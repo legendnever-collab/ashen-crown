@@ -6,7 +6,7 @@ const ctx=await browser.newContext({viewport:{width:1440,height:900}});await ctx
 const url=process.env.GAME_URL||pathToFileURL(path.resolve('releases/Ashen_Crown_v0.1.1.html')).href;
 fs.mkdirSync('test-output',{recursive:true});
 const snapshot=()=>page.evaluate(()=>window.AshenCrown.snapshot());
-const idle=()=>page.waitForFunction(()=>window.AshenCrown&&!window.AshenCrown.view().busy&&window.AshenCrown.snapshot().phase==='player'||window.AshenCrown?.snapshot().screen==='result',{},{timeout:30000});
+const idle=()=>page.waitForFunction(()=>window.AshenCrown&&!window.AshenCrown.view().busy&&(window.AshenCrown.snapshot().phase==='player'||window.AshenCrown.snapshot().screen==='result'),{},{timeout:30000});
 async function clickDo(action,id){await page.locator(`[data-do="${action}"]${id?`[data-id="${id}"]`:''}`).first().click();}
 async function tile(x,y){await page.waitForTimeout(35);const p=await page.evaluate(({x,y})=>{const b=document.querySelector('#battle-map').getBoundingClientRect(),p=window.AshenCrown.tileCenter(x,y);return {x:p.x+b.x,y:p.y+b.y};},{x,y});await page.mouse.click(p.x,p.y);}
 async function select(id){const u=(await snapshot()).units.find(u=>u.id===id);await tile(u.x,u.y);}

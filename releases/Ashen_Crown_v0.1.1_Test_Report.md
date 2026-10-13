@@ -53,6 +53,8 @@ Branch: `feature/v0.1.1-mobile-command-dock`
 
 64×64 Tile / 128×128 Portrait 값과 다섯 Portrait Render의 차이를 확인했습니다. 화면 Capture를 직접 검토하여 Portrait, Tile Detail, 버튼 배치와 하단 Forecast 가독성을 확인했습니다. Frame마다 전체 지형을 다시 그리지 않고 원본 Map을 Cache해서 추가 Detail의 비용을 줄였습니다.
 
+초기 원격 CI는 패배 결과 직후 마지막 Animation이 끝나기 전에 Retry를 클릭하여 실패했습니다. 결과 화면이 표시되는 것과 입력 가능한 시점을 구분하도록 E2E 대기 조건을 고쳤고, 결과 버튼도 Animation 완료까지 명시적으로 비활성화했습니다. 수정 후 로컬 회귀 64개와 모바일 76개를 다시 통과했습니다. 원격 CI 완료 여부는 최종 안내에서 확인합니다.
+
 ## 저장 호환과 사용 방법
 
 Save Schema 1과 저장 Key를 유지합니다. 실제 이전 HTML에서 생성한 Battle Save를 Menu → Backup/Restore로 붙여넣었고 Unit State, Growth, Schema, RNG가 일치했습니다. 파일 이름이 변경되면 브라우저의 `file://` 저장 영역이 달라질 수 있으므로 이전 파일의 텍스트 백업을 새 파일에 복원할 수 있습니다.
