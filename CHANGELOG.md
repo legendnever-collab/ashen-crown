@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.1.1 — Mobile Command Dock & Hero Identity
+
+- Map taps activate a hero immediately; a persistent bottom dock shows a dedicated face portrait, HP/MP and actions on desktop and mobile.
+- Movement is explicitly selected, displays the authoritative terrain-cost range and ends at the action chooser. Tapping the current tile enables stationary action without consuming movement, MP or RNG.
+- Attack, skill, rescue and end-phase previews/confirmation stay inside the dock. The battle command drawer has been removed.
+- Native tile resolution increased from 32×32 to 64×64 with new fine detail; sprites were redrawn with distinct silhouettes, clothes and weapons. Facial portraits are original 128×128 pixel drawings.
+- Responsive dock controls, touch drag and two-finger pinch; battle journal can be toggled. Save Schema 1 and previous text backups remain compatible.
+- Dedicated mobile regression covers four portrait/landscape sizes and a full touch-only first battle.
+
 ## v0.1.0 — The Ashen Village
 
 - Title, original story, war room, five character previews, three starting formations and free deployment with swapping.
