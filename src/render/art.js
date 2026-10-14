@@ -1,3 +1,4 @@
+import {appearanceFor} from '../data/appearances.js';
 // Native 64×64 terrain/sprites and 128×128 portraits. All artwork is original.
 export const TILE=64, PORTRAIT_SIZE=128;
 export const pixel=(c,color,x,y,w,h)=>{c.fillStyle=color;c.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));};
@@ -34,7 +35,7 @@ export function drawSprite(c,u,x,y,time=0,pose='idle',size=1){
  if(u.id==='elina'){r('#3d6349',-17,-6,4,30);r('#8aaa5d',-17,19,11,4);r('#dbbd72',-6,-4,4,3);r('#eecc8c',-9,1,2,2);}
  if(u.id==='lia'){r('#594470',-19,8,4,15);r('#c7a1dc',-18,10,2,12);r('#dabe73',-3,0,5,4);r('#ead9af',-1,0,1,4);}
  if(u.id==='sain'){r('#c4ad72',-14,7,3,15);r('#c4ad72',12,7,3,15);r('#f4dda2',-1,-5,3,2);r('#fff4c5',0,-8,1,5);}
- if(u.id==='eric'&&(u.appearanceTier||1)>=2){r('#5d425e',-18,-7,5,30);r('#e7c783',-17,-6,32,3);r('#c2d6d7',-19,-5,10,8);r('#c2d6d7',9,-5,10,8);r('#deb877',-23,0,7,3);r('#deb877',-21,0,3,18);r('#eae5cf',-22,9,5,3);}
+ if(u.id==='eric'&&appearanceFor(u).tier>=2){r('#5d425e',-18,-7,5,30);r('#e7c783',-17,-6,32,3);r('#c2d6d7',-19,-5,10,8);r('#c2d6d7',9,-5,10,8);r('#deb877',-23,0,7,3);r('#deb877',-21,0,3,18);r('#eae5cf',-22,9,5,3);}
  if(u.id==='kai'){r('#c08050',-17,3,4,18);r('#b9c4bc',-26,7,2,13);}
  if(u.guardTarget){r('#edd28b',-25,-38,50,2);r('#edd28b',-25,-38,2,11);r('#edd28b',23,-38,2,11);}c.restore();
 }
@@ -51,7 +52,7 @@ export function drawPortrait(c,u){
  if(u.id==='sain'){r('#fff5d8',42,116,12,11);r('#a18d5d',42,116,3,11);r('#f1c778',67,108,3,6);r('#fff7c5',68,104,1,8);}
  if(u.id==='kai'){r('#f6c487',38,108,4,13);r('#bf7650',39,114,15,3);r('#dcd3a9',93,82,3,4);}
  if(u.id==='aren'){r('#a6755b',44,100,48,13);r('#dfa56d',45,100,45,3);r('#b77956',39,107,12,21);r('#bbbda8',84,106,21,5);}
- if(u.id==='eric'&&(u.appearanceTier||1)>=2){r('#654b66',16,109,18,19);r('#654b66',97,106,18,22);r('#dfc17e',18,107,93,3);r('#dbe5de',20,102,25,4);r('#dbe5de',84,99,28,5);r('#ddc181',55,117,17,3);}
+ if(u.id==='eric'&&appearanceFor(u).tier>=2){r('#654b66',16,109,18,19);r('#654b66',97,106,18,22);r('#dfc17e',18,107,93,3);r('#dbe5de',20,102,25,4);r('#dbe5de',84,99,28,5);r('#ddc181',55,117,17,3);}
  if(u.expression==='concerned'){r(p.shade,45,51,15,3);r(p.shade,70,49,15,3);r('#583c3d',60,82,8,2);}else if(u.expression==='determined'){r(p.hair,46,56,14,3);r(p.hair,70,54,14,3);r('#563d36',58,83,14,2);}else if(u.expression==='sad'){r(p.shade,46,60,14,3);r(p.shade,70,58,14,3);r('#725051',61,82,8,2);}
  r('#c2aa72',0,0,128,1);r('#c2aa72',0,127,128,1);
 }

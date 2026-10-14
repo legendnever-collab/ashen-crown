@@ -30,7 +30,7 @@ export function validate(s){
  if(!n||!Array.isArray(n.queue)||!Array.isArray(n.events)||!Array.isArray(n.seen)||!Array.isArray(n.history)||n.queue.length>50||n.history.length>250||[...n.queue,...n.events,...n.seen].some(k=>!STORY[k]))throw Error('대화 기록이 손상되었습니다.');
  if(n.active&&(!STORY[n.active.key]||!Number.isInteger(n.active.index)||n.active.index<0||n.active.index>=STORY[n.active.key].length))throw Error('대화 위치가 손상되었습니다.');
  if(!Array.isArray(c.completed)||c.completed.some(id=>!MISSIONS[id])||!c.flags||!c.bonds||!c.tacticalMemory||[c.flags,c.bonds,c.tacticalMemory].some(v=>typeof v!=='object'||Array.isArray(v))||Object.values(c.tacticalMemory).some(v=>!Number.isInteger(v)||v<0))throw Error('캠페인 상태가 손상되었습니다.');
- if(s.units.some(u=>u.team==='ally'&&![1,2,3].includes(u.appearanceTier)))throw Error('외형 Tier가 손상되었습니다.');
+ if(s.units.some(u=>u.team==='ally'&&(![1,2,3].includes(u.appearanceTier)||['classTier','storyTier'].some(k=>u[k]!=null&&![1,2,3].includes(u[k])))))throw Error('외형 Tier가 손상되었습니다.');
  return s;
 }
 export function migrate(s){

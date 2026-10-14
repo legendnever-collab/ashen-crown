@@ -15,3 +15,5 @@
 | D-011 | Erik LV5 Tier2 시범 | PROPOSED | 3 Mission 내 체감, 전직 자체 아님 |
 | D-012 | 최초 클리어 성장 확정/연습 비확정 | PROPOSED | 반복 EXP 인플레이션 억제, legacy 보존 |
 | D-013 | 왕관 희생 작동·재상 책임 세부 | OPEN | 정치·결계 인과 검증 필요 |
+
+2026-10-14 implementation decisions (PROPOSED, not story canon): M03 initial 8-turn candidate expanded to 10 after 30 legal-rule campaign seeds required 4–9 turns. First-clear rewards/practice and Erik LV5 outfit sample retain old growth; full class behavior remains v0.4. Source synthesis selected to avoid external audio dependencies. Native 64/128 art retained because silhouette/detail improve readability without a uniform 2× asset increase.

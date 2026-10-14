@@ -5,7 +5,7 @@ import {narrativeState,enqueueStory,remember,setStoryFlag,afterBattleEvents} fro
 export function newGame(seed=20261014,campaign=null,missionId=1){
  const mission=MISSIONS[missionId];
  const units=HEROES.map((h,i)=>{const old=campaign?.heroes?.find(a=>a.id===h.id);const u={...structuredClone(h),team:'ally',maxHP:h.hp,maxMP:h.mp,x:DEPLOYMENTS.recommended[i][0],y:DEPLOYMENTS.recommended[i][1],xp:0,earnedXP:0,growthHistory:[],clues:[],highlights:[],healTargets:[],moved:false,acted:false,hitThisTurn:false,shadowBonus:0,guardTarget:null};
-  if(old){for(const k of ['level','xp','maxHP','maxMP','atk','def','mag','res','spd','growthHistory','clues','appearanceTier'])u[k]=structuredClone(old[k]);u.hp=u.maxHP;u.mp=u.maxMP;}u.name=h.name;u.ko=h.ko;u.appearanceTier=u.appearanceTier|| (u.id==='eric'&&u.level>=5?2:1);return u;
+  if(old){for(const k of ['level','xp','maxHP','maxMP','atk','def','mag','res','spd','growthHistory','clues','appearanceTier','classTier','storyTier'])if(old[k]!==undefined)u[k]=structuredClone(old[k]);u.hp=u.maxHP;u.mp=u.maxMP;}u.name=h.name;u.ko=h.ko;u.appearanceTier=u.appearanceTier|| (u.id==='eric'&&u.level>=5?2:1);return u;
  });
  units.push(...mission.enemies.map(e=>({...structuredClone(e),team:'enemy',maxHP:e.hp,mp:0,maxMP:0,mag:0,moved:false,acted:false,spawnTurn:0})),...mission.civilians.map(c=>({...c,team:'civilian',kind:'civilian',hp:BALANCE.civilianHP,maxHP:BALANCE.civilianHP,mp:0,maxMP:0,atk:0,def:1,res:1,mag:0,spd:0,mov:0,range:[0,0],rescued:false})));
  campaign=structuredClone(campaign||{heroes:null,results:[],clears:0});campaign.completed=campaign.completed||[];campaign.flags=campaign.flags||{};campaign.bonds=campaign.bonds||{};campaign.tacticalMemory=campaign.tacticalMemory||{};
@@ -88,7 +88,7 @@ export function checkOutcome(s){
  const civ=s.units.filter(u=>u.team==='civilian'),heroes=s.units.filter(u=>u.team==='ally');
  if(heroes.every(u=>!alive(u)))finish(s,'defeat','모든 장수가 전투불능입니다.');
  else if(s.missionId===2){const boss=findUnit(s,'boss');if(boss.rescued||boss.hp<=0||boss.y===0||s.turn>8||s.units.filter(u=>u.team==='enemy').every(u=>!alive(u)))finish(s,'victory',boss.rescued?'포로와 보급로 진술 확보.':'추격 종료. 상자의 흔적은 남았지만 진술은 얻지 못했습니다.');}
- else if(s.missionId===3){const saved=civ.filter(c=>c.rescued).length;if(saved>0&&heroes.filter(alive).every(u=>u.y<=2)){setStoryFlag(s,'mission_03_bridge_held');setStoryFlag(s,'mission_03_refugees_saved',saved);finish(s,'victory',`${saved}/2 주민 구조, 생존 장수 철수 완료.`);}else if(civ.every(c=>c.hp<=0)||s.turn>8)finish(s,'defeat','구조와 안전한 철수를 제한 턴 안에 완료하지 못했습니다.');}
+ else if(s.missionId===3){const saved=civ.filter(c=>c.rescued).length;if(s.turn>10)finish(s,'defeat','제한 10턴 안에 철수하지 못했습니다.');else if(saved>0&&heroes.filter(alive).every(u=>u.y<=2)){setStoryFlag(s,'mission_03_bridge_held');setStoryFlag(s,'mission_03_refugees_saved',saved);finish(s,'victory',`${saved}/2 주민 구조, 생존 장수 철수 완료.`);}else if(civ.every(c=>c.hp<=0))finish(s,'defeat','구조와 안전한 철수를 제한 턴 안에 완료하지 못했습니다.');}
  else if(civ.some(c=>c.hp<=0))finish(s,'defeat','주민을 잃어 필수 구출 목표를 달성할 수 없습니다.');
  else if(civ.every(c=>c.rescued)&&findUnit(s,'boss').hp<=0)finish(s,'victory','두 주민이 무사히 탈출했고 Garr를 격파했습니다.');
  return s.outcome;
@@ -96,7 +96,7 @@ export function checkOutcome(s){
 function finish(s,outcome,reason){
  s.outcome=outcome;s.screen='result';s.reason=reason;s.undo={};
  if(outcome==='victory')for(const u of s.units.filter(u=>u.team==='ally'&&alive(u)))awardXP(s,u,BALANCE.clearXP,'마을 구출 완수');
- const result={missionId:s.missionId,practice:s.practice,outcome,turn:s.turn,rescued:s.units.filter(u=>u.team==='civilian'&&u.rescued).length,allAlive:s.units.filter(u=>u.team==='ally').every(alive),swift:s.turn<=BALANCE.parTurn,potential:findUnit(s,'eric').clues.includes("Guardian’s Oath"),seed:s.initialSeed,heroes:s.units.filter(u=>u.team==='ally').map(u=>({id:u.id,level:u.level,earnedXP:u.earnedXP,clues:[...u.clues]}))};
+ const result={missionId:s.missionId,practice:s.practice,outcome,turn:s.turn,rescued:s.units.filter(u=>u.team==='civilian'&&u.rescued).length,allAlive:s.units.filter(u=>u.team==='ally').every(alive),swift:s.turn<=missionOf(s).par,potential:findUnit(s,'eric').clues.includes("Guardian’s Oath"),seed:s.initialSeed,heroes:s.units.filter(u=>u.team==='ally').map(u=>({id:u.id,level:u.level,earnedXP:u.earnedXP,clues:[...u.clues]}))};
  s.campaign.results.push(result);s.campaign.results=s.campaign.results.slice(-30);
  if(outcome==='victory'){if(!s.practice){s.campaign.clears++;s.campaign.completed.push(s.missionId);s.campaign.heroes=structuredClone(s.units.filter(u=>u.team==='ally'));setStoryFlag(s,`mission_0${s.missionId}_completed`);if(s.missionId===1){setStoryFlag(s,'royal_supply_evidence');setStoryFlag(s,'mission_01_civilians_rescued',2);}}}
  if(outcome==='victory'&&s.missionId===3&&!s.practice){const m=s.campaign.tacticalMemory,prior=s.stageStart?.campaign.tacticalMemory||{},did=k=>(m[k]||0)>(prior[k]||0);if(did('guard_eric_sain')&&(did('kai_rescue')||did('kai_bypass'))&&(did('sain_rescue')||did('sain_heal'))){s.campaign.bonds.erik_kai=true;setStoryFlag(s,'bond_erik_kai');enqueueStory(s,'3:bond');}}

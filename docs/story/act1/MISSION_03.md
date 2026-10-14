@@ -6,7 +6,9 @@ APPROVED_DIRECTION: 교량 방어와 민간인 구조. 에릭의 보호, 세인�
 에릭의 실제 Guard, 카이 구조/우회, 세인 구조/치유의 Tactical Memory가 특별 Bond를 연다. 강제 희생 없음. 종료 후 아렌은 봉인 명령 기억을 털어놓지만 전체 진실은 미공개.
 
 ## Gameplay
-교량·협곡. Civilian이 아군 인접 보호를 받으면 매 Player Turn 시작에 안전지대로 자동 이동. 인접 Rescue는 즉시 구출. 8턴까지 1명 이상 구출+생존 장수가 안전구역 철수. 전원 구조 도전 가능.
+교량·협곡. Civilian이 아군 인접 보호를 받으면 매 Player Turn 시작에 안전지대로 자동 이동. 인접 Rescue는 즉시 구출. 10턴까지 1명 이상 구출+생존 장수가 안전구역 철수. 전원 구조 도전 가능.
 
 ## 결과·연결
 전투 결과는 Story Flag와 정보·보상을 바꾸며 진행을 차단하지 않는다. 전멸/필수 목표 실패는 Retry/Stage Restart. 대화는 Manual/Auto/본 대화 Skip/History. 선택·Tactical Memory는 stage checkpoint로 되돌리고 확정된 이전 Mission 기록은 유지한다.
+
+Balance note: 최초 8턴 후보에서는 한 경로가 9턴에 완료되어 제한을 10턴으로 조정했다. 30 seed legal-rule 캠페인 4–9턴 철수로 검증한다. 제한을 넘긴 턴은 승리 조건보다 먼저 패배 판정한다.

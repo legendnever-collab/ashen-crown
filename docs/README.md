@@ -1,6 +1,6 @@
 # Documentation Index
 
-개발 진입: [AGENTS.md](../AGENTS.md) → [PROJECT_CONTEXT](handoff/PROJECT_CONTEXT.md).
+Developer entry: [AGENTS.md](../AGENTS.md) → [PROJECT_CONTEXT](handoff/PROJECT_CONTEXT.md).
 
 - [decisions/DECISION_LOG.md](decisions/DECISION_LOG.md)
 - [decisions/OPEN_QUESTIONS.md](decisions/OPEN_QUESTIONS.md)
@@ -10,6 +10,9 @@
 - [design/CHARACTER_GROWTH.md](design/CHARACTER_GROWTH.md)
 - [design/COMBAT_SYSTEM.md](design/COMBAT_SYSTEM.md)
 - [design/NARRATIVE_SYSTEM.md](design/NARRATIVE_SYSTEM.md)
+- [handoff/CURRENT_STATUS.md](handoff/CURRENT_STATUS.md)
+- [handoff/NEXT_TASKS.md](handoff/NEXT_TASKS.md)
+- [handoff/PROJECT_CONTEXT.md](handoff/PROJECT_CONTEXT.md)
 - [story/CAMPAIGN_STRUCTURE.md](story/CAMPAIGN_STRUCTURE.md)
 - [story/CHARACTER_BIBLE.md](story/CHARACTER_BIBLE.md)
 - [story/CHARACTER_RELATIONSHIPS.md](story/CHARACTER_RELATIONSHIPS.md)
