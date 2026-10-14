@@ -1,4 +1,4 @@
-export const VERSION = '0.1.2';
+export const VERSION = '0.1.3';
 export const SCHEMA = 1;
 export const WIDTH = 12, HEIGHT = 10;
 export const TERRAIN = {

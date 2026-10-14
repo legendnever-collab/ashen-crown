@@ -1,0 +1,69 @@
+{
+  "results": [
+    {
+      "viewport": "1440x900",
+      "activated": {
+        "menu": "root",
+        "mode": "choose"
+      },
+      "hit": {
+        "tag": "CANVAS",
+        "id": "battle-map",
+        "menu": false
+      },
+      "menu": "forecast",
+      "selected": "eric",
+      "mode": "attack",
+      "attackPreview": true
+    },
+    {
+      "viewport": "390x844",
+      "activated": {
+        "menu": "root",
+        "mode": "choose"
+      },
+      "hit": {
+        "tag": "CANVAS",
+        "id": "battle-map",
+        "menu": false
+      },
+      "menu": "forecast",
+      "selected": "eric",
+      "mode": "attack",
+      "attackPreview": true
+    },
+    {
+      "viewport": "360x640",
+      "activated": {
+        "menu": null,
+        "mode": "rescue"
+      },
+      "hit": {
+        "tag": "BUTTON",
+        "id": "",
+        "action": "mode",
+        "menu": true
+      },
+      "menu": "root",
+      "selected": "eric",
+      "mode": "choose",
+      "attackPreview": false
+    },
+    {
+      "viewport": "844x390",
+      "activated": {
+        "menu": "root",
+        "mode": "choose"
+      },
+      "hit": {
+        "tag": "CANVAS",
+        "id": "battle-map",
+        "menu": false
+      },
+      "menu": "forecast",
+      "selected": "eric",
+      "mode": "attack",
+      "attackPreview": true
+    }
+  ]
+}

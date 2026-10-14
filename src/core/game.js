@@ -9,7 +9,7 @@ export function newGame(seed=20261014,campaign=null){
 }
 export function setDeployment(s,id,x,y){if(s.screen!=='deployment'||y<7||y>9||x<1||x>10||!Number.isFinite(terrainAt(x,y)?.cost))return false;const u=findUnit(s,id);if(!u||u.team!=='ally')return false;const other=at(s,x,y);if(other&&other.team!=='ally')return false;if(other){other.x=u.x;other.y=u.y;}u.x=x;u.y=y;return true;}
 export function presetDeployment(s,name){if(s.screen!=='deployment')return;HEROES.forEach((h,i)=>{const u=findUnit(s,h.id);[u.x,u.y]=DEPLOYMENTS[name][i];});}
-export function startBattle(s){if(s.screen!=='deployment')return false;s.screen='battle';s.log.push('TURN 1 · 먼저 남쪽 산적을 저지하세요. 주민은 TURN 5부터 직접 공격받을 수 있습니다. 인접한 장수로 구출하세요.');return true;}
+export function startBattle(s){if(s.screen!=='deployment')return false;s.screen='battle';s.log.push('TURN 1 · 먼저 남쪽 산적을 저지하세요. 주민은 TURN 5부터 직접 공격받을 수 있습니다. 인접한 장수로 구출하세요.');const {stageStart,...initial}=s;s.stageStart=structuredClone({...initial,feedback:[]});return true;}
 export function canAct(s,u){return s.screen==='battle'&&s.phase==='player'&&u?.team==='ally'&&alive(u)&&!u.acted;}
 export function moveUnit(s,id,x,y){const u=findUnit(s,id);if(!canAct(s,u)||u.moved||(u.x===x&&u.y===y))return null;const path=pathTo(s,u,x,y);if(!path)return null;s.undo[id]={x:u.x,y:u.y};u.x=x;u.y=y;u.moved=true;s.feedback.push({type:'move',id,path});return path;}
 export function undoMove(s,id){const u=findUnit(s,id),origin=s.undo[id];if(!canAct(s,u)||!origin||at(s,origin.x,origin.y))return false;u.x=origin.x;u.y=origin.y;u.moved=false;delete s.undo[id];return true;}
@@ -89,3 +89,5 @@ function finish(s,outcome,reason){
  s.log.push(`${outcome==='victory'?'VICTORY':'DEFEAT'} · ${reason}`);
 }
 export function replay(s,fresh=false){return newGame(s.initialSeed,fresh?null:structuredClone(s.campaign));}
+
+export function restartStage(s){if(!['battle','result'].includes(s.screen))return null;if(s.stageStart){const initial=structuredClone(s.stageStart);initial.stageStart=structuredClone(s.stageStart);return initial;}const initial=newGame(s.initialSeed,structuredClone(s.campaign));initial.screen='deployment';return initial;}

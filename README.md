@@ -1,10 +1,10 @@
-# Ashen Crown v0.1.2
+# Ashen Crown v0.1.3
 
 **First Battle — The Ashen Village**. Original fantasy SRPG built around five heroes, tactical choices, fixed character growth and clues to hidden potential. Original procedural pixel art; no borrowed game assets.
 
 ## Play
 
-Download [`releases/Ashen_Crown_v0.1.2.html`](releases/Ashen_Crown_v0.1.2.html), then open it directly in a recent browser. All code, graphics and the Korean UI font are inline. No network or installation is needed to play. `index.html` is the same standalone build and can be served over HTTP. GitHub's file viewer shows source; use **Download raw file** to obtain the playable HTML.
+Download [`releases/Ashen_Crown_v0.1.3.html`](releases/Ashen_Crown_v0.1.3.html), then open it directly in a recent browser. All code, graphics and the Korean UI font are inline. No network or installation is needed to play. `index.html` is the same standalone build and can be served over HTTP. GitHub's file viewer shows source; use **Download raw file** to obtain the playable HTML.
 
 Start → Story → War Room → Free Deployment → Battle → Growth Result. Rescue both civilians and defeat Garr. A civilian death or party wipe loses the mission. Each hero moves once and takes one action; actions end that hero's turn. Rescue consumes an action and requires adjacency. The two northern reinforcements are announced on turn 2, arrive on turn 3 and give the player a phase to respond. Civilians cannot be directly targeted until turn 5, announced on turn 4.
 
@@ -20,6 +20,7 @@ Start → Story → War Room → Free Deployment → Battle → Growth Result. R
 
 - Tap or click a hero on the map: its face and HP/MP remain in the bottom dock, and a small map-anchored action menu opens. Choose Move, Attack, Skills, Tools, Traits, Rescue or Wait. Skills and Tools open submenus; Traits shows the talent and potential clues.
 - Choose **이동**, then a blue tile. Watch the route, then choose **이동 확정** or **취소** at the destination. The move does not affect rules or saves until confirmed. Cancel walks back without consuming movement or RNG. Tap the current tile to act without moving. A confirmed move can still be undone before an irreversible action.
+- Movement consumes only movement, so a hero can attack after confirming a move. The action menu avoids nearby enemies and ally selection tiles where space permits, and a map tap cannot accidentally activate a newly opened menu button. Elina still cannot shoot adjacent targets: her range is 2–3; the dock explains the restriction and suggests undoing the move.
 - Choose Attack or a skill, then a target. Damage, hit chance, counterattack and target HP appear in the contextual menu; confirm there. End-phase confirmation stays in the bottom dock.
 - In deployment, tap a hero, then **배치 이동**, then a valid southern tile. An occupied ally tile swaps positions. Three preset formations are available.
 - `1` Move, `2` Attack, `3` Skill, `4` Rescue, `Z` Undo move, `W` Wait, `Tab` Next available hero, `E` End phase, `Escape` Cancel.
@@ -29,9 +30,11 @@ Start → Story → War Room → Free Deployment → Battle → Growth Result. R
 
 ## Save and replay
 
+Menu → **스테이지 초기화** → confirmation restarts the current mission at TURN 1 using the exact starting formation, hero growth, resources and RNG. Current-stage XP/clues/results are rolled back; earlier campaign progress stays. The checkpoint persists through saves/reload. Older saves without a checkpoint explain the limitation and return to recommended deployment with permanent growth retained. This is separate from deleting all saves or starting fresh level-1 practice.
+
 Every committed screen, confirmed move, action and AI step autosaves current battle, RNG, HP, MP, growth, clues and results. Refresh restores it, including an interrupted enemy phase. Menu → Backup/Restore allows copy/paste transfer. A checksum and schema validation reject malformed data; a last-good snapshot provides fallback. Failures are shown explicitly. Reset requires confirmation.
 
-v0.1.0 and v0.1.1 Save Schema 1 remain compatible. For a newly named HTML path, export text backup in the previous version and paste it into v0.1.2 through Menu → Backup/Restore. This was tested using the actual previous HTML.
+v0.1.0, v0.1.1 and v0.1.2 Save Schema 1 remain compatible. For a newly named HTML path, export text backup in the previous version and paste it into v0.1.3 through Menu → Backup/Restore. This was tested using the actual previous HTML.
 
 Local storage belongs to a browser/profile and may depend on the local HTML path. Keep the path stable and preserve a text backup before moving files. Storage cannot be guaranteed against browser eviction or user deletion. Offline `file://` storage was tested in Chromium. Safari, Firefox and actual phone hardware were not tested.
 
@@ -51,6 +54,8 @@ npm run test:e2e
 npm run test:mobile
 npm run test:tactical
 npm run test:http
+npm run test:post-move
+npm run test:restart
 npm run serve
 ```
 

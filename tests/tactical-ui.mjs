@@ -1,7 +1,7 @@
 import {HEROES} from '../src/data/game-data.js';
 import fs from 'node:fs';import assert from 'node:assert/strict';import path from 'node:path';import {pathToFileURL} from 'node:url';import {chromium} from 'playwright';
 const browser=await chromium.launch({headless:true,...process.env.BROWSER_EXECUTABLE?{executablePath:process.env.BROWSER_EXECUTABLE}:{},args:['--no-sandbox','--disable-gpu','--in-process-gpu','--no-zygote']}),checks=[],errors=[];
-const check=(name,ok)=>{assert.ok(ok,name);checks.push({name,status:'PASS'});console.log('PASS',name);},url=pathToFileURL(path.resolve('releases/Ashen_Crown_v0.1.2.html')).href;
+const check=(name,ok)=>{assert.ok(ok,name);checks.push({name,status:'PASS'});console.log('PASS',name);},url=pathToFileURL(path.resolve('releases/Ashen_Crown_v0.1.3.html')).href;
 const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2});await ctx.setOffline(true);const p=await ctx.newPage();p.on('pageerror',e=>errors.push(e.message));
 const s=()=>p.evaluate(()=>window.AshenCrown.snapshot()),v=()=>p.evaluate(()=>window.AshenCrown.view()),cmd=(a,id)=>p.locator(`[data-do="${a}"]${id?`[data-id="${id}"]`:''}`).first().tap(),idle=()=>p.waitForFunction(()=>!window.AshenCrown.view().busy,{},{timeout:30000});
 async function tile(x,y){await p.waitForTimeout(40);const pt=await p.evaluate(([x,y])=>{const c=window.AshenCrown.tileCenter(x,y),b=document.querySelector('#battle-map').getBoundingClientRect();return {x:c.x+b.x,y:c.y+b.y};},[x,y]);await p.touchscreen.tap(pt.x,pt.y);}
