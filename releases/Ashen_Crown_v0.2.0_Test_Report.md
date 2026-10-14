@@ -1,7 +1,7 @@
 # Ashen Crown v0.2.0 — Test Report
 
 Date: 2026-10-14. Release candidate, user review required before merge.
-Authoritative baseline: main 5aa56dd4596246057611606f28ece4643e1d080a / v0.1.3, PR #4 merged. Baseline main CI success and predecessor PR CI success verified. Implementation code: 6b0235b4425de7f00ac0feffbe0ca10afc58a66d on feature/v0.2-burning-frontier. Hosted final status is the branch/PR Checks tab; this document records executed local evidence.
+Authoritative baseline: main 5aa56dd4596246057611606f28ece4643e1d080a / v0.1.3, PR #4 merged. Baseline main CI success and predecessor PR CI success verified. Implementation code: 6b0235b4425de7f00ac0feffbe0ca10afc58a66d on feature/v0.2-burning-frontier. Hosted implementation CI SUCCESS: https://github.com/legendnever-collab/ashen-crown/actions/runs/38534109776. All build, unit, balance, desktop/mobile/tactical/restart/campaign steps passed. Final artifact/docs commit checks are visible on PR #5: https://github.com/legendnever-collab/ashen-crown/pull/5. This report records local evidence plus that hosted implementation verification.
 
 ## Implemented scope
 - Documentation-first root AGENTS/CLAUDE and complete world/factions/characters/relationships/4-act 30-mission/ending/vision/roadmap/decision/handoff docs. CANON, APPROVED_DIRECTION, PROPOSED, OPEN, DEPRECATED distinguished.
