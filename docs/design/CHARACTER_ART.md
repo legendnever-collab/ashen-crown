@@ -8,3 +8,7 @@ Font expansion: AshenUI derived from locally available @fontsource/nanum-gothic 
 Tier metadata and reserved assets: src/data/appearances.js. Resolver accepts appearanceTier, classTier and storyTier and selects an available rendered variant; incomplete Tier2/3 assets do not silently appear as finished.
 
 v0.3 adds procedural Aren walking, Village/Camp layout, shop interior, NPC sprites and equipment icons. Existing identity tiers preserved; gear shown in inventory/portrait panel, no promise of per-combination tactical sprites.
+
+
+## v0.3.1 native detail
+World units use a 64-unit tile coordinate system. Terrain caches are rendered at native 128 pixels per tile; procedural sprites contain half-world-pixel seams, etched gear, face highlights and walk arm frames (128 native extent); portraits have 256 backing pixels and new native face/hair/garment detail. This is not CSS enlargement. Existing silhouettes, Erik Tier2 and original art ownership remain. No sprite for every gear combination or new promotion claimed.

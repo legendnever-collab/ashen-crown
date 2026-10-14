@@ -28,10 +28,9 @@ export const SPEAKERS={aren:{id:'aren',name:'Aren Valter',ko:'아렌',team:'comm
 for(const [key,lines]of Object.entries(FRONTIER_SCENES))STORY[key]=lines.map(([speaker,text],i)=>({...line(speaker,text,i%4===1?'concerned':i%4===2?'determined':'neutral'),stage:key.startsWith('pre:1')||key==='raid'||key==='after:1'?'village':'camp',focus:i%3,actors:['aren','eric','elina','lia','sain','kai']}));
 for(let mission=1;mission<=3;mission++)for(const phase of ['preparation','aftermath'])for(const [id,copy]of Object.entries(NPC_LINES)){
  const lines=copy.map(text=>line(id,text));
- if(mission===1&&phase==='aftermath')lines.push(line(id,'마을은 지켰어요. 이제 불탄 자리에서 다음 길을 준비합니다.'));
- if(mission===2)lines.push(line(id,phase==='aftermath'?'숲의 흔적을 남기고 피난민이 있는 다리로 향합니다.':'포로의 진술은 선택이지만, 살아 있는 정보는 다음 판단을 돕습니다.'));
- if(mission===3)lines.push(line(id,phase==='aftermath'?'지금은 야영지로 돌아왔습니다. 다음 성채 조사는 v0.4에서 이어집니다.':'도구가 없어도 구조할 수 있어요. 전원이 돌아올 자리를 남겨 두세요.'));
- STORY[`npc:${mission}:${phase}:${id}`]=lines.map(l=>({...l,stage:mission===1?'village':'camp',actors:['aren',id],focus:1}));
+ const contextual={eric:'손이 떨리는 병사부터 쉬게 하자.',elina:'자국은 남아요. 누가 밟고 갔는지 끝까지 찾겠어요.',lia:'아직 모르는 게 많네요. 그래서 더 살펴봐야죠.',sain:'기다려 주세요. 붕대를 한 번 더 감아야 해요.',kai:'쉬는 동안에도 출구는 봐 둬. 버릇이거든.',elder:'빈집에도 돌아올 사람의 자리는 남겨 두겠습니다.',refugee:'오늘은 아이가 잠들었어요. 그걸로 됐어요.',guard:'교대할 병사가 왔습니다. 이제 잠깐 쉬어도 되겠지요.'};
+ if(phase==='aftermath'&&contextual[id])lines.push(line(id,contextual[id]));
+ STORY[`npc:${mission}:${phase}:${id}`]=lines.map(l=>({...l,inPlace:true,actors:['aren',id],focus:1}));
 }
 for(const [id,name]of Object.entries({elder:'마을 어른',smith:'대장장이',merchant:'도구 상인',refugee:'피난민',guard:'경비병'}))SPEAKERS[id]={id,name,ko:name,team:'civilian'};
 STORY['after:3:quiet']=STORY['after:3'].map(l=>({...l}));STORY['after:3:quiet'][1].text='서로 다른 방식으로 길을 지켰다. 아직 맞춰 가야 할 점이 있겠지.';STORY['after:3:quiet'][2].text='돌아온 사람들이 있잖아. 다음에도 길을 찾아보지.';

@@ -8,3 +8,7 @@ Loop: Story → Town/Camp Exploration → NPC/Recruitment → Shop/Equipment →
 
 
 CANON: «장수를 만나고, 함께 준비하고, 전장에서 성장시키며, 전쟁을 통해 그들의 이야기를 완성한다.» 아렌은 이야기와 군단 운영, 장수들은 전투의 주인공. 탐색·상점은 장수 육성에 기여한다.
+
+
+## v0.3.1 Classic SRPG Renaissance
+Approved implementation direction: preparation takes place in walkable shops; distinguish architectural uses; actor selection reveals legal movement and contextual commands; portrait dialogue retains world positions. Native detail, visible fire/ruins, variable rectangular maps and role-specific movement strengthen the existing loop. No additional missions or changes to the original 4-act canon.

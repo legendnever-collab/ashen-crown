@@ -26,3 +26,13 @@
 - D-017 Version Scope Revision — APPROVED_DIRECTION: v0.3 Living Frontier, v0.4 Broken Allegiance M04–06, v0.5 Advanced Class, 이후 ACT II–IV. 과거 일정 항목을 대체한다.
 - D-018 Economic checkpoint — implementation policy: canonical campaign assets; attempt working copy at departure; practice isolated. First clear commits inventory and bounded Gold, retry/restart restores departure assets. No reward farming. Existing legacy heroes/results preserved. Default gear zero bonus, purchases additive and class checked; one upgrade per instance.
 
+
+
+## 2026-10-14 — v0.3.1 user Master Task
+- D-019 Walkable shop lifecycle: separate maps/owners/exit; durable doorway return; no automatic exterior relocation on transactions.
+- D-020 Weapon-first atomic buy/equip: exact effective-stat comparison, eligibility and idempotent nonce, save failure rolls back both assets and equipment.
+- D-021 Rendering: retain logical TILE=64; native 128 terrain/sprite detail, 256 portrait backing; standard desktop density 2.1 to meet ≥4× baseline pixels even with different font/viewport metrics. Mobile backing follows device scale. Cache terrain and preserve pixelated/no-smoothing rendering.
+- D-022 Geometry: preserve old core and all save coordinates; add distinct rectangular side routes/facilities, shared camera and minimap. Existing deployment/bridge safe zone coordinates intentionally preserved.
+- D-023 Tactical identity: class MOV 2/3/3/3/4, explicit terrain profiles, allied traversal/no allied landing, reserved mounted modifier. M03 deadline remains 10.
+- D-024 Popup placement: center obstruction has higher penalty than sprite-edge overlap; protects reachable cells and targets, prioritizes enemy input on constrained screens. Informational quest text passes map clicks through.
+No new story facts promoted to CANON. Reference screenshots were mentioned in the task but not attached in this execution; no direct copyrighted image comparison claimed.

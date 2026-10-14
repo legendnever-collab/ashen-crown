@@ -1,5 +1,5 @@
 import {effectiveStats} from './economy.js';
-import {MAP,TERRAIN,WIDTH,HEIGHT,BALANCE,HEROES} from '../data/game-data.js';
+import {MAP,TERRAIN,WIDTH,HEIGHT,BALANCE,HEROES,CLASS_MOVEMENT,HERO_CLASS,TERRAIN_COSTS} from '../data/game-data.js';
 import {missionOf} from '../data/missions.js';
 import {remember} from './narrative.js';
 export const distance=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
@@ -10,16 +10,18 @@ export const findUnit=(s,id)=>s.units.find(u=>u.id===id);
 export const at=(s,x,y)=>s.units.find(u=>alive(u)&&u.x===x&&u.y===y);
 export function nextRandom(state){const next=(Math.imul(state>>>0,1664525)+1013904223)>>>0;return {state:next,value:next/4294967296};}
 export function roll(s){const r=nextRandom(s.rng);s.rng=r.state;return r.value;}
+export function terrainCost(s,u,x,y){const type=missionOf(s).map[y]?.[x];if(!type||missionOf(s).layers.collision[y]?.[x]||!Number.isFinite(TERRAIN[type]?.cost))return Infinity;const profile=u.movementProfile||CLASS_MOVEMENT[HERO_CLASS[u.id]]?.profile||'infantry';return TERRAIN_COSTS[profile]?.[type]??TERRAIN[type].cost;}
 export function movement(s,u,ignore=false){
  const start=key(u.x,u.y), costs=new Map([[start,0]]),prev=new Map(),queue=[{x:u.x,y:u.y,c:0}];
  const allowance=effectiveStats(s,u).mov+(u.shadowBonus||0);
  while(queue.length){queue.sort((a,b)=>a.c-b.c);const p=queue.shift();if(p.c!==costs.get(key(p.x,p.y)))continue;
   for(const [dx,dy] of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,t=terrainAt(x,y,s);if(!t||!Number.isFinite(t.cost))continue;
-   const occupant=at(s,x,y);if(!ignore&&occupant&&occupant.id!==u.id)continue;
-   const c=p.c+(u.id==='kai'&&missionOf(s).map[y][x]==='f'?1:t.cost),k=key(x,y);
+   const occupant=at(s,x,y);if(!ignore&&occupant&&occupant.id!==u.id&&occupant.team!==u.team)continue;
+   const c=p.c+terrainCost(s,u,x,y),k=key(x,y);
    if(c<=allowance&&c<(costs.get(k)??Infinity)){costs.set(k,c);prev.set(k,key(p.x,p.y));queue.push({x,y,c});}
   }
  }
+ if(!ignore)for(const p of [...costs.keys()]){const [x,y]=p.split(',').map(Number),occupant=at(s,x,y);if(occupant&&occupant.id!==u.id)costs.delete(p);}
  return {costs,prev};
 }
 export function pathTo(s,u,x,y){const {costs,prev}=movement(s,u);let k=key(x,y);if(!costs.has(k))return null;const path=[];while(k){const [px,py]=k.split(',').map(Number);path.unshift({x:px,y:py});k=prev.get(k);}return path;}

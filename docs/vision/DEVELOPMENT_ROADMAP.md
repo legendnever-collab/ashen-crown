@@ -6,3 +6,6 @@ APPROVED_DIRECTION, 2026-10-14 user v0.3 Master Task. Story CANON과 실제 구�
 - v0.4.0 The Broken Allegiance: M04–06, abandoned fort / royal supply investigation / Baldrick / Ashen Oath, ACT I completion. Previously v0.3 scope moved here, not deleted.
 - v0.5.0 Advanced Class & Character Progression: tactical class evolution, advanced growth and hero-specific appearance. Previously v0.4 scope moved here.
 - Subsequent: ACT II–IV, recruitment, relationship branches and three endings. Preserve 4 acts / 30 missions.
+
+
+- v0.3.1 Classic SRPG Renaissance: walkable forge/item interiors; weapon-first buy/equip; natural NPC copy and in-place dialogue; variable maps, native art detail, bounded camera/minimap, contextual tactics, fire states and class MOV. Stacked release candidate on PR #6; later missions remain v0.4, full promotions v0.5.
