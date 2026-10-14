@@ -58,3 +58,7 @@
 - Local autosave, last-good recovery, checksum/schema validation, text backup/restore and reset confirmation.
 - Original 32×32 procedural art, movement/idle/attack/hit/death feedback, damage and healing numbers, growth and discovery feedback; zoom/pan, keyboard and touch controls, animation speeds.
 - Self-contained offline HTML, source ZIP, test report and GitHub Actions validation. No audio or second mission.
+
+
+## v0.3.1 — 2026-10-14
+Independent walkable forge/item interiors and durable doorway return; weapon-first hero eligibility and effective-stat delta; atomic buy/equip retaining shop UI; in-place NPC/battle portraits/history and copy review; council checkbox removal; persistent collapsible objectives; immediate terrain-aware movement and target-protecting popup; variable rectangular maps/shared bounded camera/minimaps; native128 terrain/sprite detail and256 portraits; animated fire/charred village; class MOV2/3/3/3/4, terrain profiles/allied traversal and future modifier metadata. Save schema4 migration preserves growth/checkpoints/economy. All actual evidence in v0.3.1 report; no new missions or canon changes.

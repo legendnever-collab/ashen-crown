@@ -36,3 +36,5 @@
 - D-023 Tactical identity: class MOV 2/3/3/3/4, explicit terrain profiles, allied traversal/no allied landing, reserved mounted modifier. M03 deadline remains 10.
 - D-024 Popup placement: center obstruction has higher penalty than sprite-edge overlap; protects reachable cells and targets, prioritizes enemy input on constrained screens. Informational quest text passes map clicks through.
 No new story facts promoted to CANON. Reference screenshots were mentioned in the task but not attached in this execution; no direct copyrighted image comparison claimed.
+
+D-025 v0.3.1 final audit: reinforcement warning locations derive from authored mission spawns (M01 north/M03 rear, none in M02), not fixed village corners. Root developer/readme/changelog documents are included in the same release tree.
