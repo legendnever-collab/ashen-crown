@@ -1,3 +1,5 @@
 # Narrative System
 Data: src/data/story.js. Runtime: src/core/narrative.js. State: flags/bonds/tacticalMemory in campaign; scene queue/current line/history/seen/event IDs persisted. Trigger IDs include mission to prevent duplicates. Narrative facts independent of outcome checks. Dialogue locks combat input until queue drained; manual/auto advances, previously seen skip, history replay read-only. scene music + expressions + entrance.
 Restart: stageStart includes pre-battle campaign flags/memory; current-battle event IDs and choices rewind. Persistent viewer seen/history may retain already viewed dialogue; actual consequences rewind. Intro choice checkpoint precedes battle; restart keeps pre-battle choice, then reruns battle events. First-clear results committed once; practice does not alter canonical campaign flags/bonds/heroes. Interrupted dialogue/enemy phase resume safely.
+
+Hub/NPC/preparation scenes reuse narrative engine, stable scene IDs and seen/history. New scene staging places pixel actors with facing, expression, actor position shifts and backdrop transitions. NPC dialogue optional. Knowledge survives skip in War Council/history.

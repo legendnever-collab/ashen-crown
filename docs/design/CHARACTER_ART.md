@@ -6,3 +6,5 @@ Tier1 base / Tier2 advanced / Tier3 elite reserved. Erik T2 어깨 갑옷·망�
 Font expansion: AshenUI derived from locally available @fontsource/nanum-gothic 400 WOFF subsets (NHN/Sandoll, SIL OFL; original src/assets/OFL.txt preserved). Additional Korean syllables merged and unused glyphs removed. src/assets/font-glyphs.json is checked against authored text; no runtime dependency on fontsource. Source-composed music/art use repository MIT LICENSE.
 
 Tier metadata and reserved assets: src/data/appearances.js. Resolver accepts appearanceTier, classTier and storyTier and selects an available rendered variant; incomplete Tier2/3 assets do not silently appear as finished.
+
+v0.3 adds procedural Aren walking, Village/Camp layout, shop interior, NPC sprites and equipment icons. Existing identity tiers preserved; gear shown in inventory/portrait panel, no promise of per-combination tactical sprites.
