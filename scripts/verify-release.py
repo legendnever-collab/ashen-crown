@@ -12,5 +12,8 @@ with tempfile.TemporaryDirectory() as tmp:
     source=Path(tmp)/'ashen-crown'
     subprocess.run(['node','scripts/build.mjs'],cwd=source,check=True)
     assert (source/'releases'/f'Ashen_Crown_v{version}.html').read_bytes()==(release/f'Ashen_Crown_v{version}.html').read_bytes()
-    subprocess.run(['npm','test'],cwd=source,check=True,stdout=subprocess.DEVNULL)
+    tested=subprocess.run(['npm','test'],cwd=source,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
+    if tested.returncode:
+        print(tested.stdout)
+        tested.check_returncode()
 print('SHA256, clean Source ZIP byte-identical HTML rebuild and unit tests: PASS')

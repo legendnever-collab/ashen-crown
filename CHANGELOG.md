@@ -1,3 +1,11 @@
+# v0.3.0 — The Living Frontier (Release Candidate)
+- Hybrid Aren-controlled Village/Camp with path navigation, collision, touch D-pad, visited Fast Travel and contextual NPCs.
+- Pixel-actor pre-battle scenes and aftermath, optional Lia/Sain/Kai affiliation; five existing heroes preserved.
+- Atomic Gold shops, three purchased tools, class-compatible equipment slots, comparisons, buy/sell and one +1 upgrade.
+- Effective equipment stats in real combat/movement/healing; departure checkpoints, isolated practice, schema3 legacy migration and storage-failure rollback.
+- War Council, readiness checklist, return-to-hub and explicit final departure confirmation. Original audio motif variants and embedded Korean glyph expansion.
+- Roadmap revised: M04–06 v0.4, tactical advanced classes v0.5. Existing story canon preserved. No main merge before review.
+
 # v0.2.0 — The Burning Frontier (2026-10-14)
 
 - Establish AGENTS/CLAUDE and complete vision/story/characters/30-mission/decision/handoff documents with canon taxonomy.

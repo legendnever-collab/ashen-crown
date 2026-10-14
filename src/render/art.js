@@ -37,6 +37,7 @@ export function drawSprite(c,u,x,y,time=0,pose='idle',size=1){
  if(u.id==='sain'){r('#c4ad72',-14,7,3,15);r('#c4ad72',12,7,3,15);r('#f4dda2',-1,-5,3,2);r('#fff4c5',0,-8,1,5);}
  if(u.id==='eric'&&appearanceFor(u).tier>=2){r('#5d425e',-18,-7,5,30);r('#e7c783',-17,-6,32,3);r('#c2d6d7',-19,-5,10,8);r('#c2d6d7',9,-5,10,8);r('#deb877',-23,0,7,3);r('#deb877',-21,0,3,18);r('#eae5cf',-22,9,5,3);}
  if(u.id==='kai'){r('#c08050',-17,3,4,18);r('#b9c4bc',-26,7,2,13);}
+ if(u.id==='aren'){r('#a45b49',-14,-6,28,5);r('#d79b68',-12,-6,24,2);r('#a45b49',-14,-1,6,20);r('#d9c8a0',7,2,8,2);}
  if(u.guardTarget){r('#edd28b',-25,-38,50,2);r('#edd28b',-25,-38,2,11);r('#edd28b',23,-38,2,11);}c.restore();
 }
 export function drawPortrait(c,u){

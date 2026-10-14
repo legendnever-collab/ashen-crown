@@ -8,7 +8,7 @@ permissions:
 jobs:
   first-battle:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,6 +21,7 @@ jobs:
       - run: npm run test:campaign-balance
       - run: npm run build
       - run: git diff --exit-code -- index.html releases/Ashen_Crown_v0.3.0.html
+      - run: python scripts/verify-release.py
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
       - run: npm run test:mobile

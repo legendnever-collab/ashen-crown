@@ -1,5 +1,5 @@
 # Test Matrix
-Pending execution, record results without inferred pass.
+Executed evidence is in releases/Ashen_Crown_v0.3.0_Test_Report.md and this directory. Individual assertions/counts remain authoritative in JSON/logs; final-head hosted CI is in PR #6.
 - Units: movement/collision/path/Fast Travel/NPC variants/affiliation; transaction duplicate/insufficient/capacity/sell/equip/class/upgrade/cancel; effective gear/growth/no stacking; item action/move/temporary buff expiry; first clear/restart/retry/practice economy; malformed schema3 and legacy migration.
 - Existing: unit, 30 M01 balance, 30 full campaigns, general E2E/mobile/tactical/post-move/restart/HTTP/campaign E2E. Adapt only preparation flow/version; preserve assertions.
 - New actual UI desktop/touch: walk/tap path/D-pad/interact/visit/Fast Travel/reload; encounter/decline/join; shop buy/cancel/confirm/double-click/sell/upgrade/class preview; council/back/deployment/final confirm; inventory/use battle; aftermath/return hub. No writable diagnostics.

@@ -1,0 +1,274 @@
+{
+  "runs": [
+    {
+      "seed": 20261014,
+      "m1": 5,
+      "m2": 3,
+      "capture": true,
+      "m3": 6,
+      "saved": 2,
+      "alive": 5
+    },
+    {
+      "seed": 20261015,
+      "m1": 4,
+      "m2": 3,
+      "capture": false,
+      "m3": 9,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261016,
+      "m1": 5,
+      "m2": 3,
+      "capture": true,
+      "m3": 9,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261017,
+      "m1": 4,
+      "m2": 3,
+      "capture": false,
+      "m3": 4,
+      "saved": 2,
+      "alive": 5
+    },
+    {
+      "seed": 20261018,
+      "m1": 4,
+      "m2": 3,
+      "capture": true,
+      "m3": 5,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261019,
+      "m1": 5,
+      "m2": 3,
+      "capture": false,
+      "m3": 5,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261020,
+      "m1": 4,
+      "m2": 3,
+      "capture": true,
+      "m3": 8,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261021,
+      "m1": 4,
+      "m2": 3,
+      "capture": false,
+      "m3": 5,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261022,
+      "m1": 4,
+      "m2": 3,
+      "capture": true,
+      "m3": 5,
+      "saved": 2,
+      "alive": 5
+    },
+    {
+      "seed": 20261023,
+      "m1": 4,
+      "m2": 3,
+      "capture": false,
+      "m3": 5,
+      "saved": 2,
+      "alive": 5
+    },
+    {
+      "seed": 20261024,
+      "m1": 4,
+      "m2": 3,
+      "capture": true,
+      "m3": 6,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261025,
+      "m1": 5,
+      "m2": 3,
+      "capture": false,
+      "m3": 8,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261026,
+      "m1": 4,
+      "m2": 3,
+      "capture": true,
+      "m3": 5,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261027,
+      "m1": 4,
+      "m2": 3,
+      "capture": false,
+      "m3": 9,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261028,
+      "m1": 5,
+      "m2": 3,
+      "capture": true,
+      "m3": 5,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261029,
+      "m1": 4,
+      "m2": 3,
+      "capture": false,
+      "m3": 5,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261030,
+      "m1": 4,
+      "m2": 3,
+      "capture": true,
+      "m3": 5,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261031,
+      "m1": 5,
+      "m2": 3,
+      "capture": false,
+      "m3": 5,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261032,
+      "m1": 5,
+      "m2": 3,
+      "capture": true,
+      "m3": 6,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261033,
+      "m1": 4,
+      "m2": 3,
+      "capture": false,
+      "m3": 5,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261034,
+      "m1": 5,
+      "m2": 3,
+      "capture": true,
+      "m3": 5,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261035,
+      "m1": 4,
+      "m2": 3,
+      "capture": false,
+      "m3": 5,
+      "saved": 2,
+      "alive": 5
+    },
+    {
+      "seed": 20261036,
+      "m1": 4,
+      "m2": 3,
+      "capture": true,
+      "m3": 6,
+      "saved": 2,
+      "alive": 5
+    },
+    {
+      "seed": 20261037,
+      "m1": 5,
+      "m2": 3,
+      "capture": false,
+      "m3": 5,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261038,
+      "m1": 4,
+      "m2": 3,
+      "capture": true,
+      "m3": 5,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261039,
+      "m1": 4,
+      "m2": 3,
+      "capture": false,
+      "m3": 8,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261040,
+      "m1": 5,
+      "m2": 3,
+      "capture": true,
+      "m3": 8,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261041,
+      "m1": 4,
+      "m2": 3,
+      "capture": false,
+      "m3": 5,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261042,
+      "m1": 4,
+      "m2": 3,
+      "capture": true,
+      "m3": 8,
+      "saved": 2,
+      "alive": 4
+    },
+    {
+      "seed": 20261043,
+      "m1": 5,
+      "m2": 3,
+      "capture": false,
+      "m3": 8,
+      "saved": 2,
+      "alive": 4
+    }
+  ]
+}
