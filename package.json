@@ -13,7 +13,8 @@
     "test:mobile": "node tests/mobile-dock.mjs",
     "test:tactical": "node tests/tactical-ui.mjs",
     "test:http": "node tests/http-smoke.mjs",
-    "test:post-move": "node tests/post-move-attack.mjs"
+    "test:post-move": "node tests/post-move-attack.mjs",
+    "test:restart": "node tests/restart-stage.mjs"
   },
   "devDependencies": {
     "playwright": "1.58.2"

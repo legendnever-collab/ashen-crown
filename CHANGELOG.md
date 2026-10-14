@@ -2,6 +2,8 @@
 
 ## v0.1.3 — Post-move Attack Soft Update
 
+- Added Menu → Stage Reset with confirmation. A saved start checkpoint restores exact deployment, pre-stage hero growth, resources, objectives and seeded RNG; current-stage progress/result rolls back. Earlier campaign history stays. Legacy saves without a checkpoint return safely to recommended deployment with an explanation.
+
 - Prevent the pointer gesture selecting a hero from also clicking a menu button inserted at pointerup. Reproduced accidental Rescue activation on 360×640 in v0.1.2.
 - Reposition the contextual menu to keep nearby attack targets and ally selections clear where space permits. Reproduced a menu button covering an adjacent enemy after a confirmed move in v0.1.2.
 - Show specific messages for an archer's adjacent dead zone, targets beyond range and already completed actions. Preserve Elina range 2–3 and all combat/growth/save rules.

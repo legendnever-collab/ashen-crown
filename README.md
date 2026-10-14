@@ -30,6 +30,8 @@ Start → Story → War Room → Free Deployment → Battle → Growth Result. R
 
 ## Save and replay
 
+Menu → **스테이지 초기화** → confirmation restarts the current mission at TURN 1 using the exact starting formation, hero growth, resources and RNG. Current-stage XP/clues/results are rolled back; earlier campaign progress stays. The checkpoint persists through saves/reload. Older saves without a checkpoint explain the limitation and return to recommended deployment with permanent growth retained. This is separate from deleting all saves or starting fresh level-1 practice.
+
 Every committed screen, confirmed move, action and AI step autosaves current battle, RNG, HP, MP, growth, clues and results. Refresh restores it, including an interrupted enemy phase. Menu → Backup/Restore allows copy/paste transfer. A checksum and schema validation reject malformed data; a last-good snapshot provides fallback. Failures are shown explicitly. Reset requires confirmation.
 
 v0.1.0, v0.1.1 and v0.1.2 Save Schema 1 remain compatible. For a newly named HTML path, export text backup in the previous version and paste it into v0.1.3 through Menu → Backup/Restore. This was tested using the actual previous HTML.
@@ -53,6 +55,7 @@ npm run test:mobile
 npm run test:tactical
 npm run test:http
 npm run test:post-move
+npm run test:restart
 npm run serve
 ```
 

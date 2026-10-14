@@ -7,6 +7,7 @@ const rect=pixel;
 export class BattleRenderer{
  constructor(canvas,getState,getUI){this.canvas=canvas;this.ctx=canvas.getContext('2d');this.getState=getState;this.getUI=getUI;this.zoom=1;this.pan={x:0,y:0};this.camera={scale:1,x:0,y:0};this.effects=[];this.motion=new Map();this.frame=0;this.terrainCanvas=document.createElement('canvas');this.terrainCanvas.width=WIDTH*TILE;this.terrainCanvas.height=HEIGHT*TILE;const tc=this.terrainCanvas.getContext('2d');for(let y=0;y<HEIGHT;y++)for(let x=0;x<WIDTH;x++)drawTile(tc,MAP[y][x],x*TILE,y*TILE,y*WIDTH+x);this.resize();this.observer=new ResizeObserver(()=>this.resize());this.observer.observe(canvas);this.tick=this.tick.bind(this);requestAnimationFrame(this.tick);}
  resize(){const b=this.canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;this.canvas.width=Math.round(b.width*dpr);this.canvas.height=Math.round(b.height*dpr);this.dpr=dpr;this.w=b.width;this.h=b.height;this.ctx.imageSmoothingEnabled=false;}
+ clearPresentation(){this.effects=[];this.motion.clear();this.hpStart=null;this.hpEvents=[];this.visualUntil=0;this.lastWalk=null;this.lastPresentation=[];}
  reset(){this.zoom=1;this.pan={x:0,y:0};}
  zoomBy(n){this.zoom=Math.max(.7,Math.min(2.4,this.zoom*n));this.clampPan();}
  clampPan(){this.pan.x=Math.max(-this.w*.6,Math.min(this.w*.6,this.pan.x));this.pan.y=Math.max(-this.h*.6,Math.min(this.h*.6,this.pan.y));}

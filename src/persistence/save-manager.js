@@ -21,6 +21,7 @@ export function validate(s){
  if(s.campaign.heroes!==null){if(!Array.isArray(s.campaign.heroes)||s.campaign.heroes.length!==5||new Set(s.campaign.heroes.map(u=>u.id)).size!==5)throw Error('군단 성장 저장이 손상되었습니다.');for(const u of s.campaign.heroes){if(!HEROES.some(h=>h.id===u.id)||!Array.isArray(u.clues)||!Array.isArray(u.growthHistory)||['level','xp','maxHP','maxMP','atk','def','mag','res','spd'].some(k=>!Number.isInteger(u[k])||u[k]<0))throw Error('군단 수치가 손상되었습니다.');}}
  if(s.log.some(l=>typeof l!=='string')||s.missionStart.length!==5||s.missionStart.some(m=>!m||!HEROES.some(h=>h.id===m.id)||!m.stats||!Number.isInteger(m.level)))throw Error('미션 기록이 손상되었습니다.');
  if(s.outcome!==null&&!['victory','defeat'].includes(s.outcome)||s.screen==='result'&&!s.outcome)throw Error('미션 결과가 손상되었습니다.');
+ if(s.stageStart!=null){const initial=s.stageStart;if(initial.stageStart!=null||initial.screen!=='battle'||initial.phase!=='player'||initial.turn!==1||initial.initialSeed!==s.initialSeed||initial.rng!==s.initialSeed||initial.potions!==2||initial.reinforced||initial.units?.length!==12||initial.units?.some(u=>u.team==='ally'&&(u.moved||u.acted)||u.team==='civilian'&&u.rescued))throw Error('스테이지 시작 기록이 손상되었습니다.');validate(initial);}
  return s;
 }
 export function migrate(s){if(s?.schema===0){s.schema=1;s.version='0.1.0';s.feedback=s.feedback||[];}if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');return validate(s);}
