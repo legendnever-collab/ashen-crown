@@ -1,7 +1,7 @@
 # Ashen Crown v0.2.0 — Test Report
 
 Date: 2026-10-14. Release candidate, user review required before merge.
-Authoritative baseline: main 5aa56dd4596246057611606f28ece4643e1d080a / v0.1.3, PR #4 merged. Baseline main CI success and predecessor PR CI success verified. Implementation code: 6b0235b4425de7f00ac0feffbe0ca10afc58a66d on feature/v0.2-burning-frontier. Hosted implementation CI SUCCESS: https://github.com/legendnever-collab/ashen-crown/actions/runs/38534109776. All build, unit, balance, desktop/mobile/tactical/restart/campaign steps passed. Final artifact/docs commit checks are visible on PR #5: https://github.com/legendnever-collab/ashen-crown/pull/5. This report records local evidence plus that hosted implementation verification.
+Authoritative baseline: main 5aa56dd4596246057611606f28ece4643e1d080a / v0.1.3, PR #4 merged. Baseline main CI success and predecessor PR CI success verified. Implementation code: 8fe22c0450929c4f21008d8826afdfe014c21029 on feature/v0.2-burning-frontier. Hosted preflight CI SUCCESS (before final practice/retry hardening): https://github.com/legendnever-collab/ashen-crown/actions/runs/38534109776. All build, unit, balance, desktop/mobile/tactical/restart/campaign steps passed. Final artifact/docs commit checks are visible on PR #5: https://github.com/legendnever-collab/ashen-crown/pull/5. This report records local evidence plus that hosted implementation verification.
 
 ## Implemented scope
 - Documentation-first root AGENTS/CLAUDE and complete world/factions/characters/relationships/4-act 30-mission/ending/vision/roadmap/decision/handoff docs. CANON, APPROVED_DIRECTION, PROPOSED, OPEN, DEPRECATED distinguished.
@@ -14,17 +14,17 @@ Authoritative baseline: main 5aa56dd4596246057611606f28ece4643e1d080a / v0.1.3, 
 ## Executed validation
 | Check | Result | Evidence |
 |---|---:|---|
-| Node unit/rules/narrative/save/tier/documentation | 71 PASS / 0 FAIL | unit.log |
+| Node unit/rules/narrative/save/tier/documentation | 73 PASS / 0 FAIL | unit.log |
 | Desktop/general file:// E2E | 64 PASS | e2e.json |
 | Touch layout/full battle/actual previous HTML imports | 82 PASS | mobile-dock.json |
 | Movement confirmation/cast/projectile/impact/counters/items | 26 PASS | tactical-ui.json |
 | Stage restart desktop/touch/legacy/storage denial | 22 PASS | restart-stage.json |
 | Post-move attack and touch menu regression | 8 scenarios PASS | post-move-attack.json |
 | HTTP standalone play/persistence | 4 PASS | http-smoke.json |
-| Desktop + touch 01→02→03 campaign via actual controls | 114 PASS | campaign-e2e.json |
+| Desktop + touch 01→02→03 campaign via actual controls | 118 PASS | campaign-e2e.json |
 | First mission legal-rule balance | 30 wins | balance.json/winning-trace.json |
 | Complete campaign legal-rule balance | 30 wins, 15 captured, 30 perfect rescues; bridge 4–9 turns | campaign-balance.json |
-| Source ZIP reconstruction | byte-identical HTML + 71 unit PASS | scripts/verify-release.py, source-rebuild.log |
+| Source ZIP reconstruction | byte-identical HTML + 73 unit PASS | scripts/verify-release.py, source-rebuild.log |
 | Asset audit | code-native art/music; OFL font license retained; no third-party audio | AUDIO_ASSET_REGISTER.md, OFL.txt |
 
 Browser tests use offline Chromium, desktop and touch emulation (390×844, 360×640, 430×932, 844×390 where applicable). Diagnostic API is read-only. Campaign E2E uses real map taps/moves/forecasts/actions/phase transitions; no state-injection or instant-win path is exposed. Unit fixtures alter state to isolate edge cases and are distinguished from browser gameplay.
@@ -45,3 +45,5 @@ Visual review caught missing Korean glyphs and modal opening scrolled to the bot
 Artifacts: Ashen_Crown_v0.2.0.html, Ashen_Crown_v0.2.0_Source.zip, Ashen_Crown_v0.2.0_Test_Report.md, Ashen_Crown_v0.2.0_SHA256SUMS. HTML embeds code/art/font/score and requests zero external assets. Rebuild: extract ZIP → cd ashen-crown → node scripts/build.mjs; checksum/clean-source verification: python scripts/verify-release.py in the release checkout.
 
 New session: AGENTS.md → docs/handoff/PROJECT_CONTEXT.md → ordered vision/story/status/decision documents → NEXT_TASKS.md. Start with user play/listening review; develop ACT I M04–06 only after v0.2 feedback. PR stays open; no automatic main merge.
+
+Final persistence audit: level-one practice keeps the canonical campaign heroes/progress instead of replacing them. Defeat Retry rewinds current-battle flags/bonds/action memory to the mission checkpoint while retaining the defeat record and viewed history. Two before-fix failing regressions are retained as rollback-before-fix.log; the final 73-unit suite passes. Desktop/touch full campaign adds practice+reload assertions (118 PASS). Final current-head CI is authoritative in PR #5 Checks.

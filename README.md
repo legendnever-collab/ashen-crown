@@ -38,7 +38,7 @@ v0.1.0–v0.1.3 Schema 1 saves migrate to Schema 2. For a newly named HTML path,
 
 Local storage belongs to a browser/profile and may depend on the local HTML path. Keep the path stable and preserve a text backup before moving files. Storage cannot be guaranteed against browser eviction or user deletion. Offline `file://` storage was tested in Chromium. Safari, Firefox and actual phone hardware were not tested.
 
-First victory commits hero growth; **현재 Mission 연습** replays with that growth and replenished resources, without further permanent growth. Defeat retry restores pre-battle permanent growth and retains the defeat record. **LV 초기 상태로 연습** starts fresh practice. Incapacitated allies recover for a successful replay; this release does not implement permanent death. This release contains Missions 01–03; full tactical class advancements/awakenings remain future work.
+First victory commits hero growth; **현재 Mission 연습** replays with that growth and replenished resources, without further permanent growth. Defeat retry restores pre-battle permanent growth and retains the defeat record. **LV 초기 상태로 연습** starts level-one practice while preserving the existing permanent campaign. Defeat Retry rolls back current-battle story flags/bonds/action memory to the checkpoint and keeps the defeat record/viewed history. Incapacitated allies recover for a successful replay; this release does not implement permanent death. This release contains Missions 01–03; full tactical class advancements/awakenings remain future work.
 
 ## Development
 

@@ -221,6 +221,14 @@
       "status": "PASS"
     },
     {
+      "name": "false: level-one practice preserves permanent heroes",
+      "status": "PASS"
+    },
+    {
+      "name": "false: practice reload keeps canonical progress",
+      "status": "PASS"
+    },
+    {
       "name": "false: completed mission practice mode",
       "status": "PASS"
     },
@@ -442,6 +450,14 @@
     },
     {
       "name": "true: Erik advanced preview",
+      "status": "PASS"
+    },
+    {
+      "name": "true: level-one practice preserves permanent heroes",
+      "status": "PASS"
+    },
+    {
+      "name": "true: practice reload keeps canonical progress",
       "status": "PASS"
     },
     {

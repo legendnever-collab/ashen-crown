@@ -5,6 +5,7 @@
 - Forest pursuit supports capture/escape/elimination; bridge supports escort/rescue and safe withdrawal, 10-turn balance.
 - Strengthen hero identities/expressions; implement Erik LV5 Advanced outfit and preview.
 - Compose five original adaptive Web Audio tracks, stingers/SFX and persisted audio controls, with provenance.
+- Final persistence hardening: level-one practice preserves permanent progress; defeat retry rolls back current-battle narrative consequences.
 - Schema2 backwards migration, first-clear growth commitment, practice, checkpoint rollback and conditional action-based bond.
 - Expand embedded OFL UI font to all authored Korean syllables; preserve offline standalone and regression suite.
 
