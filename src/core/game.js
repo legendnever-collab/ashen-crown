@@ -15,9 +15,9 @@ export function moveUnit(s,id,x,y){const u=findUnit(s,id);if(!canAct(s,u)||u.mov
 export function undoMove(s,id){const u=findUnit(s,id),origin=s.undo[id];if(!canAct(s,u)||!origin||at(s,origin.x,origin.y))return false;u.x=origin.x;u.y=origin.y;u.moved=false;delete s.undo[id];return true;}
 function consumeAction(s,u){u.acted=true;delete s.undo[u.id];}
 function damage(s,u,t,mode,counter=false){
- let victim=guardFor(s,u,t,mode)||t;const stats=strikeStats(s,u,victim,mode),hit=roll(s)*100<stats.hit,critical=roll(s)*100<stats.crit;
+ let victim=guardFor(s,u,t,mode)||t;s.feedback.push({type:'attack',id:u.id,target:victim.id,mode,counter});const fromHP=victim.hp;const stats=strikeStats(s,u,victim,mode),hit=roll(s)*100<stats.hit,critical=roll(s)*100<stats.crit;
  if(!hit){s.feedback.push({type:'miss',id:victim.id,text:'MISS'});s.log.push(`${u.name} → ${victim.name}: MISS (${stats.hit}%).`);return {hit:false,damage:0,victim};}
- const dealt=stats.damage+(critical?Math.ceil(stats.damage*.5):0);victim.hp=Math.max(0,victim.hp-dealt);victim.hitThisTurn=true;s.feedback.push({type:critical?'critical':'hit',id:victim.id,text:`${critical?'CRITICAL ':''}−${dealt}`});
+ const dealt=stats.damage+(critical?Math.ceil(stats.damage*.5):0);victim.hp=Math.max(0,victim.hp-dealt);victim.hitThisTurn=true;s.feedback.push({type:critical?'critical':'hit',id:victim.id,text:`${critical?'CRITICAL ':''}−${dealt}`,fromHP,toHP:victim.hp,damage:dealt});
  s.log.push(`${counter?'반격 · ':''}${u.name} → ${victim.name}: ${dealt} 피해${critical?' / Critical':''}${victim!==t?' / Guard':''}.`);
  if(victim!==t){victim.guardTarget=null;awardXP(s,victim,BALANCE.guardXP,'Guard로 동료 보호');discover(s,victim,"Guardian’s Oath");}
  if(!alive(victim)){s.feedback.push({type:'death',id:victim.id,text:'FALLEN'});s.log.push(`${victim.name} 전투불능.`);}
@@ -27,7 +27,7 @@ export function performAction(s,id,mode,targetId){
  const u=findUnit(s,id),t=findUnit(s,targetId);if(!canAct(s,u))return {ok:false,error:'행동할 수 없는 장수입니다.'};
  s.feedback=[];
  if(mode==='wait'){consumeAction(s,u);s.log.push(`${u.name}: 대기.`);return {ok:true};}
- if(mode==='item'){if(!s.potions||u.hp===u.maxHP)return {ok:false,error:'회복약을 사용할 수 없습니다.'};s.potions--;const n=Math.min(20,u.maxHP-u.hp);u.hp+=n;s.feedback.push({type:'heal',id,text:`+${n}`});consumeAction(s,u);s.log.push(`${u.name}: 회복약으로 ${n} HP 회복.`);return {ok:true};}
+ if(mode==='item'){if(!s.potions||u.hp===u.maxHP)return {ok:false,error:'회복약을 사용할 수 없습니다.'};s.potions--;const n=Math.min(20,u.maxHP-u.hp);u.hp+=n;s.feedback.push({type:'heal',id,text:`+${n}`,toHP:u.hp});consumeAction(s,u);s.log.push(`${u.name}: 회복약으로 ${n} HP 회복.`);return {ok:true};}
  if(!validTarget(s,u,t,mode))return {ok:false,error:'대상 또는 사거리가 올바르지 않습니다.'};
  if(mode==='skill'&&u.mp<skillCost(u))return {ok:false,error:'MP가 부족합니다.'};
  if(mode==='skill')u.mp-=skillCost(u);
@@ -35,11 +35,11 @@ export function performAction(s,id,mode,targetId){
  if(mode==='rescue'){t.rescued=true;awardXP(s,u,BALANCE.rescueXP,`${t.name} 구출`);s.log.push(`${u.name}: ${t.name}을 안전한 피난로로 구출했습니다.`);s.feedback.push({type:'rescue',id:t.id,text:'RESCUED'});if(u.id==='kai')discover(s,u,'Shadow Exchange');}
  else if(mode==='skill'&&u.id==='eric'){u.guardTarget=t.id;s.log.push(`Eric: ${t.name}에게 Guard. 다음 적 Phase 동안 첫 인접 근접 피해를 대신 받습니다.`);s.feedback.push({type:'guard',id:u.id,text:'GUARD'});}
  else if(mode==='skill'&&u.id==='sain'){
-  const heal=Math.min(12+u.mag,t.maxHP-t.hp);t.hp+=heal;s.feedback.push({type:'heal',id:t.id,text:`+${heal}`});
-  const extra=s.units.filter(a=>a.team==='ally'&&alive(a)&&a.id!==t.id&&distance(a,t)===1&&a.hp<a.maxHP).sort((a,b)=>a.hp/a.maxHP-b.hp/b.maxHP)[0];let splash=0;if(extra){splash=Math.min(4,extra.maxHP-extra.hp);extra.hp+=splash;s.feedback.push({type:'heal',id:extra.id,text:`+${splash}`});}
+  const heal=Math.min(12+u.mag,t.maxHP-t.hp);t.hp+=heal;s.feedback.push({type:'heal',id:t.id,text:`+${heal}`,toHP:t.hp});
+  const extra=s.units.filter(a=>a.team==='ally'&&alive(a)&&a.id!==t.id&&distance(a,t)===1&&a.hp<a.maxHP).sort((a,b)=>a.hp/a.maxHP-b.hp/b.maxHP)[0];let splash=0;if(extra){splash=Math.min(4,extra.maxHP-extra.hp);extra.hp+=splash;s.feedback.push({type:'heal',id:extra.id,text:`+${splash}`,toHP:extra.hp});}
   if((heal||splash)&&!u.healTargets.includes(t.id)){u.healTargets.push(t.id);awardXP(s,u,BALANCE.healXP,`${t.name} 치유`);}if(extra&&splash)discover(s,u,'Divine Recall');s.log.push(`Sain: ${t.name} +${heal} HP${extra?`, Gentle Hands → ${extra.name} +${splash}`:''}. 동일 대상 치유 EXP는 미션당 1회.`);
  }else{
-  s.feedback.push({type:'attack',id:u.id,target:t.id});const r=damage(s,u,t,mode);if(r.hit){awardXP(s,u,BALANCE.attackXP+(!alive(r.victim)?BALANCE.killXP:0),`${r.victim.name} ${alive(r.victim)?'공격':'격파'}`);if(u.id==='elina'&&['f','v'].includes(sTerrain(u)))discover(s,u,'Overwatch');if(u.id==='lia'&&!alive(r.victim))discover(s,u,'Arcane Territory');}
+  const r=damage(s,u,t,mode);if(r.hit){awardXP(s,u,BALANCE.attackXP+(!alive(r.victim)?BALANCE.killXP:0),`${r.victim.name} ${alive(r.victim)?'공격':'격파'}`);if(u.id==='elina'&&['f','v'].includes(sTerrain(u)))discover(s,u,'Overwatch');if(u.id==='lia'&&!alive(r.victim))discover(s,u,'Arcane Territory');}
   if(alive(r.victim)&&validTarget(s,r.victim,u))damage(s,r.victim,u,'attack',true);
  }
  checkOutcome(s);return {ok:true};
@@ -62,7 +62,7 @@ export function planEnemy(s,u){
 export function advanceEnemy(s){
  if(s.screen!=='battle'||s.phase!=='enemy')return false;s.feedback=[];
  if(s.enemyIndex<s.enemyQueue.length){const u=findUnit(s,s.enemyQueue[s.enemyIndex++]);if(!u||!alive(u))return true;const p=planEnemy(s,u),path=pathTo(s,u,p.x,p.y);if(path){u.x=p.x;u.y=p.y;if(path.length>1)s.feedback.push({type:'move',id:u.id,path});}
-  s.log.push(`AI · ${u.name}: ${p.reason}.`);if(p.target){const t=findUnit(s,p.target);s.feedback.push({type:'attack',id:u.id,target:t.id});const r=damage(s,u,t,'attack');if(t.team==='ally'&&alive(r.victim)&&validTarget(s,r.victim,u)){const counter=damage(s,r.victim,u,'attack',true);if(counter.hit)awardXP(s,r.victim,!alive(u)?BALANCE.attackXP+BALANCE.killXP:10,`${u.name} 반격`);}}
+  s.log.push(`AI · ${u.name}: ${p.reason}.`);if(p.target){const t=findUnit(s,p.target);const r=damage(s,u,t,'attack');if(t.team==='ally'&&alive(r.victim)&&validTarget(s,r.victim,u)){const counter=damage(s,r.victim,u,'attack',true);if(counter.hit)awardXP(s,r.victim,!alive(u)?BALANCE.attackXP+BALANCE.killXP:10,`${u.name} 반격`);}}
   checkOutcome(s);return true;
  }
  s.turn++;s.phase='player';s.enemyQueue=[];s.enemyIndex=0;

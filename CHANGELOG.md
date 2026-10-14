@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.1.2 — Tactical Action Menus & Battle Impacts
+
+- More vivid blue movement, red attack and green support ranges.
+- Tile-by-tile walking, continuous walking and instant movement options, with persistent speed and weak-effect preferences.
+- Destination confirmation after a movement preview. Rules, RNG and saves remain unchanged until confirmed; cancel follows the route back. Confirmed moves retain pre-action undo.
+- Map-anchored hero action window with Move, Attack, Skills, Tools, Traits, Rescue and Wait; nested skill/tool menus, forecasts and confirmations.
+- Original sword, dagger and axe swings, flying arrows, Fire Bolt casting/projectile/explosion, impact-timed HP and damage feedback, sequential counters.
+- Responsive menu clamping/scrolling, 44px main action targets, compact persistent face/HP/MP dock, touch pan/pinch and disabled browser tap tint.
+- Save Schema 1 retained; actual v0.1.0 and v0.1.1 battle backup import tests. Added movement-presentation unit tests and dedicated tactical UI/VFX regression.
+
 ## v0.1.1 — Mobile Command Dock & Hero Identity
 
 - Map taps activate a hero immediately; a persistent bottom dock shows a dedicated face portrait, HP/MP and actions on desktop and mobile.

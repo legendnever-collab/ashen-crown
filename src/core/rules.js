@@ -51,6 +51,6 @@ export function forecast(s,u,t,mode='attack'){
 export function awardXP(s,u,amount,reason){
  if(u.team!=='ally'||!amount)return;
  u.xp+=amount;u.earnedXP+=amount;u.highlights.push(reason);s.feedback.push({type:'xp',id:u.id,text:`+${amount} EXP`});
- while(u.xp>=BALANCE.xpLevel){u.xp-=BALANCE.xpLevel;u.level++;const g=HEROES.find(h=>h.id===u.id).growth;const changes={...g};for(const [stat,n] of Object.entries(g)){if(stat==='hp'){u.maxHP+=n;u.hp=Math.min(u.maxHP,u.hp+n);}else if(stat==='mp'){u.maxMP+=n;u.mp=Math.min(u.maxMP,u.mp+n);}else u[stat]+=n;}u.growthHistory.push({level:u.level,changes});s.feedback.push({type:'level',id:u.id,text:`LEVEL ${u.level}`});s.log.push(`${u.name} → LV ${u.level}. 성장이 새로운 힘으로 이어집니다.`);}
+ while(u.xp>=BALANCE.xpLevel){u.xp-=BALANCE.xpLevel;u.level++;const g=HEROES.find(h=>h.id===u.id).growth;const changes={...g};for(const [stat,n] of Object.entries(g)){if(stat==='hp'){u.maxHP+=n;u.hp=Math.min(u.maxHP,u.hp+n);}else if(stat==='mp'){u.maxMP+=n;u.mp=Math.min(u.maxMP,u.mp+n);}else u[stat]+=n;}u.growthHistory.push({level:u.level,changes});s.feedback.push({type:'level',id:u.id,text:`LEVEL ${u.level}`,toHP:u.hp});s.log.push(`${u.name} → LV ${u.level}. 성장이 새로운 힘으로 이어집니다.`);}
 }
 export function discover(s,u,clue){if(!u.clues.includes(clue)){u.clues.push(clue);s.feedback.push({type:'potential',id:u.id,text:'POTENTIAL DISCOVERED'});s.log.push(`Potential Clue Discovered — ${clue} (1/3). 각성은 아직 해금되지 않았습니다.`);}}
