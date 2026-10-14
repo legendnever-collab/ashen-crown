@@ -1,11 +1,12 @@
 import {VERSION,HEROES,BALANCE,TERRAIN} from '../data/game-data.js';
 import {newGame,setDeployment,presetDeployment,startBattle,canAct,moveUnit,undoMove,performAction,beginEnemyPhase,advanceEnemy,replay} from '../core/game.js';
-import {findUnit,at,alive,terrainAt,movement,pathTo,validTarget,forecast,skillCost} from '../core/rules.js';
+import {findUnit,at,alive,terrainAt,movement,pathTo,validTarget,forecast,skillCost,rangeFor} from '../core/rules.js';
 import {loadGame,saveGame,resetSave,serialize,deserialize} from '../persistence/save-manager.js';
 import {BattleRenderer} from '../render/pixel-renderer.js';
 import {drawPortrait,TILE,PORTRAIT_SIZE} from '../render/art.js';
 import {renderDock,contextMessage,initialMode} from './dock.js';
 import {menuHTML} from './action-menu.js';
+import {placePopover} from './popover-position.js';
 const $=q=>document.querySelector(q),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const app=$('#app');let storage;try{storage=window.localStorage;}catch{storage={getItem(){throw Error('브라우저 저장 차단');},setItem(){throw Error('브라우저 저장 차단');}};}
 const loaded=loadGame(storage);let state=loaded.state||newGame();let ui={selected:'eric',mode:'choose',preview:null,hover:null,busy:false,notice:null,inspected:null,phaseConfirm:false,journal:false,speed:1,menu:null,pendingMove:null,movement:'step',reduced:window.matchMedia('(prefers-reduced-motion: reduce)').matches};
@@ -32,7 +33,11 @@ function render(){
  if(battle||deploy){$('#rail').innerHTML=renderDock(state,ui,esc,portrait,(label,value,max,cls)=>bar(label,label==='HP'?renderer.displayHP(u):value,max,cls));}else{renderScreen();$('#rail').innerHTML=`<div class="eyebrow">COMMANDER’S NOTES</div><h3 style="margin:13px 0">한 사람씩, 하나의 가능성</h3><p style="font-size:13px">다섯 장수의 역할을 연결하세요. 숲의 사수, 동료를 지키는 기사, 빠른 구출과 치유가 전장의 흐름을 바꿉니다.</p><div class="rule"></div><div class="eyebrow">MISSION OBJECTIVES</div><p style="font-size:12px;margin:10px 0">주민 2명 구출 + Garr 격파<br>선택 목표: 전원 생존 · 8턴 이내 · Eric의 단서</p><div class="rule"></div><div class="muted">완료한 미션: ${state.campaign.clears}회<br>v${VERSION} · 오리지널 픽셀 아트<br>오프라인 실행 · 로컬 저장</div><button class="small" data-do="help" style="margin-top:18px">조작과 전투 규칙</button>`;}
  const pop=$('#unit-popover');pop.innerHTML=menuHTML(state,ui,esc);pop.hidden=!pop.innerHTML;positionPopover();paintPortraits();
 }
-function positionPopover(){const pop=$('#unit-popover');if(!pop||pop.hidden)return;const unit=findUnit(state,ui.preview||ui.selected),anchor=ui.pendingMove||unit;if(!anchor)return;const center=renderer.tileCenter(anchor.x,anchor.y),field=$('.field'),w=field.clientWidth,h=field.clientHeight,pw=pop.offsetWidth,ph=pop.offsetHeight;let x=center.x+20;if(x+pw>w-6)x=center.x-pw-20;let y=center.y-ph-23;if(y<6)y=center.y+23;x=Math.max(6,Math.min(w-pw-6,x));y=Math.max(6,Math.min(h-ph-6,y));const left=Math.round(x)+'px',top=Math.round(y)+'px';if(pop.style.left!==left)pop.style.left=left;if(pop.style.top!==top)pop.style.top=top;}
+function positionPopover(){
+ const pop=$('#unit-popover');if(!pop||pop.hidden)return;const selected=findUnit(state,ui.selected),unit=findUnit(state,ui.preview||ui.selected),anchor=ui.pendingMove||unit;if(!anchor)return;
+ const center=renderer.tileCenter(anchor.x,anchor.y),field=$('.field'),protectedPoints=state.units.filter(t=>alive(t)&&(t.id===selected?.id||ui.menu==='root'&&canAct(state,selected)&&(t.team==='ally'||validTarget(state,selected,t,'attack')||validTarget(state,selected,t,'skill')||validTarget(state,selected,t,'rescue')||t.team==='enemy'&&Math.abs(selected.x-t.x)+Math.abs(selected.y-t.y)<=Math.max(selected.range[1],rangeFor(selected,'skill')[1])))).map(t=>({...renderer.tileCenter(t.x,t.y),radius:Math.max(6,renderer.camera.scale*32),weight:t.id===selected?.id?1:t.team==='ally'?4:100}));
+ const pos=placePopover({width:field.clientWidth,height:field.clientHeight,popupWidth:pop.offsetWidth,popupHeight:pop.offsetHeight,anchor:center,protectedPoints}),left=pos.x+'px',top=pos.y+'px';if(pop.style.left!==left)pop.style.left=left;if(pop.style.top!==top)pop.style.top=top;
+}
 renderer.onCamera=()=>{positionPopover();const u=findUnit(state,ui.selected),hp=$('.dock-vitals .bar-row');if(u&&hp){const shown=renderer.displayHP(u),value=hp.lastElementChild,meter=hp.querySelector('.meter b');if(value.textContent!==`${shown}/${u.maxHP}`){value.textContent=`${shown}/${u.maxHP}`;meter.style.width=100*shown/u.maxHP+'%';}}};
 async function previewMove(id,x,y){const u=findUnit(state,id),path=pathTo(state,u,x,y);if(!canAct(state,u)||u.moved||!path||path.length<2)return false;ui.pendingMove={id,x,y,path};ui.menu=null;ui.preview=null;ui.notice='이동 경로를 따라 걷는 중입니다. 도착 후 확정하거나 취소하세요.';ui.busy=true;render();const duration=renderer.walk(id,path,ui.movement,ui.speed);await new Promise(r=>setTimeout(r,duration+24));ui.busy=false;ui.menu='move-confirm';ui.notice=null;render();return true;}
 async function cancelMovement(){const m=ui.pendingMove;if(!m)return;ui.menu=null;ui.busy=true;render();const duration=renderer.walk(m.id,[...m.path].reverse(),ui.movement,ui.speed);await new Promise(r=>setTimeout(r,duration+24));renderer.motion.delete(m.id);ui.pendingMove=null;ui.busy=false;ui.mode='choose';ui.menu='root';ui.notice='이동 취소 · 원래 위치와 이동권을 유지합니다.';render();}
@@ -89,7 +94,10 @@ async function dispatch(action,id){if(ui.pendingMove&&!['confirm-move','cancel-m
  case 'zoom-in':renderer.zoomBy(1.15);break;case 'zoom-out':renderer.zoomBy(1/1.15);break;case 'reset-camera':renderer.reset();break;
  }
 }
-document.addEventListener('click',e=>{const b=e.target.closest('[data-do]');if(b&&!b.disabled)dispatch(b.dataset.do,b.dataset.id);});
+// A menu inserted on map pointerup must not receive the same gesture's click.
+let pressedCommand=null;
+document.addEventListener('pointerdown',e=>{pressedCommand=e.target.closest('[data-do]');},{capture:true});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-do]');if(b&&!b.disabled&&(e.detail===0||pressedCommand===b))dispatch(b.dataset.do,b.dataset.id);});
 document.addEventListener('change',e=>{if(e.target.id==='animation-speed')ui.speed=Number(e.target.value);if(e.target.id==='movement-animation')ui.movement=e.target.value;if(e.target.id==='reduced-effects')ui.reduced=e.target.checked;try{storage.setItem('ashen-crown:ui:v1',JSON.stringify({speed:ui.speed,movement:ui.movement,reduced:ui.reduced}));}catch{toast('표시 옵션을 저장할 수 없습니다.');}});
 const canvas=$('#battle-map');let pointer=null,pinch=null,pinchUsed=false;const touches=new Map();
 canvas.addEventListener('contextmenu',e=>e.preventDefault());
@@ -110,7 +118,7 @@ canvas.addEventListener('pointerup',async e=>{touches.delete(e.pointerId);if(pin
  if(ui.mode==='move'&&canAct(state,u)&&!u.moved){if(!await previewMove(u.id,tile.x,tile.y)){ui.notice='이동 불가 · 지형 비용, 이동력과 유닛 점유를 확인하세요.';render();}return;}
  if(t?.team==='enemy'){
   if(canAct(state,u)&&validTarget(state,u,t,'attack')){ui.mode='attack';ui.menu='forecast';ui.preview=t.id;ui.inspected=null;ui.notice=null;}
-  else{ui.menu=null;ui.inspected=t.id;ui.preview=null;ui.notice=null;}render();
+  else{ui.menu=null;ui.inspected=t.id;ui.preview=null;const [min,max]=u.range,d=Math.abs(u.x-t.x)+Math.abs(u.y-t.y);ui.notice=u.acted?`${u.name}은 이번 턴의 행동을 마쳤습니다. 다음 턴에 공격하세요.`:d<min?`${u.name} 사거리 ${min}–${max}칸 · 인접한 적에게는 사격할 수 없습니다. 이동 취소 후 거리를 확보하세요.`:`${u.name} 사거리 ${min}–${max}칸 · 대상까지 ${d}칸입니다. 이동하거나 다른 장수를 선택하세요.`;}render();
  }
 });
 canvas.addEventListener('pointercancel',()=>{pointer=null;pinch=null;pinchUsed=false;touches.clear();});
