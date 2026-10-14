@@ -1,12 +1,14 @@
+import {drainStory} from './story-helper.mjs';
 import {HEROES} from '../src/data/game-data.js';
 import fs from 'node:fs';import assert from 'node:assert/strict';import path from 'node:path';import {pathToFileURL} from 'node:url';import {chromium} from 'playwright';
 const browser=await chromium.launch({headless:true,...process.env.BROWSER_EXECUTABLE?{executablePath:process.env.BROWSER_EXECUTABLE}:{},args:['--no-sandbox','--disable-gpu','--in-process-gpu','--no-zygote']}),checks=[],errors=[];
-const check=(name,ok)=>{assert.ok(ok,name);checks.push({name,status:'PASS'});console.log('PASS',name);},url=pathToFileURL(path.resolve('releases/Ashen_Crown_v0.1.3.html')).href;
+const check=(name,ok)=>{assert.ok(ok,name);checks.push({name,status:'PASS'});console.log('PASS',name);},url=pathToFileURL(path.resolve('releases/Ashen_Crown_v0.2.0.html')).href;
 const ctx=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2});await ctx.setOffline(true);const p=await ctx.newPage();p.on('pageerror',e=>errors.push(e.message));
-const s=()=>p.evaluate(()=>window.AshenCrown.snapshot()),v=()=>p.evaluate(()=>window.AshenCrown.view()),cmd=(a,id)=>p.locator(`[data-do="${a}"]${id?`[data-id="${id}"]`:''}`).first().tap(),idle=()=>p.waitForFunction(()=>!window.AshenCrown.view().busy,{},{timeout:30000});
+const s=()=>p.evaluate(()=>window.AshenCrown.snapshot()),v=()=>p.evaluate(()=>window.AshenCrown.view()),rawcmd=(a,id)=>p.locator(`[data-do="${a}"]${id?`[data-id="${id}"]`:''}`).first().tap(),idle=()=>p.waitForFunction(()=>!window.AshenCrown.view().busy,{},{timeout:30000});
+const cmd=rawcmd;
 async function tile(x,y){await p.waitForTimeout(40);const pt=await p.evaluate(([x,y])=>{const c=window.AshenCrown.tileCenter(x,y),b=document.querySelector('#battle-map').getBoundingClientRect();return {x:c.x+b.x,y:c.y+b.y};},[x,y]);await p.touchscreen.tap(pt.x,pt.y);}
-async function select(id){const u=(await s()).units.find(u=>u.id===id);await tile(u.x,u.y);}
-async function fresh(){await p.goto(url);await p.evaluate(()=>localStorage.clear());await p.reload();for(const a of ['new','warroom','deploy','start-battle'])await cmd(a);}
+async function select(id){await drainStory(p);const u=(await s()).units.find(u=>u.id===id);await tile(u.x,u.y);}
+async function fresh(){await p.goto(url);await p.evaluate(()=>localStorage.clear());await p.reload();for(const a of ['new','warroom','deploy','start-battle']){await cmd(a);await drainStory(p);}}
 async function chooseMove(id,x,y){await select(id);await cmd('mode','move');await tile(x,y);await idle();await cmd('confirm-move');}
 async function captureEffects(){return p.evaluate(async()=>{const samples=[];while(window.AshenCrown.view().busy){const view=window.AshenCrown.view();samples.push({active:view.animation.active,hp:document.querySelector('.dock-vitals .bar-row')?.textContent});await new Promise(r=>setTimeout(r,16));}return samples;});}
 try{

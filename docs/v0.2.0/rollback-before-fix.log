@@ -1,0 +1,131 @@
+
+> ashen-crown@0.2.0 test
+> node --test tests/*.test.mjs
+
+✔ tile walk visits each waypoint, pauses, and never cuts a corner (1.973609ms)
+✔ walk modes honor speed, instant mode and single tile paths (0.28449ms)
+✔ weapon presentation is distinct for magic, archer, rogue, knight and bandit (0.299206ms)
+✔ enemy walk finishes before attack; counter follows the first attack (0.434656ms)
+✔ Fire Bolt has cast, flight, and explosion, with damage at impact (0.273266ms)
+✔ heal and level HP are presented without attack or RNG (0.329217ms)
+✔ weak effects and animation speed shorten presentation without changing event outcome (0.434744ms)
+✔ move, attack and support highlights use separate vivid colors (0.35472ms)
+✔ 01→02→03 legal-rule continuous campaign, two rescues and safe retreat (106.73852ms)
+✔ capture range and HP threshold, no counterattack, special information reward (0.649989ms)
+✔ escaped and eliminated targets continue campaign without prisoner flag (1.252703ms)
+✔ bridge blocks canyon, hero terrain context never uses village map (0.471682ms)
+✔ bridge requires rescue plus all surviving heroes safely withdrawn (0.493244ms)
+✔ bridge deadline defeat supports exact checkpoint retry (1.657639ms)
+✔ actual escort action at turn boundary moves protected civilian (0.546945ms)
+✔ seen skip and active dialogue lock combat; repeated event IDs stay unique (0.467417ms)
+✔ interrupted dialogue save resumes exact speaker/line and history (1.056798ms)
+✔ Restart rewinds flags, memory and event triggers, retains viewed dialogue (0.794755ms)
+✔ practice clear does not inflate permanent heroes, flags or clears (18.361152ms)
+✔ Erik LV5 appearance changes while legacy stable ID and stats remain valid (1.208438ms)
+✔ schema1 migration retains all accumulated levels, XP, clears and old checkpoint (10.689411ms)
+✔ bad scene, impossible tier, invalid mission and story memory are rejected (1.37458ms)
+✔ audio original scores select expected scenes and fail-soft without AudioContext (0.554257ms)
+✔ M03 actual protection + two rescue actions unlocks conditional Bond; previous mission memory alone does not (1.628644ms)
+✔ Tier metadata supports level/class/story triggers and reserves unbuilt Elite art (0.740555ms)
+✖ level-one practice preserves existing permanent campaign and cannot commit replacement growth (10.251739ms)
+✖ defeat retry rolls back this battle story consequences while retaining defeat record and viewed history (0.602984ms)
+✔ developer entry point references exist; complete 30-mission story and status taxonomy (5.334497ms)
+✔ embedded font glyph manifest covers every authored Korean syllable (39.784065ms)
+✔ small viewport menu leaves adjacent attack target uncovered (1.385537ms)
+✔ menu is clamped on four viewport sizes and map edges (0.941965ms)
+✔ legal targets take priority over covering selected hero when space is constrained (2.195549ms)
+✔ restart restores custom formation, resources, RNG and pre-stage growth (12.904102ms)
+✔ restart removes current victory and retains earlier campaign history and growth (3.228379ms)
+✔ defeat restart revives civilian and restores mission objectives without defeat record (1.728546ms)
+✔ repeat resets do not nest snapshots or change deterministic combat outcomes (6.851101ms)
+✔ legacy save without snapshot uses permanent growth and recommended deployment safely (2.762716ms)
+✔ corrupt or nested stage checkpoint is rejected without touching live state (1.895612ms)
+✔ map is 12×10 with five heroes, five enemies, two civilians (4.5245ms)
+✔ Dijkstra counts forest costs and Kai terrain exception (2.390115ms)
+✔ ruins and occupied tiles cannot be crossed (2.950311ms)
+✔ movement path stays orthogonal, passable and within budget (7.958414ms)
+✔ free deployment swaps without changing hero data (2.668789ms)
+✔ presets contain unique valid deployment tiles (0.931032ms)
+✔ move once and undo before irreversible action (0.814688ms)
+✔ archer has a dead zone; magic extends range (0.443333ms)
+✔ physical defense, magic resistance and terrain are independent (1.23414ms)
+✔ Hawk Eye gives forest shooting accuracy bonus (0.767002ms)
+✔ Unstable Mana increases damage and MP expense at low HP (0.359003ms)
+✔ Quick Strike flank requires opposite adjacent teammate (0.56669ms)
+✔ counterattack cannot chain; preview agrees with noncritical attack (2.971101ms)
+✔ out-of-range attack and insufficient MP do not consume actions (0.456402ms)
+✔ healing caps HP, Gentle Hands splashes, repeated target gives no XP (0.96564ms)
+✔ Guard intercepts first melee attack and discovers actual potential (1.638544ms)
+✔ Guard does not intercept ranged attacks or after moving apart (0.397106ms)
+✔ Indomitable Will reduces incoming damage below 30% (0.246115ms)
+✔ Seeded RNG and battle reproduce exactly (0.582548ms)
+✔ fixed growth records multiple levels and skill resources (0.361338ms)
+✔ potential clue records only once (0.240018ms)
+✔ rescue requires adjacency and removes civilian occupancy (0.564583ms)
+✔ reinforcement telegraph, then two enemies with response opportunity (9.266064ms)
+✔ civilian protection window prevents AI targeting before turn 5 (2.299464ms)
+✔ AI destination is reachable and target is in actual attack range (9.648196ms)
+✔ victory needs both rescue and boss; other enemies optional (4.554538ms)
+✔ dead civilian and party wipe are explicit defeats; no negative HP (0.700037ms)
+✔ Shadow Step grants next-turn movement only when not hit (0.803797ms)
+✔ save restores battle phase, undo, current HP, growth and RNG (4.774958ms)
+✔ enemy-phase save resumes deterministically at AI cursor (17.513969ms)
+✔ save corruption safely falls back to last good snapshot (1.379499ms)
+✔ save failure surfaced, invalid import rejected without mutating state (1.458308ms)
+✔ duplicate tiles, invalid unit stats, missing hero, future schema rejected (0.929ms)
+✔ migration entry point accepts schema 0 and reset removes both saves (1.263612ms)
+✔ victory replay keeps permanent growth, defeat replay rolls back battle gains (1.010502ms)
+ℹ tests 73
+ℹ suites 0
+ℹ pass 71
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 365.726801
+
+✖ failing tests:
+
+test at tests/campaign.test.mjs:27:1
+✖ level-one practice preserves existing permanent campaign and cannot commit replacement growth (10.251739ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/565ddb3b337f/ashen-crown/tests/campaign.test.mjs:27:252)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/campaign.test.mjs:28:1
+✖ defeat retry rolls back this battle story consequences while retaining defeat record and viewed history (0.602984ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + true
+  - undefined
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/565ddb3b337f/ashen-crown/tests/campaign.test.mjs:28:329)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: undefined,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

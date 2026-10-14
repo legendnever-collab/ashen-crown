@@ -12,6 +12,7 @@ export function contextMessage(s,u,ui){
  if(ui.mode==='move')return `MOV ${u.mov+(u.shadowBonus||0)} · 푸른 칸으로 이동. 같은 위치를 다시 누르면 제자리에서 행동합니다.`;
  if(ui.mode==='skill')return `${u.skill} · ${skillCost(u)} MP · ${u.description}`;
  if(ui.mode==='attack')return `공격 사거리 ${u.range.join('–')} · 붉은 범위의 적을 눌러 피해와 반격을 확인하세요.`;
+ if(ui.mode==='capture')return '생포 · 도주 대장 HP 절반 이하에서 인접한 장수로 선택하세요.';
  if(ui.mode==='rescue')return '주민 구출 · 인접한 주민을 누르세요. 구출은 행동 1회를 사용합니다.';
  return `${u.moved?'이동 완료':'이동 미사용'} · ${u.mov+(u.shadowBonus||0)} MOV · ${u.range.join('–')}칸 공격 · 장수를 누르거나 장수 명령을 열어 행동을 선택하세요.`;
 }
