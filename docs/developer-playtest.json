@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-14",
+  "method": "Developer-selected Canvas tiles and commands, without automated player policy",
+  "preset": "defense",
+  "seed": 20261014,
+  "outcome": "victory",
+  "turn": 6,
+  "survivingHeroes": 5,
+  "rescued": 2,
+  "ericPotential": "Guardian’s Oath",
+  "levels": { "eric": 3, "elina": 3, "lia": 2, "sain": 3, "kai": 2 },
+  "observations": [
+    "Guard intercepted an actual melee attack on Lia in first Enemy Phase",
+    "Lia retreated to avoid adjacent counterattack before Fire Bolt, then received Heal",
+    "Occupied corridor and ruin terrain prevented two proposed moves; rules rejected them safely",
+    "Garr died before final rescue; victory did not trigger until both civilians were rescued",
+    "Repeated Heal on Lia restored HP without repeat-target experience",
+    "Final UI layout was separately rebuilt and revalidated after visual refinements"
+  ]
+}

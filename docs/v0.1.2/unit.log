@@ -1,0 +1,56 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> ashen-crown@0.1.2 test
+> node --test tests/*.test.mjs
+
+✔ tile walk visits each waypoint, pauses, and never cuts a corner (2.013852ms)
+✔ walk modes honor speed, instant mode and single tile paths (0.275637ms)
+✔ weapon presentation is distinct for magic, archer, rogue, knight and bandit (0.292031ms)
+✔ enemy walk finishes before attack; counter follows the first attack (0.466007ms)
+✔ Fire Bolt has cast, flight, and explosion, with damage at impact (0.245652ms)
+✔ heal and level HP are presented without attack or RNG (0.294604ms)
+✔ weak effects and animation speed shorten presentation without changing event outcome (0.355034ms)
+✔ move, attack and support highlights use separate vivid colors (0.294014ms)
+✔ map is 12×10 with five heroes, five enemies, two civilians (2.402936ms)
+✔ Dijkstra counts forest costs and Kai terrain exception (2.46076ms)
+✔ ruins and occupied tiles cannot be crossed (1.044361ms)
+✔ movement path stays orthogonal, passable and within budget (4.476244ms)
+✔ free deployment swaps without changing hero data (1.359496ms)
+✔ presets contain unique valid deployment tiles (0.534429ms)
+✔ move once and undo before irreversible action (1.05727ms)
+✔ archer has a dead zone; magic extends range (0.329737ms)
+✔ physical defense, magic resistance and terrain are independent (0.375083ms)
+✔ Hawk Eye gives forest shooting accuracy bonus (0.396976ms)
+✔ Unstable Mana increases damage and MP expense at low HP (0.227846ms)
+✔ Quick Strike flank requires opposite adjacent teammate (0.385578ms)
+✔ counterattack cannot chain; preview agrees with noncritical attack (0.762034ms)
+✔ out-of-range attack and insufficient MP do not consume actions (0.221697ms)
+✔ healing caps HP, Gentle Hands splashes, repeated target gives no XP (0.26428ms)
+✔ Guard intercepts first melee attack and discovers actual potential (0.866979ms)
+✔ Guard does not intercept ranged attacks or after moving apart (0.166606ms)
+✔ Indomitable Will reduces incoming damage below 30% (0.149331ms)
+✔ Seeded RNG and battle reproduce exactly (0.401453ms)
+✔ fixed growth records multiple levels and skill resources (0.245161ms)
+✔ potential clue records only once (0.120889ms)
+✔ rescue requires adjacency and removes civilian occupancy (0.217321ms)
+✔ reinforcement telegraph, then two enemies with response opportunity (4.333263ms)
+✔ civilian protection window prevents AI targeting before turn 5 (0.733021ms)
+✔ AI destination is reachable and target is in actual attack range (2.696959ms)
+✔ victory needs both rescue and boss; other enemies optional (0.573506ms)
+✔ dead civilian and party wipe are explicit defeats; no negative HP (0.304619ms)
+✔ Shadow Step grants next-turn movement only when not hit (0.289207ms)
+✔ save restores battle phase, undo, current HP, growth and RNG (1.811433ms)
+✔ enemy-phase save resumes deterministically at AI cursor (4.765902ms)
+✔ save corruption safely falls back to last good snapshot (0.988739ms)
+✔ save failure surfaced, invalid import rejected without mutating state (0.850405ms)
+✔ duplicate tiles, invalid unit stats, missing hero, future schema rejected (0.545575ms)
+✔ migration entry point accepts schema 0 and reset removes both saves (0.75883ms)
+✔ victory replay keeps permanent growth, defeat replay rolls back battle gains (1.127023ms)
+ℹ tests 43
+ℹ suites 0
+ℹ pass 43
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 135.188997

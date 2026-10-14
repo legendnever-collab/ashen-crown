@@ -1,0 +1,47 @@
+
+> ashen-crown@0.1.0 test
+> node --test tests/*.test.mjs
+
+✔ map is 12×10 with five heroes, five enemies, two civilians (1.38098ms)
+✔ Dijkstra counts forest costs and Kai terrain exception (1.442624ms)
+✔ ruins and occupied tiles cannot be crossed (0.810191ms)
+✔ movement path stays orthogonal, passable and within budget (2.766719ms)
+✔ free deployment swaps without changing hero data (0.770521ms)
+✔ presets contain unique valid deployment tiles (0.405881ms)
+✔ move once and undo before irreversible action (0.568216ms)
+✔ archer has a dead zone; magic extends range (0.268084ms)
+✔ physical defense, magic resistance and terrain are independent (0.31231ms)
+✔ Hawk Eye gives forest shooting accuracy bonus (0.606734ms)
+✔ Unstable Mana increases damage and MP expense at low HP (0.227573ms)
+✔ Quick Strike flank requires opposite adjacent teammate (0.295255ms)
+✔ counterattack cannot chain; preview agrees with noncritical attack (0.648477ms)
+✔ out-of-range attack and insufficient MP do not consume actions (0.204108ms)
+✔ healing caps HP, Gentle Hands splashes, repeated target gives no XP (0.262205ms)
+✔ Guard intercepts first melee attack and discovers actual potential (1.537467ms)
+✔ Guard does not intercept ranged attacks or after moving apart (0.193592ms)
+✔ Indomitable Will reduces incoming damage below 30% (0.130026ms)
+✔ Seeded RNG and battle reproduce exactly (0.356677ms)
+✔ fixed growth records multiple levels and skill resources (0.247092ms)
+✔ potential clue records only once (0.147722ms)
+✔ rescue requires adjacency and removes civilian occupancy (0.210777ms)
+✔ reinforcement telegraph, then two enemies with response opportunity (3.287162ms)
+✔ civilian protection window prevents AI targeting before turn 5 (0.624581ms)
+✔ AI destination is reachable and target is in actual attack range (2.710724ms)
+✔ victory needs both rescue and boss; other enemies optional (0.403357ms)
+✔ dead civilian and party wipe are explicit defeats; no negative HP (0.216867ms)
+✔ Shadow Step grants next-turn movement only when not hit (0.221133ms)
+✔ save restores battle phase, undo, current HP, growth and RNG (1.558749ms)
+✔ enemy-phase save resumes deterministically at AI cursor (6.979327ms)
+✔ save corruption safely falls back to last good snapshot (0.871033ms)
+✔ save failure surfaced, invalid import rejected without mutating state (0.685142ms)
+✔ duplicate tiles, invalid unit stats, missing hero, future schema rejected (0.476708ms)
+✔ migration entry point accepts schema 0 and reset removes both saves (0.574125ms)
+✔ victory replay keeps permanent growth, defeat replay rolls back battle gains (0.632142ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 110.755441

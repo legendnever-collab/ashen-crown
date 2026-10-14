@@ -1,0 +1,7 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';
+import {newGame,presetDeployment,startBattle,beginEnemyPhase,advanceEnemy} from '../src/core/game.js';
+import {playBattle} from './player-policy.mjs';
+const results=[];for(const preset of ['recommended','assault','defense'])for(const seed of [1,42,20261014,77,313])for(const guard of [false,true]){const s=newGame(seed);s.screen='deployment';presetDeployment(s,preset);startBattle(s);const r=playBattle(s,{guard});results.push({preset,seed,guard,...r,trace:undefined,states:undefined});assert.equal(r.outcome,'victory',`${preset} seed ${seed} guard ${guard} → ${r.outcome} turn ${r.turn}`);}
+const s=newGame(20261014);s.screen='deployment';startBattle(s);const proof=playBattle(s);fs.mkdirSync('test-output',{recursive:true});fs.writeFileSync('test-output/winning-trace.json',JSON.stringify(proof,null,2));
+const fail=newGame(14);fail.screen='deployment';startBattle(fail);while(!fail.outcome&&fail.turn<30){beginEnemyPhase(fail);while(fail.phase==='enemy'&&!fail.outcome)advanceEnemy(fail);}assert.equal(fail.outcome,'defeat');
+fs.writeFileSync('test-output/balance.json',JSON.stringify({runs:results.length,results,civilianFailure:{outcome:fail.outcome,turn:fail.turn,reason:fail.reason}},null,2));console.log(`${results.length} winning runs; turns ${Math.min(...results.map(r=>r.turn))}–${Math.max(...results.map(r=>r.turn))}; potential ${results.filter(r=>r.potential).length}; partial party ${results.filter(r=>r.alive<5).length}; civilian failure ${fail.turn}`);
