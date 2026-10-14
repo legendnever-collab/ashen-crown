@@ -103,9 +103,14 @@ function finish(s,outcome,reason){
  afterBattleEvents(s);
  s.log.push(`${outcome==='victory'?'VICTORY':'DEFEAT'} · ${reason}`);
 }
-export function replay(s,fresh=false){return newGame(s.initialSeed,fresh?null:structuredClone(s.campaign),s.missionId);}
+export function replay(s,fresh=false){
+ let campaign=structuredClone(s.campaign);
+ if(s.outcome==='defeat'&&s.stageStart){campaign=structuredClone(s.stageStart.campaign);campaign.results=structuredClone(s.campaign.results);if(s.campaign.dialogueMemory)campaign.dialogueMemory=structuredClone(s.campaign.dialogueMemory);}
+ if(fresh){const initial=newGame(s.initialSeed,null,s.missionId);initial.campaign=campaign;initial.practice=true;initial.narrative.seen=campaign.dialogueMemory?.seen||[];initial.narrative.history=campaign.dialogueMemory?.history||[];return initial;}
+ return newGame(s.initialSeed,campaign,s.missionId);
+}
 
 export function restartStage(s){if(!['battle','result'].includes(s.screen))return null;if(s.stageStart){const initial=structuredClone(s.stageStart);initial.stageStart=structuredClone(s.stageStart);initial.narrative.seen=[...s.narrative.seen];initial.narrative.history=structuredClone(s.narrative.history);return initial;}const initial=newGame(s.initialSeed,structuredClone(s.campaign),s.missionId);initial.screen='deployment';return initial;}
 
-export function nextMission(s){if(s.outcome!=='victory'||s.missionId>=3)return null;return newGame(s.initialSeed+1,structuredClone(s.campaign),s.missionId+1);}
+export function nextMission(s){if(s.outcome!=='victory'||s.missionId>=3||!s.campaign.completed.includes(s.missionId))return null;return newGame(s.initialSeed+1,structuredClone(s.campaign),s.missionId+1);}
 function escortCivilians(s){for(const c of s.units.filter(u=>u.team==='civilian'&&alive(u))){if(!s.units.some(u=>u.team==='ally'&&alive(u)&&distance(u,c)===1))continue;const options=[[0,-1],[-1,0],[1,0]].map(([dx,dy])=>({x:c.x+dx,y:c.y+dy})).filter(p=>terrainAt(p.x,p.y,s)&&Number.isFinite(terrainAt(p.x,p.y,s).cost)&&!at(s,p.x,p.y));options.sort((a,b)=>a.y-b.y||Math.abs(a.x-5.5)-Math.abs(b.x-5.5));if(options.length){const p=options[0];c.x=p.x;c.y=p.y;s.log.push(`${c.name} 호위 이동.`);if(c.y<=2){c.rescued=true;setStoryFlag(s,'mission_03_escorted');}}}}
