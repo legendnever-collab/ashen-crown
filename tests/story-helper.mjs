@@ -1,1 +1,2 @@
-export async function drainStory(page){for(let i=0;i<50;i++){await page.waitForFunction(()=>!window.AshenCrown?.view().busy,{},{timeout:30000});if(!await page.locator('[data-do="story-next"]').count())break;await page.locator('[data-do="story-next"]').click();} }
+// Settle shipped story and the explicit departure confirmation through visible UI.
+export async function drainStory(page){for(let i=0;i<100;i++){await page.waitForFunction(()=>!window.AshenCrown?.view().busy,{},{timeout:30000});if(await page.locator('[data-do="confirm-battle"]').count()){await page.locator('[data-do="confirm-battle"]').click();continue;}if(!await page.locator('[data-do="story-next"]').count())break;await page.locator('[data-do="story-next"]').click();}}
