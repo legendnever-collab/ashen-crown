@@ -27,3 +27,17 @@ Developer entry: [AGENTS.md](../AGENTS.md) → [PROJECT_CONTEXT](handoff/PROJECT
 - [vision/DEVELOPMENT_ROADMAP.md](vision/DEVELOPMENT_ROADMAP.md)
 - [vision/GAME_DESIGN_PRINCIPLES.md](vision/GAME_DESIGN_PRINCIPLES.md)
 - [vision/PRODUCT_VISION.md](vision/PRODUCT_VISION.md)
+
+## Living Frontier
+
+- [design/EXPLORATION_SYSTEM.md](design/EXPLORATION_SYSTEM.md)
+- [design/TOWN_AND_CAMP.md](design/TOWN_AND_CAMP.md)
+- [design/EQUIPMENT_SYSTEM.md](design/EQUIPMENT_SYSTEM.md)
+- [design/ECONOMY_AND_SHOPS.md](design/ECONOMY_AND_SHOPS.md)
+- [design/RECRUITMENT_SYSTEM.md](design/RECRUITMENT_SYSTEM.md)
+- [design/PRE_BATTLE_PREPARATION.md](design/PRE_BATTLE_PREPARATION.md)
+- [story/act1/PRE_BATTLE_SCENES.md](story/act1/PRE_BATTLE_SCENES.md)
+- [story/act1/TOWN_NPC_EVENTS.md](story/act1/TOWN_NPC_EVENTS.md)
+- [v0.3.0/IMPLEMENTATION_PLAN.md](v0.3.0/IMPLEMENTATION_PLAN.md)
+- [v0.3.0/TEST_MATRIX.md](v0.3.0/TEST_MATRIX.md)
+- [v0.3.0/DESIGN_REVIEW.md](v0.3.0/DESIGN_REVIEW.md)

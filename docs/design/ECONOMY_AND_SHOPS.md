@@ -1,0 +1,4 @@
+# Economy And Shops
+
+v0.3 implementation specification, 2026-10-14.
+Gold only. Initial grant 180, first clear rewards M01 100/M02 120/M03 140. Legacy migration grants initial Gold plus unique completed-mission rewards once. Consumable purchased capacity 6, free legacy field potion×2 separate and unchanged. Medium Potion HP+30, Ether MP+8, Ward Tonic DEF/RES+2 until next player phase; self-use, consumes one action, permitted after movement. Buy/sell price spread prevents arbitrage. Transactions use monotonic nonce/idempotency ledger, clone-validate-commit, single save envelope; failed storage rolls UI state back. Practice shops disabled, purchased item use isolated. Canonical economy untouched until first victory; restart/retry departure snapshot. Result cannot enter economy before returning safely to hub.

@@ -1,3 +1,4 @@
+import {TOOLS} from '../data/frontier-data.js';
 import {findUnit,skillCost,forecast} from '../core/rules.js';
 import {canAct} from '../core/game.js';
 export function menuHTML(s,ui,esc){
@@ -7,7 +8,7 @@ export function menuHTML(s,ui,esc){
  let content='';
  if(ui.menu==='root')content=`<div class="menu-grid">${button('mode','이동','move',!active||u.moved)}${button('mode','공격','attack',!active)}${button('submenu','스킬','skills',!active)}${button('submenu','도구','tools',!active)}${button('submenu','특성','traits')}${s.missionId===2?button('mode','생포 · HP½','capture',!active):''}${button('mode','주민 구출','rescue',!active)}${button('wait','대기','',!active)}${button('undo','이동 취소','',!active||!s.undo[u.id])}</div>`;
  if(ui.menu==='skills')content=`<div class="menu-body"><div class="menu-label">직업 스킬 · ${u.mp}/${u.maxMP} MP</div>${button('mode',`${u.skill} <small>${skillCost(u)} MP</small>`,'skill',!active||u.mp<skillCost(u),'skill-choice')}<p>${esc(u.description)}</p>${back}</div>`;
- if(ui.menu==='tools')content=`<div class="menu-body"><div class="menu-label">도구 · 회복약 ${s.potions}개</div>${button('submenu','회복약 <small>자신의 HP +20</small>','item-confirm',!active||!s.potions||u.hp===u.maxHP,'skill-choice')}<p>회복약은 행동 1회를 사용합니다.</p>${back}</div>`;
+ if(ui.menu==='tools')content=`<div class="menu-body"><div class="menu-label">도구 · 회복약 ${s.potions}개</div>${button('submenu','회복약 <small>자신의 HP +20</small>','item-confirm',!active||!s.potions||u.hp===u.maxHP,'skill-choice')}${Object.entries(TOOLS).map(([id,t])=>button('tool',`${t.name} × ${s.economy?.items[id]||0}`,id,!active||!s.economy?.items[id],'skill-choice')).join('')}<p>도구는 자신에게 사용 · 이동 후 가능 · 행동 1회.</p>${back}</div>`;
  if(ui.menu==='item-confirm')content=`<div class="menu-body"><p>회복약을 사용할까요?<br>HP ${u.hp} → ${Math.min(u.maxHP,u.hp+20)} / ${u.maxHP}</p><div class="menu-confirm">${button('item','사용','','','primary')}${back}</div></div>`;
  if(ui.menu==='traits')content=`<div class="menu-body"><div class="menu-label">${esc(u.talent)}</div><p>${esc(u.description)}</p><p>잠재력 단서 · ${esc(u.clues.join(', ')||'아직 발견하지 못했습니다.')}<br>각성 스킬은 아직 해금되지 않았습니다.</p>${back}</div>`;
  if(ui.menu==='move-confirm'&&ui.pendingMove){const m=ui.pendingMove;content=`<div class="menu-body"><div class="menu-label">이동 확인</div><p>(${m.x+1}, ${m.y+1}) 위치로<br>이동을 확정할까요?</p><div class="menu-confirm">${button('confirm-move','이동 확정','',ui.busy,'primary')}${button('cancel-move','취소','',ui.busy)}</div></div>`;}

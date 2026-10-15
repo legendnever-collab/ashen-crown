@@ -1,12 +1,13 @@
 # Next Tasks
+Read AGENTS.md ordered canon, then this list. v0.3 PR [#6](https://github.com/legendnever-collab/ashen-crown/pull/6) is for user review; do not merge automatically.
 
-New session: read AGENTS.md required order, then this list. User review of v0.2 comes before merge; no automatic merge.
+| Priority | Task | Acceptance / files |
+|---|---|---|
+| P0 | User desktop/phone play and listening review | Walk Village/Camp, meet newcomers, compare/equip/upgrade, use purchased tools, M01–03 and aftermath; report actual device/audio preference separately |
+| P0 | Check final PR head CI and artifacts before approved merge | Exact head Checks green, standalone download + checksums, Source ZIP reproducible |
+| P1 v0.4 | The Broken Allegiance / ACT I M04–06 | Abandoned fort, supply evidence, Baldrick and Ashen Oath; preserve 30-mission order, faction independence and OPEN supply provenance |
+| P1 v0.5 | Advanced Class & Character Progression | New tactical actions and hero-specific appearance, no pure stat-only advancement; equipment separate from raw growth |
+| P2 | More relationships / recruitment / hub polish | Reuse stable RECRUITS schema; add new combat hero only with approved canon; improve scene/actor staging and shop interior art after feedback |
+| P1 before later acts | ACT II–IV causal review | Crown survival alternatives, Bellard responsibility and all three ending costs validated before canon promotion |
 
-| Objective | Priority | Dependencies | Expected Deliverable | Acceptance Criteria | Relevant Files | Known Risks |
-|---|---|---|---|---|---|---|
-| User play/listening and physical device review | P0 | v0.2 artifacts/PR | short feedback + fixes if needed | M01→03 playable on actual device; original score audible; review tier identity | releases,tests/campaign-e2e.mjs | emulation ≠ physical device; subjective music |
-| ACT I M04–06 | P1 v0.3 | user v0.2 approval, canon docs | abandoned fort/supply evidence/Baldrick/Ashen Oath | preserve spoiler boundaries, three factions' independent motives | story/act1,missions.js,story.js | supply provenance and Bellard causality OPEN |
-| Class progression and tactical advancement | P1 v0.4 | balance and user direction | new tactical behaviors + hero-specific Tier2 | ability changes actions rather than just stats; save compatibility | CHARACTER_GROWTH,render/art.js,core/rules.js | appearance sample currently not class advancement |
-| Expand relationships and camp | P2 | battle memory foundation | Elina/Sain, Lia/Kai contextual events | observed actions drive event; no forced sacrifice | CHARACTER_RELATIONSHIPS,core/narrative.js | prevent grind/duplicate effects |
-| Expanded original OST/art | P2 | M04–06 design | Black Lion / Oath themes, additional outfits | original source/provenance/offline limits maintained | AUDIO_DESIGN,AUDIO_ASSET_REGISTER | synthetic timbre quality and asset size |
-| Full ACT II–IV causality review | P1 before later narrative | approved political/ending direction | updated proposed causal chain | validate crown survival alternatives and all ending costs before canon promotion | STORY_BIBLE,OPEN_QUESTIONS | unfinished late-game details |
+Economy policy: initial grant and unique reward IDs once, purchased carry cap 6, free baseline potions separate, nonce-confirmed atomic transactions, failed-save rollback, departure checkpoints, isolated practice. Regression tests must remain; new data needs font glyph coverage and offline rebuild.

@@ -1,3 +1,5 @@
+import {ensureEconomy,validateEconomy} from '../core/economy.js';
+import {frontierState,validateFrontier} from '../core/frontier.js';
 import {SCHEMA,WIDTH,HEIGHT,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS} from '../data/game-data.js';
 import {terrainAt,alive} from '../core/rules.js';
 import {MISSIONS,missionOf} from '../data/missions.js';
@@ -6,7 +8,7 @@ import {narrativeState} from '../core/narrative.js';
 export const SAVE_KEY='ashen-crown:v1',BACKUP_KEY='ashen-crown:last-good';
 export function checksum(text){let h=2166136261;for(let i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0).toString(16);}
 export function validate(s){
- if(!s||s.schema!==SCHEMA||!['title','intro','warroom','deployment','battle','result'].includes(s.screen)||!['player','enemy'].includes(s.phase))throw Error('지원하지 않는 저장 형식입니다.');
+ if(!s||s.schema!==SCHEMA||!['title','intro','exploration','warroom','deployment','battle','result'].includes(s.screen)||!['player','enemy'].includes(s.phase))throw Error('지원하지 않는 저장 형식입니다.');
  if(!Number.isInteger(s.turn)||s.turn<1||s.turn>10000||!Number.isInteger(s.rng)||s.rng<0||s.rng>4294967295)throw Error('턴 또는 RNG 상태가 손상되었습니다.');
  if(!Array.isArray(s.units)||s.units.length<10||s.units.length>14||!Array.isArray(s.log)||!s.campaign||!Array.isArray(s.campaign.results)||!Number.isInteger(s.campaign.clears)||!Array.isArray(s.missionStart))throw Error('필수 게임 기록이 없습니다.');
  if(!MISSIONS[s.missionId]||typeof s.practice!=='boolean')throw Error('Mission 기록이 손상되었습니다.');
@@ -31,11 +33,13 @@ export function validate(s){
  if(n.active&&(!STORY[n.active.key]||!Number.isInteger(n.active.index)||n.active.index<0||n.active.index>=STORY[n.active.key].length))throw Error('대화 위치가 손상되었습니다.');
  if(!Array.isArray(c.completed)||c.completed.some(id=>!MISSIONS[id])||!c.flags||!c.bonds||!c.tacticalMemory||[c.flags,c.bonds,c.tacticalMemory].some(v=>typeof v!=='object'||Array.isArray(v))||Object.values(c.tacticalMemory).some(v=>!Number.isInteger(v)||v<0))throw Error('캠페인 상태가 손상되었습니다.');
  if(s.units.some(u=>u.team==='ally'&&(![1,2,3].includes(u.appearanceTier)||['classTier','storyTier'].some(k=>u[k]!=null&&![1,2,3].includes(u[k])))))throw Error('외형 Tier가 손상되었습니다.');
+ validateEconomy(s.economy);validateEconomy(s.campaign.economy);if(s.frontier)validateFrontier(s.frontier);if(s.campaign.frontier)validateFrontier(s.campaign.frontier);
  return s;
 }
 export function migrate(s){
  if(s?.schema===0){s.schema=1;s.feedback=s.feedback||[];}
  if(s?.schema===1){s.schema=2;s.version='0.2.0';s.missionId=1;s.practice=false;s.narrative=narrativeState();const c=s.campaign;c.completed=c.clears>0?[1]:[];c.flags=c.clears>0?{mission_01_completed:true}:{};c.bonds={};c.tacticalMemory={};for(const u of [...s.units,...(c.heroes||[])])if(u.team==='ally'||HEROES.some(h=>h.id===u.id)){u.appearanceTier=u.id==='eric'&&u.level>=5?2:1;const h=HEROES.find(h=>h.id===u.id);u.name=h.name;u.ko=h.ko;}if(s.stageStart)s.stageStart=migrate(s.stageStart);}
+ if(s?.schema===2){s.schema=3;s.version='0.3.0';ensureEconomy(s);s.frontier=frontierState(s.missionId);s.campaign.frontier=structuredClone(s.frontier);if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');return validate(s);
 }
 export function serialize(s){validate(s);const data=JSON.stringify({...s,feedback:[]});return JSON.stringify({format:'AshenCrown',schema:SCHEMA,checksum:checksum(data),data});}

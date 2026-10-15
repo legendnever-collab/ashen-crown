@@ -1,3 +1,4 @@
+import {effectiveStats} from './economy.js';
 import {MAP,TERRAIN,WIDTH,HEIGHT,BALANCE,HEROES} from '../data/game-data.js';
 import {missionOf} from '../data/missions.js';
 import {remember} from './narrative.js';
@@ -11,7 +12,7 @@ export function nextRandom(state){const next=(Math.imul(state>>>0,1664525)+10139
 export function roll(s){const r=nextRandom(s.rng);s.rng=r.state;return r.value;}
 export function movement(s,u,ignore=false){
  const start=key(u.x,u.y), costs=new Map([[start,0]]),prev=new Map(),queue=[{x:u.x,y:u.y,c:0}];
- const allowance=u.mov+(u.shadowBonus||0);
+ const allowance=effectiveStats(s,u).mov+(u.shadowBonus||0);
  while(queue.length){queue.sort((a,b)=>a.c-b.c);const p=queue.shift();if(p.c!==costs.get(key(p.x,p.y)))continue;
   for(const [dx,dy] of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,t=terrainAt(x,y,s);if(!t||!Number.isFinite(t.cost))continue;
    const occupant=at(s,x,y);if(!ignore&&occupant&&occupant.id!==u.id)continue;
@@ -33,18 +34,19 @@ export function validTarget(s,u,t,mode='attack'){
 }
 export function flank(s,u,t){return s.units.some(a=>a.team===u.team&&alive(a)&&a.id!==u.id&&distance(a,t)===1&&((u.x<t.x&&a.x>t.x)||(u.x>t.x&&a.x<t.x)||(u.y<t.y&&a.y>t.y)||(u.y>t.y&&a.y<t.y)));}
 export function strikeStats(s,u,t,mode='attack'){
+ u=effectiveStats(s,u);t=effectiveStats(s,t);
  const magic=mode==='skill'&&u.id==='lia',aim=mode==='skill'&&u.id==='elina',quick=mode==='skill'&&u.id==='kai';
  const defense=magic?t.res:t.def+terrainAt(t.x,t.y,s).defense;
  let dmg=Math.max(1,(magic?u.mag:u.atk)-defense+(aim?2:0)+(magic&&u.hp<=u.maxHP/2?4:0)+(quick&&flank(s,u,t)?6:0));
  if(t.id==='eric'&&t.hp<=t.maxHP*.3)dmg=Math.max(1,Math.floor(dmg*.85));
  const ground=missionOf(s).map[u.y][u.x];const hawk=u.id==='elina'&&(ground==='f'||ground==='v')?12:0;
- const hit=Math.max(55,Math.min(100,(magic?95:88)+(u.spd-t.spd)*2-terrainAt(t.x,t.y,s).evade+hawk+(aim?18:0)));
+ const hit=Math.max(55,Math.min(100,(magic?95:88)+(u.spd-t.spd)*2-terrainAt(t.x,t.y,s).evade+hawk+(aim?18:0)+(u.hit||0)));
  const crit=magic?0:Math.min(18,Math.max(3,u.spd-t.spd+5));
  return {damage:dmg,hit,crit,magic,flank:quick&&flank(s,u,t)};
 }
 export function guardFor(s,u,t,mode){if(mode==='skill'&&u.id==='lia'||distance(u,t)!==1)return null;return s.units.find(g=>alive(g)&&g.team===t.team&&g.guardTarget===t.id&&distance(g,t)===1);}
 export function forecast(s,u,t,mode='attack'){
- if(mode==='skill'&&u.id==='sain')return {heal:Math.min(t.maxHP-t.hp,12+u.mag),hit:100,damage:0,counter:0,after:Math.min(t.maxHP,t.hp+12+u.mag)};
+ if(mode==='skill'&&u.id==='sain')return {heal:Math.min(t.maxHP-t.hp,12+effectiveStats(s,u).mag),hit:100,damage:0,counter:0,after:Math.min(t.maxHP,t.hp+12+effectiveStats(s,u).mag)};
  if(mode==='skill'&&u.id==='eric')return {guard:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='capture')return {capture:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='rescue')return {rescue:true,damage:0,hit:100,counter:0,after:t.hp};

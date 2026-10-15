@@ -2,13 +2,13 @@ name: Game validation
 on:
   pull_request:
   push:
-    branches: [main, feature/v0.1-first-battle, fix/v0.1.3-post-move-attack, feature/v0.2-burning-frontier]
+    branches: [main, feature/v0.1-first-battle, fix/v0.1.3-post-move-attack, feature/v0.2-burning-frontier, feature/v0.3-living-frontier]
 permissions:
   contents: read
 jobs:
   first-battle:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -20,7 +20,8 @@ jobs:
       - run: npm run test:balance
       - run: npm run test:campaign-balance
       - run: npm run build
-      - run: git diff --exit-code -- index.html releases/Ashen_Crown_v0.2.0.html
+      - run: git diff --exit-code -- index.html releases/Ashen_Crown_v0.3.0.html
+      - run: python scripts/verify-release.py
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
       - run: npm run test:mobile
@@ -29,6 +30,9 @@ jobs:
       - run: npm run test:post-move
       - run: npm run test:restart
       - run: npm run test:campaign
+      - run: npm run test:frontier
+      - run: npm run test:economy-balance
+      - run: npm run test:migration-v02
       - uses: actions/upload-artifact@v4
         if: always()
         with:

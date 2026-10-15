@@ -1,3 +1,4 @@
+import {FRONTIER_SCENES,NPC_LINES} from './frontier-data.js';
 const line=(speaker,text,expression='neutral')=>({speaker,text,expression});
 export const STORY={
  '1:intro':[line('aren','왕실의 명령을 기다릴 시간이 없다. 에릭, 먼저 주민을 지켜라.','determined'),line('eric','네 판단을 믿는다. 이번에는 한 사람도 놓치지 않겠다.'),line('elina','숲에 궁수, 북쪽에 Garr. 뒤쪽에서도 발소리가 들려요.'),line('lia','스승의 봉인 흔적을 조사하러 머물던 마을이에요. 불길이 기록까지 삼키기 전에 구해야 해요.'),line('sain','명령이나 신분보다 먼저, 다친 사람부터 도와야 합니다.'),line('kai','저 상자… 군용 인장 아닌가? 지금은 사람부터 꺼내자.')],
@@ -23,3 +24,17 @@ export const STORY={
  defeat:[line('aren','철수한다. 이번 판단을 돌아보고 다시 준비하자.','sad')]
 };
 export const SPEAKERS={aren:{id:'aren',name:'Aren Valter',ko:'아렌',team:'commander'},eric:{id:'eric',name:'Erik',ko:'에릭'},elina:{id:'elina',name:'Elina',ko:'엘리나'},lia:{id:'lia',name:'Lia',ko:'리아'},sain:{id:'sain',name:'Sain',ko:'세인'},kai:{id:'kai',name:'Kai',ko:'카이'}};
+
+for(const [key,lines]of Object.entries(FRONTIER_SCENES))STORY[key]=lines.map(([speaker,text],i)=>({...line(speaker,text,i%4===1?'concerned':i%4===2?'determined':'neutral'),stage:key.startsWith('pre:1')||key==='raid'||key==='after:1'?'village':'camp',focus:i%3,actors:['aren','eric','elina','lia','sain','kai']}));
+for(let mission=1;mission<=3;mission++)for(const phase of ['preparation','aftermath'])for(const [id,copy]of Object.entries(NPC_LINES)){
+ const lines=copy.map(text=>line(id,text));
+ if(mission===1&&phase==='aftermath')lines.push(line(id,'마을은 지켰어요. 이제 불탄 자리에서 다음 길을 준비합니다.'));
+ if(mission===2)lines.push(line(id,phase==='aftermath'?'숲의 흔적을 남기고 피난민이 있는 다리로 향합니다.':'포로의 진술은 선택이지만, 살아 있는 정보는 다음 판단을 돕습니다.'));
+ if(mission===3)lines.push(line(id,phase==='aftermath'?'지금은 야영지로 돌아왔습니다. 다음 성채 조사는 v0.4에서 이어집니다.':'도구가 없어도 구조할 수 있어요. 전원이 돌아올 자리를 남겨 두세요.'));
+ STORY[`npc:${mission}:${phase}:${id}`]=lines.map(l=>({...l,stage:mission===1?'village':'camp',actors:['aren',id],focus:1}));
+}
+for(const [id,name]of Object.entries({elder:'마을 어른',smith:'대장장이',merchant:'도구 상인',refugee:'피난민',guard:'경비병'}))SPEAKERS[id]={id,name,ko:name,team:'civilian'};
+STORY['after:3:quiet']=STORY['after:3'].map(l=>({...l}));STORY['after:3:quiet'][1].text='서로 다른 방식으로 길을 지켰다. 아직 맞춰 가야 할 점이 있겠지.';STORY['after:3:quiet'][2].text='돌아온 사람들이 있잖아. 다음에도 길을 찾아보지.';
+STORY['after:3:loss']=[{...line('sain','모든 사람을 구하지는 못했어요. 돌아오지 못한 이름을 기억하겠습니다.','sad'),stage:'camp',actors:['aren','sain']}];
+STORY['npc:evidence']=[line('lia','왕실 군용 인장은 확인했어요. 누가 상자를 보냈는지는 알 수 없어요.')];
+STORY['npc:bond']=[line('eric','카이와 함께 세인을 지킨 일을 기억한다. 서로 다른 방식으로 같은 사람을 지켰지.'),line('kai','돌아올 곳이 있다는 걸 그날 알았어.')];
