@@ -9,7 +9,7 @@ try{for(const touch of [false,true]){
  const press=(a,id)=>frontierPress(p,touch,a,id);
  const idle=()=>p.waitForFunction(()=>!window.AshenCrown.view().busy);
  const story=async()=>{for(let i=0;i<100;i++){await idle();if(!await p.locator('[data-do="story-next"]').count())break;await press('story-next');}};
- const walk=async(x,y)=>{const path=frontierPath(await s(),x,y);assert.ok(path);for(const [x,y]of path.slice(1)){const f=(await s()).frontier;await press('walk',x<f.x?'left':x>f.x?'right':y<f.y?'up':'down');}assert.deepEqual([(await s()).frontier.x,(await s()).frontier.y],[x,y]);};
+ const walk=async(x,y)=>{for(let i=0;i<100;i++){const now=await s(),f=now.frontier;if(f.x===x&&f.y===y)break;const route=frontierPath(now,x,y);assert.ok(route,`route ${x},${y}`);const [a,b]=route[1];await press('walk',a<f.x?'left':a>f.x?'right':b<f.y?'up':'down');}const f=(await s()).frontier;assert.deepEqual([f.x,f.y],[x,y],`navigation to ${x},${y}`);await p.waitForTimeout(300);};
  const tx=async(encoded)=>{await press('transaction',encoded);await press('confirm-transaction');};
  const openForge=async()=>{if(await p.locator('#modal-root .modal').count())await press('close-modal');if((await s()).frontier.interior==='item')await press('shop-exit');if(!(await s()).frontier.interior){await walk(3,4);await press('place','forge');}await walk(5,5);await press('npc','smith');};
  const openItems=async()=>{if(await p.locator('#modal-root .modal').count())await press('close-modal');if((await s()).frontier.interior==='weapon')await press('shop-exit');if(!(await s()).frontier.interior){await walk(12,4);await press('place','shop');}await walk(4,6);await press('npc','merchant');};
