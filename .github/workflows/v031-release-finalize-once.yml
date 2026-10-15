@@ -31,7 +31,7 @@ jobs:
           s=readme.read_text()
           replacements={
             'Download [Ashen_Crown_v0.3.0.html](releases/Ashen_Crown_v0.3.0.html)':'Download [Ashen_Crown_v0.3.1.html](releases/Ashen_Crown_v0.3.1.html)',
-            '[Test Report](releases/Ashen_Crown_v0.3.0_Test_Report.md), [test matrix](docs/v0.3.0/TEST_MATRIX.md)':'[Test Report](releases/Ashen_Crown_v0.3.1_Test_Report.md), [test matrix](docs/v0.3.1/TEST_MATRIX.md)',
+            '[Test Report](releases/Ashen_Crown_v0.3.0_Test_Report.md), [test matrix](docs/v0.3.0/TEST_MATRIX.md)':'[Test Report](releases/Ashen_Crown_v0.3.1_Test_Report.md), [test matrix](docs/v0.3.1/REGRESSION_RESULTS.md)',
             'v0.3 PR stays unmerged until user approval':'v0.3 PR #6 and v0.3.1 PR #7 are merged with user approval',
             'Shops use illustrated functional modals rather than freely walkable interior maps.':'Shops now have walkable interiors and interactive owners.',
             'Original procedural 64px sprites and 128px portraits':'Original procedural native-128 tile/sprite details and 256px portraits',
