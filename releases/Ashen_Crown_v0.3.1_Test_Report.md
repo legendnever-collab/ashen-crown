@@ -1,6 +1,6 @@
 # Ashen Crown v0.3.1 — Test Report
 
-2026-10-14 · Classic SRPG Renaissance · Release Candidate
+2026-10-14 development / 2026-10-15 KST recovery · Classic SRPG Renaissance · Release Candidate
 
 ## Baseline and dependency
 Verified main fdcdcc42e3adaca7c961dd76dd51268b358ce08f (v0.2). PR #6 remains unmerged at development start; its v0.3 head 461abfddd0a3a84a224781cff022dd58cc9afc5f passed hosted CI 38565695436 / 38565689422. Branch feature/v0.3.1-classic-srpg-renaissance is stacked on that head. No merge performed/authorized. Exact new-head hosted status is maintained in PR Checks and PR body; local results below do not imply a hosted pass.
@@ -8,7 +8,7 @@ Verified main fdcdcc42e3adaca7c961dd76dd51268b358ce08f (v0.2). PR #6 remains unm
 ## Implemented changes
 Walkable forge/item interiors, owners/counters/exits and durable return coordinates; weapon-first compatible hero comparison and atomic buy/equip; in-place NPC/battle portrait dialogue/copy review; no council readiness checkboxes; collapsible persistent Quest with informational click-through body; immediate legal movement and target-protecting contextual commands; distinct architecture, variable maps/camera/minimaps; native 128 tile/sprite detail/256 portraits; animated burning and charred village; class MOV 2/3/3/3/4, terrain profiles/allied traversal/future mounted metadata. Three missions, growth, audio and canon preserved.
 
-## Executed local verification
+## Verification ledger (original results plus targeted recovery)
 
 | Suite | PASS | FAIL |
 |---|---:|---:|
@@ -20,10 +20,10 @@ Walkable forge/item interiors, owners/counters/exits and durable return coordina
 | Stage restart/defeat/legacy/storage failure | 22 | 0 |
 | Actual M01–03 campaign controls (desktop/touch) | 118 | 0 |
 | Frontier/recruitment/economy/storage failure | 102 | 0 |
-| Renaissance UI/resolution/shop/camera (four viewports) | 109 | 0 |
+| Renaissance UI/resolution/shop/camera (four viewports), recovery rerun | 113 | 0 |
 | Actual progressed v0.2 campaign import | 16 | 0 |
 
-Total: **95 unit checks + 541 browser/scenario checks**, zero recorded runtime errors and zero external runtime requests. Node test and browser suite counts are separate. Original v0.2 source/rules fixtures are retained for playing the actual older HTML, avoiding use of new geometry/rules in old-save generation.
+Total: **95 unit checks + 545 browser/scenario checks**, zero recorded runtime errors and zero external runtime requests. Node test and browser suite counts are separate. The original ledger was 95 unit + 541 browser checks. Recovery reran 95 units and replaced the original 109-check Renaissance suite with 113 checks (four new synchronous persistence assertions); the other 432 checks and 210 mission victories are retained evidence, not newly rerun local results. Original v0.2 source/rules fixtures are retained for playing the actual older HTML, avoiding use of new geometry/rules in old-save generation.
 
 Balance: 30 M01 victories across recommended/assault/defense, 30 standard complete campaigns (90 mission wins), plus 30 complete campaigns across standard/reinforced/purchased tools (90 mission wins): **210 mission victories**. Standard bridge completion 5–10 turns; 10-turn deadline unchanged. Optional prisoner branch verified alongside non-capture progression. Natural defeat, retry and rollback remain possible; these policy results are not a guarantee every strategy wins or all heroes survive.
 
@@ -49,7 +49,17 @@ Schema0–3→4 preserves raw earned growth/XP/clues/appearance, results, flags/
 23 before/after/current screenshots under docs/v0.3.1/screenshots (desktop/touch town, shops, comparisons, dialogues, contextual commands, each mission, burned village). Direct comparison with the six referenced Cao Cao screenshots cannot be claimed because those files were not attached here; original assets only. Traceability and visual review identify limitations.
 
 ## Reproduction and hosted checks
-Run npm ci, npm test, test:balance, test:campaign-balance, test:economy-balance, npm run build, scripts/verify-release.py and the browser scripts in .github/workflows/ci.yml. Source ZIP extraction must regenerate byte-identical HTML and pass units; SHA256 manifest covers HTML/ZIP/this report. The release pipeline includes HTTP smoke on GitHub Actions; local socket restrictions prevented local HTTP serving, so local HTTP PASS is not claimed. Exact-head hosted Checks are authoritative.
+Run npm ci, npm test, test:balance, test:campaign-balance, test:economy-balance, npm run build, scripts/verify-release.py and the browser scripts in .github/workflows/ci.yml. Source ZIP extraction must regenerate byte-identical HTML and pass units; both SHA256 manifests cover exactly HTML/ZIP/this report and agree. Every archived file must match the current working source/docs/evidence, with complete packaging coverage; ZIPs and checksum manifests are excluded to avoid circular self-hashes. The release pipeline includes HTTP smoke on GitHub Actions. Original exact-head hosted PR run 38587741878 and push run 38587731729 passed HTTP and actual v0.2 migration, then failed on Quest preference reload. Local HTTP serving is restricted; no local HTTP PASS is claimed. Final recovery-head hosted Checks and run links are maintained in PR #7: https://github.com/legendnever-collab/ashen-crown/pull/7. This packaged report does not assert a hosted pass for a commit that has not yet run.
 
 ## Known scope limits
 Real phones/Safari/Firefox, long-term browser storage eviction and human story/music/art preferences remain unverified. Context menus can move away from the actor in tightly crowded views to keep target centers clickable. Legacy battle core/deployment/safe-zone coordinates preserved; new appendages are conservative rather than a full campaign geography replacement. Flame/smoke/embers are visual only, with no damage/spread. Native fine detail supplements established procedural silhouettes, not a wholly new hand-painted sprite catalogue. Future mounted class is metadata; playable promotions and sixth recruits not available. M04–06 remain v0.4; full class progression v0.5. No main merge or publishing.
+
+## Recovery audit — 2026-10-15 KST
+
+- Restored the GitHub branch at 0869636c39fa61c051ed4c7cb0f76d17f8e58f8e; did not restart development or merge main. PR #7 is stacked on PR #6 / 461abfddd0a3a84a224781cff022dd58cc9afc5f; main remains fdcdcc42e3adaca7c961dd76dd51268b358ce08f.
+- Historical final CI failure: asynchronous details.toggle persisted Quest state too late for immediate reload. Both hosted runs failed at this assertion (different viewports); local baseline reproduced at 390×844. Earlier steps passed; performance was skipped in those runs.
+- Minimal fix: summary activation toggles and persists synchronously. Enter/Space on the summary are isolated from exploration interaction shortcuts. Retain toggle handling for programmatic state changes. No migration, core/economy, story, art or geometry change.
+- Regression uses a same-event assertion (summary.click plus localStorage read in one evaluate), immediate reload, keyboard expansion and real pointer collapse over four viewports. Recovery: **113 PASS / 0 FAIL**, zero runtime errors and external requests, recorded in docs/v0.3.1/evidence/recovery-renaissance-e2e.json. Units: **95 PASS / 0 FAIL**, recorded in recovery-unit.log. Original screenshots retained because visuals are unchanged.
+- Ordinary Chromium launch failed with socket() EPERM. Installed Chromium133 headless shell in single-process mode completed file-browser testing. Performance samples were also regenerated on the recovery HTML (recovery-performance.json); synthetic observations only. No blocking command was repeatedly retried without inspecting its cause.
+- Reused existing actual v0.1.x and progressed v0.2 migration evidence and hosted success because schema/migration/core files remain byte-identical to the restored baseline. No additional long legacy campaign generation was launched locally.
+- Release verification checks the exact current source, documentation, evidence, standalone HTML and report against Source ZIP bytes, matching SHA256 text/JSON manifests, a byte-identical clean rebuild and clean ZIP units. Final acceptance requires green exact recovery-head hosted CI; consult PR Checks/body for that result.

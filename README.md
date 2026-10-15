@@ -1,6 +1,6 @@
-# Ashen Crown v0.3.0
+# Ashen Crown v0.3.1
 
-**The Living Frontier — Story, Exploration, Preparation & Recruitment**
+**Classic SRPG Renaissance — Story, Exploration, Preparation & Recruitment**
 
 Original offline pixel fantasy SRPG. 아렌은 이야기와 군단 운영의 주인공이고, 다섯 장수는 전투의 주인공입니다. 장수를 만나고 함께 준비하며 전쟁을 통해 그들의 이야기를 완성합니다.
 
@@ -15,10 +15,10 @@ Story → Town / Camp → NPC / Affiliation → Shop / Equipment → War Council
 - Meet Erik, Elina, Lia, Sain and Kai. Lia/Sain/Kai offer explicit affiliation choices; all five remain deployable even if you defer. No sixth hero is added. NPC responses reflect mission/aftermath, supply evidence and the actual Erik–Kai battle bond.
 - Shops show prices, ownership and hero-specific stat comparisons. Buy/sell, equip/unequip and **one +1 upgrade for 40 Gold** require confirmation. Weapon/Armor/Accessory compatibility is enforced. Starter gear has zero bonus; equipment is added to existing growth without rewriting it.
 - Starting **180 Gold**, first-clear rewards **100/120/140**. Purchased tools share a **6-item capacity**. Medium Potion restores self HP +30; Ether self MP +8; Ward Tonic grants self DEF/RES +2 until the next Player Phase. All consume one action and can be used after moving. The existing free two-potion field kit remains. No shopping is required to finish the campaign.
-- War Council shows essential victory conditions, terrain, known/unknown intelligence, equipment, supplies and an optional readiness checklist. Return to exploration before departure. Free deployment is preserved; **출전 확정** is required to start combat.
+- War Council shows essential victory conditions, terrain, known/unknown intelligence, equipment and supplies. Return to exploration before departure. Free deployment is preserved; **출전 확정** is required to start combat.
 - Victory/defeat results return to a hub through **마을 / 야영지로 돌아가기** or **야영지에서 다시 준비**. M03 aftermath reacts to rescue results and bond state; M04 is previewed as future content only.
 
-Downloads: [Source ZIP](releases/Ashen_Crown_v0.3.0_Source.zip) · [Test Report](releases/Ashen_Crown_v0.3.0_Test_Report.md) · [SHA256SUMS](releases/Ashen_Crown_v0.3.0_SHA256SUMS)
+Downloads: [HTML](releases/Ashen_Crown_v0.3.1.html) · [Source ZIP](releases/Ashen_Crown_v0.3.1_Source.zip) · [Test Report](releases/Ashen_Crown_v0.3.1_Test_Report.md) · [SHA256SUMS](releases/Ashen_Crown_v0.3.1_SHA256SUMS)
 
 ## Tactical campaign
 
@@ -42,7 +42,7 @@ Dialogue reuses the narrative engine with portraits, expressions, manual/auto, s
 
 ## Save / migration / economy
 
-Autosave/checksum/last-good/text backup remain. **Schema 0/1/2 → 3** preserves existing growth, results, tiers, bonds and story flags. Actual v0.1.0–v0.1.3 battle saves and an actual v0.2 three-mission completed save were imported through the UI. Legacy completion grants the new economy's initial allowance and unique first-clear rewards once. Completed players are not forced into the new old-mission prologues.
+Autosave/checksum/last-good/text backup remain. **Schema 0–3 → 4** preserves existing growth, results, tiers, bonds and story flags; class base MOV is intentionally rebalanced. Actual v0.1.0–v0.1.3 battle saves and an actual v0.2 three-mission completed save were imported through the UI. Legacy completion grants the new economy's initial allowance and unique first-clear rewards once. Completed players are not forced into the new old-mission prologues.
 
 Canonical campaign assets live in `campaign.economy`; the current attempt uses `economy`. Purchases made in preparation commit atomically with an idempotent confirmation token. A failed save rolls the entire transaction back. Battle consumption commits only on a first victory; **Stage Restart** and **Defeat Retry** restore departure inventory, equipment, Gold and growth. Practice copies assets and cannot trade or change canonical assets/growth; level-one practice changes only temporary hero growth. Returning to a hub ends the restart window for that attempt. Campaign selection is blocked during an active battle/deployment.
 

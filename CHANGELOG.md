@@ -1,3 +1,9 @@
+# v0.3.1 — Release recovery (2026-10-15 KST)
+- Fix Quest preference loss on immediate reload by saving in summary activation before the deferred toggle event. Keep summary Enter/Space from triggering town interaction.
+- Add same-event persistence coverage to all four Renaissance viewports; preserve existing game/save migration behavior.
+- Verify checksum manifests agree and every Source ZIP entry matches current source/docs/evidence before the clean HTML rebuild and unit test gate.
+- Refresh release evidence/status and PR #7 for user review; keep the unmerged PR #6 dependency and no automatic main merge.
+
 # v0.3.0 — The Living Frontier (Release Candidate)
 - Hybrid Aren-controlled Village/Camp with path navigation, collision, touch D-pad, visited Fast Travel and contextual NPCs.
 - Pixel-actor pre-battle scenes and aftermath, optional Lia/Sain/Kai affiliation; five existing heroes preserved.
