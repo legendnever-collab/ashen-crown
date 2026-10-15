@@ -69,6 +69,7 @@ npm run test:http
 npm run test:campaign
 npm run test:frontier
 npm run test:migration-v02
+npm run test:migration-v031
 npm run test:renaissance
 npm run test:quality
 python scripts/package.py
