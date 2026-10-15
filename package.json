@@ -21,7 +21,8 @@
     "test:economy-balance": "node tests/economy-balance.mjs",
     "test:migration-v02": "node tests/migration-v02.mjs",
     "test:renaissance": "node tests/renaissance-e2e.mjs",
-    "test:performance": "node tests/performance.mjs"
+    "test:performance": "node tests/performance.mjs",
+    "test:quality": "node tests/gameplay-quality-e2e.mjs"
   },
   "devDependencies": {
     "playwright": "1.58.2"

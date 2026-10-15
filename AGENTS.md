@@ -22,3 +22,6 @@ v0.3: 아렌 직접 이동 Hybrid Town/Camp, 방문 후 Fast Travel, Story → E
 
 ## v0.3.1 entry
 Current branch feature/v0.3.1-classic-srpg-renaissance is stacked on unmerged PR #6 (461abfd), main remains fdcdcc4 unless GitHub says otherwise. Read docs/v0.3.1/IMPLEMENTATION_PLAN.md, design/VISUAL_DESIGN_SYSTEM.md, MAP_ARCHITECTURE.md and TACTICAL_UX.md. Preserve schema4 migration, interior return positions, immediate terrain-cost preview, nonce buy/equip and camera hit-testing. Require 14-row feedback traceability, actual screenshots, campaign and legacy UI evidence, rebuild/checksum verification. Do not merge either PR without user authorization. Future mounted class is reserved data, not a playable promotion.
+
+## v0.3.2 entry
+PR6/7 merged; implementation baseline main b826c49851596398967b36d517270a3f556df94c. Earlier stacked-branch statements above are historical. Current feature/v0.3.2-gameplay-quality-rewards; no user approval to merge this version. Read docs/v0.3.2/IMPLEMENTATION_PLAN.md, TEST_MATRIX.md, RELEASE_VALIDATION.md, design/TERRAIN_RECOVERY.md and BATTLE_REWARDS.md. Preserve Schema5/nonce/phase/reward idempotence and all canon. Run newly built v0.3.2 targets; physical devices remain unverified.

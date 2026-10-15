@@ -6,3 +6,6 @@ Ashen Village: Square, Blacksmith, Item Shop, Barracks, Supply Depot, War Room, 
 
 ## v0.3.1 spaces
 Village 16×16; Camp 20×24; forge 12×10; item shop 10×12. Forge has furnace/chimney/anvil, shop awning/bottles/herbs, barracks broad roof, council flag/table motifs, residences and supply stacks. Exterior shop owners removed, interior owners/counters/racks/exits are walkable interactions. Village residential shells become burned after M01, raid scene flames and battle burning objects reflect story chronology. Added southern camp facilities and village homes retain all legacy positions. Decorative building footprints block exploration movement.
+
+## v0.3.2
+Doors ask confirmation before entering. Inside, approach owner and choose buy/sell/upgrade (forge only). Transactions keep actor/map/camera location; leaving remains explicit.

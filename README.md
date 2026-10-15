@@ -89,3 +89,6 @@ Original source-composed Web Audio scores use oscillator synthesis and no third-
 ## v0.3.1 — Classic SRPG Renaissance
 Walk into independent shops, approach the owner, select equipment then a compatible hero and compare actual stats before atomic purchase/equip. NPC dialogue retains the town. Select a tactical hero for immediate terrain-cost range and contextual commands. Variable maps, bounded camera/minimaps, persistent Quest panel, role-specific MOV, new native detail and burning/burned buildings preserve all three missions.
 Artifacts: [HTML](releases/Ashen_Crown_v0.3.1.html), [Source ZIP](releases/Ashen_Crown_v0.3.1_Source.zip), [Test Report](releases/Ashen_Crown_v0.3.1_Test_Report.md), [SHA256](releases/Ashen_Crown_v0.3.1_SHA256SUMS). Exact changes [feedback traceability](docs/v0.3.1/FEEDBACK_TRACEABILITY.md). Schema4 migrates 0–3; growth/assets retained, base class MOV intentionally rebalanced. PR #6 and PR #7 merged with user approval; official v0.3.1 release authorized.
+
+## v0.3.2 Gameplay Quality & Rewards — review candidate
+Held exploration, explicit doorway entry, shopkeeper service menus, compatible hero auto-equip, tactical HP/MP sites, canonical victory supplies and optional rewards. Schema5 accepts0–4. [Validation](docs/v0.3.2/RELEASE_VALIDATION.md). User play approval required before main merge.

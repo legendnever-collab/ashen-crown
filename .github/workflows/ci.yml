@@ -2,7 +2,7 @@ name: Game validation
 on:
   pull_request:
   push:
-    branches: [main, feature/v0.1-first-battle, fix/v0.1.3-post-move-attack, feature/v0.2-burning-frontier, feature/v0.3-living-frontier, feature/v0.3.1-classic-srpg-renaissance]
+    branches: [main, feature/v0.1-first-battle, fix/v0.1.3-post-move-attack, feature/v0.2-burning-frontier, feature/v0.3-living-frontier, feature/v0.3.1-classic-srpg-renaissance, feature/v0.3.2-gameplay-quality-rewards]
 permissions:
   contents: read
 jobs:
@@ -20,7 +20,7 @@ jobs:
       - run: npm run test:balance
       - run: npm run test:campaign-balance
       - run: npm run build
-      - run: git diff --exit-code -- index.html releases/Ashen_Crown_v0.3.1.html
+      - run: git diff --exit-code -- index.html releases/Ashen_Crown_v0.3.2.html
       - run: python scripts/verify-release.py
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
@@ -34,6 +34,7 @@ jobs:
       - run: npm run test:economy-balance
       - run: npm run test:migration-v02
       - run: npm run test:renaissance
+      - run: npm run test:quality
       - run: npm run test:performance
       - uses: actions/upload-artifact@v4
         if: always()

@@ -6,3 +6,6 @@
 
 
 v0.3.1: follow the stacked-branch, interior-position, schema4 and screenshot contracts in AGENTS.md. Current artifacts and exact verification are in docs/v0.3.1; previous version evidence is historical.
+
+## v0.3.2
+Follow AGENTS v0.3.2 entry. PR6/7 are merged. Current gameplay/reward candidate requires user play approval before merge.
