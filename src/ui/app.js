@@ -1,7 +1,7 @@
 import {rewardLabel} from '../core/battle-rewards.js';
 import {createHeldMovement} from './held-movement.js';
 import {HUBS,GEAR,TOOLS,RECRUITS} from '../data/frontier-data.js';
-import {currentHub,enterInterior,exitInterior,ensureFrontier,enterHub,stepAren,frontierPath,fastTravel,interactions,interactNPC,affiliate,syncFrontier,councilInfo} from '../core/frontier.js';
+import {openCouncil,currentHub,enterInterior,exitInterior,ensureFrontier,enterHub,stepAren,frontierPath,fastTravel,interactions,interactNPC,affiliate,syncFrontier,councilInfo} from '../core/frontier.js';
 import {transact,effectiveStats,equipmentLabel,itemCount} from '../core/economy.js';
 import {renderFrontier,councilHTML,inventoryHTML,shopHTML,shopkeeperHTML,ownedShopHTML,bonusText,frontierButton} from './frontier-ui.js';
 import {hubCamera,drawHub} from '../render/frontier-renderer.js';
@@ -31,7 +31,7 @@ const questPanel=$('#quest-panel');questPanel.open=!ui.questClosed;
 questPanel.querySelector('summary').addEventListener('click',e=>{e.preventDefault();questPanel.open=!questPanel.open;ui.questClosed=!questPanel.open;persistUIPrefs();});
 questPanel.querySelector('summary').addEventListener('keydown',e=>{if(['Enter',' '].includes(e.key))e.stopPropagation();});
 questPanel.addEventListener('toggle',()=>{ui.questClosed=!questPanel.open;persistUIPrefs();});
-const renderer=new BattleRenderer($('#battle-map'),()=>state,()=>ui);let autoTimer;let saveMessage='',toastTimer,enemyRunning=false;let pendingTransaction=null,shopKind=null,shopMode='buy',shopHero='eric',frontierWalking=false;
+const renderer=new BattleRenderer($('#battle-map'),()=>state,()=>ui);let autoTimer;let saveMessage='',toastTimer,enemyRunning=false;let pendingTransaction=null,shopKind=null,shopMode='buy',shopHero='eric',frontierWalking=false,navigationEpoch=0;
 const heldMovement=createHeldMovement((dx,dy)=>walkAren(dx,dy));
 function toast(msg){$('#toast').textContent=msg;$('#toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').hidden=true,4200);}
 function save(){const r=saveGame(state,storage);saveMessage=r.ok?'✓ 자동 저장됨':'저장 실패 · 백업 필요';$('#save-status').textContent=saveMessage;$('#save-status').style.color=r.ok?'#a4c4aa':'#edb398';if(!r.ok)toast(`저장 실패: ${r.error}. 메뉴에서 텍스트 백업을 복사하세요.`);return r;}
@@ -136,7 +136,7 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
 }
 // A menu inserted on map pointerup must not receive the same gesture's click.
 let pressedCommand=null;
-document.addEventListener('pointerdown',e=>{pressedCommand=e.target.closest('[data-do]');audio.activate();},{capture:true});
+document.addEventListener('pointerdown',e=>{pressedCommand=e.target.closest('[data-do]');if(pressedCommand&&pressedCommand.dataset.do!=='walk'){heldMovement.clear();navigationEpoch++;}audio.activate();},{capture:true});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-do]'),pointerClick=!!e.pointerType||!!e.sourceCapabilities?.firesTouchEvents||e.detail>0;if(b&&!b.disabled&&!(b.dataset.do==='walk'&&pointerClick)&&(!pointerClick||pressedCommand===b))dispatch(b.dataset.do,b.dataset.id);});
 document.addEventListener('change',e=>{if(e.target.dataset.ready){state.frontier.ready[e.target.dataset.ready]=e.target.checked;syncFrontier(state);save();}if(e.target.id==='shop-hero'){shopHero=e.target.value;openShop('weapon');}if(e.target.id==='music-volume')audio.settings({music:Number(e.target.value)});if(e.target.id==='sfx-volume')audio.settings({sfx:Number(e.target.value)});if(e.target.id==='audio-muted')audio.settings({muted:e.target.checked});if(e.target.id==='audio-paused')audio.settings({paused:e.target.checked});if(e.target.id==='animation-speed')ui.speed=Number(e.target.value);if(e.target.id==='movement-animation')ui.movement=e.target.value;if(e.target.id==='reduced-effects')ui.reduced=e.target.checked;try{storage.setItem('ashen-crown:ui:v1',JSON.stringify({speed:ui.speed,movement:ui.movement,reduced:ui.reduced,questClosed:ui.questClosed}));}catch{toast('표시 옵션을 저장할 수 없습니다.');}});
 const canvas=$('#battle-map');let pointer=null,pinch=null,pinchUsed=false;const touches=new Map();
@@ -179,9 +179,16 @@ function followAren(){} // MapCamera follows without DOM scrolling or scene tele
 function doorAtAren(){return !state.frontier.interior&&currentHub(state).places.find(p=>['weapon','item'].includes(p.action)&&p.x===state.frontier.x&&p.y===state.frontier.y);}
 function confirmEntrance(kind){if(state.frontier.interior||!interactions(state).some(p=>p.action===kind))return;modal('건물 입장',`<p>${kind==='weapon'?'무기점':'도구점'}에 들어가시겠습니까?</p>`,frontierButton('enter-building','들어간다',kind,false,'primary')+frontierButton('close-modal','취소'));}
 function walkAren(dx,dy){if(frontierWalking||$('#modal-root').children.length||state.narrative.active)return false;if(!stepAren(state,dx,dy)){const door=doorAtAren();if(door&&dy<0)confirmEntrance(door.action);return false;}hubCamera.target=null;commit();const c=$('#frontier-map');if(c)drawHub(c,{...state,walking:true},{time:performance.now()});const door=doorAtAren();if(door){confirmEntrance(door.action);return false;}return true;}
-async function walkToFrontier(x,y){if(frontierWalking||$('#modal-root').children.length||state.narrative.active)return;const npc=currentHub(state).npcs.find(n=>n.x===x&&n.y===y);const path=npc?[[0,-1],[-1,0],[1,0],[0,1]].map(([dx,dy])=>frontierPath(state,x+dx,y+dy)).filter(Boolean).sort((a,b)=>a.length-b.length)[0]:frontierPath(state,x,y);if(!path){toast('건물과 사람을 피해 길 위의 목적지를 누르세요.');return;}frontierWalking=true;try{for(const [a,b]of path.slice(1)){if(state.screen!=='exploration'||state.narrative.active||$('#modal-root').children.length)break;const f=state.frontier;stepAren(state,a-f.x,b-f.y);commit();const door=doorAtAren();if(door){confirmEntrance(door.action);break;}const c=$('#frontier-map');if(c)drawHub(c,{...state,walking:true},{time:performance.now()});await new Promise(resolve=>setTimeout(resolve,75));}}finally{frontierWalking=false;render();}if(npc&&!$('#modal-root').children.length)await dispatch('npc',npc.id);}
+async function walkToFrontier(x,y){if(frontierWalking||$('#modal-root').children.length||state.narrative.active)return;const door=!state.frontier.interior&&currentHub(state).places.find(p=>p.entrance&&p.entrance.tileX===x&&p.entrance.tileY===y);if(door){x=door.x;y=door.y;}const npc=currentHub(state).npcs.find(n=>n.x===x&&n.y===y);const path=npc?[[0,-1],[-1,0],[1,0],[0,1]].map(([dx,dy])=>frontierPath(state,x+dx,y+dy)).filter(Boolean).sort((a,b)=>a.length-b.length)[0]:frontierPath(state,x,y);if(!path){toast('건물과 사람을 피해 길 위의 목적지를 누르세요.');return;}frontierWalking=true;const epoch=navigationEpoch;try{for(const [a,b]of path.slice(1)){if(epoch!==navigationEpoch||state.screen!=='exploration'||state.narrative.active||$('#modal-root').children.length)break;const f=state.frontier;stepAren(state,a-f.x,b-f.y);commit();const door=doorAtAren();if(door){confirmEntrance(door.action);break;}const c=$('#frontier-map');if(c)drawHub(c,{...state,walking:true},{time:performance.now()});await new Promise(resolve=>setTimeout(resolve,75));}}finally{frontierWalking=false;render();}if(npc&&!$('#modal-root').children.length)await dispatch('npc',npc.id);}
 document.addEventListener('click',e=>{if(e.target.id!=='frontier-map'||e.shiftKey||hubPanUsed){hubPanUsed=false;return;}const box=e.target.getBoundingClientRect(),point=hubCamera.tileAt(e.clientX-box.left,e.clientY-box.top);walkToFrontier(point.x,point.y);});
-async function prepareCouncil(){if(state.frontier.interior){toast('상점 출구로 나간 뒤 작전 회의로 이동하세요.');return;}if(!['exploration','intro','warroom','deployment'].includes(state.screen))return;if(state.screen==='exploration'&&!interactions(state).some(n=>!n.npc&&n.action==='council'))await walkToFrontier(12,7);closeModal();if(state.frontier.phase==='aftermath'){toast('다음 이야기 또는 Mission 연습을 선택하세요.');return;}state.screen='warroom';if(state.missionId===1&&!state.practice){setStoryFlag(state,'village_fire_started');state.narrative.events.includes('raid')||state.narrative.queue.push('raid');if(!state.narrative.events.includes('raid'))state.narrative.events.push('raid');}introStory(state);commit();}
+async function prepareCouncil(){
+ if(state.frontier.interior){toast('상점 출구로 나간 뒤 작전 회의로 이동하세요.');return;}
+ if(state.screen==='exploration'&&!interactions(state).some(n=>!n.npc&&n.action==='council')){
+  const gate=currentHub(state).places.find(p=>p.id==='council');await walkToFrontier(gate.x,gate.y);
+  if(!interactions(state).some(n=>!n.npc&&n.action==='council'))return;
+ }
+ closeModal();if(openCouncil(state))commit();else toast('다음 이야기 또는 Mission 연습을 선택하세요.');
+}
 function openShopkeeper(kind){if(state.screen!=='exploration'||state.frontier.interior!==kind||!interactions(state).some(n=>n.service===kind))return;shopKind=kind;modal(kind==='weapon'?'대장장이':'도구 상인',shopkeeperHTML(kind),'');audio.select('shop');}
 function openShop(kind,mode=shopMode){if(state.screen!=='exploration'||state.frontier.interior!==kind||!interactions(state).some(n=>n.service===kind))return;shopKind=kind;shopMode=mode;modal(kind==='weapon'?'Blacksmith · 무기점':'Item Shop · 도구점',mode==='buy'?shopHTML(state,kind,esc):ownedShopHTML(state,mode),`<button data-do="shop-owner">주인에게 돌아가기</button><button data-do="inventory">Party / 장비</button><button data-do="items">Inventory</button>`);audio.select('shop');}
 function showInventory(id){if(!['exploration','warroom','deployment'].includes(state.screen)){toast('전투 전 준비 단계에서 장비를 바꿀 수 있습니다.');return;}shopKind=null;const hero=HEROES.some(h=>h.id===id)?id:ui.selected;ui.selected=hero;modal('Party · Equipment',inventoryHTML(state,hero,esc,portrait),'');paintPortraits();}
@@ -192,7 +199,7 @@ function transactionPreview(encoded){if(state.practice){toast('연습에서는 �
 }
 async function frontierDispatch(action,id=''){
  const allowed=['shop-service','shop-owner','enter-building','hub-zoom','hub-focus','shop-exit','purchase-hero','shop-back','walk','interact','npc','place','fast-map','fast-travel','hub-return','aftermath','affiliate','inventory','items','transaction','confirm-transaction','buy-preview','gear-info','gear-compare','tool','tool-confirm'];if(!allowed.includes(action))return false;
- if(frontierWalking&&!['items','inventory'].includes(action))return true;
+ if(frontierWalking&&!['items','inventory'].includes(action)){navigationEpoch++;while(frontierWalking)await new Promise(r=>setTimeout(r,16));}
  const f=ensureFrontier(state);
  if(action==='enter-building'){closeModal();if(enterInterior(state,id)){hubCamera.reset();commit();}}
  if(action==='walk'){const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[id];if(d)walkAren(...d);}

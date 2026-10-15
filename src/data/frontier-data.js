@@ -49,3 +49,13 @@ export const NPC_LINES={
 
 export const INTERIORS={weapon:{name:'Blacksmith · 무기점 내부',tone:'interior',width:12,height:10,spawn:[5,8],service:'weapon',buildings:[{x:3,y:3,w:6,h:1,type:'counter',label:'COUNTER'},{x:1,y:1,w:2,h:3,type:'furnace',label:'FORGE'},{x:9,y:1,w:2,h:4,type:'rack',label:'WEAPONS'}],npcs:[{id:'smith',name:'대장장이 · 장비 거래',x:5,y:4,service:'weapon'}],places:[{id:'exit',name:'마을로 나가기',x:5,y:8,action:'exit'}]},item:{name:'Item Shop · 도구점 내부',tone:'interior',width:10,height:12,spawn:[4,10],service:'item',buildings:[{x:2,y:4,w:6,h:1,type:'counter',label:'COUNTER'},{x:1,y:1,w:1,h:3,type:'shelf',label:'HERBS'},{x:8,y:1,w:1,h:3,type:'shelf',label:'POTIONS'}],npcs:[{id:'merchant',name:'도구 상인 · 보급 거래',x:4,y:5,service:'item'}],places:[{id:'exit',name:'마을로 나가기',x:4,y:10,action:'exit'}]}};
 for(const h of Object.values(HUBS)){h.npcs=h.npcs.filter(n=>!n.service);h.buildings.push(...(h.tone==='village'?[{x:1,y:12,w:3,h:2,type:'residence',label:'HOME'},{x:10,y:12,w:4,h:2,type:'depot',label:'SUPPLY'}]:[{x:2,y:13,w:4,h:3,type:'inn',label:'BARRACKS'},{x:12,y:14,w:5,h:3,type:'warroom',label:'OPERATIONS'},{x:8,y:19,w:3,h:3,type:'depot',label:'SUPPLY'}]));}
+
+// One tile anchor drives painted threshold, solid wall, valid approach and exit return.
+for(const hub of Object.values(HUBS)){
+ for(const [type,id,tileX,tileY,action] of [['forge','forge',3,3,'weapon'],['shop','shop',12,3,'item'],['warroom','council',12,10,'council']]){
+  const b=hub.buildings.find(b=>b.type===type),p=hub.places.find(p=>p.id===id);
+  b.buildingId=id;b.entrance={tileX,tileY,approachDirection:'north',triggerType:'interact'};
+  b.returnPoint={tileX,tileY:tileY+1};b.interiorScene=action;
+  Object.assign(p,{x:b.returnPoint.tileX,y:b.returnPoint.tileY,entrance:b.entrance,buildingId:id});
+ }
+}

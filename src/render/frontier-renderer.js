@@ -19,6 +19,11 @@ export function drawHub(canvas,s,{line=null,time=performance.now()}={}){
  if(line){const cast=(line.actors||['aren',line.speaker]).filter((id,i,a)=>a.indexOf(id)===i);cast.forEach((id,i)=>{const actor=s.units.find(u=>u.id===id)||{id,team:id==='aren'?'commander':'civilian'};drawSprite(c,actor,220+i*75,400+i%2*30,time);if(id===line.speaker)pixel(c,'#f5d594',216+i*75,342+i%2*30,8,8);});}
  else{for(const n of h.npcs){drawSprite(c,s.units.find(u=>u.id===n.id)||{...n,team:'civilian'},n.x*64+32,n.y*64+36,time);if(Math.abs(n.x-f.x)+Math.abs(n.y-f.y)<=1||s.narrative.active?.key.startsWith('npc:')&&s.narrative.active.key.endsWith(`:${n.id}`)){pixel(c,'#f0d291',n.x*64+28,n.y*64-12,8,8);}}
  const px=f.x*64+32,py=f.y*64+36;c.save();if(f.facing==='left'){c.translate(px,0);c.scale(-1,1);drawSprite(c,{id:'aren',team:'commander'},0,py,time,s.walking?'walk':'idle');}else drawSprite(c,{id:'aren',team:'commander'},px,py,time,s.walking?'walk':'idle');c.restore();pixel(c,'#e4c580',px-20,py+29,40,2);}
+ if(!line&&new URLSearchParams(location.search).get('debugMap')==='1'){
+ c.save();c.lineWidth=1;c.strokeStyle='#91bcc055';for(let x=0;x<h.width;x++)for(let y=0;y<h.height;y++)c.strokeRect(x*64,y*64,64,64);
+ for(const b of h.buildings){c.strokeStyle='#f1696c';c.strokeRect(b.x*64,b.y*64,b.w*64,b.h*64);if(b.entrance){const e=b.entrance;c.strokeStyle='#ffda71';c.strokeRect(e.tileX*64,e.tileY*64,64,64);c.strokeStyle='#71efb9';c.strokeRect(e.tileX*64,(e.tileY+1)*64,64,64);c.fillStyle='#ffda71';c.font='12px monospace';c.fillText(`${b.buildingId}: solid / front only`,e.tileX*64-42,e.tileY*64-8);}}
+ c.restore();
+ }
  const mini=document.querySelector('#hub-minimap');if(!line&&mini)drawMinimap(mini,map,[{id:'aren',x:f.x,y:f.y,team:'ally'},...h.npcs.map(n=>({...n,team:'civilian'}))],camera,h.places);
  canvas.dataset.backingPixels=String(canvas.width*canvas.height);canvas.dataset.mapSize=`${h.width}×${h.height}`;
 }
