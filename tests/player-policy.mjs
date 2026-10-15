@@ -15,7 +15,7 @@ export function chooseAction(s,u,{guard=false}={}){
   }
   // Advance toward a civilian or captain when no immediate productive action is available.
   const targets=civ.length?civ:enemies.filter(e=>e.id==='boss').length?enemies.filter(e=>e.id==='boss'):enemies;
-  const nearest=targets.reduce((acc,t)=>Math.min(acc,distance(a,t)),100);const score=30-nearest*4+terrainAt(x,y).defense-c*.1;
+  const nearest=targets.reduce((acc,t)=>Math.min(acc,distance(a,t)),100);const score=30-nearest*4+terrainAt(x,y,s).defense-c*.1;
   if(!best||score>best.score)best={id:u.id,x,y,mode:'wait',score};
  }
  return best||{id:u.id,x:u.x,y:u.y,mode:'wait'};

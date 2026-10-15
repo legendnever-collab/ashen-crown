@@ -1,0 +1,9 @@
+# Visual Review — v0.3.1
+
+Reviewed actual 1440 desktop and390 touch screenshots, not only code. Before battle: [v0.3](screenshots/before-battle-1440.png). After/current: [M01](screenshots/mission-1-1440.png), [M02](screenshots/mission-2-1440.png), [M03](screenshots/mission-3-1440.png).
+
+[Town](screenshots/town-1440.png): forge chimney/furnace/anvil, potion awning, barracks wide roof, council flag and residences differ structurally. [Forge](screenshots/forge-interior-1440.png), [Item interior](screenshots/item-interior-1440.png): independently walkable, owner present, shelves/counter/exit. [Comparison](screenshots/equipment-comparison-1440.png): eligibility/portraits and zero/+2 stat deltas; repeated transaction returns to catalogue. [NPC](screenshots/dialogue-390.png): current actors stay on map and bottom portrait names the speaker. [Commands](screenshots/context-menu-390.png): visible legal tiles and contextual action menu with vitals/settings below. [Burned village](screenshots/burned-village-1440.png) vs [battle flames](screenshots/battle-fire-1440.png): visual state/roof/debris and animated fire differ.
+
+Pixel contours remain sharp, native thin seams/texture/portrait marks are added. Selected targets are kept clickable, including the small360×640 adjacent-target regression where sprite edges may overlap. Objectives remain readable and collapsible; text itself does not consume map input. Popup can sit farther from actor when a crowded field cannot fit it nearby. Shop interior is intentionally simple, with more furnishings possible later. Conservative map extensions preserve legacy positions.
+
+Six referenced commercial screenshots absent from the supplied attachments; no direct side-by-side comparison or asset borrowing claimed. Native visual detail and measured pixel increase are verified, but subjective stylistic resemblance/play feel requires user review. Physical hardware not verified.

@@ -1,0 +1,3 @@
+import {chromium} from 'playwright';
+// Independent browser processes also support restricted pipe-only local runners.
+export async function launchTestBrowser(options){if(!process.env.BROWSER_SINGLE_PROCESS)return chromium.launch(options);const pool=[];return {async newContext(opts){const b=await chromium.launch(options);pool.push(b);const ctx=await b.newContext(opts),close=ctx.close.bind(ctx);ctx.close=async()=>{await close();await b.close();};return ctx;},async newPage(opts){const b=await chromium.launch(options);pool.push(b);return b.newPage(opts);},async close(){await Promise.allSettled(pool.map(b=>b.close()));}};}

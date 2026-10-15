@@ -16,7 +16,8 @@ export function validate(s){
  for(const u of s.units){if(!known.has(u.id)||ids.has(u.id)||!['ally','enemy','civilian'].includes(u.team))throw Error('장수 목록이 손상되었습니다.');ids.add(u.id);
   const expected=HEROES.some(h=>h.id===u.id)?'ally':mission.civilians.some(c=>c.id===u.id)?'civilian':'enemy';if(u.team!==expected||typeof u.name!=='string'||u.name.length>120||!Array.isArray(u.range)||u.range.length!==2||u.range.some(n=>!Number.isInteger(n)||n<0||n>12)||u.range[0]>u.range[1])throw Error('유닛 분류 또는 사거리가 손상되었습니다.');
   for(const k of ['hp','maxHP','mp','maxMP','atk','def','mag','res','spd','mov','x','y'])if(!Number.isFinite(u[k])||u[k]<0||!Number.isInteger(u[k]))throw Error('유닛 수치가 올바르지 않습니다.');
-  if(u.hp>u.maxHP||u.mp>u.maxMP||u.maxHP<1||u.x>=WIDTH||u.y>=HEIGHT||!Number.isFinite(terrainAt(u.x,u.y,s)?.cost))throw Error('유닛 위치 또는 HP가 손상되었습니다.');
+  if(u.classMovementModifier!=null&&(!Number.isInteger(u.classMovementModifier)||u.classMovementModifier<0||u.classMovementModifier>5)||u.movementProfile!=null&&!['infantry','rogue','cavalry'].includes(u.movementProfile))throw Error('병종 이동 정보가 손상되었습니다.');
+  if(u.hp>u.maxHP||u.mp>u.maxMP||u.maxHP<1||u.x>=mission.width||u.y>=mission.height||!Number.isFinite(terrainAt(u.x,u.y,s)?.cost))throw Error('유닛 위치 또는 HP가 손상되었습니다.');
   if(alive(u)){const p=`${u.x},${u.y}`;if(occupied.has(p))throw Error('유닛이 중복 배치되었습니다.');occupied.add(p);}
   if(u.team==='ally'&&(!HEROES.some(h=>h.id===u.id)||!Number.isInteger(u.level)||u.level<1||!Number.isInteger(u.xp)||u.xp<0||u.xp>=100||!Array.isArray(u.clues)||!Array.isArray(u.growthHistory)||!Array.isArray(u.highlights)||!Array.isArray(u.healTargets)))throw Error('성장 기록이 손상되었습니다.');
   if(u.team==='ally'&&(!Number.isInteger(u.earnedXP)||u.earnedXP<0||u.clues.some(c=>typeof c!=='string')||u.highlights.some(h=>typeof h!=='string')||u.growthHistory.some(g=>!g||!Number.isInteger(g.level)||!g.changes)||typeof u.moved!=='boolean'||typeof u.acted!=='boolean'))throw Error('장수 행동 또는 성장 기록이 손상되었습니다.');
@@ -40,6 +41,7 @@ export function migrate(s){
  if(s?.schema===0){s.schema=1;s.feedback=s.feedback||[];}
  if(s?.schema===1){s.schema=2;s.version='0.2.0';s.missionId=1;s.practice=false;s.narrative=narrativeState();const c=s.campaign;c.completed=c.clears>0?[1]:[];c.flags=c.clears>0?{mission_01_completed:true}:{};c.bonds={};c.tacticalMemory={};for(const u of [...s.units,...(c.heroes||[])])if(u.team==='ally'||HEROES.some(h=>h.id===u.id)){u.appearanceTier=u.id==='eric'&&u.level>=5?2:1;const h=HEROES.find(h=>h.id===u.id);u.name=h.name;u.ko=h.ko;}if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema===2){s.schema=3;s.version='0.3.0';ensureEconomy(s);s.frontier=frontierState(s.missionId);s.campaign.frontier=structuredClone(s.frontier);if(s.stageStart)s.stageStart=migrate(s.stageStart);}
+ if(s?.schema===3){s.schema=4;s.version='0.3.1';for(const u of [...s.units,...(s.campaign.heroes||[])]){const h=HEROES.find(h=>h.id===u.id);if(h)u.mov=h.mov;}if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');return validate(s);
 }
 export function serialize(s){validate(s);const data=JSON.stringify({...s,feedback:[]});return JSON.stringify({format:'AshenCrown',schema:SCHEMA,checksum:checksum(data),data});}

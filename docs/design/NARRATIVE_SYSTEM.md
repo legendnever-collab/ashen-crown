@@ -3,3 +3,7 @@ Data: src/data/story.js. Runtime: src/core/narrative.js. State: flags/bonds/tact
 Restart: stageStart includes pre-battle campaign flags/memory; current-battle event IDs and choices rewind. Persistent viewer seen/history may retain already viewed dialogue; actual consequences rewind. Intro choice checkpoint precedes battle; restart keeps pre-battle choice, then reruns battle events. First-clear results committed once; practice does not alter canonical campaign flags/bonds/heroes. Interrupted dialogue/enemy phase resume safely.
 
 Hub/NPC/preparation scenes reuse narrative engine, stable scene IDs and seen/history. New scene staging places pixel actors with facing, expression, actor position shifts and backdrop transitions. NPC dialogue optional. Knowledge survives skip in War Council/history.
+
+
+## v0.3.1 presentation/copy review
+Only explicitly authored pre/raid/aftermath cutscenes have staged actors. NPC and battle conversations retain the visible map, current actors and camera, with bottom portrait/name/expression/history/advance. Narrative active blocks walking/combat/AI, then resumes the prior screen/phase. NPC generic version/planning outros removed; Aren/Erik brief military phrasing, Elina wary observations, Lia curiosity, Sain concrete care, Kai guarded humor. Major pre/post lines shortened; military supply evidence remains observation, not an inferred culprit. STORY_BIBLE, CHARACTER_BIBLE and 4-act/30-mission order reviewed unchanged.

@@ -1,15 +1,16 @@
+import {launchTestBrowser} from './browser-helper.mjs';
 import {drainStory} from './story-helper.mjs';
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {pathToFileURL} from 'node:url';
 let pw;try{pw=await import('playwright');}catch{pw=await import(pathToFileURL(path.join(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES,'playwright/index.mjs')));}
-const launch={headless:true,args:['--no-sandbox','--disable-gpu','--in-process-gpu','--no-zygote']};if(process.env.BROWSER_EXECUTABLE)launch.executablePath=process.env.BROWSER_EXECUTABLE;
-const browser=await pw.chromium.launch(launch),results=[],errors=[];let external=0;
+const launch={headless:true,args:['--no-sandbox','--disable-gpu','--in-process-gpu','--no-zygote',...(process.env.BROWSER_SINGLE_PROCESS?['--single-process']:[])]};if(process.env.BROWSER_EXECUTABLE)launch.executablePath=process.env.BROWSER_EXECUTABLE;
+const browser=await launchTestBrowser(launch),results=[],errors=[];let external=0;
 const ctx=await browser.newContext({viewport:{width:1440,height:900}});await ctx.setOffline(true);const page=await ctx.newPage();page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(/^https?:/.test(r.url()))external++;});
-const url=process.env.GAME_URL||pathToFileURL(path.resolve('releases/Ashen_Crown_v0.3.0.html')).href;
+const url=process.env.GAME_URL||pathToFileURL(path.resolve('releases/Ashen_Crown_v0.3.1.html')).href;
 fs.mkdirSync('test-output',{recursive:true});
 const snapshot=()=>page.evaluate(()=>window.AshenCrown.snapshot());
 const idle=async()=>{await page.waitForFunction(()=>!window.AshenCrown.view().busy);await drainStory(page);return page.waitForFunction(()=>window.AshenCrown&&!window.AshenCrown.view().busy&&(window.AshenCrown.snapshot().phase==='player'||window.AshenCrown.snapshot().screen==='result'),{},{timeout:30000});};
 async function clickDo(action,id){await drainStory(page);if((action==='mode'&&['move','attack','skill','rescue'].includes(id))||['wait','undo'].includes(action)){if(!await page.locator('#unit-popover:not([hidden])').count())await page.locator('[data-do="open-unit-menu"]').click();await drainStory(page);if(id==='skill')await page.locator('[data-do="submenu"][data-id="skills"]').click();await drainStory(page);}await page.locator(`[data-do="${action}"]${id?`[data-id="${id}"]`:''}`).first().click();await drainStory(page);}
-async function tile(x,y){await page.waitForTimeout(35);const p=await page.evaluate(({x,y})=>{const b=document.querySelector('#battle-map').getBoundingClientRect(),p=window.AshenCrown.tileCenter(x,y);return {x:p.x+b.x,y:p.y+b.y};},{x,y});await page.mouse.click(p.x,p.y);}
+async function tile(x,y){await page.waitForTimeout(250);const p=await page.evaluate(({x,y})=>{const b=document.querySelector('#battle-map').getBoundingClientRect(),p=window.AshenCrown.tileCenter(x,y);return {x:p.x+b.x,y:p.y+b.y};},{x,y});await page.mouse.click(p.x,p.y);}
 async function select(id){const u=(await snapshot()).units.find(u=>u.id===id);await tile(u.x,u.y);}
 async function endPhase(){await clickDo('end-phase');if(await page.locator('[data-do="confirm-phase"]').count())await clickDo('confirm-phase');await idle();}
 const check=(name,condition)=>{assert.ok(condition,name);results.push({name,status:'PASS'});console.log('PASS',name);};

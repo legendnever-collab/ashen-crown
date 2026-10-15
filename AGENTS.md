@@ -18,3 +18,7 @@
 
 
 v0.3: 아렌 직접 이동 Hybrid Town/Camp, 방문 후 Fast Travel, Story → Exploration → Preparation → Battle → Aftermath. 경제 원자성·Practice 격리 필수. M04–06은 v0.4, 전직은 v0.5. 4막 30 Mission·인물 정본 보존. 신규 NPC 세부는 PROPOSED. 새 세션은 EXPLORATION_SYSTEM/EQUIPMENT_SYSTEM/ECONOMY_AND_SHOPS도 읽는다.
+
+
+## v0.3.1 entry
+Current branch feature/v0.3.1-classic-srpg-renaissance is stacked on unmerged PR #6 (461abfd), main remains fdcdcc4 unless GitHub says otherwise. Read docs/v0.3.1/IMPLEMENTATION_PLAN.md, design/VISUAL_DESIGN_SYSTEM.md, MAP_ARCHITECTURE.md and TACTICAL_UX.md. Preserve schema4 migration, interior return positions, immediate terrain-cost preview, nonce buy/equip and camera hit-testing. Require 14-row feedback traceability, actual screenshots, campaign and legacy UI evidence, rebuild/checksum verification. Do not merge either PR without user authorization. Future mounted class is reserved data, not a playable promotion.

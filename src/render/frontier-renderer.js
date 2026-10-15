@@ -1,13 +1,24 @@
 import {HUBS} from '../data/frontier-data.js';
+import {currentHub} from '../core/frontier.js';
 import {drawTile,drawSprite,pixel} from './art.js';
-export function drawHub(canvas,s,{interior=null,line=null,time=performance.now()}={}){
- const c=canvas.getContext('2d'),f=s.frontier||{hub:s.missionId===1?'village':'camp',x:7,y:7,facing:'down'},hub=HUBS[line?.stage||f.hub];const width=1024,height=768;canvas.width=width;canvas.height=height;c.imageSmoothingEnabled=false;
- for(let y=0;y<12;y++)for(let x=0;x<16;x++)drawTile(c,interior?'r':x===0||y===0||x===15||y===11?'f':x===7||y===4||y===7?'r':'g',x*64,y*64,x+y*16);
- if(interior){pixel(c,'#2e383a',0,0,1024,150);pixel(c,'#56433c',64,150,896,32);for(let i=0;i<7;i++){pixel(c,'#8a694b',90+i*128,210,100,22);pixel(c,'#bf9c65',100+i*128,195,24,15);}pixel(c,'#674b3a',64,620,896,50);pixel(c,'#d4ae73',64,620,896,8);if(interior==='weapon'){pixel(c,'#261d20',440,230,144,130);pixel(c,'#b54c31',458,270,108,80);pixel(c,'#edbb62',480,285,68,55);}c.fillStyle='#edcf94';c.font='bold 30px Georgia';c.fillText(interior==='weapon'?'BLACKSMITH':'ITEM SHOP',70,95);}
- else{for(const b of hub.buildings){const tent=hub.tone==='camp';pixel(c,tent?'#364249':'#4f3d32',b.x*64,b.y*64,b.w*64,b.h*64);pixel(c,tent?'#6c7768':'#c3ae83',b.x*64+8,b.y*64+45,b.w*64-16,b.h*64-45);for(let i=0;i<5;i++)pixel(c,tent?'#637866':i%2?'#9e6549':'#b67a54',b.x*64-12+i*3,b.y*64+i*10,b.w*64+24-i*6,13);pixel(c,'#283537',(b.x+b.w/2)*64-20,(b.y+b.h)*64-57,40,57);c.fillStyle='#f1ddad';c.font='bold 13px Arial';c.textAlign='center';c.fillText(b.label,(b.x+b.w/2)*64,(b.y+b.h)*64-12);}c.textAlign='left';
- if(hub.tone==='camp'){pixel(c,'#4d4538',420,340,80,50);pixel(c,'#bd7041',434,350,50,26);pixel(c,'#ebbd67',444,342,28,30);pixel(c,'#f3d695',452,348,10,18);}}
- if(line){const cast=(line.actors||['aren',line.speaker]).filter((id,i,a)=>a.indexOf(id)===i);cast.forEach((id,i)=>{const actor=s.units.find(u=>u.id===id)||{id,team:id==='aren'?'commander':'civilian',name:id};const x=160+i*135+(line.speaker===id?(line.focus||0)*9:0),y=465+(i%2)*45;c.save();if(i%2){c.translate(x,0);c.scale(-1,1);drawSprite(c,actor,0,y,time,line.speaker===id?'walk':'idle');}else drawSprite(c,actor,x,y,time,line.speaker===id?'walk':'idle');c.restore();if(id===line.speaker){pixel(c,'#ead29c',x-14,y-67,28,4);pixel(c,'#ead29c',x-4,y-80,8,10);}});}
- else if(interior){drawSprite(c,{id:interior==='weapon'?'smith':'merchant',team:'civilian'},510,490,time);drawSprite(c,{id:'aren',team:'commander'},500,570,time,'idle');}
- else{for(const n of hub.npcs){const u=s.units.find(u=>u.id===n.id)||{...n,team:'civilian'};drawSprite(c,u,n.x*64+32,n.y*64+36,time);if(Math.abs(n.x-f.x)+Math.abs(n.y-f.y)<=1){pixel(c,'#f0d291',n.x*64+27,n.y*64-24,10,14);}}const actor={id:'aren',team:'commander'};c.save();const px=f.x*64+32,py=f.y*64+36;if(f.facing==='left'){c.translate(px,0);c.scale(-1,1);drawSprite(c,actor,0,py,time,s.walking?'walk':'idle');}else drawSprite(c,actor,px,py,time,s.walking?'walk':'idle');c.restore();pixel(c,'#debd78',px-20,py+29,40,3);}
- if(!interior&&hub.tone==='camp'){c.fillStyle='rgba(18,27,55,.22)';c.fillRect(0,0,width,height);}
+import {drawBuilding,drawFire} from './world-art.js';
+import {MapCamera,drawMinimap} from './camera.js';
+export const hubCamera=new MapCamera();
+let hubTerrainCache=null;
+export function hubTerrain(h){return Array.from({length:h.height},(_,y)=>Array.from({length:h.width},(_,x)=>h.tone==='interior'?'r':x===0||y===0||x===h.width-1||y===h.height-1?'f':x===7||y===4||y===7||y===11?'r':'g'));}
+export function drawHub(canvas,s,{line=null,time=performance.now()}={}){
+ const c=canvas.getContext('2d'),f=s.frontier,h=line?HUBS[line.stage]:currentHub(s),box=canvas.getBoundingClientRect(),width=Math.max(1,box.width||1024),height=Math.max(1,box.height||768),resolution=width<600?Math.max(1,window.devicePixelRatio||1):Math.max(2.1,window.devicePixelRatio||1);
+ if(canvas.width!==Math.round(width*resolution)||canvas.height!==Math.round(height*resolution)){canvas.width=Math.round(width*resolution);canvas.height=Math.round(height*resolution);}c.setTransform(resolution,0,0,resolution,0,0);c.imageSmoothingEnabled=false;pixel(c,'#172c31',0,0,width,height);
+ const camera=line?{x:0,y:0,scale:Math.min(width/h.width/64,height/h.height/64)}:hubCamera.layout(width,height,h.width,h.height,{follow:{x:f.x,y:f.y},key:`${f.hub}:${f.interior||'outside'}`});
+ c.translate(camera.x,camera.y);c.scale(camera.scale,camera.scale);
+ const map=hubTerrain(h);if(hubTerrainCache?.hub!==h){const image=document.createElement('canvas');image.width=h.width*128;image.height=h.height*128;const tc=image.getContext('2d');tc.scale(2,2);for(let y=0;y<h.height;y++)for(let x=0;x<h.width;x++)drawTile(tc,map[y][x],x*64,y*64,y*h.width+x);hubTerrainCache={hub:h,image};}c.drawImage(hubTerrainCache.image,0,0,h.width*64,h.height*64);
+ if(h.tone==='interior'){for(let y=0;y<h.height;y++){pixel(c,'#4a4140',0,y*64,64,64);pixel(c,'#4a4140',(h.width-1)*64,y*64,64,64);}pixel(c,'#473d3a',0,0,h.width*64,64);pixel(c,'#c4aa7f',64,62,(h.width-2)*64,3);const e=h.places[0];pixel(c,'#cab78b',e.x*64+12,e.y*64+7,40,49);pixel(c,'#8b7460',e.x*64+18,e.y*64+12,28,39);c.fillStyle='#f3e1b2';c.font='bold 11px monospace';c.fillText('EXIT',e.x*64+18,e.y*64+39);}
+ const burned=!!s.campaign.flags.mission_01_completed;
+ for(const b of h.buildings)drawBuilding(c,b,time,burned&&f.hub==='village'&&b.type==='residence'?'burned':line&&s.narrative.active?.key==='raid'&&b.type==='residence'?'burning':'intact');
+ if(h.tone==='camp')drawFire(c,7*64,6*64,time,.65);
+ if(line){const cast=(line.actors||['aren',line.speaker]).filter((id,i,a)=>a.indexOf(id)===i);cast.forEach((id,i)=>{const actor=s.units.find(u=>u.id===id)||{id,team:id==='aren'?'commander':'civilian'};drawSprite(c,actor,220+i*75,400+i%2*30,time);if(id===line.speaker)pixel(c,'#f5d594',216+i*75,342+i%2*30,8,8);});}
+ else{for(const n of h.npcs){drawSprite(c,s.units.find(u=>u.id===n.id)||{...n,team:'civilian'},n.x*64+32,n.y*64+36,time);if(Math.abs(n.x-f.x)+Math.abs(n.y-f.y)<=1||s.narrative.active?.key.startsWith('npc:')&&s.narrative.active.key.endsWith(`:${n.id}`)){pixel(c,'#f0d291',n.x*64+28,n.y*64-12,8,8);}}
+ const px=f.x*64+32,py=f.y*64+36;c.save();if(f.facing==='left'){c.translate(px,0);c.scale(-1,1);drawSprite(c,{id:'aren',team:'commander'},0,py,time,s.walking?'walk':'idle');}else drawSprite(c,{id:'aren',team:'commander'},px,py,time,s.walking?'walk':'idle');c.restore();pixel(c,'#e4c580',px-20,py+29,40,2);}
+ const mini=document.querySelector('#hub-minimap');if(!line&&mini)drawMinimap(mini,map,[{id:'aren',x:f.x,y:f.y,team:'ally'},...h.npcs.map(n=>({...n,team:'civilian'}))],camera,h.places);
+ canvas.dataset.backingPixels=String(canvas.width*canvas.height);canvas.dataset.mapSize=`${h.width}×${h.height}`;
 }

@@ -1,6 +1,6 @@
 # Project Context
-Original offline pixel SRPG, repository https://github.com/legendnever-collab/ashen-crown.
-Baseline main v0.2.0 PR #5 merged with user authorization: fdcdcc42e3adaca7c961dd76dd51268b358ce08f. Active feature/v0.3-living-frontier, no merge before user review.
-Read AGENTS.md ordered canon. Aren commander/exploration avatar, five heroes tactical protagonists. Erdia/Ashen Crown/잿빛 밤/three factions/Baldrick/Bellard/4 acts 30 missions/three endings/B relationships preserved.
-v0.3 changes RPG preparation loop, not mission count. v0.4 M04–06, v0.5 advanced class. Source src/core/game.js/rules.js, data story/missions; new frontier and economy modules integrate with existing narrative/save/audio. Current implemented vs pending work in CURRENT_STATUS/NEXT_TASKS.
-Canonical asset/attempt/practice isolation, migration/restart/regression are release blockers. Standalone rebuild reproducible; original procedural art and oscillator score, existing OFL font attribution retained.
+Original offline classic pixel SRPG, https://github.com/legendnever-collab/ashen-crown.
+Verified development baseline: main v0.2.0 fdcdcc42e3adaca7c961dd76dd51268b358ce08f; PR #6 v0.3.0 unmerged, head 461abfddd0a3a84a224781cff022dd58cc9afc5f with passing CI. Active feature/v0.3.1-classic-srpg-renaissance is stacked on #6, targeting its branch. Never merge without user approval. Refresh actual refs before future work.
+Read AGENTS ordered canon and v0.3.1 design/evidence. Aren remains non-deployable commander; five tactical heroes, Erdia/Ashen Crown/Ashen Night/three factions/Baldrick/Bellard/4 acts/30 missions/three endings/B relationships preserved. No new mission.
+Implemented v0.3.1: independent shop interiors/doorway return, weapon-first atomic buy/equip, in-place NPC/battle dialogue, class/terrain MOV, variable maps, camera/minimap, native 128/256 detail, fire/ruin story state and contextual input/Quest panel. Schema4 accepts legacy 0–3, preserves all growth/Gold/gear/checkpoints; only base class MOV intentionally rebalanced. Gameplay modifiers separate from growth.
+Source modules remain incremental. Reproducible offline HTML/ZIP/report/checksums under releases; precise verification and limitations docs/v0.3.1. Reserve mounted advancement data only. Next M04–06 v0.4, complete promotions v0.5.
