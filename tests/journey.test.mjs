@@ -8,7 +8,7 @@ test('All doors share visual tile anchor / front-only approach / solid threshold
  for(const [x,y]of [[e.tileX,b.y-1],[b.x-1,e.tileY],[b.x+b.w,e.tileY],[e.tileX-1,p.y]]){s.frontier.x=x;s.frontier.y=y;assert.equal(interactions(s).some(n=>n.id===p.id),false);}
  s.frontier.x=p.x;s.frontier.y=p.y;assert.ok(walkable(s,p.x,p.y));assert.ok(interactions(s).some(n=>n.id===p.id));if(['weapon','item'].includes(p.action)){assert.ok(enterInterior(s,p.action));assert.ok(exitInterior(s));assert.deepEqual([s.frontier.x,s.frontier.y],[p.x,p.y]);}
  }}});
-test('Existing council API opens briefing and preserves return coordinates; aftermath cannot depart',()=>{const s=hub(1),f=structuredClone(s.frontier);assert.ok(openCouncil(s));assert.equal(s.screen,'warroom');assert.equal(s.narrative.active.key,'raid');assert.deepEqual(s.frontier,f);drain(s);enterHub(s,{story:false});assert.deepEqual([s.frontier.x,s.frontier.y],[f.x,f.y]);s.frontier.phase='aftermath';assert.equal(openCouncil(s),false);});
+test('Existing council API opens briefing and preserves return coordinates; aftermath cannot depart',()=>{const s=hub(1),f=structuredClone(s.frontier);s.frontier.advisorPending=true;assert.ok(openCouncil(s));assert.equal(s.screen,'warroom');assert.equal(s.narrative.active.key,'raid');assert.deepEqual(s.frontier,f);drain(s);enterHub(s,{story:false});assert.deepEqual([s.frontier.x,s.frontier.y],[f.x,f.y]);s.frontier.phase='aftermath';assert.equal(openCouncil(s),false);});
 
 test('Schema5 blocked doors and nested battle checkpoints recover spatial state without changing assets',async()=>{
  const {migrate}=await import('../src/persistence/save-manager.js');const {startBattle}=await import('../src/core/game.js');

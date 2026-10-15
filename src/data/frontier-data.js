@@ -63,3 +63,18 @@ for(const hub of Object.values(HUBS)){
 // Stable eric battle entity becomes the sole exploration actor. Aren remains commander.
 for(const hub of Object.values(HUBS))for(const n of hub.npcs)if(n.id==='eric')Object.assign(n,{id:'aren',name:'Aren · 군단장',kind:'commander'});
 NPC_LINES.aren=['에릭, 병사들의 상태를 살펴 줘. 이번 판단도 함께 책임지겠다.','명령서는 내가 확인하겠다. 동료들이 돌아올 길을 부탁한다.'];
+
+// Functional staff role only: personal name/backstory remains PROPOSED.
+for(const hub of Object.values(HUBS)){
+ hub.npcs.push({id:'advisor',name:'군사 · 작전 참모',x:8,y:7,kind:'advisor'});
+ const p=hub.places.find(p=>p.id==='council'),b=hub.buildings.find(b=>b.buildingId==='council');
+ p.name='Commander Quarters';delete p.action;delete p.entrance;
+ b.label='COMMAND QUARTERS';delete b.entrance;delete b.returnPoint;delete b.interiorScene;
+ delete hub.places.find(p=>p.id==='exit').action;
+ hub.places.push({id:'advisor',name:'군사 · 광장 동쪽',x:7,y:7});
+}
+export const ADVISOR_BRIEFINGS={
+ 1:[['advisor','에릭 경, 북쪽 경계에서 보고가 왔습니다.'],['eric','주민부터 지켜야 한다. 적은 어디 있지?'],['advisor','Garr의 무리가 마을로 향합니다. 광장에서 병력을 모으겠습니다.']],
+ 2:[['advisor','습격자들이 북쪽 숲길로 달아났습니다.'],['eric','숲에서 떨어지지 않게 대열을 정하자.'],['advisor','대장의 퇴로는 북쪽입니다. 생포할 기회가 있으면 보급로를 물을 수 있습니다.']],
+ 3:[['advisor','다리 앞에 피난민이 모였습니다. 후방에서는 추격병이 접근합니다.'],['eric','세인이 구조할 길을 열겠다. 철수로부터 확인하지.'],['advisor','10턴 안에 주민 한 명 이상을 구하고, 살아 있는 장수 전원이 북쪽 안전 구역으로 빠져나와야 합니다.']]
+};
