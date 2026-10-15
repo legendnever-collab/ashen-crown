@@ -59,3 +59,7 @@ for(const hub of Object.values(HUBS)){
   Object.assign(p,{x:b.returnPoint.tileX,y:b.returnPoint.tileY,entrance:b.entrance,buildingId:id});
  }
 }
+
+// Stable eric battle entity becomes the sole exploration actor. Aren remains commander.
+for(const hub of Object.values(HUBS))for(const n of hub.npcs)if(n.id==='eric')Object.assign(n,{id:'aren',name:'Aren · 군단장',kind:'commander'});
+NPC_LINES.aren=['에릭, 병사들의 상태를 살펴 줘. 이번 판단도 함께 책임지겠다.','명령서는 내가 확인하겠다. 동료들이 돌아올 길을 부탁한다.'];

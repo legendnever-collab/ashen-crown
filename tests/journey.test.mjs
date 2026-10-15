@@ -9,3 +9,10 @@ test('All doors share visual tile anchor / front-only approach / solid threshold
  s.frontier.x=p.x;s.frontier.y=p.y;assert.ok(walkable(s,p.x,p.y));assert.ok(interactions(s).some(n=>n.id===p.id));if(['weapon','item'].includes(p.action)){assert.ok(enterInterior(s,p.action));assert.ok(exitInterior(s));assert.deepEqual([s.frontier.x,s.frontier.y],[p.x,p.y]);}
  }}});
 test('Existing council API opens briefing and preserves return coordinates; aftermath cannot depart',()=>{const s=hub(1),f=structuredClone(s.frontier);assert.ok(openCouncil(s));assert.equal(s.screen,'warroom');assert.equal(s.narrative.active.key,'raid');assert.deepEqual(s.frontier,f);drain(s);enterHub(s,{story:false});assert.deepEqual([s.frontier.x,s.frontier.y],[f.x,f.y]);s.frontier.phase='aftermath';assert.equal(openCouncil(s),false);});
+
+test('Schema5 blocked doors and nested battle checkpoints recover spatial state without changing assets',async()=>{
+ const {migrate}=await import('../src/persistence/save-manager.js');const {startBattle}=await import('../src/core/game.js');
+ for(const schema of [4,5])for(const blocked of [false,true]){const s=hub(2);s.campaign.flags.keep_flag=true;s.campaign.bonds.erik_kai=true;s.screen='deployment';startBattle(s);const before=structuredClone(s);
+ for(const target of [s,s.stageStart]){target.schema=schema;delete target.frontier.actorId;delete target.campaign.frontier.actorId;if(blocked){target.frontier.x=12;target.frontier.y=9;}target.campaign.frontier.x=5;target.campaign.frontier.y=5;}
+ const fixed=migrate(s);assert.equal(fixed.schema,6);assert.equal(fixed.stageStart.schema,6);assert.equal(fixed.frontier.actorId,'eric');assert.ok(walkable(fixed,fixed.frontier.x,fixed.frontier.y));assert.deepEqual(fixed.units,before.units);assert.deepEqual(fixed.economy,before.economy);assert.deepEqual(fixed.campaign.flags,before.campaign.flags);assert.deepEqual(fixed.campaign.bonds,before.campaign.bonds);assert.deepEqual(fixed.campaign.heroes,before.campaign.heroes);assert.equal(fixed.rng,before.rng);assert.ok(walkable({frontier:fixed.campaign.frontier},fixed.campaign.frontier.x,fixed.campaign.frontier.y));}
+});

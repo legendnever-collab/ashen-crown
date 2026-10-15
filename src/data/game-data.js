@@ -1,5 +1,5 @@
-export const VERSION = '0.3.2';
-export const SCHEMA = 5;
+export const VERSION = '0.3.3';
+export const SCHEMA = 6;
 export const WIDTH = 12, HEIGHT = 10;
 export const TERRAIN = {
   g: {name:'Grass', cost:1, defense:0, evade:0, color:'#52624a'},

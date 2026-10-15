@@ -49,6 +49,7 @@ export function drawSprite(c,u,x,y,time=0,pose='idle',size=1){
  r('#fff4d3',-3.5,-17,.5,.5);r(p.shade,-6,-12,1,.5);r(p.light,7,-23,.5,5);
  if(pose==='walk'){r(p.coat,-17,-1+walk,4,8);r(p.skin,13,4-walk,3,5);}
  if(u.id==='eric')for(let i=0;i<5;i++)r('#e2d8ad',-23+i*1.5,3+i*2,.5,3);
+ if(u.id==='eric'&&u.facing==='up'){r('#819caa',-10,-23,20,14);r('#d4e2d9',-11,-25,22,3);r('#54798a',-9,-19,18,1);r('#c1a774',-1,-22,2,12);}
  if(u.guardTarget){r('#edd28b',-25,-38,50,2);r('#edd28b',-25,-38,2,11);r('#edd28b',23,-38,2,11);}c.restore();
 }
 export function drawPortrait(c,u){
