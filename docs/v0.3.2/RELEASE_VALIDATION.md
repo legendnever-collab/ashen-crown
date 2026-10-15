@@ -1,3 +1,6 @@
 # v0.3.2 Release Validation
-Local108 unit PASS;210 legal-policy victories; canonical balance and phase migration coverage in evidence. Hosted browser/HTTP CI pending. No main merge or official release publication authorized for v0.3.2.
-Standalone and source package integrity checked by scripts/build.mjs, scripts/package.py and scripts/verify-release.py. Final PR and exact GitHub commit/CI will be recorded after validation.
+Implemented review candidate. Full code validation PASS: [run38767275479](https://github.com/legendnever-collab/ashen-crown/actions/runs/38767275479), code2bc9a31228e5dcbfa91a63f25eb295c164b32c5c. Current HTML SHA256 f9949e87d2556f1e6b0883e3583aafe571b40548f1087b38b0c57b1b131e9081 matches that exact verified HTML.
+108 unit PASS /0 FAIL;680 browser/scenario checks;210 legal-policy victories. Actual v0.3.1 interior/equipped/battle imports and nested Stage Restart covered. All reported browser error arrays empty. Performance reports actual headless Chromium145.0.7632.6, not physical hardware.
+Later changes are test/CI/document/evidence/package only. Final package integrity and latest CI are available in [PR8](https://github.com/legendnever-collab/ashen-crown/pull/8). Source ZIP coverage/byte-identical rebuild/units/text+JSON SHA256 checked before every artifact commit.
+See [executed report](../../releases/Ashen_Crown_v0.3.2_Test_Report.md), [raw summary](evidence/validation-summary.json), [acceptance](ACCEPTANCE.md) and [visual review](VISUAL_REVIEW.md).
+User play approval and main merge remain pending; no official v0.3.2 release/tag published. Main remains v0.3.1; PR6/7 merged. Physical devices/other engines/eviction remain unverified. v0.4 M04–06 is next; original canon unchanged.

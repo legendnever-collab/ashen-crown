@@ -1,5 +1,5 @@
 # v0.3.2 Acceptance
-Implementation and targeted tests complete; final combined CI pending until RELEASE_VALIDATION records the successful run.
+Implementation and full hosted code validation complete:108 unit,680 browser/scenario checks,210 legal-policy victories. See RELEASE_VALIDATION for exact verified code/build and final PR package CI. User play approval/main merge pending.
 
 | Area | Delivered behavior | Evidence |
 |---|---|---|

@@ -52,6 +52,11 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium
+      - uses: actions/download-artifact@v4
+        if: matrix.suite_group == 'tactical'
+        with:
+          name: validation-core
+          path: test-output/
       - name: Run ${{ matrix.suite_group }} regression
         env:
           BROWSER_SUITES: ${{ matrix.suites }}

@@ -1,0 +1,510 @@
+{
+  "checks": [
+    {
+      "name": "false: commander dialogue and portrait",
+      "status": "PASS"
+    },
+    {
+      "name": "false: unread skip disabled",
+      "status": "PASS"
+    },
+    {
+      "name": "false: interrupted introduction resumes",
+      "status": "PASS"
+    },
+    {
+      "name": "false M1: kai skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M1: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M1: elina skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M1: kai rescue forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M1: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M1: sain attack forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M1: eric attack forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M1: kai skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M1: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M1: eric attack forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M1: kai skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M1: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M1: elina rescue forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M1: eric attack forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false: M1 natural victory",
+      "status": "PASS"
+    },
+    {
+      "name": "false: M1 reward screen matches canonical grant",
+      "status": "PASS"
+    },
+    {
+      "name": "false: M1 campaign clear flag",
+      "status": "PASS"
+    },
+    {
+      "name": "false: M1 completion persists",
+      "status": "PASS"
+    },
+    {
+      "name": "false: M1 rewards persist without duplication",
+      "status": "PASS"
+    },
+    {
+      "name": "false: M2 inherits growth",
+      "status": "PASS"
+    },
+    {
+      "name": "false M2: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M2: kai skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M2: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M2: elina skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M2: sain skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M2: eric attack forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M2: kai capture forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false: M2 natural victory",
+      "status": "PASS"
+    },
+    {
+      "name": "false: M2 reward screen matches canonical grant",
+      "status": "PASS"
+    },
+    {
+      "name": "false: M2 campaign clear flag",
+      "status": "PASS"
+    },
+    {
+      "name": "false: prisoner info differs from escape",
+      "status": "PASS"
+    },
+    {
+      "name": "false: M2 completion persists",
+      "status": "PASS"
+    },
+    {
+      "name": "false: M2 rewards persist without duplication",
+      "status": "PASS"
+    },
+    {
+      "name": "false: M3 inherits growth",
+      "status": "PASS"
+    },
+    {
+      "name": "false M3: kai rescue forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M3: lia rescue forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M3: elina skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M3: kai skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M3: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M3: elina skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M3: eric attack forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M3: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M3: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M3: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false M3: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "false: M3 natural victory",
+      "status": "PASS"
+    },
+    {
+      "name": "false: M3 reward screen matches canonical grant",
+      "status": "PASS"
+    },
+    {
+      "name": "false: full rescue grants unique equipment",
+      "status": "PASS"
+    },
+    {
+      "name": "false: M3 campaign clear flag",
+      "status": "PASS"
+    },
+    {
+      "name": "false: all civilians + surviving heroes safe",
+      "status": "PASS"
+    },
+    {
+      "name": "false: M3 completion persists",
+      "status": "PASS"
+    },
+    {
+      "name": "false: M3 rewards persist without duplication",
+      "status": "PASS"
+    },
+    {
+      "name": "false: Web Audio runs original scene score",
+      "status": "PASS"
+    },
+    {
+      "name": "false: audio prefs persist",
+      "status": "PASS"
+    },
+    {
+      "name": "false: Erik advanced preview",
+      "status": "PASS"
+    },
+    {
+      "name": "false: practice copies canonical economy without resetting gear or Gold",
+      "status": "PASS"
+    },
+    {
+      "name": "false: level-one practice preserves permanent heroes",
+      "status": "PASS"
+    },
+    {
+      "name": "false: practice reload keeps canonical progress",
+      "status": "PASS"
+    },
+    {
+      "name": "false: completed mission practice mode",
+      "status": "PASS"
+    },
+    {
+      "name": "true: commander dialogue and portrait",
+      "status": "PASS"
+    },
+    {
+      "name": "true: unread skip disabled",
+      "status": "PASS"
+    },
+    {
+      "name": "true: interrupted introduction resumes",
+      "status": "PASS"
+    },
+    {
+      "name": "true M1: kai skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M1: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M1: elina skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M1: kai rescue forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M1: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M1: sain attack forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M1: eric attack forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M1: kai skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M1: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M1: eric attack forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M1: kai skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M1: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M1: elina rescue forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M1: eric attack forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true: M1 natural victory",
+      "status": "PASS"
+    },
+    {
+      "name": "true: M1 reward screen matches canonical grant",
+      "status": "PASS"
+    },
+    {
+      "name": "true: M1 campaign clear flag",
+      "status": "PASS"
+    },
+    {
+      "name": "true: M1 completion persists",
+      "status": "PASS"
+    },
+    {
+      "name": "true: M1 rewards persist without duplication",
+      "status": "PASS"
+    },
+    {
+      "name": "true: M2 inherits growth",
+      "status": "PASS"
+    },
+    {
+      "name": "true M2: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M2: kai skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M2: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M2: elina skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M2: sain skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M2: eric attack forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M2: kai capture forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true: M2 natural victory",
+      "status": "PASS"
+    },
+    {
+      "name": "true: M2 reward screen matches canonical grant",
+      "status": "PASS"
+    },
+    {
+      "name": "true: M2 campaign clear flag",
+      "status": "PASS"
+    },
+    {
+      "name": "true: prisoner info differs from escape",
+      "status": "PASS"
+    },
+    {
+      "name": "true: M2 completion persists",
+      "status": "PASS"
+    },
+    {
+      "name": "true: M2 rewards persist without duplication",
+      "status": "PASS"
+    },
+    {
+      "name": "true: M3 inherits growth",
+      "status": "PASS"
+    },
+    {
+      "name": "true M3: kai rescue forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M3: lia rescue forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M3: elina skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M3: kai skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M3: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M3: elina skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M3: eric attack forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M3: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M3: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M3: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true M3: lia skill forecast",
+      "status": "PASS"
+    },
+    {
+      "name": "true: M3 natural victory",
+      "status": "PASS"
+    },
+    {
+      "name": "true: M3 reward screen matches canonical grant",
+      "status": "PASS"
+    },
+    {
+      "name": "true: full rescue grants unique equipment",
+      "status": "PASS"
+    },
+    {
+      "name": "true: M3 campaign clear flag",
+      "status": "PASS"
+    },
+    {
+      "name": "true: all civilians + surviving heroes safe",
+      "status": "PASS"
+    },
+    {
+      "name": "true: M3 completion persists",
+      "status": "PASS"
+    },
+    {
+      "name": "true: M3 rewards persist without duplication",
+      "status": "PASS"
+    },
+    {
+      "name": "true: Web Audio runs original scene score",
+      "status": "PASS"
+    },
+    {
+      "name": "true: audio prefs persist",
+      "status": "PASS"
+    },
+    {
+      "name": "true: Erik advanced preview",
+      "status": "PASS"
+    },
+    {
+      "name": "true: practice copies canonical economy without resetting gear or Gold",
+      "status": "PASS"
+    },
+    {
+      "name": "true: level-one practice preserves permanent heroes",
+      "status": "PASS"
+    },
+    {
+      "name": "true: practice reload keeps canonical progress",
+      "status": "PASS"
+    },
+    {
+      "name": "true: completed mission practice mode",
+      "status": "PASS"
+    },
+    {
+      "name": "Offline campaign has zero HTTP assets",
+      "status": "PASS"
+    },
+    {
+      "name": "No fatal runtime errors throughout campaign",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "external": 0
+}

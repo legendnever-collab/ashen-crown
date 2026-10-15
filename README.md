@@ -95,3 +95,5 @@ Artifacts: [HTML](releases/Ashen_Crown_v0.3.1.html), [Source ZIP](releases/Ashen
 
 ## v0.3.2 Gameplay Quality & Rewards — review candidate
 Held exploration, explicit doorway entry, shopkeeper service menus, compatible hero auto-equip, tactical HP/MP sites, canonical victory supplies and optional rewards. Schema5 accepts0–4. [Validation](docs/v0.3.2/RELEASE_VALIDATION.md). User play approval required before main merge.
+
+Validation:108 unit PASS,680 browser/scenario checks,210 legal-policy mission victories; full CI run38767275479, current identical HTML. [Current release report](releases/Ashen_Crown_v0.3.2_Test_Report.md). Main merge requires user play approval.

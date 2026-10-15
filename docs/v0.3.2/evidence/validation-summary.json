@@ -1,0 +1,25 @@
+{
+  "baseline": "b826c49851596398967b36d517270a3f556df94c",
+  "verified_code_commit": "2bc9a31228e5dcbfa91a63f25eb295c164b32c5c",
+  "verified_run": 38767275479,
+  "verified_run_url": "https://github.com/legendnever-collab/ashen-crown/actions/runs/38767275479",
+  "html_sha256": "f9949e87d2556f1e6b0883e3583aafe571b40548f1087b38b0c57b1b131e9081",
+  "unit_pass": 108,
+  "unit_fail": 0,
+  "browser_scenario_checks": 680,
+  "legal_policy_mission_victories": 210,
+  "browser_counts": {
+    "e2e": 60,
+    "mobile-dock": 80,
+    "tactical-ui": 26,
+    "http-smoke": 4,
+    "post-move-attack": 8,
+    "restart-stage": 22,
+    "campaign-e2e": 126,
+    "frontier-e2e": 102,
+    "migration-v02": 16,
+    "migration-v031": 10,
+    "renaissance-e2e": 137,
+    "gameplay-quality-e2e": 89
+  }
+}

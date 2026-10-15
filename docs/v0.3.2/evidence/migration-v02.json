@@ -1,0 +1,69 @@
+{
+  "checks": [
+    {
+      "name": "Actual v0.2 M1 UI victory",
+      "status": "PASS"
+    },
+    {
+      "name": "Actual v0.2 M2 UI victory",
+      "status": "PASS"
+    },
+    {
+      "name": "Actual v0.2 M3 UI victory",
+      "status": "PASS"
+    },
+    {
+      "name": "Legacy schema2 save contains three campaign clears and growth",
+      "status": "PASS"
+    },
+    {
+      "name": "Schema2→5 keeps exact original hero growth and appearance",
+      "status": "PASS"
+    },
+    {
+      "name": "Schema2→5 preserves permanent hero growth",
+      "status": "PASS"
+    },
+    {
+      "name": "Schema2→5 retains results",
+      "status": "PASS"
+    },
+    {
+      "name": "Schema2→5 retains clears",
+      "status": "PASS"
+    },
+    {
+      "name": "Schema2→5 retains completed",
+      "status": "PASS"
+    },
+    {
+      "name": "Schema2→5 retains flags",
+      "status": "PASS"
+    },
+    {
+      "name": "Schema2→5 retains bonds",
+      "status": "PASS"
+    },
+    {
+      "name": "Schema2→5 retains tacticalMemory",
+      "status": "PASS"
+    },
+    {
+      "name": "Migration grants first-clear economy catchup once",
+      "status": "PASS"
+    },
+    {
+      "name": "Migration reload cannot duplicate Gold",
+      "status": "PASS"
+    },
+    {
+      "name": "Completed legacy player returns to aftermath without forced pre-mission scenes",
+      "status": "PASS"
+    },
+    {
+      "name": "Migration flows have no runtime errors",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}
