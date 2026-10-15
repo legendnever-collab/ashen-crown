@@ -1,0 +1,68 @@
+name: Publish v0.3.1
+on:
+  workflow_run:
+    workflows: [Game validation]
+    types: [completed]
+    branches: [main]
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: publish-v031
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check finalization and exact green main
+        id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          if ! grep -q '^Release publication: authorized$' docs/handoff/CURRENT_STATUS.md; then
+            echo 'Final release documentation is not ready; publication deferred.'
+            exit 0
+          fi
+          test "$(gh api "repos/$GITHUB_REPOSITORY/branches/main" --jq .commit.sha)" = "$RELEASE_SHA"
+          test "$(gh api "repos/$GITHUB_REPOSITORY/pulls/7" --jq .merged)" = true
+          test "$(node -p "JSON.parse(require('fs').readFileSync('package.json')).version")" = 0.3.1
+          echo 'ready=true' >> "$GITHUB_OUTPUT"
+      - name: Verify exact source and standalone assets
+        if: steps.gate.outputs.ready == 'true'
+        run: |
+          npm run build
+          git diff --exit-code -- index.html releases/Ashen_Crown_v0.3.1.html
+          python scripts/verify-release.py
+      - name: Publish verified release assets
+        if: steps.gate.outputs.ready == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          tag=v0.3.1
+          assets=(releases/Ashen_Crown_v0.3.1.html releases/Ashen_Crown_v0.3.1_Source.zip releases/Ashen_Crown_v0.3.1_Test_Report.md releases/Ashen_Crown_v0.3.1_SHA256SUMS)
+          if gh release view "$tag" >/dev/null 2>&1; then
+            mkdir -p "$RUNNER_TEMP/release-existing"
+            gh release download "$tag" --dir "$RUNNER_TEMP/release-existing"
+            for asset in "${assets[@]}"; do cmp "$asset" "$RUNNER_TEMP/release-existing/$(basename "$asset")"; done
+            gh release edit "$tag" --draft=false --prerelease=false --latest
+          else
+            if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$tag" > "$RUNNER_TEMP/release-tag.json" 2>/dev/null; then
+              git fetch origin "refs/tags/$tag:refs/tags/$tag"
+              test "$(git rev-parse "$tag^{commit}")" = "$RELEASE_SHA"
+            fi
+            gh release create "$tag" "${assets[@]}" --target "$RELEASE_SHA" --title 'Ashen Crown v0.3.1 — Classic SRPG Renaissance' --notes-file docs/v0.3.1/RELEASE_NOTES.md --latest
+          fi
+          gh release view "$tag" --json url,isDraft,isPrerelease,assets
