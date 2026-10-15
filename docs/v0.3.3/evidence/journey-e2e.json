@@ -1,0 +1,830 @@
+{
+  "checks": [
+    {
+      "name": "1440x1000 Erik owns exploration, no duplicate growth",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 Aren commander and advisor visible in map UI",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 weapon exact front arrival confirms",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 weapon hold cancel no repeated modal",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 weapon facade hit maps to front door",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 weapon entered",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 weapon interior reload",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 weapon exact return",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 weapon lateral/radius shortcut absent",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 weapon rear side cannot enter",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 item exact front arrival confirms",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 item hold cancel no repeated modal",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 item facade hit maps to front door",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 item entered",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 item interior reload",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 item exact return",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 item lateral/radius shortcut absent",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 item rear side cannot enter",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 weapon exact front arrival confirms",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 weapon hold cancel no repeated modal",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 weapon facade hit maps to front door",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 weapon entered",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 weapon interior reload",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 weapon exact return",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 weapon lateral/radius shortcut absent",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 weapon rear side cannot enter",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 item exact front arrival confirms",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 item hold cancel no repeated modal",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 item facade hit maps to front door",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 item entered",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 item interior reload",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 item exact return",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 item lateral/radius shortcut absent",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 item rear side cannot enter",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 actual NPC tap opens briefing",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 Erik dialogue portrait",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 briefing reload exact",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 choice menu follows dialogue",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 current mission visible",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 defer keeps exploration",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 advisor opens official council",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 council cancel preserves position/economy",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 deployment can return and repeat",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M1 real Battle Start and same equipped Erik",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 actual NPC tap opens briefing",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 Erik dialogue portrait",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 briefing reload exact",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 choice menu follows dialogue",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 current mission visible",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 defer keeps exploration",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 advisor opens official council",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 council cancel preserves position/economy",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 deployment can return and repeat",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M2 real Battle Start and same equipped Erik",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M3 actual NPC tap opens briefing",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M3 Erik dialogue portrait",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M3 briefing reload exact",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M3 choice menu follows dialogue",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M3 current mission visible",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M3 defer keeps exploration",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M3 advisor opens official council",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M3 council cancel preserves position/economy",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M3 deployment can return and repeat",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M3 real Battle Start and same equipped Erik",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 M03 aftermath no false next departure",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 blocked v032 save recovers safely",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 migrated blocked save reaches council",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 viewport has no horizontal overflow",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 Erik owns exploration, no duplicate growth",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 Aren commander and advisor visible in map UI",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 weapon exact front arrival confirms",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 weapon hold cancel no repeated modal",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 weapon facade hit maps to front door",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 weapon entered",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 weapon interior reload",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 weapon exact return",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 weapon lateral/radius shortcut absent",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 weapon rear side cannot enter",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 item exact front arrival confirms",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 item hold cancel no repeated modal",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 item facade hit maps to front door",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 item entered",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 item interior reload",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 item exact return",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 item lateral/radius shortcut absent",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 item rear side cannot enter",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 weapon exact front arrival confirms",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 weapon hold cancel no repeated modal",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 weapon facade hit maps to front door",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 weapon entered",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 weapon interior reload",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 weapon exact return",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 weapon lateral/radius shortcut absent",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 weapon rear side cannot enter",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 item exact front arrival confirms",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 item hold cancel no repeated modal",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 item facade hit maps to front door",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 item entered",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 item interior reload",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 item exact return",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 item lateral/radius shortcut absent",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 item rear side cannot enter",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 actual NPC tap opens briefing",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 Erik dialogue portrait",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 briefing reload exact",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 choice menu follows dialogue",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 current mission visible",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 defer keeps exploration",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 advisor opens official council",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 council cancel preserves position/economy",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 deployment can return and repeat",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M1 real Battle Start and same equipped Erik",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 actual NPC tap opens briefing",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 Erik dialogue portrait",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 briefing reload exact",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 choice menu follows dialogue",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 current mission visible",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 defer keeps exploration",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 advisor opens official council",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 council cancel preserves position/economy",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 deployment can return and repeat",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M2 real Battle Start and same equipped Erik",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M3 actual NPC tap opens briefing",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M3 Erik dialogue portrait",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M3 briefing reload exact",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M3 choice menu follows dialogue",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M3 current mission visible",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M3 defer keeps exploration",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M3 advisor opens official council",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M3 council cancel preserves position/economy",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M3 deployment can return and repeat",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M3 real Battle Start and same equipped Erik",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M03 aftermath no false next departure",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 blocked v032 save recovers safely",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 migrated blocked save reaches council",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 viewport has no horizontal overflow",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 Erik owns exploration, no duplicate growth",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 Aren commander and advisor visible in map UI",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 weapon exact front arrival confirms",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 weapon hold cancel no repeated modal",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 weapon facade hit maps to front door",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 weapon entered",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 weapon interior reload",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 weapon exact return",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 weapon lateral/radius shortcut absent",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 weapon rear side cannot enter",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 item exact front arrival confirms",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 item hold cancel no repeated modal",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 item facade hit maps to front door",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 item entered",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 item interior reload",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 item exact return",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 item lateral/radius shortcut absent",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 item rear side cannot enter",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 weapon exact front arrival confirms",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 weapon hold cancel no repeated modal",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 weapon facade hit maps to front door",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 weapon entered",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 weapon interior reload",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 weapon exact return",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 weapon lateral/radius shortcut absent",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 weapon rear side cannot enter",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 item exact front arrival confirms",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 item hold cancel no repeated modal",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 item facade hit maps to front door",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 item entered",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 item interior reload",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 item exact return",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 item lateral/radius shortcut absent",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 item rear side cannot enter",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 actual NPC tap opens briefing",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 Erik dialogue portrait",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 briefing reload exact",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 choice menu follows dialogue",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 current mission visible",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 defer keeps exploration",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 advisor opens official council",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 council cancel preserves position/economy",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 deployment can return and repeat",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M1 real Battle Start and same equipped Erik",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 actual NPC tap opens briefing",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 Erik dialogue portrait",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 briefing reload exact",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 choice menu follows dialogue",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 current mission visible",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 defer keeps exploration",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 advisor opens official council",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 council cancel preserves position/economy",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 deployment can return and repeat",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M2 real Battle Start and same equipped Erik",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M3 actual NPC tap opens briefing",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M3 Erik dialogue portrait",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M3 briefing reload exact",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M3 choice menu follows dialogue",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M3 current mission visible",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M3 defer keeps exploration",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M3 advisor opens official council",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M3 council cancel preserves position/economy",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M3 deployment can return and repeat",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M3 real Battle Start and same equipped Erik",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M03 aftermath no false next departure",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 blocked v032 save recovers safely",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 migrated blocked save reaches council",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 viewport has no horizontal overflow",
+      "status": "PASS"
+    },
+    {
+      "name": "Journey browser has zero runtime errors",
+      "status": "PASS"
+    },
+    {
+      "name": "Journey standalone has zero HTTP requests",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "external": 0
+}

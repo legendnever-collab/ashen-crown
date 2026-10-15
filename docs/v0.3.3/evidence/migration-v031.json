@@ -1,0 +1,45 @@
+{
+  "checks": [
+    {
+      "name": "Actual v0.3.1 produces schema4 interior/equipped save",
+      "status": "PASS"
+    },
+    {
+      "name": "Actual v0.3.1 battle departure checkpoint generated",
+      "status": "PASS"
+    },
+    {
+      "name": "Actual schema4 interior imports through visible text UI",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.3.1 Gold gear growth preserved exactly",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.3.1 imported shop reload keeps gear and position",
+      "status": "PASS"
+    },
+    {
+      "name": "Migrated doorway exit returns to exact exterior",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.3.1 battle and nested checkpoint migrate to5",
+      "status": "PASS"
+    },
+    {
+      "name": "Imported battle reload preserves complete economy",
+      "status": "PASS"
+    },
+    {
+      "name": "Migrated stage restart retains departure gear and Gold",
+      "status": "PASS"
+    },
+    {
+      "name": "Actual v0.3.1 migration has no runtime errors",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}

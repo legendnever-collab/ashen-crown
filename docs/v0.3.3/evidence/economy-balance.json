@@ -1,0 +1,814 @@
+{
+  "runs": [
+    {
+      "loadout": "standard",
+      "seed": 20261014,
+      "mission": 1,
+      "turn": 4,
+      "gold": 280,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261014,
+      "mission": 2,
+      "turn": 3,
+      "gold": 430,
+      "saved": 0,
+      "captured": true
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261014,
+      "mission": 3,
+      "turn": 7,
+      "gold": 570,
+      "saved": 2,
+      "captured": true
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261015,
+      "mission": 1,
+      "turn": 5,
+      "gold": 280,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261015,
+      "mission": 2,
+      "turn": 3,
+      "gold": 400,
+      "saved": 0,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261015,
+      "mission": 3,
+      "turn": 5,
+      "gold": 540,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261016,
+      "mission": 1,
+      "turn": 4,
+      "gold": 280,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261016,
+      "mission": 2,
+      "turn": 3,
+      "gold": 430,
+      "saved": 0,
+      "captured": true
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261016,
+      "mission": 3,
+      "turn": 8,
+      "gold": 570,
+      "saved": 2,
+      "captured": true
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261017,
+      "mission": 1,
+      "turn": 4,
+      "gold": 280,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261017,
+      "mission": 2,
+      "turn": 3,
+      "gold": 400,
+      "saved": 0,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261017,
+      "mission": 3,
+      "turn": 7,
+      "gold": 540,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261018,
+      "mission": 1,
+      "turn": 4,
+      "gold": 280,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261018,
+      "mission": 2,
+      "turn": 3,
+      "gold": 430,
+      "saved": 0,
+      "captured": true
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261018,
+      "mission": 3,
+      "turn": 6,
+      "gold": 570,
+      "saved": 2,
+      "captured": true
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261019,
+      "mission": 1,
+      "turn": 4,
+      "gold": 280,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261019,
+      "mission": 2,
+      "turn": 3,
+      "gold": 400,
+      "saved": 0,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261019,
+      "mission": 3,
+      "turn": 6,
+      "gold": 540,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261020,
+      "mission": 1,
+      "turn": 4,
+      "gold": 280,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261020,
+      "mission": 2,
+      "turn": 3,
+      "gold": 430,
+      "saved": 0,
+      "captured": true
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261020,
+      "mission": 3,
+      "turn": 6,
+      "gold": 570,
+      "saved": 2,
+      "captured": true
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261021,
+      "mission": 1,
+      "turn": 4,
+      "gold": 280,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261021,
+      "mission": 2,
+      "turn": 3,
+      "gold": 400,
+      "saved": 0,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261021,
+      "mission": 3,
+      "turn": 7,
+      "gold": 540,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261022,
+      "mission": 1,
+      "turn": 4,
+      "gold": 280,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261022,
+      "mission": 2,
+      "turn": 3,
+      "gold": 430,
+      "saved": 0,
+      "captured": true
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261022,
+      "mission": 3,
+      "turn": 5,
+      "gold": 570,
+      "saved": 2,
+      "captured": true
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261023,
+      "mission": 1,
+      "turn": 5,
+      "gold": 280,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261023,
+      "mission": 2,
+      "turn": 3,
+      "gold": 400,
+      "saved": 0,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261023,
+      "mission": 3,
+      "turn": 5,
+      "gold": 540,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261014,
+      "mission": 1,
+      "turn": 4,
+      "gold": 175,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261014,
+      "mission": 2,
+      "turn": 3,
+      "gold": 325,
+      "saved": 0,
+      "captured": true
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261014,
+      "mission": 3,
+      "turn": 6,
+      "gold": 465,
+      "saved": 2,
+      "captured": true
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261015,
+      "mission": 1,
+      "turn": 5,
+      "gold": 175,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261015,
+      "mission": 2,
+      "turn": 3,
+      "gold": 295,
+      "saved": 0,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261015,
+      "mission": 3,
+      "turn": 5,
+      "gold": 435,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261016,
+      "mission": 1,
+      "turn": 4,
+      "gold": 175,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261016,
+      "mission": 2,
+      "turn": 3,
+      "gold": 325,
+      "saved": 0,
+      "captured": true
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261016,
+      "mission": 3,
+      "turn": 7,
+      "gold": 465,
+      "saved": 2,
+      "captured": true
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261017,
+      "mission": 1,
+      "turn": 4,
+      "gold": 175,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261017,
+      "mission": 2,
+      "turn": 3,
+      "gold": 295,
+      "saved": 0,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261017,
+      "mission": 3,
+      "turn": 7,
+      "gold": 435,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261018,
+      "mission": 1,
+      "turn": 4,
+      "gold": 175,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261018,
+      "mission": 2,
+      "turn": 3,
+      "gold": 325,
+      "saved": 0,
+      "captured": true
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261018,
+      "mission": 3,
+      "turn": 6,
+      "gold": 465,
+      "saved": 2,
+      "captured": true
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261019,
+      "mission": 1,
+      "turn": 4,
+      "gold": 175,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261019,
+      "mission": 2,
+      "turn": 3,
+      "gold": 295,
+      "saved": 0,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261019,
+      "mission": 3,
+      "turn": 7,
+      "gold": 435,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261020,
+      "mission": 1,
+      "turn": 4,
+      "gold": 175,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261020,
+      "mission": 2,
+      "turn": 3,
+      "gold": 325,
+      "saved": 0,
+      "captured": true
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261020,
+      "mission": 3,
+      "turn": 5,
+      "gold": 465,
+      "saved": 2,
+      "captured": true
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261021,
+      "mission": 1,
+      "turn": 4,
+      "gold": 175,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261021,
+      "mission": 2,
+      "turn": 3,
+      "gold": 295,
+      "saved": 0,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261021,
+      "mission": 3,
+      "turn": 7,
+      "gold": 435,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261022,
+      "mission": 1,
+      "turn": 4,
+      "gold": 175,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261022,
+      "mission": 2,
+      "turn": 3,
+      "gold": 325,
+      "saved": 0,
+      "captured": true
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261022,
+      "mission": 3,
+      "turn": 5,
+      "gold": 465,
+      "saved": 2,
+      "captured": true
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261023,
+      "mission": 1,
+      "turn": 5,
+      "gold": 175,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261023,
+      "mission": 2,
+      "turn": 3,
+      "gold": 295,
+      "saved": 0,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261023,
+      "mission": 3,
+      "turn": 5,
+      "gold": 435,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261014,
+      "mission": 1,
+      "turn": 5,
+      "gold": 205,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261014,
+      "mission": 2,
+      "turn": 3,
+      "gold": 355,
+      "saved": 0,
+      "captured": true
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261014,
+      "mission": 3,
+      "turn": 7,
+      "gold": 460,
+      "saved": 2,
+      "captured": true
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261015,
+      "mission": 1,
+      "turn": 5,
+      "gold": 205,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261015,
+      "mission": 2,
+      "turn": 3,
+      "gold": 325,
+      "saved": 0,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261015,
+      "mission": 3,
+      "turn": 6,
+      "gold": 430,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261016,
+      "mission": 1,
+      "turn": 5,
+      "gold": 205,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261016,
+      "mission": 2,
+      "turn": 3,
+      "gold": 355,
+      "saved": 0,
+      "captured": true
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261016,
+      "mission": 3,
+      "turn": 6,
+      "gold": 460,
+      "saved": 2,
+      "captured": true
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261017,
+      "mission": 1,
+      "turn": 5,
+      "gold": 205,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261017,
+      "mission": 2,
+      "turn": 3,
+      "gold": 325,
+      "saved": 0,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261017,
+      "mission": 3,
+      "turn": 8,
+      "gold": 430,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261018,
+      "mission": 1,
+      "turn": 5,
+      "gold": 205,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261018,
+      "mission": 2,
+      "turn": 3,
+      "gold": 355,
+      "saved": 0,
+      "captured": true
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261018,
+      "mission": 3,
+      "turn": 6,
+      "gold": 460,
+      "saved": 2,
+      "captured": true
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261019,
+      "mission": 1,
+      "turn": 5,
+      "gold": 205,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261019,
+      "mission": 2,
+      "turn": 3,
+      "gold": 325,
+      "saved": 0,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261019,
+      "mission": 3,
+      "turn": 8,
+      "gold": 430,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261020,
+      "mission": 1,
+      "turn": 5,
+      "gold": 205,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261020,
+      "mission": 2,
+      "turn": 3,
+      "gold": 355,
+      "saved": 0,
+      "captured": true
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261020,
+      "mission": 3,
+      "turn": 7,
+      "gold": 460,
+      "saved": 2,
+      "captured": true
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261021,
+      "mission": 1,
+      "turn": 4,
+      "gold": 205,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261021,
+      "mission": 2,
+      "turn": 3,
+      "gold": 325,
+      "saved": 0,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261021,
+      "mission": 3,
+      "turn": 7,
+      "gold": 430,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261022,
+      "mission": 1,
+      "turn": 5,
+      "gold": 205,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261022,
+      "mission": 2,
+      "turn": 3,
+      "gold": 355,
+      "saved": 0,
+      "captured": true
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261022,
+      "mission": 3,
+      "turn": 5,
+      "gold": 460,
+      "saved": 2,
+      "captured": true
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261023,
+      "mission": 1,
+      "turn": 5,
+      "gold": 205,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261023,
+      "mission": 2,
+      "turn": 3,
+      "gold": 325,
+      "saved": 0,
+      "captured": false
+    },
+    {
+      "loadout": "supplies",
+      "seed": 20261023,
+      "mission": 3,
+      "turn": 7,
+      "gold": 430,
+      "saved": 2,
+      "captured": false
+    }
+  ]
+}

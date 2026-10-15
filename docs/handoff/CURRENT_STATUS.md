@@ -1,3 +1,5 @@
 # Current Status
 Updated2026-10-16 KST. v0.3.3 The Hero's Journey implementation in feature/v0.3.3-erik-advisor-campaign, stacked on unmerged v0.3.2 PR8 c0a5fc1. Main official v0.3.1 b826c49. PR8 CI38769901779 success4/4 before this task; v0.3.3 validation recorded separately.
 Implemented shared shop door anchors/front-only confirmation, command input settling, shared council API, Erik exploration using battle entity/armor tier, Aren NPC, advisor mission-aware briefings/council, legacy spatial migration to schema6. Existing economy/recovery/rewards/tactical engine preserved. See docs/v0.3.3 for newly executed evidence and remaining limits. No merge approval.
+
+Local verification complete:112 unit /898 browser-scenario /210 legal mission victories,0 recorded runtime errors/external assets. Actual predecessor saves and final screenshot QA pass. Final tree CI and reproducible package audit are required; inspect PR checks. HTML SHA256 672a24e9c675f0eccb7f812732149df9a93254b2e77ec68bb0b9ad73092538a1.
