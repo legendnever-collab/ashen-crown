@@ -24,6 +24,8 @@ jobs:
       - run: python scripts/verify-release.py
       - run: npx playwright install --with-deps chromium
       - run: npm run test:quality
+      - run: npm run test:frontier
+      - run: npm run test:renaissance
       - run: npm run test:e2e
       - run: npm run test:mobile
       - run: npm run test:tactical
@@ -31,10 +33,8 @@ jobs:
       - run: npm run test:post-move
       - run: npm run test:restart
       - run: npm run test:campaign
-      - run: npm run test:frontier
       - run: npm run test:economy-balance
       - run: npm run test:migration-v02
-      - run: npm run test:renaissance
       - run: npm run test:performance
       - uses: actions/upload-artifact@v4
         if: always()
