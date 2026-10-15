@@ -1137,7 +1137,7 @@ document.addEventListener('keyup',e=>heldMovement.release('key:'+e.code,performa
 window.addEventListener('blur',()=>heldMovement.clear());
 document.addEventListener('visibilitychange',()=>{if(document.hidden)heldMovement.clear();});
 let walkPointer=null;
-document.addEventListener('pointerdown',e=>{const b=e.target.closest('[data-do="walk"]');if(!b||walkPointer!==null)return;e.preventDefault();walkPointer=e.pointerId;const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[b.dataset.id];if(d)heldMovement.press('pointer',d,performance.now());},{passive:false});
-for(const event of ['pointerup','pointercancel','lostpointercapture'])window.addEventListener(event,e=>{if(e.pointerId===walkPointer){walkPointer=null;heldMovement.release('pointer',performance.now());}});
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('[data-do="walk"]');if(!b||walkPointer!==null)return;e.preventDefault();walkPointer=e.pointerId;try{document.body.setPointerCapture(e.pointerId);}catch{}const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[b.dataset.id];if(d)heldMovement.press('pointer',d,performance.now());},{passive:false});
+for(const event of ['pointerup','pointercancel','lostpointercapture'])window.addEventListener(event,e=>{if(e.pointerId===walkPointer&&(event!=='lostpointercapture'||e.target===document.body)){walkPointer=null;heldMovement.release('pointer',performance.now());}});
 
 })();</script></body></html>
