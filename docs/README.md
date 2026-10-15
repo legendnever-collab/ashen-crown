@@ -41,3 +41,8 @@ Developer entry: [AGENTS.md](../AGENTS.md) → [PROJECT_CONTEXT](handoff/PROJECT
 - [v0.3.0/IMPLEMENTATION_PLAN.md](v0.3.0/IMPLEMENTATION_PLAN.md)
 - [v0.3.0/TEST_MATRIX.md](v0.3.0/TEST_MATRIX.md)
 - [v0.3.0/DESIGN_REVIEW.md](v0.3.0/DESIGN_REVIEW.md)
+
+## Gameplay Quality & Rewards
+- [Recovery](design/TERRAIN_RECOVERY.md)
+- [Rewards](design/BATTLE_REWARDS.md)
+- [v0.3.2 validation](v0.3.2/RELEASE_VALIDATION.md)
