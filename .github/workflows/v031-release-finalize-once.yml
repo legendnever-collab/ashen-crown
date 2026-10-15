@@ -1,0 +1,98 @@
+name: v0.3.1 one-time documentation and package finalization
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/v031-release-finalize-once.yml
+permissions:
+  contents: write
+concurrency:
+  group: v031-finalization-one-time
+  cancel-in-progress: false
+jobs:
+  prepare-final-release:
+    if: github.repository == 'legendnever-collab/ashen-crown'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Refresh verified release handoff (no gameplay changes)
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          readme=Path('README.md')
+          s=readme.read_text()
+          replacements={
+            'Download [Ashen_Crown_v0.3.0.html](releases/Ashen_Crown_v0.3.0.html)':'Download [Ashen_Crown_v0.3.1.html](releases/Ashen_Crown_v0.3.1.html)',
+            '[Test Report](releases/Ashen_Crown_v0.3.0_Test_Report.md), [test matrix](docs/v0.3.0/TEST_MATRIX.md)':'[Test Report](releases/Ashen_Crown_v0.3.1_Test_Report.md), [test matrix](docs/v0.3.1/TEST_MATRIX.md)',
+            'v0.3 PR stays unmerged until user approval':'v0.3 PR #6 and v0.3.1 PR #7 are merged with user approval',
+            'Shops use illustrated functional modals rather than freely walkable interior maps.':'Shops now have walkable interiors and interactive owners.',
+            'Original procedural 64px sprites and 128px portraits':'Original procedural native-128 tile/sprite details and 256px portraits',
+            'Stacked on PR #6; no auto merge.':'PR #6 and PR #7 merged with user approval; official v0.3.1 release authorized.'
+          }
+          for old,new in replacements.items():
+            if old not in s:
+              print('README replacement not found (non-fatal):',old)
+            s=s.replace(old,new)
+          readme.write_text(s)
+          Path('docs/handoff/CURRENT_STATUS.md').write_text("""# Current Status
+          Last Updated: 2026-10-16 (KST)
+          Current Version: v0.3.1 — Classic SRPG Renaissance (approved for official release)
+          Release publication: authorized
+          User play validation: complete. Official final release authorized.
+          main: v0.3.0 PR #6 merged at 05736c74d828955b5eea1bc6184e0b240d107f76; v0.3.1 PR #7 merged at b7866fcc6b92497090682ac04f614d12e8d39cff.
+          Original development commit: 0869636c39fa61c051ed4c7cb0f76d17f8e58f8e. Final verified PR head: 42cecebd8e17f409e7a8a268af03c4c1bfe613b2.
+          Original CI 38587741878 failed on Quest preference reload. The root cause was a deferred details.toggle storage race, not a save schema or migration defect. The recovery saves immediately on summary activation and isolates Enter/Space from exploration shortcuts.
+          Hosted PR CI 38733801539 and push CI 38733794764 both passed all Game validation steps, including Renaissance, performance, HTTP and actual v0.2 migration. Original 95 unit, 541 browser/scenario, 210 balance victories are preserved; new hosted Renaissance checks pass in all four viewports. Exact-final-main CI must pass before automated publication.
+          Scope: walkable shop interiors, equipment selection/comparison and atomic purchase, in-place NPC dialogue, tactical movement/commands, persistent Quest, camera/minimaps, native pixel detail, fire/ruins, terrain profiles and schema 0–3 to 4 save compatibility. No new missions or v0.3.2 work.
+          Assets: releases/Ashen_Crown_v0.3.1.html, Ashen_Crown_v0.3.1_Source.zip, Ashen_Crown_v0.3.1_Test_Report.md, Ashen_Crown_v0.3.1_SHA256SUMS.
+          Known limits: physical devices, Safari/Firefox, long-term storage eviction, subjective story/audio preference; no fire spread or playable promotions.
+          """)
+          Path('docs/handoff/NEXT_TASKS.md').write_text("""# Next Tasks
+          1. v0.3.1 official release is authorized and PR #6/#7 merged; no new development is part of this finalization. Check exact-main CI, published GitHub Release v0.3.1, attached standalone HTML/Source ZIP/Test Report/SHA256 before closure.
+          2. For future planning only: v0.4 The Broken Allegiance (M04–06) remains outside this release.
+          3. For future planning only: v0.5 full advanced class progression remains outside this release.
+          4. Physical phone, Safari/Firefox and long-term storage eviction remain unverified. Original 4 acts, 30 missions, five heroes and canon remain unchanged.
+          Keep save migration, atomic economy/rollback, doorway return, movement/target legality and balance regression as future gates.
+          """)
+          p=Path('docs/v0.3.1/REGRESSION_RESULTS.md')
+          s=p.read_text()
+          s=s.replace('| Renaissance UI/resolution/shop/camera (four viewports), recovery rerun | 113 | 0 |','| Renaissance UI/resolution/shop/camera (four viewports), latest hosted run | 137 | 0 |')
+          s=s.replace('95 unit + 545 browser/scenario checks; 210 balance mission victories.','Latest hosted PR run: 95 unit + 569 browser/scenario checks; original 210 balance mission victories retained (hosted balance suites passed).')
+          s += "\nFinal hosted PR CI: https://github.com/legendnever-collab/ashen-crown/actions/runs/38733801539 (success). Local recovery evidence contains 113 Renaissance checks; hosted runner executed 137.\n"
+          p.write_text(s)
+          p=Path('releases/Ashen_Crown_v0.3.1_Test_Report.md')
+          s=p.read_text()
+          s=s.replace('2026-10-14 development / 2026-10-15 KST recovery · Classic SRPG Renaissance · Release Candidate','2026-10-14 development / 2026-10-16 KST finalization · Classic SRPG Renaissance · Official Release')
+          s=s.replace('Renaissance UI/resolution/shop/camera (four viewports), recovery rerun | 113','Renaissance UI/resolution/shop/camera (four viewports), hosted final validation | 137')
+          s=s.replace('Total: **95 unit checks + 545 browser/scenario checks**','Total in latest hosted CI: **95 unit checks + 569 browser/scenario checks**')
+          s=s.replace('Recovery reran 95 units and replaced the original 109-check Renaissance suite with 113 checks (four new synchronous persistence assertions);','Recovery locally reran 95 units and 113 Renaissance checks; latest hosted CI executed 137 Renaissance checks (with expanded keyboard/pointer cases);')
+          s += "\n## Release approval and final GitHub validation\n\nUser played and approved v0.3.1; PR #6 and PR #7 are merged. Final PR-head CI: https://github.com/legendnever-collab/ashen-crown/actions/runs/38733801539 — success, including Renaissance, performance and packaging. Official v0.3.1 publication is authorized, gated on a successful exact-main validation and verified assets. The original 210 mission victories remain preserved; final CI reruns both balance suites. No new gameplay was added for release finalization.\n"
+          p.write_text(s)
+          p=Path('docs/v0.3.1/RELEASE_NOTES.md')
+          s=p.read_text().replace('95 unit tests; 210 legal-policy mission victories.','95 unit tests, 569 hosted browser/scenario checks, 210 documented legal-policy mission victories.')
+          p.write_text(s)
+          print('Documentation marked authorized and historic v0.3.1 CI evidence preserved.')
+          PY
+      - name: Rebuild exact source package and verify
+        run: |
+          npm ci
+          npm run build
+          git diff --exit-code -- index.html releases/Ashen_Crown_v0.3.1.html
+          python scripts/package.py
+          python scripts/verify-release.py
+      - name: Commit release-only documentation and verified packages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md docs/handoff/CURRENT_STATUS.md docs/handoff/NEXT_TASKS.md docs/v0.3.1/REGRESSION_RESULTS.md docs/v0.3.1/RELEASE_NOTES.md releases/Ashen_Crown_v0.3.1_Test_Report.md releases/Ashen_Crown_v0.3.1_Source.zip releases/Ashen_Crown_v0.3.1_SHA256SUMS releases/SHA256SUMS.json
+          git diff --cached --stat
+          git commit -m "docs(release): authorize v0.3.1 and sync verified source ZIP" 
+          git push origin HEAD:main
