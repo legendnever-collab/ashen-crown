@@ -1,3 +1,2 @@
 # Claude entry point
-Follow [AGENTS.md](AGENTS.md) reading order, current version and verification contracts.
-Current branch feature/v0.3.2-gameplay-quality-rewards / PR8. PR6/7 merged. No v0.3.2 main merge before user play approval. Preserve Schema5 economy/recovery/reward invariants and canon.
+Follow [AGENTS.md](AGENTS.md) reading order. Current v0.3.3 The Hero's Journey is stacked on unmerged PR8. No automatic merge. Stable eric explores and fights, Aren remains commander; D-031/032. Schema6 imports0–5. Preserve v0.3.2 recovery/rewards/economy and original story. Test current build and publish only executed results.

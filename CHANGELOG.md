@@ -1,3 +1,11 @@
+# v0.3.3 — The Hero's Journey
+- Unified door anchors/front-only approach; facade click walks to the real entrance, cancellation does not loop.
+- Recover council progression through shared API; settle held/path input before commands.
+- Stable eric exploration hero reads battle appearance/growth; Aren remains commander NPC.
+- Advisor briefings → War Council → deployment → existing battle; old building gate retired, M03 aftermath honest.
+- Schema6 legacy spatial migration and nested checkpoints; preserve economy, story, growth, recovery and rewards.
+- NPC/pre-battle viewpoint corrections; no M04–06 or new personal story canon.
+
 ## v0.3.2 — Gameplay Quality & Rewards (review candidate)
 Continuous keyboard/pointer movement, doorway confirmation and owner service menus. Existing auto-equip retained with explicit hero choice. Phase-once HP/MP recovery, enemy supply tactics, first-clear/optional reward ledger, overflow delivery and schema5 catchup. Main merge pending.
 

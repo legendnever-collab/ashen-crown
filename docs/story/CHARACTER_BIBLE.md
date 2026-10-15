@@ -126,4 +126,7 @@ Legacy compatibility: code ID `eric` remains immutable; display spelling is Erik
 - **Visual Identity**: 짙은 후드·주황 스카프·쌍단검
 - **Current Canon Status**: B안 관계 CANON, 나머지 지시 배경 APPROVED_DIRECTION, 외형 상세 PROPOSED/구현 스타일. 나이·성씨 OPEN(아렌 예외).
 
-v0.3 staging/affiliation: 기존 다섯 장수 출전은 항상 유지. Lia/Sain/Kai와 선택적 대화를 통해 encountered → affiliated. 에릭은 장비 점검, 엘리나는 경계, 리아는 기록, 세인은 구호, 카이는 외진 길목. Aren은 탐색 아바타이며 전투 유닛이 아니다. 새 전투 장수 추가 없음.
+v0.3 staging/affiliation: 기존 다섯 장수 출전은 항상 유지. Lia/Sain/Kai와 선택적 대화를 통해 encountered → affiliated. 에릭은 직접 조작, 아렌은 군단장 NPC, 엘리나는 경계, 리아는 기록, 세인은 구호, 카이는 외진 길목. Aren은 군단장 NPC이며 전투 유닛이 아니다. 새 전투 장수 추가 없음.
+
+## v0.3.3 viewpoint correction — CANON D-031
+Earlier "Aren 탐색 아바타" staging clause is superseded. Erik is the exploration and battle protagonist (`eric` ID immutable), with the same growth/equipment/armor tier. Aren appears as commander NPC; his past, age, royal/crown connection and political arc remain his own. Functional Operations Advisor has no canon personal name/backstory (PROPOSED). No duplicate Erik NPC exists in the hub.

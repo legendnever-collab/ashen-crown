@@ -1,5 +1,5 @@
 # Next Tasks
-1. v0.3.2 full code validation passed; review PR8 and final package CI. User plays the supplied candidate and then authorizes merge.
-2. Fix only observed regressions, preserve phase/reward/schema/nonce contracts.
-3. After approval: v0.4 The Broken Allegiance (M04–06, Baldrick, royal supply, ACT I ending).
-4. v0.5 Advanced Character Evolution; physical-device and other-browser checks remain.
+1. Finish v0.3.3 fresh-build regression and reproducible package; provide PR and user-play HTML.
+2. User validates doors, Erik/advisor/cancel/reentry and campaign, then explicitly approves merge sequence. PR8 remains unmerged.
+3. Only after approval, v0.4 The Broken Allegiance: M04–06/Baldrick/royal supply/ACT I end. v0.5 promotions. Preserve4 acts30 missions.
+4. Physical phones, other browser engines, long-term browser storage eviction remain unverified.

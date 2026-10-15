@@ -115,3 +115,6 @@ PROPOSED: 스승·정보 조직이 보급망과 연결되는 세부. OPEN: 스�
 Continuity audit: 의식→명령→피난 희생→내전의 시간 순서, 세 세력 독립 동기, 결계 전환 생존성, C 엔딩 비용, 발드릭 영입 조건을 후속 Narrative 작업에서 검증한다.
 
 v0.3 continuity: M01 이전 Ashen Village 짧은 탐색/동료 소개 → 습격 확인 → 기존 전투. M01 이후 마을 반응, M02 전 Border Camp, M03 전 구조 작전, M03 후 야영지 회고. 사건·관계·왕실 보급의 관찰 범위를 보존. M04–06은 v0.4. 신규 마을 주민의 말과 세부 성격은 PROPOSED, 배후·왕관 원리를 확정하지 않는다.
+
+## v0.3.3 user-approved viewpoint — CANON D-031/032
+Erik is the directly controlled exploration and battle protagonist. Aren remains commander and keeps his past and crown arc; this supersedes any older avatar implication without transferring history. Advisor dialogue opens war council. Original4 acts/30 missions/factions/endings remain intact; no new personal advisor lore canonized.

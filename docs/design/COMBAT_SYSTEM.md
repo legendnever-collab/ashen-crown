@@ -10,3 +10,6 @@ Select an active hero → immediate Dijkstra range + contextual action menu → 
 
 ## v0.3.2
 Phase-once friendly/enemy terrain recovery, floor/min1/clamp, saved per-unit marker; Village10/5,Fort15/10,Recovery10/10 percent HP/MP. See TERRAIN_RECOVERY.md. No new mission, deadline or growth stat changes.
+
+## v0.3.3 preservation
+Advisor calls shared openCouncil → existing Free Deployment → explicit Confirm → startBattle. No direct NPC battle mutations. Stable eric entity supplies exploration appearance and battle effectiveStats. Existing recovery, victory claims, practice isolation, missions01–03 and M03 ten-turn deadline unchanged.
