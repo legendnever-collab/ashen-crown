@@ -1,11 +1,12 @@
 # Current Status
-Last Updated: 2026-10-15 (KST)
-Current Version: v0.3.1 Release Candidate — Classic SRPG Renaissance
-Main baseline: v0.2 fdcdcc42e3adaca7c961dd76dd51268b358ce08f.
-Dependency: unmerged PR #6 v0.3 at461abfddd0a3a84a224781cff022dd58cc9afc5f; baseline CI success. Active feature/v0.3.1-classic-srpg-renaissance, stacked PR base feature/v0.3-living-frontier. Refresh actual GitHub refs; no merge.
-Implemented: interiors/owners/exit and durable coordinates, atomic weapon-first buy/equip, NPC/battle in-place dialogue/copy review, no council checkboxes, persistent Quest, immediate real movement/context actions, variable maps/camera/minimap, native128/256 art, fire/ruins, MOV/terrain profiles/schema4 migration. Canon/three missions/growth/audio preserved.
-Recovery baseline: PR #7 Draft/open, head 0869636c39fa61c051ed4c7cb0f76d17f8e58f8e; PR CI 38587741878 and push CI 38587731729 both completed with failure in test:renaissance (Quest preference reload), not a hanging command. All preceding checks, including HTTP smoke and 16 actual v0.2 migration checks, passed. Performance was skipped. The same Quest failure reproduced locally at 390×844.
-Recovery change: persist Quest activation synchronously before queued details.toggle, and keep Enter/Space on its summary from triggering exploration interaction. Add a same-event persistence assertion to the four-view regression. Gameplay, migration and canon unchanged; no repeated legacy campaign generation is required. Exact final hosted status and run links are maintained on PR #7 Checks/body; only mark it Ready for Review once release verification and hosted validation pass.
-Executed baseline: 95 units; 541 browser/scenario checks; 210 seeded legal-policy mission victories. Existing migration evidence is reused because persistence/migration/core modules are unchanged. Recovery evidence and final counts are in the release Test Report and docs/v0.3.1/evidence. Standard desktop measured4.372× backing pixels. Release gate: checksums, clean ZIP rebuild, units and exact ZIP/current-source comparison. Local HTTP sockets remain unavailable; the recorded hosted HTTP pass is authoritative.
-Remaining: user play/visual/audio preference and physical devices; Safari/Firefox/eviction; M04–06 v0.4; actual promotions/new recruit v0.5+. Only future mounted metadata, no playable cavalry. Legacy battle core retained; no fire damage/spread. No merge/publication.
-Artifacts: releases/Ashen_Crown_v0.3.1.html, Source.zip, Test_Report.md, SHA256SUMS. Read AGENTS ordered canon plus MAP_ARCHITECTURE/VISUAL_DESIGN_SYSTEM/TACTICAL_UX before follow-up.
+Last Updated: 2026-10-16 (KST)
+Current Version: v0.3.1 — Classic SRPG Renaissance (approved for official release)
+Release publication: authorized
+User play validation: complete. Official final release authorized.
+main: v0.3.0 PR #6 merged at 05736c74d828955b5eea1bc6184e0b240d107f76; v0.3.1 PR #7 merged at b7866fcc6b92497090682ac04f614d12e8d39cff.
+Original development commit: 0869636c39fa61c051ed4c7cb0f76d17f8e58f8e. Final verified PR head: 42cecebd8e17f409e7a8a268af03c4c1bfe613b2.
+Original CI 38587741878 failed on Quest preference reload. The root cause was a deferred details.toggle storage race, not a save schema or migration defect. The recovery saves immediately on summary activation and isolates Enter/Space from exploration shortcuts.
+Hosted PR CI 38733801539 and push CI 38733794764 both passed all Game validation steps, including Renaissance, performance, HTTP and actual v0.2 migration. Original 95 unit, 541 browser/scenario, 210 balance victories are preserved; new hosted Renaissance checks pass in all four viewports. Exact-final-main CI must pass before automated publication.
+Scope: walkable shop interiors, equipment selection/comparison and atomic purchase, in-place NPC dialogue, tactical movement/commands, persistent Quest, camera/minimaps, native pixel detail, fire/ruins, terrain profiles and schema 0–3 to 4 save compatibility. No new missions or v0.3.2 work.
+Assets: releases/Ashen_Crown_v0.3.1.html, Ashen_Crown_v0.3.1_Source.zip, Ashen_Crown_v0.3.1_Test_Report.md, Ashen_Crown_v0.3.1_SHA256SUMS.
+Known limits: physical devices, Safari/Firefox, long-term storage eviction, subjective story/audio preference; no fire spread or playable promotions.

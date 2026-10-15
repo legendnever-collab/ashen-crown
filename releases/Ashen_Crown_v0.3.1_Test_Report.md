@@ -1,6 +1,6 @@
 # Ashen Crown v0.3.1 — Test Report
 
-2026-10-14 development / 2026-10-15 KST recovery · Classic SRPG Renaissance · Release Candidate
+2026-10-14 development / 2026-10-16 KST finalization · Classic SRPG Renaissance · Official Release
 
 ## Baseline and dependency
 Verified main fdcdcc42e3adaca7c961dd76dd51268b358ce08f (v0.2). PR #6 remains unmerged at development start; its v0.3 head 461abfddd0a3a84a224781cff022dd58cc9afc5f passed hosted CI 38565695436 / 38565689422. Branch feature/v0.3.1-classic-srpg-renaissance is stacked on that head. No merge performed/authorized. Exact new-head hosted status is maintained in PR Checks and PR body; local results below do not imply a hosted pass.
@@ -20,10 +20,10 @@ Walkable forge/item interiors, owners/counters/exits and durable return coordina
 | Stage restart/defeat/legacy/storage failure | 22 | 0 |
 | Actual M01–03 campaign controls (desktop/touch) | 118 | 0 |
 | Frontier/recruitment/economy/storage failure | 102 | 0 |
-| Renaissance UI/resolution/shop/camera (four viewports), recovery rerun | 113 | 0 |
+| Renaissance UI/resolution/shop/camera (four viewports), hosted final validation | 137 | 0 |
 | Actual progressed v0.2 campaign import | 16 | 0 |
 
-Total: **95 unit checks + 545 browser/scenario checks**, zero recorded runtime errors and zero external runtime requests. Node test and browser suite counts are separate. The original ledger was 95 unit + 541 browser checks. Recovery reran 95 units and replaced the original 109-check Renaissance suite with 113 checks (four new synchronous persistence assertions); the other 432 checks and 210 mission victories are retained evidence, not newly rerun local results. Original v0.2 source/rules fixtures are retained for playing the actual older HTML, avoiding use of new geometry/rules in old-save generation.
+Total in latest hosted CI: **95 unit checks + 569 browser/scenario checks**, zero recorded runtime errors and zero external runtime requests. Node test and browser suite counts are separate. The original ledger was 95 unit + 541 browser checks. Recovery locally reran 95 units and 113 Renaissance checks; latest hosted CI executed 137 Renaissance checks (with expanded keyboard/pointer cases); the other 432 checks and 210 mission victories are retained evidence, not newly rerun local results. Original v0.2 source/rules fixtures are retained for playing the actual older HTML, avoiding use of new geometry/rules in old-save generation.
 
 Balance: 30 M01 victories across recommended/assault/defense, 30 standard complete campaigns (90 mission wins), plus 30 complete campaigns across standard/reinforced/purchased tools (90 mission wins): **210 mission victories**. Standard bridge completion 5–10 turns; 10-turn deadline unchanged. Optional prisoner branch verified alongside non-capture progression. Natural defeat, retry and rollback remain possible; these policy results are not a guarantee every strategy wins or all heroes survive.
 
@@ -63,3 +63,7 @@ Real phones/Safari/Firefox, long-term browser storage eviction and human story/m
 - Ordinary Chromium launch failed with socket() EPERM. Installed Chromium133 headless shell in single-process mode completed file-browser testing. Performance samples were also regenerated on the recovery HTML (recovery-performance.json); synthetic observations only. No blocking command was repeatedly retried without inspecting its cause.
 - Reused existing actual v0.1.x and progressed v0.2 migration evidence and hosted success because schema/migration/core files remain byte-identical to the restored baseline. No additional long legacy campaign generation was launched locally.
 - Release verification checks the exact current source, documentation, evidence, standalone HTML and report against Source ZIP bytes, matching SHA256 text/JSON manifests, a byte-identical clean rebuild and clean ZIP units. Final acceptance requires green exact recovery-head hosted CI; consult PR Checks/body for that result.
+
+## Release approval and final GitHub validation
+
+User played and approved v0.3.1; PR #6 and PR #7 are merged. Final PR-head CI: https://github.com/legendnever-collab/ashen-crown/actions/runs/38733801539 — success, including Renaissance, performance and packaging. Official v0.3.1 publication is authorized, gated on a successful exact-main validation and verified assets. The original 210 mission victories remain preserved; final CI reruns both balance suites. No new gameplay was added for release finalization.

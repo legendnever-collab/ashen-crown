@@ -6,7 +6,7 @@ Original offline pixel fantasy SRPG. 아렌은 이야기와 군단 운영의 주
 
 ## Play
 
-Download [Ashen_Crown_v0.3.0.html](releases/Ashen_Crown_v0.3.0.html) using GitHub's **Download raw file**, then open it in a browser. `index.html` is byte-identical. Code, original pixel art, Korean font and original synthesized music are embedded; no network or installation is required.
+Download [Ashen_Crown_v0.3.1.html](releases/Ashen_Crown_v0.3.1.html) using GitHub's **Download raw file**, then open it in a browser. `index.html` is byte-identical. Code, original pixel art, Korean font and original synthesized music are embedded; no network or installation is required.
 
 Story → Town / Camp → NPC / Affiliation → Shop / Equipment → War Council → Free Deployment → Battle → Growth → Aftermath → Next Story.
 
@@ -73,19 +73,19 @@ python scripts/package.py
 python scripts/verify-release.py
 ```
 
-`BROWSER_EXECUTABLE` optionally selects an installed Chromium. Browser tests operate visible controls and legal rules. Unit fixtures modify state only to isolate edge cases. Source ZIP extraction recreates byte-identical HTML and passes unit tests. Evidence: [Test Report](releases/Ashen_Crown_v0.3.0_Test_Report.md), [test matrix](docs/v0.3.0/TEST_MATRIX.md), `docs/v0.3.0/`.
+`BROWSER_EXECUTABLE` optionally selects an installed Chromium. Browser tests operate visible controls and legal rules. Unit fixtures modify state only to isolate edge cases. Source ZIP extraction recreates byte-identical HTML and passes unit tests. Evidence: [Test Report](releases/Ashen_Crown_v0.3.1_Test_Report.md), [test matrix](docs/v0.3.1/REGRESSION_RESULTS.md), `docs/v0.3.0/`.
 
 ## Canon and next work
 
-Start with [AGENTS.md](AGENTS.md), [PROJECT_CONTEXT](docs/handoff/PROJECT_CONTEXT.md), [Story Bible](docs/story/STORY_BIBLE.md), [CURRENT_STATUS](docs/handoff/CURRENT_STATUS.md), [NEXT_TASKS](docs/handoff/NEXT_TASKS.md). The approved 4 acts / 30 missions, three factions/endings and initial cast are preserved. Local NPC details remain PROPOSED. The old v0.3 M04–06 plan is moved to **v0.4 The Broken Allegiance**; full advanced classes move to **v0.5**. v0.2 PR #5 is merged; **v0.3 PR stays unmerged until user approval**.
+Start with [AGENTS.md](AGENTS.md), [PROJECT_CONTEXT](docs/handoff/PROJECT_CONTEXT.md), [Story Bible](docs/story/STORY_BIBLE.md), [CURRENT_STATUS](docs/handoff/CURRENT_STATUS.md), [NEXT_TASKS](docs/handoff/NEXT_TASKS.md). The approved 4 acts / 30 missions, three factions/endings and initial cast are preserved. Local NPC details remain PROPOSED. The old v0.3 M04–06 plan is moved to **v0.4 The Broken Allegiance**; full advanced classes move to **v0.5**. v0.2 PR #5 is merged; **v0.3 PR #6 and v0.3.1 PR #7 are merged with user approval**.
 
 ## Art / audio / limits
 
-Original procedural 64px sprites and 128px portraits; Aren walking/scarf, local NPCs, map buildings, campfire and shop vignettes are code-native. Weapon ownership/upgrade is visible in Party UI; individual gear combinations do not have separate battle sprites. Erik LV5 Advanced appearance is retained; full class abilities and other advanced outfits remain future work.
+Original procedural native-128 tile/sprite details and 256px portraits; Aren walking/scarf, local NPCs, map buildings, campfire and shop vignettes are code-native. Weapon ownership/upgrade is visible in Party UI; individual gear combinations do not have separate battle sprites. Erik LV5 Advanced appearance is retained; full class abilities and other advanced outfits remain future work.
 
-Original source-composed Web Audio scores use oscillator synthesis and no third-party recordings. Existing renamed Nanum Gothic UI subset retains SIL OFL attribution in [OFL.txt](src/assets/OFL.txt); expanded glyphs cover authored Korean text. Project source remains MIT. Safari/Firefox, physical phone hardware, long-term storage eviction and subjective story/music quality require separate review. Shops use illustrated functional modals rather than freely walkable interior maps. GitHub Pages publication is outside this release.
+Original source-composed Web Audio scores use oscillator synthesis and no third-party recordings. Existing renamed Nanum Gothic UI subset retains SIL OFL attribution in [OFL.txt](src/assets/OFL.txt); expanded glyphs cover authored Korean text. Project source remains MIT. Safari/Firefox, physical phone hardware, long-term storage eviction and subjective story/music quality require separate review. Shops now have walkable interiors and interactive owners. GitHub Pages publication is outside this release.
 
 
 ## v0.3.1 — Classic SRPG Renaissance
 Walk into independent shops, approach the owner, select equipment then a compatible hero and compare actual stats before atomic purchase/equip. NPC dialogue retains the town. Select a tactical hero for immediate terrain-cost range and contextual commands. Variable maps, bounded camera/minimaps, persistent Quest panel, role-specific MOV, new native detail and burning/burned buildings preserve all three missions.
-Artifacts: [HTML](releases/Ashen_Crown_v0.3.1.html), [Source ZIP](releases/Ashen_Crown_v0.3.1_Source.zip), [Test Report](releases/Ashen_Crown_v0.3.1_Test_Report.md), [SHA256](releases/Ashen_Crown_v0.3.1_SHA256SUMS). Exact changes [feedback traceability](docs/v0.3.1/FEEDBACK_TRACEABILITY.md). Schema4 migrates 0–3; growth/assets retained, base class MOV intentionally rebalanced. Stacked on PR #6; no auto merge.
+Artifacts: [HTML](releases/Ashen_Crown_v0.3.1.html), [Source ZIP](releases/Ashen_Crown_v0.3.1_Source.zip), [Test Report](releases/Ashen_Crown_v0.3.1_Test_Report.md), [SHA256](releases/Ashen_Crown_v0.3.1_SHA256SUMS). Exact changes [feedback traceability](docs/v0.3.1/FEEDBACK_TRACEABILITY.md). Schema4 migrates 0–3; growth/assets retained, base class MOV intentionally rebalanced. PR #6 and PR #7 merged with user approval; official v0.3.1 release authorized.
