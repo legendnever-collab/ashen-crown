@@ -42,3 +42,9 @@ export function migrateFrontier(f,missionId=1){
  if(!safe(f.interior,f.x,f.y)){const spawn=(f.interior?INTERIORS[f.interior]:HUBS[f.hub]).spawn;[f.x,f.y]=spawn;f.facing='down';}
  return f;
 }
+
+// Error-only retry route uses the same progression API and still requires the advisor.
+export function recoverCouncil(s){
+ if(s.screen!=='exploration'||s.narrative.active||s.frontier.interior||s.frontier.phase!=='preparation'||!interactions(s).some(n=>n.id==='advisor'&&n.npc))return false;
+ s.frontier.advisorPending=true;return openCouncil(s);
+}

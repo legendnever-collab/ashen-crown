@@ -11,7 +11,7 @@ Legacy compatibility: code ID `eric` remains immutable; display spelling is Erik
 - **Name**: Aren Valter
 - **Age**: 27
 - **Class**: Commander (non-deployable)
-- **Narrative Role**: 스토리 주인공·책임의 공유
+- **Narrative Role**: 군단 지휘관·정치적 책임의 공유
 - **Personality**: 병사 생존을 중시하는 유능한 지휘관
 - **Strength**: 판단과 지휘
 - **Flaw**: 과도한 책임·결정 지연
@@ -31,7 +31,7 @@ Legacy compatibility: code ID `eric` remains immutable; display spelling is Erik
 - **Name**: Erik
 - **Age**: OPEN
 - **Class**: Knight / Tank
-- **Narrative Role**: 보호와 명예
+- **Narrative Role**: 탐색/전투 플레이어 주인공·보호와 명예
 - **Personality**: 규율·명예 중시
 - **Strength**: 전열 안정
 - **Flaw**: 과도한 보호

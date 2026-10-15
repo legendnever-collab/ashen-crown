@@ -46,3 +46,7 @@
 /* Held touch directions must not select text or scroll the document. */
 .dpad button{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .victory-rewards{margin:14px 0;padding:16px;border:1px solid #91ad8b;background:#203d36;border-radius:10px}.victory-rewards h3{color:#e9d79d}.victory-rewards p{line-height:1.6}
+
+/* Exploration quest belongs in the panel, so its interactive summary never masks doors/NPCs. */
+.exploring .quest-panel{position:relative;inset:auto;width:auto;grid-column:1/-1;margin:0 0 10px;box-shadow:none;z-index:auto}
+@media(max-width:600px){.exploring .frontier-panel .dpad{grid-row:4/6}}

@@ -5,6 +5,7 @@ export async function frontierPress(page,touch,action,id){
  if(action==='transaction'&&/^(sell-|upgrade)/.test(id)&&!await page.locator(`[data-do="transaction"][data-id="${id}"]`).count()){await click('shop-owner');await click('shop-service',id.startsWith('sell-')?'sell':'upgrade');}
  if(action==='warroom'){
   await click('warroom');
+  await page.waitForFunction(()=>!window.AshenCrown.view().busy);
   for(let i=0;i<20&&await page.locator('[data-do="story-next"]').count();i++)await click('story-next');
   await click('advisor-operation');return;
  }

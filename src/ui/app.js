@@ -1,7 +1,7 @@
 import {rewardLabel} from '../core/battle-rewards.js';
 import {createHeldMovement} from './held-movement.js';
 import {HUBS,GEAR,TOOLS,RECRUITS} from '../data/frontier-data.js';
-import {openCouncil,currentHub,enterInterior,exitInterior,ensureFrontier,enterHub,stepAren,frontierPath,fastTravel,interactions,interactNPC,affiliate,syncFrontier,councilInfo} from '../core/frontier.js';
+import {recoverCouncil,openCouncil,currentHub,enterInterior,exitInterior,ensureFrontier,enterHub,stepAren,frontierPath,fastTravel,interactions,interactNPC,affiliate,syncFrontier,councilInfo} from '../core/frontier.js';
 import {transact,effectiveStats,equipmentLabel,itemCount} from '../core/economy.js';
 import {renderFrontier,councilHTML,inventoryHTML,shopHTML,shopkeeperHTML,ownedShopHTML,bonusText,frontierButton} from './frontier-ui.js';
 import {hubCamera,drawHub} from '../render/frontier-renderer.js';
@@ -49,7 +49,7 @@ function render(){
  $('#map-label').innerHTML=battle||deploy?`<div class="eyebrow">BORDERLANDS · SOUTHERN APPROACH</div><h3>${mission.en}</h3><p>${deploy?'남쪽의 푸른 영역에 장수를 자유 배치하세요.':mission.brief}</p>`:'';
  $('#board-caption').textContent=battle?ui.busy?'적의 행동을 지켜보세요.':ui.preview?'예측을 확인한 뒤 행동을 확정하세요.':!u||u.acted?'다음 장수를 선택하거나 Phase를 종료하세요.':ui.mode==='move'?`${u.name} · 푸른 칸으로 이동. 이동 후에는 취소할 수 있습니다.`:ui.mode==='rescue'?'인접한 주민을 선택하세요.':ui.mode==='skill'?`${u.skill} · 유효한 대상을 선택하세요.`:'붉은 범위의 적을 선택해 공격을 예측하세요.':deploy?'장수 선택 → 남쪽 Tile 클릭 · 다른 장수 위치를 클릭하면 Swap':'';
  $('#logentries').innerHTML=state.log.slice(-18).map(l=>`<div>${esc(l)}</div>`).join('');$('#logentries').scrollTop=$('#logentries').scrollHeight;
- renderObjectives();$('#battle-minimap').hidden=!(battle||deploy);app.classList.toggle('exploring',state.screen==='exploration');app.classList.toggle('in-battle',battle||deploy);app.classList.toggle('journal-open',ui.journal);$('#rail').hidden=!(battle||deploy);$('#screen').innerHTML='';
+ renderObjectives();$('#battle-minimap').hidden=!(battle||deploy);app.classList.toggle('exploring',state.screen==='exploration');app.classList.toggle('in-battle',battle||deploy);app.classList.toggle('journal-open',ui.journal);$('#rail').hidden=!(battle||deploy);$('.field').append(questPanel);$('#screen').innerHTML='';
  if(battle||deploy){$('#rail').innerHTML=renderDock(state,ui,esc,portrait,(label,value,max,cls)=>bar(label,label==='HP'?renderer.displayHP(u):value,max,cls));}else{renderScreen();$('#rail').innerHTML=`<div class="eyebrow">COMMANDER’S NOTES</div><h3 style="margin:13px 0">한 사람씩, 하나의 가능성</h3><p style="font-size:13px">다섯 장수의 역할을 연결하세요. 숲의 사수, 동료를 지키는 기사, 빠른 구출과 치유가 전장의 흐름을 바꿉니다.</p><div class="rule"></div><div class="eyebrow">MISSION OBJECTIVES</div><p style="font-size:12px;margin:10px 0">주민 2명 구출 + Garr 격파<br>선택 목표: 전원 생존 · 8턴 이내 · Eric의 단서</p><div class="rule"></div><div class="muted">완료한 미션: ${state.campaign.clears}회<br>v${VERSION} · 오리지널 픽셀 아트<br>오프라인 실행 · 로컬 저장</div><button class="small" data-do="help" style="margin-top:18px">조작과 전투 규칙</button>`;}
  const pop=$('#unit-popover');pop.innerHTML=menuHTML(state,ui,esc);pop.hidden=!pop.innerHTML;positionPopover();renderStory();paintPortraits();const hubCanvas=$('#frontier-map');if(hubCanvas){drawHub(hubCanvas,state);followAren();}const stage=$('#scene-stage');if(stage)drawHub(stage,state,{line:storyLine(state)});offerAffiliation();offerAdvisor();
 }
@@ -65,7 +65,7 @@ async function cancelMovement(){const m=ui.pendingMove;if(!m)return;ui.menu=null
 function confirmMovement(){const m=ui.pendingMove;if(!m)return;const path=moveUnit(state,m.id,m.x,m.y);renderer.motion.delete(m.id);ui.pendingMove=null;ui.menu='root';ui.mode='choose';ui.notice=path?'이동 확정 · 공격, 스킬, 도구 또는 대기를 선택하세요.':'이동을 확정할 수 없습니다. 원래 위치를 유지합니다.';commit();}
 function renderVictoryRewards(last){if(state.outcome!=='victory')return '';const r=last.rewards;if(state.practice||last.practice)return '<section class="victory-rewards"><h3>Practice · 보상 미확정</h3><p>정식 Gold / Inventory는 증가하지 않습니다.</p></section>';return `<section class="victory-rewards"><h3>Victory Rewards</h3><p>${r?`${r.gold} Gold · ${r.extras.map(rewardLabel).join(' / ')}`:'이전 버전 클리어 · 신규 보상은 Inventory에 반영됩니다.'}</p><p>Optional: ${state.missionId===2?(state.campaign.flags.mission_02_prisoner_captured?'생포 달성':'생포 미달성'):`주민 ${last.rescued}/${missionOf(state).civilians.length} 구조`}</p>${state.economy.rewardPending.length?'<p>소지 한도 초과 보상은 보관됩니다. 준비 화면 Inventory에서 받으세요.</p>':''}<p>Relationship: ${state.campaign.bonds.erik_kai?'Erik / Kai 협력 기록':'동료 관계와 Potential 기록은 아래 성장 결과에서 확인하세요.'}</p></section>`;}
 function renderScreen(){const u=findUnit(state,ui.selected);let html='';
- if(state.screen==='exploration'){$('#screen').innerHTML=renderFrontier(state,esc);$('#phasebar').innerHTML=`<span class="eyebrow">EXPLORATION</span><span class="turn">${HUBS[state.frontier.hub].name}</span><span class="phase-pill">${state.frontier.phase.toUpperCase()}</span>`;return;}
+ if(state.screen==='exploration'){$('#screen').innerHTML=renderFrontier(state,esc);$('.frontier-panel').prepend(questPanel);$('#phasebar').innerHTML=`<span class="eyebrow">EXPLORATION</span><span class="turn">${HUBS[state.frontier.hub].name}</span><span class="phase-pill">${state.frontier.phase.toUpperCase()}</span>`;return;}
  if(state.screen==='title')html=`<div class="title-inner"><div class="eyebrow">AN ORIGINAL FANTASY TACTICAL RPG</div><h1>Ashen<br>Crown<span class="accent">.</span></h1><div class="subtitle">ACT I — The Living Frontier</div><p>재가 된 왕관 아래, 다섯 동료의 이야기가 시작됩니다.<br>당신의 선택은 전장을 바꾸고, 장수의 숨겨진 가능성을 깨웁니다.</p><div class="title-actions"><button class="primary" data-do="new">캠페인 시작 →</button><button data-do="load" ${loaded.state||state.campaign.clears?'':'disabled'}>저장 불러오기</button><button data-do="campaign">Campaign</button><button data-do="audio">♫ Music</button><button data-do="help">플레이 안내</button></div><div class="title-bottom"><div>TACTICAL COMBAT<br><span class="accent">지형 · 사거리 · 협공</span></div><div>CHARACTER GROWTH<br><span class="accent">다섯 장수 · 서로 다른 역할</span></div><div>HIDDEN POTENTIAL<br><span class="accent">행동에서 발견하는 단서</span></div></div></div>`;
  else if(state.screen==='intro')html=`<div class="screen-inner"><div class="eyebrow">ACT I · MISSION ${state.missionId}</div><h2>${missionOf(state).title}</h2><div class="story">${esc(missionOf(state).objective)}<br><br>${esc(missionOf(state).brief)}<br><br>아렌의 명령 아래, 다섯 동료가 각자의 이유로 전장에 나섭니다.</div><button class="primary" data-do="warroom">동료들과 전투 준비 →</button></div>`;
  else if(state.screen==='warroom')html=`<div class="screen-inner council-screen">${councilHTML(state,esc,portrait,ui.selected)}</div>`;
@@ -191,6 +191,7 @@ async function prepareCouncil(){
  }
  if(openCouncil(state))commit();
 }
+function offerCouncilRecovery(){if(state.screen!=='exploration'||state.narrative.active||state.frontier.phase!=='preparation'||!interactions(state).some(n=>n.id==='advisor'&&n.npc))return;modal('작전 회의 복구','<p>작전 보고를 다시 확인합니다. 현재 장비와 임무 기록은 유지됩니다.</p>',frontierButton('advisor-recover','작전 회의를 다시 연다')+frontierButton('close-modal','돌아가기'));}
 function offerAdvisor(){
  const f=state.frontier;if(state.screen!=='exploration'||!f.advisorPending||state.narrative.active||$('#modal-root').children.length)return;
  if(!interactions(state).some(n=>n.id==='advisor'&&n.npc)){f.advisorPending=false;syncFrontier(state);save();return;}
@@ -208,17 +209,18 @@ function transactionPreview(encoded){if(state.practice){toast('연습에서는 �
  modal('거래 확인',`<p>${esc({ 'collect-rewards':'보관 보상 받기','buy-item':'도구 구매','sell-item':'도구 판매','buy-gear':'장비 구매','sell-gear':'장비 판매',upgrade:'장비 +1 강화',equip:'장비 장착',unequip:'기본 장비로 복귀'}[op]||op)} · ${esc(TOOLS[id]?.name||GEAR[id]?.name||GEAR[g?.type]?.name||id)}</p>${op==='upgrade'?`<p>강화 0 → +1 · ${bonusText(GEAR[g.type].upgrade)}<br>소유 장비 1개에 한 번만 적용됩니다.</p>`:''}<p>Gold ${state.economy.gold} → ${state.economy.gold-amount}${amount>0?` (−${amount})`:amount<0?` (+${-amount})`:''}</p>`,`<button class="primary" data-do="confirm-transaction">확정</button><button data-do="${shopReturn?'shop-back':'close-modal'}">취소</button>`);pendingTransaction=req;
 }
 async function frontierDispatch(action,id=''){
- const allowed=['advisor-locate','advisor-operation','advisor-menu','mission-status','shop-service','shop-owner','enter-building','hub-zoom','hub-focus','shop-exit','purchase-hero','shop-back','walk','interact','npc','place','fast-map','fast-travel','hub-return','aftermath','affiliate','inventory','items','transaction','confirm-transaction','buy-preview','gear-info','gear-compare','tool','tool-confirm'];if(!allowed.includes(action))return false;
+ const allowed=['advisor-locate','advisor-operation','advisor-recover','advisor-menu','mission-status','shop-service','shop-owner','enter-building','hub-zoom','hub-focus','shop-exit','purchase-hero','shop-back','walk','interact','npc','place','fast-map','fast-travel','hub-return','aftermath','affiliate','inventory','items','transaction','confirm-transaction','buy-preview','gear-info','gear-compare','tool','tool-confirm'];if(!allowed.includes(action))return false;
  if(frontierWalking&&!['items','inventory'].includes(action)){navigationEpoch++;while(frontierWalking)await new Promise(r=>setTimeout(r,16));}
  const f=ensureFrontier(state);
  if(action==='advisor-locate')await prepareCouncil();
- if(action==='advisor-operation'){if(openCouncil(state)){closeModal();commit();}else toast('군사 곁에서 대화를 마친 뒤 다시 확인하세요.');}
+ if(action==='advisor-operation'){if(openCouncil(state)){closeModal();commit();}else offerCouncilRecovery();}
+ if(action==='advisor-recover'){if(recoverCouncil(state)){closeModal();commit();}}
  if(action==='mission-status'){const intel=councilInfo(state);modal('현재 임무',`<p>${esc(missionOf(state).title)}</p><p>${f.phase==='aftermath'?state.missionId===3?'ACT I 전반 완료 · 다음 작전은 준비 중입니다.':'전투를 마쳤습니다. 동료를 살핀 뒤 다음 이야기를 선택하세요.':esc(intel.plan)}</p>`,frontierButton('advisor-menu','작전 대화로 돌아가기'));}
  if(action==='advisor-menu'){closeModal();offerAdvisor();}
  if(action==='enter-building'){closeModal();if(enterInterior(state,id)){hubCamera.reset();commit();}}
  if(action==='walk'){const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[id];if(d)walkAren(...d);}
  if(action==='interact'){const n=interactions(state)[0];if(n)await dispatch(n.npc?'npc':'place',n.id);else toast('대화할 사람이나 입구 가까이 이동하세요.');}
- if(action==='npc'){const n=interactions(state).find(n=>n.id===id&&n.npc);if(n?.service){openShopkeeper(n.service);return true;}if(interactNPC(state,id)){commit();}}
+ if(action==='npc'){const n=interactions(state).find(n=>n.id===id&&n.npc);if(n?.service){openShopkeeper(n.service);return true;}if(interactNPC(state,id)){commit();}else if(id==='advisor')offerCouncilRecovery();}
  if(action==='affiliate'){if(affiliate(state,id)){closeModal();commit();toast(`${SPEAKERS[id].name} · 소속 기록을 남겼습니다.`);}}
  if(action==='place'){const n=interactions(state).find(p=>!p.npc&&p.id===id);if(n?.action==='council')await prepareCouncil();else if(n?.action==='exit'){if(exitInterior(state)){hubCamera.reset();commit();}}else if(['weapon','item'].includes(n?.action))confirmEntrance(n.action);}
  if(action==='fast-map'){modal('Town Map · 방문한 장소',`<p>직접 찾아간 주요 장소에 빠르게 이동합니다.</p><div class="travel-list">${HUBS[f.hub].places.map(p=>frontierButton('fast-travel',`${p.name} ${f.visited[f.hub].includes(p.id)?'✓':'· 미방문'}`,p.id,!f.visited[f.hub].includes(p.id))).join('')}</div>`,'');}
