@@ -11,3 +11,7 @@ export const missionOf=s=>MISSIONS[s?.missionId||1];
 // Preserve all old core coordinates for migration, add authored flanking regions.
 for(const m of Object.values(MISSIONS)){const original=m.map.map(row=>[...row]);const width={1:16,2:18,3:14}[m.id],height={1:12,2:14,3:12}[m.id];m.map=Array.from({length:height},(_,y)=>Array.from({length:width},(_,x)=>{if(y<10&&x<12)return original[y][x];if(m.id===1)return x===13?'r':(y===2||y===6)&&x>13?'v':y===11?'f':'g';if(m.id===2)return x===13||y===11?'r':x===14&&y<8?'m':x>=16?'f':(x+y)%4===0?'f':'g';return y===3||y===4?'w':x===12?'r':'g';}));m.width=width;m.height=height;m.layers={terrain:m.map,collision:m.map.map(row=>row.map(t=>['x','w'].includes(t))),buildings:[],objects:[],actors:'units',effects:'feedback',events:'narrative'};if(m.id===1)m.layers.buildings=[{x:2,y:1,w:1,h:2,type:'residence',state:'burning'},{x:9,y:1,w:1,h:2,type:'residence',state:'burning'},{x:14,y:2,w:2,h:2,type:'depot',state:'burning'},{x:14,y:6,w:2,h:2,type:'residence',state:'intact'}];}
 export const mapDimensions=s=>({width:missionOf(s).map[0].length,height:missionOf(s).map.length});
+
+// Limited tactical supply sites; old core routes and victory deadlines stay intact.
+MISSIONS[2].map[6][9]='h';
+MISSIONS[3].map[5][5]='t';

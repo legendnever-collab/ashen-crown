@@ -12,6 +12,7 @@ const palette=u=>({
  kai:{skin:'#d5ad79',shade:'#97684a',hair:'#263943',light:'#4f6471',coat:'#596b76',dark:'#283c47',eye:'#91ac62'}
 }[u.id]||{skin:'#d5aa84',shade:'#9b6d57',hair:u.kind==='captain'?'#593b37':'#674d3f',light:'#9b7255',coat:u.team==='civilian'?'#cdb995':u.kind==='captain'?'#b16b63':'#a77961',dark:'#583e3e',eye:'#665344'});
 export function drawTile(c,type,x,y,index){
+ if(type==='t'||type==='h'){drawTile(c,type==='t'?'v':'r',x,y,index);pixel(c,'#294b43',x+40,y+5,20,20);pixel(c,'#cef4c6',x+48,y+8,4,14);pixel(c,'#cef4c6',x+43,y+13,14,4);return;}
  const r=(col,a,b,w,h)=>pixel(c,col,x+a,y+b,w,h);r(type==='f'?'#385a45':type==='r'?'#9a8360':type==='v'?'#89785c':type==='x'?'#52564c':'#61734e',0,0,64,64);
  for(let i=0;i<29;i++){const px=(index*17+i*23)%62,py=(index*13+i*19)%62;r(type==='r'?i%2?'#b6a079':'#7f7055':i%2?'#78925e':'#4e6347',px,py,i%3+1,1);if(type==='g'&&i%4===0){r('#91a271',px,py-2,1,3);r('#4f6547',px+2,py-1,1,2);}}
  if(type==='b'){r('#172e38',0,0,64,64);for(let i=0;i<8;i++){r(i%2?'#977d55':'#b49b6d',5,i*8,54,7);r('#d0b88b',5,i*8,54,1);}r('#574634',3,0,3,64);r('#574634',59,0,3,64);}
