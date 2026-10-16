@@ -20,7 +20,7 @@
 
 
 ## 2026-10-14 — explicit user v0.3 Master Task
-- D-014 Hybrid Town Exploration — CANON: Aren 직접 이동, 방문 후 Fast Travel, keyboard/mouse/touch, 전투와 별도 mode, 육성에 기여.
+- D-014 Hybrid Town Exploration — CANON (actor clause superseded by D-031): Aren 직접 이동, 방문 후 Fast Travel, keyboard/mouse/touch, 전투와 별도 mode, 육성에 기여.
 - D-015 Pre-Battle RPG Loop — CANON: Story → Town/Camp → NPC → shops/upgrade → preparation → War Council → battle → aftermath.
 - D-016 Recruitment Through Story — CANON: encounter/personal event/decision. 세부 영입 분기는 PROPOSED. 초기 5명 출전 유지, affiliation만 시범 구현.
 - D-017 Version Scope Revision — APPROVED_DIRECTION: v0.3 Living Frontier, v0.4 Broken Allegiance M04–06, v0.5 Advanced Class, 이후 ACT II–IV. 과거 일정 항목을 대체한다.
@@ -41,3 +41,9 @@ D-025 v0.3.1 final audit: reinforcement warning locations derive from authored m
 
 ## 2026-10-16 — approved v0.3.2 task
 D-026 runtime held input and transient explicit doors; no serialized pressed keys/modal. D-027 owner menus preserve weapon-first atomic equip. D-028 own-phase terrain recovery with saved marker, attack-first bounded enemy preference. D-029 preserve base Gold; additive stable reward IDs and deferred capacity delivery, Schema5 catchup. D-030 legal campaign test withdrawal uses actual terrain path distance; old Manhattan-only policy could stall beside bridge obstacles after healing changed combat state. Story canon unchanged.
+
+## 2026-10-16 — explicit user v0.3.3 Master Task
+- D-031 Erik as Unified Player Protagonist — CANON. 에릭은 마을/야영지 직접 조작 인물이자 기존 `eric` 전투 장수다. 성장/장비는 같은 battle entity를 읽는다. D-014의 Aren avatar 조항을 대체한다. 아렌은 비출전 군단장, 에릭의 오랜 전우, 정치적 책임/잿빛 밤/왕관 서사 담당을 유지한다. D-001의 지휘관/전투 장수 분리는 유지한다.
+- D-032 Advisor-driven Campaign Progression — CANON. 군사 NPC 대화 → War Council → Free Deployment → Confirm → Battle. War Room 건물은 필수 gate가 아니다. D-015의 준비 loop를 구체화한다. 신규 기능 NPC의 개인 이름/과거는 PROPOSED이며 확정하지 않는다.
+- D-033 Door geometry / migration — implementation policy. Single facade threshold anchor and exact front approach; pointer uses existing inverse camera transform. Schema6 migrates legacy exterior/interior/return/nested checkpoint positions, preserving all non-spatial payloads. Advisor request persists across dialogue reload; input/camera animation remains runtime only.
+Requested D-014/015 IDs were occupied; D-031/032 are assigned without renumbering historical decisions.

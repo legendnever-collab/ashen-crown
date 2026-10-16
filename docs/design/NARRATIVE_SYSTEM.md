@@ -7,3 +7,6 @@ Hub/NPC/preparation scenes reuse narrative engine, stable scene IDs and seen/his
 
 ## v0.3.1 presentation/copy review
 Only explicitly authored pre/raid/aftermath cutscenes have staged actors. NPC and battle conversations retain the visible map, current actors and camera, with bottom portrait/name/expression/history/advance. Narrative active blocks walking/combat/AI, then resumes the prior screen/phase. NPC generic version/planning outros removed; Aren/Erik brief military phrasing, Elina wary observations, Lia curiosity, Sain concrete care, Kai guarded humor. Major pre/post lines shortened; military supply evidence remains observation, not an inferred culprit. STORY_BIBLE, CHARACTER_BIBLE and 4-act/30-mission order reviewed unchanged.
+
+## v0.3.3 Erik viewpoint
+Pre-scenes direct Erik to check comrades/advisor. NPC replies address Erik; Aren retains command, sealed order guilt and Ashen Night memory. Advisor briefings use mission1 raid /2 pursuit and optional prisoner /3 bridge rescue and ten-turn withdrawal; aftermath3 offers no next mission. Existing narrative queue/seen/history/flags/bond mechanics remain authoritative; functional advisor personal lore stays PROPOSED.

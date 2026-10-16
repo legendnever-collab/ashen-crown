@@ -12,3 +12,6 @@ APPROVED_DIRECTION, 2026-10-14 user v0.3 Master Task. Story CANON과 실제 구�
 
 ## Current verified sequence
 v0.3.0/v0.3.1 PR6/7 merged. v0.3.2 Gameplay Quality & Rewards implemented as review candidate; validation in docs/v0.3.2. Next remains v0.4.0 The Broken Allegiance, then v0.5.0 Advanced Class.
+
+## v0.3.3 The Hero's Journey
+Progression recovery → unified Erik → advisor-driven council → narrative continuity. Incremental candidate on unmerged v0.3.2; no additional missions. Supersedes the older next-release-only-v0.4 statement. v0.4 scope remains unchanged.

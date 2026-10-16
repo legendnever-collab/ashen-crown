@@ -1,0 +1,95 @@
+{
+  "version": "0.3.3",
+  "baseline": "c0a5fc1fdfe6b64c58815c0c4a189e5bbd46a29d",
+  "source_checkpoint": "afb28564f8cb1dfda3ed930f824a57af70761ea1",
+  "html_sha256": "672a24e9c675f0eccb7f812732149df9a93254b2e77ec68bb0b9ad73092538a1",
+  "units": 112,
+  "browser_scenario_checks": 898,
+  "suites": [
+    {
+      "suite": "journey-e2e",
+      "checks": 206,
+      "status": "PASS"
+    },
+    {
+      "suite": "gameplay-quality-e2e",
+      "checks": 92,
+      "status": "PASS"
+    },
+    {
+      "suite": "frontier-e2e",
+      "checks": 102,
+      "status": "PASS"
+    },
+    {
+      "suite": "renaissance-e2e",
+      "checks": 137,
+      "status": "PASS"
+    },
+    {
+      "suite": "campaign-e2e",
+      "checks": 126,
+      "status": "PASS"
+    },
+    {
+      "suite": "e2e",
+      "checks": 60,
+      "status": "PASS"
+    },
+    {
+      "suite": "mobile-dock",
+      "checks": 80,
+      "status": "PASS"
+    },
+    {
+      "suite": "tactical-ui",
+      "checks": 26,
+      "status": "PASS"
+    },
+    {
+      "suite": "http-smoke",
+      "checks": 4,
+      "status": "PASS"
+    },
+    {
+      "suite": "post-move-attack",
+      "checks": 8,
+      "status": "PASS"
+    },
+    {
+      "suite": "restart-stage",
+      "checks": 22,
+      "status": "PASS"
+    },
+    {
+      "suite": "migration-v02",
+      "checks": 16,
+      "status": "PASS"
+    },
+    {
+      "suite": "migration-v031",
+      "checks": 10,
+      "status": "PASS"
+    },
+    {
+      "suite": "migration-v032",
+      "checks": 9,
+      "status": "PASS"
+    }
+  ],
+  "legal_mission_victories": 210,
+  "campaign_balance": {
+    "complete_campaigns": 30,
+    "perfect_rescues": 30,
+    "captures": 15,
+    "bridge_turns": "5\u20138"
+  },
+  "runtime_errors": 0,
+  "external_requests": 0,
+  "local_scope": "Incremental local suites exercised the v0.3.3 path throughout implementation; final exact-tree CI is the authoritative complete rerun. Final screenshots use the manifest HTML.",
+  "unverified": [
+    "Physical devices",
+    "Safari / Firefox",
+    "Long-term browser eviction"
+  ]
+}

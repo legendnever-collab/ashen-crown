@@ -1,5 +1,14 @@
-## v0.3.2 — Gameplay Quality & Rewards (review candidate)
-Continuous keyboard/pointer movement, doorway confirmation and owner service menus. Existing auto-equip retained with explicit hero choice. Phase-once HP/MP recovery, enemy supply tactics, first-clear/optional reward ledger, overflow delivery and schema5 catchup. Main merge pending.
+# v0.3.3 — The Hero's Journey (official release, 2026-10-16)
+- Released after user play approval; PR8 and PR9 merged sequentially. Finalization changed documentation/package manifests only; standalone HTML unchanged.
+- Unified door anchors/front-only approach; facade click walks to the real entrance, cancellation does not loop.
+- Recover council progression through shared API; settle held/path input before commands.
+- Stable eric exploration hero reads battle appearance/growth; Aren remains commander NPC.
+- Advisor briefings → War Council → deployment → existing battle; old building gate retired, M03 aftermath honest.
+- Schema6 legacy spatial migration and nested checkpoints; preserve economy, story, growth, recovery and rewards.
+- NPC/pre-battle viewpoint corrections; no M04–06 or new personal story canon.
+
+## v0.3.2 — Gameplay Quality & Rewards (merged via PR8, 2026-10-16)
+Continuous keyboard/pointer movement, doorway confirmation and owner service menus. Existing auto-equip retained with explicit hero choice. Phase-once HP/MP recovery, enemy supply tactics, first-clear/optional reward ledger, overflow delivery and schema5 catchup. Merged to main with user approval.
 
 # v0.3.1 — Release recovery (2026-10-15 KST)
 - Fix Quest preference loss on immediate reload by saving in summary activation before the deferred toggle event. Keep summary Enter/Space from triggering town interaction.

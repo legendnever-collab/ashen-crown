@@ -1,6 +1,6 @@
 import {legacyRewardCatchup} from '../core/battle-rewards.js';
 import {ensureEconomy,validateEconomy} from '../core/economy.js';
-import {frontierState,validateFrontier} from '../core/frontier.js';
+import {migrateFrontier,frontierState,validateFrontier} from '../core/frontier.js';
 import {SCHEMA,WIDTH,HEIGHT,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS} from '../data/game-data.js';
 import {terrainAt,alive} from '../core/rules.js';
 import {MISSIONS,missionOf} from '../data/missions.js';
@@ -45,6 +45,7 @@ export function migrate(s){
  if(s?.schema===2){s.schema=3;s.version='0.3.0';ensureEconomy(s);s.frontier=frontierState(s.missionId);s.campaign.frontier=structuredClone(s.frontier);if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema===3){s.schema=4;s.version='0.3.1';for(const u of [...s.units,...(s.campaign.heroes||[])]){const h=HEROES.find(h=>h.id===u.id);if(h)u.mov=h.mov;}if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema===4){s.schema=5;s.version='0.3.2';legacyRewardCatchup(s.campaign.economy,s.campaign);legacyRewardCatchup(s.economy,s.campaign);if(s.stageStart)s.stageStart=migrate(s.stageStart);}
+ if(s?.schema===5){s.schema=6;s.version='0.3.3';s.frontier=migrateFrontier(s.frontier,s.missionId);s.campaign.frontier=migrateFrontier(s.campaign.frontier,s.missionId);if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');return validate(s);
 }
 export function serialize(s){validate(s);const data=JSON.stringify({...s,feedback:[]});return JSON.stringify({format:'AshenCrown',schema:SCHEMA,checksum:checksum(data),data});}

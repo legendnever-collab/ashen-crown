@@ -29,10 +29,10 @@ export const HUBS={
  npcs:[{id:'eric',name:'Erik · 방패 점검',x:5,y:5,kind:'hero'},{id:'elina',name:'Elina · 정찰',x:11,y:6,kind:'hero'},{id:'lia',name:'Lia · 기록',x:10,y:5,kind:'hero'},{id:'sain',name:'Sain · 부상자',x:3,y:6,kind:'hero'},{id:'kai',name:'Kai · 우회로',x:12,y:8,kind:'hero'},{id:'elder',name:'Camp Steward',x:6,y:3},{id:'smith',name:'Field Blacksmith',x:2,y:4,service:'weapon'},{id:'merchant',name:'Quartermaster',x:13,y:4,service:'item'},{id:'refugee',name:'Displaced Villager',x:4,y:6},{id:'guard',name:'Sentry',x:13,y:7}]}
 };
 export const FRONTIER_SCENES={
- 'pre:1':[['aren','에릭, 아침 종이 울리기 전에 돌아보자. 병사들은 어떤가?'],['eric','방패를 고치고 있다. 오늘은 좀 조용했으면 좋겠군.'],['aren','네가 본 것도 듣고 싶다.'],['elina','북쪽 숲에 낯선 발자국이 있어요. 아직 습격이라고 단정할 수는 없지만요.'],['aren','주민들이 불안해하지 않게 확인해 줘. 나도 마을을 돌아보겠다.'],['lia','기록을 보고 있었어요. 떠나기 전에 이야기할 시간이 있나요?'],['sain','피난민이 쉬고 있어요. 약이 없어도 제 손이 닿는 곳은 돕겠습니다.'],['kai','사람은 준비가 되어야 같은 길로 갈 수 있지. 말 걸고 싶으면 동쪽 길목으로 와.'],['eric','나는 광장에 있겠다. 볼일이 끝나면 회의실에서 만나자.'],['aren','서두르지는 마라. 빠뜨린 일이 없는지 살펴보자.']],
- 'pre:2':[['aren','불길은 꺼졌지만 군용 인장이 찍힌 상자는 남았다. 누가 보냈는지는 아직 모른다.'],['elina','습격자들이 숲으로 달아났어요. 뒤를 잡을 수 있어요.'],['sain','죽은 사람에게서는 답을 들을 수 없어요. 살아 있는 증언을 구할 기회를 주세요.'],['elina','마을을 불태운 사람에게 자비부터 말하나요?'],['aren','용서하자는 말이 아니다. 명령을 내린 사람을 찾아야 한다.'],['kai','북쪽 출구로 곧장 갈 거야. 나는 옆길로 먼저 움직이지.'],['eric','우리 장수들이 서로 떨어지면 위험하다. 방패와 활의 위치를 먼저 정하자.'],['lia','기록과 현장의 흔적을 비교할게요. 진술과 사실은 따로 적겠습니다.'],['aren','야영지에서 정비한다. 필요한 장비가 있으면 지금 챙겨라.'],['kai','도주 대장을 절반 HP 이하로 낮추고 인접하면 생포할 수 있어. 필수는 아니지만 정보가 달라지겠지.'],['aren','살아 돌아오는 것까지 작전이다. 준비가 되면 Command Tent로 모여라.']],
+ 'pre:1':[['aren','에릭, 아침 종이 울리기 전에 돌아보자. 병사들은 어떤가?'],['eric','방패를 고치고 있다. 오늘은 좀 조용했으면 좋겠군.'],['aren','네가 본 것도 듣고 싶다.'],['elina','북쪽 숲에 낯선 발자국이 있어요. 아직 습격이라고 단정할 수는 없지만요.'],['aren','주민들이 불안해하지 않게 확인해 줘. 에릭, 마을을 부탁한다.'],['lia','기록을 보고 있었어요. 떠나기 전에 이야기할 시간이 있나요?'],['sain','피난민이 쉬고 있어요. 약이 없어도 제 손이 닿는 곳은 돕겠습니다.'],['kai','사람은 준비가 되어야 같은 길로 갈 수 있지. 말 걸고 싶으면 동쪽 길목으로 와.'],['eric','내가 동료들을 살피겠다. 정찰 보고는 군사에게 확인하지.'],['aren','서두르지는 마라. 빠뜨린 일이 없는지 살펴보자.']],
+ 'pre:2':[['aren','불길은 꺼졌지만 군용 인장이 찍힌 상자는 남았다. 누가 보냈는지는 아직 모른다.'],['elina','습격자들이 숲으로 달아났어요. 뒤를 잡을 수 있어요.'],['sain','죽은 사람에게서는 답을 들을 수 없어요. 살아 있는 증언을 구할 기회를 주세요.'],['elina','마을을 불태운 사람에게 자비부터 말하나요?'],['aren','용서하자는 말이 아니다. 명령을 내린 사람을 찾아야 한다.'],['kai','북쪽 출구로 곧장 갈 거야. 나는 옆길로 먼저 움직이지.'],['eric','우리 장수들이 서로 떨어지면 위험하다. 방패와 활의 위치를 먼저 정하자.'],['lia','기록과 현장의 흔적을 비교할게요. 진술과 사실은 따로 적겠습니다.'],['aren','야영지에서 정비한다. 필요한 장비가 있으면 지금 챙겨라.'],['kai','도주 대장을 절반 HP 이하로 낮추고 인접하면 생포할 수 있어. 필수는 아니지만 정보가 달라지겠지.'],['aren','살아 돌아오는 것까지 작전이다. 에릭, 준비가 되면 군사와 작전을 확인해라.']],
  'pre:3':[['sain','다리 앞에 피난민이 모였어요. 부상자들은 혼자 건너기 어려워요.'],['eric','좁은 교량에 병력을 쌓으면 퇴로까지 막힌다. 먼저 길을 나누자.'],['kai','옆으로 돌아가면 북쪽에서 도울 수 있어. 방패로 혼자 다 받으려 하지는 마.'],['eric','그동안 세인을 지키겠다. 네가 돌아올 길도 남겨 두지.'],['elina','추격병은 후방에서 접근해요. 구조가 끝나도 마지막 장수가 남으면 위험해요.'],['lia','불길을 좁은 길목에 모으면 주민이 움직일 공간을 만들 수 있어요.'],['aren','주민 곁을 지키면 스스로 북쪽으로 이동한다. 인접해서 직접 구조해도 된다.'],['sain','회복과 구조 중 무엇이 급한지 현장에서 판단할게요.'],['aren','10턴 안에 주민 한 명 이상을 구하고, 생존 장수 전원이 북쪽 세 줄의 안전 구역으로 철수한다.'],['eric','기본 장비로도 할 수 있다. 여유가 있다면 이동 장비나 회복 도구를 비교해 보자.'],['aren','명령서보다 사람의 얼굴을 먼저 보겠다. 함께 준비하자.']],
- raid:[['elina','북쪽에서 연기가 올라요. Garr의 무리가 마을 안으로 들어왔어요!'],['eric','준비된 다섯 명을 부르겠다. 더 지체하지 말자.'],['aren','주민 둘을 구하고 Garr를 막는다. 먼저 배치를 확인한다.'],['sain','사람을 구할 길을 남겨 주세요.'],['aren','회의실로 모여라. 길을 정하고 바로 출발한다.']],
+ raid:[['elina','북쪽에서 연기가 올라요. Garr의 무리가 마을 안으로 들어왔어요!'],['eric','준비된 다섯 명을 부르겠다. 더 지체하지 말자.'],['aren','주민 둘을 구하고 Garr를 막는다. 먼저 배치를 확인한다.'],['sain','사람을 구할 길을 남겨 주세요.'],['aren','군사와 보고를 맞춰라. 길을 정하고 바로 출발한다.']],
  'after:1':[['elder','두 분 모두 무사히 돌아왔군요. 불탄 집보다 돌아온 얼굴부터 세겠습니다.'],['sain','다친 사람들은 여기서 쉬게 해 주세요.'],['lia','상자에 왕실 군용 인장이 있어요. 하지만 누가 전달했는지 기록은 비어 있어요.'],['aren','인장은 기록해 둬라. 상자를 보낸 사람은 아직 모른다.'],['eric','장수들의 장비를 다시 보자. 돌아올 곳이 있으면 다음 출전도 버틸 수 있다.']],
  'after:2':[['elina','숲의 흔적을 정리했어요. 결론을 서두르지는 않겠어요.'],['sain','책임을 묻는 것과 생명을 지키는 일은 같이 할 수 있어요.'],['kai','이제 다리가 문제야. 피난민이 몰리기 전에 길을 열어야 해.'],['aren','같은 야영지에서 다음 구조 작전을 준비한다.']],
  'after:3':[['sain','오늘 돌아온 사람들의 이름을 적어 두겠어요. 돌아오지 못한 이름도요.'],['eric','카이, 네가 고른 길 덕분에 우리가 돌아왔다.'],['kai','방패 뒤에 누군가 남아 있을 거라 믿었지. 이제는 조금 알겠어.'],['aren','잿빛 밤에는 명령서를 들고 있었다. 이번에는 너희와 함께 사람을 보고 판단했다.'],['lia','군용 물자의 흔적은 남아 있어요. 버려진 성채에서 기록을 찾을 수 있을지 몰라요.'],['aren','지금은 쉬자. 다음 길은 모두의 의견을 듣고 정한다.'],['eric','함께 돌아온 사람부터 살피자. 성채로 향하는 길은 그 다음이다.']]
@@ -41,11 +41,40 @@ export const FRONTIER_SCENES={
 export const NPC_LINES={
  eric:['방패는 혼자 버티라는 뜻이 아니다. 함께 돌아오기 위한 약속이지.','숲에서는 길목을 막고, 다리에서는 세인과 주민이 지나갈 자리를 남겨 두자.'],
  elina:['숲에서 낯선 발자국을 찾았어요. 준비가 끝나면 경계 보고를 모을게요.','생포하려면 도주로를 먼저 막아요. 활은 인접한 적에게 쏠 수 없으니 거리를 남겨요.'],
- lia:['봉인 흔적을 조사하다 이 마을에 머물렀어요. 기록보다 먼저 사람을 지켜야겠죠.','아렌, 조사에 협력할게요. 다만 위험을 발견하면 서로 숨기지 말아요.'],
+ lia:['봉인 흔적을 조사하다 이 마을에 머물렀어요. 기록보다 먼저 사람을 지켜야겠죠.','에릭, 조사에 협력할게요. 다만 위험을 발견하면 서로 숨기지 말아요.'],
  sain:['피난길에 만난 이들을 치료하고 있어요. 명령보다 먼저 다친 사람의 손을 잡겠습니다.','당신들의 곁에서 사람을 돕고 싶어요. 적이라도 칼을 놓으면 치료할게요.'],
  kai:['그냥 지나가던 길이야. 하지만 이 길에서 사라지는 사람이 더 늘면 곤란하지.','앞서 갈 길은 알아. 오늘은 혼자 떠나지 않고 너희와 함께 가겠어.'],
- elder:['집은 다시 지으면 됩니다. 돌아올 사람들이 먼저지요.'],smith:['무거운 건 잘 막고, 가벼운 건 빨리 움직이지. 하나 들어 보겠나?'],merchant:['많이 산다고 모두 지킬 수는 없어요. 들고 갈 도구는 여섯 개까지입니다.'],refugee:['다리 너머에도 기다리는 사람이 있어요. 길이 열리면 알려 주세요.'],guard:['경계 보고가 들어왔습니다. 회의실에서 기다리고 계십니다.']
+ elder:['집은 다시 지으면 됩니다. 돌아올 사람들이 먼저지요.'],smith:['무거운 건 잘 막고, 가벼운 건 빨리 움직이지. 하나 들어 보겠나?'],merchant:['많이 산다고 모두 지킬 수는 없어요. 들고 갈 도구는 여섯 개까지입니다.'],refugee:['다리 너머에도 기다리는 사람이 있어요. 길이 열리면 알려 주세요.'],guard:['에릭 경, 경계 보고가 들어왔습니다. 군사는 광장 동쪽에 있습니다.']
 };
 
 export const INTERIORS={weapon:{name:'Blacksmith · 무기점 내부',tone:'interior',width:12,height:10,spawn:[5,8],service:'weapon',buildings:[{x:3,y:3,w:6,h:1,type:'counter',label:'COUNTER'},{x:1,y:1,w:2,h:3,type:'furnace',label:'FORGE'},{x:9,y:1,w:2,h:4,type:'rack',label:'WEAPONS'}],npcs:[{id:'smith',name:'대장장이 · 장비 거래',x:5,y:4,service:'weapon'}],places:[{id:'exit',name:'마을로 나가기',x:5,y:8,action:'exit'}]},item:{name:'Item Shop · 도구점 내부',tone:'interior',width:10,height:12,spawn:[4,10],service:'item',buildings:[{x:2,y:4,w:6,h:1,type:'counter',label:'COUNTER'},{x:1,y:1,w:1,h:3,type:'shelf',label:'HERBS'},{x:8,y:1,w:1,h:3,type:'shelf',label:'POTIONS'}],npcs:[{id:'merchant',name:'도구 상인 · 보급 거래',x:4,y:5,service:'item'}],places:[{id:'exit',name:'마을로 나가기',x:4,y:10,action:'exit'}]}};
 for(const h of Object.values(HUBS)){h.npcs=h.npcs.filter(n=>!n.service);h.buildings.push(...(h.tone==='village'?[{x:1,y:12,w:3,h:2,type:'residence',label:'HOME'},{x:10,y:12,w:4,h:2,type:'depot',label:'SUPPLY'}]:[{x:2,y:13,w:4,h:3,type:'inn',label:'BARRACKS'},{x:12,y:14,w:5,h:3,type:'warroom',label:'OPERATIONS'},{x:8,y:19,w:3,h:3,type:'depot',label:'SUPPLY'}]));}
+
+// One tile anchor drives painted threshold, solid wall, valid approach and exit return.
+for(const hub of Object.values(HUBS)){
+ for(const [type,id,tileX,tileY,action] of [['forge','forge',3,3,'weapon'],['shop','shop',12,3,'item'],['warroom','council',12,10,'council']]){
+  const b=hub.buildings.find(b=>b.type===type),p=hub.places.find(p=>p.id===id);
+  b.buildingId=id;b.entrance={tileX,tileY,approachDirection:'north',triggerType:'interact'};
+  b.returnPoint={tileX,tileY:tileY+1};b.interiorScene=action;
+  Object.assign(p,{x:b.returnPoint.tileX,y:b.returnPoint.tileY,entrance:b.entrance,buildingId:id});
+ }
+}
+
+// Stable eric battle entity becomes the sole exploration actor. Aren remains commander.
+for(const hub of Object.values(HUBS))for(const n of hub.npcs)if(n.id==='eric')Object.assign(n,{id:'aren',name:'Aren · 군단장',kind:'commander'});
+NPC_LINES.aren=['에릭, 병사들의 상태를 살펴 줘. 이번 판단도 함께 책임지겠다.','명령서는 내가 확인하겠다. 동료들이 돌아올 길을 부탁한다.'];
+
+// Functional staff role only: personal name/backstory remains PROPOSED.
+for(const hub of Object.values(HUBS)){
+ hub.npcs.push({id:'advisor',name:'군사 · 작전 참모',x:8,y:7,kind:'advisor'});
+ const p=hub.places.find(p=>p.id==='council'),b=hub.buildings.find(b=>b.buildingId==='council');
+ p.name='Commander Quarters';delete p.action;delete p.entrance;
+ b.label='COMMAND QUARTERS';delete b.entrance;delete b.returnPoint;delete b.interiorScene;
+ delete hub.places.find(p=>p.id==='exit').action;
+ hub.places.push({id:'advisor',name:'군사 · 광장 동쪽',x:7,y:7});
+}
+export const ADVISOR_BRIEFINGS={
+ 1:[['advisor','에릭 경, 북쪽 경계에서 보고가 왔습니다.'],['eric','주민부터 지켜야 한다. 적은 어디 있지?'],['advisor','Garr의 무리가 마을로 향합니다. 광장에서 병력을 모으겠습니다.']],
+ 2:[['advisor','습격자들이 북쪽 숲길로 달아났습니다.'],['eric','숲에서 떨어지지 않게 대열을 정하자.'],['advisor','대장의 퇴로는 북쪽입니다. 생포할 기회가 있으면 보급로를 물을 수 있습니다.']],
+ 3:[['advisor','다리 앞에 피난민이 모였습니다. 후방에서는 추격병이 접근합니다.'],['eric','세인이 구조할 길을 열겠다. 철수로부터 확인하지.'],['advisor','10턴 안에 주민 한 명 이상을 구하고, 살아 있는 장수 전원이 북쪽 안전 구역으로 빠져나와야 합니다.']]
+};

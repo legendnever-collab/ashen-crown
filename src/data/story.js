@@ -1,4 +1,4 @@
-import {FRONTIER_SCENES,NPC_LINES} from './frontier-data.js';
+import {FRONTIER_SCENES,NPC_LINES,ADVISOR_BRIEFINGS} from './frontier-data.js';
 const line=(speaker,text,expression='neutral')=>({speaker,text,expression});
 export const STORY={
  '1:intro':[line('aren','왕실의 명령을 기다릴 시간이 없다. 에릭, 먼저 주민을 지켜라.','determined'),line('eric','네 판단을 믿는다. 이번에는 한 사람도 놓치지 않겠다.'),line('elina','숲에 궁수, 북쪽에 Garr. 뒤쪽에서도 발소리가 들려요.'),line('lia','스승의 봉인 흔적을 조사하러 머물던 마을이에요. 불길이 기록까지 삼키기 전에 구해야 해요.'),line('sain','명령이나 신분보다 먼저, 다친 사람부터 도와야 합니다.'),line('kai','저 상자… 군용 인장 아닌가? 지금은 사람부터 꺼내자.')],
@@ -30,10 +30,20 @@ for(let mission=1;mission<=3;mission++)for(const phase of ['preparation','afterm
  const lines=copy.map(text=>line(id,text));
  const contextual={eric:'손이 떨리는 병사부터 쉬게 하자.',elina:'자국은 남아요. 누가 밟고 갔는지 끝까지 찾겠어요.',lia:'아직 모르는 게 많네요. 그래서 더 살펴봐야죠.',sain:'기다려 주세요. 붕대를 한 번 더 감아야 해요.',kai:'쉬는 동안에도 출구는 봐 둬. 버릇이거든.',elder:'빈집에도 돌아올 사람의 자리는 남겨 두겠습니다.',refugee:'오늘은 아이가 잠들었어요. 그걸로 됐어요.',guard:'교대할 병사가 왔습니다. 이제 잠깐 쉬어도 되겠지요.'};
  if(phase==='aftermath'&&contextual[id])lines.push(line(id,contextual[id]));
- STORY[`npc:${mission}:${phase}:${id}`]=lines.map(l=>({...l,inPlace:true,actors:['aren',id],focus:1}));
+ STORY[`npc:${mission}:${phase}:${id}`]=lines.map(l=>({...l,inPlace:true,actors:['eric',id],focus:1}));
 }
 for(const [id,name]of Object.entries({elder:'마을 어른',smith:'대장장이',merchant:'도구 상인',refugee:'피난민',guard:'경비병'}))SPEAKERS[id]={id,name,ko:name,team:'civilian'};
 STORY['after:3:quiet']=STORY['after:3'].map(l=>({...l}));STORY['after:3:quiet'][1].text='서로 다른 방식으로 길을 지켰다. 아직 맞춰 가야 할 점이 있겠지.';STORY['after:3:quiet'][2].text='돌아온 사람들이 있잖아. 다음에도 길을 찾아보지.';
 STORY['after:3:loss']=[{...line('sain','모든 사람을 구하지는 못했어요. 돌아오지 못한 이름을 기억하겠습니다.','sad'),stage:'camp',actors:['aren','sain']}];
 STORY['npc:evidence']=[line('lia','왕실 군용 인장은 확인했어요. 누가 상자를 보냈는지는 알 수 없어요.')];
 STORY['npc:bond']=[line('eric','카이와 함께 세인을 지킨 일을 기억한다. 서로 다른 방식으로 같은 사람을 지켰지.'),line('kai','돌아올 곳이 있다는 걸 그날 알았어.')];
+
+SPEAKERS.advisor={id:'advisor',name:'Operations Advisor',ko:'작전 참모',team:'civilian'};
+for(let mission=1;mission<=3;mission++)for(const phase of ['preparation','aftermath']){
+ const lines=phase==='aftermath'?(mission===3?[['advisor','함께 돌아온 이들을 살피겠습니다. 성채로 향할 다음 작전은 아직 준비되지 않았습니다.'],['eric','지금은 동료들을 쉬게 하자.']]:[['advisor','전투 기록을 정리하고 있습니다. 동료들을 살핀 뒤 다음 이동을 결정하시지요.']]):ADVISOR_BRIEFINGS[mission];
+ STORY[`npc:${mission}:${phase}:advisor`]=lines.map(([speaker,text])=>({...line(speaker,text),inPlace:true,actors:['eric','advisor']}));
+}
+
+// Erik is the participant, Aren keeps command and his own Ashen Night memories.
+const ERIK_REPLIES={aren:'네가 혼자 책임질 일은 아니다. 병사들은 내가 살피겠다.',elina:'알겠다. 동료들이 돌아올 길도 함께 확인해 줘.',lia:'위험한 흔적이 있으면 먼저 알려 줘. 동료부터 지킨다.',sain:'치료에 집중해. 그동안 내가 곁을 지키겠다.',kai:'혼자 빠져나갈 길만 찾지는 마라. 모두 돌아와야 한다.'};
+for(let mission=1;mission<=3;mission++)for(const phase of ['preparation','aftermath'])for(const [id,text]of Object.entries(ERIK_REPLIES))STORY[`npc:${mission}:${phase}:${id}`].push({...line('eric',text),inPlace:true,actors:['eric',id]});

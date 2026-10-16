@@ -16,3 +16,6 @@ APPROVED_DIRECTION 관계 축, 상태 변화 세부 PROPOSED. v0.2 전투 행동
 
 
 v0.3: M03 실제 전투의 Erik–Kai bond 판정 유지, 이후 Camp 대화가 결과에 반응. NPC 대화 자체로 bond 전투 조건을 대체하지 않는다.
+
+## v0.3.3 continuity
+Erik speaks directly to Aren, Elina, Lia, Sain and Kai. Aren/Erik remain old comrades; Erik/Kai discipline/survival tension and actual M03 bond mechanics are preserved. Advisor reports actionable intelligence, without becoming the source of new crown facts.

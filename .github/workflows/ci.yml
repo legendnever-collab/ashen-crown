@@ -23,7 +23,7 @@ jobs:
       - run: npm run test:balance
       - run: npm run test:campaign-balance
       - run: npm run build
-      - run: git diff --exit-code -- index.html releases/Ashen_Crown_v0.3.2.html
+      - run: git diff --exit-code -- index.html releases/Ashen_Crown_v0.3.3.html
       - run: python scripts/verify-release.py
       - uses: actions/upload-artifact@v4
         if: always()
@@ -39,7 +39,7 @@ jobs:
       matrix:
         include:
           - suite_group: exploration
-            suites: quality migration-v031 frontier renaissance performance
+            suites: journey quality migration-v031 migration-v032 frontier renaissance performance
           - suite_group: tactical
             suites: e2e mobile tactical http post-move restart
           - suite_group: campaign

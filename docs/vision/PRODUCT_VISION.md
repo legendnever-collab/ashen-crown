@@ -12,3 +12,6 @@ CANON: «장수를 만나고, 함께 준비하고, 전장에서 성장시키며,
 
 ## v0.3.1 Classic SRPG Renaissance
 Approved implementation direction: preparation takes place in walkable shops; distinguish architectural uses; actor selection reveals legal movement and contextual commands; portrait dialogue retains world positions. Native detail, visible fire/ruins, variable rectangular maps and role-specific movement strengthen the existing loop. No additional missions or changes to the original 4-act canon.
+
+## Current protagonist (v0.3.3, D-031/032 CANON)
+에릭의 시선으로 마을에서 살고, 동료와 준비하고, 전장에서 싸운다. 직접 조작 인물은 탐색과 전투 모두 stable eric. 아렌은 군단장과 정치적 선택/과거 서사를 담당한다. 군사 대화가 작전 회의를 열며 특정 건물 방문은 요구하지 않는다.

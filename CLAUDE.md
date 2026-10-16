@@ -1,3 +1,2 @@
 # Claude entry point
-Follow [AGENTS.md](AGENTS.md) reading order, current version and verification contracts.
-Current branch feature/v0.3.2-gameplay-quality-rewards / PR8. PR6/7 merged. No v0.3.2 main merge before user play approval. Preserve Schema5 economy/recovery/reward invariants and canon.
+Follow [AGENTS.md](AGENTS.md) reading order. v0.3.2 (PR8) and v0.3.3 The Hero's Journey (PR9) were merged after the user play-tested and approved them in chat on 2026-10-16; v0.3.3 is the official release on main. Next development: v0.4.0 The Broken Allegiance on feature/v0.4-the-broken-allegiance; its PR must not be merged before the user plays and approves the release candidate. Stable eric explores and fights, Aren remains commander; D-031/032. Schema6 imports0–5. Preserve v0.3.2 recovery/rewards/economy and original story. Test current build and publish only executed results.
