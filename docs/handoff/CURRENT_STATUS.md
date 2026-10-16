@@ -23,3 +23,7 @@ Not yet done: M05, M06, ACT I completion, Phase F six-mission balance and v0.3.3
 
 ### Benchmark pass B1 (controls/bugs) — implemented 2026-10-16 KST
 User feedback #2 #5 #6 #8 #10 #11 implemented (D-038–040 recorded). Balance re-baselined per D-039: M01 balance 30/30 wins (turns 3–6), campaign-balance 30/30 (capture 15, perfect rescues 30, bridge turns 5–8), economy-balance 90 legal victories. Browser suites re-run and passing: act1 53, journey 212, quality 95, frontier 102, renaissance 137, tactical 26, e2e 60, mobile 80, campaign 124 (two conditional Sain-forecast checks are no longer reached by the policy path), restart 22, http 4, migration-v02 16 / v031 10 / v032 9. 123 unit PASS.
+
+### Benchmark pass B2 (systems) — implemented 2026-10-16 KST
+Enterable buildings + seeded chests, terrain aptitude/modifiers/fire, unit sheet, turn display (docs/v0.4.0/BENCHMARK_PASS.md). 126 unit PASS. Browser: quality 95, frontier 102, tactical 27, e2e 64, journey 212, act1 53, renaissance 137, mobile 82, campaign 128, restart 22, http 4, post-move 8, migration-v02 16 / v031 10 / v032 9 — all PASS. Balance: M01 30/30, campaign 30/30, economy 90/90, M04 30/30.
+Next: B3 dialogue rewrite + Lia as strategist (D-038), then B4 graphics sample for approval.

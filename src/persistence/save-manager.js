@@ -38,6 +38,7 @@ export function validate(s){
  if(!Array.isArray(c.completed)||c.completed.some(id=>!MISSIONS[id])||!c.flags||!c.bonds||!c.tacticalMemory||[c.flags,c.bonds,c.tacticalMemory].some(v=>typeof v!=='object'||Array.isArray(v))||Object.values(c.tacticalMemory).some(v=>!Number.isInteger(v)||v<0))throw Error('캠페인 상태가 손상되었습니다.');
  if(c.choices!=null&&(typeof c.choices!=='object'||Array.isArray(c.choices)||Object.values(c.choices).some(v=>typeof v!=='string'||v.length>40)))throw Error('선택 기록이 손상되었습니다.');
  if(rulesOf(s)&&!rulesOf(s).validState(s.missionState))throw Error('임무 진행 기록이 손상되었습니다.');
+ if(s.burning!=null&&(typeof s.burning!=='object'||Array.isArray(s.burning)||Object.entries(s.burning).some(([k,v])=>!/^\d{1,2},\d{1,2}$/.test(k)||!Number.isInteger(v)||v<1||v>2)))throw Error('화염 기록이 손상되었습니다.');
  if(s.units.some(u=>u.team==='ally'&&(![1,2,3].includes(u.appearanceTier)||['classTier','storyTier'].some(k=>u[k]!=null&&![1,2,3].includes(u[k])))))throw Error('외형 Tier가 손상되었습니다.');
  validateEconomy(s.economy);validateEconomy(s.campaign.economy);if(s.frontier)validateFrontier(s.frontier);if(s.campaign.frontier)validateFrontier(s.campaign.frontier);
  return s;

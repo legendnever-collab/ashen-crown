@@ -1,21 +1,23 @@
 export const VERSION = '0.4.0';
 export const SCHEMA = 7;
 export const WIDTH = 12, HEIGHT = 10;
+// v0.4 benchmark pass: physical cut (fraction), evade (%), fire multiplier and per-class
+// movement live together so the tap readout can describe each tile in one line.
 export const TERRAIN = {
-  g: {name:'Grass', cost:1, defense:0, evade:0, color:'#52624a'},
-  r: {name:'Road', cost:1, defense:0, evade:0, color:'#947a54'},
-  f: {name:'Forest', cost:2, defense:1, evade:12, color:'#294f43'},
-  v: {name:'Village', cost:1, defense:2, evade:0, hpRecovery:.10,mpRecovery:.05, color:'#756b56'},
-  t: {name:'Fort',cost:1,defense:2,evade:0,hpRecovery:.15,mpRecovery:.10,color:'#78817d'},
-  h: {name:'Recovery Point',cost:1,defense:0,evade:0,hpRecovery:.10,mpRecovery:.10,color:'#71a38b'},
-  b: {name:'Bridge', cost:1, defense:1, evade:0, color:'#9b815b'},
-  m: {name:'Mountain Path',cost:3,defense:2,evade:6,color:'#797e6a'},
-  d: {name:'Desert',cost:2,defense:0,evade:0,color:'#baa472'},
-  s: {name:'Swamp',cost:3,defense:0,evade:4,color:'#465f54'},
-  w: {name:'Deep Water',cost:Infinity,defense:0,evade:0,color:'#31576b'},
-  k: {name:'Keep Floor',cost:1,defense:0,evade:0,color:'#7d7a6e'},
-  q: {name:'Rampart',cost:1,defense:2,evade:5,color:'#5f6763'},
-  x: {name:'Ruin', cost:Infinity, defense:0, evade:0, color:'#434646'}
+  g: {name:'Grass',ko:'평지', cost:1, defense:0, phys:0, evade:0, fire:1.25, color:'#52624a'},
+  r: {name:'Road',ko:'길', cost:1, defense:0, phys:0, evade:0, fire:1, color:'#947a54'},
+  f: {name:'Forest',ko:'숲', cost:2, defense:0, phys:.2, evade:15, fire:1.5, color:'#294f43'},
+  v: {name:'Village',ko:'마을', cost:1, defense:0, phys:.1, evade:0, fire:1.25, hpRecovery:.10,mpRecovery:.05, color:'#756b56'},
+  t: {name:'Fort',ko:'요새',cost:1,defense:0,phys:.25,evade:0,fire:1,hpRecovery:.15,mpRecovery:.10,color:'#78817d'},
+  h: {name:'Recovery Point',ko:'보급 거점',cost:1,defense:0,phys:0,evade:0,fire:1,hpRecovery:.10,mpRecovery:.10,color:'#71a38b'},
+  b: {name:'Bridge',ko:'다리', cost:1, defense:0, phys:0, evade:-10, fire:1, color:'#9b815b'},
+  m: {name:'Mountain Path',ko:'산길',cost:3,defense:0,phys:.3,evade:10,fire:1,color:'#797e6a'},
+  d: {name:'Desert',ko:'사막',cost:2,defense:0,phys:0,evade:-5,fire:1,color:'#baa472'},
+  s: {name:'Swamp',ko:'늪',cost:3,defense:0,phys:0,evade:-10,fire:.5,color:'#465f54'},
+  w: {name:'Deep Water',ko:'깊은 물',cost:Infinity,defense:0,phys:0,evade:0,fire:0,color:'#31576b'},
+  k: {name:'Keep Floor',ko:'성채 바닥',cost:1,defense:0,phys:0,evade:0,fire:1,color:'#7d7a6e'},
+  q: {name:'Rampart',ko:'성벽 위',cost:1,defense:0,phys:.25,evade:5,fire:1,color:'#5f6763'},
+  x: {name:'Ruin',ko:'벽·폐허', cost:Infinity, defense:0, phys:0, evade:0, fire:0, color:'#434646'}
 };
 export const MAP = [
   'ffggrrrrggff',
@@ -54,4 +56,5 @@ export const BALANCE = {xpLevel:100,attackXP:22,killXP:28,healXP:24,rescueXP:45,
 // Explicit profiles: future advancement data only, no promotion UI.
 export const CLASS_MOVEMENT={knight:{base:2,profile:'infantry'},archer:{base:3,profile:'infantry'},mage:{base:3,profile:'infantry'},healer:{base:3,profile:'infantry'},rogue:{base:4,profile:'rogue'},mountedKnight:{base:5,profile:'cavalry',future:true}};
 export const HERO_CLASS={eric:'knight',elina:'archer',lia:'mage',sain:'healer',kai:'rogue'};
-export const TERRAIN_COSTS={infantry:{r:1,g:1,v:1,b:1,f:2,m:3,d:2,s:3},rogue:{r:1,g:1,v:1,b:1,f:1,m:1,d:1,s:2},cavalry:{r:1,g:1,v:1,b:1,f:2,m:Infinity,d:2,s:Infinity}};
+export const TERRAIN_COSTS={infantry:{r:1,g:1,v:1,b:1,f:2,m:3,d:2,s:3},rogue:{r:1,g:1,v:1,b:1,f:1,m:1,d:1,s:2},cavalry:{r:1,g:1,v:1,b:1,f:1,m:Infinity,d:1,s:Infinity}};
+export const PROFILE_KO={infantry:'보병',rogue:'도적',cavalry:'기병'};

@@ -1,5 +1,5 @@
 import {MapCamera,drawMinimap} from './camera.js';
-import {drawBuilding} from './world-art.js';
+import {drawBuilding,drawFire} from './world-art.js';
 import {MAP,WIDTH,HEIGHT} from '../data/game-data.js';
 import {missionOf} from '../data/missions.js';
 import {alive,movement,validTarget} from '../core/rules.js';
@@ -34,6 +34,7 @@ export class BattleRenderer{
    if(['move','choose'].includes(ui.mode)&&!selected.moved)for(const p of movement(s,selected).costs.keys()){const [tx,ty]=p.split(',').map(Number);rect(c,RANGE_STYLE.move.fill,tx*TILE+1,ty*TILE+1,60,60);rect(c,RANGE_STYLE.move.border,tx*TILE+1,ty*TILE+1,60,2);}
    else if(['attack','skill','rescue','capture'].includes(ui.mode))for(let ty=0;ty<HEIGHT;ty++)for(let tx=0;tx<WIDTH;tx++){const dummy={x:tx,y:ty,hp:1,team:ui.mode==='skill'&&['sain','eric'].includes(selected.id)?'ally':ui.mode==='rescue'?'civilian':ui.mode==='search'?'object':'enemy',id:ui.mode==='capture'?'boss':'preview'};if(validTarget(s,selected,dummy,ui.mode)){rect(c,ui.mode==='rescue'||selected.id==='sain'&&ui.mode==='skill'?RANGE_STYLE.support.fill:RANGE_STYLE.attack.fill,tx*TILE+1,ty*TILE+1,60,60);}}
   }
+  for(const k of Object.keys(s.burning||{})){const [fx,fy]=k.split(',').map(Number);rect(c,'rgba(226,108,48,.28)',fx*TILE,fy*TILE,TILE,TILE);drawFire(c,fx*TILE+32,fy*TILE+44,now,.78);}
   if(s.turn===2&&s.screen==='battle')for(const spawn of missionOf(s).reinforcements){const sx=spawn.x*TILE,sy=spawn.y*TILE;rect(c,'#e1af63',sx,sy,TILE,3);rect(c,'#e1af63',sx,sy,3,TILE);c.fillStyle='#ffdb87';c.font='bold 24px monospace';c.fillText('!',sx+28,sy+34);}
   const actors=s.units.filter(u=>(alive(u)||this.displayHP(u,now)>0)&&!u.rescued).sort((a,b)=>a.y-b.y);for(const u of actors){let ux=u.x*TILE+32,uy=u.y*TILE+37,pose='idle';const m=this.motion.get(u.id);if(m){const p=motionAt(m.path,now-m.start,m.movement,m.speed);ux=p.x*TILE+32;uy=p.y*TILE+37;pose=p.done?'idle':'walk';if(p.done&&!ui.pendingMove)this.motion.delete(u.id);}else if(ui.pendingMove?.id===u.id){ux=ui.pendingMove.x*TILE+32;uy=ui.pendingMove.y*TILE+37;}
    const effects=this.effects.filter(e=>e.id===u.id&&now>=e.start&&now-e.start<e.duration);if(effects.some(e=>e.type==='attack'))pose='attack';

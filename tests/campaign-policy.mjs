@@ -23,7 +23,7 @@ export function campaignAction(s,u,capture=true){
   score-=c*.5;if(!best||score>best.score)best={id:u.id,x,y,mode,target:t.id,score};}
   let score;
   if(goalDistance)score=200-(goalDistance.get(`${x},${y}`)??100)*12-c*.1;
-  else if(s.missionId===3&&!civ.length)score=200-(exitDistance.get(`${x},${y}`)??100)*15-c*.1;
+  else if(s.missionId===3&&!civ.length)score=200-(exitDistance.get(`${x},${y}`)??100)*15-y*3-c*.1;
   else{const targets=civ.length?civ:s.units.filter(t=>t.id==='boss'&&alive(t));const near=targets.reduce((n,t)=>Math.min(n,distance(a,t)),100);score=80-near*8-c*.1;}
   if(!best||score>best.score)best={id:u.id,x,y,mode:'wait',score};
  }

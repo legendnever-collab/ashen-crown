@@ -1,5 +1,5 @@
 import {HUBS} from '../data/frontier-data.js';
-import {explorationHero,currentHub} from '../core/frontier.js';
+import {explorationHero,currentHub,chestKey} from '../core/frontier.js';
 import {drawTile,drawSprite,pixel} from './art.js';
 import {drawBuilding,drawFire} from './world-art.js';
 import {MapCamera,drawMinimap} from './camera.js';
@@ -14,7 +14,7 @@ export function drawHub(canvas,s,{line=null,time=performance.now()}={}){
  const map=hubTerrain(h);if(hubTerrainCache?.hub!==h){const image=document.createElement('canvas');image.width=h.width*128;image.height=h.height*128;const tc=image.getContext('2d');tc.scale(2,2);for(let y=0;y<h.height;y++)for(let x=0;x<h.width;x++)drawTile(tc,map[y][x],x*64,y*64,y*h.width+x);hubTerrainCache={hub:h,image};}c.drawImage(hubTerrainCache.image,0,0,h.width*64,h.height*64);
  if(h.tone==='interior'){for(let y=0;y<h.height;y++){pixel(c,'#4a4140',0,y*64,64,64);pixel(c,'#4a4140',(h.width-1)*64,y*64,64,64);}pixel(c,'#473d3a',0,0,h.width*64,64);pixel(c,'#c4aa7f',64,62,(h.width-2)*64,3);const e=h.places[0];pixel(c,'#cab78b',e.x*64+12,e.y*64+7,40,49);pixel(c,'#8b7460',e.x*64+18,e.y*64+12,28,39);c.fillStyle='#f3e1b2';c.font='bold 11px monospace';c.fillText('EXIT',e.x*64+18,e.y*64+39);}
  const burned=!!s.campaign.flags.mission_01_completed;
- for(const b of h.buildings)drawBuilding(c,b,time,burned&&f.hub==='village'&&b.type==='residence'?'burned':line&&s.narrative.active?.key==='raid'&&b.type==='residence'?'burning':'intact');
+ const opened=new Set(s.economy?.chests||[]);for(const b of h.buildings)drawBuilding(c,b,time,b.type==='chest'?(opened.has(chestKey(s,b.chestId))?'open':'closed'):burned&&f.hub==='village'&&b.type==='residence'?'burned':line&&s.narrative.active?.key==='raid'&&b.type==='residence'?'burning':'intact');
  if(h.tone==='camp')drawFire(c,7*64,6*64,time,.65);
  if(line){const cast=(line.actors||['aren',line.speaker]).filter((id,i,a)=>a.indexOf(id)===i);cast.forEach((id,i)=>{const actor=s.units.find(u=>u.id===id)||{id,team:id==='aren'?'commander':'civilian'};drawSprite(c,actor,220+i*75,400+i%2*30,time);if(id===line.speaker)pixel(c,'#f5d594',216+i*75,342+i%2*30,8,8);});}
  else{for(const n of h.npcs){drawSprite(c,s.units.find(u=>u.id===n.id)||{...n,team:'civilian'},n.x*64+32,n.y*64+36,time);if(Math.abs(n.x-f.x)+Math.abs(n.y-f.y)<=1||s.narrative.active?.key.startsWith('npc:')&&s.narrative.active.key.endsWith(`:${n.id}`)){pixel(c,'#f0d291',n.x*64+28,n.y*64-12,8,8);}}

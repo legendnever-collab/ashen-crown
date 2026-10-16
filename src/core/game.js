@@ -27,6 +27,7 @@ function damage(s,u,t,mode,counter=false){
  const dealt=stats.damage+(critical?Math.ceil(stats.damage*.5):0);victim.hp=Math.max(0,victim.hp-dealt);victim.hitThisTurn=true;s.feedback.push({type:critical?'critical':'hit',id:victim.id,text:`${critical?'CRITICAL ':''}−${dealt}`,fromHP,toHP:victim.hp,damage:dealt});
  s.log.push(`${counter?'반격 · ':''}${u.name} → ${victim.name}: ${dealt} 피해${critical?' / Critical':''}${victim!==t?' / Guard':''}.`);
  if(victim!==t){remember(s,`guard_${victim.id}_${t.id}`);if(s.missionId===3&&t.id==='sain')enqueueStory(s,'3:guard');victim.guardTarget=null;victim.guardUsed=true;awardXP(s,victim,BALANCE.guardXP,'Guard로 동료 보호');discover(s,victim,"Guardian’s Oath");}
+ if(mode==='skill'&&u.id==='lia')ignite(s,victim);
  if(!alive(victim)){if(victim.id==='boss'){setStoryFlag(s,`mission_0${s.missionId}_garr_defeated`);enqueueStory(s,`${s.missionId}:boss`);}s.feedback.push({type:'death',id:victim.id,text:'FALLEN'});s.log.push(`${victim.name} 전투불능.`);}
  return {hit:true,damage:dealt,victim};
 }
@@ -57,7 +58,7 @@ export function performAction(s,id,mode,targetId){
  checkOutcome(s);afterBattleEvents(s);return {ok:true};
 }
 function sTerrain(s,u){return terrainAt(u.x,u.y,s).name==='Forest'?'f':terrainAt(u.x,u.y,s).name==='Village'?'v':'g';}
-export function beginEnemyPhase(s){if(s.screen!=='battle'||s.phase!=='player'||s.narrative?.active)return false;s.phase='enemy';s.undo={};rulesOf(s)?.beforeEnemyPhase?.(s);s.enemyQueue=s.units.filter(u=>u.team==='enemy'&&alive(u)).map(u=>u.id);s.enemyIndex=0;s.feedback=[];applyTerrainRecovery(s);s.log.push(`TURN ${s.turn} · ENEMY PHASE`);return true;}
+export function beginEnemyPhase(s){if(s.screen!=='battle'||s.phase!=='player'||s.narrative?.active)return false;s.phase='enemy';s.undo={};rulesOf(s)?.beforeEnemyPhase?.(s);burnUnits(s,'enemy');s.enemyQueue=s.units.filter(u=>u.team==='enemy'&&alive(u)).map(u=>u.id);s.enemyIndex=0;s.feedback=[];applyTerrainRecovery(s);s.log.push(`TURN ${s.turn} · ENEMY PHASE`);return true;}
 export function planEnemy(s,u){
  const reachable=movement(s,u).costs;
  if(s.missionId===2&&u.id==='boss'){const cells=[...reachable].map(([p,c])=>{const [x,y]=p.split(',').map(Number);return {x,y,c};}).sort((a,b)=>a.y-b.y||Math.abs(a.x-5)-Math.abs(b.x-5)||a.c-b.c);const d=cells[0];return {...d,target:null,reason:'북쪽 출구로 도주'};}
@@ -86,6 +87,7 @@ export function advanceEnemy(s){
  if(s.missionId===1&&s.turn===2)s.log.push('북쪽 숲에서 발소리가 들립니다. TURN 3에 북서·북동 모서리로 산적 2명이 진입합니다.');
  if(s.turn>=3&&!s.reinforced&&missionOf(s).reinforcements.length){for(const e of missionOf(s).reinforcements){let pos={x:e.x,y:e.y};if(at(s,pos.x,pos.y)){const free=[];for(let y=0;y<missionOf(s).height;y++)for(let x=0;x<missionOf(s).width;x++)if(!at(s,x,y)&&Number.isFinite(terrainAt(x,y,s).cost))free.push({x,y});free.sort((a,b)=>distance(a,e)-distance(b,e));pos=free[0];}s.units.push({...structuredClone(e),...pos,team:'enemy',maxHP:e.hp,mp:0,maxMP:0,mag:0,spawnTurn:s.turn});s.feedback.push({type:'spawn',id:e.id,text:'REINFORCEMENT'});}s.reinforced=true;s.log.push('적 증원 2명 출현. 이번 Player Phase 동안 먼저 대응할 수 있습니다.');}
  rulesOf(s)?.onTurnStart?.(s);
+ ageFires(s);burnUnits(s,'ally');
  if(s.missionId===1&&s.turn===4)s.log.push('Garr: “피난민을 잡아라!” 다음 TURN 5부터 산적이 주민을 직접 공격합니다.');
  applyTerrainRecovery(s);
  if(s.missionId===3)escortCivilians(s);
@@ -126,3 +128,8 @@ export function restartStage(s){if(!['battle','result'].includes(s.screen))retur
 
 export function nextMission(s){if(s.outcome!=='victory'||s.missionId>=LAST_MISSION||!s.campaign.completed.includes(s.missionId))return null;return newGame(s.initialSeed+1,structuredClone(s.campaign),s.missionId+1);}
 function escortCivilians(s){for(const c of s.units.filter(u=>u.team==='civilian'&&alive(u))){if(!s.units.some(u=>u.team==='ally'&&alive(u)&&distance(u,c)===1))continue;const options=[[0,-1],[-1,0],[1,0]].map(([dx,dy])=>({x:c.x+dx,y:c.y+dy})).filter(p=>terrainAt(p.x,p.y,s)&&Number.isFinite(terrainAt(p.x,p.y,s).cost)&&!at(s,p.x,p.y));options.sort((a,b)=>a.y-b.y||Math.abs(a.x-5.5)-Math.abs(b.x-5.5));if(options.length){const p=options[0];c.x=p.x;c.y=p.y;s.log.push(`${c.name} 호위 이동.`);if(c.y<=2){c.rescued=true;setStoryFlag(s,'mission_03_escorted');}}}}
+// Fire tactics (v0.4 benchmark pass): Fire Bolt ignites grass/forest/village for two turns.
+// Units standing in fire at the start of their side's phase take 10% max HP (min 3), never lethal.
+function ignite(s,victim){const {x,y}=victim,t=terrainAt(x,y,s);if(!t||(t.fire??1)<1.25)return;s.burning??={};const k=key(x,y),fresh=!s.burning[k];s.burning[k]=2;if(fresh){s.feedback.push({type:'ignite',id:victim.id,text:'FIRE'});s.log.push(`${t.ko||t.name}에 불길이 번졌습니다. 2턴 동안 그 위의 유닛이 화상을 입습니다.`);}}
+function ageFires(s){if(!s.burning)return;for(const k of Object.keys(s.burning)){s.burning[k]--;if(s.burning[k]<=0)delete s.burning[k];}}
+function burnUnits(s,team){if(!s.burning)return;for(const u of s.units.filter(u=>u.team===team&&alive(u)&&s.burning[key(u.x,u.y)])){const n=Math.min(u.hp-1,Math.max(3,Math.floor(u.maxHP*.1)));if(n<=0)continue;const fromHP=u.hp;u.hp-=n;s.feedback.push({type:'hit',id:u.id,text:`🔥 −${n}`,fromHP,toHP:u.hp,damage:n});s.log.push(`${u.name}: 불길에 ${n} 피해.`);}}

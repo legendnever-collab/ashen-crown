@@ -39,13 +39,14 @@ export function flank(s,u,t){return s.units.some(a=>a.team===u.team&&alive(a)&&a
 export function strikeStats(s,u,t,mode='attack'){
  u=effectiveStats(s,u);t=effectiveStats(s,t);
  const magic=mode==='skill'&&u.id==='lia',aim=mode==='skill'&&u.id==='elina',quick=mode==='skill'&&u.id==='kai';
- const defense=magic?t.res:t.def+terrainAt(t.x,t.y,s).defense;
- let dmg=Math.max(1,(magic?u.mag:u.atk)-defense+(aim?2:0)+(magic&&u.hp<=u.maxHP/2?4:0)+(quick&&flank(s,u,t)?6:0));
+ const ground=terrainAt(t.x,t.y,s),defense=magic?t.res:t.def,burning=!!s.burning?.[key(t.x,t.y)];
+ let raw=Math.max(1,(magic?u.mag:u.atk)-defense+(aim?2:0)+(magic&&u.hp<=u.maxHP/2?4:0)+(quick&&flank(s,u,t)?6:0));
+ let dmg=Math.max(1,Math.round(magic?raw*(ground.fire??1):raw*(1-(ground.phys||0))));
  if(t.id==='eric'&&t.hp<=t.maxHP*.3)dmg=Math.max(1,Math.floor(dmg*.85));
- const ground=missionOf(s).map[u.y][u.x];const hawk=u.id==='elina'&&(ground==='f'||ground==='v')?12:0;
- const hit=Math.max(55,Math.min(100,(magic?95:88)+(u.spd-t.spd)*2-terrainAt(t.x,t.y,s).evade+hawk+(aim?18:0)+(u.hit||0)));
+ const standing=missionOf(s).map[u.y][u.x];const hawk=u.id==='elina'&&(standing==='f'||standing==='v')?12:0;
+ const hit=Math.max(55,Math.min(100,(magic?95:88)+(u.spd-t.spd)*2-(ground.evade||0)+hawk+(aim?18:0)+(u.hit||0)));
  const crit=magic?0:Math.min(18,Math.max(3,u.spd-t.spd+5));
- return {damage:dmg,hit,crit,magic,flank:quick&&flank(s,u,t)};
+ return {damage:dmg,hit,crit,magic,fire:magic,terrainMul:magic?(ground.fire??1):1-(ground.phys||0),flank:quick&&flank(s,u,t),burning};
 }
 export function guardFor(s,u,t,mode){if(mode==='skill'&&u.id==='lia'||distance(u,t)!==1)return null;return s.units.find(g=>alive(g)&&g.team===t.team&&g.id!==t.id&&(g.guarding&&!g.guardUsed||g.guardTarget===t.id)&&distance(g,t)===1);}
 export function forecast(s,u,t,mode='attack'){
@@ -65,3 +66,12 @@ export function awardXP(s,u,amount,reason){
  if(leveled){u.hp=u.maxHP;u.mp=u.maxMP;s.log.push(`${u.name}: 레벨업으로 HP/MP 전부 회복.`);}
 }
 export function discover(s,u,clue){if(!u.clues.includes(clue)){u.clues.push(clue);s.feedback.push({type:'potential',id:u.id,text:'POTENTIAL DISCOVERED'});s.log.push(`Potential Clue Discovered — ${clue} (1/3). 각성은 아직 해금되지 않았습니다.`);}}
+// One-line tactical summary of a tile, shown when the player taps terrain.
+export function terrainSummary(s,x,y,u=null){const type=missionOf(s).map[y]?.[x],t=TERRAIN[type];if(!t)return '전장 밖';
+ if(!Number.isFinite(t.cost))return `${t.ko} · 통행 불가`;
+ const costs=['infantry','rogue','cavalry'].map(p=>TERRAIN_COSTS[p]?.[type]??t.cost),cost=c=>Number.isFinite(c)?c:'불가';
+ const move=costs.every(c=>c===costs[0])?`이동 ${cost(costs[0])}`:`이동 보병 ${cost(costs[0])} · 도적 ${cost(costs[1])} · 기병 ${cost(costs[2])}`;
+ const parts=[t.ko,move];if(t.phys)parts.push(`일반공격 ${Math.round(t.phys*100)}%↓`);if(t.evade)parts.push(`회피 ${Math.abs(t.evade)}%${t.evade>0?'↑':'↓'}`);
+ if(t.fire&&t.fire!==1)parts.push(`화공 ${Math.round(Math.abs(t.fire-1)*100)}%${t.fire>1?'↑':'↓'}`);if(t.hpRecovery)parts.push(`턴 시작 HP ${t.hpRecovery*100}% 회복`);
+ if(s.burning?.[key(x,y)])parts.push('🔥 불타는 중');if(u&&u.team==='ally'){const c=terrainCost(s,u,x,y);parts.push(`${u.name}: ${Number.isFinite(c)?`비용 ${c}`:'진입 불가'}`);}
+ return parts.join(' · ');}

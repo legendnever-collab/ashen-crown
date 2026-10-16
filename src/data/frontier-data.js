@@ -78,3 +78,22 @@ export const ADVISOR_BRIEFINGS={
  2:[['advisor','습격자들이 북쪽 숲길로 달아났습니다.'],['eric','숲에서 떨어지지 않게 대열을 정하자.'],['advisor','대장의 퇴로는 북쪽입니다. 생포할 기회가 있으면 보급로를 물을 수 있습니다.']],
  3:[['advisor','다리 앞에 피난민이 모였습니다. 후방에서는 추격병이 접근합니다.'],['eric','세인이 구조할 길을 열겠다. 철수로부터 확인하지.'],['advisor','10턴 안에 주민 한 명 이상을 구하고, 살아 있는 장수 전원이 북쪽 안전 구역으로 빠져나와야 합니다.']]
 };
+
+// v0.4 benchmark pass: every ordinary building can be entered. Interiors are original
+// templates; chests are once-per-mission finds (see economy op 'chest').
+const prop=(type,x,y,w=1,h=1,label='')=>({type,x,y,w,h,label});
+const roomExit=(x,y)=>({id:'exit',name:'밖으로 나가기',x,y,action:'exit'});
+function room(name,width,height,props,chests){const exitX=Math.floor(width/2);return {name,tone:'interior',width,height,spawn:[exitX,height-2],generic:true,buildings:[...props,...chests.map(([id,x,y])=>({...prop('chest',x,y),chestId:id}))],npcs:[],places:[roomExit(exitX,height-2),...chests.map(([id,x,y])=>({id:`chest:${id}`,name:'보물상자',x,y,action:'chest',chestId:id}))]};}
+Object.assign(INTERIORS,{
+ house:room('민가 · 내부',9,8,[prop('bed',1,1,2,1),prop('table',4,2,2,1),prop('hearth',6,1,2,1),prop('barrel',1,4)],[['a',7,4]]),
+ barracks:room('병영 · 내부',11,8,[prop('bunk',1,1,2,1),prop('bunk',4,1,2,1),prop('bunk',7,1,2,1),prop('table',4,4,3,1),prop('barrel',9,4)],[['a',1,4],['b',9,1]]),
+ store:room('창고 · 내부',10,9,[prop('crate',1,1,2,2),prop('barrel',4,1),prop('barrel',5,1),prop('crate',7,1,2,1),prop('crate',1,5),prop('barrel',8,5)],[['a',8,3],['b',3,4]]),
+ quarters:room('지휘 막사 · 내부',10,8,[prop('maptable',3,2,4,2),prop('shelf',1,1,1,3),prop('barrel',8,1)],[['a',8,4]])
+});
+export const BUILDING_INTERIOR={residence:'house',inn:'barracks',depot:'store',warroom:'quarters'};
+for(const [hubId,hub] of Object.entries(HUBS)){let n=0;
+ for(const b of hub.buildings){const interior=BUILDING_INTERIOR[b.type];if(!interior||b.entrance)continue;
+  b.buildingId=b.buildingId&&b.buildingId!=='council'?b.buildingId:`${b.type}-${++n}`;const tileX=b.x+Math.floor(b.w/2),tileY=b.y+b.h-1;
+  b.entrance={tileX,tileY,approachDirection:'north',triggerType:'interact'};b.returnPoint={tileX,tileY:tileY+1};b.interiorScene=interior;
+  hub.places.push({id:b.buildingId,name:({HOME:'민가',SUPPLY:'보급 창고',BARRACKS:'병영',TRIAGE:'구호 천막','COMMAND QUARTERS':'지휘관 숙소',OPERATIONS:'작전 막사'})[b.label]||b.label||interior,x:tileX,y:tileY+1,action:'enter',entrance:b.entrance,buildingId:b.buildingId,interior,hub:hubId});}
+}
