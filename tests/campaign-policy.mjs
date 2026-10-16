@@ -1,22 +1,29 @@
+import {missionOf} from '../src/data/missions.js';
 import {findUnit,alive,movement,validTarget,forecast,distance,terrainAt,terrainCost} from '../src/core/rules.js';
 import {moveUnit,performAction,canAct,beginEnemyPhase,advanceEnemy} from '../src/core/game.js';
 import {openStory,advanceStory} from '../src/core/narrative.js';
+// v0.4 missions: path distance (walls respected, units ignored) toward open evidence, then the boss.
+function missionGoals(s){const open=s.units.filter(o=>o.team==='object'&&o.kind==='evidence'&&alive(o));return open.length?open:s.units.filter(t=>t.id==='boss'&&alive(t));}
+function fieldDistance(s,u,goals){const d=new Map(),q=[];for(const g of goals)for(const [dx,dy]of [[0,-1],[-1,0],[1,0],[0,1]]){const x=g.x+dx,y=g.y+dy;if(Number.isFinite(terrainCost(s,u,x,y))){d.set(`${x},${y}`,0);q.push({x,y,c:0});}}while(q.length){q.sort((a,b)=>a.c-b.c);const p=q.shift();if(p.c!==d.get(`${p.x},${p.y}`))continue;for(const [dx,dy]of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,step=terrainCost(s,u,x,y),k=`${x},${y}`;if(!Number.isFinite(step))continue;const c=p.c+step;if(c<(d.get(k)??Infinity)){d.set(k,c);q.push({x,y,c});}}}return d;}
 export function drain(s){openStory(s);for(let i=0;s.narrative.active&&i<100;i++)advanceStory(s);}
 export function campaignAction(s,u,capture=true){
- let best=null;const exitDistance=new Map();if(s.missionId===3){const q=[];for(let y=0;y<=2;y++)for(let x=0;x<14;x++)if(Number.isFinite(terrainCost(s,u,x,y))){exitDistance.set(`${x},${y}`,0);q.push({x,y,c:0});}while(q.length){q.sort((a,b)=>a.c-b.c);const p=q.shift();for(const [dx,dy]of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,c=p.c+terrainCost(s,u,p.x,p.y),k=`${x},${y}`;if(Number.isFinite(terrainCost(s,u,x,y))&&c<(exitDistance.get(k)??Infinity)){exitDistance.set(k,c);q.push({x,y,c});}}}}const cells=u.moved?new Map([[`${u.x},${u.y}`,0]]):movement(s,u).costs;
+ let best=null;const exitDistance=new Map();if(s.missionId===3){const q=[];for(let y=0;y<=2;y++)for(let x=0;x<14;x++)if(Number.isFinite(terrainCost(s,u,x,y))){exitDistance.set(`${x},${y}`,0);q.push({x,y,c:0});}while(q.length){q.sort((a,b)=>a.c-b.c);const p=q.shift();for(const [dx,dy]of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,c=p.c+terrainCost(s,u,p.x,p.y),k=`${x},${y}`;if(Number.isFinite(terrainCost(s,u,x,y))&&c<(exitDistance.get(k)??Infinity)){exitDistance.set(k,c);q.push({x,y,c});}}}}const goalDistance=s.missionId>=4?fieldDistance(s,u,missionGoals(s)):null;const cells=u.moved?new Map([[`${u.x},${u.y}`,0]]):movement(s,u).costs;
  const civ=s.units.filter(t=>t.team==='civilian'&&alive(t));
  for(const [p,c]of cells){const [x,y]=p.split(',').map(Number),a={...u,x,y};
-  for(const t of s.units.filter(alive))for(const mode of ['capture','rescue','skill','attack']){if(!validTarget(s,a,t,mode)||mode==='capture'&&!capture||mode==='skill'&&a.mp<(a.cost+(a.id==='lia'&&a.hp<=a.maxHP/2?1:0)))continue;const f=forecast(s,a,t,mode);let score=-1000;
-  if(mode==='capture')score=2000;
+  for(const t of s.units.filter(alive))for(const mode of s.missionId>=4?['search','capture','rescue','skill','attack']:['capture','rescue','skill','attack']){if(!validTarget(s,a,t,mode)||mode==='capture'&&!capture||mode==='skill'&&a.mp<(a.cost+(a.id==='lia'&&a.hp<=a.maxHP/2?1:0)))continue;const f=forecast(s,a,t,mode);let score=-1000;
+  if(mode==='search')score=t.evidence==='ledger'?1500:1300;
+  else if(mode==='capture')score=2000;
   else if(mode==='rescue')score=1000;
   else if(f.heal!==undefined)score=f.heal>=10?80+f.heal:0;
   else if(f.guard===true)score=0;
   else{score=f.damage*f.hit/100*3+(f.after===0?50:0)-f.counter;
    if(s.missionId===2&&t.id==='boss'){score+=100;if(capture&&f.after===0)score=-500;}
-   if(s.missionId===3){if(civ.length)score+=20;else score+=t.y<u.y?100:10;}}
+   if(s.missionId===3){if(civ.length)score+=20;else score+=t.y<u.y?100:10;}
+   if(s.missionId===4){if(t.burns&&s.turn<missionOf(s).burnTurn&&s.units.some(o=>o.evidence===t.burns&&alive(o)))score+=80;if(t.id==='boss')score+=60;}}
   score-=c*.5;if(!best||score>best.score)best={id:u.id,x,y,mode,target:t.id,score};}
   let score;
-  if(s.missionId===3&&!civ.length)score=200-(exitDistance.get(`${x},${y}`)??100)*15-c*.1;
+  if(goalDistance)score=200-(goalDistance.get(`${x},${y}`)??100)*12-c*.1;
+  else if(s.missionId===3&&!civ.length)score=200-(exitDistance.get(`${x},${y}`)??100)*15-c*.1;
   else{const targets=civ.length?civ:s.units.filter(t=>t.id==='boss'&&alive(t));const near=targets.reduce((n,t)=>Math.min(n,distance(a,t)),100);score=80-near*8-c*.1;}
   if(!best||score>best.score)best={id:u.id,x,y,mode:'wait',score};
  }

@@ -29,7 +29,7 @@ export function skillCost(u){const h=HEROES.find(h=>h.id===u.id);return (h?.cost
 export function rangeFor(u,mode='attack'){return mode==='skill'&&u.id==='lia'?[1,3]:mode==='skill'&&u.id==='sain'?[0,2]:mode==='skill'&&u.id==='eric'?[1,1]:u.range;}
 export function validTarget(s,u,t,mode='attack'){
  if(!u||!t||!alive(u)||!alive(t))return false;
- const d=distance(u,t);if(mode==='capture')return s.missionId===2&&t.id==='boss'&&t.team==='enemy'&&t.hp<=t.maxHP/2&&d===1;
+ const d=distance(u,t);if(t.team==='object')return mode==='search'&&u.team==='ally'&&d===1;if(mode==='search')return false;if(mode==='capture')return s.missionId===2&&t.id==='boss'&&t.team==='enemy'&&t.hp<=t.maxHP/2&&d===1;
  if(mode==='rescue')return t.team==='civilian'&&d===1;
  if(mode==='skill'&&(u.id==='eric'||u.id==='sain'))return t.team==='ally'&&d>=rangeFor(u,mode)[0]&&d<=rangeFor(u,mode)[1]&&(u.id!=='eric'||u.id!==t.id);
  const [min,max]=rangeFor(u,mode);return u.team!==t.team&&t.team!=='civilian'&&d>=min&&d<=max;
@@ -52,6 +52,7 @@ export function forecast(s,u,t,mode='attack'){
  if(mode==='skill'&&u.id==='eric')return {guard:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='capture')return {capture:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='rescue')return {rescue:true,damage:0,hit:100,counter:0,after:t.hp};
+ if(mode==='search')return {search:true,damage:0,hit:100,counter:0,after:t.hp};
  const guard=guardFor(s,u,t,mode),victim=guard||t,stats=strikeStats(s,u,victim,mode),canCounter=validTarget(s,victim,u,'attack')&&victim.hp>stats.damage;
  const counter=canCounter?strikeStats(s,victim,u).damage:0;
  return {...stats,counter,counterHit:canCounter?strikeStats(s,victim,u).hit:0,after:Math.max(0,victim.hp-stats.damage),guard:guard?.id,victim:victim.id};

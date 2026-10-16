@@ -15,3 +15,27 @@ export const mapDimensions=s=>({width:missionOf(s).map[0].length,height:missionO
 // Limited tactical supply sites; old core routes and victory deadlines stay intact.
 MISSIONS[2].map[6][9]='h';
 MISSIONS[3].map[5][5]='t';
+
+// v0.4 ACT I missions are authored at full size; M01–03 data above stays unchanged.
+const unit=(id,name,kind,x,y,stats={})=>({id,name,kind,x,y,hp:30,atk:13,def:5,res:3,spd:6,mov:3,range:kind==='archer'?[2,3]:[1,1],...stats});
+const evidence=(id,name,type,x,y)=>({id,name,kind:'evidence',evidence:type,x,y});
+function authored(m){m.map=grid(m.rows);delete m.rows;m.width=m.map[0].length;m.height=m.map.length;m.layers={terrain:m.map,collision:m.map.map(row=>row.map(t=>['x','w'].includes(t))),buildings:[],objects:[],actors:'units',effects:'feedback',events:'narrative'};m.objects=m.objects||[];m.waves=m.waves||[];m.reinforcements=m.reinforcements||[];m.civilians=m.civilians||[];return m;}
+const zone=(cells)=>new Set(cells.map(([x,y])=>`${x},${y}`));
+MISSIONS[4]=authored({id:4,title:'버려진 성채',en:'The Abandoned Fortress',
+ rows:['xxxxxxxxxxxxxxxx','xrrrxrrrrrrxrrrx','xrrrxrrrrrrxrrrx','xrrrxxxrrxxxrrrx','xtrrrrrrrrrrrrtx','xxxrxxggggxxrxxx','xrrrxggggggxrrrx','xrrrrggghgggrrrx','xrrrxggggggxrrrx','xxrxxxggggxxxrxx','xxrxxtrrrrtxxrxx','grrrrrrrrrrrrrrg','ggggggggggmggggg','gggfffgggggfffgg'],
+ enemies:[
+  unit('boss','성채 병참관','captain',7,2,{hp:66,atk:16,def:7,res:4,spd:6,mov:0,alertMov:3}),
+  unit('w1','성벽 사수','archer',1,4,{hp:26,atk:13,def:3,spd:7,mov:0}),
+  unit('w2','성벽 사수','archer',14,4,{hp:26,atk:13,def:3,spd:7,mov:0}),
+  unit('g1','성채 경비병','bandit',3,5),unit('g2','성채 경비병','bandit',12,5),
+  unit('g3','관문 경비병','bandit',7,9,{hp:32}),unit('g4','보관실 경비병','bandit',8,3,{hp:32,def:6}),
+  unit('t1','횃불 병참병','bandit',2,2,{hp:24,atk:11,def:3,mov:0,burns:'seal'}),
+  unit('t2','횃불 병참병','bandit',13,2,{hp:24,atk:11,def:3,mov:0,burns:'orders'})],
+ waves:[{turn:4,story:'4:reinforce',units:[unit('r1','지하 창고병','bandit',6,6,{hp:28}),unit('r2','지하 창고병','bandit',9,8,{hp:28})]}],
+ objects:[evidence('e1','보급 장부','ledger',8,1),evidence('e2','봉인술 기록','seal',1,1),evidence('e3','이송 군령','orders',14,1)],
+ deployZone:s=>{const base=[];for(let y=11;y<=13;y++)for(let x=0;x<16;x++)base.push([x,y]);if(s?.campaign?.flags?.mission_02_supply_route_discovered)base.push([2,8],[2,9],[2,10]);return zone(base);},
+ deployments:{recommended:[[7,11],[5,12],[8,12],[7,13],[10,12]],assault:[[6,11],[4,11],[9,11],[7,12],[11,11]],defense:[[7,12],[5,13],[9,13],[7,13],[11,12]]},
+ threatTurn:99,par:9,turnLimit:14,burnTurn:8,
+ objective:'보급 장부 확보 + 성채 병참관 격파',
+ brief:'증거 지점에 인접해 조사(행동 1회). TURN 7이 끝나면 살아 있는 횃불 병참병이 맡은 기록을 태웁니다. 보급 장부는 소각되지 않습니다. 제한 14턴.'});
+export const LAST_MISSION=Math.max(...Object.keys(MISSIONS).map(Number));
