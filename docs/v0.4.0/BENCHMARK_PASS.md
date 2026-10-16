@@ -63,3 +63,12 @@ Lia stands at the war table beside her staff aide (the aide keeps the `advisor` 
 | 8 | Interiors have the exit door on the bottom row; walking onto it leaves the building. |
 | 9 | Hit = clamp(70–100, 97 (magic 100) + 1.5 × SPD gap − terrain evade + skill/gear bonuses − target dodge). Crit = clamp(3–12%, SPD gap/2 + 5), ×1.5 damage; magic never crits. |
 | 10 | Depth-sorted town drawing (heroes never draw over roofs), villagers pace slowly with role props, and the faced person is talked to first when several are adjacent. |
+
+## B4 — graphics sample (PROPOSED, awaiting user approval; not wired into the game)
+`src/render/hd-art.js` paints original pixel art at 48 logical pixels per tile, shown at 2× (96 px per tile on desktop):
+- Per-pixel shading ramps (hue-shifted shadows/highlights) with ordered dithering, coloured outlines on every figure and object.
+- Organic terrain edges (roads, sand, water and swamp fray into grass), tufts/flowers/stones, shore foam, plank bridges, flagstone fortress floors and ramparts.
+- Trees, bushes, ruined walls, crags and cottages are depth-sorted objects; a unit always draws in front of the trees on its own tile.
+- 20 hand-built figures (six heroes and the commander, five enemy types, nine civilians/staff) with distinct silhouettes, headgear and props; chibi proportions with eyes that stay visible under hair, hoods and helmets.
+Sample images: docs/v0.4.0/b4/ (`b4-compare` current vs sample on the same M01 scene at the same scale, `b4-scene`, `b4-zoom`, `b4-cast`, `b4-terrain`). Harness: `samples/b4/index.html` (`#scene`, `#cast`, `#terrain`), rendered by `node samples/b4/shots.mjs <outdir> scene cast terrain`.
+Rollout after approval: replace battle tiles/sprites, town tiles/NPCs and portraits-on-map with this renderer, add walk/attack frames and facing, keep the 64-unit logical coordinate system and all hit-testing unchanged.
