@@ -47,3 +47,10 @@ D-026 runtime held input and transient explicit doors; no serialized pressed key
 - D-032 Advisor-driven Campaign Progression — CANON. 군사 NPC 대화 → War Council → Free Deployment → Confirm → Battle. War Room 건물은 필수 gate가 아니다. D-015의 준비 loop를 구체화한다. 신규 기능 NPC의 개인 이름/과거는 PROPOSED이며 확정하지 않는다.
 - D-033 Door geometry / migration — implementation policy. Single facade threshold anchor and exact front approach; pointer uses existing inverse camera transform. Schema6 migrates legacy exterior/interior/return/nested checkpoint positions, preserving all non-spatial payloads. Advisor request persists across dialogue reload; input/camera animation remains runtime only.
 Requested D-014/015 IDs were occupied; D-031/032 are assigned without renumbering historical decisions.
+
+## 2026-10-16 — v0.4.0 Phase B user approvals (chat, 18:5x KST)
+- D-034 Erik–Baldrick past — CANON (user chose option B "구출된 생존자"). 에릭이 발드릭 휘하에 있던 시절, 발드릭은 명령을 어기고 에릭만 전장에서 끌어냈고 남겨진 에릭의 동료들은 희생되었다. 에릭은 발드릭에게 목숨의 빚과 함께 동료를 지키지 못한 자책을 진다. 시기·장소·부대명·희생자 이름은 OPEN.
+- D-035 M06 royal order — CANON (approved). 왕실 명의 국경 봉쇄 명령 = 관문 봉인 + 피난민 통행 금지 + 성채 기록 회수, 잿빛 밤 봉인 명령과 같은 형식. 서명은 '왕실 군령부'로만 표기한다. 재상 관여·실제 서명자는 비공개(ACT III).
+- D-036 Lia's teacher clue in M04 — CANON (approved). 봉인술 기록에서 스승과 같은 표기 방식만 발견한다. 스승 이름·정체·생사는 OPEN 유지.
+- D-037 Legion name — CANON (approved). ACT I 종료 시 독립 군단의 이름은 재의 군단 (Ashen Legion).
+- Not asked / still PROPOSED: Q4 성채 병참관 기능 이름, Q5 발드릭 외형(검은 판금·사자 갈기 망토·장창, 독자 디자인), C1–C3 선택지 세부, 미션 수치.

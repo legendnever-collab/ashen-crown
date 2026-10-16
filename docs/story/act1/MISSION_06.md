@@ -60,9 +60,9 @@ ACT I 종결 미션이다. 아래 세부는 PROPOSED이며, 봉쇄 명령의 성
 - 기본: Medium Potion 1, Ether 1
 - 선택: 피난민 전원 통과 → **Trail Boots 1**, 봉화 파괴 → 60 Gold
 
-## OPEN (사용자 결정 필요)
-- 독립 군단의 이름: 제안 "재의 군단 (Ashen Legion)" — 승인 전에는 "독립 군단"으로만 표기
-- 봉쇄 명령 서명자: '왕실 군령부'로만 표기 (재상 관여 비공개 — ACT III)
+## 승인된 결정
+- 독립 군단의 이름: **재의 군단 (Ashen Legion)** — CANON D-037
+- 봉쇄 명령 형식과 서명 표기: CANON D-035 ('왕실 군령부'만, 재상 관여 비공개 — ACT III)
 
 ## 대사 키
 `pre:6`, `pre:6:reason:{hero}`, `6:intro`, `6:phase2`, `6:phase3`, `6:banner`, `6:beacon`, `6:unseal`, `6:encounter`, `6:end`, `6:oath`, `6:oath:{focus}`, `6:oath:bond:{bond}`, `act1:complete`, `after:6`

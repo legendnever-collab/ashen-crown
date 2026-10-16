@@ -118,3 +118,6 @@ v0.3 continuity: M01 이전 Ashen Village 짧은 탐색/동료 소개 → 습격
 
 ## v0.3.3 user-approved viewpoint — CANON D-031/032
 Erik is the directly controlled exploration and battle protagonist. Aren remains commander and keeps his past and crown arc; this supersedes any older avatar implication without transferring history. Advisor dialogue opens war council. Original4 acts/30 missions/factions/endings remain intact; no new personal advisor lore canonized.
+
+## v0.4.0 user-approved ACT I details — CANON D-034–037
+Erik–Baldrick: Baldrick disobeyed orders to pull Erik alone out of a battle; Erik's comrades left behind died. Erik owes Baldrick his life and blames himself (time/place/names OPEN). M06 royal border-closure order repeats the Ashen Night sealing-order form (gate seal, refugee passage ban, record recovery), signed only as the Royal War Office; chancellor involvement remains undisclosed. M04 seal-craft records share only the notation style of Lia's teacher (identity OPEN). The independent force formed at the end of ACT I is the Ashen Legion (재의 군단). Baldrick's recruitment conditions remain OPEN.
