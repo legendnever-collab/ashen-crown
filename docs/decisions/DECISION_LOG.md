@@ -54,3 +54,8 @@ Requested D-014/015 IDs were occupied; D-031/032 are assigned without renumberin
 - D-036 Lia's teacher clue in M04 — CANON (approved). 봉인술 기록에서 스승과 같은 표기 방식만 발견한다. 스승 이름·정체·생사는 OPEN 유지.
 - D-037 Legion name — CANON (approved). ACT I 종료 시 독립 군단의 이름은 재의 군단 (Ashen Legion).
 - Not asked / still PROPOSED: Q4 성채 병참관 기능 이름, Q5 발드릭 외형(검은 판금·사자 갈기 망토·장창, 독자 디자인), C1–C3 선택지 세부, 미션 수치.
+
+## 2026-10-16 — Cao Cao's Legend benchmark pass (user feedback, chat 21:13–21:16 KST)
+- D-038 Lia as Legion Strategist — CANON (user chose option A). 리아가 군단의 군사(작전 참모)를 겸임하고 계속 출전한다. 작전 회의를 리아가 주재하며, 기존 기능 NPC "작전 참모"는 리아의 보좌로 바뀐다(개인 이름·과거 없음). D-032 진행 흐름(군사 대화 → War Council → Free Deployment)은 유지한다.
+- D-039 Balance re-baseline — approved. Guard·지형 보정·EXP·레벨업 회복 변경으로 M01–03 결과는 v0.3.3과 달라진다. 6개 미션 전체를 legal-policy 시뮬레이션으로 재검증해 클리어 가능성과 난이도를 확인한다.
+- D-040 Benchmark scope: gameplay conventions, information layout and presentation density of classic tactical SRPGs (Cao Cao's Legend) are benchmarked; all art, UI chrome, characters and text remain original. Order: B1 controls/bugs → B2 systems → B3 dialogue/strategist → B4 graphics sample → approval → rollout → Phase D (M05).

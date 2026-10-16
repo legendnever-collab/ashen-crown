@@ -26,12 +26,13 @@ export function movement(s,u,ignore=false){
 }
 export function pathTo(s,u,x,y){const {costs,prev}=movement(s,u);let k=key(x,y);if(!costs.has(k))return null;const path=[];while(k){const [px,py]=k.split(',').map(Number);path.unshift({x:px,y:py});k=prev.get(k);}return path;}
 export function skillCost(u){const h=HEROES.find(h=>h.id===u.id);return (h?.cost||0)+(u.id==='lia'&&u.hp<=u.maxHP/2?1:0);}
-export function rangeFor(u,mode='attack'){return mode==='skill'&&u.id==='lia'?[1,3]:mode==='skill'&&u.id==='sain'?[0,2]:mode==='skill'&&u.id==='eric'?[1,1]:u.range;}
+export function rangeFor(u,mode='attack'){return mode==='skill'&&u.id==='lia'?[1,3]:mode==='skill'&&u.id==='sain'?[0,2]:mode==='skill'&&u.id==='eric'?[0,0]:u.range;}
 export function validTarget(s,u,t,mode='attack'){
  if(!u||!t||!alive(u)||!alive(t))return false;
  const d=distance(u,t);if(t.team==='object')return mode==='search'&&u.team==='ally'&&d===1;if(mode==='search')return false;if(mode==='capture')return s.missionId===2&&t.id==='boss'&&t.team==='enemy'&&t.hp<=t.maxHP/2&&d===1;
  if(mode==='rescue')return t.team==='civilian'&&d===1;
- if(mode==='skill'&&(u.id==='eric'||u.id==='sain'))return t.team==='ally'&&d>=rangeFor(u,mode)[0]&&d<=rangeFor(u,mode)[1]&&(u.id!=='eric'||u.id!==t.id);
+ if(mode==='skill'&&u.id==='eric')return t.id===u.id;
+ if(mode==='skill'&&u.id==='sain')return t.team==='ally'&&d>=rangeFor(u,mode)[0]&&d<=rangeFor(u,mode)[1];
  const [min,max]=rangeFor(u,mode);return u.team!==t.team&&t.team!=='civilian'&&d>=min&&d<=max;
 }
 export function flank(s,u,t){return s.units.some(a=>a.team===u.team&&alive(a)&&a.id!==u.id&&distance(a,t)===1&&((u.x<t.x&&a.x>t.x)||(u.x>t.x&&a.x<t.x)||(u.y<t.y&&a.y>t.y)||(u.y>t.y&&a.y<t.y)));}
@@ -46,7 +47,7 @@ export function strikeStats(s,u,t,mode='attack'){
  const crit=magic?0:Math.min(18,Math.max(3,u.spd-t.spd+5));
  return {damage:dmg,hit,crit,magic,flank:quick&&flank(s,u,t)};
 }
-export function guardFor(s,u,t,mode){if(mode==='skill'&&u.id==='lia'||distance(u,t)!==1)return null;return s.units.find(g=>alive(g)&&g.team===t.team&&g.guardTarget===t.id&&distance(g,t)===1);}
+export function guardFor(s,u,t,mode){if(mode==='skill'&&u.id==='lia'||distance(u,t)!==1)return null;return s.units.find(g=>alive(g)&&g.team===t.team&&g.id!==t.id&&(g.guarding&&!g.guardUsed||g.guardTarget===t.id)&&distance(g,t)===1);}
 export function forecast(s,u,t,mode='attack'){
  if(mode==='skill'&&u.id==='sain')return {heal:Math.min(t.maxHP-t.hp,12+effectiveStats(s,u).mag),hit:100,damage:0,counter:0,after:Math.min(t.maxHP,t.hp+12+effectiveStats(s,u).mag)};
  if(mode==='skill'&&u.id==='eric')return {guard:true,damage:0,hit:100,counter:0,after:t.hp};
@@ -60,6 +61,7 @@ export function forecast(s,u,t,mode='attack'){
 export function awardXP(s,u,amount,reason){
  if(u.team!=='ally'||!amount)return;
  u.xp+=amount;u.earnedXP+=amount;u.highlights.push(reason);s.feedback.push({type:'xp',id:u.id,text:`+${amount} EXP`});
- while(u.xp>=BALANCE.xpLevel){u.xp-=BALANCE.xpLevel;u.level++;const g=HEROES.find(h=>h.id===u.id).growth;const changes={...g};for(const [stat,n] of Object.entries(g)){if(stat==='hp'){u.maxHP+=n;u.hp=Math.min(u.maxHP,u.hp+n);}else if(stat==='mp'){u.maxMP+=n;u.mp=Math.min(u.maxMP,u.mp+n);}else u[stat]+=n;}if(u.id==='eric'&&u.level>=5)u.appearanceTier=2;u.growthHistory.push({level:u.level,changes});s.feedback.push({type:'level',id:u.id,text:`LEVEL ${u.level}`,toHP:u.hp});s.log.push(`${u.name} → LV ${u.level}. 성장이 새로운 힘으로 이어집니다.`);}
+ let leveled=false;while(u.xp>=BALANCE.xpLevel){leveled=true;u.xp-=BALANCE.xpLevel;u.level++;const g=HEROES.find(h=>h.id===u.id).growth;const changes={...g};for(const [stat,n] of Object.entries(g)){if(stat==='hp'){u.maxHP+=n;u.hp=Math.min(u.maxHP,u.hp+n);}else if(stat==='mp'){u.maxMP+=n;u.mp=Math.min(u.maxMP,u.mp+n);}else u[stat]+=n;}if(u.id==='eric'&&u.level>=5)u.appearanceTier=2;u.growthHistory.push({level:u.level,changes});s.feedback.push({type:'level',id:u.id,text:`LEVEL ${u.level}`,toHP:u.hp});s.log.push(`${u.name} → LV ${u.level}. 성장이 새로운 힘으로 이어집니다.`);}
+ if(leveled){u.hp=u.maxHP;u.mp=u.maxMP;s.log.push(`${u.name}: 레벨업으로 HP/MP 전부 회복.`);}
 }
 export function discover(s,u,clue){if(!u.clues.includes(clue)){u.clues.push(clue);s.feedback.push({type:'potential',id:u.id,text:'POTENTIAL DISCOVERED'});s.log.push(`Potential Clue Discovered — ${clue} (1/3). 각성은 아직 해금되지 않았습니다.`);}}

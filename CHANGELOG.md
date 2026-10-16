@@ -1,4 +1,5 @@
 # v0.4.0 — The Broken Allegiance (in development)
+- Benchmark pass B1 (user feedback): shop doors prompt only when Erik steps into the doorway; Guard is a self stance usable anywhere (DEF +3 until the next player turn, intercepts the first melee hit on an adjacent ally); a centred "다음 턴으로 넘어가겠습니까?" card appears once every hero has acted; compact icon command list anchored beside the selected unit; level-up restores HP/MP; every heal grants EXP (10 + half the amount, max 24); visual bag, gear storage and paper-doll equipment screens.
 - M04 The Abandoned Fortress: investigation battle with Search, torch-bearer burn timer, quartermaster alert, courtyard wave, M02-capture side deployment, Lia–Kai bond and records decision.
 - Data-driven mission hooks for M04+; M01–03 rules and balance results unchanged. Save schema 7 (imports 0–6).
 - New fortress terrain (Keep Floor, Rampart) and evidence art; font subset extended from the same Noto Sans CJK KR source.

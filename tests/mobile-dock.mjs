@@ -10,7 +10,7 @@ const state=p=>p.evaluate(()=>window.AshenCrown.snapshot()),view=p=>p.evaluate((
 async function tile(p,x,y){await p.waitForTimeout(350);const pt=await p.evaluate(([x,y])=>{const c=window.AshenCrown.tileCenter(x,y),b=document.querySelector('#battle-map').getBoundingClientRect();return {x:c.x+b.x,y:c.y+b.y};},[x,y]);await p.touchscreen.tap(pt.x,pt.y);}
 const idle=async p=>{await drainStory(p);return p.waitForFunction(()=>!window.AshenCrown.view().busy,{},{timeout:30000});};
 async function cmd(p,a,id){if((a==='mode'&&['move','attack','skill','rescue'].includes(id))||['wait','undo'].includes(a)){if(!await p.locator('#unit-popover:not([hidden])').count())await p.locator('[data-do="open-unit-menu"]').tap();await drainStory(p);if(id==='skill')await p.locator('[data-do="submenu"][data-id="skills"]').tap();await drainStory(p);}await p.locator(`[data-do="${a}"]${id?`[data-id="${id}"]`:''}`).first().tap();await drainStory(p);}
-async function select(p,id){const u=(await state(p)).units.find(u=>u.id===id);await tile(p,u.x,u.y);}
+async function select(p,id){const u=(await state(p)).units.find(u=>u.id===id);if(await p.locator('#unit-popover:not([hidden]) [data-do="close-unit-menu"]').count())await cmd(p,'close-unit-menu');await tile(p,u.x,u.y);}
 async function end(p){await cmd(p,'end-phase');if(await p.locator('[data-do="confirm-phase"]').count())await cmd(p,'confirm-phase');await idle(p);}
 async function inViewport(p,selector){const b=await p.locator(selector).boundingBox(),v=p.viewportSize();return b&&b.x>=0&&b.y>=0&&b.x+b.width<=v.width+1&&b.y+b.height<=v.height+1;}
 try{

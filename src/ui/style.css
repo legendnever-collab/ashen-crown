@@ -50,3 +50,52 @@
 /* Exploration quest belongs in the panel, so its interactive summary never masks doors/NPCs. */
 .exploring .quest-panel{position:relative;inset:auto;width:auto;grid-column:1/-1;margin:0 0 10px;box-shadow:none;z-index:auto}
 @media(max-width:600px){.exploring .frontier-panel .dpad{grid-row:4/6}}
+
+/* v0.4 benchmark pass: compact command list beside the unit (classic SRPG style). */
+.unit-popover:has(.menu-list){width:148px!important;max-width:calc(100% - 12px)}
+.unit-popover:has(.menu-list) header{padding:6px 8px}
+.menu-list{display:flex;flex-direction:column;padding:4px;gap:2px}
+.menu-list .cmd{display:flex;align-items:center;gap:8px;width:100%;min-height:34px;padding:5px 10px;text-align:left;font:600 13px Arial,'Ashen UI',sans-serif;background:linear-gradient(#22414a,#1a343b);border:1px solid #3f6266;border-radius:4px;color:#f1e6c8}
+.menu-list .cmd:hover:not(:disabled),.menu-list .cmd:focus-visible{background:linear-gradient(#3a5d58,#28474a);border-color:#d8bb7c;outline:none}
+.menu-list .cmd:disabled{opacity:.42}
+.menu-list .cmd-icon{display:inline-flex;width:18px;color:#e2c27c}
+.unit-popover[data-side="right"]::before,.unit-popover[data-side="left"]::before{content:'';position:absolute;top:50%;width:0;height:0;border:7px solid transparent;margin-top:-7px}
+.unit-popover[data-side="right"]::before{left:-15px;border-right-color:#d8bb7c}
+.unit-popover[data-side="left"]::before{right:-15px;border-left-color:#d8bb7c}
+.unit-popover{overflow:visible}
+.unit-popover>.menu-body,.unit-popover>.menu-list{max-height:calc(100vh - 160px);overflow:auto}
+.turn-end-copy{font:15px/1.8 Arial,'Ashen UI',sans-serif;text-align:center;margin:8px 0 4px}
+.turn-end-copy b{color:#f1d58c}
+@media(pointer:coarse){.menu-list .cmd{min-height:40px}}
+/* v0.4 benchmark pass: visual bag, gear storage and paper doll. */
+.item-icon{image-rendering:pixelated;flex:none}
+.bag-head{display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding:8px 10px;margin:6px 0 10px;background:#0f2226;border:1px solid #3f6266;border-radius:6px;font:13px Arial,'Ashen UI',sans-serif}
+.bag-head span{display:inline-flex;align-items:center;gap:6px}.bag-head b{color:#f1d58c}
+.bag-layout{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start}
+.bag-label{font:600 11px Arial,sans-serif;letter-spacing:.12em;color:#b9c8b5;margin:10px 0 6px}
+.bag-grid{display:grid;grid-template-columns:repeat(3,56px);gap:6px}
+.bag-slot{width:56px;height:56px;display:grid;place-items:center;background:radial-gradient(#2b4a4f,#163036);border:2px solid #4c6f70;border-radius:6px;padding:0}
+.bag-slot.empty{border-style:dashed;opacity:.45}.bag-slot.active{border-color:#e2c27c;box-shadow:0 0 0 2px #e2c27c55}
+.bag-counts{display:flex;gap:6px;margin-top:8px}.bag-count{display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border-radius:5px}.bag-count.active{border-color:#e2c27c}
+.item-detail{display:flex;gap:12px;align-items:flex-start;padding:12px;background:#10262b;border:1px solid #d8bb7c66;border-radius:8px;min-height:110px}
+.item-detail h3{margin:0 0 4px;color:#f1e3b8}.item-detail p{margin:0 0 6px;font-size:13px}
+.gear-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:6px}
+.gear-cell{position:relative;display:grid;justify-items:center;gap:2px;padding:6px 4px;background:#163036;border:1px solid #3f6266;border-radius:6px}
+.gear-cell small{font-size:10px;text-align:center;line-height:1.2}.gear-cell i{position:absolute;top:3px;right:5px;font:700 10px Arial;color:#9fe0b5;font-style:normal}
+.gear-cell em{position:absolute;top:3px;left:4px;font:700 9px Arial;font-style:normal;background:#d8bb7c;color:#13262a;border-radius:3px;padding:0 3px}
+.bag-pending{color:#f1d58c}
+.paperdoll{display:grid;grid-template-columns:150px 1fr 1.2fr;gap:12px;align-items:start;margin:10px 0}
+.doll-portrait{text-align:center}.doll-portrait h3{margin:6px 0 0;font-size:14px}
+.doll-slots{display:grid;gap:8px}
+.doll-slot{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:10px;align-items:center;padding:8px;background:#10262b;border:1px solid #3f6266;border-radius:6px}
+.doll-slot.filled{border-color:#d8bb7c99}.doll-slot .doll-name{grid-column:1/-1;font:600 10px Arial;letter-spacing:.1em;color:#9fb4a8}
+.doll-slot .doll-empty{width:40px;height:40px;display:grid;place-items:center;border:1px dashed #4c6f70;border-radius:4px;font-size:10px;color:#8ea39a}
+.doll-slot b{font-size:12px}.doll-slot button{grid-column:2;justify-self:start;padding:2px 8px;font-size:11px}
+.doll-stats{display:grid;gap:6px}.stat-row{display:grid;grid-template-columns:34px 1fr 64px;gap:8px;align-items:center;font:12px Arial,sans-serif}
+.stat-bar{position:relative;height:8px;background:#0c1d21;border-radius:4px;overflow:hidden}.stat-bar i{position:absolute;inset:0 auto 0 0;background:#6fa6b2}.stat-bar em{position:absolute;top:0;bottom:0;background:#e2c27c}
+.gear-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.gear-card{display:flex;gap:10px;padding:8px;background:#163036;border:1px solid #3f6266;border-radius:6px}.gear-card.unfit{opacity:.6}.gear-card h3{margin:0;font-size:13px}.gear-card p{margin:2px 0;font-size:12px}
+@media(max-width:720px){.bag-layout{grid-template-columns:1fr}.paperdoll{grid-template-columns:1fr}.doll-portrait{display:flex;align-items:center;gap:10px;text-align:left}.doll-portrait canvas{width:72px;height:72px}}
+.turn-prompt{position:absolute;z-index:9;left:50%;top:50%;transform:translate(-50%,-50%);min-width:250px;padding:14px 18px 16px;background:#152b30f7;border:2px solid #d8bb7c;border-radius:8px;box-shadow:0 10px 30px #071a24cc;text-align:center}
+.turn-prompt .row{justify-content:center;gap:10px}.turn-prompt button{min-width:84px}
+.turn-prompt[hidden]{display:none}
