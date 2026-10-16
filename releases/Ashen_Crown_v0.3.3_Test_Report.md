@@ -1,5 +1,5 @@
 # Ashen Crown v0.3.3 — The Hero's Journey / QA Report
-Updated2026-10-16 KST. Candidate only; user play approval required. Main and PR8 were not merged.
+Updated2026-10-16 KST. Official release: the user play-tested and approved v0.3.3; PR8 and PR9 were merged sequentially (see Release finalization below).
 
 Baseline main b826c49851596398967b36d517270a3f556df94c; PR8 c0a5fc1fdfe6b64c58815c0c4a189e5bbd46a29d (unmerged). Source checkpoint afb28564f8cb1dfda3ed930f824a57af70761ea1. Final artifacts/evidence are added in the release packaging commit; see PR for exact final HEAD and CI. Original v0.3.2 CI success does not stand in for new validation.
 
@@ -42,3 +42,6 @@ Standalone has embedded code/art/fonts/music and no external runtime files. `npm
 Physical phones, Safari/Firefox and long-term browser storage eviction unverified. Small landscape preparation/council panels require scrolling. M04–06 and playable promotions are intentionally absent. v0.4 can begin after user approval, covering The Broken Allegiance/Baldrick/royal supply/ACT I ending. Neither main nor PR8 is auto-merged.
 
 Evidence: docs/v0.3.3/evidence and screenshots. CI status and final commit: GitHub PR checks on feature/v0.3.3-erik-advisor-campaign.
+
+## Release finalization (2026-10-16 KST)
+User play validation complete; merge and release approved by the user. PR8 merged at 4a66a2f53c94ee98d97f47d90033c0598c7d0ea5 (push CI 38863433099 success). PR9 head c87be4293bddfc60c1ea90c27bf728fbe53c6039 hosted CI 38863386451 success 4/4; its merge tree onto main equals the CI-tested tree. Finalization re-executed locally on the release tree: 112 unit PASS, byte-identical `npm run build`, `verify-release.py` PASS, journey-e2e 206 PASS, migration-v032 9 PASS, migration-v031 10 PASS, gameplay-quality-e2e 92 PASS (headless Chromium). Only documentation and the Source ZIP/SHA256 manifest changed; the standalone HTML SHA256 is unchanged. Final merge SHA, tag and exact-main CI: v0.3.3 GitHub Release notes.

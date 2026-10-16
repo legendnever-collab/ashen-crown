@@ -1,7 +1,7 @@
 # Ashen Crown v0.3.3 — The Hero's Journey
 Erik explores town and camp, speaks with comrades and prepares with the Operations Advisor before fighting with the existing five heroes. Front-facing shop doors share a visual/collision anchor. Offline standalone, Missions01–03, classic original pixel art/music. No M04–06.
 
-Current candidate branch: feature/v0.3.3-erik-advisor-campaign, based on unmerged PR8 c0a5fc1. Main remains official v0.3.1; no merge without user play approval. v0.3.2 features are included and preserved.
+Official release v0.3.3 on main (tag v0.3.3), merged after user play approval together with v0.3.2 (PR8). v0.3.2 features are included and preserved. Next: v0.4.0 The Broken Allegiance (M04–06).
 
 - [Standalone HTML](releases/Ashen_Crown_v0.3.3.html)
 - [Source ZIP](releases/Ashen_Crown_v0.3.3_Source.zip)
