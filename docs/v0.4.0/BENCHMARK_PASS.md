@@ -72,3 +72,7 @@ Lia stands at the war table beside her staff aide (the aide keeps the `advisor` 
 - 20 hand-built figures (six heroes and the commander, five enemy types, nine civilians/staff) with distinct silhouettes, headgear and props; chibi proportions with eyes that stay visible under hair, hoods and helmets.
 Sample images: docs/v0.4.0/b4/ (`b4-compare` current vs sample on the same M01 scene at the same scale, `b4-scene`, `b4-zoom`, `b4-cast`, `b4-terrain`). Harness: `samples/b4/index.html` (`#scene`, `#cast`, `#terrain`), rendered by `node samples/b4/shots.mjs <outdir> scene cast terrain`.
 Rollout after approval: replace battle tiles/sprites, town tiles/NPCs and portraits-on-map with this renderer, add walk/attack frames and facing, keep the 64-unit logical coordinate system and all hit-testing unchanged.
+
+### B4 revision 1 (user feedback 2026-10-17 07:27)
+- Head reduced (15×14 px instead of 17×16) so bodies read taller.
+- Four facings: down (front), right (profile), up (back view), left (mirrored profile), plus a four-step walk cycle; units turn to the direction they travel. Back views show hair, capes, quivers and shields; profiles show one eye, nose and the near arm. Images: `b4-facing.png`, `b4-walk.gif`; harness views `#facing`, `#walk`.
