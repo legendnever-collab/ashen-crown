@@ -1,6 +1,7 @@
 // Historical UX assertions continue through the new explicit entry/service choices.
 export async function frontierPress(page,touch,action,id){
- const click=async(a,value)=>{const l=page.locator(`[data-do="${a}"]${value?`[data-id="${value}"]`:''}`).first();touch?await l.tap():await l.click();};
+ // Desktop (fine pointer) hides the on-screen D-pad; a keyboard-equivalent activation is used there.
+ const click=async(a,value)=>{const l=page.locator(`[data-do="${a}"]${value?`[data-id="${value}"]`:''}`).first();if(a==='walk'&&!await l.isVisible()){await l.evaluate(b=>b.click());return;}touch?await l.tap():await l.click();};
  if(action==='shop-service'&&!await page.locator('[data-do="shop-service"]').count())await click('shop-owner');
  if(action==='transaction'&&/^(sell-|upgrade)/.test(id)&&!await page.locator(`[data-do="transaction"][data-id="${id}"]`).count()){await click('shop-owner');await click('shop-service',id.startsWith('sell-')?'sell':'upgrade');}
  if(action==='warroom'){

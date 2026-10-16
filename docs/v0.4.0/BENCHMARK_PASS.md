@@ -42,3 +42,24 @@ A Fire Bolt hit on grass/forest/village sets the tile burning for two turns. Uni
 
 ## Balance re-baseline (executed locally, legal policy)
 M01 30/30 (turns 4–6); M01–M03 campaigns 30/30 (capture 15, perfect rescues 30, bridge turns 5–8); economy 90/90; M04 30/30 (turns 4–10, avg 8.0, avg 4.47 surviving heroes). The legal-play test policy now steps deeper into the M03 safe zone so arriving heroes do not block the bridge exit.
+
+## B3 — voice, strategist and play-test feedback (implemented, 2026-10-17)
+### Dialogue (PROPOSED wording; canon facts unchanged)
+All ACT I scenes, camp/village conversations, NPC lines, Erik's replies and briefings were rewritten in spoken Korean with one voice per character: Erik short soldier 반말; Aren weighty, pauses (…); Elina sharp, dry 해요체; Lia quick, excited scholar; Sain gentle 존댓말; Kai teasing 반말; the M04 quartermaster speaks 하오체. Line order, speakers and every observed fact (seal, crate numbers, 「폐기 처분」, scraped signature, Lia's teacher notation, Kai's courier-form knowledge) are unchanged; nothing names a culprit.
+
+### Lia as strategist (D-038)
+Lia stands at the war table beside her staff aide (the aide keeps the `advisor` id that drives the council). The aide reports scouting; Lia gives the plan in every briefing and aftermath note. The council screen and the briefing window show Lia's portrait ("군사 리아").
+
+### Feedback batch
+| # | Change |
+|---|---|
+| 1 | New original score: 11 tracks (adds M04 "Halls of the Quartermaster"), each with its own key, tempo, chord loop and melody. Layered synthesis: detuned low-pass pads, harp/pluck arpeggios, breathy flute with vibrato, FM celesta, soft horn, timpani/snare noise, generated stereo reverb and a bus compressor. Only the current and fading tracks are scheduled. Offline render check: peaks 0.18–0.33, no clipping. |
+| 2 | Command list: 공격 / 기술 / 도구 / 정보 / 이동 취소 (plus 조사·구출·생포 only when a legal target is adjacent, and 대기). |
+| 3 | Opening and story text enlarged. |
+| 4 | Village/camp map fills the screen (no side panels); controls float over the map. |
+| 5 | Ending the turn early shows the same centred card: "아직 행동하지 않은 장수가 n명 있습니다. 넘어가겠습니까?" |
+| 6 | Result screen: banner, stars, reward icons (item × n, Gold), hero portrait tiles with EXP bars and a LEVEL UP badge; text only for important notes. |
+| 7 | Quest is a scroll button (or Q) that opens a short card and closes again; default closed. |
+| 8 | Interiors have the exit door on the bottom row; walking onto it leaves the building. |
+| 9 | Hit = clamp(70–100, 97 (magic 100) + 1.5 × SPD gap − terrain evade + skill/gear bonuses − target dodge). Crit = clamp(3–12%, SPD gap/2 + 5), ×1.5 damage; magic never crits. |
+| 10 | Depth-sorted town drawing (heroes never draw over roofs), villagers pace slowly with role props, and the faced person is talked to first when several are adjacent. |

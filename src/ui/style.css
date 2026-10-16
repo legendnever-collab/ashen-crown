@@ -114,3 +114,66 @@
 .class-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}.class-grid h4{margin:0 0 6px}.apt-table{border-collapse:collapse;font-size:12px}.apt-table th,.apt-table td{padding:3px 8px;border-bottom:1px solid #284346;text-align:left}
 .info-slots{display:grid;gap:8px;max-width:420px}
 @media(max-width:720px){.class-grid,.tactic-card{grid-template-columns:1fr}.tactic-card .range-grid{grid-column:1;grid-row:auto}.info-head{grid-template-columns:72px 1fr}.info-head canvas{width:72px;height:72px}}
+/* v0.4 feedback #3: readable intro, guide and dialogue text. */
+.title-inner p{font-size:18px;line-height:1.85;max-width:620px}
+.title-bottom{font:14px/1.8 Arial,'Ashen UI',sans-serif;color:#b9c8bf}
+.modal p,.modal li{font:15px/1.85 Arial,'Ashen UI',sans-serif}
+.story{font-size:18px;line-height:2}
+.dialogue-text{font-size:19px;line-height:1.8}
+@media(max-width:720px){.title-inner p{font-size:16px}.title-bottom{font-size:13px}.modal p,.modal li{font-size:15px}.story{font-size:16px}.dialogue-text{font-size:17px;line-height:1.7}}
+/* v0.4 feedback #4/#7: full-width play area, floating hub controls, scroll-icon quest. */
+.frontier-screen.fs{padding:0;overflow:hidden}
+.frontier-screen.fs .frontier-layout{display:block;max-width:none;height:100%;margin:0}
+.frontier-screen.fs .frontier-map-wrap{position:relative;height:100%!important;max-height:none!important;min-height:0!important;border:0;overflow:hidden;background:#1d3330}
+.frontier-screen.fs #frontier-map{width:100%;height:100%;display:block}
+.hub-top{position:absolute;top:10px;left:12px;right:auto;display:flex;gap:10px;align-items:center;margin:0;z-index:3;pointer-events:none}
+.hub-title{font:600 16px 'Ashen UI',Arial,sans-serif;color:#f1e3b8;background:#0f2226cc;padding:5px 12px;border-radius:6px;border:1px solid #d8bb7c66}
+.hub-top .gold{font:600 14px Arial,sans-serif;background:#0f2226cc;padding:5px 10px;border-radius:6px;border:1px solid #d8bb7c66;color:#f1d58c}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.frontier-screen.fs .hub-map-controls{position:absolute;top:10px;right:64px;z-index:3;display:flex;gap:4px}
+.frontier-screen.fs .location-tag{position:absolute;left:12px;bottom:12px;z-index:3}
+.frontier-screen.fs .interaction-list{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:4;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:70%}
+.frontier-screen.fs .interaction-list button{background:#15302ff0;border:2px solid #d8bb7c;padding:9px 16px;font:600 14px 'Ashen UI',Arial,sans-serif;box-shadow:0 4px 14px #0009}
+.frontier-screen.fs .dpad{position:absolute;left:14px;bottom:52px;z-index:4;opacity:.92}
+@media(pointer:fine){.frontier-screen.fs .dpad{display:none}}
+.frontier-screen.fs .frontier-actions{position:absolute;right:12px;bottom:12px;z-index:4;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.frontier-screen.fs .frontier-actions button{display:inline-flex;align-items:center;gap:6px;background:#15302fe6;padding:7px 12px;font:600 13px 'Ashen UI',Arial,sans-serif}
+.frontier-screen.fs .frontier-actions button.primary{background:#d8bb7c;color:#14262a;font-size:14px;padding:10px 16px}
+.frontier-screen.fs #hub-minimap{position:absolute;right:12px;top:52px;bottom:auto;z-index:3;width:150px;height:auto}
+.quest-panel{position:absolute;top:10px;right:12px;z-index:6;max-width:300px;background:transparent;border:0;padding:0}
+.quest-panel>summary{list-style:none;display:inline-flex;align-items:center;gap:4px;margin-left:auto;cursor:pointer;background:#15302ff0;border:2px solid #d8bb7c;border-radius:8px;padding:5px 7px;float:right}
+.quest-panel>summary::-webkit-details-marker{display:none}
+.quest-key{font:700 11px Arial;color:#f1d58c}
+.quest-panel[open]>#quest-content{clear:both;margin-top:6px;background:#132a2ef5;border:2px solid #d8bb7c;border-radius:8px;padding:10px 14px;font:14px/1.6 'Ashen UI',Arial,sans-serif;box-shadow:0 8px 24px #000a}
+#quest-content b{color:#f1d58c}#quest-content p{margin:4px 0}.quest-opt,.quest-status{font-size:13px;color:#cfe0cf}
+.frontier-screen.fs~.quest-panel,.field .quest-panel{top:10px}
+.map-label{display:none}
+@media(max-width:720px){.frontier-screen.fs .interaction-list{max-width:92%;bottom:auto;top:52px}.frontier-screen.fs .frontier-actions{flex-direction:row;flex-wrap:wrap;justify-content:flex-end;max-width:62%}.frontier-screen.fs #hub-minimap{display:none}.frontier-screen.fs .hub-map-controls{right:58px}.hub-title{font-size:13px}}
+.quest-panel,.exploring .quest-panel{position:absolute!important;inset:auto!important;top:10px!important;right:12px!important;left:auto!important;z-index:7!important;width:auto!important;max-width:300px;background:transparent!important;border:0!important;box-shadow:none!important;margin:0!important;grid-column:auto}
+.quest-panel>summary{min-height:0;font-size:0}
+.frontier-screen.fs #hub-minimap{top:56px}
+.frontier-screen.fs .hub-map-controls{top:auto;right:auto;left:12px;bottom:48px}
+@media(max-width:720px){.frontier-screen.fs .hub-map-controls{left:auto;right:12px;top:56px;bottom:auto}.quest-panel[open]>#quest-content{max-width:240px}}
+/* v0.4 feedback #6: icon-first result screen. */
+.result-v2{text-align:center}
+.result-banner h2{font:700 54px/1 'Ashen UI',Georgia,serif;letter-spacing:.12em;margin:6px 0}
+.result-banner.win h2{color:#f1d58c;text-shadow:0 0 18px #e2c27c66}.result-banner.lose h2{color:#d98a7c}
+.result-banner span{font:15px 'Ashen UI',Arial,sans-serif;color:#cfdccf}
+.result-reason{font-size:15px;color:#e8d6c8}
+.victory-rewards{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:16px 0;background:none;border:0;padding:0}
+.reward-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:#132a2e;border:2px solid #d8bb7c88;border-radius:10px;font:600 16px 'Ashen UI',Arial,sans-serif;color:#f6ebc9}
+.reward-chip.bond{border-color:#e48aa0;color:#ffd3de}.reward-chip.warn{border-color:#c98a4a}
+.stars{display:flex;justify-content:center;gap:18px;margin:4px 0 14px}.star{display:grid;justify-items:center;font-size:28px;color:#5e6f69}.star.on{color:#f3cf6c;text-shadow:0 0 10px #f3cf6c77}.star small{font:12px Arial,'Ashen UI',sans-serif;color:#b9c8bf}
+.hero-row{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:6px 0 16px}
+.hero-tile{position:relative;display:grid;justify-items:center;gap:4px;padding:12px 6px 10px!important;background:#132a2e;border:1px solid #3f6266;border-radius:10px}
+.hero-tile canvas{width:84px;height:84px}.hero-tile strong{font:600 15px 'Ashen UI',Arial,sans-serif}.hero-tile .lv{font:700 13px Arial;color:#f1d58c}
+.hero-tile .xpbar{width:80%;height:6px;background:#0c1d21;border-radius:3px;overflow:hidden}.hero-tile .xpbar i{display:block;height:100%;background:#e2c27c}
+.hero-tile .gain{font:12px Arial;color:#9fd3a1}.hero-tile .stat-ups{font:11px Arial;color:#cfe0cf}
+.hero-tile.leveled{border-color:#f1d58c;box-shadow:0 0 16px #f1d58c44}.hero-tile .lvup{position:absolute;top:-10px;background:#f1d58c;color:#14262a;font:800 11px Arial;padding:2px 8px;border-radius:9px}
+.hero-tile.down{opacity:.6}.hero-tile .ko{font:11px Arial;color:#e59a8a}.hero-tile .clue{position:absolute;top:6px;right:8px;color:#c9a4f0;font-size:16px}
+.result-actions{justify-content:center;flex-wrap:wrap}
+@media(max-width:720px){.hero-row{grid-template-columns:repeat(3,minmax(0,1fr))}.result-banner h2{font-size:40px}.hero-tile canvas{width:64px;height:64px}}
+/* v0.4 B3: Lia as strategist */
+.strategist-line{display:flex;align-items:center;gap:12px;margin:6px 0}
+.strategist-line .card-sprite{width:56px;height:56px;flex:none;image-rendering:pixelated}
+.strategist-line p{margin:0;font-size:16px}

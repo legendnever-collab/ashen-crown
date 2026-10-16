@@ -44,8 +44,8 @@ export function strikeStats(s,u,t,mode='attack'){
  let dmg=Math.max(1,Math.round(magic?raw*(ground.fire??1):raw*(1-(ground.phys||0))));
  if(t.id==='eric'&&t.hp<=t.maxHP*.3)dmg=Math.max(1,Math.floor(dmg*.85));
  const standing=missionOf(s).map[u.y][u.x];const hawk=u.id==='elina'&&(standing==='f'||standing==='v')?12:0;
- const hit=Math.max(55,Math.min(100,(magic?95:88)+(u.spd-t.spd)*2-(ground.evade||0)+hawk+(aim?18:0)+(u.hit||0)));
- const crit=magic?0:Math.min(18,Math.max(3,u.spd-t.spd+5));
+ const hit=Math.max(70,Math.min(100,(magic?100:97)+Math.round((u.spd-t.spd)*1.5)-(ground.evade||0)+hawk+(aim?18:0)+(u.hit||0)-(t.dodge||0)));
+ const crit=magic?0:Math.min(12,Math.max(3,Math.round((u.spd-t.spd)/2)+5));
  return {damage:dmg,hit,crit,magic,fire:magic,terrainMul:magic?(ground.fire??1):1-(ground.phys||0),flank:quick&&flank(s,u,t),burning};
 }
 export function guardFor(s,u,t,mode){if(mode==='skill'&&u.id==='lia'||distance(u,t)!==1)return null;return s.units.find(g=>alive(g)&&g.team===t.team&&g.id!==t.id&&(g.guarding&&!g.guardUsed||g.guardTarget===t.id)&&distance(g,t)===1);}

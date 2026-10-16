@@ -9,7 +9,13 @@ const palette=u=>({
  elina:{skin:'#efcaa1',shade:'#c89277',hair:'#b45a34',light:'#e89c52',coat:'#82a663',dark:'#38583f',eye:'#66874b'},
  lia:{skin:'#e8b5ac',shade:'#b47887',hair:'#49364e',light:'#88627b',coat:'#a282c1',dark:'#544272',eye:'#c19b58'},
  sain:{skin:'#a97454',shade:'#6f4438',hair:'#e9ddbf',light:'#fff4d7',coat:'#e5dbc0',dark:'#7e846d',eye:'#584b3c'},
- kai:{skin:'#d5ad79',shade:'#97684a',hair:'#263943',light:'#4f6471',coat:'#596b76',dark:'#283c47',eye:'#91ac62'}
+ kai:{skin:'#d5ad79',shade:'#97684a',hair:'#263943',light:'#4f6471',coat:'#596b76',dark:'#283c47',eye:'#91ac62'},
+ elder:{skin:'#d9b393',shade:'#a17b62',hair:'#d8d4c9',light:'#a0896a',coat:'#7b5b46',dark:'#4a362b',eye:'#5b4a3c'},
+ smith:{skin:'#c99474',shade:'#8f6250',hair:'#3a2a22',light:'#8c6a50',coat:'#6d4f3d',dark:'#2e2520',eye:'#4a3a30'},
+ merchant:{skin:'#e3bd98',shade:'#b08670',hair:'#5a3f2c',light:'#7fae86',coat:'#4f8460',dark:'#2f4f3a',eye:'#4d5f44'},
+ refugee:{skin:'#c79f80',shade:'#93705c',hair:'#4a3b31',light:'#a9a698',coat:'#8b8f87',dark:'#55574f',eye:'#5b4d42'},
+ guard:{skin:'#e0b493',shade:'#a8806a',hair:'#2f2a26',light:'#7c9ab3',coat:'#4f6b84',dark:'#2c3e50',eye:'#4f5f70'},
+ advisor:{skin:'#e8c2a5',shade:'#b48a74',hair:'#2a2430',light:'#6c5f8c',coat:'#3f3a63',dark:'#25223c',eye:'#6a5a8a'}
 }[u.id]||{skin:'#d5aa84',shade:'#9b6d57',hair:u.kind==='captain'?'#593b37':'#674d3f',light:'#9b7255',coat:u.team==='civilian'?'#cdb995':u.kind==='captain'?'#b16b63':'#a77961',dark:'#583e3e',eye:'#665344'});
 export function drawTile(c,type,x,y,index){
  if(type==='t'||type==='h'){drawTile(c,type==='t'?'v':'r',x,y,index);pixel(c,'#294b43',x+40,y+5,20,20);pixel(c,'#cef4c6',x+48,y+8,4,14);pixel(c,'#cef4c6',x+43,y+13,14,4);return;}
