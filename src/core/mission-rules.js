@@ -15,6 +15,7 @@ export function spawnWave(s,list){
 
 const M4={
  init(s){s.missionState={alerted:false,burned:[],waves:[]};},
+ clearLabel:'성채 조사 완수',
  validState(m){return !!m&&typeof m==='object'&&typeof m.alerted==='boolean'&&Array.isArray(m.burned)&&m.burned.every(v=>['seal','orders'].includes(v))&&new Set(m.burned).size===m.burned.length&&Array.isArray(m.waves)&&m.waves.every(n=>Number.isInteger(n)&&n>0);},
  status(s){const found=['ledger','seal','orders'].filter(t=>searched(s,t)).length,left=Math.max(0,missionOf(s).burnTurn-s.turn);return `증거 ${found}/3${s.missionState?.burned.length?` · 소각 ${s.missionState.burned.length}`:left&&s.turn<missionOf(s).burnTurn?` · 소각까지 ${left}턴`:''} · ${Math.max(0,missionOf(s).turnLimit+1-s.turn)}턴 남음`;},
  optional(s){const f=s.campaign.flags;return `증거 ${['mission_04_ledger_recovered','mission_04_seal_notes','mission_04_transfer_orders'].filter(k=>f[k]).length}/3 확보${f.mission_04_evidence_burned?` · 소각 ${f.mission_04_evidence_burned}`:''}`;},

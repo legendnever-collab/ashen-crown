@@ -212,6 +212,8 @@ const TERRAIN = {
   d: {name:'Desert',cost:2,defense:0,evade:0,color:'#baa472'},
   s: {name:'Swamp',cost:3,defense:0,evade:4,color:'#465f54'},
   w: {name:'Deep Water',cost:Infinity,defense:0,evade:0,color:'#31576b'},
+  k: {name:'Keep Floor',cost:1,defense:0,evade:0,color:'#7d7a6e'},
+  q: {name:'Rampart',cost:1,defense:2,evade:5,color:'#5f6763'},
   x: {name:'Ruin', cost:Infinity, defense:0, evade:0, color:'#434646'}
 };
 const MAP = [
@@ -277,7 +279,7 @@ const evidence=(id,name,type,x,y)=>({id,name,kind:'evidence',evidence:type,x,y})
 function authored(m){m.map=grid(m.rows);delete m.rows;m.width=m.map[0].length;m.height=m.map.length;m.layers={terrain:m.map,collision:m.map.map(row=>row.map(t=>['x','w'].includes(t))),buildings:[],objects:[],actors:'units',effects:'feedback',events:'narrative'};m.objects=m.objects||[];m.waves=m.waves||[];m.reinforcements=m.reinforcements||[];m.civilians=m.civilians||[];return m;}
 const zone=(cells)=>new Set(cells.map(([x,y])=>`${x},${y}`));
 MISSIONS[4]=authored({id:4,title:'버려진 성채',en:'The Abandoned Fortress',
- rows:['xxxxxxxxxxxxxxxx','xrrrxrrrrrrxrrrx','xrrrxrrrrrrxrrrx','xrrrxxxrrxxxrrrx','xtrrrrrrrrrrrrtx','xxxrxxggggxxrxxx','xrrrxggggggxrrrx','xrrrrggghgggrrrx','xrrrxggggggxrrrx','xxrxxxggggxxxrxx','xxrxxtrrrrtxxrxx','grrrrrrrrrrrrrrg','ggggggggggmggggg','gggfffgggggfffgg'],
+ rows:['xxxxxxxxxxxxxxxx','xkkkxkkkkkkxkkkx','xkkkxkkkkkkxkkkx','xkkkxxxkkxxxkkkx','xqkkkkkkkkkkkkqx','xxxkxxggggxxkxxx','xkkkxggggggxkkkx','xkkkkggghgggkkkx','xkkkxggggggxkkkx','xxkxxxggggxxxkxx','xxkxxqkkkkqxxkxx','grrrrrrrrrrrrrrg','ggggggggggmggggg','gggfffgggggfffgg'],
  enemies:[
   unit('boss','성채 병참관','captain',7,2,{hp:66,atk:16,def:7,res:4,spd:6,mov:0,alertMov:3}),
   unit('w1','성벽 사수','archer',1,4,{hp:26,atk:13,def:3,spd:7,mov:0}),
@@ -484,6 +486,7 @@ const palette=u=>({
 }[u.id]||{skin:'#d5aa84',shade:'#9b6d57',hair:u.kind==='captain'?'#593b37':'#674d3f',light:'#9b7255',coat:u.team==='civilian'?'#cdb995':u.kind==='captain'?'#b16b63':'#a77961',dark:'#583e3e',eye:'#665344'});
 function drawTile(c,type,x,y,index){
  if(type==='t'||type==='h'){drawTile(c,type==='t'?'v':'r',x,y,index);pixel(c,'#294b43',x+40,y+5,20,20);pixel(c,'#cef4c6',x+48,y+8,4,14);pixel(c,'#cef4c6',x+43,y+13,14,4);return;}
+ if(type==='k'||type==='q'){drawFortressTile(c,type,x,y,index);return;}
  const r=(col,a,b,w,h)=>pixel(c,col,x+a,y+b,w,h);r(type==='f'?'#385a45':type==='r'?'#9a8360':type==='v'?'#89785c':type==='x'?'#52564c':'#61734e',0,0,64,64);
  for(let i=0;i<29;i++){const px=(index*17+i*23)%62,py=(index*13+i*19)%62;r(type==='r'?i%2?'#b6a079':'#7f7055':i%2?'#78925e':'#4e6347',px,py,i%3+1,1);if(type==='g'&&i%4===0){r('#91a271',px,py-2,1,3);r('#4f6547',px+2,py-1,1,2);}}
  if(type==='b'){r('#172e38',0,0,64,64);for(let i=0;i<8;i++){r(i%2?'#977d55':'#b49b6d',5,i*8,54,7);r('#d0b88b',5,i*8,54,1);}r('#574634',3,0,3,64);r('#574634',59,0,3,64);}
@@ -542,6 +545,12 @@ function drawPortrait(c,u){
  for(let i=0;i<12;i++)r('#ded5b1',25+i*6,116+i%3,.5,3);r('#fff8dc',52.5,60.5,.5,.5);r('#fff8dc',75.5,58.5,.5,.5);
  r('#c2aa72',0,0,128,1);r('#c2aa72',0,127,128,1);c.restore();
 }
+// Original fortress interior tiles (v0.4 M04): worn flagstones and a crenellated rampart walk.
+function drawFortressTile(c,type,x,y,index){const r=(col,a,b,w,h)=>pixel(c,col,x+a,y+b,w,h);
+ r('#6f6c61',0,0,64,64);for(let row=0;row<4;row++)for(let k=0;k<3;k++){const px=(row%2?-10:0)+k*22,py=row*16;r((row+k+index)%3?'#837f71':'#78756a',px+1,py+1,20,14);r('#99947f',px+1,py+1,20,1);r('#5b5a51',px+1,py+14,20,1);}
+ for(let i=0;i<9;i++)r('#5c5a50',(index*19+i*23)%60,(index*11+i*29)%60,2,1);
+ if(type==='q'){r('#4e5652',0,0,64,20);for(let k=0;k<4;k++){r('#8b9187',2+k*16,2,11,13);r('#b2b6a8',2+k*16,2,11,2);r('#5d655f',11+k*16,4,2,11);}r('#3b423f',0,18,64,3);r('#c4b17c',4,24,3,3);r('#c4b17c',57,24,3,3);}
+ r('rgba(24,39,31,.19)',0,63,64,1);r('rgba(18,36,30,.12)',63,0,1,64);}
 
 // src/render/world-art.js
 // Original architectural silhouettes; logical half-pixels become native 128 details.
@@ -717,6 +726,7 @@ function spawnWave(s,list){
 
 const M4={
  init(s){s.missionState={alerted:false,burned:[],waves:[]};},
+ clearLabel:'성채 조사 완수',
  validState(m){return !!m&&typeof m==='object'&&typeof m.alerted==='boolean'&&Array.isArray(m.burned)&&m.burned.every(v=>['seal','orders'].includes(v))&&new Set(m.burned).size===m.burned.length&&Array.isArray(m.waves)&&m.waves.every(n=>Number.isInteger(n)&&n>0);},
  status(s){const found=['ledger','seal','orders'].filter(t=>searched(s,t)).length,left=Math.max(0,missionOf(s).burnTurn-s.turn);return `증거 ${found}/3${s.missionState?.burned.length?` · 소각 ${s.missionState.burned.length}`:left&&s.turn<missionOf(s).burnTurn?` · 소각까지 ${left}턴`:''} · ${Math.max(0,missionOf(s).turnLimit+1-s.turn)}턴 남음`;},
  optional(s){const f=s.campaign.flags;return `증거 ${['mission_04_ledger_recovered','mission_04_seal_notes','mission_04_transfer_orders'].filter(k=>f[k]).length}/3 확보${f.mission_04_evidence_burned?` · 소각 ${f.mission_04_evidence_burned}`:''}`;},
@@ -860,7 +870,7 @@ function checkOutcome(s){
 }
 function finish(s,outcome,reason){
  s.outcome=outcome;s.screen='result';s.reason=reason;s.undo={};
- if(outcome==='victory')for(const u of s.units.filter(u=>u.team==='ally'&&alive(u)))awardXP(s,u,BALANCE.clearXP,'마을 구출 완수');
+ if(outcome==='victory')for(const u of s.units.filter(u=>u.team==='ally'&&alive(u)))awardXP(s,u,BALANCE.clearXP,rulesOf(s)?.clearLabel||'마을 구출 완수');
  const result={missionId:s.missionId,practice:s.practice,outcome,turn:s.turn,rescued:s.units.filter(u=>u.team==='civilian'&&u.rescued).length,allAlive:s.units.filter(u=>u.team==='ally').every(alive),swift:s.turn<=missionOf(s).par,potential:findUnit(s,'eric').clues.includes("Guardian’s Oath"),seed:s.initialSeed,heroes:s.units.filter(u=>u.team==='ally').map(u=>({id:u.id,level:u.level,earnedXP:u.earnedXP,clues:[...u.clues]}))};
  s.campaign.results.push(result);s.campaign.results=s.campaign.results.slice(-30);
  if(outcome==='victory')rulesOf(s)?.beforeCommit?.(s);

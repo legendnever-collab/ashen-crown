@@ -22,7 +22,7 @@ const evidence=(id,name,type,x,y)=>({id,name,kind:'evidence',evidence:type,x,y})
 function authored(m){m.map=grid(m.rows);delete m.rows;m.width=m.map[0].length;m.height=m.map.length;m.layers={terrain:m.map,collision:m.map.map(row=>row.map(t=>['x','w'].includes(t))),buildings:[],objects:[],actors:'units',effects:'feedback',events:'narrative'};m.objects=m.objects||[];m.waves=m.waves||[];m.reinforcements=m.reinforcements||[];m.civilians=m.civilians||[];return m;}
 const zone=(cells)=>new Set(cells.map(([x,y])=>`${x},${y}`));
 MISSIONS[4]=authored({id:4,title:'버려진 성채',en:'The Abandoned Fortress',
- rows:['xxxxxxxxxxxxxxxx','xrrrxrrrrrrxrrrx','xrrrxrrrrrrxrrrx','xrrrxxxrrxxxrrrx','xtrrrrrrrrrrrrtx','xxxrxxggggxxrxxx','xrrrxggggggxrrrx','xrrrrggghgggrrrx','xrrrxggggggxrrrx','xxrxxxggggxxxrxx','xxrxxtrrrrtxxrxx','grrrrrrrrrrrrrrg','ggggggggggmggggg','gggfffgggggfffgg'],
+ rows:['xxxxxxxxxxxxxxxx','xkkkxkkkkkkxkkkx','xkkkxkkkkkkxkkkx','xkkkxxxkkxxxkkkx','xqkkkkkkkkkkkkqx','xxxkxxggggxxkxxx','xkkkxggggggxkkkx','xkkkkggghgggkkkx','xkkkxggggggxkkkx','xxkxxxggggxxxkxx','xxkxxqkkkkqxxkxx','grrrrrrrrrrrrrrg','ggggggggggmggggg','gggfffgggggfffgg'],
  enemies:[
   unit('boss','성채 병참관','captain',7,2,{hp:66,atk:16,def:7,res:4,spd:6,mov:0,alertMov:3}),
   unit('w1','성벽 사수','archer',1,4,{hp:26,atk:13,def:3,spd:7,mov:0}),

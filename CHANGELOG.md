@@ -1,3 +1,8 @@
+# v0.4.0 — The Broken Allegiance (in development)
+- M04 The Abandoned Fortress: investigation battle with Search, torch-bearer burn timer, quartermaster alert, courtyard wave, M02-capture side deployment, Lia–Kai bond and records decision.
+- Data-driven mission hooks for M04+; M01–03 rules and balance results unchanged. Save schema 7 (imports 0–6).
+- New fortress terrain (Keep Floor, Rampart) and evidence art; font subset extended from the same Noto Sans CJK KR source.
+
 # v0.3.3 — The Hero's Journey (official release, 2026-10-16)
 - Released after user play approval; PR8 and PR9 merged sequentially. Finalization changed documentation/package manifests only; standalone HTML unchanged.
 - Unified door anchors/front-only approach; facade click walks to the real entrance, cancellation does not loop.

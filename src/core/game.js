@@ -105,7 +105,7 @@ export function checkOutcome(s){
 }
 function finish(s,outcome,reason){
  s.outcome=outcome;s.screen='result';s.reason=reason;s.undo={};
- if(outcome==='victory')for(const u of s.units.filter(u=>u.team==='ally'&&alive(u)))awardXP(s,u,BALANCE.clearXP,'마을 구출 완수');
+ if(outcome==='victory')for(const u of s.units.filter(u=>u.team==='ally'&&alive(u)))awardXP(s,u,BALANCE.clearXP,rulesOf(s)?.clearLabel||'마을 구출 완수');
  const result={missionId:s.missionId,practice:s.practice,outcome,turn:s.turn,rescued:s.units.filter(u=>u.team==='civilian'&&u.rescued).length,allAlive:s.units.filter(u=>u.team==='ally').every(alive),swift:s.turn<=missionOf(s).par,potential:findUnit(s,'eric').clues.includes("Guardian’s Oath"),seed:s.initialSeed,heroes:s.units.filter(u=>u.team==='ally').map(u=>({id:u.id,level:u.level,earnedXP:u.earnedXP,clues:[...u.clues]}))};
  s.campaign.results.push(result);s.campaign.results=s.campaign.results.slice(-30);
  if(outcome==='victory')rulesOf(s)?.beforeCommit?.(s);

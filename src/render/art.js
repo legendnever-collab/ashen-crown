@@ -13,6 +13,7 @@ const palette=u=>({
 }[u.id]||{skin:'#d5aa84',shade:'#9b6d57',hair:u.kind==='captain'?'#593b37':'#674d3f',light:'#9b7255',coat:u.team==='civilian'?'#cdb995':u.kind==='captain'?'#b16b63':'#a77961',dark:'#583e3e',eye:'#665344'});
 export function drawTile(c,type,x,y,index){
  if(type==='t'||type==='h'){drawTile(c,type==='t'?'v':'r',x,y,index);pixel(c,'#294b43',x+40,y+5,20,20);pixel(c,'#cef4c6',x+48,y+8,4,14);pixel(c,'#cef4c6',x+43,y+13,14,4);return;}
+ if(type==='k'||type==='q'){drawFortressTile(c,type,x,y,index);return;}
  const r=(col,a,b,w,h)=>pixel(c,col,x+a,y+b,w,h);r(type==='f'?'#385a45':type==='r'?'#9a8360':type==='v'?'#89785c':type==='x'?'#52564c':'#61734e',0,0,64,64);
  for(let i=0;i<29;i++){const px=(index*17+i*23)%62,py=(index*13+i*19)%62;r(type==='r'?i%2?'#b6a079':'#7f7055':i%2?'#78925e':'#4e6347',px,py,i%3+1,1);if(type==='g'&&i%4===0){r('#91a271',px,py-2,1,3);r('#4f6547',px+2,py-1,1,2);}}
  if(type==='b'){r('#172e38',0,0,64,64);for(let i=0;i<8;i++){r(i%2?'#977d55':'#b49b6d',5,i*8,54,7);r('#d0b88b',5,i*8,54,1);}r('#574634',3,0,3,64);r('#574634',59,0,3,64);}
@@ -71,3 +72,9 @@ export function drawPortrait(c,u){
  for(let i=0;i<12;i++)r('#ded5b1',25+i*6,116+i%3,.5,3);r('#fff8dc',52.5,60.5,.5,.5);r('#fff8dc',75.5,58.5,.5,.5);
  r('#c2aa72',0,0,128,1);r('#c2aa72',0,127,128,1);c.restore();
 }
+// Original fortress interior tiles (v0.4 M04): worn flagstones and a crenellated rampart walk.
+function drawFortressTile(c,type,x,y,index){const r=(col,a,b,w,h)=>pixel(c,col,x+a,y+b,w,h);
+ r('#6f6c61',0,0,64,64);for(let row=0;row<4;row++)for(let k=0;k<3;k++){const px=(row%2?-10:0)+k*22,py=row*16;r((row+k+index)%3?'#837f71':'#78756a',px+1,py+1,20,14);r('#99947f',px+1,py+1,20,1);r('#5b5a51',px+1,py+14,20,1);}
+ for(let i=0;i<9;i++)r('#5c5a50',(index*19+i*23)%60,(index*11+i*29)%60,2,1);
+ if(type==='q'){r('#4e5652',0,0,64,20);for(let k=0;k<4;k++){r('#8b9187',2+k*16,2,11,13);r('#b2b6a8',2+k*16,2,11,2);r('#5d655f',11+k*16,4,2,11);}r('#3b423f',0,18,64,3);r('#c4b17c',4,24,3,3);r('#c4b17c',57,24,3,3);}
+ r('rgba(24,39,31,.19)',0,63,64,1);r('rgba(18,36,30,.12)',63,0,1,64);}

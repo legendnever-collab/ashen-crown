@@ -14,3 +14,9 @@ Next: v0.4.0 The Broken Allegiance (M04–06) on feature/v0.4-the-broken-allegia
 ## v0.4.0 The Broken Allegiance — in progress (2026-10-16 KST)
 v0.3.3 publication verified: main 105148e1f4e94502389f1570fc9c966907a96ce8 (PR9 merge), main CI Game validation success, tag/Release v0.3.3 with HTML/Source ZIP/Test Report/SHA256SUMS; release asset SHA256 digests equal the repository manifest.
 Branch feature/v0.4-the-broken-allegiance created from 105148e. Phase B (design only, no code) committed: docs/v0.4.0/ACT1_NARRATIVE_DESIGN.md, IMPLEMENTATION_PLAN.md, TEST_MATRIX.md and docs/story/act1/MISSION_04–06.md. All new story details are PROPOSED; user approval questions Q1–Q5 are pending. No tests have been executed for v0.4 yet. The v0.3.3 Source ZIP intentionally does not cover the new design docs until Phase G repackaging.
+
+### Phase C — M04 The Abandoned Fortress (implemented, 2026-10-16 KST)
+Version 0.4.0, save schema 7 (imports 0–6). Mission hook engine (src/core/mission-rules.js) is used only by M04+; M01–03 paths are unchanged and their balance (30 runs) and campaign-balance (30 campaigns) outputs are byte-identical to docs/v0.3.3/evidence.
+Executed locally (headless Chromium 1194, v0.4.0 build): 122 unit PASS; act1 53, journey 212, gameplay-quality 92, migration-v031 10, migration-v032 9, frontier 102, renaissance 137, e2e 60, mobile-dock 80, tactical 26, http 4, post-move 8, restart 22, campaign 126, economy-balance 90 legal victories, migration-v02 16 — all PASS. Performance: 390px p95 16.8 ms; 1440px p95 33.4 ms, identical to the v0.3.3 build measured in the same environment.
+M04 legal-policy simulation (30 seeds through M01–M04): 30/30 victories, turns 4–9 (avg 6.1), surviving heroes 3–5 (avg 3.8). Balance tuning is a Phase F item.
+Not yet done: M05, M06, ACT I completion, Phase F six-mission balance and v0.3.3 save-fixture migration test, Phase G packaging (the v0.3.3 Source ZIP/CI pin are still the release pins on this branch).

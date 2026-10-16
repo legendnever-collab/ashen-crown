@@ -13,6 +13,8 @@ export const TERRAIN = {
   d: {name:'Desert',cost:2,defense:0,evade:0,color:'#baa472'},
   s: {name:'Swamp',cost:3,defense:0,evade:4,color:'#465f54'},
   w: {name:'Deep Water',cost:Infinity,defense:0,evade:0,color:'#31576b'},
+  k: {name:'Keep Floor',cost:1,defense:0,evade:0,color:'#7d7a6e'},
+  q: {name:'Rampart',cost:1,defense:2,evade:5,color:'#5f6763'},
   x: {name:'Ruin', cost:Infinity, defense:0, evade:0, color:'#434646'}
 };
 export const MAP = [
