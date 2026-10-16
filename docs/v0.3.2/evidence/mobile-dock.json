@@ -1,0 +1,326 @@
+{
+  "checks": [
+    {
+      "name": "390×844: tap activates hero and face immediately",
+      "status": "PASS"
+    },
+    {
+      "name": "390×844: HP and MP always visible",
+      "status": "PASS"
+    },
+    {
+      "name": "390×844: commands always visible",
+      "status": "PASS"
+    },
+    {
+      "name": "390×844: action menu stays in map",
+      "status": "PASS"
+    },
+    {
+      "name": "390×844: Move shows terrain-cost range",
+      "status": "PASS"
+    },
+    {
+      "name": "390×844: same tile shows stationary action conditions",
+      "status": "PASS"
+    },
+    {
+      "name": "390×844: stationary choice consumes no move/MP/RNG",
+      "status": "PASS"
+    },
+    {
+      "name": "390×844: forecast inside contextual menu",
+      "status": "PASS"
+    },
+    {
+      "name": "390×844: context confirm fits inside viewport",
+      "status": "PASS"
+    },
+    {
+      "name": "390×844: no page scroll",
+      "status": "PASS"
+    },
+    {
+      "name": "390×844: attack uses real rules",
+      "status": "PASS"
+    },
+    {
+      "name": "Taking an action dismisses stale phase confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "360×640: tap activates hero and face immediately",
+      "status": "PASS"
+    },
+    {
+      "name": "360×640: HP and MP always visible",
+      "status": "PASS"
+    },
+    {
+      "name": "360×640: commands always visible",
+      "status": "PASS"
+    },
+    {
+      "name": "360×640: action menu stays in map",
+      "status": "PASS"
+    },
+    {
+      "name": "360×640: Move shows terrain-cost range",
+      "status": "PASS"
+    },
+    {
+      "name": "360×640: same tile shows stationary action conditions",
+      "status": "PASS"
+    },
+    {
+      "name": "360×640: stationary choice consumes no move/MP/RNG",
+      "status": "PASS"
+    },
+    {
+      "name": "360×640: forecast inside contextual menu",
+      "status": "PASS"
+    },
+    {
+      "name": "360×640: context confirm fits inside viewport",
+      "status": "PASS"
+    },
+    {
+      "name": "360×640: no page scroll",
+      "status": "PASS"
+    },
+    {
+      "name": "360×640: attack uses real rules",
+      "status": "PASS"
+    },
+    {
+      "name": "430×932: tap activates hero and face immediately",
+      "status": "PASS"
+    },
+    {
+      "name": "430×932: HP and MP always visible",
+      "status": "PASS"
+    },
+    {
+      "name": "430×932: commands always visible",
+      "status": "PASS"
+    },
+    {
+      "name": "430×932: action menu stays in map",
+      "status": "PASS"
+    },
+    {
+      "name": "430×932: Move shows terrain-cost range",
+      "status": "PASS"
+    },
+    {
+      "name": "430×932: same tile shows stationary action conditions",
+      "status": "PASS"
+    },
+    {
+      "name": "430×932: stationary choice consumes no move/MP/RNG",
+      "status": "PASS"
+    },
+    {
+      "name": "430×932: forecast inside contextual menu",
+      "status": "PASS"
+    },
+    {
+      "name": "430×932: context confirm fits inside viewport",
+      "status": "PASS"
+    },
+    {
+      "name": "430×932: no page scroll",
+      "status": "PASS"
+    },
+    {
+      "name": "430×932: attack uses real rules",
+      "status": "PASS"
+    },
+    {
+      "name": "844×390: tap activates hero and face immediately",
+      "status": "PASS"
+    },
+    {
+      "name": "844×390: HP and MP always visible",
+      "status": "PASS"
+    },
+    {
+      "name": "844×390: commands always visible",
+      "status": "PASS"
+    },
+    {
+      "name": "844×390: action menu stays in map",
+      "status": "PASS"
+    },
+    {
+      "name": "844×390: Move shows terrain-cost range",
+      "status": "PASS"
+    },
+    {
+      "name": "844×390: same tile shows stationary action conditions",
+      "status": "PASS"
+    },
+    {
+      "name": "844×390: stationary choice consumes no move/MP/RNG",
+      "status": "PASS"
+    },
+    {
+      "name": "844×390: forecast inside contextual menu",
+      "status": "PASS"
+    },
+    {
+      "name": "844×390: context confirm fits inside viewport",
+      "status": "PASS"
+    },
+    {
+      "name": "844×390: no page scroll",
+      "status": "PASS"
+    },
+    {
+      "name": "844×390: attack uses real rules",
+      "status": "PASS"
+    },
+    {
+      "name": "Artwork resolution is native 128×128 and faces 256×256",
+      "status": "PASS"
+    },
+    {
+      "name": "Five distinct portrait renders",
+      "status": "PASS"
+    },
+    {
+      "name": "Movement finishes into dock action chooser",
+      "status": "PASS"
+    },
+    {
+      "name": "Undo restores origin from dock",
+      "status": "PASS"
+    },
+    {
+      "name": "End phase confirmation stays inline",
+      "status": "PASS"
+    },
+    {
+      "name": "Cancel keeps the same selected hero",
+      "status": "PASS"
+    },
+    {
+      "name": "Real two-finger pinch zoom works",
+      "status": "PASS"
+    },
+    {
+      "name": "Touch drag pans without selecting or moving a hero",
+      "status": "PASS"
+    },
+    {
+      "name": "Touch kai skill: context confirm visible",
+      "status": "PASS"
+    },
+    {
+      "name": "Touch lia skill: context confirm visible",
+      "status": "PASS"
+    },
+    {
+      "name": "Touch elina skill: context confirm visible",
+      "status": "PASS"
+    },
+    {
+      "name": "Touch kai rescue: context confirm visible",
+      "status": "PASS"
+    },
+    {
+      "name": "Touch lia skill: context confirm visible",
+      "status": "PASS"
+    },
+    {
+      "name": "Touch sain attack: context confirm visible",
+      "status": "PASS"
+    },
+    {
+      "name": "Touch eric attack: context confirm visible",
+      "status": "PASS"
+    },
+    {
+      "name": "Touch kai skill: context confirm visible",
+      "status": "PASS"
+    },
+    {
+      "name": "Touch lia skill: context confirm visible",
+      "status": "PASS"
+    },
+    {
+      "name": "Touch eric attack: context confirm visible",
+      "status": "PASS"
+    },
+    {
+      "name": "Touch kai skill: context confirm visible",
+      "status": "PASS"
+    },
+    {
+      "name": "Touch lia skill: context confirm visible",
+      "status": "PASS"
+    },
+    {
+      "name": "Touch elina rescue: context confirm visible",
+      "status": "PASS"
+    },
+    {
+      "name": "Touch eric attack: context confirm visible",
+      "status": "PASS"
+    },
+    {
+      "name": "Complete touch battle: rescue, reinforcements, boss, victory",
+      "status": "PASS"
+    },
+    {
+      "name": "Touch victory and growth persist after reload",
+      "status": "PASS"
+    },
+    {
+      "name": "Touch replay remains available",
+      "status": "PASS"
+    },
+    {
+      "name": "Existing v0.1.0 battle imports without lost growth or RNG",
+      "status": "PASS"
+    },
+    {
+      "name": "Legacy v0.1.0 battle uses new bottom status and action menu",
+      "status": "PASS"
+    },
+    {
+      "name": "Existing v0.1.1 battle imports without lost growth or RNG",
+      "status": "PASS"
+    },
+    {
+      "name": "Legacy v0.1.1 battle uses new bottom status and action menu",
+      "status": "PASS"
+    },
+    {
+      "name": "Existing v0.1.2 battle imports without lost growth or RNG",
+      "status": "PASS"
+    },
+    {
+      "name": "Legacy v0.1.2 battle uses new bottom status and action menu",
+      "status": "PASS"
+    },
+    {
+      "name": "Existing v0.1.3 battle imports without lost growth or RNG",
+      "status": "PASS"
+    },
+    {
+      "name": "Legacy v0.1.3 battle uses new bottom status and action menu",
+      "status": "PASS"
+    },
+    {
+      "name": "No runtime errors in mobile/legacy flows",
+      "status": "PASS"
+    },
+    {
+      "name": "No external asset requests",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "external": 0
+}

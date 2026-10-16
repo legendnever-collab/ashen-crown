@@ -9,3 +9,6 @@ APPROVED_DIRECTION, 2026-10-14 user v0.3 Master Task. Story CANON과 실제 구�
 
 
 - v0.3.1 Classic SRPG Renaissance: walkable forge/item interiors; weapon-first buy/equip; natural NPC copy and in-place dialogue; variable maps, native art detail, bounded camera/minimap, contextual tactics, fire states and class MOV. Stacked release candidate on PR #6; later missions remain v0.4, full promotions v0.5.
+
+## Current verified sequence
+v0.3.0/v0.3.1 PR6/7 merged. v0.3.2 Gameplay Quality & Rewards implemented as review candidate; validation in docs/v0.3.2. Next remains v0.4.0 The Broken Allegiance, then v0.5.0 Advanced Class.

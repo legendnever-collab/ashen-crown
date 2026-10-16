@@ -1,3 +1,6 @@
+## v0.3.2 — Gameplay Quality & Rewards (review candidate)
+Continuous keyboard/pointer movement, doorway confirmation and owner service menus. Existing auto-equip retained with explicit hero choice. Phase-once HP/MP recovery, enemy supply tactics, first-clear/optional reward ledger, overflow delivery and schema5 catchup. Main merge pending.
+
 # v0.3.1 — Release recovery (2026-10-15 KST)
 - Fix Quest preference loss on immediate reload by saving in summary activation before the deferred toggle event. Keep summary Enter/Space from triggering town interaction.
 - Add same-event persistence coverage to all four Renaissance viewports; preserve existing game/save migration behavior.
@@ -68,3 +71,4 @@
 
 ## v0.3.1 — 2026-10-14
 Independent walkable forge/item interiors and durable doorway return; weapon-first hero eligibility and effective-stat delta; atomic buy/equip retaining shop UI; in-place NPC/battle portraits/history and copy review; council checkbox removal; persistent collapsible objectives; immediate terrain-aware movement and target-protecting popup; variable rectangular maps/shared bounded camera/minimaps; native128 terrain/sprite detail and256 portraits; animated fire/charred village; class MOV2/3/3/3/4, terrain profiles/allied traversal and future modifier metadata. Save schema4 migration preserves growth/checkpoints/economy. All actual evidence in v0.3.1 report; no new missions or canon changes.
+

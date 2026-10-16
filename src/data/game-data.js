@@ -1,11 +1,13 @@
-export const VERSION = '0.3.1';
-export const SCHEMA = 4;
+export const VERSION = '0.3.2';
+export const SCHEMA = 5;
 export const WIDTH = 12, HEIGHT = 10;
 export const TERRAIN = {
   g: {name:'Grass', cost:1, defense:0, evade:0, color:'#52624a'},
   r: {name:'Road', cost:1, defense:0, evade:0, color:'#947a54'},
   f: {name:'Forest', cost:2, defense:1, evade:12, color:'#294f43'},
-  v: {name:'Village', cost:1, defense:2, evade:0, color:'#756b56'},
+  v: {name:'Village', cost:1, defense:2, evade:0, hpRecovery:.10,mpRecovery:.05, color:'#756b56'},
+  t: {name:'Fort',cost:1,defense:2,evade:0,hpRecovery:.15,mpRecovery:.10,color:'#78817d'},
+  h: {name:'Recovery Point',cost:1,defense:0,evade:0,hpRecovery:.10,mpRecovery:.10,color:'#71a38b'},
   b: {name:'Bridge', cost:1, defense:1, evade:0, color:'#9b815b'},
   m: {name:'Mountain Path',cost:3,defense:2,evade:6,color:'#797e6a'},
   d: {name:'Desert',cost:2,defense:0,evade:0,color:'#baa472'},

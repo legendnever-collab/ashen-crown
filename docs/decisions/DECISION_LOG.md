@@ -38,3 +38,6 @@
 No new story facts promoted to CANON. Reference screenshots were mentioned in the task but not attached in this execution; no direct copyrighted image comparison claimed.
 
 D-025 v0.3.1 final audit: reinforcement warning locations derive from authored mission spawns (M01 north/M03 rear, none in M02), not fixed village corners. Root developer/readme/changelog documents are included in the same release tree.
+
+## 2026-10-16 — approved v0.3.2 task
+D-026 runtime held input and transient explicit doors; no serialized pressed keys/modal. D-027 owner menus preserve weapon-first atomic equip. D-028 own-phase terrain recovery with saved marker, attack-first bounded enemy preference. D-029 preserve base Gold; additive stable reward IDs and deferred capacity delivery, Schema5 catchup. D-030 legal campaign test withdrawal uses actual terrain path distance; old Manhattan-only policy could stall beside bridge obstacles after healing changed combat state. Story canon unchanged.

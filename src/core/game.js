@@ -1,3 +1,4 @@
+import {applyTerrainRecovery,recoveryValue} from './terrain-recovery.js';
 import {ensureEconomy,commitEconomyReward,useTool,effectiveStats} from './economy.js';
 import {VERSION,SCHEMA,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,DEPLOYMENTS,BALANCE} from '../data/game-data.js';
 import {distance,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,forecast,strikeStats,guardFor,roll,awardXP,discover,terrainAt} from './rules.js';
@@ -14,7 +15,7 @@ export function newGame(seed=20261014,campaign=null,missionId=1){
 }
 export function setDeployment(s,id,x,y){if(s.screen!=='deployment'||y<7||y>9||x<1||x>10||!Number.isFinite(terrainAt(x,y,s)?.cost))return false;const u=findUnit(s,id);if(!u||u.team!=='ally')return false;const other=at(s,x,y);if(other&&other.team!=='ally')return false;if(other){other.x=u.x;other.y=u.y;}u.x=x;u.y=y;return true;}
 export function presetDeployment(s,name){if(s.screen!=='deployment')return;HEROES.forEach((h,i)=>{const u=findUnit(s,h.id);[u.x,u.y]=DEPLOYMENTS[name][i];});}
-export function startBattle(s){if(s.screen!=='deployment')return false;s.screen='battle';s.log.push(missionOf(s).brief);const {stageStart,...initial}=s;s.stageStart=structuredClone({...initial,feedback:[]});return true;}
+export function startBattle(s){if(s.screen!=='deployment')return false;s.screen='battle';applyTerrainRecovery(s);s.log.push(missionOf(s).brief);const {stageStart,...initial}=s;s.stageStart=structuredClone({...initial,feedback:[]});return true;}
 export function canAct(s,u){return s.screen==='battle'&&s.phase==='player'&&!s.narrative?.active&&u?.team==='ally'&&alive(u)&&!u.acted;}
 export function moveUnit(s,id,x,y){const u=findUnit(s,id);if(!canAct(s,u)||u.moved||(u.x===x&&u.y===y))return null;const path=pathTo(s,u,x,y);if(!path)return null;s.undo[id]={x:u.x,y:u.y};u.x=x;u.y=y;u.moved=true;s.feedback.push({type:'move',id,path});return path;}
 export function undoMove(s,id){const u=findUnit(s,id),origin=s.undo[id];if(!canAct(s,u)||!origin||at(s,origin.x,origin.y))return false;u.x=origin.x;u.y=origin.y;u.moved=false;delete s.undo[id];return true;}
@@ -54,16 +55,18 @@ export function performAction(s,id,mode,targetId){
  checkOutcome(s);afterBattleEvents(s);return {ok:true};
 }
 function sTerrain(s,u){return terrainAt(u.x,u.y,s).name==='Forest'?'f':terrainAt(u.x,u.y,s).name==='Village'?'v':'g';}
-export function beginEnemyPhase(s){if(s.screen!=='battle'||s.phase!=='player'||s.narrative?.active)return false;s.phase='enemy';s.undo={};s.enemyQueue=s.units.filter(u=>u.team==='enemy'&&alive(u)).map(u=>u.id);s.enemyIndex=0;s.log.push(`TURN ${s.turn} · ENEMY PHASE`);return true;}
+export function beginEnemyPhase(s){if(s.screen!=='battle'||s.phase!=='player'||s.narrative?.active)return false;s.phase='enemy';s.undo={};s.enemyQueue=s.units.filter(u=>u.team==='enemy'&&alive(u)).map(u=>u.id);s.enemyIndex=0;s.feedback=[];applyTerrainRecovery(s);s.log.push(`TURN ${s.turn} · ENEMY PHASE`);return true;}
 export function planEnemy(s,u){
  const reachable=movement(s,u).costs;
  if(s.missionId===2&&u.id==='boss'){const cells=[...reachable].map(([p,c])=>{const [x,y]=p.split(',').map(Number);return {x,y,c};}).sort((a,b)=>a.y-b.y||Math.abs(a.x-5)-Math.abs(b.x-5)||a.c-b.c);const d=cells[0];return {...d,target:null,reason:'북쪽 출구로 도주'};}
 const targets=s.units.filter(t=>alive(t)&&(t.team==='ally'||t.team==='civilian'&&s.turn>=missionOf(s).threatTurn));let best=null;
  for(const [pos,cost] of reachable){const [x,y]=pos.split(',').map(Number),actor={...u,x,y};for(const t of targets){const d=distance(actor,t);if(d<u.range[0]||d>u.range[1])continue;
    const f=strikeStats(s,actor,t);const priority=t.team==='civilian'?38:u.kind==='captain'?16-t.def:t.id==='sain'?12:t.id==='lia'?8:0;
-   const score=f.damage+priority+(t.hp<=f.damage?30:0)+(u.kind==='archer'?Math.min(d,3)*3:0)-cost*.3; if(!best||score>best.score)best={x,y,target:t.id,score,reason:`공격 가능 · ${t.team==='civilian'?'주민 위협':t.id==='sain'?'지원 장수 견제':'유효 피해'} · 거리 ${d}`};
+   const score=f.damage+priority+(t.hp<=f.damage?30:0)+(u.kind==='archer'?Math.min(d,3)*3:0)-cost*.3+recoveryValue(s,u,x,y)*.35; if(!best||score>best.score)best={x,y,target:t.id,score,reason:`공격 가능 · ${t.team==='civilian'?'주민 위협':t.id==='sain'?'지원 장수 견제':'유효 피해'} · 거리 ${d}`};
  }}
  if(best)return best;
+ // Attack and the M02 escape objective always win over retreat. Only local, useful recovery.
+ if(u.hp/u.maxHP<.5){const sites=[...reachable].map(([p,c])=>{const [x,y]=p.split(',').map(Number);return {x,y,c,value:recoveryValue(s,u,x,y)};}).filter(p=>p.value>0&&targets.some(t=>distance(p,t)<=3)).sort((a,b)=>b.value-a.value||a.c-b.c);if(sites.length)return {...sites[0],target:null,reason:'인근 보급 거점 확보'};}
  const objectives=s.units.filter(t=>alive(t)&&(t.team==='ally'||t.team==='civilian'&&s.turn>=missionOf(s).threatTurn));if(!objectives.length)return {x:u.x,y:u.y,target:null,reason:'대상 없음'};
  // Path distance respects blocked ruins and units; ignore occupancy only for strategic pursuit.
  const ranked=objectives.map(t=>({t,d:distance(u,t)-(u.kind==='captain'&&t.team==='civilian'?3:0)})).sort((a,b)=>a.d-b.d);const t=ranked[0].t;
@@ -81,6 +84,7 @@ export function advanceEnemy(s){
  if(s.missionId===1&&s.turn===2)s.log.push('북쪽 숲에서 발소리가 들립니다. TURN 3에 북서·북동 모서리로 산적 2명이 진입합니다.');
  if(s.turn>=3&&!s.reinforced&&missionOf(s).reinforcements.length){for(const e of missionOf(s).reinforcements){let pos={x:e.x,y:e.y};if(at(s,pos.x,pos.y)){const free=[];for(let y=0;y<missionOf(s).height;y++)for(let x=0;x<missionOf(s).width;x++)if(!at(s,x,y)&&Number.isFinite(terrainAt(x,y,s).cost))free.push({x,y});free.sort((a,b)=>distance(a,e)-distance(b,e));pos=free[0];}s.units.push({...structuredClone(e),...pos,team:'enemy',maxHP:e.hp,mp:0,maxMP:0,mag:0,spawnTurn:s.turn});s.feedback.push({type:'spawn',id:e.id,text:'REINFORCEMENT'});}s.reinforced=true;s.log.push('적 증원 2명 출현. 이번 Player Phase 동안 먼저 대응할 수 있습니다.');}
  if(s.missionId===1&&s.turn===4)s.log.push('Garr: “피난민을 잡아라!” 다음 TURN 5부터 산적이 주민을 직접 공격합니다.');
+ applyTerrainRecovery(s);
  if(s.missionId===3)escortCivilians(s);
  checkOutcome(s);afterBattleEvents(s);
  s.log.push(`TURN ${s.turn} · PLAYER PHASE${s.turn>=5?' · 주민이 직접 공격받습니다!':''}`);return true;

@@ -1,6 +1,5 @@
 # Next Tasks
-1. v0.3.1 official release is authorized and PR #6/#7 merged; no new development is part of this finalization. Check exact-main CI, published GitHub Release v0.3.1, attached standalone HTML/Source ZIP/Test Report/SHA256 before closure.
-2. For future planning only: v0.4 The Broken Allegiance (M04–06) remains outside this release.
-3. For future planning only: v0.5 full advanced class progression remains outside this release.
-4. Physical phone, Safari/Firefox and long-term storage eviction remain unverified. Original 4 acts, 30 missions, five heroes and canon remain unchanged.
-Keep save migration, atomic economy/rollback, doorway return, movement/target legality and balance regression as future gates.
+1. v0.3.2 full code validation passed; review PR8 and final package CI. User plays the supplied candidate and then authorizes merge.
+2. Fix only observed regressions, preserve phase/reward/schema/nonce contracts.
+3. After approval: v0.4 The Broken Allegiance (M04–06, Baldrick, royal supply, ACT I ending).
+4. v0.5 Advanced Character Evolution; physical-device and other-browser checks remain.

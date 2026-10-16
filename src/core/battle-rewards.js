@@ -1,0 +1,16 @@
+import {GEAR,TOOLS} from '../data/frontier-data.js';
+// Supplement existing first-clear Gold, never replace or repeat it.
+export function supplementalRewards(missionId,{rescued=0,captured=false}={}){
+ const reward=(suffix,kind,type,amount=1,optional=false)=>({id:`v032:m${missionId}:${suffix}`,missionId,kind,type,amount,optional});
+ if(missionId===1)return [reward('supply','item','medium'),...(rescued===2?[reward('rescue','item','ward',1,true)]:[])];
+ if(missionId===2)return [reward('supply','item','ether'),...(captured?[reward('capture','gold',null,30,true)]:[])];
+ if(missionId===3)return [reward('supply-hp','item','medium'),reward('supply-mp','item','ether'),...(rescued===2?[reward('full-rescue','gear','focusCharm',1,true)]:[])];
+ return [];
+}
+export const knownRewards=()=>[1,2,3].flatMap(id=>supplementalRewards(id,{rescued:2,captured:true}));
+export function initRewardLedger(e){e.rewardClaims??=[];e.rewardHistory??=[];e.rewardPending??=[];return e;}
+export function deliverRewards(e){let count=0;for(let i=0;i<e.rewardPending.length;){const r=e.rewardPending[i];if(r.kind==='item'&&Object.values(e.items).reduce((a,b)=>a+b,0)<6){e.items[r.type]++;}else if(r.kind==='gear'&&e.gear.length<24){e.gear.push({id:`g${e.next++}`,type:r.type,level:0});}else{i++;continue;}e.rewardPending.splice(i,1);count++;}return count;}
+export function grantSupplemental(e,missionId,context={},legacy=false){initRewardLedger(e);const grants=[];for(const r of supplementalRewards(missionId,context)){if(e.rewardClaims.includes(r.id))continue;e.rewardClaims.push(r.id);e.rewardHistory.push({...r,legacy});if(r.kind==='gold')e.gold+=r.amount;else for(let n=0;n<r.amount;n++)e.rewardPending.push({...r});grants.push(r);}deliverRewards(e);return grants;}
+export function legacyRewardCatchup(e,campaign){initRewardLedger(e);for(const id of campaign.completed||[]){const result=campaign.results.find(r=>r.missionId===id&&r.outcome==='victory'&&!r.practice);const rescued=result?.rescued??(id===1?campaign.flags.mission_01_civilians_rescued:id===3?campaign.flags.mission_03_refugees_saved:0)??0;grantSupplemental(e,id,{rescued,captured:!!campaign.flags.mission_02_prisoner_captured},true);}}
+export function validateRewardLedger(e){const known=new Map(knownRewards().map(r=>[r.id,r]));const valid=r=>{const k=known.get(r?.id);return k&&['missionId','kind','type','amount','optional'].every(p=>r[p]===k[p]);};if(!Array.isArray(e.rewardClaims)||new Set(e.rewardClaims).size!==e.rewardClaims.length||e.rewardClaims.some(id=>!known.has(id))||!Array.isArray(e.rewardHistory)||e.rewardHistory.length!==e.rewardClaims.length||new Set(e.rewardHistory.map(r=>r.id)).size!==e.rewardHistory.length||e.rewardHistory.some(r=>!valid(r)||!e.rewardClaims.includes(r.id)||typeof r.legacy!=='boolean')||!Array.isArray(e.rewardPending)||new Set(e.rewardPending.map(r=>r.id)).size!==e.rewardPending.length||e.rewardPending.some(r=>!valid(r)||r.kind==='gold'||!e.rewardClaims.includes(r.id)))throw Error('보상 기록이 손상되었습니다.');}
+export const rewardLabel=r=>r.kind==='gold'?`${r.amount} Gold`:`${r.kind==='gear'?GEAR[r.type].name:TOOLS[r.type].name} × ${r.amount}`;

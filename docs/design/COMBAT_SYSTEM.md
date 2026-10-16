@@ -7,3 +7,6 @@ Effective stats/consumables: see EQUIPMENT_SYSTEM and ECONOMY_AND_SHOPS. Core mi
 
 ## v0.3.1 movement and interaction
 Select an active hero → immediate Dijkstra range + contextual action menu → destination preview → confirm/cancel → walk → resolve. Preserve post-move attacks, undo before an action, skills/tools/rescue/capture and counter rules. MOV: Knight 2, Archer/Mage/Healer 3, Rogue 4. Equipment adds MOV, Shadow Step still adds 1 when earned. Allies may be crossed, never occupied as destinations; enemies/civilians block movement. Terrain profiles include forest/mountain/desert/swamp and retain impassable walls/deep water. Use core/rules.js terrainCost for both displayed range and path execution. Future mounted modifier/profile stored but no promotion button. M03 remains 10 turns; 30 standard campaign seeds completed in 5–10 bridge turns. Full balance metrics in v0.3.1 report.
+
+## v0.3.2
+Phase-once friendly/enemy terrain recovery, floor/min1/clamp, saved per-unit marker; Village10/5,Fort15/10,Recovery10/10 percent HP/MP. See TERRAIN_RECOVERY.md. No new mission, deadline or growth stat changes.

@@ -1,12 +1,12 @@
-# Ashen Crown v0.3.1
+# Ashen Crown v0.3.2 — Review Candidate
 
-**Classic SRPG Renaissance — Story, Exploration, Preparation & Recruitment**
+**Gameplay Quality & Rewards**
 
 Original offline pixel fantasy SRPG. 아렌은 이야기와 군단 운영의 주인공이고, 다섯 장수는 전투의 주인공입니다. 장수를 만나고 함께 준비하며 전쟁을 통해 그들의 이야기를 완성합니다.
 
 ## Play
 
-Download [Ashen_Crown_v0.3.1.html](releases/Ashen_Crown_v0.3.1.html) using GitHub's **Download raw file**, then open it in a browser. `index.html` is byte-identical. Code, original pixel art, Korean font and original synthesized music are embedded; no network or installation is required.
+Download [Ashen_Crown_v0.3.2.html](releases/Ashen_Crown_v0.3.2.html) using GitHub's **Download raw file**, then open it in a browser. `index.html` is byte-identical. Code, original pixel art, Korean font and original synthesized music are embedded; no network or installation is required.
 
 Story → Town / Camp → NPC / Affiliation → Shop / Equipment → War Council → Free Deployment → Battle → Growth → Aftermath → Next Story.
 
@@ -18,7 +18,7 @@ Story → Town / Camp → NPC / Affiliation → Shop / Equipment → War Council
 - War Council shows essential victory conditions, terrain, known/unknown intelligence, equipment and supplies. Return to exploration before departure. Free deployment is preserved; **출전 확정** is required to start combat.
 - Victory/defeat results return to a hub through **마을 / 야영지로 돌아가기** or **야영지에서 다시 준비**. M03 aftermath reacts to rescue results and bond state; M04 is previewed as future content only.
 
-Downloads: [HTML](releases/Ashen_Crown_v0.3.1.html) · [Source ZIP](releases/Ashen_Crown_v0.3.1_Source.zip) · [Test Report](releases/Ashen_Crown_v0.3.1_Test_Report.md) · [SHA256SUMS](releases/Ashen_Crown_v0.3.1_SHA256SUMS)
+Downloads: [HTML](releases/Ashen_Crown_v0.3.2.html) · [Source ZIP](releases/Ashen_Crown_v0.3.2_Source.zip) · [Test Report](releases/Ashen_Crown_v0.3.2_Test_Report.md) · [SHA256SUMS](releases/Ashen_Crown_v0.3.2_SHA256SUMS)
 
 ## Tactical campaign
 
@@ -42,7 +42,7 @@ Dialogue reuses the narrative engine with portraits, expressions, manual/auto, s
 
 ## Save / migration / economy
 
-Autosave/checksum/last-good/text backup remain. **Schema 0–3 → 4** preserves existing growth, results, tiers, bonds and story flags; class base MOV is intentionally rebalanced. Actual v0.1.0–v0.1.3 battle saves and an actual v0.2 three-mission completed save were imported through the UI. Legacy completion grants the new economy's initial allowance and unique first-clear rewards once. Completed players are not forced into the new old-mission prologues.
+Autosave/checksum/last-good/text backup remain. **Schema 0–4 → 5** preserves existing growth, results, tiers, bonds and story flags; class base MOV is intentionally rebalanced. Actual v0.1.0–v0.1.3 battle saves and an actual v0.2 three-mission completed save were imported through the UI. Legacy completion grants the new economy's initial allowance and unique first-clear rewards once. Completed players are not forced into the new old-mission prologues.
 
 Canonical campaign assets live in `campaign.economy`; the current attempt uses `economy`. Purchases made in preparation commit atomically with an idempotent confirmation token. A failed save rolls the entire transaction back. Battle consumption commits only on a first victory; **Stage Restart** and **Defeat Retry** restore departure inventory, equipment, Gold and growth. Practice copies assets and cannot trade or change canonical assets/growth; level-one practice changes only temporary hero growth. Returning to a hub ends the restart window for that attempt. Campaign selection is blocked during an active battle/deployment.
 
@@ -69,11 +69,14 @@ npm run test:http
 npm run test:campaign
 npm run test:frontier
 npm run test:migration-v02
+npm run test:migration-v031
+npm run test:renaissance
+npm run test:quality
 python scripts/package.py
 python scripts/verify-release.py
 ```
 
-`BROWSER_EXECUTABLE` optionally selects an installed Chromium. Browser tests operate visible controls and legal rules. Unit fixtures modify state only to isolate edge cases. Source ZIP extraction recreates byte-identical HTML and passes unit tests. Evidence: [Test Report](releases/Ashen_Crown_v0.3.1_Test_Report.md), [test matrix](docs/v0.3.1/REGRESSION_RESULTS.md), `docs/v0.3.0/`.
+`BROWSER_EXECUTABLE` optionally selects an installed Chromium. Browser tests operate visible controls and legal rules. Unit fixtures modify state only to isolate edge cases. Source ZIP extraction recreates byte-identical HTML and passes unit tests. Evidence: [Test Report](releases/Ashen_Crown_v0.3.2_Test_Report.md), [test matrix](docs/v0.3.2/TEST_MATRIX.md), `docs/v0.3.0/`.
 
 ## Canon and next work
 
@@ -89,3 +92,8 @@ Original source-composed Web Audio scores use oscillator synthesis and no third-
 ## v0.3.1 — Classic SRPG Renaissance
 Walk into independent shops, approach the owner, select equipment then a compatible hero and compare actual stats before atomic purchase/equip. NPC dialogue retains the town. Select a tactical hero for immediate terrain-cost range and contextual commands. Variable maps, bounded camera/minimaps, persistent Quest panel, role-specific MOV, new native detail and burning/burned buildings preserve all three missions.
 Artifacts: [HTML](releases/Ashen_Crown_v0.3.1.html), [Source ZIP](releases/Ashen_Crown_v0.3.1_Source.zip), [Test Report](releases/Ashen_Crown_v0.3.1_Test_Report.md), [SHA256](releases/Ashen_Crown_v0.3.1_SHA256SUMS). Exact changes [feedback traceability](docs/v0.3.1/FEEDBACK_TRACEABILITY.md). Schema4 migrates 0–3; growth/assets retained, base class MOV intentionally rebalanced. PR #6 and PR #7 merged with user approval; official v0.3.1 release authorized.
+
+## v0.3.2 Gameplay Quality & Rewards — review candidate
+Held exploration, explicit doorway entry, shopkeeper service menus, compatible hero auto-equip, tactical HP/MP sites, canonical victory supplies and optional rewards. Schema5 accepts0–4. [Validation](docs/v0.3.2/RELEASE_VALIDATION.md). User play approval required before main merge.
+
+Validation:108 unit PASS,680 browser/scenario checks,210 legal-policy mission victories; full CI run38767275479, current identical HTML. [Current release report](releases/Ashen_Crown_v0.3.2_Test_Report.md). Main merge requires user play approval.
