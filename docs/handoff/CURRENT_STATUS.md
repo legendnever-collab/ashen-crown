@@ -10,3 +10,7 @@ Validation: 112 unit / 898 browser-scenario / 210 legal mission victories (hoste
 
 Known limits: physical phones, Safari/Firefox, long-term storage eviction unverified. release-v031.yml is a historical v0.3.1-only publisher that no-ops for later versions; v0.3.3 assets were published directly after exact-main CI and checksum verification. v0.3.2 has no separate tag/release (not requested).
 Next: v0.4.0 The Broken Allegiance (M04–06) on feature/v0.4-the-broken-allegiance. No merge before user play approval.
+
+## v0.4.0 The Broken Allegiance — in progress (2026-10-16 KST)
+v0.3.3 publication verified: main 105148e1f4e94502389f1570fc9c966907a96ce8 (PR9 merge), main CI Game validation success, tag/Release v0.3.3 with HTML/Source ZIP/Test Report/SHA256SUMS; release asset SHA256 digests equal the repository manifest.
+Branch feature/v0.4-the-broken-allegiance created from 105148e. Phase B (design only, no code) committed: docs/v0.4.0/ACT1_NARRATIVE_DESIGN.md, IMPLEMENTATION_PLAN.md, TEST_MATRIX.md and docs/story/act1/MISSION_04–06.md. All new story details are PROPOSED; user approval questions Q1–Q5 are pending. No tests have been executed for v0.4 yet. The v0.3.3 Source ZIP intentionally does not cover the new design docs until Phase G repackaging.
