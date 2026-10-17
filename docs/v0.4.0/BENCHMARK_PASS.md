@@ -64,7 +64,7 @@ Lia stands at the war table beside her staff aide (the aide keeps the `advisor` 
 | 9 | Hit = clamp(70–100, 97 (magic 100) + 1.5 × SPD gap − terrain evade + skill/gear bonuses − target dodge). Crit = clamp(3–12%, SPD gap/2 + 5), ×1.5 damage; magic never crits. |
 | 10 | Depth-sorted town drawing (heroes never draw over roofs), villagers pace slowly with role props, and the faced person is talked to first when several are adjacent. |
 
-## B4 — graphics sample (PROPOSED, awaiting user approval; not wired into the game)
+## B4 — graphics (sample approved by the user 2026-10-17 07:43; rolled out)
 `src/render/hd-art.js` paints original pixel art at 48 logical pixels per tile, shown at 2× (96 px per tile on desktop):
 - Per-pixel shading ramps (hue-shifted shadows/highlights) with ordered dithering, coloured outlines on every figure and object.
 - Organic terrain edges (roads, sand, water and swamp fray into grass), tufts/flowers/stones, shore foam, plank bridges, flagstone fortress floors and ramparts.
@@ -76,3 +76,10 @@ Rollout after approval: replace battle tiles/sprites, town tiles/NPCs and portra
 ### B4 revision 1 (user feedback 2026-10-17 07:27)
 - Head reduced (15×14 px instead of 17×16) so bodies read taller.
 - Four facings: down (front), right (profile), up (back view), left (mirrored profile), plus a four-step walk cycle; units turn to the direction they travel. Back views show hair, capes, quivers and shields; profiles show one eye, nose and the near arm. Images: `b4-facing.png`, `b4-walk.gif`; harness views `#facing`, `#walk`.
+
+### B4 rollout (implemented 2026-10-17)
+- Battle (`pixel-renderer.js`) and towns/interiors (`frontier-renderer.js`) now draw through `src/render/hd-world.js`: hd-art ground (organic edges, fortress walls with brick faces, plank interior floors), depth-sorted decor, M01 burning cottages with flames/smoke, recovery wells and supply outposts (green mark), and 30 figure looks.
+- Enemy looks per mission: M01 bandits/Garr, M02 deserters and their leader, M03 armoured pursuers and commander, M04 fortress guards, wall archers, torch-bearers, cellar workers and the quartermaster. Erik switches to his LV5 outfit (cape) when that appearance tier unlocks.
+- Facing: battle units face the direction of travel step by step, face their target when attacking, and start facing the nearest opponent; town NPCs pace slowly turning left/right, pause facing front, and turn toward Erik when he is next to them; Erik faces his last step.
+- Coordinates, hit-testing, cameras, saves and rules are unchanged (64-unit world; art is drawn at 4/3 scale from ×3 nearest-upscaled caches). The ground is resampled once per device scale and blitted 1:1 each frame: desktop 1440 median frame time fell from 33 ms to 16.7 ms in the local headless run.
+- Portraits (dialogue, dock, result, info sheet) keep the existing 128-pixel art.

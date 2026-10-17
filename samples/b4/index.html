@@ -7,7 +7,7 @@ import {MISSIONS} from '../../src/data/missions.js';
 const T=HD_TILE,out=document.getElementById('out'),view=location.hash.slice(1)||'scene';
 const passable=t=>!['x','w','v','t','h'].includes(t);
 function scene(map,units,{buildings=[],selected=null,mov=0,attack=[],time=0,scale=2,cursor=null}={}){
- const H=map.length,W=map[0].length,{pix,objects}=paintGround(map),ground=pix.canvas();
+ const H=map.length,W=map[0].length,{pix,objects}=paintGround(map,{theme:sceneTheme}),ground=pix.canvas();
  out.width=W*T*scale;out.height=H*T*scale;const c=out.getContext('2d');c.imageSmoothingEnabled=false;c.setTransform(scale,0,0,scale,0,0);c.drawImage(ground,0,0);
  // range overlays (under objects/units)
  const sel=units.find(u=>u.id===selected);
@@ -37,6 +37,7 @@ function scene(map,units,{buildings=[],selected=null,mov=0,attack=[],time=0,scal
  if(cursor){const [x,y]=cursor,k=4,col='#ffe08a';c.fillStyle=col;for(const [ax,ay,dx,dy]of[[0,0,1,1],[T,0,-1,1],[0,T,1,-1],[T,T,-1,-1]]){c.fillRect(x*T+ax-(dx<0?k+1:0)+(dx>0?-1:0),y*T+ay+(dy>0?-1:-1),k+1,2);c.fillRect(x*T+ax+(dx>0?-1:-1),y*T+ay-(dy<0?k+1:0)+(dy>0?-1:0),2,k+1);}}
  return c;
 }
+let sceneTheme='';
 const U=(id,sprite,team,x,y,hp,max,extra={})=>({id,sprite,team,x,y,hp,max,...extra});
 if(view==='scene'){
  const m=MISSIONS[1];
@@ -69,5 +70,6 @@ if(view==='walk'){
   scene(m.map,[u,U('lia','lia','ally',9,7,27,27,{facing:'left'}),U('b1','bandit','enemy',3,5,24,24,{facing:'down'})],{scale:2,time:f*80});
   const crop=document.createElement('canvas');crop.width=6*T*2;crop.height=5*T*2;crop.getContext('2d').drawImage(out,2*T*2,4*T*2,crop.width,crop.height,0,0,crop.width,crop.height);window.frames.push(crop.toDataURL('image/png'));}
 }
+if(view==='m04'){const m=MISSIONS[4];sceneTheme='fortress';scene(m.map,m.enemies.map(e=>U(e.id,e.burns?'torch':e.kind==='captain'?'quartermaster':e.kind==='archer'?'fortArcher':'fortGuard','enemy',e.x,e.y,e.hp,e.hp,{facing:'down'})),{scale:2});}
 window.ready=true;
 </script></body></html>

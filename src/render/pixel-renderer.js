@@ -6,6 +6,7 @@ import {alive,movement,validTarget} from '../core/rules.js';
 import {TILE,drawTile,drawSprite,pixel,pixelOval} from './art.js';
 import {RANGE_STYLE,moveDuration,motionAt,presentationPlan} from './animation.js';
 import {drawCombatEffect,effectPhase} from './combat-effects.js';
+import {hdGround,drawHDGround,drawHDObject,hdObjectKey,hdLayerBuildings,hdCovered,hdCastFor,drawHDFigure,hdDirection,HD_K} from './hd-world.js';
 const rect=pixel;
 export class BattleRenderer{
  constructor(canvas,getState,getUI){this.canvas=canvas;this.ctx=canvas.getContext('2d');this.getState=getState;this.getUI=getUI;this.mapCamera=new MapCamera();this.zoom=1;this.pan={x:0,y:0};this.camera={scale:1,x:0,y:0};this.effects=[];this.motion=new Map();this.frame=0;this.terrainCanvas=document.createElement('canvas');this.terrainCanvas.width=WIDTH*TILE;this.terrainCanvas.height=HEIGHT*TILE;const tc=this.terrainCanvas.getContext('2d');for(let y=0;y<HEIGHT;y++)for(let x=0;x<WIDTH;x++)drawTile(tc,MAP[y][x],x*TILE,y*TILE,y*WIDTH+x);this.resize();this.observer=new ResizeObserver(()=>this.resize());this.observer.observe(canvas);this.tick=this.tick.bind(this);requestAnimationFrame(this.tick);}
@@ -24,10 +25,9 @@ export class BattleRenderer{
  diagnostics(now=performance.now()){return {motion:[...this.motion].map(([id,m])=>({id,...motionAt(m.path,now-m.start,m.movement,m.speed)})),active:this.effects.filter(e=>now>=e.start&&now<e.start+e.duration).map(e=>({type:e.type,kind:e.kind,phase:e.kind?effectPhase(e,now):'feedback',id:e.id,target:e.target})),lastWalk:this.lastWalk||null,lastPresentation:this.lastPresentation||[],rangeStyle:RANGE_STYLE};}
  tick(now){this.draw(now);requestAnimationFrame(this.tick);}
  draw(now){const c=this.ctx,s=this.getState(),ui=this.getUI();if(!s||!['battle','deployment','result','title'].includes(s.screen))return;const {width:WIDTH,height:HEIGHT}=missionOf(s);c.setTransform(this.dpr,0,0,this.dpr,0,0);c.clearRect(0,0,this.w,this.h);rect(c,'#172b2b',0,0,this.w,this.h);
-  if(this.mapId!==s.missionId){this.mapId=s.missionId;this.terrainCanvas.width=WIDTH*TILE*2;this.terrainCanvas.height=HEIGHT*TILE*2;const tc=this.terrainCanvas.getContext('2d'),map=missionOf(s).map;tc.scale(2,2);for(let ty=0;ty<HEIGHT;ty++)for(let tx=0;tx<WIDTH;tx++)drawTile(tc,map[ty][tx],tx*TILE,ty*TILE,ty*WIDTH+tx);}
+  if(this.mapId!==s.missionId){this.mapId=s.missionId;const m=missionOf(s),map=m.id===3?m.map.map(r=>r.map(t=>t==='x'?'w':t)):m.map;this.hd=hdGround('m'+m.id,map,map.some(r=>r.includes('k'))?'fortress':'');this.hdCovered=hdCovered(m.layers.buildings);this.facing=new Map();this.lastPos=new Map();}
   const follow=ui.pendingMove||s.units.find(u=>u.id===ui.selected);if(this.mapCamera.key!==String(s.missionId)){this.mapCamera.layout(this.w,this.h,WIDTH,HEIGHT,{key:String(s.missionId),follow});}this.mapCamera.zoom=this.zoom;this.mapCamera.offset={...this.pan};const camera=this.mapCamera.layout(this.w,this.h,WIDTH,HEIGHT,{key:String(s.missionId),follow});this.camera=camera;const {x,y,scale}=camera;c.translate(x,y);c.scale(scale,scale);c.imageSmoothingEnabled=false;
-  c.drawImage(this.terrainCanvas,0,0,WIDTH*TILE,HEIGHT*TILE);
-  for(const building of missionOf(s).layers.buildings)drawBuilding(c,building,now,s.screen==='result'&&s.outcome==='victory'?'burned':building.state);
+  drawHDGround(c,this.hd);
   const selected=s.units.find(u=>u.id===ui.selected),deploy=s.screen==='deployment';
   if(deploy&&ui.mode==='deploy'){for(let ty=7;ty<10;ty++)for(let tx=1;tx<11;tx++){rect(c,RANGE_STYLE.move.fill,tx*TILE,ty*TILE,TILE,TILE);rect(c,RANGE_STYLE.move.border,tx*TILE,ty*TILE,TILE,2);}}
   if(s.screen==='battle'&&s.phase==='player'&&selected&&alive(selected)&&!selected.acted&&!ui.busy){
@@ -36,18 +36,26 @@ export class BattleRenderer{
   }
   for(const k of Object.keys(s.burning||{})){const [fx,fy]=k.split(',').map(Number);rect(c,'rgba(226,108,48,.28)',fx*TILE,fy*TILE,TILE,TILE);drawFire(c,fx*TILE+32,fy*TILE+44,now,.78);}
   if(s.turn===2&&s.screen==='battle')for(const spawn of missionOf(s).reinforcements){const sx=spawn.x*TILE,sy=spawn.y*TILE;rect(c,'#e1af63',sx,sy,TILE,3);rect(c,'#e1af63',sx,sy,3,TILE);c.fillStyle='#ffdb87';c.font='bold 24px monospace';c.fillText('!',sx+28,sy+34);}
-  const actors=s.units.filter(u=>(alive(u)||this.displayHP(u,now)>0)&&!u.rescued).sort((a,b)=>a.y-b.y);for(const u of actors){let ux=u.x*TILE+32,uy=u.y*TILE+37,pose='idle';const m=this.motion.get(u.id);if(m){const p=motionAt(m.path,now-m.start,m.movement,m.speed);ux=p.x*TILE+32;uy=p.y*TILE+37;pose=p.done?'idle':'walk';if(p.done&&!ui.pendingMove)this.motion.delete(u.id);}else if(ui.pendingMove?.id===u.id){ux=ui.pendingMove.x*TILE+32;uy=ui.pendingMove.y*TILE+37;}
-   const effects=this.effects.filter(e=>e.id===u.id&&now>=e.start&&now-e.start<e.duration);if(effects.some(e=>e.type==='attack'))pose='attack';
+  const drawables=[];const stateOf=b=>s.screen==='result'&&s.outcome==='victory'?'burned':b.state;
+  for(const o of this.hd.objects){if(o.kind==='house'&&this.hdCovered.has((o.x/48)+','+(o.y/48-1)))continue;drawables.push({key:hdObjectKey(o),draw:()=>drawHDObject(c,o,now)});}
+  for(const o of hdLayerBuildings(missionOf(s).layers.buildings,stateOf))drawables.push({key:hdObjectKey(o),draw:()=>drawHDObject(c,o,now)});
+  const actors=s.units.filter(u=>(alive(u)||this.displayHP(u,now)>0)&&!u.rescued);for(const u of actors){let ux=u.x*TILE+32,uy=u.y*TILE+37,pose='idle';let facing=this.facing.get(u.id);if(!facing){const foes=s.units.filter(v=>alive(v)&&(u.team==='enemy'?v.team==='ally':v.team==='enemy'));const t=foes.sort((a,b)=>Math.abs(a.x-u.x)+Math.abs(a.y-u.y)-Math.abs(b.x-u.x)-Math.abs(b.y-u.y))[0];facing=t?hdDirection(t.x-u.x,t.y-u.y,'down'):'down';}const m=this.motion.get(u.id);if(m){const p=motionAt(m.path,now-m.start,m.movement,m.speed),prev=this.lastPos.get(u.id);if(prev)facing=hdDirection(p.x-prev.x,p.y-prev.y,facing);this.lastPos.set(u.id,{x:p.x,y:p.y});ux=p.x*TILE+32;uy=p.y*TILE+37;pose=p.done?'idle':'walk';if(p.done&&!ui.pendingMove){this.motion.delete(u.id);this.lastPos.delete(u.id);}}else if(ui.pendingMove?.id===u.id){ux=ui.pendingMove.x*TILE+32;uy=ui.pendingMove.y*TILE+37;const path=ui.pendingMove.path||[];if(path.length>1){const a=path[path.length-2],b=path[path.length-1];facing=hdDirection(b.x-a.x,b.y-a.y,facing);}}
+   const effects=this.effects.filter(e=>e.id===u.id&&now>=e.start&&now-e.start<e.duration),atk=effects.find(e=>e.type==='attack');if(atk){pose='attack';const t=s.units.find(v=>v.id===atk.target);if(t&&t.id!==u.id)facing=hdDirection(t.x-u.x,t.y-u.y,facing);}
+   this.facing.set(u.id,facing);
+   drawables.push({key:uy+27.5,draw:()=>{
    if(u.team==='ally'&&u.acted&&s.screen==='battle')c.globalAlpha=.5;
-   rect(c,u.team==='ally'?'#72aabb':u.team==='enemy'?'#b15d56':u.team==='object'?'#e9c46a':'#ddc28b',ux-18,uy+24,36,3);
+   c.fillStyle=u.team==='ally'?'rgba(80,160,255,.5)':u.team==='enemy'?'rgba(230,70,60,.5)':u.team==='object'?'rgba(233,196,106,.5)':'rgba(240,210,110,.55)';c.beginPath();c.ellipse(ux,uy+23,17,5.5,0,0,Math.PI*2);c.fill();
    if(ui.selected===u.id){c.strokeStyle='#fff0b8';c.lineWidth=2;c.strokeRect(ux-31,uy-36,60,60);rect(c,'#f4d695',ux-4,uy-37,8,4);}
-   if(u.team==='object')drawEvidence(c,u,ux,uy,now);else drawSprite(c,u,ux,uy,now,pose);c.globalAlpha=1;
-   if(u.team!=='object'&&(u.team!=='civilian'||u.hp<u.maxHP)){rect(c,'#18242a',ux-23,uy-31,46,5);rect(c,u.team==='enemy'?'#cc7770':'#99c691',ux-22,uy-30,Math.max(1,Math.floor(44*this.displayHP(u,now)/u.maxHP)),3);}
-   if(effects.some(e=>['hit','critical'].includes(e.type))&&Math.floor(now/70)%2){rect(c,'rgba(255,224,192,.5)',ux-22,uy-25,40,47);}
+   if(u.team==='object')drawEvidence(c,u,ux,uy,now);else{c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(ux,uy+23,13,4,0,0,Math.PI*2);c.fill();drawHDFigure(c,hdCastFor(u,s.missionId),ux,uy+24,{facing,pose,frame:pose==='walk'?1+Math.floor(now/120)%4:0});}c.globalAlpha=1;
+   if(u.guarding&&!u.guardUsed){rect(c,'#2a3a44',ux+12,uy-44,13,15);rect(c,'#e7c783',ux+13,uy-43,11,13);rect(c,'#3f7fa3',ux+15,uy-41,7,9);}
+   if(u.team!=='object'&&(u.team!=='civilian'||u.hp<u.maxHP)){rect(c,'#18242a',ux-23,uy+27,46,5);rect(c,u.team==='enemy'?'#e8594a':u.team==='civilian'?'#f0cf6a':'#5fd38a',ux-22,uy+28,Math.max(1,Math.floor(44*this.displayHP(u,now)/u.maxHP)),3);}
+   if(effects.some(e=>['hit','critical'].includes(e.type))&&Math.floor(now/70)%2){rect(c,'rgba(255,224,192,.5)',ux-22,uy-40,44,62);}
+   }});
   }
+  drawables.sort((a,b)=>a.key-b.key);for(const d of drawables)d.draw();
   if(ui.pendingMove){for(const [i,p] of ui.pendingMove.path.entries()){rect(c,i===ui.pendingMove.path.length-1?'#ffe5a0':'#d2ebdf',p.x*TILE+28,p.y*TILE+29,8,5);}c.strokeStyle='#ffe0a2';c.lineWidth=3;c.strokeRect(ui.pendingMove.x*TILE+2,ui.pendingMove.y*TILE+2,60,60);}
   if(ui.hover&&ui.hover.x>=0&&ui.hover.x<WIDTH&&ui.hover.y>=0&&ui.hover.y<HEIGHT){c.strokeStyle='#e4ddbd';c.lineWidth=2;c.strokeRect(ui.hover.x*TILE+1,ui.hover.y*TILE+1,60,60);}
-  this.effects=this.effects.filter(e=>now<e.start+e.duration);for(const e of this.effects){const u=s.units.find(u=>u.id===e.id);if(!u||now<e.start||e.type==='move')continue;if(e.type==='attack'){drawCombatEffect(c,e,s.units,now,this.reduced);continue;}const age=(now-e.start)/e.duration;if(e.type==='heal'||e.type==='guard'){const radius=8+age*22;pixelOval(c,e.type==='heal'?'rgba(147,219,164,.35)':'rgba(151,205,237,.35)',u.x*TILE+32,u.y*TILE+32,radius,radius/2);}if(e.type==='death'){drawSprite(c,u,u.x*TILE+32,u.y*TILE+39,now,'death');}
+  this.effects=this.effects.filter(e=>now<e.start+e.duration);for(const e of this.effects){const u=s.units.find(u=>u.id===e.id);if(!u||now<e.start||e.type==='move')continue;if(e.type==='attack'){drawCombatEffect(c,e,s.units,now,this.reduced);continue;}const age=(now-e.start)/e.duration;if(e.type==='heal'||e.type==='guard'){const radius=8+age*22;pixelOval(c,e.type==='heal'?'rgba(147,219,164,.35)':'rgba(151,205,237,.35)',u.x*TILE+32,u.y*TILE+32,radius,radius/2);}if(e.type==='death'){drawHDFigure(c,hdCastFor(u,s.missionId),u.x*TILE+32,u.y*TILE+61,{pose:'death',facing:this.facing?.get(u.id)||'down'});}
    c.font=`bold ${e.type==='potential'?16:20}px monospace`;c.textAlign='center';c.fillStyle=e.type==='heal'?(e.resource==='mp'?'#b4dfe3':'#bdedac'):e.type==='level'||e.type==='potential'?'#ffe4a0':e.type==='xp'?'#b4dfe3':'#fff1d2';c.strokeStyle='#172a30';c.lineWidth=2;const py=u.y*TILE-3-age*32-(e.type==='xp'?22:0)-(e.resource==='mp'?22:0);c.strokeText(e.text||'',u.x*TILE+32,py);c.fillText(e.text||'',u.x*TILE+32,py);c.textAlign='start';}const mini=document.querySelector('#battle-minimap');if(mini)drawMinimap(mini,missionOf(s).map,s.units,camera,s.units.filter(u=>u.team==='civilian'||u.team==='object'||u.id==='boss'));this.canvas.dataset.backingPixels=String(this.canvas.width*this.canvas.height);if(this.onCamera)this.onCamera();
  }
 }

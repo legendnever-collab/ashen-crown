@@ -46,7 +46,7 @@ const SAND=['#a58a5a','#bba06a','#cdb27a','#dcc48e','#ebd8a6'].map(col);
 const WATER=['#1f3f5c','#2a5674','#346c8a','#4f8ca3','#8cc2c9'].map(col);
 const STONE=ramp('#8a8778'),MOSS=ramp('#5d7a43'),WOOD=ramp('#8a6040'),PLASTER=ramp('#dccaa0'),ROOF=ramp('#a3593b'),THATCH=ramp('#b98d4f');
 const LEAF=['#1d3528','#284a33','#36623d','#4e8248','#71a455'].map(col);
-const FLAG=ramp('#7d7a6c');
+const FLAG=ramp('#a29a86'),PLANK=ramp('#8a6442'),WALLR=ramp('#6e6a60');
 
 const tileAt=(map,x,y)=>map[y]?.[x];
 const isLike=(t,set)=>t!==undefined&&set.includes(t);
@@ -58,14 +58,16 @@ function groundPixel(kind,gx,gy){
  if(kind==='water'){const n=noise(gx,gy,26,6)*.7+noise(gx*.6,gy*2,8,8)*.3;let t=2;if(n<.34)t=dither(gx,gy,(.34-n)*6)?1:2;return WATER[t];}
  if(kind==='swamp'){const n=noise(gx,gy,12,7);return n<.38?(dither(gx,gy,(.38-n)*4)?col('#35524f'):col('#3f5d55')):n<.72?col('#4f6a4a'):col('#5b7550');}
  if(kind==='flag'){return FLAG[2];}
+ if(kind==='plank'){const row=Math.floor(gy/8),seam=gy%8===7,joint=(gx+row*29)%41===0;const n=noise(gx,gy*.25,10,12);let t=n<.4?1:2;if(seam||joint)t=0;else if(gy%8===0)t=3;return PLANK[t];}
+ if(kind==='wall'){return WALLR[2];}
  return GRASS[2];
 }
-const KIND={g:'grass',f:'grass',v:'grass',t:'grass',h:'dirt',r:'dirt',x:'grass',m:'grass',d:'sand',w:'water',b:'water',s:'swamp',k:'flag',q:'flag'};
+const KIND={g:'grass',f:'grass',v:'grass',t:'grass',h:'grass',r:'dirt',x:'grass',m:'grass',d:'sand',w:'water',b:'water',s:'swamp',k:'flag',q:'flag',p:'plank'};
 // paints the full terrain ground; decor (trees, houses, rocks) is returned as sortable objects
-export function paintGround(map){
- const H=map.length,W=map[0].length,T=HD_TILE,p=new Pix(W*T,H*T),objects=[];
+export function paintGround(map,{theme=''}={}){
+ const H=map.length,W=map[0].length,T=HD_TILE,p=new Pix(W*T,H*T),objects=[],fort=theme==='fortress';
  for(let ty=0;ty<H;ty++)for(let tx=0;tx<W;tx++){
-  const t=map[ty][tx],kind=KIND[t]||'grass';
+  const t=map[ty][tx],kind=fort&&t==='x'?'wall':KIND[t]||'grass';
   for(let y=0;y<T;y++)for(let x=0;x<T;x++){const gx=tx*T+x,gy=ty*T+y;let k=kind;
    // organic edges: dirt/sand/water tiles fray into neighbouring grass
    if(['dirt','sand','water','swamp'].includes(kind)){const same=(dx,dy)=>(KIND[tileAt(map,tx+dx,ty+dy)]??kind)===kind||(kind==='water'&&tileAt(map,tx+dx,ty+dy)==='b')||(kind==='dirt'&&['r','h'].includes(tileAt(map,tx+dx,ty+dy)));const j=2+noise(gx,gy,6,9)*5;let dmin=99;if(!same(-1,0))dmin=Math.min(dmin,x);if(!same(1,0))dmin=Math.min(dmin,T-1-x);if(!same(0,-1))dmin=Math.min(dmin,y);if(!same(0,1))dmin=Math.min(dmin,T-1-y);for(const [dx,dy,cx,cy]of[[-1,-1,0,0],[1,-1,T-1,0],[-1,1,0,T-1],[1,1,T-1,T-1]])if(same(dx,0)&&same(0,dy)&&!same(dx,dy))dmin=Math.min(dmin,Math.hypot(x-cx,y-cy));if(dmin<j)k='grass';else if(dmin<j+1.2)k=kind==='water'?'foam':'rim';}
@@ -81,18 +83,27 @@ export function paintGround(map){
   if(kind==='water'){for(let i=0;i<5;i++){const x=ox+3+Math.floor(R(i)*38),y=oy+4+Math.floor(R(i+9)*40);for(let k=0;k<5+Math.floor(R(i+30)*4);k++)if(p.get(x+k,y)!==WATER[4])p.set(x+k,y,k%4===0?WATER[3]:WATER[4]);}}
   if(kind==='swamp'){for(let i=0;i<6;i++){const x=ox+4+Math.floor(R(i)*40),y=oy+10+Math.floor(R(i+9)*32);for(let k=0;k<5+i%3;k++)p.set(x+(k>3?1:0),y-k,k>3?col('#9a8a54'):col('#6f8f55'));}}
   if(kind==='flag')paintFlagstones(p,ox,oy,tx,ty,t==='q');
+  if(kind==='wall')paintWall(p,ox,oy,tx,ty,tileAt(map,tx,ty+1)!=='x');
   // objects
   if(t==='f'){const spots=[[12,30],[34,28],[23,45],[8,46],[40,46]],n=3+(R(50)<.5?1:0);for(let i=0;i<n;i++){const [sx,sy]=spots[(i+Math.floor(R(49)*5))%5];objects.push({kind:'tree',x:ox+sx+Math.floor(R(51+i)*5)-2,y:oy+sy,size:.66+R(60+i)*.16,seed:tx*31+ty*17+i});}}
   if(t==='g'&&R(70)<.07)objects.push({kind:'bush',x:ox+10+Math.floor(R(71)*28),y:oy+16+Math.floor(R(72)*26),seed:tx+ty*7});
-  if(t==='x')objects.push({kind:'ruin',x:ox,y:oy+T,seed:tx*13+ty});
+  if(t==='x'&&!fort)objects.push({kind:'ruin',x:ox,y:oy+T,seed:tx*13+ty});
   if(t==='m')objects.push({kind:'crag',x:ox,y:oy+T,seed:tx*7+ty*3});
   if(t==='b')objects.push({kind:'bridge',x:ox,y:oy,key:oy-48,seed:tx,map,tx,ty});
-  if(t==='v'||t==='t'||t==='h')objects.push({kind:'house',x:ox,y:oy+T,seed:tx*5+ty*11,w:1,h:1});
+  if(t==='v')objects.push({kind:'house',x:ox,y:oy+T,seed:tx*5+ty*11,w:1,h:1});
+  if(t==='t')objects.push({kind:'outpost',x:ox,y:oy+T,seed:tx});
+  if(t==='h')objects.push({kind:'well',x:ox,y:oy+T,seed:tx});
  }
  return {pix:p,objects};
 }
+function paintWall(p,ox,oy,tx,ty,face){
+ // fortress wall seen from above: capstone walk on top, brick face where the wall drops toward the viewer
+ const top=ramp('#5c5850'),brick=ramp('#4a463f'),faceH=face?18:0;
+ for(let y=0;y<48-faceH;y++)for(let x=0;x<48;x++){const gx=ox+x,gy=oy+y,bx=(x+(Math.floor(y/12)%2?6:0))%12,by=y%12;let t=2;if(bx===0||by===0)t=1;else if(bx===1||by===1)t=3;else if(noise(gx,gy,5,13)>.7)t=1;p.set(gx,gy,top[t]);}
+ if(face){for(let y=48-faceH;y<48;y++)for(let x=0;x<48;x++){const row=Math.floor((y-48+faceH)/6),bx=(x+(row%2?5:0))%10,by=(y-48+faceH)%6;let t=y<48-faceH+2?0:2;if(t===2&&(bx===0||by===0))t=0;else if(t===2&&by===1)t=3;p.set(ox+x,oy+y,brick[t]);}p.rect(ox,oy+48-faceH-1,48,1,top[4]);}
+}
 function paintFlagstones(p,ox,oy,tx,ty,rampart){
- for(let row=0;row<4;row++)for(let k=-1;k<3;k++){const w=18,h=12,sx=ox+k*w+(row%2?9:0),sy=oy+row*h;const shade=hash(tx*9+k,ty*7+row,5);const r=shade<.3?ramp('#77746a'):shade<.7?FLAG:ramp('#87826f');for(let y=0;y<h;y++)for(let x=0;x<w;x++){const gx=sx+x,gy=sy+y;if(gx<ox||gx>=ox+48||gy<oy||gy>=oy+48)continue;let t=2;if(x===0||y===0)t=0;else if(x===1||y===1)t=3;else if(y===h-1||x===w-1)t=1;else if(noise(gx,gy,4,11)>.72)t=1;p.set(gx,gy,r[t]);}}
+ for(let row=0;row<4;row++)for(let k=-1;k<3;k++){const w=18,h=12,sx=ox+k*w+(row%2?9:0),sy=oy+row*h;const shade=hash(tx*9+k,ty*7+row,5);const r=shade<.3?ramp('#958e7a'):shade<.7?FLAG:ramp('#aaa28c');for(let y=0;y<h;y++)for(let x=0;x<w;x++){const gx=sx+x,gy=sy+y;if(gx<ox||gx>=ox+48||gy<oy||gy>=oy+48)continue;let t=2;if(x===0||y===0)t=0;else if(x===1||y===1)t=3;else if(y===h-1||x===w-1)t=1;else if(noise(gx,gy,4,11)>.72)t=1;p.set(gx,gy,r[t]);}}
  if(rampart){for(let k=0;k<4;k++){const sx=ox+k*12;p.rect(sx,oy,12,16,FLAG[1]);p.box(sx+1,oy,9,12,STONE);p.rect(sx+1,oy+12,10,2,FLAG[0]);}p.rect(ox,oy+16,48,2,FLAG[0]);}
 }
 
@@ -131,6 +142,34 @@ export function houseSprite(seed,tw=1,th=1,state='intact'){return cached(`house$
  if(burned){for(let i=0;i<10;i++){const x=4+Math.floor(hash(seed,i,9)*(W-8)),y=rTop+3+Math.floor(hash(seed,i,10)*(rBot-rTop-4));p.rect(x,y,3,2,col('#1f1a1a'));}}
  return p.outline();});}
 
+const healMark=p=>{p.rect(38,2,8,8,col('#1f3a2a'));p.rect(41,3,2,6,col('#9fe0b5'));p.rect(39,5,6,2,col('#9fe0b5'));};
+export function outpostSprite(){return cached('outpost',()=>{const p=new Pix(48,56),W=ramp('#7a5634');for(let x=4;x<44;x+=5){p.box(x,26,5,26,W);p.poly([[x,26],[x+5,26],[x+2.5,21]],W[3]);}p.box(10,14,28,10,ramp('#9c3f36'));p.rect(10,14,28,2,ramp('#9c3f36')[4]);p.box(22,0,2,20,WOOD);p.box(24,1,12,8,ramp('#3f7fa3'));p.rect(28,3,4,4,col('#e1c27a'));p.box(14,40,9,10,WOOD);p.box(26,42,9,8,WOOD);healMark(p);return p.outline();});}
+export function wellSprite(){return cached('well',()=>{const p=new Pix(48,48);p.ball(24,34,15,9,STONE);p.fillEllipse(24,32,10,5.5,WATER[1]);p.fillEllipse(22,31,5,2,WATER[3]);p.box(9,10,3,24,WOOD);p.box(36,10,3,24,WOOD);p.box(7,6,34,5,ROOF);p.rect(23,11,1,16,col('#3a2a22'));p.box(21,24,5,5,WOOD);healMark(p);return p.outline();});}
+// multi-tile town buildings: taller walls, the door on the real entrance column, and a trade sign.
+const TOWN_ROOF={forge:'#5a5f66',shop:'#3f7d72',inn:'#8a4f5e',warroom:'#3f5a7a',residence:'#a3593b',depot:'#7a5a3a'};
+export function townBuildingSprite(b,tone='village',state='intact'){const door=b.entrance?b.entrance.tileX-b.x:Math.floor(b.w/2);return cached(`town${b.type}:${b.w}x${b.h}:${door}:${tone}:${state}`,()=>{
+ const W=b.w*48,H=b.h*48+14,p=new Pix(W,H),camp=tone==='camp',burned=state==='burned';
+ const roofR=burned?ramp('#4b3a33'):camp?ramp('#b9a57a'):ramp(TOWN_ROOF[b.type]||'#a3593b'),wallR=burned?ramp('#6d6153'):camp?ramp('#d9c9a0'):PLASTER;
+ const wallH=Math.min(40,Math.round(b.h*48*.42)),wallTop=H-wallH-2,wl=3,wr=W-3;
+ p.box(wl,wallTop,wr-wl,wallH,wallR);
+ if(!camp){for(let x=wl;x<wr-2;x+=24)p.box(x,wallTop,3,wallH,WOOD,{edge:false});p.box(wr-3,wallTop,3,wallH,WOOD,{edge:false});p.box(wl,H-6,wr-wl,4,STONE);p.box(wl,wallTop,wr-wl,3,WOOD);}
+ else{for(let x=wl+6;x<wr;x+=14)p.rect(x,wallTop,1,wallH,wallR[1]);}
+ const dx=door*48+19;p.box(dx,H-22,12,20,ramp('#5c3b27'));p.rect(dx+1,H-22,10,1,col('#3a2418'));p.rect(dx+5,H-21,1,18,ramp('#5c3b27')[1]);p.set(dx+9,H-12,col('#e0c27a'));p.box(dx-2,H-24,16,3,WOOD);
+ for(let wx=8;wx<W-16;wx+=26){if(Math.abs(wx+4-(dx+6))<16)continue;p.box(wx,wallTop+8,10,10,ramp('#3d2c25'));p.rect(wx+1,wallTop+9,8,8,burned?col('#2a2220'):b.type==='forge'?col('#f0a050'):col('#f2c66e'));p.rect(wx+1,wallTop+9,4,4,burned?col('#3a2a24'):col('#fbe3a0'));p.rect(wx+5,wallTop+9,1,8,WOOD[1]);p.rect(wx+1,wallTop+13,8,1,WOOD[1]);}
+ const rTop=6,rBot=wallTop+2;
+ for(let y=rTop;y<=rBot;y++){const t=(y-rTop)/(rBot-rTop),inset=Math.round((1-t)*6);const row=Math.floor((y-rTop)/4),edge=(y-rTop)%4===3;
+  for(let x=inset;x<W-inset;x++){let tone2=2;if(t<.12)tone2=3;if(x<inset+2)tone2=3;if(x>W-inset-3)tone2=1;if(edge&&!camp)tone2=Math.max(0,tone2-1);if(camp&&(x%16===0))tone2=1;else if(!camp&&(x+row*5)%8===0)tone2=Math.max(0,tone2-1);if(y>=rBot-1)tone2=0;p.set(x,y,roofR[tone2]);}}
+ for(let x=6;x<W-6;x++){p.set(x,rTop,roofR[4]);p.set(x,rTop+1,roofR[3]);}
+ if(rBot-rTop>60&&!camp&&!burned)for(let dx2=24;dx2<W-24;dx2+=48){const dy=Math.round((rTop+rBot)/2)-8;p.box(dx2-7,dy,14,12,roofR);p.poly([[dx2-9,dy+1],[dx2+9,dy+1],[dx2,dy-7]],roofR[3]);p.box(dx2-4,dy+3,8,8,ramp('#3d2c25'));p.rect(dx2-3,dy+4,6,6,col('#f2c66e'));p.rect(dx2,dy+4,1,6,WOOD[1]);}
+ // trade details
+ if(b.type==='forge'&&!burned){p.box(W-20,0,10,rBot-10,STONE);p.rect(W-20,0,10,2,STONE[4]);p.box(10,H-14,12,6,ramp('#4a4a4e'));p.box(13,H-18,6,4,ramp('#4a4a4e'));}
+ if(b.type==='shop'&&!burned){for(let x=wl;x<wr;x++){const stripe=Math.floor(x/6)%2;for(let y=wallTop-2;y<wallTop+5;y++)p.set(x,y,stripe?col('#f1e3c4'):ramp('#3f7d72')[2]);}for(let i=0;i<3;i++){p.box(W-22+i*6,H-12,5,8,ramp(['#c8413a','#3a6fc8','#3d9a63'][i]));}}
+ if(b.type==='inn'&&!burned){p.box(dx+16,wallTop+4,14,10,WOOD);p.rect(dx+18,wallTop+7,10,4,col(camp?'#e8e2d0':'#e8c66e'));if(camp){p.rect(dx+22,wallTop+6,2,6,col('#c9443a'));p.rect(dx+20,wallTop+8,6,2,col('#c9443a'));}}
+ if(b.type==='warroom'&&!burned){p.box(W/2-1,0,2,rTop+10,WOOD);p.box(W/2+1,1,14,9,ramp('#9c3f36'));p.rect(W/2+6,3,4,5,col('#e1c27a'));}
+ if(b.type==='depot'){p.box(W-20,H-16,14,12,WOOD);p.rect(W-20,H-11,14,1,WOOD[0]);p.box(6,H-14,10,10,WOOD);}
+ if(burned){for(let i=0;i<14;i++){const x=4+Math.floor(hash(b.x,i,9)*(W-8)),y=rTop+3+Math.floor(hash(b.y,i,10)*(rBot-rTop-4));p.rect(x,y,3,2,col('#1f1a1a'));}}
+ return p.outline();});}
+
 // ---------- characters ----------
 // Figures are 40×52 pixels, feet on row 50. Front three-quarter idle pose.
 const SKIN={fair:'#f0c7a2',warm:'#dfae86',tan:'#c58f63',deep:'#9a6644',pale:'#ead5c0'};
@@ -154,6 +193,15 @@ export const CAST={
  farmer:{name:'Tomas',skin:'tan',hair:'#5a3a24',style:'short',helm:'straw',helmColor:'#d8b866',body:'tunic',coat:'#b8a07a',trim:'#7a5a3a',legs:'#5a5040',boots:'#4a3a28',weapon:'none',eye:'#3a2a22'},
  mira:{name:'Mira',skin:'fair',hair:'#9a5a3a',style:'long',scarfHead:'#c7b18a',body:'shawl',coat:'#a59c8a',shawl:'#8a6a8a',trim:'#c7b18a',legs:'#6a6254',boots:'#4a4034',weapon:'none',bandage:true,eye:'#4a3a2c'},
  guard:{name:'경비병',skin:'fair',hair:'#2f2a26',style:'short',helm:'kettle',helmColor:'#9aa4a8',body:'tunic',coat:'#4f6b84',trim:'#c9b07a',legs:'#3a4652',boots:'#2c2a26',weapon:'spear',eye:'#3a3a40'},
+ eric_adv:{name:'에릭',skin:'warm',hair:'#6b4630',style:'short',helm:'knight',body:'plate',coat:'#3f7fa3',tabard:'#3f7fa3',trim:'#e7c783',legs:'#40505c',boots:'#5b4632',weapon:'sword',off:'shield',shield:'#3f7fa3',eye:'#2f5d78',cape:'#5d425e'},
+ deserter:{name:'탈영병',skin:'warm',hair:'#4a3a2a',style:'short',body:'tunic',coat:'#6a7058',trim:'#8a7a54',legs:'#4a4a3a',boots:'#3a3226',weapon:'sword',beard:'stubble',eye:'#3a2a22'},
+ deserterCaptain:{name:'도주 대장',skin:'tan',hair:'#3a2a1c',style:'swept',hood:'#4e5a3e',body:'leather',coat:'#5d6a48',trim:'#c9a24a',cape:'#4e5a3e',legs:'#3e3a2c',boots:'#2c261c',weapon:'axe',beard:'full',eye:'#2a1a14',big:true},
+ pursuer:{name:'추격병',skin:'fair',hair:'#2f2a26',style:'short',helm:'kettle',helmColor:'#7a8288',body:'tunic',coat:'#4a3f5a',trim:'#9a8a6a',legs:'#33303a',boots:'#24222a',weapon:'sword',eye:'#3a3a40'},
+ pursuerArcher:{name:'추격 사수',skin:'warm',hair:'#3a302a',style:'short',helm:'cap',helmColor:'#4a3f5a',body:'leather',coat:'#5a4f66',trim:'#9a8a6a',legs:'#33303a',boots:'#24222a',weapon:'bow',back:'quiver',eye:'#3a3a40'},
+ pursuerCaptain:{name:'추격 지휘관',skin:'pale',hair:'#2a2430',style:'swept',helm:'knight',body:'plate',coat:'#4a3f5a',tabard:'#4a3f5a',trim:'#c9b07a',cape:'#2e2838',legs:'#2a2832',boots:'#1f1d24',weapon:'sword',eye:'#4a3a5a'},
+ fortGuard:{name:'성채 경비병',skin:'warm',hair:'#3b302a',style:'short',helm:'kettle',helmColor:'#6b6d6a',body:'tunic',coat:'#5f6a63',trim:'#a28a5a',legs:'#44494a',boots:'#2f2c28',weapon:'spear',eye:'#3a2a22'},
+ fortArcher:{name:'성벽 사수',skin:'fair',hair:'#4a3626',style:'short',helm:'cap',helmColor:'#5f6a63',body:'leather',coat:'#6a6f62',trim:'#a28a5a',legs:'#44494a',boots:'#2f2c28',weapon:'bow',back:'quiver',eye:'#3a2a22'},
+ storeman:{name:'지하 창고병',skin:'tan',hair:'#2e2420',style:'short',bandana:'#5f6a63',body:'apron',coat:'#6a5e50',apron:'#4a3a2a',trim:'#7a6a50',legs:'#44494a',boots:'#2f2c28',weapon:'hammer',beard:'stubble',eye:'#2a1a14'},
  aide:{name:'작전 보좌관',skin:'pale',hair:'#2a2430',style:'swept',body:'coat',coat:'#3f3a63',trim:'#c9b07a',legs:'#2a2840',boots:'#1f1d2a',weapon:'papers',eye:'#4a3a5a'}
 };
 // facing: down (toward the viewer), up (back view), right (profile), left (mirrored profile).
