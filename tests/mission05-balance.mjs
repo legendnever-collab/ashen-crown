@@ -1,0 +1,8 @@
+// M01→M05 legal-policy campaign simulation (30 seeds): M05 must stay winnable by both victory routes.
+import {newGame,startBattle,nextMission} from '../src/core/game.js';import {playBattle} from './player-policy.mjs';import {playCampaignBattle} from './campaign-policy.mjs';import {serialize,deserialize} from '../src/persistence/save-manager.js';
+const out=[];const N=+process.argv[2]||30;for(let seed=20261014;seed<20261014+N;seed++){let s=newGame(seed);s.screen='deployment';startBattle(s);playBattle(s);s=nextMission(s);s.screen='deployment';startBattle(s);playCampaignBattle(s,seed%2===0);s=nextMission(s);s.screen='deployment';startBattle(s);playCampaignBattle(s);s=nextMission(s);s.screen='deployment';startBattle(s);playCampaignBattle(s);
+ if(s.outcome!=='victory'){out.push({seed,m4:s.outcome});continue;}s=nextMission(s);s.campaign.choices.m05_erik_answer=seed%2?'present':'acknowledged';
+ const lv=s.units.filter(u=>u.team==='ally').map(u=>u.id+u.level).join(' ');s.screen='deployment';startBattle(s);deserialize(serialize(s));let r;try{r=playCampaignBattle(s);}catch(e){r={outcome:'ERR '+e.message,turn:s.turn};}deserialize(serialize(s));
+ out.push({seed,lv,outcome:r.outcome,turn:r.turn,reason:s.reason,alive:s.units.filter(u=>u.team==='ally'&&u.hp>0).length,wagons:s.units.filter(u=>u.kind==='wagon'&&u.hp>0).length,mode:s.missionState.withdrew,bond:!!s.campaign.bonds.elina_sain});}
+for(const o of out)console.log(JSON.stringify(o));console.log('wins',out.filter(o=>o.outcome==='victory').length,'broken',out.filter(o=>o.mode==='broken').length);
+if(out.filter(o=>o.outcome==='victory').length<out.length*0.9)process.exit(1);

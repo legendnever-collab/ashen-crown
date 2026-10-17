@@ -38,4 +38,23 @@ MISSIONS[4]=authored({id:4,title:'버려진 성채',en:'The Abandoned Fortress',
  threatTurn:99,par:9,turnLimit:14,burnTurn:8,
  objective:'보급 장부 확보 + 성채 병참관 격파',
  brief:'증거 지점에 인접해 조사(행동 1회). TURN 7이 끝나면 살아 있는 횃불 병참병이 맡은 기록을 태웁니다. 보급 장부는 소각되지 않습니다. 제한 14턴.'});
+// M05 The Lion of the Frontier: Baldrick's formation on the northern ridge, refugee wagons on the
+// southern road. Victory A (formation broken) or B (road held through TURN 10).
+MISSIONS[5]=authored({id:5,title:'국경의 사자',en:'The Lion of the Frontier',
+ rows:['mmmmmmmrrrrmmmmmmm','mmmmmmgrrrrgmmmmmm','ffmmgggrrrrgggmmgg','fffgggggrrgggggmgg','ffffggggrrgggggggg','ffffggggrrgmmggggg','fffgggggrrgmmggggg','fffggggggrrggggggg','ffgggggggrrggggggg','ffggggggrrrggggggg','fgggggggrrgggggggg','rrrrrrrrrrrrrrrrrr','ggggggggggggggggff','fgggggggggggggggff'],
+ enemies:[
+  unit('boss','Baldrick Roen · 검은 사자','lion',9,2,{hp:84,atk:18,def:9,res:5,spd:7,mov:3}),
+  unit('f1','사자 기수','bearer',7,3,{hp:30,atk:9,def:5,res:3,spd:5,mov:2}),
+  unit('f2','사자 기수','bearer',11,3,{hp:30,atk:9,def:5,res:3,spd:5,mov:2}),
+  unit('s1','철왕관 창병','spear',6,4,{hp:30,atk:14,def:6,spd:5}),unit('s2','철왕관 창병','spear',12,4,{hp:30,atk:14,def:6,spd:5}),
+  unit('s3','철왕관 창병','spear',8,5,{hp:30,atk:14,def:6,spd:5}),unit('s4','철왕관 창병','spear',10,6,{hp:30,atk:14,def:6,spd:5}),
+  unit('a1','철왕관 궁수','archer',14,2,{hp:26,atk:13,def:3,spd:7,mov:2})],
+ civilians:[{id:'w1',name:'보급 마차',kind:'wagon',x:5,y:11,hp:34,def:4,res:4},{id:'w2',name:'보급 마차',kind:'wagon',x:12,y:11,hp:34,def:4,res:4}],
+ waves:[{turn:4,story:'5:reinforce',units:[unit('c1','철왕관 기병','cavalry',17,7,{hp:30,atk:15,def:5,res:2,spd:9,mov:5,movementProfile:'cavalry'}),unit('c2','철왕관 기병','cavalry',17,8,{hp:30,atk:15,def:5,res:2,spd:9,mov:5,movementProfile:'cavalry'})]}],
+ formation:{bearers:['f1','f2'],def:2,hit:10,charge:4,leash:2},
+ deployZone:s=>{const base=[];for(let y=10;y<=13;y++)for(let x=1;x<17;x++)if(!(y===11&&(x===5||x===12)))base.push([x,y]);return zone(base);},
+ deployments:{recommended:[[8,10],[6,12],[10,12],[8,12],[11,10]],assault:[[9,10],[7,10],[10,11],[8,11],[12,10]],defense:[[5,10],[7,12],[11,12],[6,12],[12,10]]},
+ threatTurn:99,par:8,turnLimit:10,
+ objective:'사자 대형 붕괴(기수 2명 격파 + 발드릭 HP 50% 이하) 또는 TURN 10까지 보급 마차 1대 이상 사수',
+ brief:'사자 기수 옆의 적은 DEF+2·명중+10. 발드릭은 아군이 붙어 있지 않은 고립된 장수를 노립니다(피해+4). TURN 4에 동쪽에서 기병 2기가 마차를 노리고 진입합니다.'});
 export const LAST_MISSION=Math.max(...Object.keys(MISSIONS).map(Number));

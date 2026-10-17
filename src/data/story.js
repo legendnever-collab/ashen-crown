@@ -42,6 +42,7 @@ STORY['npc:evidence']=[line('lia','왕실 군용 인장은 확실해요. 근데 
 STORY['npc:bond']=[line('eric','카이랑 같이 세인을 지킨 날은 기억한다. 방식은 달라도 같은 사람을 지켰지.'),line('kai','돌아올 데가 있다는 거, 그날 알았어.')];
 
 SPEAKERS.advisor={id:'advisor',name:'Staff Aide',ko:'작전 보좌관',team:'civilian'};
+SPEAKERS.baldrick={id:'baldrick',name:'Baldrick Roen',ko:'발드릭',team:'enemy',kind:'lion'};
 for(let mission=1;mission<=LAST_MISSION;mission++)for(const phase of ['preparation','aftermath']){
  const lines=phase==='aftermath'?(mission===LAST_MISSION?[['lia','다들 돌아왔네요. 다음 작전은… 아직 정보가 모자라요. 정리되면 바로 말할게요.'],['eric','지금은 다들 쉬게 하자.']]:mission===3?[['lia','성채로 가는 길은 확보했어요! 동료들 먼저 살펴보고 출발을 정해요.'],['eric','같이 돌아온 사람부터 보자.']]:[['lia','전투 기록 정리하는 중이에요. 동료들 둘러보고 나서 다음 이동을 정해요.']]):ADVISOR_BRIEFINGS[mission];
  const actors=lines.some(([who])=>who==='advisor')?['eric','lia','advisor']:['eric','lia'];

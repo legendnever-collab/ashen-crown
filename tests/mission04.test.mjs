@@ -13,7 +13,7 @@ const endTurn=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanc
 const clearEnemies=(s,keep=[])=>{for(const u of s.units)if(u.team==='enemy'&&!keep.includes(u.id))u.hp=0;};
 
 test('M04 data: authored fortress, objects, presets inside deployment zone, campaign continues past M03',()=>{
- const m=MISSIONS[4];assert.equal(LAST_MISSION,4);assert.deepEqual([m.width,m.height],[16,14]);
+ const m=MISSIONS[4];assert.ok(LAST_MISSION>=5);assert.deepEqual([m.width,m.height],[16,14]);
  const s=newGame(1,null,4);assert.equal(s.units.filter(u=>u.team==='object').length,3);assert.equal(findUnit(s,'boss').mov,0);
  for(const preset of Object.values(m.deployments))for(const [x,y]of preset)assert.ok(m.deployZone(s).has(`${x},${y}`),`${x},${y}`);
  for(const k of ['4:intro','4:end','4:boss','4:bond','4:search:ledger','pre:4','after:4','after:4:kept','after:4:reported','npc:4:preparation:advisor'])assert.ok(STORY[k]?.length,k);

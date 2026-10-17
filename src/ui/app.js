@@ -56,7 +56,7 @@ function render(){
  $('#logentries').innerHTML=state.log.slice(-18).map(l=>`<div>${esc(l)}</div>`).join('');$('#logentries').scrollTop=$('#logentries').scrollHeight;
  renderObjectives();$('#battle-minimap').hidden=!(battle||deploy);app.classList.toggle('exploring',state.screen==='exploration');app.classList.toggle('in-battle',battle||deploy);app.classList.toggle('journal-open',ui.journal);$('#rail').hidden=!(battle||deploy);$('.field').append(questPanel);$('#screen').innerHTML='';
  if(battle||deploy){$('#rail').innerHTML=renderDock(state,ui,esc,portrait,(label,value,max,cls)=>bar(label,label==='HP'?renderer.displayHP(u):value,max,cls));}else{renderScreen();$('#rail').innerHTML=`<div class="eyebrow">COMMANDER’S NOTES</div><h3 style="margin:13px 0">한 사람씩, 하나의 가능성</h3><p style="font-size:13px">다섯 장수의 역할을 연결하세요. 숲의 사수, 동료를 지키는 기사, 빠른 구출과 치유가 전장의 흐름을 바꿉니다.</p><div class="rule"></div><div class="eyebrow">MISSION OBJECTIVES</div><p style="font-size:12px;margin:10px 0">주민 2명 구출 + Garr 격파<br>선택 목표: 전원 생존 · 8턴 이내 · Eric의 단서</p><div class="rule"></div><div class="muted">완료한 미션: ${state.campaign.clears}회<br>v${VERSION} · 오리지널 픽셀 아트<br>오프라인 실행 · 로컬 저장</div><button class="small" data-do="help" style="margin-top:18px">조작과 전투 규칙</button>`;}
- const pop=$('#unit-popover');pop.innerHTML=menuHTML(state,ui,esc);pop.hidden=!pop.innerHTML;positionPopover();syncTurnPrompt();renderStory();paintPortraits();const hubCanvas=$('#frontier-map');if(hubCanvas){drawHub(hubCanvas,state);followAren();}const stage=$('#scene-stage');if(stage)drawHub(stage,state,{line:storyLine(state)});offerAffiliation();offerAdvisor();
+ const pop=$('#unit-popover');pop.innerHTML=menuHTML(state,ui,esc);pop.hidden=!pop.innerHTML;positionPopover();syncTurnPrompt();renderStory();paintPortraits();const hubCanvas=$('#frontier-map');if(hubCanvas){drawHub(hubCanvas,state);followAren();}const stage=$('#scene-stage');if(stage)drawHub(stage,state,{line:storyLine(state)});offerAffiliation();offerAdvisor();offerParley();
 }
 function positionPopover(){
  const pop=$('#unit-popover');if(!pop||pop.hidden)return;const selected=findUnit(state,ui.selected),unit=findUnit(state,ui.preview||ui.selected),anchor=ui.pendingMove||unit;if(!anchor)return;
@@ -107,6 +107,7 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'campaign':showCampaign();break;
  case 'choose-mission':{if(['battle','deployment'].includes(state.screen)){toast('현재 전투/배치를 마친 뒤 Campaign을 선택하세요.');break;}if(state.outcome==='defeat')state=replay(state);const idn=Number(id);if(!MISSIONS[idn])break;if(idn>1&&!state.campaign.completed.includes(idn-1))break;state=newGame(state.initialSeed,state.campaign,idn);ui.selected='eric';closeModal();enterHub(state);renderer.clearPresentation();renderer.reset();commit();break;}
  case 'records-choice':showRecordsChoice();break;
+ case 'parley-pick':{if(!needsParley()||state.screen!=='deployment'||!['acknowledged','present'].includes(id))break;state.campaign.choices??={};state.campaign.choices.m05_erik_answer=id;closeModal();enqueueStory(state,`5:parley:${id}`);openStory(state);commit();break;}
  case 'item-detail':showItems(id);break;
  case 'unit-info':{const [uid,tab='ability']=String(id).split('|');const u=findUnit(state,uid);if(u&&(u.team!=='object')){modal('장수 정보',unitInfoHTML(state,u,tab,esc,portrait),'');paintPortraits();}break;}
  case 'records-pick':{if(state.missionId!==4||state.practice||state.frontier?.phase!=='aftermath'||state.campaign.choices?.m04_records_choice||!['kept','reported'].includes(id))break;state.campaign.choices??={};state.campaign.choices.m04_records_choice=id;closeModal();enqueueStory(state,`after:4:${id}`);openStory(state);commit();break;}
@@ -115,7 +116,7 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'warroom':await prepareCouncil();break;case 'deploy':state.frontier.ready.formation=true;syncFrontier(state);setScreen('deployment');break;
  case 'select':{const u=findUnit(state,id);if(!u||u.team!=='ally'||state.screen==='battle'&&!alive(u))break;ui.selected=id;ui.menu=state.screen==='battle'?'root':null;ui.mode=state.screen==='battle'&&!u.moved&&!u.acted?'move':initialMode(u);renderer.focus(u.x,u.y);ui.preview=null;ui.notice=null;ui.inspected=null;ui.phaseConfirm=false;render();break;}
  case 'preset':presetDeployment(state,id);commit();break;
- case 'start-battle':if(state.screen==='deployment'){modal('출전 최종 확인',`<p><b>${esc(missionOf(state).objective)}</b></p><p>${esc(councilInfo(state).plan)}</p><p>Equipment / Items / Formation / Objective<br>기본 장비로 출전 가능 · 구매 준비는 선택입니다.</p><p>기본 회복약 2개 + 구매 도구 ${itemCount(state.economy)}개. 출전 이후 장비 변경은 잠깁니다.</p>`,'<button class="primary" data-do="confirm-battle">출전 확정</button><button data-do="close-modal">계속 준비</button>');}break;
+ case 'start-battle':if(state.screen==='deployment'&&needsParley()){offerParley();break;}if(state.screen==='deployment'){modal('출전 최종 확인',`<p><b>${esc(missionOf(state).objective)}</b></p><p>${esc(councilInfo(state).plan)}</p><p>Equipment / Items / Formation / Objective<br>기본 장비로 출전 가능 · 구매 준비는 선택입니다.</p><p>기본 회복약 2개 + 구매 도구 ${itemCount(state.economy)}개. 출전 이후 장비 변경은 잠깁니다.</p>`,'<button class="primary" data-do="confirm-battle">출전 확정</button><button data-do="close-modal">계속 준비</button>');}break;
  case 'confirm-battle':if(startBattle(state)){closeModal();ui.mode='choose';ui.notice=null;commit();}break;
  case 'open-unit-menu':ui.menu=ui.pendingMove?'move-confirm':'root';render();break;
  case 'submenu':ui.menu=id;render();break;
@@ -214,6 +215,11 @@ async function prepareCouncil(){
  if(openCouncil(state))commit();
 }
 function offerCouncilRecovery(){if(state.screen!=='exploration'||state.narrative.active||state.frontier.phase!=='preparation'||!interactions(state).some(n=>n.id==='advisor'&&n.npc))return;modal('작전 회의 복구','<p>작전 보고를 다시 확인합니다. 현재 장비와 임무 기록은 유지됩니다.</p>',frontierButton('advisor-recover','작전 회의를 다시 연다')+frontierButton('close-modal','돌아가기'));}
+// M05 parley (C2): Baldrick's demand plays on the deployment screen, then Erik answers once.
+const needsParley=()=>state.missionId===5&&!state.practice&&!state.campaign.choices?.m05_erik_answer;
+function offerParley(){if(state.screen!=='deployment'||!needsParley()||state.narrative.active||$('#modal-root').children.length)return;
+ if(!state.narrative.events.includes('5:parley')){enqueueStory(state,'5:parley');openStory(state);commit();return;}
+ modal('에릭의 대답',`<p>발드릭이 에릭을 똑바로 바라본다. 어떻게 답할까요? 어느 쪽이든 전투로 이어지며, 퇴각 장면과 야영지 대화가 달라집니다.</p>`,frontierButton('parley-pick','“구해 주신 목숨입니다. 그날을 잊은 적은 없습니다.”','acknowledged',false,'primary')+frontierButton('parley-pick','“지금 제 곁에 있는 동료들이 제 대답입니다.”','present'));}
 function offerAdvisor(){
  const f=state.frontier;if(state.screen!=='exploration'||!f.advisorPending||state.narrative.active||$('#modal-root').children.length)return;
  if(!interactions(state).some(n=>n.id==='advisor'&&n.npc)){f.advisorPending=false;syncFrontier(state);save();return;}

@@ -1,7 +1,7 @@
 // B4 rollout: bridges the 48-pixel original art in hd-art.js to the 64-unit world coordinates
 // used by every renderer, hit test and camera. Art is pre-scaled ×3 (nearest) once and drawn
 // with smoothing so the 4/3 world ratio never produces uneven pixel widths.
-import {outpostSprite,HD_TILE,paintGround,treeSprite,bushSprite,ruinSprite,cragSprite,houseSprite,bridgeSprite,wellSprite,townBuildingSprite,figureSprite,CAST} from './hd-art.js';
+import {wagonSprite,outpostSprite,HD_TILE,paintGround,treeSprite,bushSprite,ruinSprite,cragSprite,houseSprite,bridgeSprite,wellSprite,townBuildingSprite,figureSprite,CAST} from './hd-art.js';
 import {appearanceFor} from '../data/appearances.js';
 export const HD_K=64/HD_TILE,HD_UP=3;
 const hdUpCache=new WeakMap();
@@ -42,11 +42,12 @@ export function drawTownBuilding(c,b,tone,state){const s=townBuildingSprite(b,to
  if(b.label){c.font='bold 11px sans-serif';c.textAlign='center';const tx=x+b.w*32,ty=bottom-s.height*K+28*K;const w=c.measureText(b.label).width+10;c.fillStyle='rgba(30,22,16,.78)';c.fillRect(tx-w/2,ty-11,w,15);c.fillStyle='#f2ddb0';c.fillText(b.label,tx,ty);c.textAlign='left';}}
 
 // ---------- figures ----------
-const ENEMY_LOOK={1:{bandit:'bandit',archer:'archer',captain:'captain'},2:{bandit:'deserter',archer:'archer',captain:'deserterCaptain'},3:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},4:{bandit:'fortGuard',archer:'fortArcher',captain:'quartermaster'}};
+const ENEMY_LOOK={5:{lion:'lion',bearer:'bearer',spear:'ironSpear',archer:'ironArcher',cavalry:'cavalry',captain:'lion'},1:{bandit:'bandit',archer:'archer',captain:'captain'},2:{bandit:'deserter',archer:'archer',captain:'deserterCaptain'},3:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},4:{bandit:'fortGuard',archer:'fortArcher',captain:'quartermaster'}};
 export function hdCastFor(u,missionId=1){
  if(CAST[u.id]&&u.team!=='enemy')return u.id==='eric'&&appearanceFor(u)?.tier>=2?'eric_adv':u.id;
  if(u.team==='commander'||u.id==='aren')return 'aren';
  if(u.id==='advisor')return 'aide';
+ if(u.kind==='wagon')return 'wagon';
  if(u.team==='civilian'){const n=String(u.name||'');return /Mira/.test(n)?'mira':/Tomas/.test(n)?'farmer':CAST[u.id]?u.id:'refugee';}
  if(u.burns)return 'torch';
  if(missionId===4&&/^r\d/.test(u.id))return 'storeman';
@@ -54,6 +55,7 @@ export function hdCastFor(u,missionId=1){
 }
 // draws a figure with its feet at world (x, footY); pose 'attack' leans toward the facing.
 export function drawHDFigure(c,castId,x,footY,{facing='down',frame=0,pose='idle',alpha=1}={}){
+ if(castId==='wagon'){const w=wagonSprite();c.save();c.globalAlpha*=pose==='death'?.4:alpha;hdBlit(c,w,x-24*HD_K,footY-50*HD_K);c.restore();return;}
  const s=figureSprite(castId,{facing,frame}),K=HD_K,lean=pose==='attack'?{left:[-6,0],right:[6,0],up:[0,-6],down:[0,5]}[facing]:[0,0];
  c.save();c.globalAlpha*=alpha;if(pose==='death'){c.globalAlpha*=.45;c.translate(x,footY-8);c.rotate(-Math.PI/2);hdBlit(c,s,-20*K,-50*K);c.restore();return;}
  hdBlit(c,s,x-20*K+lean[0],footY-50*K+lean[1]);c.restore();}

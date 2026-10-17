@@ -30,7 +30,7 @@ export function rangeFor(u,mode='attack'){return mode==='skill'&&u.id==='lia'?[1
 export function validTarget(s,u,t,mode='attack'){
  if(!u||!t||!alive(u)||!alive(t))return false;
  const d=distance(u,t);if(t.team==='object')return mode==='search'&&u.team==='ally'&&d===1;if(mode==='search')return false;if(mode==='capture')return s.missionId===2&&t.id==='boss'&&t.team==='enemy'&&t.hp<=t.maxHP/2&&d===1;
- if(mode==='rescue')return t.team==='civilian'&&d===1;
+ if(mode==='rescue')return t.team==='civilian'&&t.kind!=='wagon'&&d===1;
  if(mode==='skill'&&u.id==='eric')return t.id===u.id;
  if(mode==='skill'&&u.id==='sain')return t.team==='ally'&&d>=rangeFor(u,mode)[0]&&d<=rangeFor(u,mode)[1];
  const [min,max]=rangeFor(u,mode);return u.team!==t.team&&t.team!=='civilian'&&d>=min&&d<=max;
@@ -43,11 +43,19 @@ export function strikeStats(s,u,t,mode='attack'){
  let raw=Math.max(1,(magic?u.mag:u.atk)-defense+(aim?2:0)+(magic&&u.hp<=u.maxHP/2?4:0)+(quick&&flank(s,u,t)?6:0));
  let dmg=Math.max(1,Math.round(magic?raw*(ground.fire??1):raw*(1-(ground.phys||0))));
  if(t.id==='eric'&&t.hp<=t.maxHP*.3)dmg=Math.max(1,Math.floor(dmg*.85));
+ // M05 lion formation (mission data only; M01–04 have no formation): living bearers give adjacent
+ // allies of theirs DEF and accuracy; Baldrick's charge punishes isolated targets unless Erik guards.
+ const form=missionOf(s).formation;let formHit=0;
+ if(form){const near=v=>v.team==='enemy'&&!form.bearers.includes(v.id)&&s.units.some(b=>form.bearers.includes(b.id)&&alive(b)&&distance(b,v)===1);
+  if(near(t)&&!magic)dmg=Math.max(1,dmg-form.def);else if(near(t)&&magic)dmg=Math.max(1,dmg-form.def);
+  if(near(u))formHit=form.hit;
+  if(u.id==='boss'&&isolated(s,t)&&!(t.guarding&&!t.guardUsed))dmg+=form.charge;}
  const standing=missionOf(s).map[u.y][u.x];const hawk=u.id==='elina'&&(standing==='f'||standing==='v')?12:0;
- const hit=Math.max(70,Math.min(100,(magic?100:97)+Math.round((u.spd-t.spd)*1.5)-(ground.evade||0)+hawk+(aim?18:0)+(u.hit||0)-(t.dodge||0)));
+ const hit=Math.max(70,Math.min(100,(magic?100:97)+Math.round((u.spd-t.spd)*1.5)-(ground.evade||0)+hawk+(aim?18:0)+(u.hit||0)+formHit-(t.dodge||0)));
  const crit=magic?0:Math.min(12,Math.max(3,Math.round((u.spd-t.spd)/2)+5));
  return {damage:dmg,hit,crit,magic,fire:magic,terrainMul:magic?(ground.fire??1):1-(ground.phys||0),flank:quick&&flank(s,u,t),burning};
 }
+export const isolated=(s,t)=>t.team==='ally'&&!s.units.some(a=>a.team==='ally'&&alive(a)&&a.id!==t.id&&distance(a,t)===1);
 export function guardFor(s,u,t,mode){if(mode==='skill'&&u.id==='lia'||distance(u,t)!==1)return null;return s.units.find(g=>alive(g)&&g.team===t.team&&g.id!==t.id&&(g.guarding&&!g.guardUsed||g.guardTarget===t.id)&&distance(g,t)===1);}
 export function forecast(s,u,t,mode='attack'){
  if(mode==='skill'&&u.id==='sain')return {heal:Math.min(t.maxHP-t.hp,12+effectiveStats(s,u).mag),hit:100,damage:0,counter:0,after:Math.min(t.maxHP,t.hp+12+effectiveStats(s,u).mag)};

@@ -58,3 +58,20 @@ Baldrick Roen(48), 검은 사자, 철왕관 총사령관 — 유능하며 다른
 
 ## 대사 키
 `pre:5`, `5:parley`, `5:parley:acknowledged`, `5:parley:present`, `5:intro`, `5:turn2`, `5:reinforce`, `5:formation-broken`, `5:encounter`, `5:withdraw:broken`, `5:withdraw:held`, `5:bond`, `5:end`, `after:5`
+
+## 구현 (Phase D, 2026-10-17) — 수치는 PROPOSED
+| 항목 | 값 |
+|---|---|
+| 지도 | 18×14. 북쪽 능선(m)과 중앙 길목(r), 서쪽 숲, 동쪽 개활지와 언덕, 남쪽 피난 이동로(y=11) |
+| 배치 구역 | y=10–13, x=1–16 (마차 칸 제외). 추천/공격/방어 프리셋 |
+| 발드릭 | HP 84 · ATK 18 · DEF 9 · RES 5 · SPD 7 · MOV 3. HP 하한 42(50%) |
+| 사자 기수 f1·f2 | HP 30 · ATK 9 · DEF 5 · MOV 2. 오라: 인접 적 피해 −2, 명중 +10. 발드릭과 2칸 이내 유지 |
+| 창병 s1–s4 / 궁수 a1 | HP 30 ATK 14 DEF 6 / HP 26 ATK 13 DEF 3 (능선 위) |
+| 기병 c1·c2 (TURN 4, 동쪽) | HP 30 · ATK 15 · SPD 9 · MOV 5 · 기병 지형 적성(숲·산길 불가). 마차 우선 |
+| 보급 마차 w1·w2 | 이동로 (5,11)·(12,11). HP 34 · DEF 4. 구출 불가, 아군 공격 불가 |
+| 사자의 돌격 | 발드릭이 고립된 장수(인접 아군 없음) 공격 시 피해 +4, Guard 중인 에릭 제외. 다음 적 Phase 목표 후보에 붉은 ! 표시 |
+| 승리 A / B | 기수 2명 격파 + 발드릭 HP ≤ 50% → `broken` / TURN 10 종료까지 마차 ≥1 → `held` |
+| 패배 | 장수 전멸 또는 마차 2대 파괴 |
+| 보상 | 첫 클리어 180 Gold + Ether 1 + Medium Potion 1. 대형 붕괴 → Heavy Shield, 마차 2대 → 50 Gold |
+| C2 | 배치 화면에서 `5:parley` 뒤 선택. 퇴각 뒤 `5:farewell:<답>`, 야영지 `after:5:<답>` |
+| 음악 | 신규 'The Black Lion' (G단조 104 BPM) |

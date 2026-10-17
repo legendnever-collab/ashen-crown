@@ -202,8 +202,31 @@ export const CAST={
  fortGuard:{name:'성채 경비병',skin:'warm',hair:'#3b302a',style:'short',helm:'kettle',helmColor:'#6b6d6a',body:'tunic',coat:'#5f6a63',trim:'#a28a5a',legs:'#44494a',boots:'#2f2c28',weapon:'spear',eye:'#3a2a22'},
  fortArcher:{name:'성벽 사수',skin:'fair',hair:'#4a3626',style:'short',helm:'cap',helmColor:'#5f6a63',body:'leather',coat:'#6a6f62',trim:'#a28a5a',legs:'#44494a',boots:'#2f2c28',weapon:'bow',back:'quiver',eye:'#3a2a22'},
  storeman:{name:'지하 창고병',skin:'tan',hair:'#2e2420',style:'short',bandana:'#5f6a63',body:'apron',coat:'#6a5e50',apron:'#4a3a2a',trim:'#7a6a50',legs:'#44494a',boots:'#2f2c28',weapon:'hammer',beard:'stubble',eye:'#2a1a14'},
+ lion:{name:'발드릭',skin:'warm',hair:'#5d5650',style:'swept',body:'plate',metal:'#3a3d44',coat:'#2b2d33',tabard:'#1f2026',trim:'#c9a24a',collar:'#a8742e',cape:'#24262c',legs:'#26282c',boots:'#1d1d20',weapon:'spear',beard:'full',eye:'#6a5a40',big:true},
+ bearer:{name:'사자 기수',skin:'fair',hair:'#3a302a',style:'short',helm:'kettle',helmColor:'#5c6068',body:'tunic',coat:'#3a3e48',trim:'#c9a24a',legs:'#2e3038',boots:'#1f1f24',weapon:'banner',eye:'#3a3a40'},
+ ironSpear:{name:'철왕관 창병',skin:'warm',hair:'#3b302a',style:'short',helm:'kettle',helmColor:'#6e737a',body:'plate',metal:'#7d838a',coat:'#3a3e48',tabard:'#3a3e48',trim:'#c9a24a',legs:'#2e3038',boots:'#1f1f24',weapon:'spear',eye:'#3a2a22'},
+ ironArcher:{name:'철왕관 궁수',skin:'fair',hair:'#4a3626',style:'short',helm:'cap',helmColor:'#3a3e48',body:'leather',coat:'#4a4f5a',trim:'#c9a24a',legs:'#2e3038',boots:'#1f1f24',weapon:'bow',back:'quiver',eye:'#3a2a22'},
+ cavalry:{name:'철왕관 기병',skin:'tan',hair:'#2a2420',style:'short',helm:'knight',helmMetal:'#7d838a',body:'plate',metal:'#7d838a',coat:'#3a3e48',tabard:'#7a2e2a',trim:'#c9a24a',legs:'#2e3038',boots:'#1f1f24',weapon:'spear',eye:'#3a2a22',mounted:true},
  aide:{name:'작전 보좌관',skin:'pale',hair:'#2a2430',style:'swept',body:'coat',coat:'#3f3a63',trim:'#c9b07a',legs:'#2a2840',boots:'#1f1d2a',weapon:'papers',eye:'#4a3a5a'}
 };
+// small chibi horse under a rider; part 'body' before the rider, 'front' after (head / near leg).
+function horse(p,view,part,frame,boots){const H=ramp('#7a5236'),M=ramp('#2e221c'),stride=[0,1,0,-1,0][frame%5]||0;
+ if(part==='body'){
+  if(view==='side'){for(const [x,d]of[[7,-stride],[12,stride],[26,stride],[31,-stride]]){p.box(x+d,42,4,8,x<20?dark5(H):H);p.rect(x+d,48,4,2,M[1]);}p.ball(20,37,16,7.5,H);p.poly([[29,33],[33,21],[38,19],[37,31]],H[2]);p.ball(38,22,5.5,4,H);p.set(40,20,col('#1a1418'));p.set(42,23,H[0]);for(let y=19;y<33;y++){p.set(31+Math.round((33-y)*.25),y,M[2]);p.set(32+Math.round((33-y)*.25),y,M[1]);}p.poly([[5,33],[1,37],[2,46],[6,39]],M[2]);p.rect(12,30,16,3,ramp('#7a2e2a')[2]);}
+  else if(view==='front'){for(const [x,d]of[[12,stride],[25,-stride]]){p.box(x,43+Math.max(0,d),4,7-Math.max(0,d),H);p.rect(x,48,4,2,M[1]);}p.ball(20,39,13,7,H);}
+  else{for(const [x,d]of[[11,stride],[25,-stride]]){p.box(x,43+Math.max(0,d),5,7-Math.max(0,d),H);p.rect(x,48,5,2,M[1]);}p.ball(20,38,13,8,H);}
+ } else {
+  if(view==='side'){p.box(17,34,4,8,boots);p.rect(16,41,6,2,boots[1]);}
+  else if(view==='front'){p.ball(20,41,5.5,7.5,H,{bias:.1});p.rect(17,46,7,2,H[1]);p.set(17,39,col('#1a1418'));p.set(23,39,col('#1a1418'));p.poly([[14,34],[16,29],[18,35]],H[3]);p.poly([[26,34],[24,29],[22,35]],H[2]);p.rect(18,33,5,3,M[2]);p.box(6,35,3,7,boots);p.box(31,35,3,7,boots);}
+  else{p.poly([[18,40],[22,40],[24,50],[16,50]],M[2]);p.box(5,33,3,7,boots);p.box(32,33,3,7,boots);}
+ }}
+const dark5=r=>[r[0],r[0],r[1],r[2],r[3]];
+export function wagonSprite(){return cached('wagon',()=>{const p=new Pix(48,52),W=ramp('#7a5634'),C=ramp('#e2d6b4');
+ p.box(5,30,38,10,W);for(let x=7;x<42;x+=6)p.rect(x,31,1,8,W[1]);
+ for(let y=10;y<31;y++){const half=17-Math.round(Math.pow((y-10)/20,0.5)*0)-((y<14)?(14-y):0);for(let x=24-half;x<24+half;x++){let t=x<14?3:x>36?1:2;if((x-6)%8===0)t=1;p.set(x,y,C[t]);}}
+ p.rect(8,14,32,1,C[4]);for(const [x,y]of[[12,40],[36,40]]){p.ball(x,y,6,6,ramp('#5a3e28'));p.ball(x,y,2,2,ramp('#c9a24a'));for(const [a,b]of[[0,-4],[0,4],[-4,0],[4,0]])p.set(x+a,y+b,W[3]);}
+ p.box(40,32,8,2,W);p.rect(14,22,6,6,col('#3a6fc8'));p.rect(26,20,8,5,col('#c8413a'));
+ return p.outline();});}
 // facing: down (toward the viewer), up (back view), right (profile), left (mirrored profile).
 // frame: 0 idle, 1–4 walk cycle (contact, pass, contact, pass).
 export function figureSprite(id,{frame=0,facing='down'}={}){return cached(`fig${id}:${frame}:${facing}`,()=>{const S=CAST[id]||CAST.bandit;if(facing==='left'){const r=drawFigure(S,frame,'right'),m=new Pix(r.w,r.h);for(let y=0;y<r.h;y++)for(let x=0;x<r.w;x++)m.d[y*r.w+(r.w-1-x)]=r.d[y*r.w+x];return m;}return drawFigure(S,frame,facing);});}
@@ -212,10 +235,10 @@ function drawFigure(S,frame,facing){
  const p=new Pix(40,52),view=facing==='up'?'back':facing==='down'?'front':'side';
  const sk=ramp(SKIN[S.skin]||S.skin),hr=ramp(S.hair),coat=ramp(S.coat),trim=ramp(S.trim),legs=ramp(S.legs),boots=ramp(S.boots),big=S.big?1:0,small=S.small?1:0;
  const [lA,lB,aA,aB]=WALK[frame%5]||WALK[0],bob=frame%2===1?1:0;
- const top=small?8:0,cx=20,headY=17+top+(S.stoop?2:0)+bob,bodyTop=26+top+bob,hip=39+(small?3:0);
+ const top=small?8:S.mounted?-4:0,cx=20,headY=17+top+(S.stoop?2:0)+bob,bodyTop=26+top+bob,hip=39+(small?3:0);
  const tw=(8+big*2-small)-(view==='side'?2:0),tTop=bodyTop,tBot=hip+1;
- const shirt=S.body==='plate'?ramp('#b9c6ca'):coat,dark=r=>[r[0],r[0],r[1],r[2],r[3]];
- const sleeve=S.body==='plate'?ramp('#9fb0b6'):S.body==='apron'||S.body==='vest'?ramp(S.coat):coat;
+ const metal=ramp(S.metal||'#b9c6ca'),shirt=S.body==='plate'?metal:coat,dark=r=>[r[0],r[0],r[1],r[2],r[3]];
+ const sleeve=S.body==='plate'?(S.metal?dark(metal):ramp('#9fb0b6')):S.body==='apron'||S.body==='vest'?ramp(S.coat):coat;
  const armY=tTop+2,hx=cx+(view==='side'?1:0),hy=headY,hw=small?6.5:7.5,brow=hy-3;
  const near=view==='side'?[cx+1+aA*2,armY+11]:null; // hand position in profile
  const handL=view==='side'?near:[cx-tw-2,armY+11+(view==='front'?aA:0)],handR=view==='side'?near:[cx+tw+3,armY+11+(view==='front'?aB:0)];
@@ -237,7 +260,8 @@ function drawFigure(S,frame,facing){
  if(back)weapon(p,S,[cx-tw-2,armY+11],[cx+tw+3,armY+11],sk,'back',{cx,tw,tTop,hip});
  if(view==='side'&&S.weapon==='bow')bowAt(cx+10,bodyTop-6,-1);
  // ======= legs =======
- if(S.body==='robe'){const half0=8+big-(view==='side'?2:0);p.poly([[cx-half0,bodyTop+6],[cx+half0,bodyTop+6],[cx+half0+2,49],[cx-half0-2,49]],coat[2]);for(let y=bodyTop+6;y<49;y++){const half=half0+(y-bodyTop-6)*2/(49-bodyTop-6);p.set(cx-half,y,back?coat[2]:coat[3]);p.set(cx+half-1,y,coat[1]);p.set(cx+half-2,y,coat[1]);if(y%5===0&&!back)p.set(cx+2,y,coat[1]);}p.rect(cx-half0-1,47,2*half0+3,1,trim[2]);
+ if(S.mounted)horse(p,view,'body',frame);
+ else if(S.body==='robe'){const half0=8+big-(view==='side'?2:0);p.poly([[cx-half0,bodyTop+6],[cx+half0,bodyTop+6],[cx+half0+2,49],[cx-half0-2,49]],coat[2]);for(let y=bodyTop+6;y<49;y++){const half=half0+(y-bodyTop-6)*2/(49-bodyTop-6);p.set(cx-half,y,back?coat[2]:coat[3]);p.set(cx+half-1,y,coat[1]);p.set(cx+half-2,y,coat[1]);if(y%5===0&&!back)p.set(cx+2,y,coat[1]);}p.rect(cx-half0-1,47,2*half0+3,1,trim[2]);
   if(view==='side'){p.box(cx-4+lA,49,5,2,boots);p.box(cx+1+lB,49,6,2,boots);}else{p.box(cx-6,49-Math.max(0,lA),5,2,boots);p.box(cx+1,49-Math.max(0,lB),5,2,boots);}}
  else if(view==='side'){const lt=hip-1;const leg=(x,lift,r,b)=>{p.box(x,lt,5,9-lift,r);p.box(x,47-lift,7,3,b);p.rect(x,46-lift,7,1,b[3]);};leg(cx-3+lA*2,Math.max(0,-lA),dark(legs),dark(boots));leg(cx-1-lA*2,Math.max(0,lA),legs,boots);}
  else{const legL=cx-6-big,legR=cx+1+big,lt=hip-1,a=Math.max(0,lA),b=Math.max(0,lB);p.box(legL,lt,5,9-a,legs);p.box(legR,lt,5,9-b,legs);p.box(legL-1,47-a,6,3,boots);p.box(legR,47-b,6,3,boots);p.rect(legL-1,46-a,6,1,boots[3]);p.rect(legR,46-b,6,1,boots[3]);}
@@ -272,8 +296,9 @@ function drawFigure(S,frame,facing){
   else belt();
  }
  if(S.scarf){const sc=ramp(S.scarf);p.ball(tc,tTop+1,tw,3,sc);if(back)p.poly([[cx-2,tTop+2],[cx+2,tTop+2],[cx+3,tTop+12],[cx-1,tTop+12]],sc[2]);else if(view==='side')p.poly([[tc-tw,tTop+1],[tc-tw+3,tTop+1],[tc-tw-3,tTop+10],[tc-tw-5,tTop+8]],sc[2]);else{p.poly([[cx+3,tTop+2],[cx+7,tTop+2],[cx+9,tTop+12],[cx+6,tTop+12]],sc[2]);p.set(cx+8,tTop+11,sc[3]);}}
- if(S.body==='plate'&&view!=='side'){p.ball(cx-tw-1,tTop+2,4,3.5,ramp('#b9c6ca'));p.ball(cx+tw+1,tTop+2,4,3.5,ramp('#b9c6ca'));}
- if(S.body==='plate'&&view==='side')p.ball(tc,tTop+2,4,3.5,ramp('#b9c6ca'));
+ if(S.body==='plate'&&view!=='side'){p.ball(cx-tw-1,tTop+2,4,3.5,metal);p.ball(cx+tw+1,tTop+2,4,3.5,metal);}
+ if(S.body==='plate'&&view==='side')p.ball(tc,tTop+2,4,3.5,metal);
+ if(S.collar){const cr=ramp(S.collar);p.ball(tc,tTop+1,tw+4,4.5,cr,{bias:.05});for(let x=tc-tw-3;x<=tc+tw+3;x+=2)p.set(x,tTop+5+((x>>1)%2),cr[1]);if(back)p.poly([[cx-tw-2,tTop+2],[cx+tw+2,tTop+2],[cx+tw,tTop+14],[cx-tw,tTop+14]],cr[2]);}
  // ======= arms =======
  if(view==='side'){const nx=cx+aA*2;p.box(nx,armY,4,10,sleeve);if(S.body==='apron')p.box(nx,armY+3,4,7,sk);p.ball(nx+2,armY+11,2.4,2.2,sk);if(S.bandage){p.rect(nx,armY+6,4,2,col('#f2ece0'));p.set(nx+1,armY+7,col('#c9443a'));}}
  else{const aL=cx-tw-4,aR=cx+tw+1,sa=view==='front'?aA:0,sb=view==='front'?aB:0;p.box(aL,armY+Math.min(0,sa),4,10,sleeve);p.box(aR,armY+Math.min(0,sb),4,10,sleeve);if(S.body==='apron'){p.box(aL,armY+3,4,7,sk);p.box(aR,armY+3,4,7,sk);}p.ball(aL+2,armY+11+sa,2.4,2.2,sk);p.ball(aR+2,armY+11+sb,2.4,2.2,sk);if(S.bandage&&!back){p.rect(aR,armY+6,4,2,col('#f2ece0'));p.set(aR+1,armY+7,col('#c9443a'));}}
@@ -318,7 +343,7 @@ function drawFigure(S,frame,facing){
  } else {p.set(hx-3,hy-6,sk[4]);p.set(hx-2,hy-6,sk[4]);p.set(hx-3,hy-5,sk[4]);if(S.hair){if(back){for(let x=Math.round(hx-hw+1);x<Math.round(hx+hw);x++){const d=Math.abs(x+.5-hx)/hw,y0=Math.round(hy+1+d*-3);for(let y=y0;y<hy+5;y++)if(p.get(x,y))p.set(x,y,hr[x<hx?3:2]);}}else if(view==='side')p.box(Math.round(hx-hw),hy-1,4,5,hr);else{p.box(Math.round(hx-hw),hy-1,2,4,hr);p.box(Math.round(hx+hw-1),hy-1,2,4,hr);}}}
  // ======= headgear =======
  const capY=brow,W2=Math.round(2*hw);
- if(S.helm==='knight'){const m=ramp('#c4d0d4');p.ball(hx,hy-3,hw+1.4,6.4,m,{maxY:back?hy+3:capY});if(!back){p.rect(Math.round(hx-hw-1),capY,W2+3,2,m[1]);p.rect(Math.round(hx-hw-1),capY,W2+3,1,m[3]);}p.box(hx-1,hy-hw-8,3,6,ramp(S.trim));if(view==='front'){p.box(Math.round(hx-hw-1.5),capY,3,7,m);p.box(Math.round(hx+hw-1.5),capY,3,7,m);}if(view==='side')p.box(Math.round(hx-hw-1),capY,6,7,m);}
+ if(S.helm==='knight'){const m=ramp(S.helmMetal||'#c4d0d4');p.ball(hx,hy-3,hw+1.4,6.4,m,{maxY:back?hy+3:capY});if(!back){p.rect(Math.round(hx-hw-1),capY,W2+3,2,m[1]);p.rect(Math.round(hx-hw-1),capY,W2+3,1,m[3]);}p.box(hx-1,hy-hw-8,3,6,ramp(S.trim));if(view==='front'){p.box(Math.round(hx-hw-1.5),capY,3,7,m);p.box(Math.round(hx+hw-1.5),capY,3,7,m);}if(view==='side')p.box(Math.round(hx-hw-1),capY,6,7,m);}
  if(S.helm==='kettle'){const m=ramp(S.helmColor);p.ball(hx,hy-3,hw+.8,6,m,{maxY:capY});p.box(Math.round(hx-hw-3),capY,W2+7,2,m);}
  if(S.helm==='cap'){const m=ramp(S.helmColor);p.ball(hx,hy-3,hw+.8,6,m,{maxY:back?hy+1:capY});p.rect(Math.round(hx-hw),capY,W2+1,1,m[1]);}
  if(S.helm==='beret'){const m=ramp(S.helmColor);p.ball(hx-1,hy-5,hw+2,4,m,{maxY:capY});p.set(hx+4,hy-10,col('#d8b46a'));}
@@ -330,6 +355,7 @@ function drawFigure(S,frame,facing){
  if(S.scarfHead){const v=ramp(S.scarfHead);wrap(v,hw+2,back?6:4,2,(x)=>x<hx?3:2);if(view==='front')p.poly([[hx+hw-2,hy+2],[hx+hw+3,hy+4],[hx+hw+1,hy+9]],v[1]);}
  if(S.hat==='witch'){const h=ramp(S.hatColor),tip=view==='side'?-1:1;p.ball(hx,capY-1,hw+7,2.8,h,{flat:.5});p.poly([[hx-hw+1,capY-2],[hx+hw,capY-2],[hx+6*tip,capY-12],[hx+11*tip,capY-18],[hx+2*tip,capY-11]],h[2]);if(!back)p.rect(Math.round(hx-hw+1),capY-4,W2-1,2,ramp(S.trim)[2]);if(view==='front')p.set(hx+3,capY-4,col('#ffffff'));}
  // ======= items in front =======
+ if(S.mounted)horse(p,view,'front',frame,boots);
  items(front);
  if(!back)weapon(p,S,handL,handR,sk,view,{cx,tw,tTop,hip});
  return p.outline();
@@ -349,8 +375,8 @@ function weapon(p,S,handL,handR,sk,view,{cx,tw,tTop,hip,hand}){
   if(S.weapon==='ledger'||S.weapon==='papers'){p.box(x+1,y-5,5,8,S.weapon==='ledger'?ramp('#6a3a2a'):ramp('#efe6cf'));return;}
   if(S.weapon==='satchel'||S.weapon==='bundle'||S.weapon==='none')return;
  }
- if(far&&!['sword','staff','holy','axe','greataxe','torch','cane','hammer','spear'].includes(S.weapon))return;
- if(side&&['sword','staff','holy','axe','greataxe','torch','cane','hammer','spear'].includes(S.weapon))return;
+ if(far&&!['sword','staff','holy','axe','greataxe','torch','cane','hammer','spear','banner'].includes(S.weapon))return;
+ if(side&&['sword','staff','holy','axe','greataxe','torch','cane','hammer','spear','banner'].includes(S.weapon))return;
  at(main,(x,y)=>{
   if(S.weapon==='sword'){const bl=ramp('#d9e2e6');p.box(x-1,y-17,3,16,bl);p.rect(x,y-17,1,15,col('#ffffff'));p.box(x-3,y-2,7,2,ramp('#c9a24a'));}
   if(S.weapon==='staff'){p.box(x-1,y-20,2,30,ramp('#7a5232'));p.ball(x,y-23,3.6,3.6,ramp(S.orb));p.set(x-1,y-25,col('#ffffff'));p.box(x-2,y-19,4,2,ramp('#c9a24a'));}
@@ -362,6 +388,7 @@ function weapon(p,S,handL,handR,sk,view,{cx,tw,tTop,hip,hand}){
   if(S.weapon==='hammer'){p.box(x-1,y-10,2,12,ramp('#6a4a30'));p.box(x-4,y-14,8,5,ramp('#8a9094'));}
   if(S.weapon==='spear'){p.box(x-1,y-26,2,34,ramp('#7a5a3a'));p.poly([[x-2,y-26],[x+2,y-26],[x,y-33]],ramp('#d0d8dc')[3]);}
   if(S.weapon==='daggers'){p.box(x-1,y-7,2,7,ramp('#d5dde0'));p.rect(x-2,y-1,4,1,ramp('#c26a36')[2]);}
+  if(S.weapon==='banner'){p.box(x-1,y-38,2,46,ramp('#5a4030'));const bf=ramp('#24262c');p.poly([[x+1,y-37],[x+13,y-37],[x+13,y-22],[x+7,y-25],[x+1,y-22]],bf[2]);p.rect(x+1,y-37,12,1,ramp('#c9a24a')[3]);p.ball(x+7,y-31,3,2.6,ramp('#c9a24a'));p.set(x+6,y-32,col('#24262c'));p.set(x+8,y-32,col('#24262c'));p.set(x,y-39,ramp('#c9a24a')[3]);}
   if(!far)p.ball(x,y,2.2,2,sk);
  });
  if(far)return;

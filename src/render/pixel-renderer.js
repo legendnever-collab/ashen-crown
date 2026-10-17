@@ -6,6 +6,7 @@ import {alive,movement,validTarget} from '../core/rules.js';
 import {TILE,drawTile,drawSprite,pixel,pixelOval} from './art.js';
 import {RANGE_STYLE,moveDuration,motionAt,presentationPlan} from './animation.js';
 import {drawCombatEffect,effectPhase} from './combat-effects.js';
+import {rulesOf} from '../core/mission-rules.js';
 import {hdGround,drawHDGround,drawHDObject,hdObjectKey,hdLayerBuildings,hdCovered,hdCastFor,drawHDFigure,hdDirection,HD_K} from './hd-world.js';
 const rect=pixel;
 export class BattleRenderer{
@@ -34,8 +35,10 @@ export class BattleRenderer{
    if(['move','choose'].includes(ui.mode)&&!selected.moved)for(const p of movement(s,selected).costs.keys()){const [tx,ty]=p.split(',').map(Number);rect(c,RANGE_STYLE.move.fill,tx*TILE+1,ty*TILE+1,60,60);rect(c,RANGE_STYLE.move.border,tx*TILE+1,ty*TILE+1,60,2);}
    else if(['attack','skill','rescue','capture'].includes(ui.mode))for(let ty=0;ty<HEIGHT;ty++)for(let tx=0;tx<WIDTH;tx++){const dummy={x:tx,y:ty,hp:1,team:ui.mode==='skill'&&['sain','eric'].includes(selected.id)?'ally':ui.mode==='rescue'?'civilian':ui.mode==='search'?'object':'enemy',id:ui.mode==='capture'?'boss':'preview'};if(validTarget(s,selected,dummy,ui.mode)){rect(c,ui.mode==='rescue'||selected.id==='sain'&&ui.mode==='skill'?RANGE_STYLE.support.fill:RANGE_STYLE.attack.fill,tx*TILE+1,ty*TILE+1,60,60);}}
   }
+  const lion=rulesOf(s);if(lion?.auraCells&&s.screen==='battle'){for(const p of lion.auraCells(s)){if(p.x<0||p.y<0||p.x>=WIDTH||p.y>=HEIGHT)continue;rect(c,'rgba(201,162,74,.16)',p.x*TILE,p.y*TILE,TILE,TILE);c.strokeStyle='rgba(232,198,110,.55)';c.lineWidth=1;c.setLineDash([4,4]);c.strokeRect(p.x*TILE+2,p.y*TILE+2,TILE-4,TILE-4);c.setLineDash([]);}}
   for(const k of Object.keys(s.burning||{})){const [fx,fy]=k.split(',').map(Number);rect(c,'rgba(226,108,48,.28)',fx*TILE,fy*TILE,TILE,TILE);drawFire(c,fx*TILE+32,fy*TILE+44,now,.78);}
   if(s.turn===2&&s.screen==='battle')for(const spawn of missionOf(s).reinforcements){const sx=spawn.x*TILE,sy=spawn.y*TILE;rect(c,'#e1af63',sx,sy,TILE,3);rect(c,'#e1af63',sx,sy,3,TILE);c.fillStyle='#ffdb87';c.font='bold 24px monospace';c.fillText('!',sx+28,sy+34);}
+  const threatIds=new Set(s.screen==='battle'&&s.phase==='player'&&lion?.threats?lion.threats(s):[]);
   const drawables=[];const stateOf=b=>s.screen==='result'&&s.outcome==='victory'?'burned':b.state;
   for(const o of this.hd.objects){if(o.kind==='house'&&this.hdCovered.has((o.x/48)+','+(o.y/48-1)))continue;drawables.push({key:hdObjectKey(o),draw:()=>drawHDObject(c,o,now)});}
   for(const o of hdLayerBuildings(missionOf(s).layers.buildings,stateOf))drawables.push({key:hdObjectKey(o),draw:()=>drawHDObject(c,o,now)});
@@ -47,6 +50,7 @@ export class BattleRenderer{
    c.fillStyle=u.team==='ally'?'rgba(80,160,255,.5)':u.team==='enemy'?'rgba(230,70,60,.5)':u.team==='object'?'rgba(233,196,106,.5)':'rgba(240,210,110,.55)';c.beginPath();c.ellipse(ux,uy+23,17,5.5,0,0,Math.PI*2);c.fill();
    if(ui.selected===u.id){c.strokeStyle='#fff0b8';c.lineWidth=2;c.strokeRect(ux-31,uy-36,60,60);rect(c,'#f4d695',ux-4,uy-37,8,4);}
    if(u.team==='object')drawEvidence(c,u,ux,uy,now);else{c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(ux,uy+23,13,4,0,0,Math.PI*2);c.fill();drawHDFigure(c,hdCastFor(u,s.missionId),ux,uy+24,{facing,pose,frame:pose==='walk'?1+Math.floor(now/120)%4:0});}c.globalAlpha=1;
+   if(threatIds.has(u.id)&&Math.floor(now/400)%2){c.fillStyle='#e8594a';c.beginPath();c.moveTo(ux-9,uy-50);c.lineTo(ux+9,uy-50);c.lineTo(ux,uy-38);c.closePath();c.fill();c.fillStyle='#fff2d0';c.font='bold 12px sans-serif';c.textAlign='center';c.fillText('!',ux,uy-41);c.textAlign='start';}
    if(u.guarding&&!u.guardUsed){rect(c,'#2a3a44',ux+12,uy-44,13,15);rect(c,'#e7c783',ux+13,uy-43,11,13);rect(c,'#3f7fa3',ux+15,uy-41,7,9);}
    if(u.team!=='object'&&(u.team!=='civilian'||u.hp<u.maxHP)){rect(c,'#18242a',ux-23,uy+27,46,5);rect(c,u.team==='enemy'?'#e8594a':u.team==='civilian'?'#f0cf6a':'#5fd38a',ux-22,uy+28,Math.max(1,Math.floor(44*this.displayHP(u,now)/u.maxHP)),3);}
    if(effects.some(e=>['hit','critical'].includes(e.type))&&Math.floor(now/70)%2){rect(c,'rgba(255,224,192,.5)',ux-22,uy-40,44,62);}

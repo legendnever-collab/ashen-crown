@@ -58,7 +58,7 @@ try{for(const [width,height,touch]of viewports){
  await restore(m04Battle(base,s=>{for(const u of s.units)if(u.team==='enemy'&&u.id!=='boss')u.hp=0;findUnit(s,'boss').hp=0;const e=findUnit(s,'eric');e.x=9;e.y=1;}));await settle();
  await menuFor('eric',9,1);await cmd('mode','search');await tile(8,1);await cmd('confirm');await settle();s=await snap();
  check(`${label} ledger + fallen quartermaster = victory with M04 flags and first-clear Gold`,s.outcome==='victory'&&s.campaign.flags.mission_04_ledger_recovered&&s.campaign.completed.includes(4)&&s.economy.rewards.includes(4));
- check(`${label} result shows evidence summary and no false Mission 5 button`,(await p.locator('#app').textContent()).includes('증거 1/3')&&!await p.locator('[data-do="next-mission"]').count());
+ check(`${label} result shows evidence summary and sends the legion back to camp first`,(await p.locator('#app').textContent()).includes('증거 1/3')&&await p.locator('[data-do="aftermath"]').count()>0);
  if(width===1440)await p.screenshot({path:`${shots}/m04-result-${width}.png`});
  await cmd('aftermath');await settle();
  check(`${label} M04 aftermath asks for the records decision`,await p.locator('[data-do="records-choice"]').count()===1);
@@ -66,8 +66,31 @@ try{for(const [width,height,touch]of viewports){
  await cmd('records-pick','kept');await settle();s=await snap();
  check(`${label} choice saved and its scene plays once`,s.campaign.choices.m04_records_choice==='kept'&&s.narrative.seen.includes('after:4:kept')&&!await p.locator('[data-do="records-choice"]').count());
  await p.reload();await settle();s=await snap();
- check(`${label} choice survives reload; later chapters are not falsely offered`,s.campaign.choices.m04_records_choice==='kept'&&!await p.locator('[data-do="next-mission"]').count());
+ check(`${label} choice survives reload; Mission 5 is offered after the decision`,s.campaign.choices.m04_records_choice==='kept'&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('5'));
  check(`${label} aftermath layout has no horizontal overflow`,await noOverflow());
+
+ // 4. M05: camp → council → deployment parley (C2 choice) → battle with the lion formation.
+ await cmd('next-mission');await settle();s=await snap();
+ check(`${label} M05 opens in camp with the black-lion report`,s.missionId===5&&s.screen==='exploration'&&s.narrative.seen.includes('pre:5'));
+ await cmd('warroom');await settle();
+ check(`${label} M05 council names both victory routes`,(await p.locator('.council-summary').textContent()).includes('국경의 사자')&&(await p.locator('.council-summary').textContent()).includes('TURN 10'));
+ await cmd('deploy');await settle();s=await snap();
+ check(`${label} parley plays on deployment and asks for Erik's answer`,s.screen==='deployment'&&s.narrative.seen.includes('5:parley')&&await p.locator('[data-do="parley-pick"]').count()===2);
+ if(width===1440)await p.screenshot({path:`${shots}/m05-parley-${width}.png`});
+ await cmd('parley-pick','acknowledged');await settle();s=await snap();
+ check(`${label} answer saved and its scene plays`,s.campaign.choices.m05_erik_answer==='acknowledged'&&s.narrative.seen.includes('5:parley:acknowledged'));
+ await cmd('start-battle');if(await p.locator('[data-do="confirm-battle"]').count())await cmd('confirm-battle');await settle();s=await snap();
+ check(`${label} M05 battle starts with formation, two wagons and the objective bar`,s.screen==='battle'&&s.units.filter(u=>u.kind==='wagon').length===2&&(await p.locator('#phasebar').textContent()).includes('기수 격파 0/2'));
+ if(width===1440||width===390)await p.screenshot({path:`${shots}/m05-battle-${width}.png`});
+ check(`${label} M05 battle has no horizontal overflow`,await noOverflow());
+ // 5. Formation broken: both bearers down, Erik drives Baldrick to half HP → withdrawal victory.
+ const m05=JSON.parse(JSON.stringify(s));for(const u of m05.units)if(u.team==='enemy'&&u.id!=='boss')u.hp=0;const lb=m05.units.find(u=>u.id==='boss');lb.x=9;lb.y=8;lb.hp=Math.ceil(lb.maxHP/2)+1;const me=m05.units.find(u=>u.id==='eric');me.x=9;me.y=9;m05.missionState.broken=true;
+ await restore(m05);await settle();await pick('eric');if((await p.evaluate(()=>AshenCrown.view().menu))!=='root')await tile(9,9);await p.waitForSelector('[data-do="mode"][data-id="attack"]');await cmd('mode','attack');await tile(9,8);await cmd('confirm');await settle();s=await snap();
+ check(`${label} Baldrick withdraws without falling: victory A with flags and Heavy Shield`,s.outcome==='victory'&&s.missionState.withdrew==='broken'&&s.units.find(u=>u.id==='boss').hp>0&&s.campaign.flags.mission_05_baldrick_withdrew==='broken'&&s.economy.rewardClaims.includes('v040:m5:formation-broken'));
+ check(`${label} withdrawal and farewell scenes match the answer`,s.narrative.seen.includes('5:withdraw:broken')&&s.narrative.seen.includes('5:farewell:acknowledged'));
+ if(width===1440)await p.screenshot({path:`${shots}/m05-result-${width}.png`});
+ await cmd('aftermath');await settle();s=await snap();
+ check(`${label} M05 aftermath plays the camp talk for the chosen answer`,s.narrative.seen.includes('after:5')&&s.narrative.seen.includes('after:5:acknowledged'));
  await ctx.close();
 }}finally{await browser.close();}
 check('ACT I browser run has zero runtime errors',errors.length===0);check('ACT I standalone makes zero HTTP requests',external===0);
