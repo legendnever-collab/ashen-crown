@@ -64,10 +64,10 @@ for(const hub of Object.values(HUBS)){
 for(const hub of Object.values(HUBS))for(const n of hub.npcs)if(n.id==='eric')Object.assign(n,{id:'aren',name:'Aren · 군단장',kind:'commander'});
 NPC_LINES.aren=['에릭, 병사들 상태 좀 봐 줘. …이번 판단도 같이 책임지겠다.','명령서는 내가 확인하지. 넌 동료들이 돌아올 길을 부탁한다.'];
 
-// D-038: Lia doubles as the legion's strategist and stands at the war table beside her
-// staff aide (functional role; the aide keeps the 'advisor' id that drives the council).
+// D-038: Lia doubles as the legion's strategist and stands beside her war table. The table keeps the
+// 'advisor' id that drives the council (2026-10-18: the separate staff aide was removed — one Lia on the map).
 for(const hub of Object.values(HUBS)){
- hub.npcs.push({id:'advisor',name:'작전 보좌관 · 리아의 작전 탁자',x:8,y:7,kind:'advisor'});
+ hub.npcs.push({id:'advisor',name:'리아의 작전 탁자 · 작전 회의',x:8,y:7,kind:'advisor'});
  Object.assign(hub.npcs.find(n=>n.id==='lia'),{name:'Lia · 군사',x:9,y:7});
  const p=hub.places.find(p=>p.id==='council'),b=hub.buildings.find(b=>b.buildingId==='council');
  p.name='Commander Quarters';delete p.action;delete p.entrance;
@@ -76,9 +76,9 @@ for(const hub of Object.values(HUBS)){
  hub.places.push({id:'advisor',name:'작전 탁자 · 광장 동쪽',x:7,y:7});
 }
 export const ADVISOR_BRIEFINGS={
- 1:[['advisor','에릭 경, 북쪽 경계에서 급보입니다!'],['eric','주민부터 지킨다. 적은 어디 있지?'],['lia','Garr 패거리가 마을로 오고 있어요. 광장에서 병력을 모아 맞서요!']],
- 2:[['advisor','습격자들이 북쪽 숲길로 달아났습니다.'],['eric','숲에서 서로 떨어지지 않게 대열부터 정하자.'],['lia','대장의 퇴로는 북쪽이에요. 생포하면 보급로를 캐물을 수 있어요!']],
- 3:[['advisor','다리 앞에 피난민이 모였습니다. 후방에선 추격병이 접근 중입니다.'],['eric','세인이 구조할 길을 연다. 철수로부터 확인하지.'],['lia','열 턴 안에 주민을 한 명 이상 구하고, 살아 있는 장수는 전원 북쪽 안전 구역으로 빠져야 해요.']]
+ 1:[['lia','에릭, 북쪽 경계에서 급보예요!'],['eric','주민부터 지킨다. 적은 어디 있지?'],['lia','Garr 패거리가 마을로 오고 있어요. 광장에서 병력을 모아 맞서요!']],
+ 2:[['lia','습격자들이 북쪽 숲길로 달아났어요.'],['eric','숲에서 서로 떨어지지 않게 대열부터 정하자.'],['lia','대장의 퇴로는 북쪽이에요. 생포하면 보급로를 캐물을 수 있어요!']],
+ 3:[['lia','다리 앞에 피난민분들이 모였어요. 뒤에선 추격병이 다가오고 있고요.'],['eric','세인이 구조할 길을 연다. 철수로부터 확인하지.'],['lia','열 턴 안에 주민을 한 명 이상 구하고, 살아 있는 장수는 전원 북쪽 안전 구역으로 빠져야 해요.']]
 };
 
 // v0.4 benchmark pass: every ordinary building can be entered. Interiors are original

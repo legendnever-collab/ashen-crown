@@ -50,7 +50,7 @@ export function bustKey(u,missionId=1){
  if(BUST_SPEC[u.id])return u.id;
  if(u.team==='commander')return 'aren';
  if(u.team==='civilian')return 'refugee';
- const look={1:{captain:'captain',archer:'archer'},2:{captain:'deserterCaptain',bandit:'deserter'},3:{captain:'pursuerCaptain',bandit:'pursuer',archer:'pursuerArcher'},4:{captain:'quartermaster',bandit:'fortGuard',archer:'fortArcher'},5:{bearer:'bearer',spear:'ironSpear',archer:'ironArcher',cavalry:'cavalry'},6:{captain:'pursuerCaptain',bandit:'pursuer',archer:'pursuerArcher'}}[missionId]||{};
+ const look={1:{captain:'captain',archer:'archer'},2:{captain:'deserterCaptain',bandit:'deserter'},3:{captain:'pursuerCaptain',bandit:'pursuer',archer:'pursuerArcher'},4:{captain:'quartermaster',bandit:'fortGuard',archer:'fortArcher'},5:{bearer:'bearer',spear:'ironSpear',archer:'ironArcher',cavalry:'cavalry'},6:{captain:'executor',bandit:'pursuer',archer:'pursuerArcher'}}[missionId]||{};
  return 'cast:'+(look[u.kind]||(u.kind==='captain'?'captain':'bandit'));
 }
 const bustSpecOf=key=>key.startsWith('cast:')?bustFromCast(key.slice(5)):BUST_SPEC[key];
@@ -263,8 +263,10 @@ export function bustCanvas(key,expr='neutral',scale=2){const id=`${key}|${expr}|
 // failed decode → the vector bust above. Images are created once and redrawn when decoded.
 const PAINTED=typeof ASHEN_PORTRAITS!=='undefined'?ASHEN_PORTRAITS:null;
 const paintedImages=new Map();
-export const hasPainted=key=>!!PAINTED?.[key];
-export function paintedImage(key,expr='neutral'){const set=PAINTED?.[key];if(!set||typeof Image==='undefined')return null;const e=set[expr]?expr:'neutral';if(!set[e])return null;const id=`${key}|${e}`;let img=paintedImages.get(id);if(!img){img=new Image();img.decoding='async';img.src=set[e];paintedImages.set(id,img);}return img.failed?null:img;}
+export const hasPainted=key=>!!PAINTED?.[paintedId(key)];
+const PAINTED_ALIAS={'cast:captain':'garr','cast:deserterCaptain':'deserterCaptain','cast:pursuerCaptain':'pursuerCaptain','cast:quartermaster':'quartermaster','cast:executor':'executor'};
+export const paintedId=key=>PAINTED_ALIAS[key]||key;
+export function paintedImage(key,expr='neutral'){key=paintedId(key);const set=PAINTED?.[key];if(!set||typeof Image==='undefined')return null;const e=set[expr]?expr:'neutral';if(!set[e])return null;const id=`${key}|${e}`;let img=paintedImages.get(id);if(!img){img=new Image();img.decoding='async';img.src=set[e];paintedImages.set(id,img);}return img.failed?null:img;}
 function whenPainted(c,img,token,paint,fallback){const canvas=c.canvas;canvas.dataset.painting=token;if(img.complete&&img.naturalWidth){paint();return;}c.clearRect(0,0,canvas.width,canvas.height);
  img.addEventListener('load',()=>{if(canvas.isConnected!==false&&canvas.dataset.painting===token)paint();},{once:true});img.addEventListener('error',()=>{img.failed=true;if(canvas.dataset.painting===token)fallback();},{once:true});}
 function drawVectorBust(c,key,expression){const src=bustCanvas(key,expression,Math.max(1,Math.round(c.canvas.width/BUST_W)));c.clearRect(0,0,c.canvas.width,c.canvas.height);c.imageSmoothingEnabled=true;c.drawImage(src,0,0,c.canvas.width,c.canvas.height);}
@@ -273,5 +275,5 @@ export function drawBust(c,u,{expression='neutral',missionId=1}={}){const key=bu
  drawVectorBust(c,key,expression);return key;}
 // Head-and-shoulders crop of the painted bust for small square portraits (dock, unit sheet, council…).
 const HEAD_CROP={lia:[150,150,430],sain:[140,70,440],default:[150,40,420]};
-export function drawPaintedHead(c,u,{expression='neutral',missionId=1}={}){const key=bustKey(u,missionId),img=paintedImage(key,expression);if(!img)return false;const W=c.canvas.width,H=c.canvas.height,[sx,sy,ss]=HEAD_CROP[key]||HEAD_CROP.default;
+export function drawPaintedHead(c,u,{expression='neutral',missionId=1}={}){const key=bustKey(u,missionId),img=paintedImage(key,expression);if(!img)return false;const W=c.canvas.width,H=c.canvas.height,[sx,sy,ss]=HEAD_CROP[paintedId(key)]||HEAD_CROP.default;
  whenPainted(c,img,`head|${key}|${expression}`,()=>{c.save();c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,W,H);c.fillStyle='#22383c';c.fillRect(0,0,W,H);const g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(255,230,180,.10)');g.addColorStop(1,'rgba(0,0,0,.25)');c.fillStyle=g;c.fillRect(0,0,W,H);c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';const f=img.naturalWidth/720;c.drawImage(img,sx*f,sy*f,ss*f,ss*f,0,0,W,H);c.restore();},()=>{});return true;}

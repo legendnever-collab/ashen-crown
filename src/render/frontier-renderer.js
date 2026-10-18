@@ -1,3 +1,4 @@
+import {drawWarTable} from './hd-world.js';
 import {HUBS} from '../data/frontier-data.js';
 import {explorationHero,currentHub,chestKey,exitDoor} from '../core/frontier.js';
 import {drawTile,drawSprite,pixel} from './art.js';
@@ -23,7 +24,7 @@ export function drawHub(canvas,s,{line=null,time=performance.now()}={}){
  if(h.tone==='camp')drawFire(c,7*64,6*64,time,.65);
  if(line){const cast=(line.actors||['aren',line.speaker]).filter((id,i,a)=>a.indexOf(id)===i);cast.forEach((id,i)=>{const actor=s.units.find(u=>u.id===id)||{id,team:id==='aren'?'commander':'civilian'};drawHDFigure(c,hdCastFor(actor),220+i*75,424+i%2*30,{facing:'down'});if(id===line.speaker)pixel(c,'#f5d594',216+i*75,342+i%2*30,8,8);});}
  else{const near=n=>Math.abs(n.x-f.x)+Math.abs(n.y-f.y)<=1,talking=n=>s.narrative.active?.key.startsWith('npc:')&&s.narrative.active.key.endsWith(`:${n.id}`);
-  const items=[...hd.objects.map(o=>({y:hdObjectKey(o),draw:()=>drawHDObject(c,o,time)})),...h.buildings.map(b=>({y:(b.y+b.h)*64-2,draw:()=>drawB(b)})),...h.npcs.map((n,k)=>({y:(n.y+1)*64,draw:()=>{const still=near(n)||talking(n),t=time/1700+k*1.7+n.x,dx=still?0:Math.round(Math.sin(t)*9),moving=!still&&Math.abs(Math.cos(t))>.3,actor=s.units.find(u=>u.id===n.id)||{...n,team:'civilian'},x=n.x*64+32+dx,y=n.y*64+36;
+  const items=[...hd.objects.map(o=>({y:hdObjectKey(o),draw:()=>drawHDObject(c,o,time)})),...h.buildings.map(b=>({y:(b.y+b.h)*64-2,draw:()=>drawB(b)})),...h.npcs.map((n,k)=>({y:(n.y+1)*64,draw:()=>{if(n.kind==='advisor'){drawWarTable(c,n.x*64+32,n.y*64+58,time);if(near(n)||talking(n))pixel(c,'#f0d291',n.x*64+28,n.y*64-6,8,8);return;}const still=near(n)||talking(n),t=time/1700+k*1.7+n.x,dx=still?0:Math.round(Math.sin(t)*9),moving=!still&&Math.abs(Math.cos(t))>.3,actor=s.units.find(u=>u.id===n.id)||{...n,team:'civilian'},x=n.x*64+32+dx,y=n.y*64+36;
     const facing=still?hdDirection(f.x-n.x,f.y-n.y,'down'):moving?(Math.cos(t)>0?'right':'left'):'down';
     c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(x,y+23,13,4,0,0,Math.PI*2);c.fill();drawHDFigure(c,hdCastFor(actor),x,y+24,{facing,frame:moving?1+Math.floor(time/260)%4:0});if(near(n)||talking(n))pixel(c,'#f0d291',n.x*64+28,n.y*64-30,8,8);}})),
    {y:(f.y+1)*64+1,draw:()=>{const hero=explorationHero(s),px=f.x*64+32,py=f.y*64+36-(s.doorStep?26:0);c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(px,py+23,13,4,0,0,Math.PI*2);c.fill();drawHDFigure(c,hdCastFor(hero),px,py+24,{facing:f.facing||'down',frame:s.walking?1+Math.floor(time/110)%4:0});pixel(c,'#e4c580',px-20,py+29,40,2);}}];

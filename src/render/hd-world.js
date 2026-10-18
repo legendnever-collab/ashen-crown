@@ -50,15 +50,34 @@ export function hdCastFor(u,missionId=1){
  if(u.id==='advisor')return 'aide';
  if(u.kind==='wagon')return 'wagon';
  if(u.kind==='beacon')return 'beacon';
+ if(missionId===6&&u.id==='boss')return 'executor';
  if(missionId===6&&u.team==='enemy'&&/^g\d/.test(u.id))return 'fortGuard';
- if(missionId===6&&u.id==='i1')return 'quartermaster';
+ if(missionId===6&&u.id==='i1')return 'inspector';
  if(u.team==='civilian'){const n=String(u.name||'');return /Mira/.test(n)?'mira':/Tomas/.test(n)?'farmer':CAST[u.id]?u.id:'refugee';}
  if(u.burns)return 'torch';
  if(missionId===4&&/^r\d/.test(u.id))return 'storeman';
  return (ENEMY_LOOK[missionId]||ENEMY_LOOK[1])[u.kind]||'bandit';
 }
 // draws a figure with its feet at world (x, footY); pose 'attack' leans toward the facing.
+// Painted map sprites (user-supplied pack, 2026-10-18): one 4×3 sheet per look — rows down/right/up
+// (left mirrors right), columns idle / step A / step B / attack-or-action. Anchor (64,120) of a 128 cell
+// sits on the unit's feet. Until a sheet has decoded, or for looks without a sheet, the parametric
+// pixel figure below is drawn instead.
+const SPRITES=typeof ASHEN_SPRITES!=='undefined'?ASHEN_SPRITES:null,spriteImages=new Map();
+const SPRITE_ALIAS={captain:'garr',lion:'baldrick',aide:'advisor'};
+export const PAINTED_CELL=74;
+export const spriteIdFor=castId=>SPRITE_ALIAS[castId]||castId;
+let spritesWarm=false;
+function loadSheet(id){let img=spriteImages.get(id);if(!img){img=new Image();img.decoding='async';img.onerror=()=>{img.failed=true;};img.src=SPRITES[id];spriteImages.set(id,img);img.decode?.().catch(()=>{});}return img;}
+// decode every sheet once up front so no frame pays for a first-time decode mid-animation
+export function paintedSheet(castId){const id=spriteIdFor(castId),src=SPRITES?.[id];if(!src||typeof Image==='undefined')return null;if(!spritesWarm){spritesWarm=true;for(const k of Object.keys(SPRITES))loadSheet(k);}const img=loadSheet(id);return img.complete&&img.naturalWidth&&!img.failed?img:null;}
+export function paintedFrame(facing='down',frame=0,pose='idle'){return {row:facing==='up'?2:facing==='down'?0:1,col:pose==='attack'?3:frame?1+((frame-1)%2):0,mirror:facing==='left'};}
+function drawPaintedFigure(c,img,x,footY,{facing,frame,pose,alpha}){const cell=img.naturalWidth/4,{row,col,mirror}=paintedFrame(facing,frame,pose),D=PAINTED_CELL,lean=pose==='attack'?{left:[-4,0],right:[4,0],up:[0,-4],down:[0,3]}[facing]:[0,0];
+ c.save();c.globalAlpha*=alpha;c.imageSmoothingEnabled=true;c.imageSmoothingQuality='low';c.translate(x+lean[0],footY+lean[1]);
+ if(pose==='death'){c.globalAlpha*=.45;c.translate(0,-8);c.rotate(-Math.PI/2);}if(mirror)c.scale(-1,1);
+ c.drawImage(img,col*cell,row*cell,cell,cell,-D/2,-D*120/128,D,D);c.restore();}
 export function drawHDFigure(c,castId,x,footY,{facing='down',frame=0,pose='idle',alpha=1}={}){
+ const sheet=paintedSheet(castId);if(sheet){drawPaintedFigure(c,sheet,x,footY,{facing,frame,pose,alpha});return;}
  if(castId==='beacon'){drawBeacon(c,x,footY,pose==='death',alpha);return;}
  if(castId==='wagon'){const w=wagonSprite();c.save();c.globalAlpha*=pose==='death'?.4:alpha;hdBlit(c,w,x-24*HD_K,footY-50*HD_K);c.restore();return;}
  const s=figureSprite(castId,{facing,frame}),K=HD_K,lean=pose==='attack'?{left:[-6,0],right:[6,0],up:[0,-6],down:[0,5]}[facing]:[0,0];
@@ -74,3 +93,10 @@ function drawBeacon(c,x,footY,dead,alpha=1){const t=performance.now(),K=HD_K;c.s
  if(dead){for(let i=0;i<5;i++){const py=-44-i*7-(t/60)%7,px=Math.sin(t/500+i)*3;c.fillStyle=`rgba(70,68,72,${.35-i*.06})`;c.beginPath();c.ellipse(x+px*K,y+py*K,(4+i)*K,(3+i*.6)*K,0,0,Math.PI*2);c.fill();}R('#2a2224',-10,-40,20,3);}
  else{for(let i=0;i<6;i++){const ph=t/110+i*1.3,h=9+5*Math.sin(ph);R(i%2?'#ffcf6a':'#f07a32',-10+i*3.4,-38-h,3.4,h);}R('#fff2b0',-3,-46,6,6);c.fillStyle='rgba(255,180,90,.18)';c.beginPath();c.ellipse(x,y-44*K,22*K,14*K,0,0,Math.PI*2);c.fill();}
  c.restore();}
+
+// Lia's war table (the 'advisor' interaction point): a map table with markers and a candle — an object, not a person.
+export function drawWarTable(c,x,y,time=0){const R=(col,a,b,w,h)=>{c.fillStyle=col;c.fillRect(Math.round(x+a),Math.round(y+b),w,h);};
+ c.fillStyle='rgba(20,24,30,.32)';c.beginPath();c.ellipse(x,y+2,30,7,0,0,Math.PI*2);c.fill();
+ for(const dx of [-24,20])R('#4a3324',dx,-18,5,20);R('#6e4c30',-28,-26,56,10);R('#8a6240',-28,-26,56,3);R('#3a281a',-28,-17,56,2);
+ R('#e6d6ac',-22,-34,40,12);R('#c9b48a',-22,-24,40,2);R('#7a9a6a',-16,-31,10,5);R('#6a8aa8',-2,-32,8,4);R('#b23a2e',-8,-30,3,3);R('#2f5d8a',6,-28,3,3);R('#e8c56a',-14,-27,3,3);
+ R('#d8d0c0',20,-40,4,10);const f=Math.sin(time/140)*1.2;c.fillStyle='#ffcf6a';c.beginPath();c.ellipse(x+22,y-44+f*.3,2.2,4,0,0,Math.PI*2);c.fill();c.fillStyle='rgba(255,200,110,.18)';c.beginPath();c.ellipse(x+22,y-42,12,9,0,0,Math.PI*2);c.fill();}

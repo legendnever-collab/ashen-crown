@@ -220,3 +220,7 @@
 .dialogue-backdrop.in-place-dialogue .dialogue-panel{background:linear-gradient(180deg,rgba(16,22,30,.95),rgba(8,11,16,.97))}
 .dialogue-backdrop .dialogue-copy{left:calc(var(--bust-h)*.82 + 18px)}
 @media(max-width:600px){.dialogue-backdrop .dialogue-copy{left:16px}}
+/* 2026-10-18 feedback: busts ≈ 35% smaller — they rise a little above the box instead of towering over it */
+.dialogue-backdrop{--bust-h:clamp(170px,35vh,330px)}
+@media(max-width:600px){.dialogue-backdrop{--bust-h:clamp(130px,22vh,195px)}}
+@media(max-height:500px) and (min-width:601px){.dialogue-backdrop{--bust-h:min(50vh,215px)}}

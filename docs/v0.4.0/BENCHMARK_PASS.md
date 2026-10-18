@@ -109,3 +109,10 @@ Outlines are a single dark ink, figures are assembled from parametric original p
 - `scripts/build.mjs` embeds the WebP files once as `ASHEN_PORTRAITS` (data URLs); the standalone HTML grows from ≈0.6 MB to ≈3.8 MB and still makes zero network requests.
 - `src/render/bust.js`: the dialogue bust uses the painted image (missing expression → neutral; unknown speaker or a decode failure → the vector bust). One `Image` per portrait, redrawn when decoded. `eric_adv` follows the existing appearance tier (LV 5). The images face right and are never mirrored.
 - Small square portraits (dock, War Council roster, unit sheet, appearance preview) use a head-and-shoulders crop of the same painting for these seven; other characters keep the existing art.
+
+### Remaining art pack (21 busts + 36 sprite sheets) + feedback, 2026-10-18 20:21 KST
+- Imported with `scripts/import-art.py` from the user's PNG masters (SHA256 checked against the pack manifest): busts → 720×880 WebP (704×880 art + 8 px side padding), sheets → 512×384 WebP with every 256 cell halved on its own (anchor 64,120). Log with sizes and hashes: `src/assets/art-import-log.csv`. Runtime total 85 images = 49 busts + 36 sheets (incl. the earlier 28 busts).
+- Map figures (`hd-world.js drawHDFigure`): painted sheet first — rows down/right/up, left = mirrored right row; columns idle / step A / step B / attack-or-action; drawn into a 74-unit cell on the unit's feet; the parametric pixel figure remains the fallback. Look aliases: captain→garr, lion→baldrick; M06 executor and inspector get their own looks.
+- Busts for Baldrick, Garr, the deserter captain, the pursuit commander, the quartermaster, the blockade executor, the elder, smith, merchant, refugee and guard (enemy speakers resolve through their battlefield look).
+- Dialogue bust ≈ 35 % smaller (desktop max 330 px instead of 500 px; phone max 195 px) so it rises only a little above the box.
+- Two-Lias bug: the staff aide NPC beside Lia was removed. The war-council interaction point (`advisor` id, unchanged for saves/tests) is now Lia's war table; the aide's briefing lines are spoken by Lia. The aide's art stays in source but is not shipped.
