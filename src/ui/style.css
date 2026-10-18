@@ -216,3 +216,7 @@
 }
 /* v0.4 ACT I completion card */
 .act1-card{text-align:center;padding:6px 4px}.act1-card h2{font:bold 34px Georgia,'Ashen UI',serif;color:#f0c46a;margin:8px 0 0;letter-spacing:.06em}.act1-card .act1-en{font:14px Georgia,serif;color:#c9b88f;letter-spacing:.3em;text-transform:uppercase;margin:2px 0 14px}.act1-card .act1-oath{color:#f2dfb4}.act1-card blockquote{margin:14px auto;max-width:440px;padding:10px 14px;border-left:3px solid #9b875e;background:#182f33;text-align:left;font:15px/1.7 Georgia,'Ashen UI',serif;color:#e8dcc0}.act1-card cite{display:block;margin-top:6px;font:12px Arial,'Ashen UI',sans-serif;color:#b9a77f;font-style:normal}.act1-card .act1-next{margin-top:16px;font:bold 15px Arial,'Ashen UI',sans-serif;color:#9fd1e6;letter-spacing:.04em}
+/* painted busts: keep the map/dock from showing through the text box during in-battle talks */
+.dialogue-backdrop.in-place-dialogue .dialogue-panel{background:linear-gradient(180deg,rgba(16,22,30,.95),rgba(8,11,16,.97))}
+.dialogue-backdrop .dialogue-copy{left:calc(var(--bust-h)*.82 + 18px)}
+@media(max-width:600px){.dialogue-backdrop .dialogue-copy{left:16px}}
