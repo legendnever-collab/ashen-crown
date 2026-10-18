@@ -12,3 +12,6 @@ v0.3 adds procedural Aren walking, Village/Camp layout, shop interior, NPC sprit
 
 ## v0.3.1 native detail
 World units use a 64-unit tile coordinate system. Terrain caches are rendered at native 128 pixels per tile; procedural sprites contain half-world-pixel seams, etched gear, face highlights and walk arm frames (128 native extent); portraits have 256 backing pixels and new native face/hair/garment detail. This is not CSS enlargement. Existing silhouettes, Erik Tier2 and original art ownership remain. No sprite for every gear combination or new promotion claimed.
+
+v0.4.0 font: AshenUI.woff is a subset of Noto Sans CJK KR Regular 2.004 (SIL OFL 1.1; the embedded font's own name table identifies this source). `scripts/font-subset.py` keeps every existing code point and adds newly authored Hangul syllables from the same source version; it refuses a different version. v0.4.0 M04 added 39 syllables (613 → 652 manifest entries).
+v0.4.0 art: original fortress tiles (Keep Floor flagstones, crenellated Rampart) and evidence chests drawn procedurally in art.js / pixel-renderer.js; no external images.

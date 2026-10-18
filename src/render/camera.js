@@ -7,7 +7,7 @@ export class MapCamera{
  panBy(x,y){this.offset.x+=x;this.offset.y+=y;}
  layout(width,height,mapWidth,mapHeight,{follow=null,key='',smooth=true}={}){
   if(this.key!==key){this.key=key;this.reset();}
-  const tilePixels=(width<600||height<300?40:64)*this.zoom,scale=tilePixels/64;
+  const base=width<600||height<300?40:64,tilePixels=Math.max(base,Math.min(width/mapWidth,base*1.5))*this.zoom,scale=tilePixels/64;
   const point=this.target||follow||{x:mapWidth/2-.5,y:mapHeight/2-.5};
   const clamp=(v,extent,view)=>extent<=view?(view-extent)/2:Math.max(view-extent,Math.min(0,v));
   let x=clamp(width/2-(point.x+.5)*tilePixels+this.offset.x,mapWidth*tilePixels,width),y=clamp(height/2-(point.y+.5)*tilePixels+this.offset.y,mapHeight*tilePixels,height);

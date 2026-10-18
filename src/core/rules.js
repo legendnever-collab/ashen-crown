@@ -4,7 +4,8 @@ import {missionOf} from '../data/missions.js';
 import {remember} from './narrative.js';
 export const distance=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
 export const key=(x,y)=>`${x},${y}`;
-export const alive=u=>u.hp>0&&!u.rescued;
+// benched: a hero left out of the sortie (pre-battle choice) takes no part in the battle
+export const alive=u=>u.hp>0&&!u.rescued&&!u.benched;
 export const terrainAt=(x,y,s)=>TERRAIN[(s?missionOf(s).map:MAP)[y]?.[x]];
 export const findUnit=(s,id)=>s.units.find(u=>u.id===id);
 export const at=(s,x,y)=>s.units.find(u=>alive(u)&&u.x===x&&u.y===y);
@@ -26,39 +27,64 @@ export function movement(s,u,ignore=false){
 }
 export function pathTo(s,u,x,y){const {costs,prev}=movement(s,u);let k=key(x,y);if(!costs.has(k))return null;const path=[];while(k){const [px,py]=k.split(',').map(Number);path.unshift({x:px,y:py});k=prev.get(k);}return path;}
 export function skillCost(u){const h=HEROES.find(h=>h.id===u.id);return (h?.cost||0)+(u.id==='lia'&&u.hp<=u.maxHP/2?1:0);}
-export function rangeFor(u,mode='attack'){return mode==='skill'&&u.id==='lia'?[1,3]:mode==='skill'&&u.id==='sain'?[0,2]:mode==='skill'&&u.id==='eric'?[1,1]:u.range;}
+export function rangeFor(u,mode='attack'){return mode==='skill'&&u.id==='lia'?[1,3]:mode==='skill'&&u.id==='sain'?[0,2]:mode==='skill'&&u.id==='eric'?[0,0]:u.range;}
 export function validTarget(s,u,t,mode='attack'){
  if(!u||!t||!alive(u)||!alive(t))return false;
- const d=distance(u,t);if(mode==='capture')return s.missionId===2&&t.id==='boss'&&t.team==='enemy'&&t.hp<=t.maxHP/2&&d===1;
- if(mode==='rescue')return t.team==='civilian'&&d===1;
- if(mode==='skill'&&(u.id==='eric'||u.id==='sain'))return t.team==='ally'&&d>=rangeFor(u,mode)[0]&&d<=rangeFor(u,mode)[1]&&(u.id!=='eric'||u.id!==t.id);
+ const d=distance(u,t);if(t.team==='object')return mode==='search'&&u.team==='ally'&&d===1&&!t.locked&&!t.inert;if(mode==='search')return false;if(mode==='capture')return s.missionId===2&&t.id==='boss'&&t.team==='enemy'&&t.hp<=t.maxHP/2&&d===1;
+ if(mode==='rescue')return t.team==='civilian'&&t.kind!=='wagon'&&!missionOf(s).escortOnly&&d===1;
+ if(mode==='skill'&&u.id==='eric')return t.id===u.id;
+ if(mode==='skill'&&u.id==='sain')return (t.team==='ally'||t.team==='civilian'&&missionOf(s).healCivilians&&t.kind!=='wagon')&&d>=rangeFor(u,mode)[0]&&d<=rangeFor(u,mode)[1];
  const [min,max]=rangeFor(u,mode);return u.team!==t.team&&t.team!=='civilian'&&d>=min&&d<=max;
 }
 export function flank(s,u,t){return s.units.some(a=>a.team===u.team&&alive(a)&&a.id!==u.id&&distance(a,t)===1&&((u.x<t.x&&a.x>t.x)||(u.x>t.x&&a.x<t.x)||(u.y<t.y&&a.y>t.y)||(u.y>t.y&&a.y<t.y)));}
 export function strikeStats(s,u,t,mode='attack'){
  u=effectiveStats(s,u);t=effectiveStats(s,t);
  const magic=mode==='skill'&&u.id==='lia',aim=mode==='skill'&&u.id==='elina',quick=mode==='skill'&&u.id==='kai';
- const defense=magic?t.res:t.def+terrainAt(t.x,t.y,s).defense;
- let dmg=Math.max(1,(magic?u.mag:u.atk)-defense+(aim?2:0)+(magic&&u.hp<=u.maxHP/2?4:0)+(quick&&flank(s,u,t)?6:0));
+ const ground=terrainAt(t.x,t.y,s),defense=magic?t.res:t.def,burning=!!s.burning?.[key(t.x,t.y)];
+ let raw=Math.max(1,(magic?u.mag:u.atk)-defense+(aim?2:0)+(magic&&u.hp<=u.maxHP/2?4:0)+(quick&&flank(s,u,t)?6:0));
+ let dmg=Math.max(1,Math.round(magic?raw*(ground.fire??1):raw*(1-(ground.phys||0))));
  if(t.id==='eric'&&t.hp<=t.maxHP*.3)dmg=Math.max(1,Math.floor(dmg*.85));
- const ground=missionOf(s).map[u.y][u.x];const hawk=u.id==='elina'&&(ground==='f'||ground==='v')?12:0;
- const hit=Math.max(55,Math.min(100,(magic?95:88)+(u.spd-t.spd)*2-terrainAt(t.x,t.y,s).evade+hawk+(aim?18:0)+(u.hit||0)));
- const crit=magic?0:Math.min(18,Math.max(3,u.spd-t.spd+5));
- return {damage:dmg,hit,crit,magic,flank:quick&&flank(s,u,t)};
+ // M05 lion formation (mission data only; M01–04 have no formation): living bearers give adjacent
+ // allies of theirs DEF and accuracy; Baldrick's charge punishes isolated targets unless Erik guards.
+ const form=missionOf(s).formation;let formHit=0;
+ if(form){const near=v=>v.team==='enemy'&&!form.bearers.includes(v.id)&&s.units.some(b=>form.bearers.includes(b.id)&&alive(b)&&distance(b,v)===1);
+  if(near(t)&&!magic)dmg=Math.max(1,dmg-form.def);else if(near(t)&&magic)dmg=Math.max(1,dmg-form.def);
+  if(near(u))formHit=form.hit;
+  if(u.id==='boss'&&isolated(s,t)&&!(t.guarding&&!t.guardUsed))dmg+=form.charge;}
+ const standing=missionOf(s).map[u.y][u.x];const hawk=u.id==='elina'&&(standing==='f'||standing==='v')?12:0;
+ const hit=Math.max(70,Math.min(100,(magic?100:97)+Math.round((u.spd-t.spd)*1.5)-(ground.evade||0)+hawk+(aim?18:0)+(u.hit||0)+formHit-(t.dodge||0)));
+ const crit=magic?0:Math.min(12,Math.max(3,Math.round((u.spd-t.spd)/2)+5));
+ return {damage:dmg,hit,crit,magic,fire:magic,terrainMul:magic?(ground.fire??1):1-(ground.phys||0),flank:quick&&flank(s,u,t),burning};
 }
-export function guardFor(s,u,t,mode){if(mode==='skill'&&u.id==='lia'||distance(u,t)!==1)return null;return s.units.find(g=>alive(g)&&g.team===t.team&&g.guardTarget===t.id&&distance(g,t)===1);}
+export const isolated=(s,t)=>t.team==='ally'&&!s.units.some(a=>a.team==='ally'&&alive(a)&&a.id!==t.id&&distance(a,t)===1);
+export function guardFor(s,u,t,mode){if(mode==='skill'&&u.id==='lia'||distance(u,t)!==1)return null;return s.units.find(g=>alive(g)&&g.team===t.team&&g.id!==t.id&&(g.guarding&&!g.guardUsed||g.guardTarget===t.id)&&distance(g,t)===1);}
 export function forecast(s,u,t,mode='attack'){
  if(mode==='skill'&&u.id==='sain')return {heal:Math.min(t.maxHP-t.hp,12+effectiveStats(s,u).mag),hit:100,damage:0,counter:0,after:Math.min(t.maxHP,t.hp+12+effectiveStats(s,u).mag)};
  if(mode==='skill'&&u.id==='eric')return {guard:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='capture')return {capture:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='rescue')return {rescue:true,damage:0,hit:100,counter:0,after:t.hp};
+ if(mode==='search')return {search:true,damage:0,hit:100,counter:0,after:t.hp};
  const guard=guardFor(s,u,t,mode),victim=guard||t,stats=strikeStats(s,u,victim,mode),canCounter=validTarget(s,victim,u,'attack')&&victim.hp>stats.damage;
  const counter=canCounter?strikeStats(s,victim,u).damage:0;
  return {...stats,counter,counterHit:canCounter?strikeStats(s,victim,u).hit:0,after:Math.max(0,victim.hp-stats.damage),guard:guard?.id,victim:victim.id};
 }
+// Phase F (D-045): from M04 a mission carries a level. A hero more than two levels above it learns less
+// (−20% per level, floor 20%); one more than two below learns faster (+20% per level, cap 160%). M01–M03 have
+// no level and keep the v0.3.x flat EXP exactly.
+export function xpScale(s,u){const lv=missionOf(s)?.level;if(!lv)return 1;const over=u.level-(lv+2),under=(lv-2)-u.level;return over>0?Math.max(0.2,1-0.2*over):under>0?Math.min(1.6,1+0.2*under):1;}
 export function awardXP(s,u,amount,reason){
- if(u.team!=='ally'||!amount)return;
+ if(u.team!=='ally'||!amount)return;amount=Math.max(1,Math.round(amount*xpScale(s,u)));
  u.xp+=amount;u.earnedXP+=amount;u.highlights.push(reason);s.feedback.push({type:'xp',id:u.id,text:`+${amount} EXP`});
- while(u.xp>=BALANCE.xpLevel){u.xp-=BALANCE.xpLevel;u.level++;const g=HEROES.find(h=>h.id===u.id).growth;const changes={...g};for(const [stat,n] of Object.entries(g)){if(stat==='hp'){u.maxHP+=n;u.hp=Math.min(u.maxHP,u.hp+n);}else if(stat==='mp'){u.maxMP+=n;u.mp=Math.min(u.maxMP,u.mp+n);}else u[stat]+=n;}if(u.id==='eric'&&u.level>=5)u.appearanceTier=2;u.growthHistory.push({level:u.level,changes});s.feedback.push({type:'level',id:u.id,text:`LEVEL ${u.level}`,toHP:u.hp});s.log.push(`${u.name} → LV ${u.level}. 성장이 새로운 힘으로 이어집니다.`);}
+ let leveled=false;while(u.xp>=BALANCE.xpLevel){leveled=true;u.xp-=BALANCE.xpLevel;u.level++;const g=HEROES.find(h=>h.id===u.id).growth;const changes={...g};for(const [stat,n] of Object.entries(g)){if(stat==='hp'){u.maxHP+=n;u.hp=Math.min(u.maxHP,u.hp+n);}else if(stat==='mp'){u.maxMP+=n;u.mp=Math.min(u.maxMP,u.mp+n);}else u[stat]+=n;}if(u.id==='eric'&&u.level>=5)u.appearanceTier=2;u.growthHistory.push({level:u.level,changes});s.feedback.push({type:'level',id:u.id,text:`LEVEL ${u.level}`,toHP:u.hp});s.log.push(`${u.name} → LV ${u.level}. 성장이 새로운 힘으로 이어집니다.`);}
+ if(leveled){u.hp=u.maxHP;u.mp=u.maxMP;s.log.push(`${u.name}: 레벨업으로 HP/MP 전부 회복.`);}
 }
 export function discover(s,u,clue){if(!u.clues.includes(clue)){u.clues.push(clue);s.feedback.push({type:'potential',id:u.id,text:'POTENTIAL DISCOVERED'});s.log.push(`Potential Clue Discovered — ${clue} (1/3). 각성은 아직 해금되지 않았습니다.`);}}
+// One-line tactical summary of a tile, shown when the player taps terrain.
+export function terrainSummary(s,x,y,u=null){const type=missionOf(s).map[y]?.[x],t=TERRAIN[type];if(!t)return '전장 밖';
+ if(!Number.isFinite(t.cost))return `${t.ko} · 통행 불가`;
+ const costs=['infantry','rogue','cavalry'].map(p=>TERRAIN_COSTS[p]?.[type]??t.cost),cost=c=>Number.isFinite(c)?c:'불가';
+ const move=costs.every(c=>c===costs[0])?`이동 ${cost(costs[0])}`:`이동 보병 ${cost(costs[0])} · 도적 ${cost(costs[1])} · 기병 ${cost(costs[2])}`;
+ const parts=[t.ko,move];if(t.phys)parts.push(`일반공격 ${Math.round(t.phys*100)}%↓`);if(t.evade)parts.push(`회피 ${Math.abs(t.evade)}%${t.evade>0?'↑':'↓'}`);
+ if(t.fire&&t.fire!==1)parts.push(`화공 ${Math.round(Math.abs(t.fire-1)*100)}%${t.fire>1?'↑':'↓'}`);if(t.hpRecovery)parts.push(`턴 시작 HP ${t.hpRecovery*100}% 회복`);
+ if(s.burning?.[key(x,y)])parts.push('🔥 불타는 중');if(u&&u.team==='ally'){const c=terrainCost(s,u,x,y);parts.push(`${u.name}: ${Number.isFinite(c)?`비용 ${c}`:'진입 불가'}`);}
+ return parts.join(' · ');}

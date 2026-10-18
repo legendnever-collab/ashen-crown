@@ -1,0 +1,123 @@
+# v0.4.0 Benchmark Pass (Cao Cao's Legend conventions, original content)
+
+Decisions: D-038 (Lia as strategist), D-039 (balance re-baseline), D-040 (scope). Only gameplay conventions, information layout and presentation density are benchmarked; all art, UI chrome, characters and text are original.
+
+## B1 — controls and bugs (implemented)
+| # | Rule |
+|---|---|
+| 2 | Arriving in front of a door never prompts. Stepping into the doorway (↑ at the threshold, or clicking the door) shows Erik in the doorway and asks to enter. |
+| 5 | Guard = self stance, usable anywhere. Until the next player turn: DEF +3 and the first melee hit on an adjacent ally is taken by Erik. 12 EXP per use; intercept still grants Guard EXP. |
+| 6 | When no hero can act, a centred non-blocking card asks "다음 턴으로 넘어가겠습니까? 예/아니오". The end-turn button keeps working. |
+| 8 | Command list is a compact vertical icon list placed beside the unit (right, else left/below/above), never covering the unit; only relevant commands appear. |
+| 10 | Level-up restores HP/MP. Each heal grants min(24, 10 + ⌊(heal+splash)/2⌋) EXP. |
+| 11 | Bag slots with pixel icons, detail panel, gear storage grid; paper-doll equipment with stat bars (equipment bonus in gold). |
+
+## B2 — systems (implemented)
+### Enterable buildings and chests (#3)
+Every ordinary building (homes, barracks/triage, supply depots, command quarters) has a door anchor computed from its footprint and an original interior template (house, barracks, store, quarters). Chests: one roll per chest per mission, fixed by the run seed (`m{mission}:{hub}:{building}:{chest}`), stored in `economy.chests` inside the atomic transaction. Odds: 60% Gold 15–40, 20% Medium Potion, 10% Ether, 10% empty. A full bag converts an item to 20 Gold. Practice mode cannot open chests.
+
+### Terrain (#9)
+Defender terrain modifies damage by percentage; fire (Lia's Fire Bolt) uses the fire multiplier instead of the physical cut.
+
+| Terrain | Move infantry / rogue / cavalry | Physical damage | Evade | Fire | Other |
+|---|---|---|---|---|---|
+| 평지 | 1 / 1 / 1 | — | — | ×1.25 | |
+| 길 | 1 / 1 / 1 | — | — | ×1 | |
+| 숲 | 2 / 1 / 1 | −20% | +15% | ×1.5 | |
+| 산길 | 3 / 1 / 불가 | −30% | +10% | ×1 | |
+| 사막 | 2 / 1 / 1 | — | −5% | ×1 | |
+| 늪 | 3 / 2 / 불가 | — | −10% | ×0.5 | |
+| 다리 | 1 | — | −10% | ×1 | |
+| 마을 | 1 | −10% | — | ×1.25 | HP 10% / MP 5% per phase |
+| 요새 | 1 | −25% | — | ×1 | HP 15% / MP 10% per phase |
+| 성벽 위 (M04) | 1 | −25% | +5% | ×1 | |
+
+Tapping a tile shows a one-line summary, e.g. `숲 · 이동 보병 2 · 도적 1 · 기병 1 · 일반공격 20%↓ · 회피 15%↑ · 화공 50%↑`.
+
+### Fire tactics
+A Fire Bolt hit on grass/forest/village sets the tile burning for two turns. Units standing in fire at the start of their side's phase lose 10% max HP (min 3), never below 1 HP. Fire is drawn on the map and saved (`burning`).
+
+### Unit sheet, tactics, turn display
+`정보` opens a tabbed sheet: 능력 (letter grades S–E, HP/MP/EXP bars, talent, clues), 장비, 책략 (MP, effect, range grid), 열전 (original short biography), 병종 (terrain aptitude table and 7×7 attack range grid). Enemies can be inspected from the dock. The phase bar shows `턴 n / 제한` (M02 8, M03 10, M04 14) or `턴 n · 권장 8` for M01.
+
+## Balance re-baseline (executed locally, legal policy)
+M01 30/30 (turns 4–6); M01–M03 campaigns 30/30 (capture 15, perfect rescues 30, bridge turns 5–8); economy 90/90; M04 30/30 (turns 4–10, avg 8.0, avg 4.47 surviving heroes). The legal-play test policy now steps deeper into the M03 safe zone so arriving heroes do not block the bridge exit.
+
+## B3 — voice, strategist and play-test feedback (implemented, 2026-10-17)
+### Dialogue (PROPOSED wording; canon facts unchanged)
+All ACT I scenes, camp/village conversations, NPC lines, Erik's replies and briefings were rewritten in spoken Korean with one voice per character: Erik short soldier 반말; Aren weighty, pauses (…); Elina sharp, dry 해요체; Lia quick, excited scholar; Sain gentle 존댓말; Kai teasing 반말; the M04 quartermaster speaks 하오체. Line order, speakers and every observed fact (seal, crate numbers, 「폐기 처분」, scraped signature, Lia's teacher notation, Kai's courier-form knowledge) are unchanged; nothing names a culprit.
+
+### Lia as strategist (D-038)
+Lia stands at the war table beside her staff aide (the aide keeps the `advisor` id that drives the council). The aide reports scouting; Lia gives the plan in every briefing and aftermath note. The council screen and the briefing window show Lia's portrait ("군사 리아").
+
+### Feedback batch
+| # | Change |
+|---|---|
+| 1 | New original score: 11 tracks (adds M04 "Halls of the Quartermaster"), each with its own key, tempo, chord loop and melody. Layered synthesis: detuned low-pass pads, harp/pluck arpeggios, breathy flute with vibrato, FM celesta, soft horn, timpani/snare noise, generated stereo reverb and a bus compressor. Only the current and fading tracks are scheduled. Offline render check: peaks 0.18–0.33, no clipping. |
+| 2 | Command list: 공격 / 기술 / 도구 / 정보 / 이동 취소 (plus 조사·구출·생포 only when a legal target is adjacent, and 대기). |
+| 3 | Opening and story text enlarged. |
+| 4 | Village/camp map fills the screen (no side panels); controls float over the map. |
+| 5 | Ending the turn early shows the same centred card: "아직 행동하지 않은 장수가 n명 있습니다. 넘어가겠습니까?" |
+| 6 | Result screen: banner, stars, reward icons (item × n, Gold), hero portrait tiles with EXP bars and a LEVEL UP badge; text only for important notes. |
+| 7 | Quest is a scroll button (or Q) that opens a short card and closes again; default closed. |
+| 8 | Interiors have the exit door on the bottom row; walking onto it leaves the building. |
+| 9 | Hit = clamp(70–100, 97 (magic 100) + 1.5 × SPD gap − terrain evade + skill/gear bonuses − target dodge). Crit = clamp(3–12%, SPD gap/2 + 5), ×1.5 damage; magic never crits. |
+| 10 | Depth-sorted town drawing (heroes never draw over roofs), villagers pace slowly with role props, and the faced person is talked to first when several are adjacent. |
+
+## B4 — graphics (sample approved by the user 2026-10-17 07:43; rolled out)
+`src/render/hd-art.js` paints original pixel art at 48 logical pixels per tile, shown at 2× (96 px per tile on desktop):
+- Per-pixel shading ramps (hue-shifted shadows/highlights) with ordered dithering, coloured outlines on every figure and object.
+- Organic terrain edges (roads, sand, water and swamp fray into grass), tufts/flowers/stones, shore foam, plank bridges, flagstone fortress floors and ramparts.
+- Trees, bushes, ruined walls, crags and cottages are depth-sorted objects; a unit always draws in front of the trees on its own tile.
+- 20 hand-built figures (six heroes and the commander, five enemy types, nine civilians/staff) with distinct silhouettes, headgear and props; chibi proportions with eyes that stay visible under hair, hoods and helmets.
+Sample images: docs/v0.4.0/b4/ (`b4-compare` current vs sample on the same M01 scene at the same scale, `b4-scene`, `b4-zoom`, `b4-cast`, `b4-terrain`). Harness: `samples/b4/index.html` (`#scene`, `#cast`, `#terrain`), rendered by `node samples/b4/shots.mjs <outdir> scene cast terrain`.
+Rollout after approval: replace battle tiles/sprites, town tiles/NPCs and portraits-on-map with this renderer, add walk/attack frames and facing, keep the 64-unit logical coordinate system and all hit-testing unchanged.
+
+### B4 revision 1 (user feedback 2026-10-17 07:27)
+- Head reduced (15×14 px instead of 17×16) so bodies read taller.
+- Four facings: down (front), right (profile), up (back view), left (mirrored profile), plus a four-step walk cycle; units turn to the direction they travel. Back views show hair, capes, quivers and shields; profiles show one eye, nose and the near arm. Images: `b4-facing.png`, `b4-walk.gif`; harness views `#facing`, `#walk`.
+
+### B4 rollout (implemented 2026-10-17)
+- Battle (`pixel-renderer.js`) and towns/interiors (`frontier-renderer.js`) now draw through `src/render/hd-world.js`: hd-art ground (organic edges, fortress walls with brick faces, plank interior floors), depth-sorted decor, M01 burning cottages with flames/smoke, recovery wells and supply outposts (green mark), and 30 figure looks.
+- Enemy looks per mission: M01 bandits/Garr, M02 deserters and their leader, M03 armoured pursuers and commander, M04 fortress guards, wall archers, torch-bearers, cellar workers and the quartermaster. Erik switches to his LV5 outfit (cape) when that appearance tier unlocks.
+- Facing: battle units face the direction of travel step by step, face their target when attacking, and start facing the nearest opponent; town NPCs pace slowly turning left/right, pause facing front, and turn toward Erik when he is next to them; Erik faces his last step.
+- Coordinates, hit-testing, cameras, saves and rules are unchanged (64-unit world; art is drawn at 4/3 scale from ×3 nearest-upscaled caches). The ground is resampled once per device scale and blitted 1:1 each frame: desktop 1440 median frame time fell from 33 ms to 16.7 ms in the local headless run.
+- Portraits (dialogue, dock, result, info sheet) keep the existing 128-pixel art.
+
+### Character pass v2 (user benchmark sheets, 2026-10-18)
+The user supplied classic tactical-SRPG unit sheets as a benchmark. Only measurable conventions were taken from them; no pixels were traced or copied.
+| Convention measured | Reference | Ashen Crown v2 (`src/render/hd-figure.js`) |
+|---|---|---|
+| Cell | 48×48, one unit per tile | 48×48 cell drawn into the 48-px tile, feet on row 46 |
+| Figure height | 43–48 px (fills the tile) | 46–47 px |
+| Head : body | ≈ 1 : 3.4 | head 11–12 px of 46 (≈ 1 : 3.6), larger eyes |
+| Width front / side | 27–46 / 37–48 px (weapons, stride and horses extend) | 31–40 / 26–48 px; side stride 8 px, bows held forward |
+| Directions | down, left, right (mirror), up | same |
+| March | 2 alternating poses per direction, also played while standing | 2 poses (step A / step B); units march in place on the battle map, faster while moving |
+| Mounted | horse fills the cell width, rider above | horse body/legs across the cell, rider seated, horse head in front view |
+Outlines are a single dark ink, figures are assembled from parametric original parts (heads, hair, headgear, bodies, weapons, horse). The old 40×52 figure code was removed from `hd-art.js`.
+
+### Play-test feedback 2026-10-18 13:14 KST (mobile commands, body shape, dialogue window)
+1. **Mobile attack/skill did nothing** — root cause: on touch devices the command menu re-renders between `pointerdown` and the synthesized `click`, and the click handler compared button *elements*. It now compares the command (`data-do`, `data-id`, label), and the touch drag threshold is 14 px. Regression suite `npm run test:mobile-command` (390×844 and 844×390, including a re-render between touchstart and click).
+3. **Square torsos** — `hd-figure.js` bodies are now filled row by row: rounded sloping shoulders → chest → tapered waist → hips/hem flare, with soft side shading; arms and legs taper from a rounded joint toward the hand/foot. Proportions, cell size and animation are unchanged.
+4. **Dialogue window (benchmark screenshot)** — conventions taken: a large three-quarter bust at the lower left overlapping a dark translucent box with a thin gold edge, the name in amber above white text, a small blinking advance marker, tap anywhere to advance. Ashen Crown implementation: `renderStory` + CSS in `app.js`/`style.css`; the whole screen is the `story-next` target; only **자동 / 스킵** remain, top-right. Skip now works on first viewing too (the skipped lines still go to the dialogue history). On phones the bust stands on the box's top edge so the text keeps the full width.
+   - **Illustrated busts** (`src/render/bust.js`, new): original vector paintings drawn at 720×880 — layered hair locks with one inked silhouette and a gloss band, soft cel shading on the face (far-side plane, eye sockets, nose, lips, hair shadow), detailed eyes with lid/lash/iris highlights, four expressions (neutral / concerned / determined / sad), and costume parts matching each character's identity in CHARACTER_BIBLE (Erik's teal plate and cheek scar, Aren's ash coat and red commander scarf, Elina's braid/green cloak/quiver, Lia's tall hat and gem, Sain's light hood and gold sun sigil, Kai's orange scarf, Baldrick's dark plate with lion collar and scar). Enemy speakers use a bust derived from their battlefield look. Nothing is traced; the reference was used for layout only.
+   - Staged scenes now fill the screen behind the window and frame the speaking cast.
+
+### Painted portraits r2 (user-supplied pack, 2026-10-18 16:15 KST)
+- 28 WebP busts (720×880, alpha) for `aren`, `eric`, `eric_adv`, `elina`, `lia`, `sain`, `kai` × neutral/concerned/determined/sad, made by the user with an image model from docs/v0.4.0/ART_BRIEF_CHATGPT.md. SHA256 verified against the pack manifest (copy in `src/assets/portraits/manifest.csv`); character notes in `PORTRAITS_CHARACTER_DESIGN.md`. PNG masters, previews and docs are not bundled.
+- `scripts/build.mjs` embeds the WebP files once as `ASHEN_PORTRAITS` (data URLs); the standalone HTML grows from ≈0.6 MB to ≈3.8 MB and still makes zero network requests.
+- `src/render/bust.js`: the dialogue bust uses the painted image (missing expression → neutral; unknown speaker or a decode failure → the vector bust). One `Image` per portrait, redrawn when decoded. `eric_adv` follows the existing appearance tier (LV 5). The images face right and are never mirrored.
+- Small square portraits (dock, War Council roster, unit sheet, appearance preview) use a head-and-shoulders crop of the same painting for these seven; other characters keep the existing art.
+
+### Remaining art pack (21 busts + 36 sprite sheets) + feedback, 2026-10-18 20:21 KST
+- Imported with `scripts/import-art.py` from the user's PNG masters (SHA256 checked against the pack manifest): busts → 720×880 WebP (704×880 art + 8 px side padding), sheets → 512×384 WebP with every 256 cell halved on its own (anchor 64,120). Log with sizes and hashes: `src/assets/art-import-log.csv`. Runtime total 85 images = 49 busts + 36 sheets (incl. the earlier 28 busts).
+- Map figures (`hd-world.js drawHDFigure`): painted sheet first — rows down/right/up, left = mirrored right row; columns idle / step A / step B / attack-or-action; drawn into a 74-unit cell on the unit's feet; the parametric pixel figure remains the fallback. Look aliases: captain→garr, lion→baldrick; M06 executor and inspector get their own looks.
+- Busts for Baldrick, Garr, the deserter captain, the pursuit commander, the quartermaster, the blockade executor, the elder, smith, merchant, refugee and guard (enemy speakers resolve through their battlefield look).
+- Dialogue bust ≈ 35 % smaller (desktop max 330 px instead of 500 px; phone max 195 px) so it rises only a little above the box.
+- Two-Lias bug: the staff aide NPC beside Lia was removed. The war-council interaction point (`advisor` id, unchanged for saves/tests) is now Lia's war table; the aide's briefing lines are spoken by Lia. The aide's art stays in source but is not shipped.
+
+### Play-test feedback 2026-10-18 21:37 KST (walk cycle, pre-battle screens)
+1. **Walk cycle** — the generated step frames did not reliably alternate legs, so units looked like they slid. For the front and back views the two steps are now rebuilt from each sheet's idle frame at load time (`walkSheet` in `hd-world.js`): the lower-leg band is split at the figure's centre, one side stretched down (foot forward), the other compressed up (foot lifted), then swapped. Side views keep the painted strides. Cycle: step 1 → stand → step 2 → stand.
+2. **Pre-battle screens** — War Council: mission line with Lia, terrain/enemy intel folded into a "지형 · 적 정보" toggle, and a sortie board — reserve (대기) on the left, sortie (출전) on the right; drag a portrait (desktop) or select it and press ▶/◀. Erik (★) always deploys; at least one hero goes. Supplies shown as icons. Deployment: sortie portraits in a panel on the right of the map; selecting a hero (panel or map) lights the deployable tiles in blue (now the mission's real zone, previously the M01 band was always drawn); tap a blue tile to place or swap. Buttons: ← 회의 · ✦ 추천 · ⚔ 전투 시작 (attack/defence presets and the separate "배치 이동"/"탐색으로" buttons removed).
+3. Town/battle backgrounds stay as they are until the story is complete.

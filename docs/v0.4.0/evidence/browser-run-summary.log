@@ -1,0 +1,22 @@
+e2e exit=0
+mobile exit=0
+mobile-command exit=0
+tactical exit=0
+http exit=0
+post-move exit=0
+restart exit=0
+campaign exit=0
+frontier exit=0
+migration-v02 exit=0
+renaissance exit=0
+quality exit=0
+migration-v031 exit=0
+journey exit=0
+migration-v032 exit=0
+act1 exit=0
+migration-v033 exit=0
+m05-balance exit=0
+m06-balance exit=0
+act1-balance exit=0
+performance exit=0
+DONE

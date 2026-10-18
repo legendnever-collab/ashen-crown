@@ -1,0 +1,458 @@
+{
+  "checks": [
+    {
+      "name": "1440x900 M03 aftermath offers Mission 4",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 M04 opens in camp preparation with pre:4 scene seen",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 advisor briefing leads to the M04 War Council",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 M04 deployment uses the authored fortress presets",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 M04 battle starts with three evidence objects and archive boss holding",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 M04 objective bar shows evidence and burn timer",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 M04 battle has no horizontal overflow",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 Search forecast is labelled and costs no HP",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 Lia searches the seal record and her teacher-notation scene plays",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 searched record leaves the board, ledger still pending",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 ledger + fallen quartermaster = victory with M04 flags and first-clear Gold",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 result shows evidence summary and sends the legion back to camp first",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 M04 aftermath asks for the records decision",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 records choice modal lists both options",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 choice saved and its scene plays once",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 choice survives reload; Mission 5 is offered after the decision",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 aftermath layout has no horizontal overflow",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 M05 opens in camp with the black-lion report",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 M05 council names both victory routes",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 parley plays on deployment and asks for Erik's answer",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 answer saved and its scene plays",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 M05 battle starts with formation, two wagons and the objective bar",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 M05 battle has no horizontal overflow",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 Baldrick withdraws without falling: victory A with flags and Heavy Shield",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 withdrawal and farewell scenes match the answer",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 M05 aftermath plays the camp talk for the chosen answer",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 M06 opens in camp with the royal order matching the records choice",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 M06 council explains the three phases",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 M06 battle: four refugees, two locked seal stones, phase bar",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 M06 battle has no horizontal overflow",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 unseal forecast names the seal stone",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 Lia unseals in one action → phase 3 and Erik's Oath Banner",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 M06 victory sets ACT I flags and the finale rewards",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 M06 aftermath plays the oath scene and asks for the oath focus",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 oath saved, its scenes play and the ACT I card names the Ashen Legion",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 camp shows the ACT II teaser and offers no next departure",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900 oath and ACT I completion survive reload without repeating",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M03 aftermath offers Mission 4",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M04 opens in camp preparation with pre:4 scene seen",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 advisor briefing leads to the M04 War Council",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M04 deployment uses the authored fortress presets",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M04 battle starts with three evidence objects and archive boss holding",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M04 objective bar shows evidence and burn timer",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M04 battle has no horizontal overflow",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 Search forecast is labelled and costs no HP",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 Lia searches the seal record and her teacher-notation scene plays",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 searched record leaves the board, ledger still pending",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 ledger + fallen quartermaster = victory with M04 flags and first-clear Gold",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 result shows evidence summary and sends the legion back to camp first",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M04 aftermath asks for the records decision",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 records choice modal lists both options",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 choice saved and its scene plays once",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 choice survives reload; Mission 5 is offered after the decision",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 aftermath layout has no horizontal overflow",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M05 opens in camp with the black-lion report",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M05 council names both victory routes",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 parley plays on deployment and asks for Erik's answer",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 answer saved and its scene plays",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M05 battle starts with formation, two wagons and the objective bar",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M05 battle has no horizontal overflow",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 Baldrick withdraws without falling: victory A with flags and Heavy Shield",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 withdrawal and farewell scenes match the answer",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M05 aftermath plays the camp talk for the chosen answer",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M06 opens in camp with the royal order matching the records choice",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M06 council explains the three phases",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M06 battle: four refugees, two locked seal stones, phase bar",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M06 battle has no horizontal overflow",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 unseal forecast names the seal stone",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 Lia unseals in one action → phase 3 and Erik's Oath Banner",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M06 victory sets ACT I flags and the finale rewards",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 M06 aftermath plays the oath scene and asks for the oath focus",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 oath saved, its scenes play and the ACT I card names the Ashen Legion",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 camp shows the ACT II teaser and offers no next departure",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 oath and ACT I completion survive reload without repeating",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M03 aftermath offers Mission 4",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M04 opens in camp preparation with pre:4 scene seen",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 advisor briefing leads to the M04 War Council",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M04 deployment uses the authored fortress presets",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M04 battle starts with three evidence objects and archive boss holding",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M04 objective bar shows evidence and burn timer",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M04 battle has no horizontal overflow",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 Search forecast is labelled and costs no HP",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 Lia searches the seal record and her teacher-notation scene plays",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 searched record leaves the board, ledger still pending",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 ledger + fallen quartermaster = victory with M04 flags and first-clear Gold",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 result shows evidence summary and sends the legion back to camp first",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M04 aftermath asks for the records decision",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 records choice modal lists both options",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 choice saved and its scene plays once",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 choice survives reload; Mission 5 is offered after the decision",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 aftermath layout has no horizontal overflow",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M05 opens in camp with the black-lion report",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M05 council names both victory routes",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 parley plays on deployment and asks for Erik's answer",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 answer saved and its scene plays",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M05 battle starts with formation, two wagons and the objective bar",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M05 battle has no horizontal overflow",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 Baldrick withdraws without falling: victory A with flags and Heavy Shield",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 withdrawal and farewell scenes match the answer",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M05 aftermath plays the camp talk for the chosen answer",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M06 opens in camp with the royal order matching the records choice",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M06 council explains the three phases",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M06 battle: four refugees, two locked seal stones, phase bar",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M06 battle has no horizontal overflow",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 unseal forecast names the seal stone",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 Lia unseals in one action → phase 3 and Erik's Oath Banner",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M06 victory sets ACT I flags and the finale rewards",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 M06 aftermath plays the oath scene and asks for the oath focus",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 oath saved, its scenes play and the ACT I card names the Ashen Legion",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 camp shows the ACT II teaser and offers no next departure",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 oath and ACT I completion survive reload without repeating",
+      "status": "PASS"
+    },
+    {
+      "name": "ACT I browser run has zero runtime errors",
+      "status": "PASS"
+    },
+    {
+      "name": "ACT I standalone makes zero HTTP requests",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "external": 0
+}

@@ -1,0 +1,7 @@
+<!doctype html><meta charset="utf-8"><style>body{margin:0;background:#33433f;font:12px sans-serif;color:#eee}#g{display:flex;flex-wrap:wrap;gap:6px;padding:6px}figure{margin:0;background:linear-gradient(#5b7a8a,#2a3a3a)}canvas{width:var(--w,240px);height:auto;display:block}figcaption{padding:2px 6px}</style><div id="g"></div>
+<script type="module">
+import {bustCanvas} from '../../src/render/bust.js';
+const q=new URLSearchParams(location.search),keys=(q.get('keys')||'aren,eric,elina,lia,sain,kai,baldrick,advisor,elder,smith,merchant,refugee,guard,eric_adv,cast:captain,cast:deserterCaptain,cast:pursuerCaptain,cast:quartermaster,cast:bearer').split(','),expr=q.get('expr')||'neutral';
+for(const k of keys){for(const e of expr.split(',')){const f=document.createElement('figure'),c=document.createElement('canvas');const s=bustCanvas(k,e,2);c.width=s.width;c.height=s.height;c.getContext('2d').drawImage(s,0,0);f.append(c);const cap=document.createElement('figcaption');cap.textContent=k+' · '+e;f.append(cap);document.getElementById('g').append(f);}}
+document.body.style.setProperty('--w',(q.get('w')||240)+'px');document.body.dataset.ready=1;
+</script>

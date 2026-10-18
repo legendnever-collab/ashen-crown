@@ -1,19 +1,23 @@
-export const VERSION = '0.3.3';
-export const SCHEMA = 6;
+export const VERSION = '0.4.0';
+export const SCHEMA = 7;
 export const WIDTH = 12, HEIGHT = 10;
+// v0.4 benchmark pass: physical cut (fraction), evade (%), fire multiplier and per-class
+// movement live together so the tap readout can describe each tile in one line.
 export const TERRAIN = {
-  g: {name:'Grass', cost:1, defense:0, evade:0, color:'#52624a'},
-  r: {name:'Road', cost:1, defense:0, evade:0, color:'#947a54'},
-  f: {name:'Forest', cost:2, defense:1, evade:12, color:'#294f43'},
-  v: {name:'Village', cost:1, defense:2, evade:0, hpRecovery:.10,mpRecovery:.05, color:'#756b56'},
-  t: {name:'Fort',cost:1,defense:2,evade:0,hpRecovery:.15,mpRecovery:.10,color:'#78817d'},
-  h: {name:'Recovery Point',cost:1,defense:0,evade:0,hpRecovery:.10,mpRecovery:.10,color:'#71a38b'},
-  b: {name:'Bridge', cost:1, defense:1, evade:0, color:'#9b815b'},
-  m: {name:'Mountain Path',cost:3,defense:2,evade:6,color:'#797e6a'},
-  d: {name:'Desert',cost:2,defense:0,evade:0,color:'#baa472'},
-  s: {name:'Swamp',cost:3,defense:0,evade:4,color:'#465f54'},
-  w: {name:'Deep Water',cost:Infinity,defense:0,evade:0,color:'#31576b'},
-  x: {name:'Ruin', cost:Infinity, defense:0, evade:0, color:'#434646'}
+  g: {name:'Grass',ko:'평지', cost:1, defense:0, phys:0, evade:0, fire:1.25, color:'#52624a'},
+  r: {name:'Road',ko:'길', cost:1, defense:0, phys:0, evade:0, fire:1, color:'#947a54'},
+  f: {name:'Forest',ko:'숲', cost:2, defense:0, phys:.2, evade:15, fire:1.5, color:'#294f43'},
+  v: {name:'Village',ko:'마을', cost:1, defense:0, phys:.1, evade:0, fire:1.25, hpRecovery:.10,mpRecovery:.05, color:'#756b56'},
+  t: {name:'Fort',ko:'요새',cost:1,defense:0,phys:.25,evade:0,fire:1,hpRecovery:.15,mpRecovery:.10,color:'#78817d'},
+  h: {name:'Recovery Point',ko:'보급 거점',cost:1,defense:0,phys:0,evade:0,fire:1,hpRecovery:.10,mpRecovery:.10,color:'#71a38b'},
+  b: {name:'Bridge',ko:'다리', cost:1, defense:0, phys:0, evade:-10, fire:1, color:'#9b815b'},
+  m: {name:'Mountain Path',ko:'산길',cost:3,defense:0,phys:.3,evade:10,fire:1,color:'#797e6a'},
+  d: {name:'Desert',ko:'사막',cost:2,defense:0,phys:0,evade:-5,fire:1,color:'#baa472'},
+  s: {name:'Swamp',ko:'늪',cost:3,defense:0,phys:0,evade:-10,fire:.5,color:'#465f54'},
+  w: {name:'Deep Water',ko:'깊은 물',cost:Infinity,defense:0,phys:0,evade:0,fire:0,color:'#31576b'},
+  k: {name:'Keep Floor',ko:'성채 바닥',cost:1,defense:0,phys:0,evade:0,fire:1,color:'#7d7a6e'},
+  q: {name:'Rampart',ko:'성벽 위',cost:1,defense:0,phys:.25,evade:5,fire:1,color:'#5f6763'},
+  x: {name:'Ruin',ko:'벽·폐허', cost:Infinity, defense:0, phys:0, evade:0, fire:0, color:'#434646'}
 };
 export const MAP = [
   'ffggrrrrggff',
@@ -28,7 +32,7 @@ export const MAP = [
   'ggggrrrrgggg'
 ].map(r=>r.split(''));
 export const HEROES = [
- {id:'eric',name:'Erik',ko:'에릭',className:'Apprentice Knight',role:'Tank',level:1,hp:42,mp:10,atk:15,def:8,mag:3,res:5,spd:5,mov:2,range:[1,1],skill:'Guard',cost:3,talent:'Indomitable Will',color:'#72b5da',growth:{hp:5,mp:1,atk:2,def:2,mag:0,res:1,spd:1},description:'최전선에서 버티며 Guard로 인접 동료의 첫 근접 피해를 대신 받습니다.',clue:"Guardian’s Oath",goal:'Guard로 실제 공격을 대신 받아 잠재력의 첫 단서를 발견하세요.'},
+ {id:'eric',name:'Erik',ko:'에릭',className:'Apprentice Knight',role:'Tank',level:1,hp:42,mp:10,atk:15,def:8,mag:3,res:5,spd:5,mov:2,range:[1,1],skill:'Guard',cost:3,talent:'Indomitable Will',color:'#72b5da',growth:{hp:5,mp:1,atk:2,def:2,mag:0,res:1,spd:1},description:'Guard: 자신에게 사용하는 방어 태세. 다음 아군 턴까지 DEF +3, 인접 동료가 받는 첫 근접 공격을 대신 받습니다.',clue:"Guardian’s Oath",goal:'Guard로 실제 공격을 대신 받아 잠재력의 첫 단서를 발견하세요.'},
  {id:'elina',name:'Elina',ko:'엘리나',className:'Archer',role:'Ranged DPS',level:2,hp:30,mp:14,atk:16,def:4,mag:3,res:4,spd:9,mov:3,range:[2,3],skill:'Aimed Shot',cost:3,talent:'Hawk Eye',color:'#a2bd6a',growth:{hp:3,mp:2,atk:2,def:1,mag:0,res:1,spd:2},description:'사거리 2–3. 숲과 Village에서 명중 보너스. 인접 적에게는 사격할 수 없습니다.',clue:'Overwatch',goal:'유리한 지형에서 사격하는 경험을 쌓으세요.'},
  {id:'lia',name:'Lia',ko:'리아',className:'Apprentice Mage',role:'Magic DPS',level:1,hp:27,mp:24,atk:6,def:3,mag:18,res:8,spd:6,mov:3,range:[1,1],skill:'Fire Bolt',cost:5,talent:'Unstable Mana',color:'#c79ad9',growth:{hp:3,mp:4,atk:0,def:1,mag:3,res:2,spd:1},description:'Fire Bolt는 사거리 1–3, RES를 적용합니다. HP 절반 이하에서는 마법 피해 +4, MP 비용 +1.',clue:'Arcane Territory',goal:'Fire Bolt로 서로 다른 적을 제압하세요.'},
  {id:'sain',name:'Sain',ko:'세인',className:'Healer',role:'Support',level:2,hp:31,mp:24,atk:8,def:4,mag:15,res:10,spd:6,mov:3,range:[1,1],skill:'Heal',cost:4,talent:'Gentle Hands',color:'#ebd591',growth:{hp:3,mp:4,atk:1,def:1,mag:2,res:2,spd:1},description:'Heal 사거리 1–2, 자기 회복 가능. 대상 옆의 부상 동료 한 명에게도 4 HP 회복.',clue:'Divine Recall',goal:'치유로 동료를 살리고 Gentle Hands의 연결 회복을 경험하세요.'},
@@ -52,4 +56,5 @@ export const BALANCE = {xpLevel:100,attackXP:22,killXP:28,healXP:24,rescueXP:45,
 // Explicit profiles: future advancement data only, no promotion UI.
 export const CLASS_MOVEMENT={knight:{base:2,profile:'infantry'},archer:{base:3,profile:'infantry'},mage:{base:3,profile:'infantry'},healer:{base:3,profile:'infantry'},rogue:{base:4,profile:'rogue'},mountedKnight:{base:5,profile:'cavalry',future:true}};
 export const HERO_CLASS={eric:'knight',elina:'archer',lia:'mage',sain:'healer',kai:'rogue'};
-export const TERRAIN_COSTS={infantry:{r:1,g:1,v:1,b:1,f:2,m:3,d:2,s:3},rogue:{r:1,g:1,v:1,b:1,f:1,m:1,d:1,s:2},cavalry:{r:1,g:1,v:1,b:1,f:2,m:Infinity,d:2,s:Infinity}};
+export const TERRAIN_COSTS={infantry:{r:1,g:1,v:1,b:1,f:2,m:3,d:2,s:3},rogue:{r:1,g:1,v:1,b:1,f:1,m:1,d:1,s:2},cavalry:{r:1,g:1,v:1,b:1,f:1,m:Infinity,d:1,s:Infinity}};
+export const PROFILE_KO={infantry:'보병',rogue:'도적',cavalry:'기병'};

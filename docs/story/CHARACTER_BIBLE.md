@@ -130,3 +130,6 @@ v0.3 staging/affiliation: 기존 다섯 장수 출전은 항상 유지. Lia/Sain
 
 ## v0.3.3 viewpoint correction — CANON D-031
 Earlier "Aren 탐색 아바타" staging clause is superseded. Erik is the exploration and battle protagonist (`eric` ID immutable), with the same growth/equipment/armor tier. Aren appears as commander NPC; his past, age, royal/crown connection and political arc remain his own. Functional Operations Advisor has no canon personal name/backstory (PROPOSED). No duplicate Erik NPC exists in the hub.
+
+## v0.4.0 approved — CANON D-034
+Erik Hidden Past (detail): 발드릭 휘하 시절, 발드릭이 명령을 어기고 에릭만 끌어냈고 남겨진 동료들은 희생됐다. 목숨의 빚 + 자책. 시기·장소·이름 OPEN. Baldrick은 이 일로 에릭을 기억하며, 그 선택을 후회하는지는 OPEN.

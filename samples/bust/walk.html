@@ -1,0 +1,9 @@
+<!doctype html><meta charset="utf-8"><body style="margin:0;background:#2a3a3a"><canvas id="c" width="1200" height="800"></canvas>
+<script>window.ASHEN_SPRITES={};for(const n of ['eric','kai','lia','sain','pursuer','child'])window.ASHEN_SPRITES[n]='../../src/assets/sprites/sprite_'+n+'.webp';</script>
+<script type="module">
+import {paintedSheet,walkSheet,paintedFrame} from '../../src/render/hd-world.js';
+const names=['eric','kai','lia','sain','pursuer','child'];names.forEach(n=>paintedSheet(n));
+await new Promise(r=>setTimeout(r,800));const c=document.getElementById('c').getContext('2d');c.imageSmoothingEnabled=true;
+names.forEach((n,i)=>{const img=paintedSheet(n),sh=walkSheet(img),cell=img.naturalWidth/4;let x=0;for(const facing of ['down','right','up'])for(let f=1;f<=4;f++){const {row,col}=paintedFrame(facing,f,'walk');c.drawImage(sh,col*cell,row*cell,cell,cell,x,i*130,128,128);x+=96;}});
+document.body.dataset.ready=1;
+</script>

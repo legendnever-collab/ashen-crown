@@ -1,0 +1,414 @@
+{
+  "checks": [
+    {
+      "name": "false: pre-battle scene uses pixel actors and portraits",
+      "status": "PASS"
+    },
+    {
+      "name": "false: story reload restores exact current line",
+      "status": "PASS"
+    },
+    {
+      "name": "false: playable Aren is separate from five tactical heroes",
+      "status": "PASS"
+    },
+    {
+      "name": "false: keyboard moves Erik",
+      "status": "PASS"
+    },
+    {
+      "name": "false: map destination click walks through legal cells",
+      "status": "PASS"
+    },
+    {
+      "name": "false: unvisited Fast Travel is disabled",
+      "status": "PASS"
+    },
+    {
+      "name": "false: NPC dialogue locks exploration",
+      "status": "PASS"
+    },
+    {
+      "name": "false: dialogue consumes keyboard without walking",
+      "status": "PASS"
+    },
+    {
+      "name": "false: interrupted affiliation event survives reload",
+      "status": "PASS"
+    },
+    {
+      "name": "false: lia personal encounter offers decision",
+      "status": "PASS"
+    },
+    {
+      "name": "false: lia affiliates once",
+      "status": "PASS"
+    },
+    {
+      "name": "false: lia conversation cannot duplicate membership",
+      "status": "PASS"
+    },
+    {
+      "name": "false: sain personal encounter offers decision",
+      "status": "PASS"
+    },
+    {
+      "name": "false: sain affiliates once",
+      "status": "PASS"
+    },
+    {
+      "name": "false: sain conversation cannot duplicate membership",
+      "status": "PASS"
+    },
+    {
+      "name": "false: kai personal encounter offers decision",
+      "status": "PASS"
+    },
+    {
+      "name": "false: kai affiliates once",
+      "status": "PASS"
+    },
+    {
+      "name": "false: kai conversation cannot duplicate membership",
+      "status": "PASS"
+    },
+    {
+      "name": "false: building collision blocks movement",
+      "status": "PASS"
+    },
+    {
+      "name": "false: Town location, visited state and affiliations restore",
+      "status": "PASS"
+    },
+    {
+      "name": "false: visited landmark Fast Travel works",
+      "status": "PASS"
+    },
+    {
+      "name": "false: forge has original interior",
+      "status": "PASS"
+    },
+    {
+      "name": "false: weapon comparison shows actual before/after",
+      "status": "PASS"
+    },
+    {
+      "name": "false: cancelled purchase leaves Gold intact",
+      "status": "PASS"
+    },
+    {
+      "name": "false: confirmed purchase deducted once",
+      "status": "PASS"
+    },
+    {
+      "name": "false: raw and equipped stats visibly separated",
+      "status": "PASS"
+    },
+    {
+      "name": "false: equipped sword changes effective attack",
+      "status": "PASS"
+    },
+    {
+      "name": "false: incompatible class cannot equip sword",
+      "status": "PASS"
+    },
+    {
+      "name": "false: upgrade preview shows single-level improvement",
+      "status": "PASS"
+    },
+    {
+      "name": "false: upgrade costs 40 and marks +1",
+      "status": "PASS"
+    },
+    {
+      "name": "false: reload retains purchase, upgrade, equip and Gold",
+      "status": "PASS"
+    },
+    {
+      "name": "false: second upgrade unavailable",
+      "status": "PASS"
+    },
+    {
+      "name": "false: purchased Ward Tonic carries into inventory",
+      "status": "PASS"
+    },
+    {
+      "name": "false: buy/sell spread cannot create currency",
+      "status": "PASS"
+    },
+    {
+      "name": "false: insufficient Gold explains disabled purchase",
+      "status": "PASS"
+    },
+    {
+      "name": "false: council displays terrain, intelligence and essential objective",
+      "status": "PASS"
+    },
+    {
+      "name": "false: preparation can return to hub",
+      "status": "PASS"
+    },
+    {
+      "name": "false: readiness checkbox gates removed",
+      "status": "PASS"
+    },
+    {
+      "name": "false: battle requires explicit confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "false: cancelled departure preserves formation",
+      "status": "PASS"
+    },
+    {
+      "name": "false: explicit confirmation enters existing tactical combat",
+      "status": "PASS"
+    },
+    {
+      "name": "false: purchased tool really applies in battle and consumes action",
+      "status": "PASS"
+    },
+    {
+      "name": "false: canonical consumable not consumed before victory",
+      "status": "PASS"
+    },
+    {
+      "name": "false: stage restart restores purchased consumable and exact Gold",
+      "status": "PASS"
+    },
+    {
+      "name": "false: restart checkpoint remains after reload",
+      "status": "PASS"
+    },
+    {
+      "name": "false: natural defeat reaches result",
+      "status": "PASS"
+    },
+    {
+      "name": "false: defeat returns to camp preparation without economic loss",
+      "status": "PASS"
+    },
+    {
+      "name": "false: failed persistence rolls back entire transaction",
+      "status": "PASS"
+    },
+    {
+      "name": "false: cancelled failed transaction remains cancelled after reload",
+      "status": "PASS"
+    },
+    {
+      "name": "false: audio runs offline with original variants",
+      "status": "PASS"
+    },
+    {
+      "name": "true: pre-battle scene uses pixel actors and portraits",
+      "status": "PASS"
+    },
+    {
+      "name": "true: story reload restores exact current line",
+      "status": "PASS"
+    },
+    {
+      "name": "true: playable Aren is separate from five tactical heroes",
+      "status": "PASS"
+    },
+    {
+      "name": "true: keyboard moves Erik",
+      "status": "PASS"
+    },
+    {
+      "name": "true: map destination click walks through legal cells",
+      "status": "PASS"
+    },
+    {
+      "name": "true: unvisited Fast Travel is disabled",
+      "status": "PASS"
+    },
+    {
+      "name": "true: NPC dialogue locks exploration",
+      "status": "PASS"
+    },
+    {
+      "name": "true: dialogue consumes keyboard without walking",
+      "status": "PASS"
+    },
+    {
+      "name": "true: interrupted affiliation event survives reload",
+      "status": "PASS"
+    },
+    {
+      "name": "true: lia personal encounter offers decision",
+      "status": "PASS"
+    },
+    {
+      "name": "true: lia affiliates once",
+      "status": "PASS"
+    },
+    {
+      "name": "true: lia conversation cannot duplicate membership",
+      "status": "PASS"
+    },
+    {
+      "name": "true: sain personal encounter offers decision",
+      "status": "PASS"
+    },
+    {
+      "name": "true: sain affiliates once",
+      "status": "PASS"
+    },
+    {
+      "name": "true: sain conversation cannot duplicate membership",
+      "status": "PASS"
+    },
+    {
+      "name": "true: kai personal encounter offers decision",
+      "status": "PASS"
+    },
+    {
+      "name": "true: kai affiliates once",
+      "status": "PASS"
+    },
+    {
+      "name": "true: kai conversation cannot duplicate membership",
+      "status": "PASS"
+    },
+    {
+      "name": "true: building collision blocks movement",
+      "status": "PASS"
+    },
+    {
+      "name": "true: Town location, visited state and affiliations restore",
+      "status": "PASS"
+    },
+    {
+      "name": "true: visited landmark Fast Travel works",
+      "status": "PASS"
+    },
+    {
+      "name": "true: forge has original interior",
+      "status": "PASS"
+    },
+    {
+      "name": "true: weapon comparison shows actual before/after",
+      "status": "PASS"
+    },
+    {
+      "name": "true: cancelled purchase leaves Gold intact",
+      "status": "PASS"
+    },
+    {
+      "name": "true: confirmed purchase deducted once",
+      "status": "PASS"
+    },
+    {
+      "name": "true: raw and equipped stats visibly separated",
+      "status": "PASS"
+    },
+    {
+      "name": "true: equipped sword changes effective attack",
+      "status": "PASS"
+    },
+    {
+      "name": "true: incompatible class cannot equip sword",
+      "status": "PASS"
+    },
+    {
+      "name": "true: upgrade preview shows single-level improvement",
+      "status": "PASS"
+    },
+    {
+      "name": "true: upgrade costs 40 and marks +1",
+      "status": "PASS"
+    },
+    {
+      "name": "true: reload retains purchase, upgrade, equip and Gold",
+      "status": "PASS"
+    },
+    {
+      "name": "true: second upgrade unavailable",
+      "status": "PASS"
+    },
+    {
+      "name": "true: purchased Ward Tonic carries into inventory",
+      "status": "PASS"
+    },
+    {
+      "name": "true: buy/sell spread cannot create currency",
+      "status": "PASS"
+    },
+    {
+      "name": "true: insufficient Gold explains disabled purchase",
+      "status": "PASS"
+    },
+    {
+      "name": "true: council displays terrain, intelligence and essential objective",
+      "status": "PASS"
+    },
+    {
+      "name": "true: preparation can return to hub",
+      "status": "PASS"
+    },
+    {
+      "name": "true: readiness checkbox gates removed",
+      "status": "PASS"
+    },
+    {
+      "name": "true: battle requires explicit confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "true: cancelled departure preserves formation",
+      "status": "PASS"
+    },
+    {
+      "name": "true: explicit confirmation enters existing tactical combat",
+      "status": "PASS"
+    },
+    {
+      "name": "true: purchased tool really applies in battle and consumes action",
+      "status": "PASS"
+    },
+    {
+      "name": "true: canonical consumable not consumed before victory",
+      "status": "PASS"
+    },
+    {
+      "name": "true: stage restart restores purchased consumable and exact Gold",
+      "status": "PASS"
+    },
+    {
+      "name": "true: restart checkpoint remains after reload",
+      "status": "PASS"
+    },
+    {
+      "name": "true: natural defeat reaches result",
+      "status": "PASS"
+    },
+    {
+      "name": "true: defeat returns to camp preparation without economic loss",
+      "status": "PASS"
+    },
+    {
+      "name": "true: failed persistence rolls back entire transaction",
+      "status": "PASS"
+    },
+    {
+      "name": "true: cancelled failed transaction remains cancelled after reload",
+      "status": "PASS"
+    },
+    {
+      "name": "true: audio runs offline with original variants",
+      "status": "PASS"
+    },
+    {
+      "name": "Frontier interactions have no runtime errors",
+      "status": "PASS"
+    },
+    {
+      "name": "Frontier assets request no HTTP resources",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "external": 0
+}
