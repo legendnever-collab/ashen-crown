@@ -2,7 +2,9 @@
 <style>html,body{margin:0;background:#101a1c;color:#efe6cf;font:16px/1.4 'Noto Sans CJK KR',sans-serif}canvas{display:block;image-rendering:pixelated}</style></head>
 <body><canvas id="out"></canvas>
 <script type="module">
-import {bridgeSprite,HD_TILE,paintGround,treeSprite,bushSprite,ruinSprite,cragSprite,houseSprite,figureSprite,CAST,drawShadow,drawFlame} from '../../src/render/hd-art.js';
+import {figureSprite as fig2,figureSprite} from '../../src/render/hd-figure.js';
+import {CAST as CAST2} from '../../src/render/hd-art.js';
+import {bridgeSprite,HD_TILE,paintGround,treeSprite,bushSprite,ruinSprite,cragSprite,houseSprite,CAST,drawShadow,drawFlame} from '../../src/render/hd-art.js';
 import {MISSIONS} from '../../src/data/missions.js';
 const T=HD_TILE,out=document.getElementById('out'),view=location.hash.slice(1)||'scene';
 const passable=t=>!['x','w','v','t','h'].includes(t);
@@ -31,7 +33,7 @@ function scene(map,units,{buildings=[],selected=null,mov=0,attack=[],time=0,scal
    if(o.state==='burning'){for(let i=0;i<(o.w||1)*2;i++)drawFlame(c,o.x+12+i*20,o.y-s.height+16+(i%2)*8,time+i*90,1.2);for(let i=0;i<7;i++){const r=Math.round(4+i*1.4),px=Math.round(o.x+s.width/2-4+i*3+Math.sin(i*1.3+time/500)*3),py=Math.round(o.y-s.height-2-i*8);c.fillStyle=`rgba(70,66,72,${.30-i*.035})`;c.fillRect(px-r,py-r+2,r*2,r*2-4);c.fillRect(px-r+2,py-r,r*2-4,r*2);}}}
   if(o.kind==='unit'){const u=o.u,s=figureSprite(u.sprite,{facing:u.facing||'down',frame:u.frame||0});
    c.fillStyle=u.team==='ally'?'rgba(80,160,255,.55)':u.team==='enemy'?'rgba(230,70,60,.55)':'rgba(240,210,110,.6)';c.beginPath();c.ellipse(o.x,o.y,13,4.2,0,0,7);c.fill();
-   drawShadow(c,o.x,o.y,10,3);c.globalAlpha=u.acted?.62:1;c.drawImage(s,o.x-20,o.y-50);c.globalAlpha=1;
+   drawShadow(c,o.x,o.y,10,3);c.globalAlpha=u.acted?.62:1;c.drawImage(s,o.x-24,o.y-46);c.globalAlpha=1;
    if(u.hp!=null){const w=26,f=Math.max(0,u.hp/u.max);c.fillStyle='#14181c';c.fillRect(o.x-w/2-1,o.y+1,w+2,4);c.fillStyle=u.team==='ally'?'#5fd38a':u.team==='enemy'?'#e8594a':'#f0cf6a';c.fillRect(o.x-w/2,o.y+2,Math.round(w*f),2);}}
  }
  if(cursor){const [x,y]=cursor,k=4,col='#ffe08a';c.fillStyle=col;for(const [ax,ay,dx,dy]of[[0,0,1,1],[T,0,-1,1],[0,T,1,-1],[T,T,-1,-1]]){c.fillRect(x*T+ax-(dx<0?k+1:0)+(dx>0?-1:0),y*T+ay+(dy>0?-1:-1),k+1,2);c.fillRect(x*T+ax+(dx>0?-1:-1),y*T+ay-(dy<0?k+1:0)+(dy>0?-1:0),2,k+1);}}
@@ -71,5 +73,12 @@ if(view==='walk'){
   const crop=document.createElement('canvas');crop.width=6*T*2;crop.height=5*T*2;crop.getContext('2d').drawImage(out,2*T*2,4*T*2,crop.width,crop.height,0,0,crop.width,crop.height);window.frames.push(crop.toDataURL('image/png'));}
 }
 if(view==='m04'){const m=MISSIONS[4];sceneTheme='fortress';scene(m.map,m.enemies.map(e=>U(e.id,e.burns?'torch':e.kind==='captain'?'quartermaster':e.kind==='archer'?'fortArcher':'fortGuard','enemy',e.x,e.y,e.hp,e.hp,{facing:'down'})),{scale:2});}
+if(view==='sheet'){
+ // per-character sheet in the benchmark layout: rows down/left/right/up, columns = march frames 1–4
+ const ids=(new URLSearchParams(location.search).get('ids')||'eric,elina,lia,sain,kai,aren,bandit,archer,captain,lion,bearer,ironSpear,ironArcher,cavalry,guard,elder,smith,merchant,refugee,mira,farmer,child,aide,quartermaster,torch').split(','),S=2,cell=48*S,cols=4;
+ const per=Math.min(ids.length,6);out.width=(cols*cell+24)*per+16;out.height=Math.ceil(ids.length/per)*(4*cell+40)+16;const c=out.getContext('2d');c.imageSmoothingEnabled=false;c.fillStyle='#ff00ff';c.fillStyle='#22343a';c.fillRect(0,0,out.width,out.height);
+ ids.forEach((id,i)=>{const gx=8+(i%per)*(cols*cell+24),gy=8+Math.floor(i/per)*(4*cell+40);c.fillStyle='#efe6cf';c.font='16px sans-serif';c.fillText(CAST2[id]?.name||id,gx,gy+14);
+  ['down','left','right','up'].forEach((f,r)=>{for(let k=0;k<4;k++){const x=gx+k*cell,y=gy+20+r*cell;c.fillStyle=(r+k)%2?'#2a3e44':'#26383e';c.fillRect(x,y,cell,cell);c.drawImage(fig2(id,{facing:f,frame:k+1}),x,y,cell,cell);}});});
+}
 window.ready=true;
 </script></body></html>

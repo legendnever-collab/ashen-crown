@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 globalThis.document??={createElement(){return {width:0,height:0,getContext(){return {imageSmoothingEnabled:false,createImageData(w,h){return {data:new Uint8ClampedArray(w*h*4)};},putImageData(){},drawImage(){},beginPath(){},ellipse(){},fill(){}};}};}};
-const {CAST,figureSprite,paintGround,HD_TILE}=await import('../src/render/hd-art.js');
+const {CAST,paintGround,HD_TILE}=await import('../src/render/hd-art.js');const {figureSprite}=await import('../src/render/hd-figure.js');
 const {hdCastFor,hdDirection}=await import('../src/render/hd-world.js');
 const {MISSIONS}=await import('../src/data/missions.js');
 test('B4: every figure renders in four facings and the walk cycle',()=>{for(const id of Object.keys(CAST))for(const facing of ['down','up','left','right'])for(const frame of [0,1,2,3,4])assert.ok(figureSprite(id,{facing,frame}));});

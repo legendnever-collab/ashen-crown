@@ -83,3 +83,16 @@ Rollout after approval: replace battle tiles/sprites, town tiles/NPCs and portra
 - Facing: battle units face the direction of travel step by step, face their target when attacking, and start facing the nearest opponent; town NPCs pace slowly turning left/right, pause facing front, and turn toward Erik when he is next to them; Erik faces his last step.
 - Coordinates, hit-testing, cameras, saves and rules are unchanged (64-unit world; art is drawn at 4/3 scale from ×3 nearest-upscaled caches). The ground is resampled once per device scale and blitted 1:1 each frame: desktop 1440 median frame time fell from 33 ms to 16.7 ms in the local headless run.
 - Portraits (dialogue, dock, result, info sheet) keep the existing 128-pixel art.
+
+### Character pass v2 (user benchmark sheets, 2026-10-18)
+The user supplied classic tactical-SRPG unit sheets as a benchmark. Only measurable conventions were taken from them; no pixels were traced or copied.
+| Convention measured | Reference | Ashen Crown v2 (`src/render/hd-figure.js`) |
+|---|---|---|
+| Cell | 48×48, one unit per tile | 48×48 cell drawn into the 48-px tile, feet on row 46 |
+| Figure height | 43–48 px (fills the tile) | 46–47 px |
+| Head : body | ≈ 1 : 3.4 | head 11–12 px of 46 (≈ 1 : 3.6), larger eyes |
+| Width front / side | 27–46 / 37–48 px (weapons, stride and horses extend) | 31–40 / 26–48 px; side stride 8 px, bows held forward |
+| Directions | down, left, right (mirror), up | same |
+| March | 2 alternating poses per direction, also played while standing | 2 poses (step A / step B); units march in place on the battle map, faster while moving |
+| Mounted | horse fills the cell width, rider above | horse body/legs across the cell, rider seated, horse head in front view |
+Outlines are a single dark ink, figures are assembled from parametric original parts (heads, hair, headgear, bodies, weapons, horse). The old 40×52 figure code was removed from `hd-art.js`.

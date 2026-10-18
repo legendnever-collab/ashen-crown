@@ -1,7 +1,8 @@
 // B4 rollout: bridges the 48-pixel original art in hd-art.js to the 64-unit world coordinates
 // used by every renderer, hit test and camera. Art is pre-scaled ×3 (nearest) once and drawn
 // with smoothing so the 4/3 world ratio never produces uneven pixel widths.
-import {wagonSprite,outpostSprite,HD_TILE,paintGround,treeSprite,bushSprite,ruinSprite,cragSprite,houseSprite,bridgeSprite,wellSprite,townBuildingSprite,figureSprite,CAST} from './hd-art.js';
+import {wagonSprite,outpostSprite,HD_TILE,paintGround,treeSprite,bushSprite,ruinSprite,cragSprite,houseSprite,bridgeSprite,wellSprite,townBuildingSprite,CAST} from './hd-art.js';
+import {figureSprite,FIG_FOOT} from './hd-figure.js';
 import {appearanceFor} from '../data/appearances.js';
 export const HD_K=64/HD_TILE,HD_UP=3;
 const hdUpCache=new WeakMap();
@@ -57,6 +58,6 @@ export function hdCastFor(u,missionId=1){
 export function drawHDFigure(c,castId,x,footY,{facing='down',frame=0,pose='idle',alpha=1}={}){
  if(castId==='wagon'){const w=wagonSprite();c.save();c.globalAlpha*=pose==='death'?.4:alpha;hdBlit(c,w,x-24*HD_K,footY-50*HD_K);c.restore();return;}
  const s=figureSprite(castId,{facing,frame}),K=HD_K,lean=pose==='attack'?{left:[-6,0],right:[6,0],up:[0,-6],down:[0,5]}[facing]:[0,0];
- c.save();c.globalAlpha*=alpha;if(pose==='death'){c.globalAlpha*=.45;c.translate(x,footY-8);c.rotate(-Math.PI/2);hdBlit(c,s,-20*K,-50*K);c.restore();return;}
- hdBlit(c,s,x-20*K+lean[0],footY-50*K+lean[1]);c.restore();}
+ c.save();c.globalAlpha*=alpha;if(pose==='death'){c.globalAlpha*=.45;c.translate(x,footY-8);c.rotate(-Math.PI/2);hdBlit(c,s,-24*K,-FIG_FOOT*K);c.restore();return;}
+ hdBlit(c,s,x-24*K+lean[0],footY-FIG_FOOT*K+lean[1]);c.restore();}
 export const hdDirection=(dx,dy,fallback='down')=>Math.abs(dx)<.001&&Math.abs(dy)<.001?fallback:Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up');
