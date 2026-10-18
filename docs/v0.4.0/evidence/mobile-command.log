@@ -1,0 +1,25 @@
+PASS 390x844 tapping a hero opens 이동/공격/스킬/도구/상태 and shows no range yet
+PASS 390x844 이동 shows the reachable tiles
+PASS 390x844 touch move preview
+PASS 390x844 move confirmed by a late click
+PASS 390x844 Attack command survives a re-render
+PASS 390x844 tapping the enemy opens the forecast
+PASS 390x844 attack resolves
+PASS 390x844 Skill submenu opens by touch
+PASS 390x844 skill mode selected
+PASS 390x844 tapping the enemy in skill mode opens the skill forecast
+PASS 390x844 tapping the same target again casts the skill
+PASS 390x844 no runtime errors
+PASS 844x390 tapping a hero opens 이동/공격/스킬/도구/상태 and shows no range yet
+PASS 844x390 이동 shows the reachable tiles
+PASS 844x390 touch move preview
+PASS 844x390 move confirmed by a late click
+PASS 844x390 Attack command survives a re-render
+PASS 844x390 tapping the enemy opens the forecast
+PASS 844x390 attack resolves
+PASS 844x390 Skill submenu opens by touch
+PASS 844x390 skill mode selected
+PASS 844x390 tapping the enemy in skill mode opens the skill forecast
+PASS 844x390 tapping the same target again casts the skill
+PASS 844x390 no runtime errors
+24 mobile command checks PASS

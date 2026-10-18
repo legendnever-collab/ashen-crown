@@ -1,0 +1,636 @@
+{
+  "checks": [
+    {
+      "name": "1440x1000@1 Quest starts closed as a scroll button",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Quest collapses",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Quest preference saves before deferred toggle",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Quest preference survives reload",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Quest expands with keyboard",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Enter saves expanded preference",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Expanded preference survives reload",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Space collapses and saves preference",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Space preference survives reload",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Pointer expands Quest",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Pointer collapse saves preference",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 NPC dialogue stays on current map",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 NPC dialogue preserves player/camera",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Forge is a new walkable interior without automatic trade UI",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Shop owner opens weapon-first catalogue",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Equipment presents portraits/eligibility/delta",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Preview does not debit Gold",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Cancel preserves assets and interior",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Purchase equips exact instance and maintains catalogue/location",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Comparison equals actual combat stats",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Consecutive purchase remains inside with unique instances",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Interior/gear/return coordinates survive reload",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Explicit exit returns to exact doorway",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Re-entry works",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Consumable purchase stays inside shop",
+      "status": "PASS"
+    },
+    {
+      "name": "Failed-save transaction rolls back all assets and equipped stats",
+      "status": "PASS"
+    },
+    {
+      "name": "Failed-save reload retains original purchase and interior",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 War Council has summaries and no readiness checkboxes",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Selection opens the command menu without cells; 이동 then previews legal movement",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Movement remains uncommitted until explicit confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Adjacent attack opens forecast after movement",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Confirmed attack resolves and consumes action",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Restart restores checkpoint resources and turn",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Battle restart checkpoint persists",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Native graphics are 128/256 with crisp scaling",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000@1 Layout stays within viewport",
+      "status": "PASS"
+    },
+    {
+      "name": "Standard desktop backing pixels are at least 4× measured v0.3 baseline",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Quest starts closed as a scroll button",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Quest collapses",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Quest preference saves before deferred toggle",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Quest preference survives reload",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Quest expands with keyboard",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Enter saves expanded preference",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Expanded preference survives reload",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Space collapses and saves preference",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Space preference survives reload",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Pointer expands Quest",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Pointer collapse saves preference",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 NPC dialogue stays on current map",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 NPC dialogue preserves player/camera",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Forge is a new walkable interior without automatic trade UI",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Shop owner opens weapon-first catalogue",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Equipment presents portraits/eligibility/delta",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Preview does not debit Gold",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Cancel preserves assets and interior",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Purchase equips exact instance and maintains catalogue/location",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Comparison equals actual combat stats",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Consecutive purchase remains inside with unique instances",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Interior/gear/return coordinates survive reload",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Explicit exit returns to exact doorway",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Re-entry works",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Consumable purchase stays inside shop",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 War Council has summaries and no readiness checkboxes",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Selection opens the command menu without cells; 이동 then previews legal movement",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Movement remains uncommitted until explicit confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Adjacent attack opens forecast after movement",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Confirmed attack resolves and consumes action",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Restart restores checkpoint resources and turn",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Battle restart checkpoint persists",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Native graphics are 128/256 with crisp scaling",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x900@2 Layout stays within viewport",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Quest starts closed as a scroll button",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Quest collapses",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Quest preference saves before deferred toggle",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Quest preference survives reload",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Quest expands with keyboard",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Enter saves expanded preference",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Expanded preference survives reload",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Space collapses and saves preference",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Space preference survives reload",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Pointer expands Quest",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Pointer collapse saves preference",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 NPC dialogue stays on current map",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 NPC dialogue preserves player/camera",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Forge is a new walkable interior without automatic trade UI",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Shop owner opens weapon-first catalogue",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Equipment presents portraits/eligibility/delta",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Preview does not debit Gold",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Cancel preserves assets and interior",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Purchase equips exact instance and maintains catalogue/location",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Comparison equals actual combat stats",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Consecutive purchase remains inside with unique instances",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Interior/gear/return coordinates survive reload",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Explicit exit returns to exact doorway",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Re-entry works",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Consumable purchase stays inside shop",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 War Council has summaries and no readiness checkboxes",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Selection opens the command menu without cells; 이동 then previews legal movement",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Movement remains uncommitted until explicit confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Adjacent attack opens forecast after movement",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Confirmed attack resolves and consumes action",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Restart restores checkpoint resources and turn",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Battle restart checkpoint persists",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Native graphics are 128/256 with crisp scaling",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844@2 Layout stays within viewport",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Quest starts closed as a scroll button",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Quest collapses",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Quest preference saves before deferred toggle",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Quest preference survives reload",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Quest expands with keyboard",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Enter saves expanded preference",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Expanded preference survives reload",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Space collapses and saves preference",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Space preference survives reload",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Pointer expands Quest",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Pointer collapse saves preference",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 NPC dialogue stays on current map",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 NPC dialogue preserves player/camera",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Forge is a new walkable interior without automatic trade UI",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Shop owner opens weapon-first catalogue",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Equipment presents portraits/eligibility/delta",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Preview does not debit Gold",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Cancel preserves assets and interior",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Purchase equips exact instance and maintains catalogue/location",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Comparison equals actual combat stats",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Consecutive purchase remains inside with unique instances",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Interior/gear/return coordinates survive reload",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Explicit exit returns to exact doorway",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Re-entry works",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Consumable purchase stays inside shop",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 War Council has summaries and no readiness checkboxes",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Selection opens the command menu without cells; 이동 then previews legal movement",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Movement remains uncommitted until explicit confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Adjacent attack opens forecast after movement",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Confirmed attack resolves and consumes action",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Restart restores checkpoint resources and turn",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Battle restart checkpoint persists",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Native graphics are 128/256 with crisp scaling",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390@1 Layout stays within viewport",
+      "status": "PASS"
+    },
+    {
+      "name": "Renaissance browser flows have zero runtime errors",
+      "status": "PASS"
+    },
+    {
+      "name": "Standalone has zero external requests",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "external": 0,
+  "measurements": [
+    {
+      "label": "1440x1000@1",
+      "css": [
+        1440,
+        702
+      ],
+      "buffer": [
+        3024,
+        1474
+      ],
+      "pixels": 4457376,
+      "dpr": 1,
+      "nativeTile": 128,
+      "portrait": 256
+    },
+    {
+      "baselinePixels": 1010880,
+      "ratio": 4.40940170940171
+    },
+    {
+      "label": "1440x900@2",
+      "css": [
+        1440,
+        602
+      ],
+      "buffer": [
+        3024,
+        1264
+      ],
+      "pixels": 3822336,
+      "dpr": 2,
+      "nativeTile": 128,
+      "portrait": 256
+    },
+    {
+      "label": "390x844@2",
+      "css": [
+        390,
+        602
+      ],
+      "buffer": [
+        780,
+        1204
+      ],
+      "pixels": 939120,
+      "dpr": 2,
+      "nativeTile": 128,
+      "portrait": 256
+    },
+    {
+      "label": "844x390@1",
+      "css": [
+        844,
+        207
+      ],
+      "buffer": [
+        1772,
+        435
+      ],
+      "pixels": 770820,
+      "dpr": 1,
+      "nativeTile": 128,
+      "portrait": 256
+    }
+  ]
+}

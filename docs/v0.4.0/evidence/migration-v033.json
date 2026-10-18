@@ -1,0 +1,49 @@
+{
+  "checks": [
+    {
+      "name": "Shipped v0.3.3 village save is schema 6",
+      "status": "PASS"
+    },
+    {
+      "name": "Shipped v0.3.3 battle checkpoint generated",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.3.3 village save imports as schema 7 in the same place",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.3.3 battle and its stage checkpoint migrate unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "Restart of a migrated v0.3.3 battle works",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.3.3 Mission 02 battle fixture resumes",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.3.3 M03 aftermath keeps gear, items and gold",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.3.3 aftermath offers the Mission 4 departure",
+      "status": "PASS"
+    },
+    {
+      "name": "Migrated campaign moves on to Mission 04 with its purse",
+      "status": "PASS"
+    },
+    {
+      "name": "Migrated M04 camp is saved as v0.4.0 and reloads",
+      "status": "PASS"
+    },
+    {
+      "name": "No runtime errors in either build",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}

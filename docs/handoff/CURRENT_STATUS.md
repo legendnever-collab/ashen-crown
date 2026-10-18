@@ -1,5 +1,7 @@
 # Current Status
-Updated 2026-10-16 KST. Current Version: v0.3.3 — The Hero's Journey (official release).
+Updated 2026-10-19 KST. Current Version: v0.4.0 — The Broken Allegiance (official release). The user played the release candidate and approved the merge in chat on 2026-10-19 07:35 KST; the PR number, merge SHA, CI run and tag are recorded in the v0.4.0 GitHub Release notes and the Test Report. ACT I (M01–M06) complete; ACT II not started. Next: v0.5.0.
+
+Previous release: v0.3.3 — The Hero's Journey (official release).
 User play validation: complete. The user play-tested v0.3.3, judged gameplay satisfactory, and approved in chat (2026-10-16 16:31 KST) merging PR9, tagging/publishing v0.3.3 and recording it as the official release.
 
 main: v0.3.2 PR8 merged at 4a66a2f53c94ee98d97f47d90033c0598c7d0ea5 (push CI 38863433099 success 4/4). v0.3.3 PR9 merged on top; the final merge SHA, tag v0.3.3 and GitHub Release are recorded in the v0.3.3 GitHub Release notes and docs/v0.3.3/RELEASE_FINALIZATION.md.

@@ -1,0 +1,45 @@
+{
+  "environment": "Headless Chromium 141.0.7390.37; not a physical-device benchmark",
+  "samples": [
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "mode": "town",
+      "median": 33.29999999999927,
+      "p95": 33.400000000001455,
+      "count": 60
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "mode": "battle",
+      "median": 33.39999999999782,
+      "p95": 50.10000000000218,
+      "count": 60
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "mode": "town",
+      "median": 16.69999999999891,
+      "p95": 16.700000000000728,
+      "count": 60
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "mode": "battle",
+      "median": 16.69999999999891,
+      "p95": 16.799999999999272,
+      "count": 60
+    }
+  ]
+}
