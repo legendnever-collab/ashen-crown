@@ -250,3 +250,21 @@
 @media(max-width:600px){.deploy-side{position:static;flex-direction:row;justify-content:flex-start;background:none;border:0;padding:0 0 4px;gap:6px}.deploy-face-btn canvas{width:38px;height:38px}}
 @media(max-height:500px) and (min-width:601px){.deploy-side{position:static;flex-direction:row;background:none;border:0;padding:0 0 4px;max-width:none}}
 @media(max-width:600px){.dock-commands:not(.compact-commands) button{font-size:12px;padding:6px 4px;white-space:nowrap}}
+/* 2026-10-18 mobile battle feedback: the unit command list and the forecast become a bottom sheet with
+   large buttons on phones (no floating card that can drift under fingers or off-screen). */
+
+/* Phones (portrait): the command list stays anchored beside the hero (placePopover keeps targets uncovered),
+   but as a 3-column grid of large icon buttons so each command is an easy thumb target. */
+@media(max-width:600px){
+ .unit-popover:has(.menu-list){width:228px}
+ .unit-popover .menu-list{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:6px}
+ .unit-popover .menu-list .cmd{flex-direction:column;justify-content:center;min-height:52px;padding:5px 2px;font-size:13px;gap:3px;text-align:center}
+ .unit-popover .menu-list .cmd .cmd-icon svg{width:20px;height:20px}
+ .unit-popover .menu-confirm button,.unit-popover .skill-choice{min-height:46px;font-size:15px}
+}
+@media(max-height:500px) and (min-width:601px){
+ .unit-popover{position:fixed!important;left:auto!important;right:8px!important;top:56px!important;width:250px!important;max-height:calc(100vh - 64px);z-index:30}
+ .unit-popover::before{display:none!important}
+ .unit-popover .menu-list{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:6px}
+ .unit-popover .menu-list .cmd{flex-direction:column;justify-content:center;min-height:48px;padding:4px 2px;font-size:12px;gap:2px;text-align:center}
+}

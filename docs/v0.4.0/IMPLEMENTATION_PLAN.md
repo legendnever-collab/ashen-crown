@@ -63,7 +63,7 @@ MISSIONS[n] = { id, title, en, map, width, height, enemies, civilians, objects, 
 | C | 엔진 훅 + M04 | unit + M04 E2E + M01–03 회귀 불변 |
 | D | M05 | 대형/퇴각/AI unit + E2E — **완료 2026-10-17** (tests/mission05.test.mjs, act1-e2e §4–5, test:m05-balance) |
 | E | M06 + ACT I 종결 | phase 전환 E2E + ACT I 완료 화면 — **완료 2026-10-18** (tests/mission06.test.mjs, act1-e2e §6–9, test:m06-balance) |
-| F | Schema 7 마이그레이션, 캠페인 6미션 밸런스 (legal policy 30 seed), 데스크톱/모바일 회귀 | 전 suite PASS |
+| F | Schema 7 마이그레이션, 캠페인 6미션 밸런스 (legal policy 30 seed), 데스크톱/모바일 회귀 | 전 suite PASS — **완료 2026-10-19** (tests/migration-v033.test.mjs + test:migration-v033 with v0.3.3 fixtures, test:act1-balance → ACT1_BALANCE_REPORT.md, D-045) |
 | G | standalone HTML, Source ZIP, Test Report, SHA256, PR | CI 4/4, PR 생성 (병합 금지) |
 
 ## 7. 리스크

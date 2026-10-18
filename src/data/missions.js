@@ -35,7 +35,7 @@ MISSIONS[4]=authored({id:4,title:'버려진 성채',en:'The Abandoned Fortress',
  objects:[evidence('e1','보급 장부','ledger',8,1),evidence('e2','봉인술 기록','seal',1,1),evidence('e3','이송 군령','orders',14,1)],
  deployZone:s=>{const base=[];for(let y=11;y<=13;y++)for(let x=0;x<16;x++)base.push([x,y]);if(s?.campaign?.flags?.mission_02_supply_route_discovered)base.push([2,8],[2,9],[2,10]);return zone(base);},
  deployments:{recommended:[[7,11],[5,12],[8,12],[7,13],[10,12]],assault:[[6,11],[4,11],[9,11],[7,12],[11,11]],defense:[[7,12],[5,13],[9,13],[7,13],[11,12]]},
- threatTurn:99,par:9,turnLimit:14,burnTurn:8,
+ threatTurn:99,par:9,turnLimit:14,burnTurn:8,level:5,
  objective:'보급 장부 확보 + 성채 병참관 격파',
  brief:'증거 지점에 인접해 조사(행동 1회). TURN 7이 끝나면 살아 있는 횃불 병참병이 맡은 기록을 태웁니다. 보급 장부는 소각되지 않습니다. 제한 14턴.'});
 // M05 The Lion of the Frontier: Baldrick's formation on the northern ridge, refugee wagons on the
@@ -54,7 +54,7 @@ MISSIONS[5]=authored({id:5,title:'국경의 사자',en:'The Lion of the Frontier
  formation:{bearers:['f1','f2'],def:2,hit:10,charge:4,leash:2},
  deployZone:s=>{const base=[];for(let y=10;y<=13;y++)for(let x=1;x<17;x++)if(!(y===11&&(x===5||x===12)))base.push([x,y]);return zone(base);},
  deployments:{recommended:[[8,10],[6,12],[10,12],[8,12],[11,10]],assault:[[9,10],[7,10],[10,11],[8,11],[12,10]],defense:[[5,10],[7,12],[11,12],[6,12],[12,10]]},
- threatTurn:99,par:8,turnLimit:10,
+ threatTurn:99,par:8,turnLimit:10,level:6,
  objective:'사자 대형 붕괴(기수 2명 격파 + 발드릭 HP 50% 이하) 또는 TURN 10까지 보급 마차 1대 이상 사수',
  brief:'사자 기수 옆의 적은 DEF+2·명중+10. 발드릭은 아군이 붙어 있지 않은 고립된 장수를 노립니다(피해+4). TURN 4에 동쪽에서 기병 2기가 마차를 노리고 진입합니다.'});
 // M06 The Ashen Oath (ACT I finale): escort four refugees through the border gate, unseal the two
@@ -75,7 +75,7 @@ MISSIONS[6]=authored({id:6,title:'재의 맹세',en:'The Ashen Oath',
   {trigger:'phase3',unlessBeacon:true,story:'6:garrison',units:[unit('g1','관문 수비대','bandit',7,1,{hp:30,atk:14,def:6,spd:5}),unit('g2','관문 수비대','bandit',10,1,{hp:30,atk:14,def:6,spd:5})]}],
  deployZone:s=>{const base=[];for(let y=11;y<=15;y++)for(let x=1;x<17;x++)base.push([x,y]);return zone(base.filter(([x,y])=>!MISSIONS[6].civilians.some(c=>c.x===x&&c.y===y)));},
  deployments:{recommended:[[8,11],[5,13],[9,12],[10,13],[12,12]],assault:[[8,11],[7,11],[9,11],[10,11],[6,11]],defense:[[7,12],[5,12],[9,14],[10,12],[12,14]]},
- threatTurn:3,par:10,sealTurn:11,turnLimit:16,escortOnly:true,healCivilians:true,
+ threatTurn:3,par:10,sealTurn:11,level:7,turnLimit:16,escortOnly:true,healCivilians:true,
  objective:'피난민 호위 → 봉인석 2개 해제(TURN 11 종료 전) → 봉쇄 집행관 격파 또는 생존 장수 전원 관문 북쪽 철수',
  brief:'장수가 인접한 피난민은 매 턴 관문 쪽으로 2칸 이동합니다(HP 절반 이하는 세인의 치유가 필요). 피난민 2명 통과 또는 TURN 5에 2단계: 봉인석에 인접해 해제(리아 1회, 다른 장수 2회 누적). 서쪽 레버는 측면 관문을 엽니다. 동쪽 봉화를 부수면 3단계 증원이 오지 않습니다.'});
 export const LAST_MISSION=Math.max(...Object.keys(MISSIONS).map(Number));

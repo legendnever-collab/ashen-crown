@@ -29,7 +29,9 @@
     "test:act1": "node tests/act1-e2e.mjs",
     "test:m05-balance": "node tests/mission05-balance.mjs",
     "test:m06-balance": "node tests/mission06-balance.mjs",
-    "test:mobile-command": "node tests/mobile-command.mjs"
+    "test:mobile-command": "node tests/mobile-command.mjs",
+    "test:migration-v033": "node tests/migration-v033.mjs",
+    "test:act1-balance": "node tests/act1-balance.mjs"
   },
   "devDependencies": {
     "playwright": "1.58.2"

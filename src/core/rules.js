@@ -68,8 +68,12 @@ export function forecast(s,u,t,mode='attack'){
  const counter=canCounter?strikeStats(s,victim,u).damage:0;
  return {...stats,counter,counterHit:canCounter?strikeStats(s,victim,u).hit:0,after:Math.max(0,victim.hp-stats.damage),guard:guard?.id,victim:victim.id};
 }
+// Phase F (D-045): from M04 a mission carries a level. A hero more than two levels above it learns less
+// (−20% per level, floor 20%); one more than two below learns faster (+20% per level, cap 160%). M01–M03 have
+// no level and keep the v0.3.x flat EXP exactly.
+export function xpScale(s,u){const lv=missionOf(s)?.level;if(!lv)return 1;const over=u.level-(lv+2),under=(lv-2)-u.level;return over>0?Math.max(0.2,1-0.2*over):under>0?Math.min(1.6,1+0.2*under):1;}
 export function awardXP(s,u,amount,reason){
- if(u.team!=='ally'||!amount)return;
+ if(u.team!=='ally'||!amount)return;amount=Math.max(1,Math.round(amount*xpScale(s,u)));
  u.xp+=amount;u.earnedXP+=amount;u.highlights.push(reason);s.feedback.push({type:'xp',id:u.id,text:`+${amount} EXP`});
  let leveled=false;while(u.xp>=BALANCE.xpLevel){leveled=true;u.xp-=BALANCE.xpLevel;u.level++;const g=HEROES.find(h=>h.id===u.id).growth;const changes={...g};for(const [stat,n] of Object.entries(g)){if(stat==='hp'){u.maxHP+=n;u.hp=Math.min(u.maxHP,u.hp+n);}else if(stat==='mp'){u.maxMP+=n;u.mp=Math.min(u.maxMP,u.mp+n);}else u[stat]+=n;}if(u.id==='eric'&&u.level>=5)u.appearanceTier=2;u.growthHistory.push({level:u.level,changes});s.feedback.push({type:'level',id:u.id,text:`LEVEL ${u.level}`,toHP:u.hp});s.log.push(`${u.name} → LV ${u.level}. 성장이 새로운 힘으로 이어집니다.`);}
  if(leveled){u.hp=u.maxHP;u.mp=u.maxMP;s.log.push(`${u.name}: 레벨업으로 HP/MP 전부 회복.`);}
