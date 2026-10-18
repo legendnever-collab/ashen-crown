@@ -42,6 +42,7 @@ export class BattleRenderer{
   const drawables=[];const stateOf=b=>s.screen==='result'&&s.outcome==='victory'?'burned':b.state;
   for(const o of this.hd.objects){if(o.kind==='house'&&this.hdCovered.has((o.x/48)+','+(o.y/48-1)))continue;drawables.push({key:hdObjectKey(o),draw:()=>drawHDObject(c,o,now)});}
   for(const o of hdLayerBuildings(missionOf(s).layers.buildings,stateOf))drawables.push({key:hdObjectKey(o),draw:()=>drawHDObject(c,o,now)});
+  for(const o of s.units.filter(u=>u.team==='object'&&u.rescued&&!u.evidence)){const ox=o.x*TILE+32,oy=o.y*TILE+37;drawables.push({key:oy+27.5,draw:()=>drawMissionObject(c,o,ox,oy,now)});}
   const actors=s.units.filter(u=>(alive(u)||this.displayHP(u,now)>0)&&!u.rescued);for(const u of actors){let ux=u.x*TILE+32,uy=u.y*TILE+37,pose='idle';let facing=this.facing.get(u.id);if(!facing){const foes=s.units.filter(v=>alive(v)&&(u.team==='enemy'?v.team==='ally':v.team==='enemy'));const t=foes.sort((a,b)=>Math.abs(a.x-u.x)+Math.abs(a.y-u.y)-Math.abs(b.x-u.x)-Math.abs(b.y-u.y))[0];facing=t?hdDirection(t.x-u.x,t.y-u.y,'down'):'down';}const m=this.motion.get(u.id);if(m){const p=motionAt(m.path,now-m.start,m.movement,m.speed),prev=this.lastPos.get(u.id);if(prev)facing=hdDirection(p.x-prev.x,p.y-prev.y,facing);this.lastPos.set(u.id,{x:p.x,y:p.y});ux=p.x*TILE+32;uy=p.y*TILE+37;pose=p.done?'idle':'walk';if(p.done&&!ui.pendingMove){this.motion.delete(u.id);this.lastPos.delete(u.id);}}else if(ui.pendingMove?.id===u.id){ux=ui.pendingMove.x*TILE+32;uy=ui.pendingMove.y*TILE+37;const path=ui.pendingMove.path||[];if(path.length>1){const a=path[path.length-2],b=path[path.length-1];facing=hdDirection(b.x-a.x,b.y-a.y,facing);}}
    const effects=this.effects.filter(e=>e.id===u.id&&now>=e.start&&now-e.start<e.duration),atk=effects.find(e=>e.type==='attack');if(atk){pose='attack';const t=s.units.find(v=>v.id===atk.target);if(t&&t.id!==u.id)facing=hdDirection(t.x-u.x,t.y-u.y,facing);}
    this.facing.set(u.id,facing);
@@ -49,7 +50,7 @@ export class BattleRenderer{
    if(u.team==='ally'&&u.acted&&s.screen==='battle')c.globalAlpha=.5;
    c.fillStyle=u.team==='ally'?'rgba(80,160,255,.5)':u.team==='enemy'?'rgba(230,70,60,.5)':u.team==='object'?'rgba(233,196,106,.5)':'rgba(240,210,110,.55)';c.beginPath();c.ellipse(ux,uy+23,17,5.5,0,0,Math.PI*2);c.fill();
    if(ui.selected===u.id){c.strokeStyle='#fff0b8';c.lineWidth=2;c.strokeRect(ux-31,uy-36,60,60);rect(c,'#f4d695',ux-4,uy-37,8,4);}
-   if(u.team==='object')drawEvidence(c,u,ux,uy,now);else{c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(ux,uy+23,13,4,0,0,Math.PI*2);c.fill();drawHDFigure(c,hdCastFor(u,s.missionId),ux,uy+24,{facing,pose,frame:pose==='walk'?1+Math.floor(now/120)%4:(u.team==='ally'&&u.acted)||u.team==='civilian'||s.screen!=='battle'?0:1+Math.floor((now+u.x*97+u.y*53)/280)%4});}c.globalAlpha=1;
+   if(u.team==='object')(u.evidence?drawEvidence:drawMissionObject)(c,u,ux,uy,now);else{c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(ux,uy+23,13,4,0,0,Math.PI*2);c.fill();drawHDFigure(c,hdCastFor(u,s.missionId),ux,uy+24,{facing,pose,frame:pose==='walk'?1+Math.floor(now/120)%4:(u.team==='ally'&&u.acted)||u.team==='civilian'||s.screen!=='battle'?0:1+Math.floor((now+u.x*97+u.y*53)/280)%4});}c.globalAlpha=1;
    if(threatIds.has(u.id)&&Math.floor(now/400)%2){c.fillStyle='#e8594a';c.beginPath();c.moveTo(ux-9,uy-50);c.lineTo(ux+9,uy-50);c.lineTo(ux,uy-38);c.closePath();c.fill();c.fillStyle='#fff2d0';c.font='bold 12px sans-serif';c.textAlign='center';c.fillText('!',ux,uy-41);c.textAlign='start';}
    if(u.guarding&&!u.guardUsed){rect(c,'#2a3a44',ux+12,uy-44,13,15);rect(c,'#e7c783',ux+13,uy-43,11,13);rect(c,'#3f7fa3',ux+15,uy-41,7,9);}
    if(u.team!=='object'&&(u.team!=='civilian'||u.hp<u.maxHP)){rect(c,'#18242a',ux-23,uy+27,46,5);rect(c,u.team==='enemy'?'#e8594a':u.team==='civilian'?'#f0cf6a':'#5fd38a',ux-22,uy+28,Math.max(1,Math.floor(44*this.displayHP(u,now)/u.maxHP)),3);}
@@ -63,6 +64,20 @@ export class BattleRenderer{
    c.font=`bold ${e.type==='potential'?16:20}px monospace`;c.textAlign='center';c.fillStyle=e.type==='heal'?(e.resource==='mp'?'#b4dfe3':'#bdedac'):e.type==='level'||e.type==='potential'?'#ffe4a0':e.type==='xp'?'#b4dfe3':'#fff1d2';c.strokeStyle='#172a30';c.lineWidth=2;const py=u.y*TILE-3-age*32-(e.type==='xp'?22:0)-(e.resource==='mp'?22:0);c.strokeText(e.text||'',u.x*TILE+32,py);c.fillText(e.text||'',u.x*TILE+32,py);c.textAlign='start';}const mini=document.querySelector('#battle-minimap');if(mini)drawMinimap(mini,missionOf(s).map,s.units,camera,s.units.filter(u=>u.team==='civilian'||u.team==='object'||u.id==='boss'));this.canvas.dataset.backingPixels=String(this.canvas.width*this.canvas.height);if(this.onCamera)this.onCamera();
  }
 }
+// M06 mission objects (original): rune seal stones, the side-gate lever and the side gate itself.
+function drawMissionObject(c,u,x,y,now){const done=u.rescued,glow=.5+.3*Math.sin(now/300+u.x);
+ if(u.kind==='sealstone'){c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+22,15,5,0,0,Math.PI*2);c.fill();
+  if(done){rect(c,'#3c3f48',x-13,y+8,12,14);rect(c,'#4c505a',x+2,y+2,11,20);rect(c,'#5d616c',x-13,y+8,12,2);rect(c,'#6a6f7a',x+2,y+2,11,2);rect(c,'#9fd1e6',x-2,y+12,3,3);return;}
+  rect(c,'#2e3038',x-13,y-26,26,48);rect(c,'#4a4d58',x-12,y-25,24,46);rect(c,'#5d616c',x-12,y-25,24,3);rect(c,'#3c3f48',x+8,y-22,4,43);
+  const rune=u.locked?`rgba(170,120,230,${.35+glow*.4})`:u.progress?`rgba(150,220,255,${.5+glow*.4})`:`rgba(240,200,110,${.45+glow*.4})`;c.fillStyle=rune;for(const [a,b,w,h]of[[-2,-18,4,14],[-7,-12,14,3],[-6,0,12,3],[-2,4,4,10]])c.fillRect(x+a,y+b,w,h);
+  if(u.progress){rect(c,'#e9f6ff',x-12,y-2,24,2);}
+  if(!u.locked){c.fillStyle=`rgba(240,200,110,${glow*.25})`;c.fillRect(x-20,y-30,40,56);}return;}
+ if(u.kind==='lever'){c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+20,13,4,0,0,Math.PI*2);c.fill();rect(c,'#5a5c5a',x-12,y+8,24,12);rect(c,'#7c7f7c',x-12,y+8,24,2);
+  c.save();c.translate(x,y+10);c.rotate(done?.8:-.8);rect(c,'#3a281a',-2,-24,4,24);rect(c,'#c9a24a',-4,-28,8,6);c.restore();
+  if(!done){c.fillStyle=`rgba(240,206,120,${glow*.4})`;c.fillRect(x-18,y-22,36,46);}return;}
+ if(u.kind==='gate'){if(done){rect(c,'#4a3424',x-30,y-26,8,48);rect(c,'#4a3424',x+22,y-26,8,48);return;}
+  rect(c,'#3a281a',x-30,y-30,60,54);for(let i=0;i<5;i++)rect(c,i%2?'#6b4a30':'#5a3e28',x-28+i*11.5,y-28,11,50);rect(c,'#8a8f94',x-30,y-14,60,4);rect(c,'#8a8f94',x-30,y+8,60,4);return;}
+ drawEvidence(c,u,x,y,now);}
 // Original evidence markers: a strapped document chest with a pulsing seal glow (no external art).
 function drawEvidence(c,u,x,y,now){const glow=.45+.25*Math.sin(now/320+u.x);c.fillStyle=`rgba(240,206,120,${glow*.45})`;c.fillRect(x-22,y-6,44,30);
  const box=u.evidence==='ledger'?'#7a5534':u.evidence==='seal'?'#4f4a78':'#6d4a3b';rect(c,'#2a1d16',x-17,y-2,34,24);rect(c,box,x-16,y-1,32,22);rect(c,'#b98d52',x-16,y+6,32,3);rect(c,'#b98d52',x-3,y-1,6,22);

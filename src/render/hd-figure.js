@@ -17,9 +17,10 @@ export function figureSprite(id,{frame=0,facing='down'}={}){const key=`${id}:${f
  const c=p.canvas();figCache.set(key,c);return c;}
 
 // thick limb between two points, lit from the upper left
-function limb(p,x0,y0,x1,y1,w,r,tone=2){const dx=x1-x0,dy=y1-y0,len=Math.hypot(dx,dy)||1,nx=-dy/len*w/2,ny=dx/len*w/2;
- p.poly([[x0+nx,y0+ny],[x1+nx,y1+ny],[x1-nx,y1-ny],[x0-nx,y0-ny]],r[tone]);
- const steps=Math.ceil(len);for(let i=0;i<=steps;i++){const t=i/steps,x=x0+dx*t,y=y0+dy*t;p.set(x-Math.abs(nx)+.5,y,r[tone+1]);p.set(x+Math.abs(nx)-1,y,r[Math.max(0,tone-1)]);}}
+// limb between two points: rounded joint, tapered toward the hand/foot, lit from the upper left
+function limb(p,x0,y0,x1,y1,w,r,tone=2,taper=.74){const dx=x1-x0,dy=y1-y0,len=Math.hypot(dx,dy)||1,ux=-dy/len,uy=dx/len,w0=w/2,w1=w*taper/2;
+ p.poly([[x0+ux*w0,y0+uy*w0],[x1+ux*w1,y1+uy*w1],[x1-ux*w1,y1-uy*w1],[x0-ux*w0,y0-uy*w0]],r[tone]);if(w>=4)p.fillEllipse(x0,y0+.3,w0,w0*.9,r[tone]);
+ const steps=Math.ceil(len);for(let i=0;i<=steps;i++){const t=i/steps,x=x0+dx*t,y=y0+dy*t,h=(w0+(w1-w0)*t)*Math.abs(ux)+(1-Math.abs(ux))*.2;p.set(x-h+.5,y,r[tone+1]);p.set(x+h-1,y,r[Math.max(0,tone-1)]);}}
 function boot(p,x,y,r,dir=0){ // dir: 0 front, 1 right-facing profile
  if(dir){p.box(x-3,y-5,9,5,r);p.rect(x-3,y-1,10,1,r[0]);p.rect(x+4,y-3,2,2,r[1]);p.rect(x-3,y-5,6,1,r[3]);}
  else{p.box(x-4,y-5,8,5,r);p.rect(x-4,y-1,8,1,r[0]);p.rect(x-3,y-5,5,1,r[3]);}}
@@ -62,15 +63,11 @@ function drawFigure2(S,frame,facing){
  // far arm in profile (behind torso)
  if(side){const sx=cx+3,hx2=cx+3-swing*4;limb(p,sx,sh+2,hx2+1,wy-1,4,darker(S.body==='plate'?metal:coat));p.ball(hx2+1,wy+1,2,2,darker(sk));}
  // ---------------- torso ----------------
- const tl=side?cx-sw+1:cx-sw,tr=side?cx+sw:cx+sw;
- p.poly([[tl,sh+1],[tr,sh+1],[cx+ww+(side?1:0),wy],[cx-ww+(side?1:0),wy]],torso[2]);
- for(let y=sh+1;y<=wy;y++){const k=(y-sh)/(wy-sh),l=Math.round(tl+(cx-ww+(side?1:0)-tl)*k),r=Math.round(tr+(cx+ww+(side?1:0)-tr)*k);if(y<=sh+2)for(let x=l;x<r;x++)p.set(x,y,torso[3]);p.set(l,y,torso[4]);p.set(l+1,y,torso[3]);p.set(r-1,y,torso[1]);p.set(r-2,y,torso[1]);if(y>=wy-1)for(let x=l+2;x<r-2;x++)p.set(x,y,torso[1]);if(S.body==='plate'&&(y-sh)%4===0)for(let x=l+2;x<r-2;x++)p.set(x,y,torso[1]);}
+ torsoFill(p,S,{cx,sh,wy,sw,ww,side,torso});
  // hips / lower garment
  const hemY=mounted?hip+2:longSkirt?G-2:coatTail?hip+9:S.body==='apron'?hip+7:hip+4;
  const lower=S.body==='plate'?metal:longSkirt||coatTail?coat:S.body==='apron'?ramp(S.apron):coat;
- p.poly([[cx-ww+(side?1:0),wy],[cx+ww+(side?1:0),wy],[cx+ww+2+(longSkirt?3:0),hemY],[cx-ww-2-(longSkirt?3:0),hemY]],lower[2]);
- for(let y=wy;y<=hemY;y++){const t=(y-wy)/Math.max(1,hemY-wy),l=Math.round(cx-ww-(2+(longSkirt?3:0))*t)+(side?1:0),r=Math.round(cx+ww+(2+(longSkirt?3:0))*t)+(side?1:0);p.set(l,y,lower[3]);p.set(r,y,lower[1]);p.set(r-1,y,lower[1]);if(S.body==='plate'&&(y-wy)%3===2)for(let x=l+1;x<r;x++)p.set(x,y,lower[1]);if(longSkirt&&!back&&(y%4===0))p.set(cx+1+(side?2:0),y,lower[1]);}
- p.rect(cx-ww-2-(longSkirt?3:0)+(side?1:0),hemY,2*(ww+2+(longSkirt?3:0))+1,1,trim[1]);
+ lowerFill(p,S,{cx,wy,ww,hemY,side,lower,trim,longSkirt,back});
  // near leg in profile (in front of hips)
  if(side&&!mounted&&!longSkirt){const f=nearFoot;limb(p,cx+2,hip,f.x,f.y-3,6,legs);boot(p,f.x,f.y,boots,1);}
  if(side&&longSkirt&&!mounted){const f=nearFoot;p.box(f.x-3,G-3,8,3,boots);}
@@ -81,7 +78,7 @@ function drawFigure2(S,frame,facing){
  if(side&&S.weapon==='bow'){limb(p,cx,sh+2,cx+8,wy-6,5,sleeve);p.ball(cx+8,wy-5,2.2,2.2,sk);}
  else if(side){const sx=cx-1,hx2=cx-1+swing*4;limb(p,sx,sh+2,hx2,wy-1,5,sleeve);if(S.body==='apron')limb(p,(sx+hx2)/2,(sh+wy)/2,hx2,wy-1,4,sk);p.ball(hx2,wy+1,2.2,2.2,sk);if(S.bandage)p.rect(hx2-2,wy-4,4,2,col('#f2ece0'));}
  else{const ly=back?0:-swing,ry=back?0:swing;
-  for(const [sx,hx2,dyH] of [[cx-sw,cx-sw-1,ly],[cx+sw,cx+sw+1,ry]]){limb(p,sx,sh+2,hx2,wy-1+dyH,5,sleeve);if(S.body==='apron')limb(p,(sx+hx2)/2,(sh+wy)/2+1,hx2,wy-1+dyH,4,sk);p.ball(hx2,wy+1+dyH,2.2,2.2,sk);}
+  for(const [sx,hx2,dyH] of [[cx-sw+1,cx-sw-1,ly],[cx+sw-1,cx+sw+1,ry]]){limb(p,sx,sh+3,hx2,wy-1+dyH,5,sleeve);if(S.body==='apron')limb(p,(sx+hx2)/2,(sh+wy)/2+1,hx2,wy-1+dyH,4,sk);p.ball(hx2,wy+1+dyH,2.2,2.2,sk);}
   if(S.bandage&&!back)p.rect(cx+sw-1,wy-5,4,2,col('#f2ece0'));}
  // shoulder pieces / collars
  if(S.body==='plate'){if(side)p.ball(cx,sh+2,3.6,3,metal);else{p.ball(cx-sw+1,sh+2,3.6,3,metal);p.ball(cx+sw-1,sh+2,3.6,3,metal);}}
@@ -100,6 +97,18 @@ function drawFigure2(S,frame,facing){
  if(mounted)horseFront(p,view,frame,boots,S);
  return p.outline(INK);
 }
+
+// v0.4 feedback #3: bodies are rounded and tapered (shoulder curve → chest → waist → hips), not boxes.
+function torsoHalf(t,sw,ww){const round=t<.3?Math.sqrt(Math.max(0,1-Math.pow((.3-t)/.3,2))):1,k=t*t*(3-2*t);return sw-3.4*(1-round)+(ww-sw)*Math.pow(k,1.15);}
+function torsoFill(p,S,{cx,sh,wy,sw,ww,side,torso}){const top=sh+1,plate=S.body==='plate';
+ for(let y=top;y<=wy;y++){const t=(y-top)/Math.max(1,wy-top),h=torsoHalf(t,sw,ww)*(side?.84:1),chest=side&&t>.12&&t<.62?1.2*Math.sin((t-.12)/.5*Math.PI):0,l=Math.round(cx-h+(side?.5:0)),r=Math.round(cx+h+(side?.5+chest:0));
+  for(let x=l;x<r;x++){const u=(x+.5-cx)/Math.max(1,h);let tone=u<-.6?3:u>.5?1:2;if(y<=top+1&&tone===2)tone=3;if(t>.86&&tone===2)tone=1;if(!side&&t>.18&&t<.5&&Math.abs(u+.25)<.18)tone=3;if(side&&u>.05&&u<.45&&t>.18&&t<.48)tone=3;if(plate&&(y-sh)%4===0&&x>l+1&&x<r-2)tone=1;p.set(x,y,torso[tone]);}
+  p.set(l,y,torso[4]);p.set(r-1,y,torso[0]);}}
+function lowerFill(p,S,{cx,wy,ww,hemY,side,lower,trim,longSkirt,back}){const flare=2+(longSkirt?3:0),plate=S.body==='plate';
+ for(let y=wy;y<=hemY;y++){const t=(y-wy)/Math.max(1,hemY-wy),hip=longSkirt?0:Math.sin(Math.min(1,t*1.6)*Math.PI/2)*1.1,h=ww+flare*Math.pow(t,.8)+hip-(y===hemY?1:0),l=Math.round(cx-h+(side?1:0)),r=Math.round(cx+h+(side?1:0))+1;
+  for(let x=l;x<r;x++){const u=(x+.5-cx-(side?1:0))/Math.max(1,h);let tone=u<-.6?3:u>.45?1:2;if(plate&&(y-wy)%3===2)tone=1;if(longSkirt&&!back&&Math.abs(x-cx-1-(side?2:0))<.6&&y%4===0)tone=1;if(y===wy&&tone===2)tone=1;p.set(x,y,lower[tone]);}
+  p.set(l,y,lower[3]);p.set(r-1,y,lower[1]);}
+ const h=ww+flare-1;p.rect(Math.round(cx-h+(side?1:0)),hemY,Math.round(2*h)+1,1,trim[1]);}
 
 function bodyDetails(p,S,view,{cx,sh,sw,wy,ww,hip,torso,coat,trim,sk,hemY}){
  const side=view==='side',back=view==='back',o=side?1:0;

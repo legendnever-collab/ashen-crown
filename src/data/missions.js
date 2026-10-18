@@ -57,4 +57,25 @@ MISSIONS[5]=authored({id:5,title:'국경의 사자',en:'The Lion of the Frontier
  threatTurn:99,par:8,turnLimit:10,
  objective:'사자 대형 붕괴(기수 2명 격파 + 발드릭 HP 50% 이하) 또는 TURN 10까지 보급 마차 1대 이상 사수',
  brief:'사자 기수 옆의 적은 DEF+2·명중+10. 발드릭은 아군이 붙어 있지 않은 고립된 장수를 노립니다(피해+4). TURN 4에 동쪽에서 기병 2기가 마차를 노리고 진입합니다.'});
+// M06 The Ashen Oath (ACT I finale): escort four refugees through the border gate, unseal the two
+// seal stones before TURN 11 ends, then break out north. Phase rules live in core/mission-rules.js.
+const sealObject=(id,name,kind,x,y,extra={})=>({id,name,kind,x,y,...extra});
+MISSIONS[6]=authored({id:6,title:'재의 맹세',en:'The Ashen Oath',
+ rows:['ffgggggrrrrgggggff','fggggggrrrrggggggf','ggggxgggrrgggxgggg','xrxxqxxxrrxxxqxxxx','ggggxggkrrkggxggmm','ggggggggrrgggggmmm','fgggggggrrgggggmkm','ffggggggrrgggggmmg','ffggfgggrrggfgggfg','fgggffggrrggffgggf','ggggggggrrgggggggg','ggvgggggrrggggvggg','gggggggrrrrggggggg','ggggggrrrrrrgggggg','fgggggggrrggggggff','ffggggggrrgggggfff'],
+ enemies:[
+  unit('boss','봉쇄 집행관','captain',9,1,{hp:72,atk:17,def:8,res:5,spd:6,mov:0,breakMov:3}),
+  unit('k1','왕실 봉인대','bandit',6,4,{hp:30,atk:14,def:6,spd:5,mov:2}),unit('k2','왕실 봉인대','bandit',7,5,{hp:30,atk:14,def:6,spd:5,mov:2}),
+  unit('k3','왕실 봉인대','bandit',10,5,{hp:30,atk:14,def:6,spd:5,mov:2}),unit('k4','왕실 봉인대','bandit',11,4,{hp:30,atk:14,def:6,spd:5,mov:2}),
+  unit('a1','봉인대 궁수','archer',4,3,{hp:24,atk:13,def:3,spd:7,mov:0}),unit('a2','봉인대 궁수','archer',13,3,{hp:24,atk:13,def:3,spd:7,mov:0}),
+  unit('beacon','감시탑 봉화','beacon',16,6,{hp:26,atk:0,def:3,res:3,spd:0,mov:0,range:[0,0]})],
+ civilians:[{id:'p1',name:'피난민 노인',x:6,y:12,hp:30,def:3},{id:'p2',name:'부상한 피난민',x:8,y:13,hp:30,def:3,startHP:13},{id:'p3',name:'피난민 어머니',x:11,y:12,hp:30,def:3},{id:'p4',name:'부상한 소년',x:13,y:13,hp:30,def:3,startHP:14}],
+ objects:[sealObject('seal1','봉인석','sealstone',7,4,{locked:true,progress:0}),sealObject('seal2','봉인석','sealstone',10,4,{locked:true,progress:0}),sealObject('lever','측면 관문 레버','lever',2,7),sealObject('sidegate','측면 관문','gate',1,3,{inert:true})],
+ waves:[{trigger:'start',when:'reported',story:'6:inspector',units:[unit('i1','군령부 감찰관','bandit',14,5,{hp:32,atk:15,def:6,spd:6})]},
+  {trigger:'phase2',story:'6:pursuers',units:[unit('r1','남쪽 추격대','bandit',0,15,{hp:28,atk:14,def:5,spd:6}),unit('r2','남쪽 추격대','bandit',17,15,{hp:28,atk:14,def:5,spd:6})]},
+  {trigger:'phase3',unlessBeacon:true,story:'6:garrison',units:[unit('g1','관문 수비대','bandit',7,1,{hp:30,atk:14,def:6,spd:5}),unit('g2','관문 수비대','bandit',10,1,{hp:30,atk:14,def:6,spd:5})]}],
+ deployZone:s=>{const base=[];for(let y=11;y<=15;y++)for(let x=1;x<17;x++)base.push([x,y]);return zone(base.filter(([x,y])=>!MISSIONS[6].civilians.some(c=>c.x===x&&c.y===y)));},
+ deployments:{recommended:[[8,11],[5,13],[9,12],[10,13],[12,12]],assault:[[8,11],[7,11],[9,11],[10,11],[6,11]],defense:[[7,12],[5,12],[9,14],[10,12],[12,14]]},
+ threatTurn:3,par:10,sealTurn:11,turnLimit:16,escortOnly:true,healCivilians:true,
+ objective:'피난민 호위 → 봉인석 2개 해제(TURN 11 종료 전) → 봉쇄 집행관 격파 또는 생존 장수 전원 관문 북쪽 철수',
+ brief:'장수가 인접한 피난민은 매 턴 관문 쪽으로 2칸 이동합니다(HP 절반 이하는 세인의 치유가 필요). 피난민 2명 통과 또는 TURN 5에 2단계: 봉인석에 인접해 해제(리아 1회, 다른 장수 2회 누적). 서쪽 레버는 측면 관문을 엽니다. 동쪽 봉화를 부수면 3단계 증원이 오지 않습니다.'});
 export const LAST_MISSION=Math.max(...Object.keys(MISSIONS).map(Number));

@@ -108,7 +108,82 @@ const M5={
 };
 function movementCells(s,u){const out=[];const mov=u.mov,seen=new Map([[`${u.x},${u.y}`,0]]),q=[{x:u.x,y:u.y,c:0}];while(q.length){const p=q.shift();out.push(p);for(const [dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const x=p.x+dx,y=p.y+dy,t=terrainAt(x,y,s);if(!t||!Number.isFinite(t.cost))continue;const o=at(s,x,y);if(o&&o.team!==u.team)continue;const c=p.c+t.cost;if(c>mov||c>=(seen.get(`${x},${y}`)??Infinity))continue;seen.set(`${x},${y}`,c);q.push({x,y,c});}}const live=bearersOf(s).filter(alive);return u.id==='boss'&&live.length?out.filter(p=>live.some(b=>distance(p,b)<=missionOf(s).formation.leash)):out;}
 
-export const MISSION_RULES={4:M4,5:M5};
+// ---------- M06 The Ashen Oath (ACT I finale) ----------
+const SAFE_Y=2;
+const refugeesOf=s=>s.units.filter(u=>u.team==='civilian');
+const passedOf=s=>refugeesOf(s).filter(u=>u.rescued).length;
+const stonesOf=s=>s.units.filter(u=>u.kind==='sealstone');
+const GUARD_STONE={k1:'seal1',k2:'seal1',k3:'seal2',k4:'seal2'};
+function triggerWaves(s,trigger){const m=missionOf(s),st=s.missionState;m.waves.forEach((w,i)=>{if(w.trigger!==trigger||st.waves.includes(i+1))return;
+ if(w.when==='reported'&&s.campaign.choices?.m04_records_choice!=='reported')return;st.waves.push(i+1);
+ if(w.unlessBeacon&&!alive(findUnit(s,'beacon'))){s.log.push('봉화가 꺼져 관문 수비대 증원이 오지 않습니다.');return;}
+ spawnWave(s,w.units);if(w.story)enqueueStory(s,w.story);s.log.push(`적 증원 ${w.units.length}명 출현.`);});}
+// refugees walk the shortest open route north; they may pass through heroes but never stop on anyone
+function refugeeRoute(s,c){const start=`${c.x},${c.y}`,prev=new Map([[start,null]]),q=[{x:c.x,y:c.y}];let goal=null;
+ while(q.length){const p=q.shift();if(p.y<=SAFE_Y&&`${p.x},${p.y}`!==start){goal=p;break;}
+  for(const [dx,dy]of[[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,k=`${x},${y}`;if(prev.has(k))continue;const t=terrainAt(x,y,s);if(!t||!Number.isFinite(t.cost))continue;const o=at(s,x,y);if(o&&o.team!=='ally')continue;prev.set(k,`${p.x},${p.y}`);q.push({x,y});}}
+ if(!goal)return [];const path=[];let k=`${goal.x},${goal.y}`;while(k&&k!==start){const [x,y]=k.split(',').map(Number);path.unshift({x,y});k=prev.get(k);}return path;}
+function escortRefugees(s){const st=s.missionState;
+ for(const c of refugeesOf(s).filter(alive)){
+  if(c.hp<=c.maxHP/2){s.log.push(`${c.name}: 부상이 심해 움직이지 못합니다. 세인의 치유가 필요합니다.`);continue;}
+  const escorted=s.units.some(u=>u.team==='ally'&&alive(u)&&distance(u,c)===1),steps=escorted?2:st.lever?1:0;if(!steps)continue;
+  const path=refugeeRoute(s,c);let dest=-1;for(let i=0;i<Math.min(steps,path.length);i++)if(!at(s,path[i].x,path[i].y))dest=i;if(dest<0)continue;
+  const from={x:c.x,y:c.y};c.x=path[dest].x;c.y=path[dest].y;s.feedback.push({type:'move',id:c.id,path:[from,...path.slice(0,dest+1)]});
+  if(c.y<=SAFE_Y){c.rescued=true;s.feedback.push({type:'rescue',id:c.id,text:'SAFE'});s.log.push(`${c.name}이(가) 관문을 넘었습니다. (${passedOf(s)}/4)`);enqueueStory(s,'6:through');}
+  else s.log.push(`${c.name} ${escorted?'호위 이동':'우회로 이동'}.`);}}
+// civBias < 0: soldiers prefer heroes and only strike refugees when nothing better is in reach
+function plan6(s,u,cells,{civBias=-20,goal=null,reason='전진'}={}){
+ const targets=s.units.filter(t=>alive(t)&&(t.team==='ally'||t.team==='civilian'&&s.turn>=missionOf(s).threatTurn));let best=null;
+ for(const p of cells)for(const t of targets){if(at(s,p.x,p.y)&&!(p.x===u.x&&p.y===u.y))continue;const d=distance(p,t);if(d<u.range[0]||d>u.range[1])continue;
+  const f=strikeStats(s,{...u,x:p.x,y:p.y},t);const score=f.damage+(t.hp<=f.damage?30:0)+(t.team==='civilian'?civBias:0)+(t.id==='sain'?8:0)-p.c*.3;
+  if(!best||score>best.score)best={x:p.x,y:p.y,target:t.id,score,reason:t.team==='civilian'?'피난민 위협':`공격 가능 · 거리 ${d}`};}
+ if(best)return best;
+ const goals=goal?[goal]:targets;if(!goals.length)return {x:u.x,y:u.y,target:null,reason:'대상 없음'};
+ let dest=null;for(const p of cells){if(at(s,p.x,p.y)&&!(p.x===u.x&&p.y===u.y))continue;const d=Math.min(...goals.map(g=>distance(p,g)))+p.c*.01;if(!dest||d<dest.d)dest={...p,d};}
+ return dest?{x:dest.x,y:dest.y,target:null,reason}:{x:u.x,y:u.y,target:null,reason:'대기'};}
+const M6={
+ init(s){s.missionState={phase:1,waves:[],lever:false,beacon:false,banner:false};triggerWaves(s,'start');},
+ clearLabel:'재의 맹세 · 관문 돌파',
+ validState(m){return !!m&&typeof m==='object'&&[1,2,3].includes(m.phase)&&Array.isArray(m.waves)&&m.waves.every(n=>Number.isInteger(n)&&n>0&&n<=3)&&new Set(m.waves).size===m.waves.length&&['lever','beacon','banner'].every(k=>typeof m[k]==='boolean');},
+ status(s){const st=s.missionState,m=missionOf(s),open=stonesOf(s).filter(o=>o.rescued).length;return `${st.phase}단계 · 피난민 통과 ${passedOf(s)}/4 · 봉인석 ${open}/2${st.phase<3?` · 봉인까지 ${Math.max(0,m.sealTurn+1-s.turn)}턴`:' · 관문 돌파!'}`;},
+ optional(s){const f=s.campaign.flags;return `피난민 ${f.mission_06_refugees_through??passedOf(s)}/4 통과${f.mission_06_beacon_destroyed||s.missionState?.beacon?' · 봉화 파괴':''}`;},
+ phaseCheck(s){const st=s.missionState;if(s.outcome)return;
+  if(st.phase===1&&(passedOf(s)>=2||s.turn>=5)){st.phase=2;for(const o of stonesOf(s))o.locked=false;enqueueStory(s,'6:phase2');s.log.push('2단계 · 봉인 해제: 봉인석에 인접해 해제하세요 (리아 1회, 다른 장수 2회 누적).');triggerWaves(s,'phase2');}
+  if(st.phase===2&&stonesOf(s).every(o=>o.rescued)){st.phase=3;const boss=findUnit(s,'boss');if(alive(boss))boss.mov=boss.breakMov;enqueueStory(s,'6:phase3');s.log.push('3단계 · 탈출: 봉쇄 집행관 격파 또는 생존 장수 전원 관문 북쪽(y≤2) 철수.');
+   const erik=findUnit(s,'eric');if(erik&&alive(erik)){st.banner=true;for(const a of s.units.filter(a=>a.team==='ally'&&alive(a)&&distance(a,erik)<=2))a.oathUntil=s.turn+1;enqueueStory(s,'6:banner');s.log.push('맹세의 깃발: 에릭 2칸 이내 동료는 이번과 다음 Player Phase에 MOV +1.');s.feedback.push({type:'guard',id:'eric',text:'OATH'});}
+   triggerWaves(s,'phase3');}},
+ search(s,u,t){
+  if(t.kind==='sealstone'){t.progress=(t.progress||0)+(u.id==='lia'?2:1);remember(s,`m6_unseal_${u.id}`);
+   if(t.progress>=2){t.rescued=true;s.feedback.push({type:'rescue',id:t.id,text:'UNSEALED'});s.log.push(`${u.name}: 봉인석 해제.`);enqueueStory(s,'6:unseal');}
+   else{s.feedback.push({type:'rescue',id:t.id,text:'1/2'});s.log.push(`${u.name}: 봉인 해제 진행 1/2.`);}
+   M6.phaseCheck(s);return true;}
+  if(t.kind==='lever'){t.rescued=true;s.missionState.lever=true;const gate=findUnit(s,'sidegate');if(gate)gate.rescued=true;if(u.id==='kai')remember(s,'m6_kai_lever');s.feedback.push({type:'rescue',id:t.id,text:'OPEN'});s.log.push('측면 관문이 열렸습니다. 피난민은 호위가 없어도 매 턴 1칸씩 우회로로 이동합니다.');enqueueStory(s,'6:lever');return true;}
+  return false;},
+ afterDamage(s,v){if(v.id==='beacon'&&!alive(v)&&!s.missionState.beacon){s.missionState.beacon=true;enqueueStory(s,'6:beacon');s.log.push('감시탑 봉화가 꺼졌습니다. 3단계 관문 수비대 증원이 취소됩니다.');}},
+ onAction(s,u,mode,t){if(s.practice)return;if(u.id==='sain'&&mode==='skill'&&t?.team==='civilian')remember(s,'m6_sain_refugee');if(u.id==='elina'&&t?.id==='beacon'&&!alive(t))remember(s,'m6_elina_beacon');M6.phaseCheck(s);},
+ onTurnStart(s){escortRefugees(s);M6.phaseCheck(s);},
+ beforeEnemyPhase(){},
+ planEnemy(s,u,reachable){
+  const cells=[...reachable].map(([p,c])=>{const [x,y]=p.split(',').map(Number);return {x,y,c};}),st=s.missionState;
+  if(u.kind==='beacon')return {x:u.x,y:u.y,target:null,reason:'봉화 신호 대기'};
+  if(u.id==='boss'){if(st.phase<3)return plan6(s,u,[{x:u.x,y:u.y,c:0}],{reason:'관문 북쪽 지휘'});const hold=cells.filter(p=>p.y<=SAFE_Y);return plan6(s,u,hold.length?hold:cells,{goal:{x:8,y:2},reason:'관문을 직접 막는다'});}
+  if(GUARD_STONE[u.id]){const stone=findUnit(s,GUARD_STONE[u.id]);if(stone&&!stone.rescued){const near=cells.filter(p=>distance(p,stone)<=2);return plan6(s,u,near.length?near:[{x:u.x,y:u.y,c:0}],{goal:stone,reason:'봉인석 사수'});}}
+  if(/^r\d/.test(u.id))return plan6(s,u,cells,{civBias:40,goal:refugeesOf(s).filter(alive).sort((a,b)=>distance(u,a)-distance(u,b))[0]||null,reason:'피난민 추격'});
+  return plan6(s,u,cells,{reason:'공격 대상으로 이동'});},
+ checkOutcome(s,finish){
+  const st=s.missionState,m=missionOf(s),passed=passedOf(s),boss=findUnit(s,'boss');
+  if(!passed&&refugeesOf(s).every(c=>!alive(c)))return finish(s,'defeat','피난민을 모두 잃었습니다.');
+  if(st.phase<3&&s.turn>m.sealTurn)return finish(s,'defeat',`TURN ${m.sealTurn}이 끝나 관문이 봉인되었습니다.`);
+  if(s.turn>m.turnLimit)return finish(s,'defeat',`제한 ${m.turnLimit}턴 안에 관문을 넘지 못했습니다.`);
+  if(st.phase===3&&passed>=1){const heroes=s.units.filter(u=>u.team==='ally'&&alive(u));
+   if(!alive(boss))return finish(s,'victory',`봉쇄 집행관 격파 · 피난민 ${passed}/4 통과.`);
+   if(heroes.length&&heroes.every(u=>u.y<=SAFE_Y))return finish(s,'victory',`관문 돌파 · 생존 장수 전원 철수 · 피난민 ${passed}/4 통과.`);}
+ },
+ beforeCommit(s){setStoryFlag(s,'mission_06_refugees_through',passedOf(s));setStoryFlag(s,'mission_06_beacon_destroyed',!!s.missionState.beacon);setStoryFlag(s,'act1_completed');setStoryFlag(s,'legion_independent');},
+ afterVictory(){},
+ rewardContext(s){return {refugees:passedOf(s),beacon:!!s.missionState.beacon};}
+};
+export const MISSION_RULES={4:M4,5:M5,6:M6};
 export const rulesOf=s=>MISSION_RULES[s?.missionId]||null;
 
 export function searchEvidence(s,u,t){

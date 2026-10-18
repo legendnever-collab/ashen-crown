@@ -43,12 +43,15 @@ export function drawTownBuilding(c,b,tone,state){const s=townBuildingSprite(b,to
  if(b.label){c.font='bold 11px sans-serif';c.textAlign='center';const tx=x+b.w*32,ty=bottom-s.height*K+28*K;const w=c.measureText(b.label).width+10;c.fillStyle='rgba(30,22,16,.78)';c.fillRect(tx-w/2,ty-11,w,15);c.fillStyle='#f2ddb0';c.fillText(b.label,tx,ty);c.textAlign='left';}}
 
 // ---------- figures ----------
-const ENEMY_LOOK={5:{lion:'lion',bearer:'bearer',spear:'ironSpear',archer:'ironArcher',cavalry:'cavalry',captain:'lion'},1:{bandit:'bandit',archer:'archer',captain:'captain'},2:{bandit:'deserter',archer:'archer',captain:'deserterCaptain'},3:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},4:{bandit:'fortGuard',archer:'fortArcher',captain:'quartermaster'}};
+const ENEMY_LOOK={6:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},5:{lion:'lion',bearer:'bearer',spear:'ironSpear',archer:'ironArcher',cavalry:'cavalry',captain:'lion'},1:{bandit:'bandit',archer:'archer',captain:'captain'},2:{bandit:'deserter',archer:'archer',captain:'deserterCaptain'},3:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},4:{bandit:'fortGuard',archer:'fortArcher',captain:'quartermaster'}};
 export function hdCastFor(u,missionId=1){
  if(CAST[u.id]&&u.team!=='enemy')return u.id==='eric'&&appearanceFor(u)?.tier>=2?'eric_adv':u.id;
  if(u.team==='commander'||u.id==='aren')return 'aren';
  if(u.id==='advisor')return 'aide';
  if(u.kind==='wagon')return 'wagon';
+ if(u.kind==='beacon')return 'beacon';
+ if(missionId===6&&u.team==='enemy'&&/^g\d/.test(u.id))return 'fortGuard';
+ if(missionId===6&&u.id==='i1')return 'quartermaster';
  if(u.team==='civilian'){const n=String(u.name||'');return /Mira/.test(n)?'mira':/Tomas/.test(n)?'farmer':CAST[u.id]?u.id:'refugee';}
  if(u.burns)return 'torch';
  if(missionId===4&&/^r\d/.test(u.id))return 'storeman';
@@ -56,8 +59,18 @@ export function hdCastFor(u,missionId=1){
 }
 // draws a figure with its feet at world (x, footY); pose 'attack' leans toward the facing.
 export function drawHDFigure(c,castId,x,footY,{facing='down',frame=0,pose='idle',alpha=1}={}){
+ if(castId==='beacon'){drawBeacon(c,x,footY,pose==='death',alpha);return;}
  if(castId==='wagon'){const w=wagonSprite();c.save();c.globalAlpha*=pose==='death'?.4:alpha;hdBlit(c,w,x-24*HD_K,footY-50*HD_K);c.restore();return;}
  const s=figureSprite(castId,{facing,frame}),K=HD_K,lean=pose==='attack'?{left:[-6,0],right:[6,0],up:[0,-6],down:[0,5]}[facing]:[0,0];
  c.save();c.globalAlpha*=alpha;if(pose==='death'){c.globalAlpha*=.45;c.translate(x,footY-8);c.rotate(-Math.PI/2);hdBlit(c,s,-24*K,-FIG_FOOT*K);c.restore();return;}
  hdBlit(c,s,x-24*K+lean[0],footY-FIG_FOOT*K+lean[1]);c.restore();}
 export const hdDirection=(dx,dy,fallback='down')=>Math.abs(dx)<.001&&Math.abs(dy)<.001?fallback:Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up');
+
+// M06 watchtower beacon (original): stone brazier on a timber stand; the fire animates, a fallen beacon smokes.
+function drawBeacon(c,x,footY,dead,alpha=1){const t=performance.now(),K=HD_K;c.save();c.globalAlpha*=alpha;const y=footY,R=(col,a,b,w,h)=>{c.fillStyle=col;c.fillRect(Math.round(x+a*K),Math.round(y+b*K),Math.round(w*K),Math.round(h*K));};
+ c.fillStyle='rgba(20,24,30,.32)';c.beginPath();c.ellipse(x,y-2,16*K,4*K,0,0,Math.PI*2);c.fill();
+ for(const dx of [-11,8])R('#5a3e28',dx,-30,3,30);R('#6e4c30',-12,-18,24,3);R('#3a281a',-12,-16,24,1);
+ R('#6b6d6a',-13,-38,26,9);R('#8c8f8a',-13,-38,26,2);R('#45474a',-13,-31,26,2);R('#5a5c5a',-9,-29,18,2);
+ if(dead){for(let i=0;i<5;i++){const py=-44-i*7-(t/60)%7,px=Math.sin(t/500+i)*3;c.fillStyle=`rgba(70,68,72,${.35-i*.06})`;c.beginPath();c.ellipse(x+px*K,y+py*K,(4+i)*K,(3+i*.6)*K,0,0,Math.PI*2);c.fill();}R('#2a2224',-10,-40,20,3);}
+ else{for(let i=0;i<6;i++){const ph=t/110+i*1.3,h=9+5*Math.sin(ph);R(i%2?'#ffcf6a':'#f07a32',-10+i*3.4,-38-h,3.4,h);}R('#fff2b0',-3,-46,6,6);c.fillStyle='rgba(255,180,90,.18)';c.beginPath();c.ellipse(x,y-44*K,22*K,14*K,0,0,Math.PI*2);c.fill();}
+ c.restore();}

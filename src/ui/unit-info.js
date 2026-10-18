@@ -7,8 +7,8 @@ import {rangeFor,skillCost} from '../core/rules.js';
 import {itemIcon} from './item-art.js';
 
 const CLASS_KO={'Apprentice Knight':'견습 기사',Archer:'궁수','Apprentice Mage':'견습 마도사',Healer:'치유사',Rogue:'도적'};
-const KIND_KO={bandit:'보병',archer:'궁병',captain:'지휘관',civilian:'주민',lion:'철왕관 총사령관',bearer:'사자 기수',spear:'창병',cavalry:'기병',wagon:'보급 마차'};
-const ENEMY_BIO={lion:'철왕관 총사령관, "검은 사자". 무법지대가 된 국경에 질서를 되찾겠다며 정규군을 이끌고 왔다. 맡은 명령을 완수하면 미련 없이 물러나는 지휘관이다.',bearer:'검은 사자 깃발을 든 기수. 곁에 선 병사들을 단단히 묶어 대형을 지탱한다.',spear:'철왕관 정규 창병. 기수 곁에서 대열을 지킨다.',cavalry:'철왕관 기병. 빠르지만 숲과 산길로는 들어오지 못한다.',wagon:'피난민의 식량과 약을 실은 마차. 한 대라도 지켜 내면 이동로를 지킨 것이다.'};
+const KIND_KO={bandit:'보병',archer:'궁병',captain:'지휘관',civilian:'주민',lion:'철왕관 총사령관',bearer:'사자 기수',spear:'창병',cavalry:'기병',wagon:'보급 마차',beacon:'감시탑 봉화'};
+const ENEMY_BIO={beacon:'관문 동쪽 감시탑의 봉화. 반격하지 않지만, 살아 있으면 3단계에 관문 수비대 증원을 부른다.',lion:'철왕관 총사령관, "검은 사자". 무법지대가 된 국경에 질서를 되찾겠다며 정규군을 이끌고 왔다. 맡은 명령을 완수하면 미련 없이 물러나는 지휘관이다.',bearer:'검은 사자 깃발을 든 기수. 곁에 선 병사들을 단단히 묶어 대형을 지탱한다.',spear:'철왕관 정규 창병. 기수 곁에서 대열을 지킨다.',cavalry:'철왕관 기병. 빠르지만 숲과 산길로는 들어오지 못한다.',wagon:'피난민의 식량과 약을 실은 마차. 한 대라도 지켜 내면 이동로를 지킨 것이다.'};
 const BIO={
  eric:'변경 수비대의 기사. 아렌의 오랜 전우로, 언제나 맨 앞에 서서 동료를 지키는 것을 자기 몫으로 여긴다. 지난 일은 좀처럼 입에 올리지 않는다.',
  elina:'수비대 정찰병. 고향을 잃은 뒤로 높은 사람들의 말을 쉽게 믿지 않는다. 숲과 마을에서 쏘는 화살은 빗나가는 법이 드물다.',

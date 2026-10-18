@@ -91,6 +91,38 @@ try{for(const [width,height,touch]of viewports){
  if(width===1440)await p.screenshot({path:`${shots}/m05-result-${width}.png`});
  await cmd('aftermath');await settle();s=await snap();
  check(`${label} M05 aftermath plays the camp talk for the chosen answer`,s.narrative.seen.includes('after:5')&&s.narrative.seen.includes('after:5:acknowledged'));
+ // 6. M06: camp (royal order) → council → deployment → battle with refugees and seal stones.
+ await cmd('next-mission');await settle();s=await snap();
+ check(`${label} M06 opens in camp with the royal order matching the records choice`,s.missionId===6&&s.screen==='exploration'&&s.narrative.seen.includes('pre:6')&&s.narrative.seen.includes('pre:6:order:kept'));
+ await cmd('warroom');await settle();
+ check(`${label} M06 council explains the three phases`,(await p.locator('.council-summary').textContent()).includes('재의 맹세')&&(await p.locator('.council-summary').textContent()).includes('TURN 11'));
+ await cmd('deploy');await settle();await cmd('start-battle');if(await p.locator('[data-do="confirm-battle"]').count())await cmd('confirm-battle');await settle();s=await snap();
+ check(`${label} M06 battle: four refugees, two locked seal stones, phase bar`,s.screen==='battle'&&s.units.filter(u=>u.team==='civilian').length===4&&s.units.filter(u=>u.kind==='sealstone'&&u.locked).length===2&&(await p.locator('#phasebar').textContent()).includes('1단계'));
+ if(width===1440||width===390)await p.screenshot({path:`${shots}/m06-battle-${width}.png`});
+ check(`${label} M06 battle has no horizontal overflow`,await noOverflow());
+ // 7. Lia opens the last seal through the visible menu → phase 3 and Erik's Oath Banner.
+ const m06=JSON.parse(JSON.stringify(s));for(const u of m06.units)if(u.team==='enemy'&&!['boss','beacon'].includes(u.id))u.hp=0;m06.missionState.phase=2;for(const o of m06.units.filter(u=>u.kind==='sealstone'))o.locked=false;m06.units.find(u=>u.id==='seal1').rescued=true;
+ const ref=m06.units.find(u=>u.id==='p1');ref.x=8;ref.y=1;ref.rescued=true;const ml=m06.units.find(u=>u.id==='lia');ml.x=11;ml.y=4;const mE=m06.units.find(u=>u.id==='eric');mE.x=12;mE.y=5;
+ await restore(m06);await settle();await menuFor('lia',11,4);await cmd('mode','search');await tile(10,4);
+ check(`${label} unseal forecast names the seal stone`,(await p.locator('.forecast').textContent()).includes('봉인 해제'));
+ await cmd('confirm');await settle();s=await snap();
+ check(`${label} Lia unseals in one action → phase 3 and Erik's Oath Banner`,s.missionState.phase===3&&s.missionState.banner&&s.narrative.seen.includes('6:phase3')&&s.narrative.seen.includes('6:banner')&&s.units.find(u=>u.id==='eric').oathUntil===s.turn+1);
+ // 8. Erik fells the blockade executor → victory, flags and rewards.
+ const win=JSON.parse(JSON.stringify(s));for(const u of win.units)if(u.team==='enemy'&&!['boss','beacon'].includes(u.id))u.hp=0;const wb=win.units.find(u=>u.id==='boss');wb.x=9;wb.y=1;wb.hp=3;const we=win.units.find(u=>u.id==='eric');we.x=9;we.y=2;
+ await restore(win);await settle();await pick('eric');if((await p.evaluate(()=>AshenCrown.view().menu))!=='root')await tile(9,2);await p.waitForSelector('[data-do="mode"][data-id="attack"]');await cmd('mode','attack');await tile(9,1);await cmd('confirm');await settle();s=await snap();
+ check(`${label} M06 victory sets ACT I flags and the finale rewards`,s.outcome==='victory'&&s.campaign.flags.act1_completed&&s.campaign.flags.legion_independent&&s.campaign.flags.mission_06_refugees_through===1&&s.economy.rewardClaims.includes('v040:m6:supply-hp'));
+ if(width===1440)await p.screenshot({path:`${shots}/m06-result-${width}.png`});
+ // 9. Aftermath: the Ashen Oath choice (C3) → ACT I completion card → camp shows the ACT II teaser.
+ await cmd('aftermath');await settle();s=await snap();
+ check(`${label} M06 aftermath plays the oath scene and asks for the oath focus`,s.narrative.seen.includes('6:oath')&&await p.locator('[data-do="oath-pick"]').count()===3);
+ if(width===1440||width===390)await p.screenshot({path:`${shots}/m06-oath-${width}.png`});
+ await cmd('oath-pick','comrades');await settle();s=await snap();
+ check(`${label} oath saved, its scenes play and the ACT I card names the Ashen Legion`,s.campaign.choices.m06_oath==='comrades'&&s.campaign.flags.ashen_oath_focus==='comrades'&&s.narrative.seen.includes('6:oath:comrades')&&s.narrative.seen.includes('act1:complete')&&s.narrative.seen.includes('after:6')&&(await p.locator('.act1-card').textContent()).includes('재의 군단'));
+ if(width===1440||width===390)await p.screenshot({path:`${shots}/act1-complete-${width}.png`});
+ await cmd('close-modal');await p.waitForTimeout(150);
+ check(`${label} camp shows the ACT II teaser and offers no next departure`,(await p.locator('#app').textContent()).includes('ACT II')&&!await p.locator('[data-do="next-mission"]').count());
+ await p.reload();await settle();s=await snap();
+ check(`${label} oath and ACT I completion survive reload without repeating`,s.campaign.choices.m06_oath==='comrades'&&s.campaign.choices.act1_seen==='yes'&&!await p.locator('.act1-card').count()&&!await p.locator('[data-do="oath-pick"]').count());
  await ctx.close();
 }}finally{await browser.close();}
 check('ACT I browser run has zero runtime errors',errors.length===0);check('ACT I standalone makes zero HTTP requests',external===0);

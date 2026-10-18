@@ -40,9 +40,12 @@ export const SCORE={
  lion:{name:'The Black Lion',tempo:104,lead:'horn',arp:'ostinato',pad:'lowpad',drums:'heavy',gain:.85,
   chords:chords('Gm Eb Bb F Gm Eb D D'),
   melody:melody('G4:2 D5:2 G5:3 F5:1  Eb5:2 D5:2 Bb4:4  F5:2 D5:2 Bb4:2 C5:2  F4:6 -:2  G4:2 Bb4:2 D5:2 G5:2  G5:2 F5:2 Eb5:4  D5:2 C5:2 Bb4:2 A4:2  F#4:6 -:2')},
+ oath:{name:'The Ashen Oath',tempo:112,lead:'horn',arp:'ostinato',pad:'strings',drums:'battle',gain:.85,
+  chords:chords('Bm G D A Bm G Em F#'),
+  melody:melody('B4:2 D5:2 F#5:3 E5:1  D5:2 C#5:2 B4:4  G5:2 F#5:2 E5:2 D5:2  C#5:6 -:2  B4:2 D5:2 F#5:2 B5:2  A5:3 G5:1 F#5:4  E5:2 G5:2 F#5:2 E5:2  F#5:6 -:2')},
  fortress:{name:'Halls of the Quartermaster',tempo:108,lead:'horn',arp:'ostinato',pad:'lowpad',drums:'battle',gain:.85,
   chords:chords('Em D C B Em D C B'),
   melody:melody('E5:2 B4:2 E5:2 G5:2  F#5:2 D5:2 A4:4  G5:2 E5:2 C5:2 E5:2  D#5:6 -:2  E5:1 F#5:1 G5:2 A5:2 B5:2  A5:2 F#5:2 D5:4  C5:2 E5:2 G5:2 E5:2  B4:6 -:2')}
 };
 export const MOTIF=SCORE.title.melody.map(([n])=>n);
-export const musicScene=s=>s.narrative?.active?(s.narrative.active.key==='raid'?'tension':s.narrative.active.key.startsWith('pre:')?'story':s.frontier?.hub==='camp'?'camp':'story'):s.screen==='title'?'title':s.screen==='exploration'?s.frontier?.hub==='camp'?'camp':'village':['warroom','deployment'].includes(s.screen)?'departure':s.screen!=='battle'?'story':s.missionId===3||s.units.some(u=>u.team==='civilian'&&!u.rescued&&u.hp>0&&u.hp<u.maxHP/2)?'crisis':s.phase==='enemy'?'enemy':s.missionId===4?'fortress':s.missionId===5?'lion':'player';
+export const musicScene=s=>s.narrative?.active?(s.narrative.active.key==='raid'?'tension':s.narrative.active.key.startsWith('pre:')?'story':s.frontier?.hub==='camp'?'camp':'story'):s.screen==='title'?'title':s.screen==='exploration'?s.frontier?.hub==='camp'?'camp':'village':['warroom','deployment'].includes(s.screen)?'departure':s.screen!=='battle'?'story':s.missionId===6?(s.phase==='enemy'?'enemy':'oath'):s.missionId===3||s.units.some(u=>u.team==='civilian'&&!u.rescued&&u.hp>0&&u.hp<u.maxHP/2)?'crisis':s.phase==='enemy'?'enemy':s.missionId===4?'fortress':s.missionId===5?'lion':'player';

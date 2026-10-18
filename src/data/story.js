@@ -53,3 +53,5 @@ for(let mission=1;mission<=LAST_MISSION;mission++)for(const phase of ['preparati
 const ERIK_REPLIES={aren:'너 혼자 질 짐이 아니야. 병사들은 내가 챙긴다.',elina:'알았다. 다들 돌아올 길도 같이 봐 줘.',lia:'위험한 흔적이 보이면 먼저 말해. 동료부터 지킨다.',sain:'치료에만 집중해. 그동안 옆은 내가 지킨다.',kai:'혼자 빠질 길만 찾지 마. 다 같이 돌아가는 거다.'};
 for(let mission=1;mission<=LAST_MISSION;mission++)for(const phase of ['preparation','aftermath'])for(const [id,text]of Object.entries(ERIK_REPLIES))STORY[`npc:${mission}:${phase}:${id}`].push({...line('eric',text),inPlace:true,actors:['eric',id]});
 Object.assign(STORY,STORY_V04);
+// M06 camp: each companion's reason to stay replaces the generic preparation talk (PROPOSED wording).
+for(const [npc,hero]of [['aren','eric'],['elina','elina'],['lia','lia'],['sain','sain'],['kai','kai']])if(STORY[`pre:6:reason:${hero}`])STORY[`npc:6:preparation:${npc}`]=STORY[`pre:6:reason:${hero}`].map(l=>({...l,stage:undefined,inPlace:true,actors:['eric',npc],focus:1}));

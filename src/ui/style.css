@@ -177,3 +177,42 @@
 .strategist-line{display:flex;align-items:center;gap:12px;margin:6px 0}
 .strategist-line .card-sprite{width:56px;height:56px;flex:none;image-rendering:pixelated}
 .strategist-line p{margin:0;font-size:16px}
+/* v0.4 feedback #4: classic SRPG dialogue window — painted bust overlapping a translucent box.
+   The whole screen is the "next" button; only Auto/Skip remain (top-right). */
+.dialogue-backdrop{--bust-h:clamp(250px,54vh,500px);display:block;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;background:linear-gradient(180deg,rgba(6,12,16,0) 45%,rgba(6,12,16,.5))}
+.dialogue-backdrop.staged-scene{background:#08181f}
+.dialogue-backdrop.in-place-dialogue{background:linear-gradient(180deg,rgba(6,12,16,0) 50%,rgba(6,12,16,.42))}
+.dialogue-backdrop .dialogue-panel{position:absolute;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(1120px,calc(100% - 24px));max-width:none;height:clamp(132px,25vh,214px);display:block;gap:0;padding:0;margin:0;background:linear-gradient(180deg,rgba(18,24,32,.86),rgba(8,11,16,.93));border:1px solid rgba(220,182,108,.62);border-radius:3px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,232,180,.12),0 10px 36px rgba(0,0,0,.5);animation:dialogueIn .18s ease-out;z-index:1}
+.dialogue-backdrop .dialogue-panel.reduced{animation:none}
+.dialogue-backdrop .story-bust{position:absolute;left:6px;bottom:-1px;height:var(--bust-h);width:auto;aspect-ratio:360/440;image-rendering:auto;pointer-events:none;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
+.dialogue-backdrop .dialogue-copy{position:absolute;left:calc(var(--bust-h)*.80 + 10px);right:52px;top:16px;bottom:14px;overflow:hidden}
+.dialogue-backdrop .dialogue-name{margin:0 0 8px;font:bold 22px/1.2 Georgia,'Ashen UI',serif;color:#f4a43c;letter-spacing:.04em;text-shadow:0 2px 0 #1a0e04,0 0 10px rgba(240,150,40,.25)}
+.dialogue-backdrop .dialogue-text{margin:0;min-height:0;font:19px/1.72 Arial,'Ashen UI',sans-serif;color:#f6f2e8;text-shadow:0 1px 0 #000;word-break:keep-all;overflow-wrap:anywhere}
+.dialogue-next{position:absolute;right:20px;bottom:16px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:11px solid #f0c060;filter:drop-shadow(0 0 4px rgba(240,190,90,.6));animation:nextBob 1s ease-in-out infinite}
+.story-controls{position:absolute;top:max(10px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));display:flex;gap:6px;z-index:3}
+.story-controls button{min-height:40px;min-width:62px;padding:6px 14px;background:rgba(14,20,28,.8);border:1px solid rgba(220,182,108,.65);border-radius:3px;color:#f2e3c0;font:bold 14px Arial,'Ashen UI',sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.story-controls button.on{background:#c89640;border-color:#f3d590;color:#1b1208}
+.dialogue-backdrop #scene-stage{left:0;top:0;transform:none;width:100%;height:calc(100dvh - clamp(132px,25vh,214px) - 10px)}
+@keyframes nextBob{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(4px);opacity:.55}}
+@keyframes dialogueIn{from{opacity:.4;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+@media(max-width:600px){
+ .dialogue-backdrop{--bust-h:clamp(200px,34vh,300px)}
+ .dialogue-backdrop .dialogue-panel{height:clamp(150px,23vh,190px);width:calc(100% - 16px);bottom:max(10px,env(safe-area-inset-bottom))}
+ .dialogue-backdrop .story-bust{left:0;bottom:calc(100% - 4px)}
+ .dialogue-backdrop .dialogue-copy{left:16px;right:34px;top:12px;bottom:10px}
+ .dialogue-backdrop .dialogue-name{font-size:18px;margin-bottom:5px}
+ .dialogue-backdrop .dialogue-text{font-size:16px;line-height:1.65}
+ .dialogue-next{right:14px;bottom:12px}
+ .story-controls button{min-height:40px;min-width:54px;padding:6px 10px;font-size:13px}
+ .dialogue-backdrop #scene-stage{height:calc(100dvh - clamp(150px,23vh,190px) - 12px)}
+}
+@media(max-height:500px) and (min-width:601px){
+ .dialogue-backdrop{--bust-h:min(76vh,330px)}
+ .dialogue-backdrop .dialogue-panel{height:clamp(116px,34vh,150px);bottom:8px}
+ .dialogue-backdrop .dialogue-copy{top:10px;bottom:8px}
+ .dialogue-backdrop .dialogue-name{font-size:17px;margin-bottom:4px}
+ .dialogue-backdrop .dialogue-text{font-size:15px;line-height:1.6}
+ .dialogue-backdrop #scene-stage{height:100dvh}
+}
+/* v0.4 ACT I completion card */
+.act1-card{text-align:center;padding:6px 4px}.act1-card h2{font:bold 34px Georgia,'Ashen UI',serif;color:#f0c46a;margin:8px 0 0;letter-spacing:.06em}.act1-card .act1-en{font:14px Georgia,serif;color:#c9b88f;letter-spacing:.3em;text-transform:uppercase;margin:2px 0 14px}.act1-card .act1-oath{color:#f2dfb4}.act1-card blockquote{margin:14px auto;max-width:440px;padding:10px 14px;border-left:3px solid #9b875e;background:#182f33;text-align:left;font:15px/1.7 Georgia,'Ashen UI',serif;color:#e8dcc0}.act1-card cite{display:block;margin-top:6px;font:12px Arial,'Ashen UI',sans-serif;color:#b9a77f;font-style:normal}.act1-card .act1-next{margin-top:16px;font:bold 15px Arial,'Ashen UI',sans-serif;color:#9fd1e6;letter-spacing:.04em}
