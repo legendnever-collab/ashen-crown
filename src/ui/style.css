@@ -224,3 +224,29 @@
 .dialogue-backdrop{--bust-h:clamp(170px,35vh,330px)}
 @media(max-width:600px){.dialogue-backdrop{--bust-h:clamp(130px,22vh,195px)}}
 @media(max-height:500px) and (min-width:601px){.dialogue-backdrop{--bust-h:min(50vh,215px)}}
+/* 2026-10-18 feedback: War Council sortie board + picture-first deployment */
+.council-screen .council-summary h2{margin:4px 0 8px}.council-goal{font:14px/1.6 Arial,'Ashen UI',sans-serif;margin:0;color:#efe2c2}
+.council-intel{margin:8px 0 4px;font:12px/1.6 Arial,'Ashen UI',sans-serif;color:#c8d2c4}.council-intel summary{cursor:pointer;color:#d8bd85;min-height:32px;display:flex;align-items:center}.council-intel p{margin:6px 0}
+.sortie-board{display:grid!important;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch;margin:14px 0}
+.sortie-col{background:#1c3236;border:1px solid #4f665e;padding:10px;min-height:140px;transition:background .15s}.sortie-col.drop-hover{background:#28463f;border-color:#d8bd85}.sortie-out{border-color:#9b875e}
+.sortie-col h3{margin:0 0 8px;font:bold 14px Arial,'Ashen UI',sans-serif;color:#e8cf95}.sortie-col h3 small{color:#9fb2a8;margin-left:6px}
+.sortie-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.sortie-tile{position:relative;display:flex!important;flex-direction:row!important;align-items:center;gap:10px;padding:6px 10px 6px 6px!important;min-height:64px;text-align:left;background:#243c3f;border:1px solid #587063;cursor:grab}
+.sortie-tile.active{border-color:#f0c46a;box-shadow:0 0 0 2px rgba(240,196,106,.35)}.sortie-tile canvas{width:52px!important;height:52px!important;flex:0 0 52px;border:1px solid #6b7f73}
+.sortie-tile b{display:block;font:bold 14px Arial,'Ashen UI',sans-serif;color:#f2e6c8}.sortie-tile small{display:block;font:11px Arial,'Ashen UI',sans-serif;color:#a9bdb2}
+.sortie-lock{position:absolute;top:4px;right:6px;font-style:normal;color:#f0c46a;font-size:12px}
+.sortie-empty{color:#7f958b;font:12px Arial,'Ashen UI',sans-serif;margin:30px 0;text-align:center}
+.sortie-arrows{display:flex;flex-direction:column;justify-content:center;gap:10px}.sortie-arrows button{min-width:64px;min-height:52px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:18px}.sortie-arrows small{font-size:11px}
+.council-supplies{display:flex;flex-wrap:wrap;gap:14px;align-items:center;font:13px Arial,'Ashen UI',sans-serif;color:#e8dcc0;margin:6px 0 12px}.council-supplies span{display:inline-flex;align-items:center;gap:4px}.supply-gold{color:#f0c46a}
+.council-actions button{min-height:44px}
+.deploy-side{position:fixed;right:14px;top:150px;z-index:8;display:flex;flex-direction:column;gap:8px;background:rgba(14,26,30,.82);border:1px solid #7e7957;padding:8px;border-radius:4px}
+.deploy-face-btn{display:flex!important;flex-direction:column;align-items:center;gap:2px;padding:4px!important;min-width:0!important;background:#1d3337;border:1px solid #4f665e}.deploy-face-btn.active{border-color:#f0c46a;box-shadow:0 0 0 2px rgba(240,196,106,.45);background:#2c4640}
+.deploy-face-btn canvas{width:56px;height:56px;display:block}.deploy-face-btn span{font:11px Arial,'Ashen UI',sans-serif;color:#e8dcc0}
+@media(max-width:600px){.sortie-board{grid-template-columns:1fr auto 1fr;gap:6px}.sortie-col{padding:6px;min-height:110px}.sortie-list{grid-template-columns:1fr}.sortie-tile{gap:6px;min-height:52px;padding:4px!important}.sortie-tile canvas{width:40px!important;height:40px!important;flex-basis:40px}.sortie-tile b{font-size:12px}.sortie-tile small{font-size:10px}.sortie-arrows button{min-width:46px;min-height:46px}
+ .deploy-side{right:6px;top:118px;padding:5px;gap:5px}.deploy-face-btn canvas{width:40px;height:40px}.deploy-face-btn span{display:none}}
+@media(max-height:500px){.deploy-side{top:90px;flex-direction:row;flex-wrap:wrap;max-width:240px}.deploy-face-btn canvas{width:38px;height:38px}.deploy-face-btn span{display:none}}
+.deploy-side{top:198px}@media(max-width:600px){.deploy-side{top:162px}}@media(max-height:500px){.deploy-side{top:96px;right:60px}}
+/* phones: the sortie portraits sit in the bottom bar instead of over the map, so no tile is hidden */
+@media(max-width:600px){.deploy-side{position:static;flex-direction:row;justify-content:flex-start;background:none;border:0;padding:0 0 4px;gap:6px}.deploy-face-btn canvas{width:38px;height:38px}}
+@media(max-height:500px) and (min-width:601px){.deploy-side{position:static;flex-direction:row;background:none;border:0;padding:0 0 4px;max-width:none}}
+@media(max-width:600px){.dock-commands:not(.compact-commands) button{font-size:12px;padding:6px 4px;white-space:nowrap}}

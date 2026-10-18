@@ -8,6 +8,7 @@ import {itemIcon} from './item-art.js';
 import {unitInfoHTML} from './unit-info.js';
 import {hubCamera,drawHub} from '../render/frontier-renderer.js';
 import {VERSION,HEROES,BALANCE,TERRAIN} from '../data/game-data.js';
+import {setSortie} from '../core/game.js';
 import {newGame,setDeployment,presetDeployment,startBattle,canAct,moveUnit,undoMove,performAction,beginEnemyPhase,advanceEnemy,replay,restartStage,nextMission} from '../core/game.js';
 import {findUnit,at,alive,terrainAt,terrainCost,movement,pathTo,validTarget,forecast,skillCost,rangeFor,terrainSummary} from '../core/rules.js';
 import {loadGame,saveGame,resetSave,serialize,deserialize} from '../persistence/save-manager.js';
@@ -115,8 +116,9 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'records-pick':{if(state.missionId!==4||state.practice||state.frontier?.phase!=='aftermath'||state.campaign.choices?.m04_records_choice||!['kept','reported'].includes(id))break;state.campaign.choices??={};state.campaign.choices.m04_records_choice=id;closeModal();enqueueStory(state,`after:4:${id}`);openStory(state);commit();break;}
  case 'appearance':showAppearance();break;
  case 'new':state=newGame(state.initialSeed,state.campaign,state.campaign.completed.includes(1)?Math.min(LAST_MISSION,(state.campaign.completed.at(-1)||0)+1):1);ui.selected='eric';enterHub(state);commit();break;
- case 'warroom':await prepareCouncil();break;case 'deploy':state.frontier.ready.formation=true;syncFrontier(state);setScreen('deployment');break;
- case 'select':{const u=findUnit(state,id);if(!u||u.team!=='ally'||state.screen==='battle'&&!alive(u))break;ui.selected=id;ui.menu=state.screen==='battle'?'root':null;ui.mode=state.screen==='battle'&&!u.moved&&!u.acted?'move':initialMode(u);renderer.focus(u.x,u.y);ui.preview=null;ui.notice=null;ui.inspected=null;ui.phaseConfirm=false;render();break;}
+ case 'warroom':await prepareCouncil();break;case 'deploy':state.frontier.ready.formation=true;syncFrontier(state);if(findUnit(state,ui.selected)?.benched||!findUnit(state,ui.selected))ui.selected='eric';ui.mode='choose';setScreen('deployment');break;
+ case 'sortie-add':case 'sortie-remove':{if(setSortie(state,ui.selected,action==='sortie-add'))commit();break;}
+ case 'select':{const u=findUnit(state,id);if(!u||u.team!=='ally'||state.screen==='battle'&&!alive(u)||state.screen==='deployment'&&u.benched)break;ui.selected=id;ui.menu=state.screen==='battle'?'root':null;ui.mode=state.screen==='deployment'?'deploy':state.screen==='battle'&&!u.moved&&!u.acted?'move':initialMode(u);renderer.focus(u.x,u.y);ui.preview=null;ui.notice=null;ui.inspected=null;ui.phaseConfirm=false;render();break;}
  case 'preset':presetDeployment(state,id);commit();break;
  case 'start-battle':if(state.screen==='deployment'&&needsParley()){offerParley();break;}if(state.screen==='deployment'){modal('출전 최종 확인',`<p><b>${esc(missionOf(state).objective)}</b></p><p>${esc(councilInfo(state).plan)}</p><p>Equipment / Items / Formation / Objective<br>기본 장비로 출전 가능 · 구매 준비는 선택입니다.</p><p>기본 회복약 2개 + 구매 도구 ${itemCount(state.economy)}개. 출전 이후 장비 변경은 잠깁니다.</p>`,'<button class="primary" data-do="confirm-battle">출전 확정</button><button data-do="close-modal">계속 준비</button>');}break;
  case 'confirm-battle':if(startBattle(state)){closeModal();ui.mode='choose';ui.notice=null;commit();}break;
@@ -155,6 +157,10 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
 }
 // A menu inserted on map pointerup must not receive the same gesture's click.
 let pressedCommand=null;
+document.addEventListener('dragstart',e=>{const h=e.target.closest?.('[data-hero]');if(!h)return;e.dataTransfer.setData('text/plain',h.dataset.hero);e.dataTransfer.effectAllowed='move';});
+document.addEventListener('dragover',e=>{const col=e.target.closest?.('[data-drop]');if(col){e.preventDefault();col.classList.add('drop-hover');}});
+document.addEventListener('dragleave',e=>{e.target.closest?.('[data-drop]')?.classList.remove('drop-hover');});
+document.addEventListener('drop',e=>{const col=e.target.closest?.('[data-drop]');if(!col)return;e.preventDefault();const id=e.dataTransfer.getData('text/plain');ui.selected=id;if(setSortie(state,id,col.dataset.drop==='sortie'))commit();else render();});
 document.addEventListener('pointerdown',e=>{pressedCommand=e.target.closest('[data-do]');if(pressedCommand&&pressedCommand.dataset.do!=='walk'){heldMovement.clear();navigationEpoch++;}audio.activate();},{capture:true});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-do]'),pointerClick=!!e.pointerType||!!e.sourceCapabilities?.firesTouchEvents||e.detail>0;if(b&&!b.disabled&&!(b.dataset.do==='walk'&&pointerClick)&&(!pointerClick||sameCommand(pressedCommand,b)))dispatch(b.dataset.do,b.dataset.id);});
 // Mobile: the menu may re-render between touchstart and the synthesized click, replacing the
@@ -168,7 +174,7 @@ canvas.addEventListener('pointerdown',e=>{touches.set(e.pointerId,{x:e.clientX,y
 canvas.addEventListener('pointermove',e=>{if(touches.has(e.pointerId))touches.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pinch&&touches.size===2){const [a,b]=[...touches.values()];const zoom=pinch.zoom*Math.hypot(a.x-b.x,a.y-b.y)/pinch.distance;renderer.zoomBy(zoom/renderer.zoom);return;}const b=canvas.getBoundingClientRect(),tile=renderer.tileAt(e.clientX-b.left,e.clientY-b.top);ui.hover=tile;const t=terrainAt(tile.x,tile.y,state),unit=at(state,tile.x,tile.y);$('#terrain-readout').textContent=t?`${terrainSummary(state,tile.x,tile.y,findUnit(state,ui.selected))}${unit?` · ${unit.name} ${unit.hp} HP`:''}`:'전장 밖';if(pointer&&pointer.id===e.pointerId&&pointer.pan){if(Math.hypot(e.clientX-pointer.x,e.clientY-pointer.y)>(e.pointerType==='touch'?14:7))pointer.drag=true;if(pointer.drag){renderer.pan.x+=e.clientX-pointer.lastX;renderer.pan.y+=e.clientY-pointer.lastY;renderer.clampPan();}}if(pointer){pointer.lastX=e.clientX;pointer.lastY=e.clientY;}});
 canvas.addEventListener('pointerup',async e=>{touches.delete(e.pointerId);if(pinchUsed){if(!touches.size){pinch=null;pinchUsed=false;pointer=null;}return;}if(!pointer||pointer.id!==e.pointerId)return;const p=pointer;pointer=null;if(p.drag||e.button===2||ui.busy||state.narrative.active)return;const b=canvas.getBoundingClientRect(),tile=renderer.tileAt(e.clientX-b.left,e.clientY-b.top),t=at(state,tile.x,tile.y),u=findUnit(state,ui.selected);
  if(state.screen==='deployment'){
-  if(ui.mode==='deploy'){if(setDeployment(state,ui.selected,tile.x,tile.y)){ui.mode='choose';ui.notice='배치 완료 · 장수를 선택해 하단에서 배치 이동을 누르세요.';commit();}else{ui.notice='남쪽 배치 영역의 유효한 Tile을 선택하세요.';render();}}
+  if(ui.mode==='deploy'&&!(t?.id===ui.selected)){if(setDeployment(state,ui.selected,tile.x,tile.y)){ui.mode='choose';ui.notice='배치 완료';commit();}else if(t?.team==='ally')dispatch('select',t.id);else{ui.notice='파란 칸에만 배치할 수 있습니다.';render();}}
   else if(t?.team==='ally')dispatch('select',t.id);return;
  }
  const terrain=terrainAt(tile.x,tile.y,state);if(terrain)$('#terrain-readout').textContent=terrainSummary(state,tile.x,tile.y,findUnit(state,ui.selected));

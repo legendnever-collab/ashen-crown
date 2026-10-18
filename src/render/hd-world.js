@@ -71,11 +71,25 @@ let spritesWarm=false;
 function loadSheet(id){let img=spriteImages.get(id);if(!img){img=new Image();img.decoding='async';img.onerror=()=>{img.failed=true;};img.src=SPRITES[id];spriteImages.set(id,img);img.decode?.().catch(()=>{});}return img;}
 // decode every sheet once up front so no frame pays for a first-time decode mid-animation
 export function paintedSheet(castId){const id=spriteIdFor(castId),src=SPRITES?.[id];if(!src||typeof Image==='undefined')return null;if(!spritesWarm){spritesWarm=true;for(const k of Object.keys(SPRITES))loadSheet(k);}const img=loadSheet(id);return img.complete&&img.naturalWidth&&!img.failed?img:null;}
-export function paintedFrame(facing='down',frame=0,pose='idle'){return {row:facing==='up'?2:facing==='down'?0:1,col:pose==='attack'?3:frame?1+((frame-1)%2):0,mirror:facing==='left'};}
-function drawPaintedFigure(c,img,x,footY,{facing,frame,pose,alpha}){const cell=img.naturalWidth/4,{row,col,mirror}=paintedFrame(facing,frame,pose),D=PAINTED_CELL,lean=pose==='attack'?{left:[-4,0],right:[4,0],up:[0,-4],down:[0,3]}[facing]:[0,0];
+// Walk cycle (2026-10-18 feedback: feet must alternate, not slide). The generated step frames do not
+// reliably alternate legs, so for the front and back views the two steps are rebuilt from the idle
+// frame: the lower-leg band is split at the figure's centre and one side is stretched down (foot
+// forward) while the other is compressed up (foot lifted), then swapped. The side view keeps the
+// painted strides. Cycle: step 1 → stand → step 2 → stand.
+export function paintedFrame(facing='down',frame=0,pose='idle'){return {row:facing==='up'?2:facing==='down'?0:1,col:pose==='attack'?3:frame?[1,0,2,0][(frame-1)%4]:0,mirror:facing==='left'};}
+const walkSheets=new WeakMap();
+function cellBox(g,x0,y0,size){const d=g.getImageData(x0,y0,size,size).data;let minX=size,maxX=-1,minY=size,maxY=-1;for(let y=0;y<size;y++)for(let x=0;x<size;x++)if(d[(y*size+x)*4+3]>40){if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y;}return maxX<0?null:{minX,maxX,minY,maxY};}
+export function walkSheet(img){let out=walkSheets.get(img);if(out)return out;const cell=img.naturalWidth/4;out=document.createElement('canvas');out.width=img.naturalWidth;out.height=img.naturalHeight;const g=out.getContext('2d',{willReadFrequently:true});g.drawImage(img,0,0);
+ try{for(const row of [0,2]){const oy=row*cell,b=cellBox(g,0,oy,cell);if(!b)continue;const legH=Math.max(8,Math.round((b.maxY-b.minY)*.26)),cut=b.maxY+1-legH,cx=Math.round((b.minX+b.maxX)/2),amp=Math.max(3,Math.round(cell*.05));
+   for(const [col,sign]of [[1,1],[2,-1]]){const ox=col*cell;g.clearRect(ox,oy,cell,cell);g.drawImage(img,0,oy,cell,cut,ox,oy,cell,cut);
+    const left=sign>0?legH+amp:legH-2*amp,right=sign>0?legH-2*amp:legH+amp;
+    g.drawImage(img,0,oy+cut,cx,legH,ox,oy+cut,cx,Math.min(left,cell-cut-1));g.drawImage(img,cx,oy+cut,cell-cx,legH,ox+cx,oy+cut,cell-cx,Math.min(right,cell-cut-1));}}}
+ catch(e){out=img;}
+ walkSheets.set(img,out);return out;}
+function drawPaintedFigure(c,img,x,footY,{facing,frame,pose,alpha}){const sheet=walkSheet(img),cell=img.naturalWidth/4,{row,col,mirror}=paintedFrame(facing,frame,pose),D=PAINTED_CELL,lean=pose==='attack'?{left:[-4,0],right:[4,0],up:[0,-4],down:[0,3]}[facing]:[0,0];
  c.save();c.globalAlpha*=alpha;c.imageSmoothingEnabled=true;c.imageSmoothingQuality='low';c.translate(x+lean[0],footY+lean[1]);
  if(pose==='death'){c.globalAlpha*=.45;c.translate(0,-8);c.rotate(-Math.PI/2);}if(mirror)c.scale(-1,1);
- c.drawImage(img,col*cell,row*cell,cell,cell,-D/2,-D*120/128,D,D);c.restore();}
+ c.drawImage(sheet,col*cell,row*cell,cell,cell,-D/2,-D*120/128,D,D);c.restore();}
 export function drawHDFigure(c,castId,x,footY,{facing='down',frame=0,pose='idle',alpha=1}={}){
  const sheet=paintedSheet(castId);if(sheet){drawPaintedFigure(c,sheet,x,footY,{facing,frame,pose,alpha});return;}
  if(castId==='beacon'){drawBeacon(c,x,footY,pose==='death',alpha);return;}

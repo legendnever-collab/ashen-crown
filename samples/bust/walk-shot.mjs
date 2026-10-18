@@ -1,0 +1,4 @@
+import {chromium} from 'playwright';import fs from 'fs';import http from 'http';import path from 'path';
+const root='/home/claude/ashen-crown';const srv=http.createServer((q,r)=>{const f=path.join(root,decodeURIComponent(q.url.split('?')[0]));fs.readFile(f,(e,d)=>{if(e){r.writeHead(404);r.end();return;}r.writeHead(200,{'content-type':f.endsWith('.js')?'text/javascript':f.endsWith('.html')?'text/html':f.endsWith('.webp')?'image/webp':'application/octet-stream'});r.end(d);});}).listen(8768);
+const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome'});const p=await b.newPage({viewport:{width:1200,height:800}});p.on('pageerror',e=>console.log('ERR',e.message));
+await p.goto('http://localhost:8768/samples/bust/walk.html');await p.waitForSelector('body[data-ready]');await p.screenshot({path:process.argv[2]});await b.close();srv.close();

@@ -4,7 +4,8 @@ import {missionOf} from '../data/missions.js';
 import {remember} from './narrative.js';
 export const distance=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
 export const key=(x,y)=>`${x},${y}`;
-export const alive=u=>u.hp>0&&!u.rescued;
+// benched: a hero left out of the sortie (pre-battle choice) takes no part in the battle
+export const alive=u=>u.hp>0&&!u.rescued&&!u.benched;
 export const terrainAt=(x,y,s)=>TERRAIN[(s?missionOf(s).map:MAP)[y]?.[x]];
 export const findUnit=(s,id)=>s.units.find(u=>u.id===id);
 export const at=(s,x,y)=>s.units.find(u=>alive(u)&&u.x===x&&u.y===y);
