@@ -1,6 +1,8 @@
 # Ashen Crown — 세계 지도·거점 배경 ChatGPT 지시서 (v0.5.0, 2026-10-20)
 
 설계는 [WORLD_MAP_AND_HUBS](WORLD_MAP_AND_HUBS.md)를 따릅니다.
+
+> **2026-10-20 갱신:** 사용자는 ChatGPT 작업 모드에 ZIP 한 개를 올려 8장을 한 번에 받고, 결과도 ZIP으로 받습니다. 그 작업 팩은 [art/world-work-pack](art/world-work-pack/)에 있고, `python3 scripts/make-world-work-pack.py --zip <out>`로 다시 만들 수 있습니다. 팩의 `00_START_HERE.md`(ChatGPT용 영문 지시서)와 `prompts/`가 이 문서보다 우선합니다. 이 문서는 사람이 한 장씩 요청할 때 쓰는 참고용입니다.
 - 배치와 거점 구성은 2026-10-20 승인되었습니다 (D-052). 그림에는 글자를 넣지 않으므로, 지명이 나중에 바뀌어도 그림은 그대로 쓸 수 있습니다.
 - 반신 그림을 받을 때 쓴 [ART_BRIEF_CHATGPT](../v0.4.0/ART_BRIEF_CHATGPT.md), [ART_BRIEF_TIER2](ART_BRIEF_TIER2.md)와 같은 원칙을 지킵니다.
 
