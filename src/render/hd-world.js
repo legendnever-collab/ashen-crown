@@ -45,7 +45,7 @@ export function drawTownBuilding(c,b,tone,state){const s=townBuildingSprite(b,to
 // ---------- figures ----------
 const ENEMY_LOOK={6:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},5:{lion:'lion',bearer:'bearer',spear:'ironSpear',archer:'ironArcher',cavalry:'cavalry',captain:'lion'},1:{bandit:'bandit',archer:'archer',captain:'captain'},2:{bandit:'deserter',archer:'archer',captain:'deserterCaptain'},3:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},4:{bandit:'fortGuard',archer:'fortArcher',captain:'quartermaster'}};
 export function hdCastFor(u,missionId=1){
- if(CAST[u.id]&&u.team!=='enemy')return u.id==='eric'&&appearanceFor(u)?.tier>=2?'eric_adv':u.id;
+ if(CAST[u.id]&&u.team!=='enemy'){if((u.classTier||1)>=2&&CAST[`${u.id}_t2`])return `${u.id}_t2`;return u.id==='eric'&&appearanceFor(u)?.tier>=2?'eric_adv':u.id;}
  if(u.team==='commander'||u.id==='aren')return 'aren';
  if(u.id==='advisor')return 'aide';
  if(u.kind==='wagon')return 'wagon';

@@ -72,3 +72,9 @@ test('schema 7 saves migrate to 8: heroes read as tier 1 and an empty promotion 
  const m=migrate(old);assert.equal(m.schema,SCHEMA);assert.equal(SCHEMA,8);assert.deepEqual(m.campaign.promotions,{});assert.ok(m.units.filter(u=>u.team==='ally').every(u=>classOf(u).tier===1),'unset classTier reads as tier 1');
  const again=deserialize(serialize(m));assert.equal(again.schema,8);
 });
+
+test('promoted heroes resolve to the tier-2 painted look; tier 1 keeps the original (incl. Erik Mantle)',async()=>{
+ const {hdCastFor}=await import('../src/render/hd-world.js');
+ for(const id of ['eric','elina','lia','sain','kai']){assert.equal(hdCastFor({id,team:'ally',classTier:2,level:9}),`${id}_t2`);}
+ assert.equal(hdCastFor({id:'lia',team:'ally',classTier:1,level:9}),'lia');assert.equal(hdCastFor({id:'eric',team:'ally',level:6,appearanceTier:2}),'eric_adv');
+});
