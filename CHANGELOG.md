@@ -1,6 +1,10 @@
-# v0.4.0 — The Broken Allegiance (in development)
+# v0.5.0 — Advanced Class & Character Progression (in development)
+- Phase A/B: v0.4.0 release notes (docs/v0.4.0/RELEASE_NOTES.md); class promotion, awakening actions, proficiency and Tier 2 appearance design (docs/v0.5.0) — design only, PROPOSED until the user approves.
+
+# v0.4.0 — The Broken Allegiance (official release, 2026-10-19)
+- Released after user play approval; PR #10 merged at f922a18 (hosted CI 5/5 on the PR head and on main).
 - Phase F: v0.3.3 save compatibility proven with real saves made by the v0.3.3 source (village, mid-M02 battle, M03 aftermath with purchases) and by the shipped v0.3.3 HTML; full ACT I (M01→M06) balance report over 30 seeds; level-relative EXP from M04 (D-045) stops one hero from running away with the levels.
-- Mobile battle (play-test 2026-10-18): tapping a hero opens 이동/공격/스킬/도구/대기/상태 without showing any cells; 이동 shows the reachable cells; tapping the previewed skill/attack target again carries it out; hero taps hit the painted figure, not just its tile; command sheet sits above the dock on phones.
+- Mobile battle (play-test 2026-10-18): tapping a hero opens 이동/공격/스킬/도구/대기/상태 without showing any cells; 이동 shows the reachable cells; tapping the previewed skill/attack target again carries it out; hero taps hit the painted figure, not just its tile; large 3-column command buttons beside the hero on phones.
 - Sortie selection and a picture-first pre-battle flow: reserve/sortie board with drag-and-drop or arrows (Erik always deploys), portrait panel and blue deployable tiles on the deployment map, recommended preset kept, attack/defence presets removed; walking figures now alternate their feet.
 - Painted art complete: 49 dialogue busts (heroes, Baldrick, bosses, NPCs) and 36 painted map sprite sheets (four directions, walk and attack/action frames) for every battle and town look; busts about 35% smaller in the dialogue window; fixed the duplicate Lia in camp (war table instead of a separate aide).
 - Painted portraits: 28 user-supplied busts (Aren, Erik, Erik Guardian Mantle, Elina, Lia, Sain, Kai × 4 expressions) in the dialogue window, with head crops in the dock, War Council and unit sheet; embedded WebP, offline.
