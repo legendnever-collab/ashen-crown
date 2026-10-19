@@ -1,7 +1,7 @@
 // v0.5.0 progression: potential (3 steps), proficiency ★ and promotion state (D-047/D-048).
 // Pure functions over campaign data; nothing here changes M01–M06 rules for tier-1 heroes.
 import {CLASS_TREE,POTENTIAL,PROFICIENCY_STEPS,PROFICIENCY_SOURCE,PROFICIENCY_EFFECT,PROMOTION_LEVEL} from '../data/classes.js';
-import {LAST_MISSION} from '../data/missions.js';
+import {LAST_MISSION,MISSIONS} from '../data/missions.js';
 
 export const classTierOf=u=>Math.max(1,u?.classTier||1);
 export function classOf(u){const tree=CLASS_TREE[u?.id];if(!tree)return null;return tree.find(c=>c.tier===classTierOf(u))||tree[0];}
@@ -35,3 +35,13 @@ export function promote(s,id,{force=false}={}){const st=promotionStatus(s,id);if
  const rec=s.campaign.heroes?.find(h=>h.id===id);if(!rec)return false;applyClass(rec,st.next);const live=s.units?.find(u=>u.id===id&&u.team==='ally');if(live&&live!==rec)applyClass(live,st.next);
  s.campaign.promotions??={};s.campaign.promotions[id]={tier:st.next.tier,key:st.next.key,mission:s.missionId,turn:s.turn};return true;}
 export function classGrowth(u){return classOf(u)?.growth||{};}
+
+// v0.5 Phase E: a won trial or drill keeps the growth earned in it. Only deployed heroes change; temporary
+// battle conditions (wounded MOV, HP) are never copied. A won trial makes the provisional tier-2 class permanent.
+const SKIRMISH_GROWTH=['level','xp','maxHP','maxMP','atk','def','mag','res','spd','growthHistory','clues','classTier','classMovementModifier','movementProfile','appearanceTier'];
+export function commitSkirmish(s){const sk=MISSIONS[s.missionId]?.skirmish;if(!sk||s.practice)return false;const heroes=s.campaign.heroes;if(!Array.isArray(heroes))return false;
+ for(const u of s.units.filter(u=>u.team==='ally'&&!u.benched)){const rec=heroes.find(h=>h.id===u.id);if(!rec)continue;for(const k of SKIRMISH_GROWTH)if(u[k]!==undefined)rec[k]=structuredClone(u[k]);}
+ s.campaign.skirmishes??={drills:0,trials:{}};
+ if(sk.kind==='trial'){const cls=CLASS_TREE[sk.hero]?.find(c=>c.tier===2);s.campaign.promotions??={};if(cls&&!s.campaign.promotions[sk.hero])s.campaign.promotions[sk.hero]={tier:2,key:cls.key,mission:s.missionId,turn:s.turn};s.campaign.skirmishes.trials[sk.hero]=(s.campaign.skirmishes.trials[sk.hero]||0)+1;s.campaign.flags[`promoted_${sk.hero}`]=true;}
+ else s.campaign.skirmishes.drills++;
+ return true;}

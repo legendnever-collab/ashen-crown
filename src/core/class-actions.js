@@ -1,6 +1,6 @@
 // v0.5.0 Phase D: the five promotion actions (D-048). Only tier-2 heroes can use them, so every M01–M06
 // path with tier-1 heroes is unchanged. State they leave behind: ally.bulwark / ally.overwatch (until the
-// next Player Phase), enemy.noCounter (this Player Phase), s.runes [{x,y,until}] (two turns).
+// next Player Phase), enemy.noCounter (this Player Phase), s.runes [{x,y,until}] (three turns).
 import {CLASS_TREE,CLASS_ACTIONS} from '../data/classes.js';
 import {distance,key,alive,at,findUnit,terrainAt,terrainCost} from './rules.js';
 import {remember} from './narrative.js';
@@ -39,7 +39,7 @@ export function forecastClass(s,u,target,mode){
  const a=CLASS_ACTIONS[mode],base={classAction:mode,name:a.ko,cost:a.cost,hit:100,damage:0,counter:0};
  if(mode==='bulwark')return {...base,rows:[['효과','인접 칸에 들어온 적 정지'],['지속','다음 아군 턴까지']]};
  if(mode==='overwatch')return {...base,rows:[['효과',`사거리 ${u.range[0]}–${u.range[1]} 첫 진입 적 사격`],['명중 시','그 적의 이동 종료']]};
- if(mode==='arcane'){const p=typeof target==='object'?target:parseTile(target);return {...base,rows:[['룬',`${runeCells(s,p).length}칸 · 2턴`],['효과','아군 MAG +3 · 적 RES −2']]};}
+ if(mode==='arcane'){const p=typeof target==='object'?target:parseTile(target);return {...base,rows:[['룬',`${runeCells(s,p).length}칸 · 3턴`],['효과','아군 MAG +3 · 적 RES −2']]};}
  const t=typeof target==='object'?target:findUnit(s,target);
  if(mode==='recall'){const spot=recallSpot(s,u,t);return {...base,target:t.id,rows:[['이동',spot?`세인 옆 (${spot.x+1}, ${spot.y+1})`:'불가'],['회복',`+${Math.min(10,t.maxHP-t.hp)} HP`]]};}
  return {...base,target:t.id,rows:[['교환',`${t.name} ↔ 카이`],['반격',t.team==='enemy'?'이번 아군 턴 동안 반격 불가':'—']]};
@@ -52,8 +52,8 @@ export function applyClassAction(s,u,target,mode){
  u.mp-=classCost(mode);remember(s,`${u.id}_class`);const name=CLASS_ACTIONS[mode].ko;
  if(mode==='bulwark'){u.bulwark=true;s.feedback.push({type:'guard',id:u.id,text:name});s.log.push(`${u.name}: ${name}. 다음 아군 턴까지 인접 칸에 들어온 적은 멈춥니다.`);}
  else if(mode==='overwatch'){u.overwatch=true;s.feedback.push({type:'guard',id:u.id,text:name});s.log.push(`${u.name}: ${name}. 사거리 안으로 처음 들어오는 적을 쏩니다.`);}
- else if(mode==='arcane'){const p=typeof target==='object'?target:parseTile(target),cells=runeCells(s,p);s.runes=(s.runes||[]).filter(r=>!cells.some(c=>c.x===r.x&&c.y===r.y));for(const c of cells){s.runes.push({x:c.x,y:c.y,until:s.turn+2});const k=key(c.x,c.y);if(s.burning?.[k])s.burning[k]++;}
-  s.feedback.push({type:'guard',id:u.id,text:name});s.log.push(`${u.name}: ${name} (${cells.length}칸, 2턴). 아군 MAG +3 · 적 RES −2.`);}
+ else if(mode==='arcane'){const p=typeof target==='object'?target:parseTile(target),cells=runeCells(s,p);s.runes=(s.runes||[]).filter(r=>!cells.some(c=>c.x===r.x&&c.y===r.y));for(const c of cells){s.runes.push({x:c.x,y:c.y,until:s.turn+3});const k=key(c.x,c.y);if(s.burning?.[k])s.burning[k]++;}
+  s.feedback.push({type:'guard',id:u.id,text:name});s.log.push(`${u.name}: ${name} (${cells.length}칸, 3턴). 아군 MAG +3 · 적 RES −2.`);}
  else if(mode==='recall'){const t=findUnit(s,target?.id||target),spot=recallSpot(s,u,t),from={x:t.x,y:t.y};t.x=spot.x;t.y=spot.y;const heal=Math.min(10,t.maxHP-t.hp);t.hp+=heal;
   s.feedback.push({type:'move',id:t.id,path:[from,spot]});if(heal)s.feedback.push({type:'heal',id:t.id,text:`+${heal}`,toHP:t.hp});s.log.push(`${u.name}: ${name} → ${t.name}을(를) 곁으로 불러 ${heal} 회복.`);}
  else if(mode==='exchange'){const t=findUnit(s,target?.id||target),a={x:u.x,y:u.y},b={x:t.x,y:t.y};u.x=b.x;u.y=b.y;t.x=a.x;t.y=a.y;if(t.team==='enemy')t.noCounter=s.turn;

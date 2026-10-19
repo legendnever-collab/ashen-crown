@@ -17,7 +17,7 @@ export function movement(s,u,ignore=false){
  const start=key(u.x,u.y), costs=new Map([[start,0]]),prev=new Map(),queue=[{x:u.x,y:u.y,c:0}];
  const allowance=effectiveStats(s,u).mov+(u.shadowBonus||0),zoc=u.team==='enemy'?bulwarkZone(s):null;
  while(queue.length){queue.sort((a,b)=>a.c-b.c);const p=queue.shift();if(p.c!==costs.get(key(p.x,p.y)))continue;
-  if(zoc&&key(p.x,p.y)!==start&&zoc.has(key(p.x,p.y)))continue; // v0.5 Bulwark: enemies stop on entering Erik's zone
+  if(zoc&&zoc.has(key(p.x,p.y)))continue; // v0.5 Bulwark: an enemy in Erik's zone cannot move on (entering stops it, starting there pins it)
   for(const [dx,dy] of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,t=terrainAt(x,y,s);if(!t||!Number.isFinite(t.cost))continue;
    const occupant=at(s,x,y);if(!ignore&&occupant&&occupant.id!==u.id&&occupant.team!==u.team)continue;
    const c=p.c+terrainCost(s,u,x,y),k=key(x,y);

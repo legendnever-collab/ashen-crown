@@ -47,15 +47,15 @@ test('Overwatch: the first enemy step inside Elina\'s range draws one shot; a hi
  assert.ok(shots>=10,`overwatch fired in ${shots}/12 runs`);assert.ok(stops>=1,'some hits stopped the enemy');
 });
 
-test('Arcane Territory: five-tile cross for two turns, ally MAG +3 / enemy RES −2, extends fire by one turn',()=>{
+test('Arcane Territory: five-tile cross for three turns, ally MAG +3 / enemy RES −2, extends fire by one turn',()=>{
  const s=arena(['b1']);park(s,['elina','sain','kai']);const l=place(s,'lia',5,8),er=place(s,'eric',6,8),b=place(s,'b1',7,8);
  s.burning={[key(6,8)]:1};const magBefore=effectiveStats(s,er).mag,resBefore=effectiveStats(s,b).res;
  assert.ok(validClassTarget(s,l,{x:6,y:8},'arcane'));assert.ok(!validClassTarget(s,l,{x:9,y:8},'arcane'),'range 0–3');
  assert.ok(classTargetCells(s,l,'arcane').length>5);assert.match(forecastClass(s,l,'6,8','arcane').rows[0][1],/5칸/);
  assert.ok(performAction(s,'lia','arcane','6,8').ok);assert.equal(l.mp,l.maxMP-6);assert.equal(s.runes.length,5);assert.equal(s.burning[key(6,8)],2);
  assert.equal(effectiveStats(s,er).mag,magBefore+3);assert.equal(effectiveStats(s,b).res,Math.max(0,resBefore-2));
- const turn=s.turn;for(let i=0;i<2;i++){beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}if(i===0)assert.ok(s.runes?.length,'still active on the next turn');}
- assert.equal(s.turn,turn+2);assert.equal(s.runes,undefined,'gone after two turns');
+ const turn=s.turn;for(let i=0;i<3;i++){beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}if(i<2)assert.ok(s.runes?.length,`still active ${i+1} turn(s) later`);}
+ assert.equal(s.turn,turn+3);assert.equal(s.runes,undefined,'gone after three turns');
 });
 
 test('Divine Recall: pulls an ally at distance 2–4 to a free tile next to Sain and heals up to 10',()=>{

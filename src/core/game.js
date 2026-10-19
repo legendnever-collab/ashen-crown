@@ -5,7 +5,7 @@ import {distance,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,for
 import {MISSIONS,missionOf,LAST_MISSION} from '../data/missions.js';
 import {rulesOf,objectUnit,searchEvidence} from './mission-rules.js';
 import {narrativeState,enqueueStory,remember,setStoryFlag,afterBattleEvents} from './narrative.js';
-import {proficiencyBonus} from './progression.js';
+import {proficiencyBonus,commitSkirmish} from './progression.js';
 import {isClassMode,applyClassAction,overwatchStop,hazardAt,expireClassEffects} from './class-actions.js';
 import {CLASS_ACTIONS} from '../data/classes.js';
 export function newGame(seed=20261014,campaign=null,missionId=1){
@@ -15,7 +15,7 @@ export function newGame(seed=20261014,campaign=null,missionId=1){
  });
  units.push(...mission.enemies.map(e=>({...structuredClone(e),team:'enemy',maxHP:e.hp,mp:0,maxMP:0,mag:0,moved:false,acted:false,spawnTurn:0})),...mission.civilians.map(({startHP,...c})=>({...c,team:'civilian',kind:c.kind||'civilian',hp:startHP||c.hp||BALANCE.civilianHP,maxHP:c.hp||BALANCE.civilianHP,mp:0,maxMP:0,atk:0,def:c.def??1,res:c.res??1,mag:0,spd:0,mov:0,range:[0,0],rescued:false})),...(mission.objects||[]).map(objectUnit));
  campaign=structuredClone(campaign||{heroes:null,results:[],clears:0});campaign.completed=campaign.completed||[];campaign.flags=campaign.flags||{};campaign.bonds=campaign.bonds||{};campaign.tacticalMemory=campaign.tacticalMemory||{};campaign.choices=campaign.choices||{};campaign.promotions=campaign.promotions||{};
- const result={missionId,practice:campaign.completed.includes(missionId),narrative:{...narrativeState(),seen:campaign.dialogueMemory?.seen||[],history:campaign.dialogueMemory?.history||[]},version:VERSION,schema:SCHEMA,screen:'title',phase:'player',turn:1,rng:seed>>>0,initialSeed:seed>>>0,units,log:[mission.objective,mission.brief],feedback:[],reinforced:false,enemyQueue:[],enemyIndex:0,undo:{},outcome:null,campaign,missionStart:units.filter(u=>u.team==='ally').map(u=>({id:u.id,level:u.level,stats:{maxHP:u.maxHP,atk:u.atk,def:u.def,mag:u.mag}})),potions:2};ensureEconomy(result);rulesOf(result)?.init(result);return result;
+ const result={missionId,practice:campaign.completed.includes(missionId)&&!mission.skirmish,narrative:{...narrativeState(),seen:campaign.dialogueMemory?.seen||[],history:campaign.dialogueMemory?.history||[]},version:VERSION,schema:SCHEMA,screen:'title',phase:'player',turn:1,rng:seed>>>0,initialSeed:seed>>>0,units,log:[mission.objective,mission.brief],feedback:[],reinforced:false,enemyQueue:[],enemyIndex:0,undo:{},outcome:null,campaign,missionStart:units.filter(u=>u.team==='ally').map(u=>({id:u.id,level:u.level,stats:{maxHP:u.maxHP,atk:u.atk,def:u.def,mag:u.mag}})),potions:2};ensureEconomy(result);rulesOf(result)?.init(result);return result;
 }
 export function setDeployment(s,id,x,y){const zone=missionOf(s).deployZone?.(s);if(s.screen!=='deployment'||(zone?!zone.has(`${x},${y}`):(y<7||y>9||x<1||x>10))||!Number.isFinite(terrainAt(x,y,s)?.cost))return false;const u=findUnit(s,id);if(!u||u.team!=='ally')return false;const other=at(s,x,y);if(other&&other.team!=='ally')return false;if(other){other.x=u.x;other.y=u.y;}u.x=x;u.y=y;return true;}
 export function presetDeployment(s,name){if(s.screen!=='deployment')return;HEROES.forEach((h,i)=>{const u=findUnit(s,h.id);[u.x,u.y]=(missionOf(s).deployments||DEPLOYMENTS)[name][i];});}
@@ -46,7 +46,7 @@ function damage(s,u,t,mode,counter=false){
 export function performAction(s,id,mode,targetId){
  const u=findUnit(s,id),t=findUnit(s,targetId);if(!canAct(s,u))return {ok:false,error:'행동할 수 없는 장수입니다.'};
  s.feedback=[];
- if(mode==='wait'){consumeAction(s,u);if(s.missionId===3&&u.id==='kai'&&u.y<=4)remember(s,'kai_bypass');s.log.push(`${u.name}: 대기.`);return {ok:true};}
+ if(mode==='wait'){consumeAction(s,u);if(s.missionId===3&&u.id==='kai'&&u.y<=4)remember(s,'kai_bypass');s.log.push(`${u.name}: 대기.`);if(missionOf(s).skirmish){checkOutcome(s);afterBattleEvents(s);}return {ok:true};}
  if(mode?.startsWith('tool:')){const result=useTool(s,u,mode.slice(5));if(result.ok)consumeAction(s,u);return result;}
  if(mode==='item'){if(!s.potions||u.hp===u.maxHP)return {ok:false,error:'회복약을 사용할 수 없습니다.'};s.potions--;const n=Math.min(20,u.maxHP-u.hp);u.hp+=n;s.feedback.push({type:'heal',id,text:`+${n}`,toHP:u.hp});consumeAction(s,u);if(s.missionId===3&&u.id==='kai'&&u.y<=4)remember(s,'kai_bypass');s.log.push(`${u.name}: 회복약으로 ${n} HP 회복.`);return {ok:true};}
  if(isClassMode(mode)){const r=applyClassAction(s,u,targetId,mode);if(!r.ok)return r;consumeAction(s,u);awardXP(s,u,20,CLASS_ACTIONS[mode].ko);rulesOf(s)?.onAction?.(s,u,mode,t);checkOutcome(s);afterBattleEvents(s);return {ok:true};}
@@ -133,7 +133,8 @@ function finish(s,outcome,reason){
  const result={missionId:s.missionId,practice:s.practice,outcome,turn:s.turn,rescued:s.units.filter(u=>u.team==='civilian'&&u.rescued).length,allAlive:s.units.filter(u=>!u.benched&&u.team==='ally').every(alive),swift:s.turn<=missionOf(s).par,potential:findUnit(s,'eric').clues.includes("Guardian’s Oath"),seed:s.initialSeed,heroes:s.units.filter(u=>u.team==='ally').map(u=>({id:u.id,level:u.level,earnedXP:u.earnedXP,clues:[...u.clues]}))};
  s.campaign.results.push(result);s.campaign.results=s.campaign.results.slice(-30);
  if(outcome==='victory')rulesOf(s)?.beforeCommit?.(s);
- if(outcome==='victory'){if(!s.practice){commitEconomyReward(s);s.campaign.clears++;s.campaign.completed.push(s.missionId);s.campaign.heroes=structuredClone(s.units.filter(u=>u.team==='ally'));setStoryFlag(s,`mission_0${s.missionId}_completed`);if(s.missionId===1){setStoryFlag(s,'royal_supply_evidence');setStoryFlag(s,'mission_01_civilians_rescued',2);}}}
+ if(outcome==='victory'&&missionOf(s).skirmish)commitSkirmish(s);
+ else if(outcome==='victory'){if(!s.practice){commitEconomyReward(s);s.campaign.clears++;s.campaign.completed.push(s.missionId);s.campaign.heroes=structuredClone(s.units.filter(u=>u.team==='ally'));setStoryFlag(s,`mission_0${s.missionId}_completed`);if(s.missionId===1){setStoryFlag(s,'royal_supply_evidence');setStoryFlag(s,'mission_01_civilians_rescued',2);}}}
  if(outcome==='victory'&&s.missionId===3&&!s.practice){const m=s.campaign.tacticalMemory,prior=s.stageStart?.campaign.tacticalMemory||{},did=k=>(m[k]||0)>(prior[k]||0);if(did('guard_eric_sain')&&(did('kai_rescue')||did('kai_bypass'))&&(did('sain_rescue')||did('sain_heal'))){s.campaign.bonds.erik_kai=true;setStoryFlag(s,'bond_erik_kai');enqueueStory(s,'3:bond');}}
  if(outcome==='victory')rulesOf(s)?.afterVictory?.(s);
  afterBattleEvents(s);

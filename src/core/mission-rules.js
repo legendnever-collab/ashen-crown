@@ -183,7 +183,27 @@ const M6={
  afterVictory(){},
  rewardContext(s){return {refugees:passedOf(s),beacon:!!s.missionState.beacon};}
 };
-export const MISSION_RULES={4:M4,5:M5,6:M6};
+// v0.5.0 skirmish rules (promotion trials 101–105, Legion Drill 110); goals live in the mission data.
+const SK_GOAL={gather:g=>`TURN ${g.turn} 종료 시 동료 집결`,survive:g=>`TURN ${g.turn} 종료까지 생존`,rout:g=>g.targets?'목표 격파':'전원 격파',reach:()=>'탈출 지점 도달'};
+const SK={
+ init(s){s.missionState={skirmish:true};},
+ validState(m){return !!m&&typeof m==='object'&&m.skirmish===true;},
+ clearLabel:'시련·훈련 완수',
+ status(s){const m=missionOf(s),g=m.goal,left=s.units.filter(u=>u.team==='enemy'&&alive(u)&&(!g.targets||g.targets.includes(u.id))).length;return `${SK_GOAL[g.type](g)} · 남은 적 ${left} · 제한 ${m.turnLimit}턴`;},
+ optional(s){const n=s.units.filter(u=>u.team==='civilian'&&u.rescued).length,c=s.units.filter(u=>u.team==='civilian').length;return c&&!missionOf(s).escortOnly?`보급병 구출 ${n}/${c}`:'시련 완수';},
+ checkOutcome(s,finish){
+  const m=missionOf(s),g=m.goal;
+  const down=(m.must||[]).map(id=>findUnit(s,id)).find(u=>u&&!u.benched&&u.hp<=0);if(down)return finish(s,'defeat',`${down.name} 전투불능.`);
+  for(const id of g.protect||[]){const c=findUnit(s,id);if(c&&c.hp<=0)return finish(s,'defeat',`${c.name}을(를) 지키지 못했습니다.`);}
+  if(g.type==='reach'){const h=findUnit(s,g.hero);if(h&&alive(h)&&h.y<=g.row)return finish(s,'victory',`${h.name} 탈출 지점 도달.`);}
+  const foes=s.units.filter(u=>u.team==='enemy'&&(!g.targets||g.targets.includes(u.id)));
+  if(g.type!=='reach'&&g.type!=='gather'&&foes.every(u=>!alive(u)))return finish(s,'victory',g.targets?'목표를 모두 격파했습니다.':'상대를 모두 물리쳤습니다.');
+  if(g.type==='survive'&&s.turn>g.turn)return finish(s,'victory',`TURN ${g.turn}까지 버텼습니다.`);
+  if(g.type==='gather'&&s.turn>g.turn){const h=findUnit(s,m.skirmish.hero),far=(m.must||[]).map(id=>findUnit(s,id)).filter(u=>u&&u!==h&&distance(u,h)>g.radius);return far.length?finish(s,'defeat',`${far.map(u=>u.name).join(', ')}이(가) 아직 멀리 있습니다.`):finish(s,'victory','부상한 동료를 모두 곁으로 데려왔습니다.');}
+  if(s.turn>m.turnLimit)return finish(s,'defeat',`TURN ${m.turnLimit} 안에 목표를 달성하지 못했습니다.`);
+ }
+};
+export const MISSION_RULES={4:M4,5:M5,6:M6,101:SK,102:SK,103:SK,104:SK,105:SK,110:SK};
 export const rulesOf=s=>MISSION_RULES[s?.missionId]||null;
 
 export function searchEvidence(s,u,t){

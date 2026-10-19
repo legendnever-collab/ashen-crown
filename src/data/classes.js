@@ -16,9 +16,9 @@ export const CLASS_TREE={
 };
 // New tactical actions (one per promoted hero). `mode` is the performAction mode used from Phase D on.
 export const CLASS_ACTIONS={
- bulwark:{hero:'eric',name:'Bulwark',ko:'방벽',cost:4,note:'다음 아군 턴까지, 에릭과 인접한 칸에 들어온 적은 그 자리에서 이동을 멈춘다.'},
+ bulwark:{hero:'eric',name:'Bulwark',ko:'방벽',cost:4,note:'다음 아군 턴까지 에릭과 인접한 칸의 적은 움직일 수 없고, 그 칸에 들어온 적도 그 자리에서 멈춘다.'},
  overwatch:{hero:'elina',name:'Overwatch',ko:'경계 사격',cost:4,note:'적 Phase에 사거리 안으로 처음 들어온 적에게 즉시 사격하고, 명중하면 그 적의 이동을 끝낸다.'},
- arcane:{hero:'lia',name:'Arcane Territory',ko:'마력 지형',cost:6,note:'십자 5칸에 2턴 동안 룬: 아군 MAG +3, 적 RES −2. 화염 지형은 1턴 연장된다.'},
+ arcane:{hero:'lia',name:'Arcane Territory',ko:'마력 지형',cost:6,note:'십자 5칸에 3턴 동안 룬: 아군 MAG +3, 적 RES −2. 화염 지형은 1턴 연장된다.'},
  recall:{hero:'sain',name:'Divine Recall',ko:'귀환의 기도',cost:6,note:'4칸 안의 아군 1명을 세인 옆 빈칸으로 끌어오고 HP 10을 회복한다.'},
  exchange:{hero:'kai',name:'Shadow Exchange',ko:'그림자 교환',cost:3,note:'3칸 안의 아군 또는 인접한 적과 위치를 바꾼다. 바뀐 적은 다음 Phase에 반격할 수 없다.'}
 };
