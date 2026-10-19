@@ -1,6 +1,6 @@
 # v0.5.0 Advanced Class & Character Progression — 설계안
 
-상태: **전체 PROPOSED** (2026-10-19). 사용자 승인 전에는 구현하지 않고 CANON으로 올리지 않는다.
+상태: **APPROVED_DIRECTION** (2026-10-19, D-047 A안 · D-048 설계안대로 · D-049 아트). 이름·수치는 플레이 테스트 후 조정할 수 있으며, CANON으로 올리지 않는다.
 근거:
 - [GAME_DESIGN_PRINCIPLES](../vision/GAME_DESIGN_PRINCIPLES.md) CANON: "고유 재능 + 전직 + 숙련, 전술 혁신형 각성", "전직·각성은 새로운 행동(보호/차단/마력 지형/구조/위치 교환)을 제공해야 한다. 외형 Tier는 전직 시스템 완성의 대체물이 아니다."
 - [PRODUCT_VISION](../vision/PRODUCT_VISION.md): 단순 수치 각성 금지, 복잡 메뉴 소프트웨어 금지.
