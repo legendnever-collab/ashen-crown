@@ -9,7 +9,8 @@ import {unitInfoHTML} from './unit-info.js';
 import {hubCamera,drawHub} from '../render/frontier-renderer.js';
 import {VERSION,HEROES,BALANCE,TERRAIN} from '../data/game-data.js';
 import {setSortie} from '../core/game.js';
-import {newGame,setDeployment,presetDeployment,startBattle,canAct,moveUnit,undoMove,performAction,beginEnemyPhase,advanceEnemy,replay,restartStage,nextMission} from '../core/game.js';
+import {isClassMode,tileTarget,validClassTarget} from '../core/class-actions.js';
+import {newGame,setDeployment,presetDeployment,startBattle,canAct,canMove,moveUnit,undoMove,performAction,beginEnemyPhase,advanceEnemy,replay,restartStage,nextMission} from '../core/game.js';
 import {findUnit,at,alive,terrainAt,terrainCost,movement,pathTo,validTarget,forecast,skillCost,rangeFor,terrainSummary} from '../core/rules.js';
 import {loadGame,saveGame,resetSave,serialize,deserialize} from '../persistence/save-manager.js';
 import {missionOf,MISSIONS} from '../data/missions.js';
@@ -66,7 +67,7 @@ function positionPopover(){
  const pos=placePopover({width:field.clientWidth,height:field.clientHeight,popupWidth:pop.offsetWidth,popupHeight:pop.offsetHeight,anchor:center,tile:tilePx,protectedPoints}),left=pos.x+'px',top=pos.y+'px';pop.dataset.side=pos.side;if(pop.style.left!==left)pop.style.left=left;if(pop.style.top!==top)pop.style.top=top;
 }
 renderer.onCamera=()=>{positionPopover();const u=findUnit(state,ui.selected),hp=$('.dock-vitals .bar-row');if(u&&hp){const shown=renderer.displayHP(u),value=hp.lastElementChild,meter=hp.querySelector('.meter b');if(value.textContent!==`${shown}/${u.maxHP}`){value.textContent=`${shown}/${u.maxHP}`;meter.style.width=100*shown/u.maxHP+'%';}}};
-async function previewMove(id,x,y){const u=findUnit(state,id),path=pathTo(state,u,x,y);if(!canAct(state,u)||u.moved||!path||path.length<2)return false;ui.pendingMove={id,x,y,path};renderer.focus(x,y);ui.menu=null;ui.preview=null;ui.notice='이동 경로를 따라 걷는 중입니다. 도착 후 확정하거나 취소하세요.';ui.busy=true;render();const duration=renderer.walk(id,path,ui.movement,ui.speed);await new Promise(r=>setTimeout(r,duration+24));ui.busy=false;ui.menu='move-confirm';ui.notice=null;render();return true;}
+async function previewMove(id,x,y){const u=findUnit(state,id),path=pathTo(state,u,x,y);if(!canMove(state,u)||!path||path.length<2)return false;ui.pendingMove={id,x,y,path};renderer.focus(x,y);ui.menu=null;ui.preview=null;ui.notice='이동 경로를 따라 걷는 중입니다. 도착 후 확정하거나 취소하세요.';ui.busy=true;render();const duration=renderer.walk(id,path,ui.movement,ui.speed);await new Promise(r=>setTimeout(r,duration+24));ui.busy=false;ui.menu='move-confirm';ui.notice=null;render();return true;}
 async function cancelMovement(){const m=ui.pendingMove;if(!m)return;ui.menu=null;ui.busy=true;render();const duration=renderer.walk(m.id,[...m.path].reverse(),ui.movement,ui.speed);await new Promise(r=>setTimeout(r,duration+24));renderer.motion.delete(m.id);ui.pendingMove=null;ui.busy=false;const original=findUnit(state,m.id);renderer.focus(original.x,original.y);ui.mode='move';ui.menu='root';ui.notice='이동 취소 · 원래 위치와 이동권을 유지합니다.';render();}
 function confirmMovement(){const m=ui.pendingMove;if(!m)return;const path=moveUnit(state,m.id,m.x,m.y);renderer.motion.delete(m.id);ui.pendingMove=null;ui.menu='root';ui.mode='choose';ui.notice=path?'이동 확정 · 공격, 스킬, 도구 또는 대기를 선택하세요.':'이동을 확정할 수 없습니다. 원래 위치를 유지합니다.';commit();}
 function renderVictoryRewards(last){if(state.outcome!=='victory')return '';const r=last.rewards;if(state.practice||last.practice)return '<section class="victory-rewards practice"><span class="reward-chip">연습 · 보상 없음</span></section>';
@@ -128,7 +129,7 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'cancel-target':ui.menu=null;ui.preview=null;render();break;
  case 'confirm-move':confirmMovement();break;
  case 'cancel-move':await cancelMovement();break;
- case 'mode':if(canAct(state,findUnit(state,ui.selected))||state.screen==='deployment'){if(id==='skill'&&ui.selected==='eric'&&state.screen==='battle'){ui.mode='skill';ui.preview='eric';ui.menu='forecast';ui.notice=null;ui.inspected=null;ui.phaseConfirm=false;render();break;}ui.mode=id;ui.menu=null;ui.preview=null;ui.notice=null;ui.inspected=null;ui.phaseConfirm=false;render();}break;
+ case 'mode':if(canAct(state,findUnit(state,ui.selected))||id==='move'&&canMove(state,findUnit(state,ui.selected))||state.screen==='deployment'){if((id==='skill'&&ui.selected==='eric'||id==='bulwark'||id==='overwatch')&&state.screen==='battle'){ui.mode=id;ui.preview=ui.selected;ui.menu='forecast';ui.notice=null;ui.inspected=null;ui.phaseConfirm=false;render();break;}ui.mode=id;ui.menu=null;ui.preview=null;ui.notice=null;ui.inspected=null;ui.phaseConfirm=false;render();}break;
  case 'undo':if(undoMove(state,ui.selected)){ui.menu='root';ui.mode='choose';ui.preview=null;commit();}break;
  case 'wait':await execute('wait');break;case 'item':await execute('item');break;
  case 'confirm':if(ui.preview)await execute(ui.mode,ui.preview);break;
@@ -180,13 +181,15 @@ canvas.addEventListener('pointerup',async e=>{touches.delete(e.pointerId);if(pin
  const terrain=terrainAt(tile.x,tile.y,state);if(terrain)$('#terrain-readout').textContent=terrainSummary(state,tile.x,tile.y,findUnit(state,ui.selected));
  if(state.screen!=='battle'||state.phase!=='player')return;if(ui.pendingMove){ui.menu='move-confirm';render();return;}
  if(canAct(state,u)&&t?.team==='object'&&ui.mode!=='search'&&validTarget(state,u,t,'search'))ui.mode='search';if(canAct(state,u)&&t?.team==='civilian'&&ui.mode!=='rescue'&&validTarget(state,u,t,'rescue'))ui.mode='rescue';
+ if(canAct(state,u)&&tileTarget(ui.mode)){const k=`${tile.x},${tile.y}`;if(validClassTarget(state,u,{x:tile.x,y:tile.y},ui.mode)){if(ui.menu==='forecast'&&ui.preview===k&&!ui.busy){await execute(ui.mode,k);return;}ui.preview=k;ui.menu='forecast';ui.inspected=null;ui.notice=null;render();return;}}
+ if(canAct(state,u)&&isClassMode(ui.mode)&&!tileTarget(ui.mode)&&t&&validClassTarget(state,u,t,ui.mode)){if(ui.menu==='forecast'&&ui.preview===t.id&&!ui.busy){await execute(ui.mode,t.id);return;}ui.preview=t.id;ui.menu='forecast';ui.inspected=null;ui.notice=null;render();return;}
  if(canAct(state,u)&&['attack','skill','rescue','capture','search'].includes(ui.mode)&&t&&validTarget(state,u,t,ui.mode)){if(ui.menu==='forecast'&&ui.preview===t.id&&!ui.busy){await execute(ui.mode,ui.preview);return;}ui.preview=t.id;ui.menu='forecast';ui.inspected=null;ui.notice=null;render();return;}
  if(t?.team==='ally'){
   if(t.id===ui.selected&&ui.mode==='move'){ui.mode='choose';ui.menu='root';ui.preview=null;ui.notice='제자리에서 행동 · 이동을 사용하지 않았습니다. 공격, 스킬 또는 대기를 선택하세요.';render();return;}
   if(t.id===ui.selected){ui.mode='choose';ui.menu='root';ui.preview=null;ui.notice=null;render();}
   else dispatch('select',t.id);return;
  }
- if(ui.mode==='move'&&canAct(state,u)&&!u.moved){if(!await previewMove(u.id,tile.x,tile.y)){ui.notice='이동 불가 · 지형 비용, 이동력과 유닛 점유를 확인하세요.';render();}return;}
+ if(ui.mode==='move'&&canMove(state,u)){if(!await previewMove(u.id,tile.x,tile.y)){ui.notice='이동 불가 · 지형 비용, 이동력과 유닛 점유를 확인하세요.';render();}return;}
  if(t?.team==='enemy'){
   if(canAct(state,u)&&validTarget(state,u,t,'attack')){ui.mode='attack';ui.menu='forecast';ui.preview=t.id;ui.inspected=null;ui.notice=null;}
   else{ui.menu=null;ui.inspected=t.id;ui.preview=null;const [min,max]=u.range,d=Math.abs(u.x-t.x)+Math.abs(u.y-t.y);ui.notice=u.acted?`${u.name}은 이번 턴의 행동을 마쳤습니다. 다음 턴에 공격하세요.`:d<min?`${u.name} 사거리 ${min}–${max}칸 · 인접한 적에게는 사격할 수 없습니다. 이동 취소 후 거리를 확보하세요.`:`${u.name} 사거리 ${min}–${max}칸 · 대상까지 ${d}칸입니다. 이동하거나 다른 장수를 선택하세요.`;}render();
@@ -196,7 +199,7 @@ canvas.addEventListener('pointercancel',()=>{pointer=null;pinch=null;pinchUsed=f
 document.addEventListener('keydown',e=>{if(['TEXTAREA','INPUT','SELECT'].includes(document.activeElement?.tagName))return;if($('#modal-root').children.length){if(e.key==='Escape')closeModal();return;}if(state.narrative.active){if(['Enter',' '].includes(e.key)){e.preventDefault();dispatch('story-next');}return;}if(state.screen==='exploration'){const directions={w:[0,-1],ArrowUp:[0,-1],s:[0,1],ArrowDown:[0,1],a:[-1,0],ArrowLeft:[-1,0],d:[1,0],ArrowRight:[1,0]};if(directions[e.key.toLowerCase()]||directions[e.key]){e.preventDefault();if(!e.repeat)heldMovement.press('key:'+e.code,directions[e.key.toLowerCase()]||directions[e.key],performance.now());}else if(['e','Enter',' '].includes(e.key)){e.preventDefault();dispatch('interact');}else if(e.key==='Escape')dispatch('menu');return;}const actions={'1':['mode','move'],'2':['mode','attack'],'3':['mode','skill'],'4':['mode','rescue'],z:['undo'],w:['wait'],e:['end-phase'],Tab:['next'],Escape:['cancel']};const a=actions[e.key]||actions[e.key.toLowerCase()];if(a&&state.screen==='battle'){e.preventDefault();dispatch(...a);}});
 render();if(loaded.warning)toast(loaded.warning);if(state.screen==='battle'&&state.phase==='enemy')enemyLoop();
 // Read-only diagnostics for QA and reproducibility. No state injection or win shortcut.
-window.AshenCrown=Object.freeze({version:VERSION,audio:()=>audio.diagnostics(),snapshot:()=>structuredClone(state),view:()=>({hubCamera:structuredClone(hubCamera.current),camera:structuredClone(renderer.camera),selected:ui.selected,mode:ui.mode,busy:ui.busy||frontierWalking,zoom:renderer.zoom,tileResolution:TILE,nativeTileResolution:NATIVE_TILE,nativeSpriteResolution:NATIVE_SPRITE,portraitResolution:PORTRAIT_SIZE,ranges:renderer.ranges?.()||[],drawnRanges:renderer.drawnRanges||0,phaseConfirm:ui.phaseConfirm,menu:ui.menu,pendingMove:ui.pendingMove?structuredClone(ui.pendingMove):null,movement:ui.movement,reduced:ui.reduced,animation:renderer.diagnostics()}),tileCenter:(x,y)=>renderer.tileCenter(x,y)});
+window.AshenCrown=Object.freeze({version:VERSION,audio:()=>audio.diagnostics(),snapshot:()=>structuredClone(state),view:()=>({hubCamera:structuredClone(hubCamera.current),camera:structuredClone(renderer.camera),selected:ui.selected,mode:ui.mode,busy:ui.busy||frontierWalking,zoom:renderer.zoom,tileResolution:TILE,nativeTileResolution:NATIVE_TILE,nativeSpriteResolution:NATIVE_SPRITE,portraitResolution:PORTRAIT_SIZE,ranges:renderer.ranges?.()||[],drawnRanges:renderer.drawnRanges||0,preview:ui.preview??null,phaseConfirm:ui.phaseConfirm,menu:ui.menu,pendingMove:ui.pendingMove?structuredClone(ui.pendingMove):null,movement:ui.movement,reduced:ui.reduced,animation:renderer.diagnostics()}),tileCenter:(x,y)=>renderer.tileCenter(x,y)});
 
 // v0.4 feedback: classic SRPG dialogue window — painted bust overlapping a translucent box, name in
 // amber, tap anywhere to advance; only Auto/Skip stay on screen (top-right).

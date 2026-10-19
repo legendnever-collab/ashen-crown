@@ -34,7 +34,7 @@ Branch `feature/v0.5-advanced-class` (base: main `f922a18`, official v0.4.0).
 | A | 코드 감사 + v0.4.0 릴리스 노트 | 커밋·푸시 — **완료 2026-10-19** |
 | B | 설계 문서 3종 + 사용자 승인 (Q1–Q5) | 승인 기록 (DECISION_LOG) — **완료 2026-10-19** (D-047 A안, D-048 설계안대로, D-049 아트 지시서 [ART_BRIEF_TIER2](ART_BRIEF_TIER2.md)) |
 | C | 엔진: CLASSES·전직 상태·잠재력 3단계·숙련·schema 8 | unit + M01–M06 회귀 결과 불변 — **구현 2026-10-19** (`src/data/classes.js`, `src/core/progression.js`, 장수 정보 '성장' 탭, tests/progression·migration-v040; ACT I 30 seed 결과 seed·미션 단위 동일) |
-| D | 새 전술 행동 5종 + 적 AI 대응 | 행동별 unit + tactical E2E (데스크톱·모바일) |
+| D | 새 전술 행동 5종 + 적 AI 대응 | 행동별 unit + tactical E2E (데스크톱·모바일) — **구현 2026-10-19** (`src/core/class-actions.js`, tests/class-actions.test.mjs 8건, `test:class` 브라우저 14×2 검사, ACT I 결과 불변) |
 | E | 전직 의식·시련 전투 5개·군단 훈련 (A안) / M03 진영 전직 (B안) | 시련 30 seed 승률 ≥ 90%, act1 회귀 PASS |
 | F | 외형 Tier 2 (아트 팩 import), 정보창 전직 탭, 연출·음악 변주 | 아트 해시 검증, 스크린샷 |
 | G | 마이그레이션(v0.4.0 실제 저장)·전체 밸런스·회귀·패키징·PR | 전 suite PASS, CI, PR (승인 전 병합 금지) |
