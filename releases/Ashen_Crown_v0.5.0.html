@@ -1027,7 +1027,11 @@ function explorationHero(s){return s.units.find(u=>u.id==='eric');}
 // Only legacy spatial records are repaired; economic/tactical/story state is untouched.
 function migrateFrontier(f,missionId=1){
  if(!f)return frontierState(missionId);
- f.actorId='eric';f.campaignEntry='advisor';f.advisorPending=false;if(!HUBS[f.hub])f.hub=hubFor(missionId,f.phase);fillVisited(f);
+ f.actorId='eric';f.campaignEntry='advisor';f.advisorPending=false;return repairFrontierSpace(f,missionId);
+}
+// Spatial repair only (hub, visited lists, interior return door, a walkable position); story/economy untouched.
+function repairFrontierSpace(f,missionId=1){
+ if(!HUBS[f.hub])f.hub=hubFor(missionId,f.phase);fillVisited(f);
  const safe=(interior,x,y)=>walkable({frontier:{...f,interior}},x,y);
  if(f.interior){
   if(!INTERIORS[f.interior]){delete f.interior;delete f.interiorBuilding;delete f.returnPosition;}
@@ -1042,7 +1046,7 @@ function migrateFrontier(f,missionId=1){
 function fillVisited(f){f.visited??={};for(const id of Object.keys(HUBS)){if(!Array.isArray(f.visited[id]))f.visited[id]=['square'];f.visited[id]=f.visited[id].filter(p=>HUBS[id].places.some(q=>q.id===p));if(!f.visited[id].includes('square'))f.visited[id].unshift('square');}return f;}
 function leaveInteriorFor(f,hub){const door=f.interiorBuilding&&HUBS[hub].places.find(p=>p.buildingId===f.interiorBuilding&&p.interior===f.interior);if(door){f.returnPosition={hub,x:door.x,y:door.y,facing:'up'};return;}const p=f.returnPosition;if(p){f.x=p.x;f.y=p.y;}delete f.interior;delete f.interiorBuilding;delete f.returnPosition;}
 // Loading any save: the hub follows the story moment (hubFor), spatial records are repaired only.
-function alignFrontier(f,missionId,screen){if(!f)return f;migrateFrontier(f,missionId);if(screen==='exploration'||screen==='title'){const hub=hubFor(missionId,f.phase);if(f.hub!==hub){if(f.interior)leaveInteriorFor(f,hub);if(f.interior){f.hub=hub;}else{f.hub=hub;[f.x,f.y]=HUBS[hub].spawn;f.facing='down';}}}return f;}
+function alignFrontier(f,missionId,screen){if(!f)return f;repairFrontierSpace(f,missionId);if(screen==='exploration'||screen==='title'){const hub=hubFor(missionId,f.phase);if(f.hub!==hub){if(f.interior)leaveInteriorFor(f,hub);if(f.interior){f.hub=hub;}else{f.hub=hub;[f.x,f.y]=HUBS[hub].spawn;f.facing='down';}}}return f;}
 
 // Error-only retry route uses the same progression API and still requires the advisor.
 function recoverCouncil(s){

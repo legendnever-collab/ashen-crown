@@ -146,3 +146,14 @@ ACT II 이후 후보 (PROPOSED, 이번에는 그리지 않음):
 | W2 | 세력 영역 공개: 처음부터 전부 vs 이야기에서 만난 뒤 | 윤곽과 지형은 처음부터, 세력 색과 이름은 만난 뒤 |
 | W3 | ACT I 거점 6종과 배치 (§3, §4) | 제안대로 |
 | W4 | 지도 연출 빈도: 새 게임 + 장소가 바뀔 때 vs 미션마다 | 새 게임 + 장소가 바뀔 때 |
+
+## 8. 구현 상태 (2026-10-20)
+
+| 항목 | 상태 |
+|---|---|
+| 아트 팩 수신 | 업로드된 ZIP이 25.19MB에서 잘려 PNG 4장만 수신. `hub_garrison`, `hub_bivouac_night`, `hub_fortress`, `hub_oathcamp`는 SHA256 일치 → `scripts/import-world-art.py`로 WebP 변환. `world_map`, `world_icons`, `hub_village_day`, `hub_village_raid`는 재전송 대기 |
+| 거점 (§3–4) | 위 4곳은 그림 + 걷기 마스크로 구현 (`src/data/hubs-v05.js`). 마을은 그림이 오기 전까지 기존 절차 생성 지도를 사용 |
+| 세계 지도 (§2) | 새 게임 소개, 장소 이동 시 행군 지도, 메뉴 '세계 지도' 구현 (`src/data/world.js`, `src/render/world-renderer.js`, `src/data/story-world.js`). 그림이 오기 전에는 양피지 대체 지도 |
+| 세부 결정 | D-053 (PROPOSED) |
+| 검증 | `tests/hubs.test.mjs`, `test:world` (1440 / 390), 기존 browser suite 갱신 (journey: 진영 상점은 노천 판매대) |
+

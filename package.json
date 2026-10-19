@@ -34,6 +34,7 @@
     "test:act1-balance": "node tests/act1-balance.mjs",
     "test:class": "node tests/class-e2e.mjs",
     "test:legion": "node tests/legion-e2e.mjs",
+    "test:world": "node tests/world-e2e.mjs",
     "test:class-balance": "node tests/class-balance.mjs"
   },
   "devDependencies": {

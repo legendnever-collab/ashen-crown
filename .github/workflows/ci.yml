@@ -49,7 +49,7 @@ jobs:
           - suite_group: campaign
             suites: campaign economy-balance migration-v02
           - suite_group: act1
-            suites: act1 migration-v033 mobile-command class legion
+            suites: act1 migration-v033 mobile-command class legion world
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
