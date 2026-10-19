@@ -5,7 +5,7 @@ let pw;try{pw=await import('playwright');}catch{pw=await import(pathToFileURL(pa
 const launch={headless:true,args:['--no-sandbox','--disable-gpu','--in-process-gpu','--no-zygote',...(process.env.BROWSER_SINGLE_PROCESS?['--single-process']:[])]};if(process.env.BROWSER_EXECUTABLE)launch.executablePath=process.env.BROWSER_EXECUTABLE;
 const browser=await launchTestBrowser(launch),results=[],errors=[];let external=0;
 const ctx=await browser.newContext({viewport:{width:1440,height:900}});await ctx.setOffline(true);const page=await ctx.newPage();page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(/^https?:/.test(r.url()))external++;});
-const url=process.env.GAME_URL||pathToFileURL(path.resolve('releases/Ashen_Crown_v0.4.0.html')).href;
+const url=process.env.GAME_URL||pathToFileURL(path.resolve('releases/Ashen_Crown_v0.5.0.html')).href;
 fs.mkdirSync('test-output',{recursive:true});
 const snapshot=()=>page.evaluate(()=>window.AshenCrown.snapshot());
 const idle=async()=>{await page.waitForFunction(()=>!window.AshenCrown.view().busy);await drainStory(page);return page.waitForFunction(()=>window.AshenCrown&&!window.AshenCrown.view().busy&&(window.AshenCrown.snapshot().phase==='player'||window.AshenCrown.snapshot().screen==='result'),{},{timeout:30000});};

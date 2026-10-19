@@ -268,3 +268,6 @@
  .unit-popover .menu-list{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:6px}
  .unit-popover .menu-list .cmd{flex-direction:column;justify-content:center;min-height:48px;padding:4px 2px;font-size:12px;gap:2px;text-align:center}
 }
+/* v0.5.0 growth tab */
+.growth-path{display:flex;align-items:center;gap:8px;margin:2px 0 8px;flex-wrap:wrap}.growth-path .cls{padding:5px 10px;border:1px solid #6d7f7a;border-radius:4px;background:#1d363b;font-weight:bold}.growth-path .cls small{display:block;font-weight:normal;font-size:11px;color:#b9c6c0}.growth-path .cls.next{border-color:#d8bb7c;color:#f4d18d}.growth-path .cls.done{background:#4a3b17}.growth-path .arrow{color:#d8bb7c;font-size:18px}
+.growth-h{display:block;text-align:left;margin:10px 0 4px;font-size:13px;color:#f4d18d}.growth-h .prof-stars{margin-left:8px;color:#f0c44c;letter-spacing:1px}.potential-steps,.promo-checks{margin:0;padding-left:0;list-style:none;font-size:12.5px;line-height:1.7}.potential-steps li,.promo-checks li{color:#9fb0aa}.potential-steps li.done,.promo-checks li.ok{color:#e8f1d8}

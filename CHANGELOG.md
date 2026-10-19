@@ -1,4 +1,5 @@
 # v0.5.0 — Advanced Class & Character Progression (in development)
+- Phase C (engine): class tree (tier 1 → tier 2 per hero) and the five new action definitions; three-step potential read from existing tactical memory (retroactive for v0.2–v0.4 saves); proficiency ★ (bonus only after promotion, so tier-1 ACT I combat is unchanged — 30-seed ACT I results identical); promotion conditions (ACT I + Lv 6 + potential 3/3) and a once-only promotion ledger; Ranger terrain profile, Shadowblade MOV +1, class growth bonuses; new memory keys lia_kill and <hero>_skill; unit sheet '성장' tab (class path, new action, potential checklist, ★, conditions); save schema 8 (imports 0–7) proven with real v0.4.0 saves (ACT I complete camp, mid-M05 battle).
 - Phase A/B: v0.4.0 release notes (docs/v0.4.0/RELEASE_NOTES.md); class promotion, awakening actions, proficiency and Tier 2 appearance design (docs/v0.5.0) — design only, PROPOSED until the user approves.
 
 # v0.4.0 — The Broken Allegiance (official release, 2026-10-19)

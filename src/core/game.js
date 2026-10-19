@@ -5,13 +5,14 @@ import {distance,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,for
 import {MISSIONS,missionOf,LAST_MISSION} from '../data/missions.js';
 import {rulesOf,objectUnit,searchEvidence} from './mission-rules.js';
 import {narrativeState,enqueueStory,remember,setStoryFlag,afterBattleEvents} from './narrative.js';
+import {proficiencyBonus} from './progression.js';
 export function newGame(seed=20261014,campaign=null,missionId=1){
  const mission=MISSIONS[missionId];
  const units=HEROES.map((h,i)=>{const old=campaign?.heroes?.find(a=>a.id===h.id);const u={...structuredClone(h),team:'ally',maxHP:h.hp,maxMP:h.mp,x:(mission.deployments||DEPLOYMENTS).recommended[i][0],y:(mission.deployments||DEPLOYMENTS).recommended[i][1],xp:0,earnedXP:0,growthHistory:[],clues:[],highlights:[],healTargets:[],moved:false,acted:false,hitThisTurn:false,shadowBonus:0,guardTarget:null};
   if(old){for(const k of ['level','xp','maxHP','maxMP','atk','def','mag','res','spd','growthHistory','clues','appearanceTier','classTier','storyTier','classMovementModifier','movementProfile'])if(old[k]!==undefined)u[k]=structuredClone(old[k]);u.hp=u.maxHP;u.mp=u.maxMP;}u.name=h.name;u.ko=h.ko;u.appearanceTier=u.appearanceTier|| (u.id==='eric'&&u.level>=5?2:1);return u;
  });
  units.push(...mission.enemies.map(e=>({...structuredClone(e),team:'enemy',maxHP:e.hp,mp:0,maxMP:0,mag:0,moved:false,acted:false,spawnTurn:0})),...mission.civilians.map(({startHP,...c})=>({...c,team:'civilian',kind:c.kind||'civilian',hp:startHP||c.hp||BALANCE.civilianHP,maxHP:c.hp||BALANCE.civilianHP,mp:0,maxMP:0,atk:0,def:c.def??1,res:c.res??1,mag:0,spd:0,mov:0,range:[0,0],rescued:false})),...(mission.objects||[]).map(objectUnit));
- campaign=structuredClone(campaign||{heroes:null,results:[],clears:0});campaign.completed=campaign.completed||[];campaign.flags=campaign.flags||{};campaign.bonds=campaign.bonds||{};campaign.tacticalMemory=campaign.tacticalMemory||{};campaign.choices=campaign.choices||{};
+ campaign=structuredClone(campaign||{heroes:null,results:[],clears:0});campaign.completed=campaign.completed||[];campaign.flags=campaign.flags||{};campaign.bonds=campaign.bonds||{};campaign.tacticalMemory=campaign.tacticalMemory||{};campaign.choices=campaign.choices||{};campaign.promotions=campaign.promotions||{};
  const result={missionId,practice:campaign.completed.includes(missionId),narrative:{...narrativeState(),seen:campaign.dialogueMemory?.seen||[],history:campaign.dialogueMemory?.history||[]},version:VERSION,schema:SCHEMA,screen:'title',phase:'player',turn:1,rng:seed>>>0,initialSeed:seed>>>0,units,log:[mission.objective,mission.brief],feedback:[],reinforced:false,enemyQueue:[],enemyIndex:0,undo:{},outcome:null,campaign,missionStart:units.filter(u=>u.team==='ally').map(u=>({id:u.id,level:u.level,stats:{maxHP:u.maxHP,atk:u.atk,def:u.def,mag:u.mag}})),potions:2};ensureEconomy(result);rulesOf(result)?.init(result);return result;
 }
 export function setDeployment(s,id,x,y){const zone=missionOf(s).deployZone?.(s);if(s.screen!=='deployment'||(zone?!zone.has(`${x},${y}`):(y<7||y>9||x<1||x>10))||!Number.isFinite(terrainAt(x,y,s)?.cost))return false;const u=findUnit(s,id);if(!u||u.team!=='ally')return false;const other=at(s,x,y);if(other&&other.team!=='ally')return false;if(other){other.x=u.x;other.y=u.y;}u.x=x;u.y=y;return true;}
@@ -47,19 +48,19 @@ export function performAction(s,id,mode,targetId){
  if(!validTarget(s,u,t,mode))return {ok:false,error:'대상 또는 사거리가 올바르지 않습니다.'};
  if(mode==='skill'&&u.mp<skillCost(u))return {ok:false,error:'MP가 부족합니다.'};
  if(t?.id==='boss'&&['attack','skill','capture'].includes(mode))enqueueStory(s,`${s.missionId}:encounter`);
- if(mode==='skill')u.mp-=skillCost(u);
+ if(mode==='skill'){u.mp-=skillCost(u);remember(s,`${u.id}_skill`);}
  consumeAction(s,u);if(s.missionId===3&&u.id==='kai'&&u.y<=4)remember(s,'kai_bypass');
  if(mode==='search'){const custom=rulesOf(s)?.search?.(s,u,t);if(!custom)searchEvidence(s,u,t);awardXP(s,u,30,`${t.name} ${custom?'작동':'조사'}`);}
  else if(mode==='capture'){t.rescued=true;setStoryFlag(s,'mission_02_prisoner_captured');setStoryFlag(s,'mission_02_supply_route_discovered');remember(s,`${u.id}_capture`);awardXP(s,u,50,'도주 대장 생포');enqueueStory(s,'2:capture');s.log.push('포로 확보 · 보급로 진술을 얻었습니다.');}
  else if(mode==='rescue'){t.rescued=true;remember(s,`${u.id}_rescue`);awardXP(s,u,BALANCE.rescueXP,`${t.name} 구출`);s.log.push(`${u.name}: ${t.name}을 안전한 피난로로 구출했습니다.`);s.feedback.push({type:'rescue',id:t.id,text:'RESCUED'});if(u.id==='kai')discover(s,u,'Shadow Exchange');}
  else if(mode==='skill'&&u.id==='eric'){u.guarding=true;u.guardUsed=false;u.guardTarget=null;awardXP(s,u,12,'방어 태세');s.log.push('Erik: 방어 태세. 다음 아군 턴까지 DEF +3, 인접 동료가 받는 첫 근접 공격을 대신 받습니다.');s.feedback.push({type:'guard',id:u.id,text:'GUARD'});}
  else if(mode==='skill'&&u.id==='sain'){
-  const heal=Math.min(12+effectiveStats(s,u).mag,t.maxHP-t.hp);t.hp+=heal;s.feedback.push({type:'heal',id:t.id,text:`+${heal}`,toHP:t.hp});
+  const heal=Math.min(12+effectiveStats(s,u).mag+(proficiencyBonus(s,u).heal||0),t.maxHP-t.hp);t.hp+=heal;s.feedback.push({type:'heal',id:t.id,text:`+${heal}`,toHP:t.hp});
   const extra=s.units.filter(a=>a.team==='ally'&&alive(a)&&a.id!==t.id&&distance(a,t)===1&&a.hp<a.maxHP).sort((a,b)=>a.hp/a.maxHP-b.hp/b.maxHP)[0];let splash=0;if(extra){splash=Math.min(4,extra.maxHP-extra.hp);extra.hp+=splash;s.feedback.push({type:'heal',id:extra.id,text:`+${splash}`,toHP:extra.hp});}
   if(heal||splash)remember(s,'sain_heal');
   if(heal||splash){if(!u.healTargets.includes(t.id))u.healTargets.push(t.id);awardXP(s,u,Math.min(BALANCE.healXP,10+Math.floor((heal+splash)/2)),`${t.name} 치유`);}if(extra&&splash)discover(s,u,'Divine Recall');s.log.push(`Sain: ${t.name} +${heal} HP${extra?`, Gentle Hands → ${extra.name} +${splash}`:''}. 치유할 때마다 EXP를 얻습니다.`);
  }else{
-  const r=damage(s,u,t,mode);if(r.hit){awardXP(s,u,BALANCE.attackXP+(!alive(r.victim)?BALANCE.killXP:0),`${r.victim.name} ${alive(r.victim)?'공격':'격파'}`);if(u.id==='elina'&&['f','v'].includes(sTerrain(s,u))){discover(s,u,'Overwatch');remember(s,'elina_forest_shot');}if(u.id==='lia'&&!alive(r.victim))discover(s,u,'Arcane Territory');}
+  const r=damage(s,u,t,mode);if(r.hit){awardXP(s,u,BALANCE.attackXP+(!alive(r.victim)?BALANCE.killXP:0),`${r.victim.name} ${alive(r.victim)?'공격':'격파'}`);if(u.id==='elina'&&['f','v'].includes(sTerrain(s,u))){discover(s,u,'Overwatch');remember(s,'elina_forest_shot');}if(u.id==='lia'&&!alive(r.victim)){discover(s,u,'Arcane Territory');remember(s,'lia_kill');}}
   if(alive(r.victim)&&validTarget(s,r.victim,u))damage(s,r.victim,u,'attack',true);
  }
  rulesOf(s)?.onAction?.(s,u,mode,t);

@@ -2,6 +2,7 @@ import {effectiveStats} from './economy.js';
 import {MAP,TERRAIN,WIDTH,HEIGHT,BALANCE,HEROES,CLASS_MOVEMENT,HERO_CLASS,TERRAIN_COSTS} from '../data/game-data.js';
 import {missionOf} from '../data/missions.js';
 import {remember} from './narrative.js';
+import {proficiencyBonus,classGrowth} from './progression.js';
 export const distance=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
 export const key=(x,y)=>`${x},${y}`;
 // benched: a hero left out of the sortie (pre-battle choice) takes no part in the battle
@@ -52,7 +53,7 @@ export function strikeStats(s,u,t,mode='attack'){
   if(near(u))formHit=form.hit;
   if(u.id==='boss'&&isolated(s,t)&&!(t.guarding&&!t.guardUsed))dmg+=form.charge;}
  const standing=missionOf(s).map[u.y][u.x];const hawk=u.id==='elina'&&(standing==='f'||standing==='v')?12:0;
- const hit=Math.max(70,Math.min(100,(magic?100:97)+Math.round((u.spd-t.spd)*1.5)-(ground.evade||0)+hawk+(aim?18:0)+(u.hit||0)+formHit-(t.dodge||0)));
+ const hit=Math.max(70,Math.min(100,(magic?100:97)+Math.round((u.spd-t.spd)*1.5)-(ground.evade||0)+hawk+(aim?18:0)+(u.hit||0)+(proficiencyBonus(s,u).hit||0)+formHit-(t.dodge||0)));
  const crit=magic?0:Math.min(12,Math.max(3,Math.round((u.spd-t.spd)/2)+5));
  return {damage:dmg,hit,crit,magic,fire:magic,terrainMul:magic?(ground.fire??1):1-(ground.phys||0),flank:quick&&flank(s,u,t),burning};
 }
@@ -75,7 +76,7 @@ export function xpScale(s,u){const lv=missionOf(s)?.level;if(!lv)return 1;const 
 export function awardXP(s,u,amount,reason){
  if(u.team!=='ally'||!amount)return;amount=Math.max(1,Math.round(amount*xpScale(s,u)));
  u.xp+=amount;u.earnedXP+=amount;u.highlights.push(reason);s.feedback.push({type:'xp',id:u.id,text:`+${amount} EXP`});
- let leveled=false;while(u.xp>=BALANCE.xpLevel){leveled=true;u.xp-=BALANCE.xpLevel;u.level++;const g=HEROES.find(h=>h.id===u.id).growth;const changes={...g};for(const [stat,n] of Object.entries(g)){if(stat==='hp'){u.maxHP+=n;u.hp=Math.min(u.maxHP,u.hp+n);}else if(stat==='mp'){u.maxMP+=n;u.mp=Math.min(u.maxMP,u.mp+n);}else u[stat]+=n;}if(u.id==='eric'&&u.level>=5)u.appearanceTier=2;u.growthHistory.push({level:u.level,changes});s.feedback.push({type:'level',id:u.id,text:`LEVEL ${u.level}`,toHP:u.hp});s.log.push(`${u.name} → LV ${u.level}. 성장이 새로운 힘으로 이어집니다.`);}
+ let leveled=false;while(u.xp>=BALANCE.xpLevel){leveled=true;u.xp-=BALANCE.xpLevel;u.level++;const g={...HEROES.find(h=>h.id===u.id).growth};for(const [k,v]of Object.entries(classGrowth(u)))g[k]=(g[k]||0)+v;const changes={...g};for(const [stat,n] of Object.entries(g)){if(stat==='hp'){u.maxHP+=n;u.hp=Math.min(u.maxHP,u.hp+n);}else if(stat==='mp'){u.maxMP+=n;u.mp=Math.min(u.maxMP,u.mp+n);}else u[stat]+=n;}if(u.id==='eric'&&u.level>=5)u.appearanceTier=2;u.growthHistory.push({level:u.level,changes});s.feedback.push({type:'level',id:u.id,text:`LEVEL ${u.level}`,toHP:u.hp});s.log.push(`${u.name} → LV ${u.level}. 성장이 새로운 힘으로 이어집니다.`);}
  if(leveled){u.hp=u.maxHP;u.mp=u.maxMP;s.log.push(`${u.name}: 레벨업으로 HP/MP 전부 회복.`);}
 }
 export function discover(s,u,clue){if(!u.clues.includes(clue)){u.clues.push(clue);s.feedback.push({type:'potential',id:u.id,text:'POTENTIAL DISCOVERED'});s.log.push(`Potential Clue Discovered — ${clue} (1/3). 각성은 아직 해금되지 않았습니다.`);}}
