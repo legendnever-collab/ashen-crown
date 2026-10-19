@@ -3,10 +3,12 @@ import {COUNCIL_V04} from '../data/story-v04.js';
 import {enqueueStory,openStory,introStory,setStoryFlag} from './narrative.js';
 import {STORY} from '../data/story.js';
 import {ensureEconomy} from './economy.js';
-export function frontierState(missionId=1){return {actorId:'eric',campaignEntry:'advisor',advisorPending:false,hub:missionId===1?'village':'camp',x:7,y:7,facing:'down',visited:{village:['square'],camp:['square']},events:[],affiliation:{eric:'affiliated',elina:'affiliated',lia:'available',sain:'available',kai:'available'},members:['eric','elina','lia','sain','kai'],phase:'preparation',pendingRecruit:null,ready:{equipment:false,items:false,formation:false,objective:false}};}
+import {hubFor} from '../data/hubs-v05.js';
+export {hubFor};
+export function frontierState(missionId=1){const hub=hubFor(missionId),[x,y]=HUBS[hub].spawn;return {actorId:'eric',campaignEntry:'advisor',advisorPending:false,hub,x,y,facing:'down',visited:Object.fromEntries(Object.keys(HUBS).map(id=>[id,['square']])),events:[],affiliation:{eric:'affiliated',elina:'affiliated',lia:'available',sain:'available',kai:'available'},members:['eric','elina','lia','sain','kai'],phase:'preparation',pendingRecruit:null,ready:{equipment:false,items:false,formation:false,objective:false}};}
 export function ensureFrontier(s){if(!s.frontier)s.frontier=structuredClone(s.campaign.frontier||frontierState(s.missionId));ensureEconomy(s);return s.frontier;}
 export function syncFrontier(s){if(!s.practice)s.campaign.frontier=structuredClone(s.frontier);}
-export function enterHub(s,{aftermath=false,story=true}={}){const f=ensureFrontier(s);const hub=s.missionId===1?'village':'camp';if(f.hub!==hub){f.hub=hub;[f.x,f.y]=HUBS[hub].spawn;}if(f.interior){const p=f.returnPosition;f.x=p.x;f.y=p.y;delete f.interior;delete f.interiorBuilding;delete f.returnPosition;}f.phase=aftermath?'aftermath':'preparation';s.screen='exploration';if(story&&!s.practice)enqueueStory(s,aftermath&&s.missionId===3&&!s.campaign.bonds.erik_kai?'after:3:quiet':aftermath&&s.missionId===6&&!s.campaign.choices?.m06_oath?'6:oath':`${aftermath?'after':'pre'}:${s.missionId}`);if(story&&!s.practice&&!aftermath&&s.missionId===6)enqueueStory(s,`pre:6:order:${s.campaign.choices?.m04_records_choice==='reported'?'reported':'kept'}`);if(aftermath&&s.missionId===3&&(s.campaign.results.at(-1)?.rescued||0)<2)enqueueStory(s,'after:3:loss');if(story&&!s.practice&&aftermath&&s.missionId===5&&s.campaign.choices?.m05_erik_answer)enqueueStory(s,`after:5:${s.campaign.choices.m05_erik_answer}`);openStory(s);syncFrontier(s);return s;}
+export function enterHub(s,{aftermath=false,story=true}={}){const f=ensureFrontier(s);fillVisited(f);const hub=hubFor(s.missionId,aftermath?'aftermath':'preparation');if(story&&!s.practice&&s.missionId===1&&!aftermath)enqueueStory(s,'world:intro');if(f.hub!==hub&&story&&!s.practice)enqueueStory(s,`world:${hub}`);if(f.hub!==hub){delete f.interior;delete f.interiorBuilding;delete f.returnPosition;f.hub=hub;[f.x,f.y]=HUBS[hub].spawn;f.facing='down';}if(f.interior){const p=f.returnPosition;f.x=p.x;f.y=p.y;delete f.interior;delete f.interiorBuilding;delete f.returnPosition;}f.phase=aftermath?'aftermath':'preparation';s.screen='exploration';if(!walkable(s,f.x,f.y)){[f.x,f.y]=HUBS[f.hub].spawn;f.facing='down';}if(story&&!s.practice)enqueueStory(s,aftermath&&s.missionId===3&&!s.campaign.bonds.erik_kai?'after:3:quiet':aftermath&&s.missionId===6&&!s.campaign.choices?.m06_oath?'6:oath':`${aftermath?'after':'pre'}:${s.missionId}`);if(story&&!s.practice&&!aftermath&&s.missionId===6)enqueueStory(s,`pre:6:order:${s.campaign.choices?.m04_records_choice==='reported'?'reported':'kept'}`);if(aftermath&&s.missionId===3&&(s.campaign.results.at(-1)?.rescued||0)<2)enqueueStory(s,'after:3:loss');if(story&&!s.practice&&aftermath&&s.missionId===5&&s.campaign.choices?.m05_erik_answer)enqueueStory(s,`after:5:${s.campaign.choices.m05_erik_answer}`);openStory(s);syncFrontier(s);return s;}
 export const currentHub=s=>s.frontier?.interior?INTERIORS[s.frontier.interior]:HUBS[s.frontier.hub];
 export function enterInterior(s,kind){const f=s.frontier;if(s.screen!=='exploration'||s.narrative.active||f.interior)return false;
  const door=!INTERIORS[kind]?interactions(s).find(n=>n.action==='enter'&&n.buildingId===kind):null;
@@ -14,7 +16,7 @@ export function enterInterior(s,kind){const f=s.frontier;if(s.screen!=='explorat
  f.returnPosition={hub:f.hub,x:f.x,y:f.y,facing:f.facing};f.interior=door?door.interior:kind;if(door)f.interiorBuilding=door.buildingId;[f.x,f.y]=INTERIORS[f.interior].spawn;f.facing='up';syncFrontier(s);return true;}
 export function exitInterior(s,viaDoor=false){const f=s.frontier;if(!f.interior||s.narrative.active||!viaDoor&&!interactions(s).some(n=>n.action==='exit'))return false;const p=f.returnPosition;if(!p)return false;f.hub=p.hub;f.x=p.x;f.y=p.y;f.facing=p.facing;delete f.interior;delete f.interiorBuilding;delete f.returnPosition;syncFrontier(s);return true;}
 export const exitDoor=h=>h.tone==='interior'?{x:h.places.find(p=>p.action==='exit')?.x??Math.floor(h.width/2),y:h.height-1}:null;
-export function walkable(s,x,y){const h=currentHub(s),door=exitDoor(h);if(door&&x===door.x&&y===door.y)return true;return Number.isInteger(x)&&Number.isInteger(y)&&x>0&&y>0&&x<h.width-1&&y<h.height-1&&!h.buildings.some(b=>x>=b.x&&x<b.x+b.w&&y>=b.y&&y<b.y+b.h)&&!h.npcs.some(n=>n.x===x&&n.y===y);}
+export function walkable(s,x,y){const h=currentHub(s);if(h.mask)return Number.isInteger(x)&&Number.isInteger(y)&&y>=0&&x>=0&&y<h.height&&x<h.width&&h.mask[y][x]==='.'&&!h.npcs.some(n=>n.x===x&&n.y===y);const door=exitDoor(h);if(door&&x===door.x&&y===door.y)return true;return Number.isInteger(x)&&Number.isInteger(y)&&x>0&&y>0&&x<h.width-1&&y<h.height-1&&!h.buildings.some(b=>x>=b.x&&x<b.x+b.w&&y>=b.y&&y<b.y+b.h)&&!h.npcs.some(n=>n.x===x&&n.y===y);}
 export function visitPlaces(s){const f=s.frontier,h=currentHub(s);for(const p of h.places)if(!f.interior&&Math.abs(f.x-p.x)+Math.abs(f.y-p.y)<=1&&!f.visited[f.hub].includes(p.id))f.visited[f.hub].push(p.id);syncFrontier(s);}
 export function stepAren(s,dx,dy){if(s.screen!=='exploration'||s.narrative.active||![[0,1],[0,-1],[1,0],[-1,0]].some(d=>d[0]===dx&&d[1]===dy))return false;const f=s.frontier;f.facing=dx<0?'left':dx>0?'right':dy<0?'up':'down';if(!walkable(s,f.x+dx,f.y+dy))return false;f.x+=dx;f.y+=dy;const door=exitDoor(currentHub(s));if(door&&f.x===door.x&&f.y===door.y){exitInterior(s,true);return true;}visitPlaces(s);return true;}
 export function frontierPath(s,x,y){if(!walkable(s,x,y))return null;const f=s.frontier,q=[[[f.x,f.y]]],seen=new Set([`${f.x},${f.y}`]);while(q.length){const p=q.shift(),[a,b]=p.at(-1);if(a===x&&b===y)return p;for(const [dx,dy]of[[0,-1],[-1,0],[1,0],[0,1]]){const nx=a+dx,ny=b+dy,k=`${nx},${ny}`;if(!seen.has(k)&&walkable(s,nx,ny)){seen.add(k);q.push([...p,[nx,ny]]);}}}return null;}
@@ -38,15 +40,22 @@ export function explorationHero(s){return s.units.find(u=>u.id==='eric');}
 // Only legacy spatial records are repaired; economic/tactical/story state is untouched.
 export function migrateFrontier(f,missionId=1){
  if(!f)return frontierState(missionId);
- f.actorId='eric';f.campaignEntry='advisor';f.advisorPending=false;if(!HUBS[f.hub])f.hub=missionId===1?'village':'camp';
+ f.actorId='eric';f.campaignEntry='advisor';f.advisorPending=false;if(!HUBS[f.hub])f.hub=hubFor(missionId,f.phase);fillVisited(f);
  const safe=(interior,x,y)=>walkable({frontier:{...f,interior}},x,y);
  if(f.interior){
   if(!INTERIORS[f.interior]){delete f.interior;delete f.interiorBuilding;delete f.returnPosition;}
-  else{const p=f.returnPosition;if(!p||p.hub!==f.hub||!safe(null,p.x,p.y)){const door=HUBS[f.hub].places.find(p=>p.action===f.interior);f.returnPosition={hub:f.hub,x:door.x,y:door.y,facing:'up'};}}
+  else{const p=f.returnPosition;if(!p||p.hub!==f.hub||!safe(null,p.x,p.y)){const door=HUBS[f.hub].places.find(p=>f.interiorBuilding?p.buildingId===f.interiorBuilding:p.action===f.interior)||{x:HUBS[f.hub].spawn[0],y:HUBS[f.hub].spawn[1]};f.returnPosition={hub:f.hub,x:door.x,y:door.y,facing:'up'};}}
  }
  if(!safe(f.interior,f.x,f.y)){const spawn=(f.interior?INTERIORS[f.interior]:HUBS[f.hub]).spawn;[f.x,f.y]=spawn;f.facing='down';}
  return f;
 }
+
+// v0.5 hubs (D-052): every hub keeps a visited list; a move to another hub while inside a shared
+// generic building (same building ids in every camp hub) re-anchors the return door.
+export function fillVisited(f){f.visited??={};for(const id of Object.keys(HUBS)){if(!Array.isArray(f.visited[id]))f.visited[id]=['square'];f.visited[id]=f.visited[id].filter(p=>HUBS[id].places.some(q=>q.id===p));if(!f.visited[id].includes('square'))f.visited[id].unshift('square');}return f;}
+function leaveInteriorFor(f,hub){const door=f.interiorBuilding&&HUBS[hub].places.find(p=>p.buildingId===f.interiorBuilding&&p.interior===f.interior);if(door){f.returnPosition={hub,x:door.x,y:door.y,facing:'up'};return;}const p=f.returnPosition;if(p){f.x=p.x;f.y=p.y;}delete f.interior;delete f.interiorBuilding;delete f.returnPosition;}
+// Loading any save: the hub follows the story moment (hubFor), spatial records are repaired only.
+export function alignFrontier(f,missionId,screen){if(!f)return f;migrateFrontier(f,missionId);if(screen==='exploration'||screen==='title'){const hub=hubFor(missionId,f.phase);if(f.hub!==hub){if(f.interior)leaveInteriorFor(f,hub);if(f.interior){f.hub=hub;}else{f.hub=hub;[f.x,f.y]=HUBS[hub].spawn;f.facing='down';}}}return f;}
 
 // Error-only retry route uses the same progression API and still requires the advisor.
 export function recoverCouncil(s){

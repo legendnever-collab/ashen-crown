@@ -1,6 +1,8 @@
+import {stageHubFor} from './hubs-v05.js';
 import {FRONTIER_SCENES,NPC_LINES,ADVISOR_BRIEFINGS} from './frontier-data.js';
 import {STORY_V04,FRONTIER_V04,ADVISOR_V04} from './story-v04.js';
 import {STORY_V05} from './story-v05.js';
+import {STORY_WORLD} from './story-world.js';
 import {LAST_MISSION} from './missions.js';
 Object.assign(FRONTIER_SCENES,FRONTIER_V04);Object.assign(ADVISOR_BRIEFINGS,ADVISOR_V04);
 const line=(speaker,text,expression='neutral')=>({speaker,text,expression});
@@ -27,9 +29,9 @@ export const STORY={
  '3:end':[line('aren','잿빛 밤에도… 난 명령서를 쥐고 있었다. 그 봉인 명령 때문에 피난민들이 갇혔지.','sad'),line('eric','그걸 너 혼자 짊어질 필요는 없어. 이번엔 같이 정한다.'),line('aren','성채의 보급 기록을 확인하자. 명령이 어디서 시작됐는지 알아야 한다.','determined'),line('lia','돌 밑에 남은 기록은 제가 찾을게요. 진실이 사람을 다치게 하지 않도록, 같이요.')],
  defeat:[line('aren','철수한다. …이번 판단을 돌아보고, 다시 준비하자.','sad')]
 };
-export const SPEAKERS={aren:{id:'aren',name:'Aren Valter',ko:'아렌',team:'commander'},eric:{id:'eric',name:'Erik',ko:'에릭'},elina:{id:'elina',name:'Elina',ko:'엘리나'},lia:{id:'lia',name:'Lia',ko:'리아'},sain:{id:'sain',name:'Sain',ko:'세인'},kai:{id:'kai',name:'Kai',ko:'카이'}};
+export const SPEAKERS={chronicle:{id:'chronicle',name:'Chronicle',ko:'연대기'},aren:{id:'aren',name:'Aren Valter',ko:'아렌',team:'commander'},eric:{id:'eric',name:'Erik',ko:'에릭'},elina:{id:'elina',name:'Elina',ko:'엘리나'},lia:{id:'lia',name:'Lia',ko:'리아'},sain:{id:'sain',name:'Sain',ko:'세인'},kai:{id:'kai',name:'Kai',ko:'카이'}};
 
-for(const [key,lines]of Object.entries(FRONTIER_SCENES))STORY[key]=lines.map(([speaker,text],i)=>({...line(speaker,text,i%4===1?'concerned':i%4===2?'determined':'neutral'),stage:key.startsWith('pre:1')||key==='raid'||key==='after:1'?'village':'camp',focus:i%3,actors:['aren','eric','elina','lia','sain','kai']}));
+for(const [key,lines]of Object.entries(FRONTIER_SCENES))STORY[key]=lines.map(([speaker,text],i)=>({...line(speaker,text,i%4===1?'concerned':i%4===2?'determined':'neutral'),stage:stageHubFor(key),focus:i%3,actors:['aren','eric','elina','lia','sain','kai']}));
 for(let mission=1;mission<=LAST_MISSION;mission++)for(const phase of ['preparation','aftermath'])for(const [id,copy]of Object.entries(NPC_LINES)){
  const lines=copy.map(text=>line(id,text));
  const contextual={eric:'손 떨리는 병사부터 쉬게 하자.',elina:'발자국은 남아요. 누가 밟고 갔는지 끝까지 찾을 거예요.',lia:'모르는 게 아직 많네요. 그러니까 더 파 봐야죠!',sain:'잠깐만요, 붕대 한 번만 더 감을게요.',kai:'쉬는 동안에도 출구는 봐 둬. 버릇이야.',elder:'빈집에도 돌아올 사람 자리는 남겨 두겠네.',refugee:'오늘은 애가 푹 잠들었어요. 그거면 됐어요.',guard:'교대 병사가 왔습니다. 이제 잠깐은 쉬셔도 됩니다.'};
@@ -38,7 +40,7 @@ for(let mission=1;mission<=LAST_MISSION;mission++)for(const phase of ['preparati
 }
 for(const [id,name]of Object.entries({elder:'마을 어른',smith:'대장장이',merchant:'도구 상인',refugee:'피난민',guard:'경비병'}))SPEAKERS[id]={id,name,ko:name,team:'civilian'};
 STORY['after:3:quiet']=STORY['after:3'].map(l=>({...l}));STORY['after:3:quiet'][1].text='방식은 달랐지만 같이 길을 지켰다. 아직 맞춰 갈 게 있겠지.';STORY['after:3:quiet'][2].text='그래도 돌아온 사람이 있잖아. 다음에도 길은 찾아보지 뭐.';
-STORY['after:3:loss']=[{...line('sain','모두를 구하진 못했어요. 돌아오지 못한 이름들, 기억하겠습니다.','sad'),stage:'camp',actors:['aren','sain']}];
+STORY['after:3:loss']=[{...line('sain','모두를 구하진 못했어요. 돌아오지 못한 이름들, 기억하겠습니다.','sad'),stage:stageHubFor('after:3'),actors:['aren','sain']}];
 STORY['npc:evidence']=[line('lia','왕실 군용 인장은 확실해요. 근데 누가 보냈는지는… 아직 몰라요.')];
 STORY['npc:bond']=[line('eric','카이랑 같이 세인을 지킨 날은 기억한다. 방식은 달라도 같은 사람을 지켰지.'),line('kai','돌아올 데가 있다는 거, 그날 알았어.')];
 
@@ -55,5 +57,6 @@ const ERIK_REPLIES={aren:'너 혼자 질 짐이 아니야. 병사들은 내가 �
 for(let mission=1;mission<=LAST_MISSION;mission++)for(const phase of ['preparation','aftermath'])for(const [id,text]of Object.entries(ERIK_REPLIES))STORY[`npc:${mission}:${phase}:${id}`].push({...line('eric',text),inPlace:true,actors:['eric',id]});
 Object.assign(STORY,STORY_V04);
 Object.assign(STORY,STORY_V05);
+Object.assign(STORY,STORY_WORLD);
 // M06 camp: each companion's reason to stay replaces the generic preparation talk (PROPOSED wording).
 for(const [npc,hero]of [['aren','eric'],['elina','elina'],['lia','lia'],['sain','sain'],['kai','kai']])if(STORY[`pre:6:reason:${hero}`])STORY[`npc:6:preparation:${npc}`]=STORY[`pre:6:reason:${hero}`].map(l=>({...l,stage:undefined,inPlace:true,actors:['eric',npc],focus:1}));

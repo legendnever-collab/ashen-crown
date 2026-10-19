@@ -1,6 +1,6 @@
 import {legacyRewardCatchup} from '../core/battle-rewards.js';
 import {ensureEconomy,validateEconomy} from '../core/economy.js';
-import {migrateFrontier,frontierState,validateFrontier} from '../core/frontier.js';
+import {migrateFrontier,frontierState,validateFrontier,alignFrontier} from '../core/frontier.js';
 import {SCHEMA,WIDTH,HEIGHT,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS} from '../data/game-data.js';
 import {terrainAt,alive} from '../core/rules.js';
 import {MISSIONS,missionOf} from '../data/missions.js';
@@ -52,7 +52,10 @@ export function migrate(s){
  if(s?.schema===5){s.schema=6;s.version='0.3.3';s.frontier=migrateFrontier(s.frontier,s.missionId);s.campaign.frontier=migrateFrontier(s.campaign.frontier,s.missionId);if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema===6){s.schema=7;s.version='0.4.0';s.campaign.choices??={};if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema===7){s.schema=8;s.version='0.5.0';s.campaign.promotions??={};if(s.stageStart)s.stageStart=migrate(s.stageStart);}
- if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');return validate(s);
+ if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');
+ // v0.5 hubs (D-052): every load re-anchors the frontier to the hub of its story moment (spatial only).
+ if(s?.schema===SCHEMA){if(s.frontier)alignFrontier(s.frontier,s.missionId,s.screen);if(s.campaign?.frontier)alignFrontier(s.campaign.frontier,s.missionId,s.screen);if(s.skirmish?.frontier)alignFrontier(s.skirmish.frontier,s.skirmish.returnMission,'exploration');if(s.stageStart?.frontier)alignFrontier(s.stageStart.frontier,s.stageStart.missionId,s.stageStart.screen);if(s.stageStart?.campaign?.frontier)alignFrontier(s.stageStart.campaign.frontier,s.stageStart.missionId,s.stageStart.screen);}
+ return validate(s);
 }
 export function serialize(s){validate(s);const data=JSON.stringify({...s,feedback:[]});return JSON.stringify({format:'AshenCrown',schema:SCHEMA,checksum:checksum(data),data});}
 export function deserialize(text){if(typeof text!=='string'||text.length>5000000)throw Error('저장 크기가 올바르지 않습니다.');const envelope=JSON.parse(text);if(envelope.format!=='AshenCrown'||typeof envelope.data!=='string'||checksum(envelope.data)!==envelope.checksum)throw Error('저장 검증에 실패했습니다.');return migrate(JSON.parse(envelope.data));}

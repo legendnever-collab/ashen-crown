@@ -1,4 +1,5 @@
 // Original local scenes/NPC details are PROPOSED content within approved chronology.
+import {ART_HUBS} from './hubs-v05.js';
 export const GEAR={
  ironBlade:{name:'Tempered Sword',icon:'⚔',slot:'weapon',heroes:['eric'],price:65,bonus:{atk:2},upgrade:{atk:1},description:'에릭의 전열 유지 · ATK +2'},
  huntingBow:{name:'Hunting Bow',icon:'➶',slot:'weapon',heroes:['elina'],price:65,bonus:{hit:8},upgrade:{atk:1},description:'엘리나의 안정적인 사격 · HIT +8'},
@@ -99,3 +100,6 @@ for(const [hubId,hub] of Object.entries(HUBS)){let n=0;
   b.entrance={tileX,tileY,approachDirection:'north',triggerType:'interact'};b.returnPoint={tileX,tileY:tileY+1};b.interiorScene=interior;
   hub.places.push({id:b.buildingId,name:({HOME:'민가',SUPPLY:'보급 창고',BARRACKS:'병영',TRIAGE:'구호 천막','COMMAND QUARTERS':'지휘관 숙소',OPERATIONS:'작전 막사'})[b.label]||b.label||interior,x:tileX,y:tileY+1,action:'enter',entrance:b.entrance,buildingId:b.buildingId,interior,hub:hubId});}
 }
+// v0.5.0 (D-052): painted camp-type hubs replace the procedural Border Camp and add the bivouac,
+// reclaimed fortress and oath camp. The legacy loops above shaped only the procedural hubs.
+Object.assign(HUBS,ART_HUBS);
