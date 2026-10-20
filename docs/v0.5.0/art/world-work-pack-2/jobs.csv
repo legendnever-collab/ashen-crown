@@ -1,0 +1,5 @@
+order,id,kind,file,size,expected_sha256_if_repackaged,references,prompt_file
+1,world_map,world,world_map.png,1536x1024,af31a6b35846b683e9ba7f5b3c4c8ddff2621d1a726403a619d1a7214e4e5f24,"layout_world_map.png, style_aren_neutral.png, approved_hub_garrison.jpg",prompts/01_world_map.txt
+2,world_icons,icons,world_icons.png,1024x1024,7f6ddc8030e17ef3984f6e7f2def00d4797206ae1f511a7627c9a0da2e46d285,"world_map.png (your final result), style_aren_neutral.png",prompts/02_world_icons.txt
+3,hub_village_day,hub,hub_village_day.png,1536x1024,f1b5d45d936aa06a0d44a83bfd0ce2ab6ad1fd9f014d50da8392d8c966a85d26,"layout_hub_village.png, scale_reference.png, sprite_eric_sheet.png, approved_hub_garrison.jpg, approved_hub_fortress.jpg",prompts/03_hub_village_day.txt
+4,hub_village_raid,hub,hub_village_raid.png,1536x1024,f448c3fdce020d4ce79a3b896342fa4ec93c74d9d3879ce0289ae623d6b681d0,"hub_village_day.png (your final result), layout_hub_village_raid.png",prompts/04_hub_village_raid.txt

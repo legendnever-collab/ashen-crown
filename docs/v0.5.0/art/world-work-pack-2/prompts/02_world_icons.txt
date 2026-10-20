@@ -1,0 +1,12 @@
+Same painting style as the approved world_map.png. Paint a 3x3 sheet of small map icons for that map. Each icon is centered in its own cell (cells are 1024/3 px; keep at least 24 px of empty space around each icon), seen from the same top-down three-quarter angle, with a soft drop shadow, on a fully TRANSPARENT background (if transparency is impossible, use flat pure green #00FF00 and nothing else). No text, no labels, no frames, no cell borders.
+Row 1: (1) a small border village of thatched houses, (2) a cluster of military canvas tents with a plain pennant, (3) a stone border gate set in a short wall.
+Row 2: (4) a ruined, partly broken hill fortress, (5) a grand royal castle with tall towers and gold-trimmed roofs, (6) a dark grey iron-and-stone mountain stronghold.
+Row 3: (7) a walled free city with a small harbor and a windmill, (8) a tall cathedral with a glowing ember-orange rose window, (9) a quiet cliffside monastery.
+Every icon must still read clearly when shrunk to 64x64 px: bold silhouette, few details.
+
+Additional requirements for this run:
+- Each icon must sit fully inside its own cell with at least 24 px of fully transparent space on every side; nothing may touch or cross a cell boundary (cells are 341/342/341 px wide and tall). If the generator crowds the icons, generate them in batches and compose the sheet yourself with Pillow — composing and moving whole icons is allowed; repainting is not.
+- No colored fringes: on a dark background no red/yellow/cyan halo may remain around a silhouette.
+Painting style: match the attached approved character art (style_aren_neutral.png, style_eric_neutral.png) — hand-painted fantasy illustration with confident contours, painterly cel shading with soft gradients, warm rim light, rich but slightly earthy colors, detailed but readable textures. Original world: do not imitate any existing game's map, town, emblem or layout.
+Attach: world_map.png (your final result), style_aren_neutral.png.
+Output: one PNG, exactly 1024x1024 px.
