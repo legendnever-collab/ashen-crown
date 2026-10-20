@@ -1,0 +1,177 @@
+PASS 1440x1000 Erik owns exploration, no duplicate growth
+PASS 1440x1000 Aren commander and advisor visible in map UI
+PASS 1440x1000 M1 weapon exact front arrival confirms
+PASS 1440x1000 M1 weapon hold cancel no repeated modal
+PASS 1440x1000 M1 weapon facade hit maps to front door
+PASS 1440x1000 M1 weapon entered
+PASS 1440x1000 M1 weapon interior reload
+PASS 1440x1000 M1 weapon exact return
+PASS 1440x1000 M1 weapon lateral/radius shortcut absent
+PASS 1440x1000 M1 weapon rear side cannot enter
+PASS 1440x1000 M1 item exact front arrival confirms
+PASS 1440x1000 M1 item hold cancel no repeated modal
+PASS 1440x1000 M1 item facade hit maps to front door
+PASS 1440x1000 M1 item entered
+PASS 1440x1000 M1 item interior reload
+PASS 1440x1000 M1 item exact return
+PASS 1440x1000 M1 item lateral/radius shortcut absent
+PASS 1440x1000 M1 item rear side cannot enter
+PASS 1440x1000 M2 weapon stall opens at the counter
+PASS 1440x1000 M2 weapon stall lists the same catalog
+PASS 1440x1000 M2 item stall opens at the counter
+PASS 1440x1000 M2 item stall lists the same catalog
+PASS 1440x1000 M1 actual NPC tap opens briefing
+PASS 1440x1000 M1 Erik dialogue portrait
+PASS 1440x1000 M1 briefing reload exact
+PASS 1440x1000 M1 choice menu follows dialogue
+PASS 1440x1000 M1 current mission visible
+PASS 1440x1000 M1 defer keeps exploration
+PASS 1440x1000 M1 advisor opens official council
+PASS 1440x1000 M1 council cancel preserves position/economy
+PASS 1440x1000 M1 deployment can return (via the council) and repeat
+PASS 1440x1000 M1 real Battle Start and same equipped Erik
+PASS 1440x1000 M2 actual NPC tap opens briefing
+PASS 1440x1000 M2 Erik dialogue portrait
+PASS 1440x1000 M2 briefing reload exact
+PASS 1440x1000 M2 choice menu follows dialogue
+PASS 1440x1000 M2 current mission visible
+PASS 1440x1000 M2 defer keeps exploration
+PASS 1440x1000 M2 advisor opens official council
+PASS 1440x1000 M2 council cancel preserves position/economy
+PASS 1440x1000 M2 deployment can return (via the council) and repeat
+PASS 1440x1000 M2 real Battle Start and same equipped Erik
+PASS 1440x1000 M3 actual NPC tap opens briefing
+PASS 1440x1000 M3 Erik dialogue portrait
+PASS 1440x1000 M3 briefing reload exact
+PASS 1440x1000 M3 choice menu follows dialogue
+PASS 1440x1000 M3 current mission visible
+PASS 1440x1000 M3 defer keeps exploration
+PASS 1440x1000 M3 advisor opens official council
+PASS 1440x1000 M3 council cancel preserves position/economy
+PASS 1440x1000 M3 deployment can return (via the council) and repeat
+PASS 1440x1000 M3 real Battle Start and same equipped Erik
+PASS 1440x1000 M03 aftermath advisor offers no council, M04 departure is on the panel
+PASS 1440x1000 M03 aftermath next story is Mission 4
+PASS 1440x1000 final-mission (M06) aftermath no false next departure
+PASS 1440x1000 blocked v032 save recovers safely
+PASS 1440x1000 migrated blocked save reaches council
+PASS 1440x1000 viewport has no horizontal overflow
+PASS 390x844 Erik owns exploration, no duplicate growth
+PASS 390x844 Aren commander and advisor visible in map UI
+PASS 390x844 M1 weapon exact front arrival confirms
+PASS 390x844 M1 weapon hold cancel no repeated modal
+PASS 390x844 M1 weapon facade hit maps to front door
+PASS 390x844 M1 weapon entered
+PASS 390x844 M1 weapon interior reload
+PASS 390x844 M1 weapon exact return
+PASS 390x844 M1 weapon lateral/radius shortcut absent
+PASS 390x844 M1 weapon rear side cannot enter
+PASS 390x844 M1 item exact front arrival confirms
+PASS 390x844 M1 item hold cancel no repeated modal
+PASS 390x844 M1 item facade hit maps to front door
+PASS 390x844 M1 item entered
+PASS 390x844 M1 item interior reload
+PASS 390x844 M1 item exact return
+PASS 390x844 M1 item lateral/radius shortcut absent
+PASS 390x844 M1 item rear side cannot enter
+PASS 390x844 M2 weapon stall opens at the counter
+PASS 390x844 M2 weapon stall lists the same catalog
+PASS 390x844 M2 item stall opens at the counter
+PASS 390x844 M2 item stall lists the same catalog
+PASS 390x844 M1 actual NPC tap opens briefing
+PASS 390x844 M1 Erik dialogue portrait
+PASS 390x844 M1 briefing reload exact
+PASS 390x844 M1 choice menu follows dialogue
+PASS 390x844 M1 current mission visible
+PASS 390x844 M1 defer keeps exploration
+PASS 390x844 M1 advisor opens official council
+PASS 390x844 M1 council cancel preserves position/economy
+PASS 390x844 M1 deployment can return (via the council) and repeat
+PASS 390x844 M1 real Battle Start and same equipped Erik
+PASS 390x844 M2 actual NPC tap opens briefing
+PASS 390x844 M2 Erik dialogue portrait
+PASS 390x844 M2 briefing reload exact
+PASS 390x844 M2 choice menu follows dialogue
+PASS 390x844 M2 current mission visible
+PASS 390x844 M2 defer keeps exploration
+PASS 390x844 M2 advisor opens official council
+PASS 390x844 M2 council cancel preserves position/economy
+PASS 390x844 M2 deployment can return (via the council) and repeat
+PASS 390x844 M2 real Battle Start and same equipped Erik
+PASS 390x844 M3 actual NPC tap opens briefing
+PASS 390x844 M3 Erik dialogue portrait
+PASS 390x844 M3 briefing reload exact
+PASS 390x844 M3 choice menu follows dialogue
+PASS 390x844 M3 current mission visible
+PASS 390x844 M3 defer keeps exploration
+PASS 390x844 M3 advisor opens official council
+PASS 390x844 M3 council cancel preserves position/economy
+PASS 390x844 M3 deployment can return (via the council) and repeat
+PASS 390x844 M3 real Battle Start and same equipped Erik
+PASS 390x844 M03 aftermath advisor offers no council, M04 departure is on the panel
+PASS 390x844 M03 aftermath next story is Mission 4
+PASS 390x844 final-mission (M06) aftermath no false next departure
+PASS 390x844 blocked v032 save recovers safely
+PASS 390x844 migrated blocked save reaches council
+PASS 390x844 viewport has no horizontal overflow
+PASS 844x390 Erik owns exploration, no duplicate growth
+PASS 844x390 Aren commander and advisor visible in map UI
+PASS 844x390 M1 weapon exact front arrival confirms
+PASS 844x390 M1 weapon hold cancel no repeated modal
+PASS 844x390 M1 weapon facade hit maps to front door
+PASS 844x390 M1 weapon entered
+PASS 844x390 M1 weapon interior reload
+PASS 844x390 M1 weapon exact return
+PASS 844x390 M1 weapon lateral/radius shortcut absent
+PASS 844x390 M1 weapon rear side cannot enter
+PASS 844x390 M1 item exact front arrival confirms
+PASS 844x390 M1 item hold cancel no repeated modal
+PASS 844x390 M1 item facade hit maps to front door
+PASS 844x390 M1 item entered
+PASS 844x390 M1 item interior reload
+PASS 844x390 M1 item exact return
+PASS 844x390 M1 item lateral/radius shortcut absent
+PASS 844x390 M1 item rear side cannot enter
+PASS 844x390 M2 weapon stall opens at the counter
+PASS 844x390 M2 weapon stall lists the same catalog
+PASS 844x390 M2 item stall opens at the counter
+PASS 844x390 M2 item stall lists the same catalog
+PASS 844x390 M1 actual NPC tap opens briefing
+PASS 844x390 M1 Erik dialogue portrait
+PASS 844x390 M1 briefing reload exact
+PASS 844x390 M1 choice menu follows dialogue
+PASS 844x390 M1 current mission visible
+PASS 844x390 M1 defer keeps exploration
+PASS 844x390 M1 advisor opens official council
+PASS 844x390 M1 council cancel preserves position/economy
+PASS 844x390 M1 deployment can return (via the council) and repeat
+PASS 844x390 M1 real Battle Start and same equipped Erik
+PASS 844x390 M2 actual NPC tap opens briefing
+PASS 844x390 M2 Erik dialogue portrait
+PASS 844x390 M2 briefing reload exact
+PASS 844x390 M2 choice menu follows dialogue
+PASS 844x390 M2 current mission visible
+PASS 844x390 M2 defer keeps exploration
+PASS 844x390 M2 advisor opens official council
+PASS 844x390 M2 council cancel preserves position/economy
+PASS 844x390 M2 deployment can return (via the council) and repeat
+PASS 844x390 M2 real Battle Start and same equipped Erik
+PASS 844x390 M3 actual NPC tap opens briefing
+PASS 844x390 M3 Erik dialogue portrait
+PASS 844x390 M3 briefing reload exact
+PASS 844x390 M3 choice menu follows dialogue
+PASS 844x390 M3 current mission visible
+PASS 844x390 M3 defer keeps exploration
+PASS 844x390 M3 advisor opens official council
+PASS 844x390 M3 council cancel preserves position/economy
+PASS 844x390 M3 deployment can return (via the council) and repeat
+PASS 844x390 M3 real Battle Start and same equipped Erik
+PASS 844x390 M03 aftermath advisor offers no council, M04 departure is on the panel
+PASS 844x390 M03 aftermath next story is Mission 4
+PASS 844x390 final-mission (M06) aftermath no false next departure
+PASS 844x390 blocked v032 save recovers safely
+PASS 844x390 migrated blocked save reaches council
+PASS 844x390 viewport has no horizontal overflow
+PASS Journey browser has zero runtime errors
+PASS Journey standalone has zero HTTP requests
+176 journey checks PASS

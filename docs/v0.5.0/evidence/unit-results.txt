@@ -1,0 +1,1198 @@
+TAP version 13
+# Subtest: tile walk visits each waypoint, pauses, and never cuts a corner
+ok 1 - tile walk visits each waypoint, pauses, and never cuts a corner
+  ---
+  duration_ms: 3.075388
+  type: 'test'
+  ...
+# Subtest: walk modes honor speed, instant mode and single tile paths
+ok 2 - walk modes honor speed, instant mode and single tile paths
+  ---
+  duration_ms: 0.279173
+  type: 'test'
+  ...
+# Subtest: weapon presentation is distinct for magic, archer, rogue, knight and bandit
+ok 3 - weapon presentation is distinct for magic, archer, rogue, knight and bandit
+  ---
+  duration_ms: 0.135781
+  type: 'test'
+  ...
+# Subtest: enemy walk finishes before attack; counter follows the first attack
+ok 4 - enemy walk finishes before attack; counter follows the first attack
+  ---
+  duration_ms: 0.299531
+  type: 'test'
+  ...
+# Subtest: Fire Bolt has cast, flight, and explosion, with damage at impact
+ok 5 - Fire Bolt has cast, flight, and explosion, with damage at impact
+  ---
+  duration_ms: 0.20083
+  type: 'test'
+  ...
+# Subtest: heal and level HP are presented without attack or RNG
+ok 6 - heal and level HP are presented without attack or RNG
+  ---
+  duration_ms: 0.169025
+  type: 'test'
+  ...
+# Subtest: weak effects and animation speed shorten presentation without changing event outcome
+ok 7 - weak effects and animation speed shorten presentation without changing event outcome
+  ---
+  duration_ms: 0.344407
+  type: 'test'
+  ...
+# Subtest: move, attack and support highlights use separate vivid colors
+ok 8 - move, attack and support highlights use separate vivid colors
+  ---
+  duration_ms: 0.187626
+  type: 'test'
+  ...
+# Subtest: first canonical victory grants base Gold and rescue supplies once; replay and restart isolate assets
+ok 9 - first canonical victory grants base Gold and rescue supplies once; replay and restart isolate assets
+  ---
+  duration_ms: 15.018133
+  type: 'test'
+  ...
+# Subtest: capture and full-rescue unique equipment depend on achieved optional objectives
+ok 10 - capture and full-rescue unique equipment depend on achieved optional objectives
+  ---
+  duration_ms: 0.745497
+  type: 'test'
+  ...
+# Subtest: full inventory defers rewards without loss; delivery respects capacity and nonce
+ok 11 - full inventory defers rewards without loss; delivery respects capacity and nonce
+  ---
+  duration_ms: 1.54358
+  type: 'test'
+  ...
+# Subtest: legacy schema4 catchup preserves Gold/equipment/growth, marks new items once and migrates nested checkpoints
+ok 12 - legacy schema4 catchup preserves Gold/equipment/growth, marks new items once and migrates nested checkpoints
+  ---
+  duration_ms: 7.78003
+  type: 'test'
+  ...
+# Subtest: pending equipment is delivered once after freeing a slot, retains old equipped gear
+ok 13 - pending equipment is delivered once after freeing a slot, retains old equipped gear
+  ---
+  duration_ms: 0.423858
+  type: 'test'
+  ...
+# Subtest: corrupt reward ledger fails validation and failed save preserves durable pre-victory state
+ok 14 - corrupt reward ledger fails validation and failed save preserves durable pre-victory state
+  ---
+  duration_ms: 4.015222
+  type: 'test'
+  ...
+# Subtest: write-then-throw storage failure restores the previous primary envelope
+ok 15 - write-then-throw storage failure restores the previous primary envelope
+  ---
+  duration_ms: 2.041318
+  type: 'test'
+  ...
+# Subtest: 01→02→03 legal-rule continuous campaign, two rescues and safe retreat
+ok 16 - 01→02→03 legal-rule continuous campaign, two rescues and safe retreat
+  ---
+  duration_ms: 124.474274
+  type: 'test'
+  ...
+# Subtest: capture range and HP threshold, no counterattack, special information reward
+ok 17 - capture range and HP threshold, no counterattack, special information reward
+  ---
+  duration_ms: 0.648379
+  type: 'test'
+  ...
+# Subtest: escaped and eliminated targets continue campaign without prisoner flag
+ok 18 - escaped and eliminated targets continue campaign without prisoner flag
+  ---
+  duration_ms: 1.249841
+  type: 'test'
+  ...
+# Subtest: bridge blocks canyon, hero terrain context never uses village map
+ok 19 - bridge blocks canyon, hero terrain context never uses village map
+  ---
+  duration_ms: 0.626922
+  type: 'test'
+  ...
+# Subtest: bridge requires rescue plus all surviving heroes safely withdrawn
+ok 20 - bridge requires rescue plus all surviving heroes safely withdrawn
+  ---
+  duration_ms: 0.739583
+  type: 'test'
+  ...
+# Subtest: bridge deadline defeat supports exact checkpoint retry
+ok 21 - bridge deadline defeat supports exact checkpoint retry
+  ---
+  duration_ms: 2.051192
+  type: 'test'
+  ...
+# Subtest: actual escort action at turn boundary moves protected civilian
+ok 22 - actual escort action at turn boundary moves protected civilian
+  ---
+  duration_ms: 0.412291
+  type: 'test'
+  ...
+# Subtest: skip finishes any scene (lines kept in history); active dialogue locks combat; repeated event IDs stay unique
+ok 23 - skip finishes any scene (lines kept in history); active dialogue locks combat; repeated event IDs stay unique
+  ---
+  duration_ms: 0.679348
+  type: 'test'
+  ...
+# Subtest: interrupted dialogue save resumes exact speaker/line and history
+ok 24 - interrupted dialogue save resumes exact speaker/line and history
+  ---
+  duration_ms: 1.362183
+  type: 'test'
+  ...
+# Subtest: Restart rewinds flags, memory and event triggers, retains viewed dialogue
+ok 25 - Restart rewinds flags, memory and event triggers, retains viewed dialogue
+  ---
+  duration_ms: 0.886218
+  type: 'test'
+  ...
+# Subtest: practice clear does not inflate permanent heroes, flags or clears
+ok 26 - practice clear does not inflate permanent heroes, flags or clears
+  ---
+  duration_ms: 67.65855
+  type: 'test'
+  ...
+# Subtest: Erik LV5 appearance changes while legacy stable ID and stats remain valid
+ok 27 - Erik LV5 appearance changes while legacy stable ID and stats remain valid
+  ---
+  duration_ms: 1.593735
+  type: 'test'
+  ...
+# Subtest: schema1 migration retains all accumulated levels, XP, clears and old checkpoint
+ok 28 - schema1 migration retains all accumulated levels, XP, clears and old checkpoint
+  ---
+  duration_ms: 50.291328
+  type: 'test'
+  ...
+# Subtest: bad scene, impossible tier, invalid mission and story memory are rejected
+ok 29 - bad scene, impossible tier, invalid mission and story memory are rejected
+  ---
+  duration_ms: 6.418604
+  type: 'test'
+  ...
+# Subtest: audio original scores select expected scenes and fail-soft without AudioContext
+ok 30 - audio original scores select expected scenes and fail-soft without AudioContext
+  ---
+  duration_ms: 0.774858
+  type: 'test'
+  ...
+# Subtest: M03 actual protection + two rescue actions unlocks conditional Bond; previous mission memory alone does not
+ok 31 - M03 actual protection + two rescue actions unlocks conditional Bond; previous mission memory alone does not
+  ---
+  duration_ms: 1.585862
+  type: 'test'
+  ...
+# Subtest: Tier metadata supports level/class/story triggers and reserves unbuilt Elite art
+ok 32 - Tier metadata supports level/class/story triggers and reserves unbuilt Elite art
+  ---
+  duration_ms: 0.818004
+  type: 'test'
+  ...
+# Subtest: level-one practice preserves existing permanent campaign and cannot commit replacement growth
+ok 33 - level-one practice preserves existing permanent campaign and cannot commit replacement growth
+  ---
+  duration_ms: 41.299286
+  type: 'test'
+  ...
+# Subtest: defeat retry rolls back this battle story consequences while retaining defeat record and viewed history
+ok 34 - defeat retry rolls back this battle story consequences while retaining defeat record and viewed history
+  ---
+  duration_ms: 0.632802
+  type: 'test'
+  ...
+# Subtest: only promoted heroes have class actions; tier-1 use is rejected without spending anything
+ok 35 - only promoted heroes have class actions; tier-1 use is rejected without spending anything
+  ---
+  duration_ms: 4.819391
+  type: 'test'
+  ...
+# Subtest: Bulwark: enemies entering a tile next to Erik stop there; it lasts until the next Player Phase
+ok 36 - Bulwark: enemies entering a tile next to Erik stop there; it lasts until the next Player Phase
+  ---
+  duration_ms: 10.514962
+  type: 'test'
+  ...
+# Subtest: Overwatch: the first enemy step inside Elina's range draws one shot; a hit ends that enemy's move
+ok 37 - Overwatch: the first enemy step inside Elina's range draws one shot; a hit ends that enemy's move
+  ---
+  duration_ms: 23.677145
+  type: 'test'
+  ...
+# Subtest: Arcane Territory: five-tile cross for three turns, ally MAG +3 / enemy RES −2, extends fire by one turn
+ok 38 - Arcane Territory: five-tile cross for three turns, ally MAG +3 / enemy RES −2, extends fire by one turn
+  ---
+  duration_ms: 10.457111
+  type: 'test'
+  ...
+# Subtest: Divine Recall: pulls an ally at distance 2–4 to a free tile next to Sain and heals up to 10
+ok 39 - Divine Recall: pulls an ally at distance 2–4 to a free tile next to Sain and heals up to 10
+  ---
+  duration_ms: 0.858645
+  type: 'test'
+  ...
+# Subtest: Shadow Exchange: ally within 3 or adjacent enemy; a swapped enemy cannot counter this Player Phase
+ok 40 - Shadow Exchange: ally within 3 or adjacent enemy; a swapped enemy cannot counter this Player Phase
+  ---
+  duration_ms: 0.808438
+  type: 'test'
+  ...
+# Subtest: tier-2 skill upgrades: ranged Guard, Lia cost, Sain range 0–3, Elina 2–4 from forest/village, Kai moves after Quick Strike
+ok 41 - tier-2 skill upgrades: ranged Guard, Lia cost, Sain range 0–3, Elina 2–4 from forest/village, Kai moves after Quick Strike
+  ---
+  duration_ms: 1.905251
+  type: 'test'
+  ...
+# Subtest: enemy planner treats overwatch ranges and runes as danger only when they exist
+ok 42 - enemy planner treats overwatch ranges and runes as danger only when they exist
+  ---
+  duration_ms: 0.546054
+  type: 'test'
+  ...
+# Subtest: developer entry point references exist; complete 30-mission story and status taxonomy
+ok 43 - developer entry point references exist; complete 30-mission story and status taxonomy
+  ---
+  duration_ms: 1.356697
+  type: 'test'
+  ...
+# Subtest: embedded font glyph manifest covers every authored Korean syllable
+ok 44 - embedded font glyph manifest covers every authored Korean syllable
+  ---
+  duration_ms: 58.598702
+  type: 'test'
+  ...
+# Subtest: Living Frontier required documentation, internal links and release roadmap are consistent
+ok 45 - Living Frontier required documentation, internal links and release roadmap are consistent
+  ---
+  duration_ms: 5.777439
+  type: 'test'
+  ...
+# Subtest: Aren collision, orthogonal path and visited-only Fast Travel survive reload
+ok 46 - Aren collision, orthogonal path and visited-only Fast Travel survive reload
+  ---
+  duration_ms: 11.573716
+  type: 'test'
+  ...
+# Subtest: Camp layout and dialogue variant retain all five heroes
+ok 47 - Camp layout and dialogue variant retain all five heroes
+  ---
+  duration_ms: 1.056661
+  type: 'test'
+  ...
+# Subtest: Story modal blocks walking and interactions; battle input cannot move Aren
+ok 48 - Story modal blocks walking and interactions; battle input cannot move Aren
+  ---
+  duration_ms: 0.930108
+  type: 'test'
+  ...
+# Subtest: Shop buy/sell capacity, insufficient Gold and stale transaction rejection are atomic
+ok 49 - Shop buy/sell capacity, insufficient Gold and stale transaction rejection are atomic
+  ---
+  duration_ms: 4.502316
+  type: 'test'
+  ...
+# Subtest: Class compatibility, equip/unequip and one upgrade apply once without baking growth
+ok 50 - Class compatibility, equip/unequip and one upgrade apply once without baking growth
+  ---
+  duration_ms: 3.36461
+  type: 'test'
+  ...
+# Subtest: Gear changes actual strike/terrain calculation and movement without changing raw stats
+ok 51 - Gear changes actual strike/terrain calculation and movement without changing raw stats
+  ---
+  duration_ms: 2.092603
+  type: 'test'
+  ...
+# Subtest: Three purchased tools work, consume actions, and ward expires after enemy phase
+ok 52 - Three purchased tools work, consume actions, and ward expires after enemy phase
+  ---
+  duration_ms: 4.346967
+  type: 'test'
+  ...
+# Subtest: Unused tool rejects without consuming or acting
+ok 53 - Unused tool rejects without consuming or acting
+  ---
+  duration_ms: 0.842759
+  type: 'test'
+  ...
+# Subtest: Restart/retry restore departure gear/items/Gold and current attempt consequences
+ok 54 - Restart/retry restore departure gear/items/Gold and current attempt consequences
+  ---
+  duration_ms: 4.182033
+  type: 'test'
+  ...
+# Subtest: First clear commits once; stage restart rewinds reward, practice cannot trade or commit
+ok 55 - First clear commits once; stage restart rewinds reward, practice cannot trade or commit
+  ---
+  duration_ms: 2.934279
+  type: 'test'
+  ...
+# Subtest: Schema2 migration grants bounded catchup once and preserves results, bonds and growth
+ok 56 - Schema2 migration grants bounded catchup once and preserves results, bonds and growth
+  ---
+  duration_ms: 3.385854
+  type: 'test'
+  ...
+# Subtest: Malformed assets/duplicate gear/foreign owner/invalid hero/blocked Aren positions rejected
+ok 57 - Malformed assets/duplicate gear/foreign owner/invalid hero/blocked Aren positions rejected
+  ---
+  duration_ms: 2.704676
+  type: 'test'
+  ...
+# Subtest: Pending affiliation survives dialogue reload and cannot duplicate a confirmed member
+ok 58 - Pending affiliation survives dialogue reload and cannot duplicate a confirmed member
+  ---
+  duration_ms: 1.599646
+  type: 'test'
+  ...
+# Subtest: every ordinary building is enterable; chests open once per mission with a seeded reward and survive save/load
+ok 59 - every ordinary building is enterable; chests open once per mission with a seeded reward and survive save/load
+  ---
+  duration_ms: 3.573573
+  type: 'test'
+  ...
+# Subtest: B4: every figure renders in four facings and the walk cycle
+ok 60 - B4: every figure renders in four facings and the walk cycle
+  ---
+  duration_ms: 581.808922
+  type: 'test'
+  ...
+# Subtest: B4: movement direction picks the facing
+ok 61 - B4: movement direction picks the facing
+  ---
+  duration_ms: 0.265623
+  type: 'test'
+  ...
+# Subtest: B4: units map to distinct looks per mission
+ok 62 - B4: units map to distinct looks per mission
+  ---
+  duration_ms: 0.524173
+  type: 'test'
+  ...
+# Subtest: B4: every mission map paints at 48 px per tile
+ok 63 - B4: every mission map paints at 48 px per tile
+  ---
+  duration_ms: 1719.650051
+  type: 'test'
+  ...
+# Subtest: held input has one immediate step, deterministic delay, release and no frame catch-up
+ok 64 - held input has one immediate step, deterministic delay, release and no frame catch-up
+  ---
+  duration_ms: 0.787899
+  type: 'test'
+  ...
+# Subtest: direction changes, collision, modal and focus clear stop all held sources
+ok 65 - direction changes, collision, modal and focus clear stop all held sources
+  ---
+  duration_ms: 1.36034
+  type: 'test'
+  ...
+# Subtest: W3 table: every ACT I story moment has its hub
+ok 66 - W3 table: every ACT I story moment has its hub
+  ---
+  duration_ms: 5.668846
+  type: 'test'
+  ...
+# Subtest: painted hubs: 24×16 masks, every walkable tile reachable, NPCs/places/doors usable
+ok 67 - painted hubs: 24×16 masks, every walkable tile reachable, NPCs/places/doors usable
+  ---
+  duration_ms: 3.937482
+  type: 'test'
+  ...
+# Subtest: every painted hub sells weapons and items and seats Lia at the war table
+ok 68 - every painted hub sells weapons and items and seats Lia at the war table
+  ---
+  duration_ms: 3.488294
+  type: 'test'
+  ...
+# Subtest: chest-bearing doors: same building ids and interior kinds as the v0.4 village / Border Camp
+ok 69 - chest-bearing doors: same building ids and interior kinds as the v0.4 village / Border Camp
+  ---
+  duration_ms: 4.30968
+  type: 'test'
+  ...
+# Subtest: staged scenes use the hub of their moment
+ok 70 - staged scenes use the hub of their moment
+  ---
+  duration_ms: 0.170789
+  type: 'test'
+  ...
+# Subtest: v0.4.0 ACT I complete save (Border Camp) loads into the oath camp, valid and walkable
+ok 71 - v0.4.0 ACT I complete save (Border Camp) loads into the oath camp, valid and walkable
+  ---
+  duration_ms: 13.008023
+  type: 'test'
+  ...
+# Subtest: a save inside a Border Camp tent keeps the tent when the legion has moved on
+ok 72 - a save inside a Border Camp tent keeps the tent when the legion has moved on
+  ---
+  duration_ms: 1.560165
+  type: 'test'
+  ...
+# Subtest: All doors share visual tile anchor / front-only approach / solid threshold / exact return
+ok 73 - All doors share visual tile anchor / front-only approach / solid threshold / exact return
+  ---
+  duration_ms: 4.780651
+  type: 'test'
+  ...
+# Subtest: Existing council API opens briefing and preserves return coordinates; aftermath cannot depart
+ok 74 - Existing council API opens briefing and preserves return coordinates; aftermath cannot depart
+  ---
+  duration_ms: 1.347437
+  type: 'test'
+  ...
+# Subtest: Schema5 blocked doors and nested battle checkpoints recover spatial state without changing assets
+ok 75 - Schema5 blocked doors and nested battle checkpoints recover spatial state without changing assets
+  ---
+  duration_ms: 12.71941
+  type: 'test'
+  ...
+# Subtest: Advisor authorization and error-only recovery share council API without remote/aftermath bypass
+ok 76 - Advisor authorization and error-only recovery share council API without remote/aftermath bypass
+  ---
+  duration_ms: 1.144368
+  type: 'test'
+  ...
+# Subtest: fixtures are genuine v0.3.3 schema-6 saves
+ok 77 - fixtures are genuine v0.3.3 schema-6 saves
+  ---
+  duration_ms: 5.097684
+  type: 'test'
+  ...
+# Subtest: every v0.3.3 save loads in v0.4.0, gains the schema-7 fields and round-trips
+ok 78 - every v0.3.3 save loads in v0.4.0, gains the schema-7 fields and round-trips
+  ---
+  duration_ms: 13.759788
+  type: 'test'
+  ...
+# Subtest: M01 village save: same screen, mission and starting purse
+ok 79 - M01 village save: same screen, mission and starting purse
+  ---
+  duration_ms: 1.47903
+  type: 'test'
+  ...
+# Subtest: M02 mid-battle save: board, HP, turn and stage checkpoint survive; the battle can still be won
+ok 80 - M02 mid-battle save: board, HP, turn and stage checkpoint survive; the battle can still be won
+  ---
+  duration_ms: 33.026037
+  type: 'test'
+  ...
+# Subtest: M03 aftermath save: growth, gear, items, gold and story flags kept; the campaign continues into M04
+ok 81 - M03 aftermath save: growth, gear, items, gold and story flags kept; the campaign continues into M04
+  ---
+  duration_ms: 98.559021
+  type: 'test'
+  ...
+# Subtest: storage path: a v0.3.3 save in localStorage loads, and the first v0.4.0 save keeps it as backup
+ok 82 - storage path: a v0.3.3 save in localStorage loads, and the first v0.4.0 save keeps it as backup
+  ---
+  duration_ms: 5.594207
+  type: 'test'
+  ...
+# Subtest: fixtures are genuine v0.4.0 schema-7 saves
+ok 83 - fixtures are genuine v0.4.0 schema-7 saves
+  ---
+  duration_ms: 6.326821
+  type: 'test'
+  ...
+# Subtest: ACT I complete camp loads as schema 8 with every asset kept and promotion state readable
+ok 84 - ACT I complete camp loads as schema 8 with every asset kept and promotion state readable
+  ---
+  duration_ms: 21.1712
+  type: 'test'
+  ...
+# Subtest: M05 mid-battle save resumes and can be won under v0.5.0 rules
+ok 85 - M05 mid-battle save resumes and can be won under v0.5.0 rules
+  ---
+  duration_ms: 250.033338
+  type: 'test'
+  ...
+# Subtest: M04 data: authored fortress, objects, presets inside deployment zone, campaign continues past M03
+ok 86 - M04 data: authored fortress, objects, presets inside deployment zone, campaign continues past M03
+  ---
+  duration_ms: 3.882493
+  type: 'test'
+  ...
+# Subtest: M04 deployment zone: south rows by default; west drain only after the M02 capture statement
+ok 87 - M04 deployment zone: south rows by default; west drain only after the M02 capture statement
+  ---
+  duration_ms: 0.974746
+  type: 'test'
+  ...
+# Subtest: Search: adjacent only, one action, evidence cannot be attacked or targeted by enemies, searched tile opens
+ok 88 - Search: adjacent only, one action, evidence cannot be attacked or targeted by enemies, searched tile opens
+  ---
+  duration_ms: 13.158234
+  type: 'test'
+  ...
+# Subtest: Torch-bearers burn their unsearched record at turn 8; defeating one protects its record; the ledger never burns
+ok 89 - Torch-bearers burn their unsearched record at turn 8; defeating one protects its record; the ledger never burns
+  ---
+  duration_ms: 14.291451
+  type: 'test'
+  ...
+# Subtest: Boss holds the archive until an ally comes within four tiles, then moves; turn-4 wave arrives once
+ok 90 - Boss holds the archive until an ally comes within four tiles, then moves; turn-4 wave arrives once
+  ---
+  duration_ms: 9.899003
+  type: 'test'
+  ...
+# Subtest: Victory needs ledger + boss; defeat after turn 14; flags, rewards and Lia–Kai bond
+ok 91 - Victory needs ledger + boss; defeat after turn 14; flags, rewards and Lia–Kai bond
+  ---
+  duration_ms: 4.048479
+  type: 'test'
+  ...
+# Subtest: Bond needs both Lia and Kai searching in this battle; practice never grants it
+ok 92 - Bond needs both Lia and Kai searching in this battle; practice never grants it
+  ---
+  duration_ms: 1.110821
+  type: 'test'
+  ...
+# Subtest: M04 saves: mid-battle round trip, burned state, restart to stage start, schema6 import gains choices
+ok 93 - M04 saves: mid-battle round trip, burned state, restart to stage start, schema6 import gains choices
+  ---
+  duration_ms: 8.791108
+  type: 'test'
+  ...
+# Subtest: Supplemental reward definitions are stable and unique; M01–03 rewards unchanged
+ok 94 - Supplemental reward definitions are stable and unique; M01–03 rewards unchanged
+  ---
+  duration_ms: 0.415537
+  type: 'test'
+  ...
+# Subtest: M01–03 never expose Search; M03 victory now continues to M04
+ok 95 - M01–03 never expose Search; M03 victory now continues to M04
+  ---
+  duration_ms: 1.499027
+  type: 'test'
+  ...
+# Subtest: M05 data: 18×14 ridge map, presets inside the deployment zone, two wagons, M04 continues to M05
+ok 96 - M05 data: 18×14 ridge map, presets inside the deployment zone, two wagons, M04 continues to M05
+  ---
+  duration_ms: 3.481074
+  type: 'test'
+  ...
+# Subtest: M05 wagons cannot be rescued and are never attackable by heroes
+ok 97 - M05 wagons cannot be rescued and are never attackable by heroes
+  ---
+  duration_ms: 1.261321
+  type: 'test'
+  ...
+# Subtest: M05 lion formation: bearer-adjacent soldiers get DEF +2 and HIT +10; aura ends with the bearers
+ok 98 - M05 lion formation: bearer-adjacent soldiers get DEF +2 and HIT +10; aura ends with the bearers
+  ---
+  duration_ms: 1.143173
+  type: 'test'
+  ...
+# Subtest: M05 lion charge: +4 against an isolated hero, none when a comrade is adjacent or Erik guards
+ok 99 - M05 lion charge: +4 against an isolated hero, none when a comrade is adjacent or Erik guards
+  ---
+  duration_ms: 0.761912
+  type: 'test'
+  ...
+# Subtest: M05 Baldrick never falls below half HP and withdraws once both bearers are down (victory A)
+ok 100 - M05 Baldrick never falls below half HP and withdraws once both bearers are down (victory A)
+  ---
+  duration_ms: 1.896543
+  type: 'test'
+  ...
+# Subtest: M05 holding the road through TURN 10 wins (victory B); losing both wagons is defeat
+ok 101 - M05 holding the road through TURN 10 wins (victory B); losing both wagons is defeat
+  ---
+  duration_ms: 4.98972
+  type: 'test'
+  ...
+# Subtest: M05 AI: Baldrick stays within two tiles of a living bearer; cavalry rides for the wagons
+ok 102 - M05 AI: Baldrick stays within two tiles of a living bearer; cavalry rides for the wagons
+  ---
+  duration_ms: 11.027561
+  type: 'test'
+  ...
+# Subtest: M05 threats mark isolated heroes in Baldrick reach; aura cells surround living bearers
+ok 103 - M05 threats mark isolated heroes in Baldrick reach; aura cells surround living bearers
+  ---
+  duration_ms: 0.986905
+  type: 'test'
+  ...
+# Subtest: M05 Elina–Sain bond: Sain heals Elina and Elina fells a foe next to Sain
+ok 104 - M05 Elina–Sain bond: Sain heals Elina and Elina fells a foe next to Sain
+  ---
+  duration_ms: 1.925967
+  type: 'test'
+  ...
+# Subtest: M05 rewards are stable ledger entries and saves round-trip mid-battle
+ok 105 - M05 rewards are stable ledger entries and saves round-trip mid-battle
+  ---
+  duration_ms: 11.770801
+  type: 'test'
+  ...
+# Subtest: M06 data: 18×16 border gate, presets in the deployment zone, four refugees (two injured), locked seal stones, M05 → M06, last mission
+ok 106 - M06 data: 18×16 border gate, presets in the deployment zone, four refugees (two injured), locked seal stones, M05 → M06, last mission
+  ---
+  duration_ms: 3.856367
+  type: 'test'
+  ...
+# Subtest: M06 escort: an escorted refugee walks two tiles toward the gate; an injured one waits for Sain, who can heal refugees here; no instant rescue
+ok 107 - M06 escort: an escorted refugee walks two tiles toward the gate; an injured one waits for Sain, who can heal refugees here; no instant rescue
+  ---
+  duration_ms: 6.801994
+  type: 'test'
+  ...
+# Subtest: M06 phase 2 opens at TURN 5; Lia unseals a stone in one action, others need two; the lever opens the side gate
+ok 108 - M06 phase 2 opens at TURN 5; Lia unseals a stone in one action, others need two; the lever opens the side gate
+  ---
+  duration_ms: 4.108645
+  type: 'test'
+  ...
+# Subtest: M06 phase 3: Oath Banner gives MOV +1 near Erik, the executor moves, the garrison arrives only while the beacon burns
+ok 109 - M06 phase 3: Oath Banner gives MOV +1 near Erik, the executor moves, the garrison arrives only while the beacon burns
+  ---
+  duration_ms: 1.403332
+  type: 'test'
+  ...
+# Subtest: M06 outcomes: victory needs phase 3 and one refugee through; the gate seals after TURN 11; losing every refugee is defeat
+ok 110 - M06 outcomes: victory needs phase 3 and one refugee through; the gate seals after TURN 11; losing every refugee is defeat
+  ---
+  duration_ms: 4.419604
+  type: 'test'
+  ...
+# Subtest: M06 records choice: a reported ledger brings the inspector and the matching briefing line
+ok 111 - M06 records choice: a reported ledger brings the inspector and the matching briefing line
+  ---
+  duration_ms: 1.84404
+  type: 'test'
+  ...
+# Subtest: M06 AI: seal guards stay by their stone, the beacon never moves, pursuers chase refugees
+ok 112 - M06 AI: seal guards stay by their stone, the beacon never moves, pursuers chase refugees
+  ---
+  duration_ms: 3.745662
+  type: 'test'
+  ...
+# Subtest: M06 rewards and saves: stable ledger ids, optional boots/gold, mid-battle round trip
+ok 113 - M06 rewards and saves: stable ledger ids, optional boots/gold, mid-battle round trip
+  ---
+  duration_ms: 8.177574
+  type: 'test'
+  ...
+# Subtest: command list sits directly beside the unit, right side first, vertically centred
+ok 114 - command list sits directly beside the unit, right side first, vertically centred
+  ---
+  duration_ms: 0.952361
+  type: 'test'
+  ...
+# Subtest: flips to the left near the right edge and never covers the unit
+ok 115 - flips to the left near the right edge and never covers the unit
+  ---
+  duration_ms: 0.161052
+  type: 'test'
+  ...
+# Subtest: clamped inside the field on phone sizes and map edges
+ok 116 - clamped inside the field on phone sizes and map edges
+  ---
+  duration_ms: 0.566098
+  type: 'test'
+  ...
+# Subtest: prefers a beside-the-unit slot that leaves a legal target visible
+ok 117 - prefers a beside-the-unit slot that leaves a legal target visible
+  ---
+  duration_ms: 0.250457
+  type: 'test'
+  ...
+# Subtest: painted portraits: 28 WebP files match the pack manifest and cover every id/expression
+ok 118 - painted portraits: 28 WebP files match the pack manifest and cover every id/expression
+  ---
+  duration_ms: 7.056309
+  type: 'test'
+  ...
+# Subtest: art packs: 21 + 36 (v0.4.0) and the 25 tier-2 assets (v0.5.0) imported from hash-verified PNG masters
+ok 119 - art packs: 21 + 36 (v0.4.0) and the 25 tier-2 assets (v0.5.0) imported from hash-verified PNG masters
+  ---
+  duration_ms: 9.689241
+  type: 'test'
+  ...
+# Subtest: shipped painted art equals the hash-verified imports (busts, sheets, hubs, world map, icons)
+ok 120 - shipped painted art equals the hash-verified imports (busts, sheets, hubs, world map, icons)
+  ---
+  duration_ms: 21.506908
+  type: 'test'
+  ...
+# Subtest: every score is original notation with whole bars; Phase F adds five variations
+ok 121 - every score is original notation with whole bars; Phase F adds five variations
+  ---
+  duration_ms: 0.45667
+  type: 'test'
+  ...
+# Subtest: music follows the hub, the world map, the promotion rite and trials
+ok 122 - music follows the hub, the world map, the promotion rite and trials
+  ---
+  duration_ms: 7.195667
+  type: 'test'
+  ...
+# Subtest: promotion actions emit a class flourish that leads the moves it causes
+ok 123 - promotion actions emit a class flourish that leads the moves it causes
+  ---
+  duration_ms: 4.510627
+  type: 'test'
+  ...
+# Subtest: ACT I tier-1 play emits no class flourish
+ok 124 - ACT I tier-1 play emits no class flourish
+  ---
+  duration_ms: 0.322803
+  type: 'test'
+  ...
+# Subtest: every hero has a tier-1 class matching its current class name and one tier-2 promotion with a new action
+ok 125 - every hero has a tier-1 class matching its current class name and one tier-2 promotion with a new action
+  ---
+  duration_ms: 0.974977
+  type: 'test'
+  ...
+# Subtest: potential steps unlock in order and read existing tactical memory retroactively
+ok 126 - potential steps unlock in order and read existing tactical memory retroactively
+  ---
+  duration_ms: 0.60047
+  type: 'test'
+  ...
+# Subtest: proficiency stars follow 1/4/9/16/25 and give no combat bonus before promotion
+ok 127 - proficiency stars follow 1/4/9/16/25 and give no combat bonus before promotion
+  ---
+  duration_ms: 3.15854
+  type: 'test'
+  ...
+# Subtest: promotion needs ACT I, the level and full potential; it applies once and is recorded
+ok 128 - promotion needs ACT I, the level and full potential; it applies once and is recorded
+  ---
+  duration_ms: 2.024459
+  type: 'test'
+  ...
+# Subtest: tier-2 class traits: Kai MOV +1, Elina ranger crosses forest at cost 1, Erik grows DEF +3
+ok 129 - tier-2 class traits: Kai MOV +1, Elina ranger crosses forest at cost 1, Erik grows DEF +3
+  ---
+  duration_ms: 1.250794
+  type: 'test'
+  ...
+# Subtest: skill use and Lia kills are remembered (memory only, outside practice)
+ok 130 - skill use and Lia kills are remembered (memory only, outside practice)
+  ---
+  duration_ms: 1.440364
+  type: 'test'
+  ...
+# Subtest: schema 7 saves migrate to 8: heroes read as tier 1 and an empty promotion ledger; current saves round-trip
+ok 131 - schema 7 saves migrate to 8: heroes read as tier 1 and an empty promotion ledger; current saves round-trip
+  ---
+  duration_ms: 5.675463
+  type: 'test'
+  ...
+# Subtest: promoted heroes resolve to the tier-2 painted look; tier 1 keeps the original (incl. Erik Mantle)
+ok 132 - promoted heroes resolve to the tier-2 painted look; tier 1 keeps the original (incl. Erik Mantle)
+  ---
+  duration_ms: 4.201848
+  type: 'test'
+  ...
+# Subtest: NPC dialogue preserves Erik, NPC map coordinates and save position
+ok 133 - NPC dialogue preserves Erik, NPC map coordinates and save position
+  ---
+  duration_ms: 8.598312
+  type: 'test'
+  ...
+# Subtest: Independent shop interiors require doorway and owner approach, preserve return on reload
+ok 134 - Independent shop interiors require doorway and owner approach, preserve return on reload
+  ---
+  duration_ms: 6.386791
+  type: 'test'
+  ...
+# Subtest: Buy and equip is one atomic nonce-confirmed action with accurate combat stats
+ok 135 - Buy and equip is one atomic nonce-confirmed action with accurate combat stats
+  ---
+  duration_ms: 2.726646
+  type: 'test'
+  ...
+# Subtest: Class move and future mounted extension respect all terrain profiles
+ok 136 - Class move and future mounted extension respect all terrain profiles
+  ---
+  duration_ms: 0.560689
+  type: 'test'
+  ...
+# Subtest: Reachable path may cross allies but cannot stop on ally/enemy or impassable tiles
+ok 137 - Reachable path may cross allies but cannot stop on ally/enemy or impassable tiles
+  ---
+  duration_ms: 2.4364
+  type: 'test'
+  ...
+# Subtest: Rectangular map dimensions and safe camera boundaries are independent
+ok 138 - Rectangular map dimensions and safe camera boundaries are independent
+  ---
+  duration_ms: 0.720556
+  type: 'test'
+  ...
+# Subtest: schema3 migration changes only class MOV while retaining growth/assets/flags/checkpoint
+ok 139 - schema3 migration changes only class MOV while retaining growth/assets/flags/checkpoint
+  ---
+  duration_ms: 6.853674
+  type: 'test'
+  ...
+# Subtest: restart restores custom formation, resources, RNG and pre-stage growth
+ok 140 - restart restores custom formation, resources, RNG and pre-stage growth
+  ---
+  duration_ms: 12.339521
+  type: 'test'
+  ...
+# Subtest: restart removes current victory and retains earlier campaign history and growth
+ok 141 - restart removes current victory and retains earlier campaign history and growth
+  ---
+  duration_ms: 4.111981
+  type: 'test'
+  ...
+# Subtest: defeat restart revives civilian and restores mission objectives without defeat record
+ok 142 - defeat restart revives civilian and restores mission objectives without defeat record
+  ---
+  duration_ms: 0.921552
+  type: 'test'
+  ...
+# Subtest: repeat resets do not nest snapshots or change deterministic combat outcomes
+ok 143 - repeat resets do not nest snapshots or change deterministic combat outcomes
+  ---
+  duration_ms: 4.580729
+  type: 'test'
+  ...
+# Subtest: legacy save without snapshot uses permanent growth and recommended deployment safely
+ok 144 - legacy save without snapshot uses permanent growth and recommended deployment safely
+  ---
+  duration_ms: 1.758649
+  type: 'test'
+  ...
+# Subtest: corrupt or nested stage checkpoint is rejected without touching live state
+ok 145 - corrupt or nested stage checkpoint is rejected without touching live state
+  ---
+  duration_ms: 2.911065
+  type: 'test'
+  ...
+# Subtest: map is 12×10 with five heroes, five enemies, two civilians
+ok 146 - map is 12×10 with five heroes, five enemies, two civilians
+  ---
+  duration_ms: 4.322539
+  type: 'test'
+  ...
+# Subtest: Dijkstra counts forest costs and Kai terrain exception
+ok 147 - Dijkstra counts forest costs and Kai terrain exception
+  ---
+  duration_ms: 7.060406
+  type: 'test'
+  ...
+# Subtest: ruins and occupied tiles cannot be crossed
+ok 148 - ruins and occupied tiles cannot be crossed
+  ---
+  duration_ms: 1.617745
+  type: 'test'
+  ...
+# Subtest: movement path stays orthogonal, passable and within budget
+ok 149 - movement path stays orthogonal, passable and within budget
+  ---
+  duration_ms: 14.822862
+  type: 'test'
+  ...
+# Subtest: free deployment swaps without changing hero data
+ok 150 - free deployment swaps without changing hero data
+  ---
+  duration_ms: 1.814654
+  type: 'test'
+  ...
+# Subtest: presets contain unique valid deployment tiles
+ok 151 - presets contain unique valid deployment tiles
+  ---
+  duration_ms: 1.293109
+  type: 'test'
+  ...
+# Subtest: move once and undo before irreversible action
+ok 152 - move once and undo before irreversible action
+  ---
+  duration_ms: 1.221393
+  type: 'test'
+  ...
+# Subtest: archer has a dead zone; magic extends range
+ok 153 - archer has a dead zone; magic extends range
+  ---
+  duration_ms: 0.602058
+  type: 'test'
+  ...
+# Subtest: physical defense, magic resistance and terrain modifiers are independent
+ok 154 - physical defense, magic resistance and terrain modifiers are independent
+  ---
+  duration_ms: 1.08161
+  type: 'test'
+  ...
+# Subtest: class terrain aptitude: rogue and cavalry cross forest/desert normally, infantry pays more
+ok 155 - class terrain aptitude: rogue and cavalry cross forest/desert normally, infantry pays more
+  ---
+  duration_ms: 0.647684
+  type: 'test'
+  ...
+# Subtest: Hawk Eye gives forest shooting accuracy bonus
+ok 156 - Hawk Eye gives forest shooting accuracy bonus
+  ---
+  duration_ms: 0.472637
+  type: 'test'
+  ...
+# Subtest: Unstable Mana increases damage and MP expense at low HP
+ok 157 - Unstable Mana increases damage and MP expense at low HP
+  ---
+  duration_ms: 0.405462
+  type: 'test'
+  ...
+# Subtest: Quick Strike flank requires opposite adjacent teammate
+ok 158 - Quick Strike flank requires opposite adjacent teammate
+  ---
+  duration_ms: 0.648408
+  type: 'test'
+  ...
+# Subtest: counterattack cannot chain; preview agrees with noncritical attack
+ok 159 - counterattack cannot chain; preview agrees with noncritical attack
+  ---
+  duration_ms: 1.236694
+  type: 'test'
+  ...
+# Subtest: out-of-range attack and insufficient MP do not consume actions
+ok 160 - out-of-range attack and insufficient MP do not consume actions
+  ---
+  duration_ms: 0.494729
+  type: 'test'
+  ...
+# Subtest: healing caps HP, Gentle Hands splashes, every heal gives XP scaled by amount
+ok 161 - healing caps HP, Gentle Hands splashes, every heal gives XP scaled by amount
+  ---
+  duration_ms: 0.518629
+  type: 'test'
+  ...
+# Subtest: level-up restores HP and MP fully
+ok 162 - level-up restores HP and MP fully
+  ---
+  duration_ms: 0.410374
+  type: 'test'
+  ...
+# Subtest: Guard is a self stance: usable with no ally or enemy nearby, DEF +3, intercepts the first melee attack on an adjacent ally
+ok 163 - Guard is a self stance: usable with no ally or enemy nearby, DEF +3, intercepts the first melee attack on an adjacent ally
+  ---
+  duration_ms: 2.70066
+  type: 'test'
+  ...
+# Subtest: Guard does not intercept ranged attacks or after moving apart
+ok 164 - Guard does not intercept ranged attacks or after moving apart
+  ---
+  duration_ms: 0.40691
+  type: 'test'
+  ...
+# Subtest: Indomitable Will reduces incoming damage below 30%
+ok 165 - Indomitable Will reduces incoming damage below 30%
+  ---
+  duration_ms: 0.294201
+  type: 'test'
+  ...
+# Subtest: Seeded RNG and battle reproduce exactly
+ok 166 - Seeded RNG and battle reproduce exactly
+  ---
+  duration_ms: 0.980227
+  type: 'test'
+  ...
+# Subtest: fixed growth records multiple levels and skill resources
+ok 167 - fixed growth records multiple levels and skill resources
+  ---
+  duration_ms: 0.475951
+  type: 'test'
+  ...
+# Subtest: potential clue records only once
+ok 168 - potential clue records only once
+  ---
+  duration_ms: 0.352335
+  type: 'test'
+  ...
+# Subtest: rescue requires adjacency and removes civilian occupancy
+ok 169 - rescue requires adjacency and removes civilian occupancy
+  ---
+  duration_ms: 0.336565
+  type: 'test'
+  ...
+# Subtest: reinforcement telegraph, then two enemies with response opportunity
+ok 170 - reinforcement telegraph, then two enemies with response opportunity
+  ---
+  duration_ms: 7.94989
+  type: 'test'
+  ...
+# Subtest: civilian protection window prevents AI targeting before turn 5
+ok 171 - civilian protection window prevents AI targeting before turn 5
+  ---
+  duration_ms: 1.678455
+  type: 'test'
+  ...
+# Subtest: AI destination is reachable and target is in actual attack range
+ok 172 - AI destination is reachable and target is in actual attack range
+  ---
+  duration_ms: 7.702776
+  type: 'test'
+  ...
+# Subtest: victory needs both rescue and boss; other enemies optional
+ok 173 - victory needs both rescue and boss; other enemies optional
+  ---
+  duration_ms: 1.282235
+  type: 'test'
+  ...
+# Subtest: dead civilian and party wipe are explicit defeats; no negative HP
+ok 174 - dead civilian and party wipe are explicit defeats; no negative HP
+  ---
+  duration_ms: 0.685455
+  type: 'test'
+  ...
+# Subtest: Shadow Step grants next-turn movement only when not hit
+ok 175 - Shadow Step grants next-turn movement only when not hit
+  ---
+  duration_ms: 0.658959
+  type: 'test'
+  ...
+# Subtest: save restores battle phase, undo, current HP, growth and RNG
+ok 176 - save restores battle phase, undo, current HP, growth and RNG
+  ---
+  duration_ms: 5.419796
+  type: 'test'
+  ...
+# Subtest: enemy-phase save resumes deterministically at AI cursor
+ok 177 - enemy-phase save resumes deterministically at AI cursor
+  ---
+  duration_ms: 15.789623
+  type: 'test'
+  ...
+# Subtest: save corruption safely falls back to last good snapshot
+ok 178 - save corruption safely falls back to last good snapshot
+  ---
+  duration_ms: 2.518191
+  type: 'test'
+  ...
+# Subtest: save failure surfaced, invalid import rejected without mutating state
+ok 179 - save failure surfaced, invalid import rejected without mutating state
+  ---
+  duration_ms: 2.005065
+  type: 'test'
+  ...
+# Subtest: duplicate tiles, invalid unit stats, missing hero, future schema rejected
+ok 180 - duplicate tiles, invalid unit stats, missing hero, future schema rejected
+  ---
+  duration_ms: 1.467592
+  type: 'test'
+  ...
+# Subtest: migration entry point accepts schema 0 and reset removes both saves
+ok 181 - migration entry point accepts schema 0 and reset removes both saves
+  ---
+  duration_ms: 4.588706
+  type: 'test'
+  ...
+# Subtest: victory replay keeps permanent growth, defeat replay rolls back battle gains
+ok 182 - victory replay keeps permanent growth, defeat replay rolls back battle gains
+  ---
+  duration_ms: 1.136756
+  type: 'test'
+  ...
+# Subtest: Fire Bolt ignites burnable ground for two turns; fire hurts but never kills; swamp halves fire
+ok 183 - Fire Bolt ignites burnable ground for two turns; fire hurts but never kills; swamp halves fire
+  ---
+  duration_ms: 6.406628
+  type: 'test'
+  ...
+# Subtest: ordinary attacks rarely miss and crits stay rare (3–12%) at x1.5
+ok 184 - ordinary attacks rarely miss and crits stay rare (3–12%) at x1.5
+  ---
+  duration_ms: 0.523952
+  type: 'test'
+  ...
+# Subtest: skirmishes are outside the campaign: LAST_MISSION stays 6, ids 101–105 and 110 are flagged
+ok 185 - skirmishes are outside the campaign: LAST_MISSION stays 6, ids 101–105 and 110 are flagged
+  ---
+  duration_ms: 1.855794
+  type: 'test'
+  ...
+# Subtest: the rite opens only in the ACT I camp after the Ashen Oath; trials need the promotion conditions
+ok 186 - the rite opens only in the ACT I camp after the Ashen Oath; trials need the promotion conditions
+  ---
+  duration_ms: 4.49951
+  type: 'test'
+  ...
+# Subtest: a trial battle: hero provisionally promoted, others in reserve, not practice, saves round-trip
+ok 187 - a trial battle: hero provisionally promoted, others in reserve, not practice, saves round-trip
+  ---
+  duration_ms: 8.278535
+  type: 'test'
+  ...
+# Subtest: winning a trial promotes for good without touching completed missions or gold
+ok 188 - winning a trial promotes for good without touching completed missions or gold
+  ---
+  duration_ms: 24.434988
+  type: 'test'
+  ...
+# Subtest: losing a trial changes nothing: the pre-battle campaign comes back
+ok 189 - losing a trial changes nothing: the pre-battle campaign comes back
+  ---
+  duration_ms: 1.860506
+  type: 'test'
+  ...
+# Subtest: Legion Drill: five heroes, permanent EXP and memory, counted; repeatable
+ok 190 - Legion Drill: five heroes, permanent EXP and memory, counted; repeatable
+  ---
+  duration_ms: 76.355253
+  type: 'test'
+  ...
+# Subtest: sortie: Erik is locked in, at least one hero goes, reserve heroes return to a free deployment tile
+ok 191 - sortie: Erik is locked in, at least one hero goes, reserve heroes return to a free deployment tile
+  ---
+  duration_ms: 1.819661
+  type: 'test'
+  ...
+# Subtest: sortie: reserve heroes take no part in battle, saves keep the choice, the victory flag ignores them
+ok 192 - sortie: reserve heroes take no part in battle, saves keep the choice, the victory flag ignores them
+  ---
+  duration_ms: 19.480419
+  type: 'test'
+  ...
+# Subtest: phase recovery floors with minimum one, clamps and is idempotent across reload
+ok 193 - phase recovery floors with minimum one, clamps and is idempotent across reload
+  ---
+  duration_ms: 6.425738
+  type: 'test'
+  ...
+# Subtest: enemy start heals only enemies, dead units excluded, grass has no recovery
+ok 194 - enemy start heals only enemies, dead units excluded, grass has no recovery
+  ---
+  duration_ms: 0.763435
+  type: 'test'
+  ...
+# Subtest: AI attacks before retreating and M02 escape always has priority
+ok 195 - AI attacks before retreating and M02 escape always has priority
+  ---
+  duration_ms: 2.273488
+  type: 'test'
+  ...
+# Subtest: enemy phase recovery is not reapplied by advancing AI
+ok 196 - enemy phase recovery is not reapplied by advancing AI
+  ---
+  duration_ms: 4.157244
+  type: 'test'
+  ...
+# Subtest: M01–M03 carry no mission level: every hero gets the exact v0.3.x EXP
+ok 197 - M01–M03 carry no mission level: every hero gets the exact v0.3.x EXP
+  ---
+  duration_ms: 2.022183
+  type: 'test'
+  ...
+# Subtest: M04–M06: heroes far above the mission level learn less, far below learn faster, with floor and cap
+ok 198 - M04–M06: heroes far above the mission level learn less, far below learn faster, with floor and cap
+  ---
+  duration_ms: 0.556547
+  type: 'test'
+  ...
+1..198
+# tests 198
+# suites 0
+# pass 198
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6310.597827

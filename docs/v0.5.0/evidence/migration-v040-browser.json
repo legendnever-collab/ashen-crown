@@ -1,0 +1,53 @@
+{
+  "checks": [
+    {
+      "name": "Shipped v0.4.0 village save is schema 7",
+      "status": "PASS"
+    },
+    {
+      "name": "Shipped v0.4.0 battle checkpoint generated",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.4.0 village save opens in the painted village (schema 8, gold kept, legal position)",
+      "status": "PASS"
+    },
+    {
+      "name": "Imported village save does not replay the world-map intro",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.4.0 battle and its checkpoint migrate unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "Restart of a migrated v0.4.0 battle works",
+      "status": "PASS"
+    },
+    {
+      "name": "ACT I complete save moves into the oath camp with every asset kept",
+      "status": "PASS"
+    },
+    {
+      "name": "Aren's rite panel is offered in the oath camp",
+      "status": "PASS"
+    },
+    {
+      "name": "Rite panel lists five heroes with conditions",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.4.0 Mission 05 battle resumes",
+      "status": "PASS"
+    },
+    {
+      "name": "Migrated save reloads as the current version",
+      "status": "PASS"
+    },
+    {
+      "name": "No runtime errors in either build",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}
