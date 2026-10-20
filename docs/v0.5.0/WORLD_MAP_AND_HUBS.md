@@ -151,9 +151,9 @@ ACT II 이후 후보 (PROPOSED, 이번에는 그리지 않음):
 
 | 항목 | 상태 |
 |---|---|
-| 아트 팩 수신 | 업로드된 ZIP이 25.19MB에서 잘려 PNG 4장만 수신. `hub_garrison`, `hub_bivouac_night`, `hub_fortress`, `hub_oathcamp`는 SHA256 일치 → `scripts/import-world-art.py`로 WebP 변환. `world_map`, `world_icons`, `hub_village_day`, `hub_village_raid`는 재전송 대기 |
-| 거점 (§3–4) | 위 4곳은 그림 + 걷기 마스크로 구현 (`src/data/hubs-v05.js`). 마을은 그림이 오기 전까지 기존 절차 생성 지도를 사용 |
-| 세계 지도 (§2) | 새 게임 소개, 장소 이동 시 행군 지도, 메뉴 '세계 지도' 구현 (`src/data/world.js`, `src/render/world-renderer.js`, `src/data/story-world.js`). 그림이 오기 전에는 양피지 대체 지도 |
+| 아트 팩 수신 | 1차 ZIP이 업로드 중 25.19MB에서 잘려 거점 4장만 수신(SHA256 일치). 나머지 4장은 Part 2 팩으로 다시 받음: GPT가 예전 결과물을 재포장(Path A), 4장 모두 1차 manifest의 SHA256과 일치. 8장 모두 `scripts/import-world-art.py`로 WebP 변환 (`src/assets/world-art-import-log.csv`) |
+| 거점 (§3–4) | 6곳 모두 그림 + 걷기 마스크로 구현 (`src/data/hubs-v05.js`). 마을은 평시(M01 전)와 습격 후(M01 후) 두 그림이 같은 배치를 쓰며, 무기점·도구점은 v0.3.3과 같은 문 앞 확인 → 상점 내부 흐름을 유지 |
+| 세계 지도 (§2) | 새 게임 소개, 장소 이동 시 행군 지도, 메뉴 '세계 지도' 구현 (`src/data/world.js`, `src/render/world-renderer.js`, `src/data/story-world.js`). 그려진 지도와 아이콘 9종 적용, 장소 좌표를 그림의 강·협곡·평지에 맞춤 (왕도는 강 북쪽 평원, 무너진 다리는 협곡 위) |
 | 세부 결정 | D-053 (PROPOSED) |
 | 검증 | `tests/hubs.test.mjs`, `test:world` (1440 / 390), 기존 browser suite 갱신 (journey: 진영 상점은 노천 판매대) |
 

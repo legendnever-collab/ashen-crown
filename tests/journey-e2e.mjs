@@ -13,16 +13,16 @@ try{for(const [width,height,touch]of [[1440,1000,false],[390,844,true],[844,390,
  await p.goto(pathToFileURL(path.resolve('releases/Ashen_Crown_v0.5.0.html')).href);await cmd('new');await story();if(await p.locator('#quest-panel').evaluate(e=>e.open))await p.locator('#quest-panel summary').click();
  check(`${label} Erik owns exploration, no duplicate growth`,(await snap()).frontier.actorId==='eric'&&(await snap()).units.filter(u=>u.id==='eric').length===1);
  check(`${label} Aren commander and advisor visible in map UI`,(await p.locator('.frontier-heading').textContent()).includes('에릭')&&!await p.locator('[data-do="place"][data-id="council"]').count());
- for(const mission of [1])for(const [kind,id,x]of [['weapon','forge',3],['item','shop',12]]){
-  await restore(fixture(mission,x,5));await p.keyboard.down('ArrowUp');await p.waitForFunction(()=>!!document.querySelector('[data-do="enter-building"]'));
+ for(const mission of [1])for(const [kind,id,x]of [['weapon','forge',5],['item','shop',21]]){
+  await restore(fixture(mission,x,4));await p.keyboard.down('ArrowUp');await p.waitForFunction(()=>!!document.querySelector('[data-do="enter-building"]'));
   check(`${label} M${mission} ${kind} exact front arrival confirms`,(await snap()).frontier.x===x&&(await snap()).frontier.y===4);
   await cmd('close-modal');await p.waitForTimeout(250);check(`${label} M${mission} ${kind} hold cancel no repeated modal`,!await p.locator('[data-do="enter-building"]').count());await p.keyboard.up('ArrowUp');
   await tile(x,3);check(`${label} M${mission} ${kind} facade hit maps to front door`,await p.locator('[data-do="enter-building"]').count()===1);await cmd('enter-building',kind);
   check(`${label} M${mission} ${kind} entered`,(await snap()).frontier.interior===kind);await p.reload();check(`${label} M${mission} ${kind} interior reload`,(await snap()).frontier.interior===kind);await cmd('shop-exit');await p.waitForFunction(()=>!AshenCrown.view().busy);
   check(`${label} M${mission} ${kind} exact return`,(await snap()).frontier.x===x&&(await snap()).frontier.y===4&&!(await snap()).frontier.interior);
-  await restore(fixture(mission,x,5));check(`${label} M${mission} ${kind} lateral/radius shortcut absent`,!await p.locator(`[data-do="place"][data-id="${id}"]`).count());
+  await restore(fixture(mission,x+1,4));check(`${label} M${mission} ${kind} lateral/radius shortcut absent`,!await p.locator(`[data-do="place"][data-id="${id}"]`).count());
   // North/rear is map boundary; stand legally beside rear wall, not in the building.
-  await restore(fixture(mission,id==='forge'?5:9,1));check(`${label} M${mission} ${kind} rear side cannot enter`,!await p.locator(`[data-do="place"][data-id="${id}"]`).count());
+  await restore(fixture(mission,x-1,4));check(`${label} M${mission} ${kind} rear side cannot enter`,!await p.locator(`[data-do="place"][data-id="${id}"]`).count());
  }
  // v0.5 painted Border Camp (D-052): open-air stalls, no shop interior.
  for(const [npc,kind] of [['smith','weapon'],['merchant','item']]){const n=HUBS.camp.npcs.find(n=>n.id===npc);await restore(fixture(2,n.x,n.y+1));await cmd('npc',npc);
@@ -40,6 +40,6 @@ try{for(const [width,height,touch]of [[1440,1000,false],[390,844,true],[844,390,
  const last=fixture(6);last.frontier.phase='aftermath';syncFrontier(last);await restore(last);await cmd('npc','advisor');await story();check(`${label} final-mission (M06) aftermath no false next departure`,!await p.locator('[data-do="advisor-operation"]').count()&&!await p.locator('[data-do="next-mission"]').count()&&(await p.locator('#modal-root').textContent()).includes('ACT II'));await cmd('close-modal');
  // Import legacy blocked War Room save via normal text backup; no mutable test API.
  const legacy=fixture(2,0,0);legacy.schema=5;legacy.version='0.3.2';delete legacy.frontier.actorId;delete legacy.campaign.frontier.actorId;const data=JSON.stringify(legacy);const {checksum}=await import('../src/persistence/save-manager.js');await restore(JSON.stringify({format:'AshenCrown',data,checksum:checksum(data)}));check(`${label} blocked v032 save recovers safely`,(await snap()).schema===8&&(await snap()).frontier.actorId==='eric'&&(await snap()).frontier.x===HUBS.camp.spawn[0]&&(await snap()).frontier.y===HUBS.camp.spawn[1]);await cmd('npc','advisor');await story();await cmd('advisor-operation');await story();check(`${label} migrated blocked save reaches council`,(await snap()).screen==='warroom');
- await cmd('hub-return');await p.screenshot({path:`${shots}/advisor-${width}.png`});await restore(fixture(1,3,4));await p.goto(p.url()+'?debugMap=1');await p.screenshot({path:`${shots}/doors-debug-${width}.png`});check(`${label} viewport has no horizontal overflow`,await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await ctx.close();
+ await cmd('hub-return');await p.screenshot({path:`${shots}/advisor-${width}.png`});await restore(fixture(1,5,4));await p.goto(p.url()+'?debugMap=1');await p.screenshot({path:`${shots}/doors-debug-${width}.png`});check(`${label} viewport has no horizontal overflow`,await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await ctx.close();
 }check('Journey browser has zero runtime errors',errors.length===0);check('Journey standalone has zero HTTP requests',external===0);
 }finally{fs.writeFileSync('test-output/journey-e2e.json',JSON.stringify({checks,errors,external},null,2));await browser.close();}console.log(`${checks.length} journey checks PASS`);

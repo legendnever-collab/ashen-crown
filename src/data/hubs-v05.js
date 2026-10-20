@@ -6,7 +6,7 @@
 // Which hub a story moment uses. phase: 'preparation' | 'aftermath'.
 export function hubFor(missionId,phase='preparation'){
  const after=phase==='aftermath';
- if(missionId<=1)return 'village';
+ if(missionId<=1)return after?'village_raid':'village';
  if(missionId===2||missionId===3&&!after)return 'camp';
  if(missionId===3||missionId===4&&!after)return 'bivouac';
  if(missionId===6&&after)return 'oathcamp';
@@ -19,20 +19,46 @@ export function stageHubFor(key){
  if(key==='raid')return 'village';if(key.startsWith('6:'))return 'oathcamp';if(key.startsWith('promo:'))return 'oathcamp';return null;
 }
 
-const hv5Interior={inn:'barracks',warroom:'quarters',depot:'store'};
+const hv5Interior={inn:'barracks',warroom:'quarters',depot:'store',residence:'house'};
+// Village shop doors keep the v0.3.3 anchors: place 'forge'/'shop', action and interior 'weapon'/'item'.
+const hv5Shop={forge:'weapon',shop:'item'};
 function hv5Build(id,spec){
- const mask=spec.mask;if(mask.length!==16||mask.some(r=>r.length!==24))throw Error(`hub mask ${id}`);
+ const mask=spec.solid?spec.mask.map((r,y)=>[...r].map((c,x)=>spec.solid.some(([a,b])=>a===x&&b===y)?'#':c).join('')):spec.mask;if(mask.length!==16||mask.some(r=>r.length!==24))throw Error(`hub mask ${id}`);
  const buildings=[],places=spec.places.map(([pid,name,x,y])=>({id:pid,name,x,y}));
- for(const [bid,label,name,x,y,w,h,dx,dy] of spec.doors){const type=bid.split('-')[0],interior=hv5Interior[type];
+ for(const [bid,label,name,x,y,w,h,dx,dy] of spec.doors){const type=bid.split('-')[0],shop=hv5Shop[bid],interior=shop||hv5Interior[type];
   const entrance={tileX:dx,tileY:dy,approachDirection:'north',triggerType:'interact'};
   buildings.push({x,y,w,h,label,type,buildingId:bid,entrance,returnPoint:{tileX:dx,tileY:dy+1},interiorScene:interior,painted:true});
-  places.push({id:bid,name,x:dx,y:dy+1,action:'enter',entrance,buildingId:bid,interior,hub:id});}
+  places.push(shop?{id:bid,name,x:dx,y:dy+1,action:shop,entrance,buildingId:bid}:{id:bid,name,x:dx,y:dy+1,action:'enter',entrance,buildingId:bid,interior,hub:id});}
  const npcs=spec.npcs.map(([nid,name,x,y,extra])=>({id:nid,name,x,y,...(extra||{})}));
- return {name:spec.name,tone:'camp',kind:spec.kind,art:spec.art,width:24,height:16,spawn:spec.spawn,mask,stage:spec.stage,lights:spec.lights||[],paintedTable:!!spec.paintedTable,night:!!spec.night,buildings,places,npcs};
+ return {name:spec.name,tone:spec.tone||'camp',kind:spec.kind,art:spec.art,width:24,height:16,spawn:spec.spawn,mask,stage:spec.stage,lights:spec.lights||[],paintedTable:!!spec.paintedTable,night:!!spec.night,buildings,places,npcs};
 }
 const hv5Heroes=(pos)=>[['aren','Aren · 군단장',...pos.aren,{kind:'commander'}],['elina',pos.elinaName,...pos.elina,{kind:'hero'}],['lia','Lia · 군사',...pos.lia,{kind:'hero'}],['sain',pos.sainName,...pos.sain,{kind:'hero'}],['kai',pos.kaiName,...pos.kai,{kind:'hero'}],['advisor','리아의 작전 탁자 · 작전 회의',...pos.advisor,{kind:'advisor'}]];
 
+// Village (M01): same 24×16 layout for the morning and the evening after the raid.
+const HV5_VILLAGE={tone:'village',spawn:[19,9],paintedTable:true,stage:{x:430,y:590},
+  mask:[
+   '########################',
+   '###########..###########',
+   '###########..###########',
+   '###########..###########',
+   '#......................#',
+   '#######..........#######',
+   '#######..#.##.#..#######',
+   '#######...####...#######',
+   '#######..#....#..#######',
+   '#......................#',
+   '##########....##########',
+   '##########....##########',
+   '#########.....##########',
+   '##........#..###########',
+   '###########..###########',
+   '########################'],
+  doors:[['forge','BLACKSMITH','Blacksmith',1,0,6,4,5,3],['shop','ITEM SHOP','Item Shop',16,0,7,4,21,3],['inn-1','BARRACKS','병영',1,5,6,4,3,8],['warroom-2','COMMAND QUARTERS','지휘관 숙소',20,5,4,4,21,8],['residence-3','HOME','민가',1,10,4,3,3,12],['depot-4','SUPPLY','보급 창고',5,10,4,3,6,12]],
+  places:[['square','Village Square',12,8],['exit','Village Exit',11,14],['advisor','작전 탁자 · 촌장 회관',19,9]],
+  npcs:[...hv5Heroes({aren:[16,8],elina:[12,1],elinaName:'Elina · 경계',lia:[18,8],sain:[5,8],sainName:'Sain · 구호',kai:[15,5],kaiName:'Kai · 길목 관찰',advisor:[19,8]}),['elder','Village Elder',22,9],['refugee','Refugee',7,8],['guard','Guard',12,14]]};
 const HV5_SPECS={
+ village:{...HV5_VILLAGE,name:'Ashen Village · 잿빛 마을',kind:'village',art:'hub_village_day',lights:[[190,180,90,'fire']]},
+ village_raid:{...HV5_VILLAGE,name:'Ashen Village · 습격 후',kind:'village',art:'hub_village_raid',solid:[[10,8],[13,8],[14,7],[15,7]],lights:[[200,720,120,'fire'],[420,740,110,'fire'],[300,800,90,'fire'],[930,500,70,'fire'],[1290,175,60,'fire']]},
  camp:{name:'Border Camp · 국경 수비대 진영',kind:'garrison',art:'hub_garrison',spawn:[9,7],paintedTable:true,stage:{x:500,y:285},
   mask:[
    '########################',

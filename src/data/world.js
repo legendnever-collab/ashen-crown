@@ -1,5 +1,5 @@
 // v0.5.0 world map of Erdia (D-052, APPROVED_DIRECTION layout; place names PROPOSED and renameable).
-// Coordinates are pixels on the 1536×1024 painted map. Faction names/leaders are CANON; regions are
+// Coordinates are pixels on the 1536×1024 painted map (fitted to the user's world_map art, 2026-10-20). Faction names/leaders are CANON; regions are
 // tinted only once the story has met them (W2). Nothing beyond the sealed border is defined (OPEN).
 
 export const WORLD_SIZE={w:1536,h:1024};
@@ -18,25 +18,25 @@ export const REGIONS=[
 ];
 // Sites: icon id (world icon sheet), region, ACT I mission/hub links. Unmet sites are drawn without names.
 export const SITES=[
- {id:'capital',name:'왕도 아우렐리아',icon:'capital',x:795,y:510,region:'center'},
+ {id:'capital',name:'왕도 아우렐리아',icon:'capital',x:790,y:455,region:'center'},
  {id:'stronghold',name:'철관성',icon:'stronghold',x:710,y:207,region:'north'},
- {id:'canyon',name:'회색 협곡',icon:null,x:600,y:335,region:'north'},
- {id:'freecity',name:'자유도시 벨마르',icon:'freecity',x:322,y:517,region:'west'},
+ {id:'canyon',name:'회색 협곡',icon:null,x:690,y:300,region:'north'},
+ {id:'freecity',name:'자유도시 벨마르',icon:'freecity',x:270,y:525,region:'west'},
  {id:'lordA',name:'영주성',icon:'ruin',x:423,y:411,region:'west',small:true},
  {id:'lordB',name:'영주성',icon:'ruin',x:433,y:651,region:'west',small:true},
  {id:'cathedral',name:'성화 대성당',icon:'cathedral',x:760,y:785,region:'south'},
  {id:'monastery',name:'침묵의 수도원',icon:'monastery',x:975,y:853,region:'south'},
- {id:'village',name:'잿빛 마을',icon:'village',x:1150,y:610,region:'east',mission:1,hub:'village'},
- {id:'garrison',name:'국경 수비대 진영',icon:'camp',x:1200,y:545,region:'east',hub:'camp'},
- {id:'forest',name:'숲길',icon:null,x:1240,y:470,region:'east',mission:2},
- {id:'bridge',name:'무너진 다리',icon:null,x:1300,y:440,region:'east',mission:3},
- {id:'bivouac',name:'강가 야영',icon:'camp',x:1268,y:402,region:'east',hub:'bivouac',small:true},
- {id:'fortress',name:'버려진 성채',icon:'ruin',x:1361,y:363,region:'east',mission:4,hub:'fortress'},
- {id:'ridge',name:'국경 능선',icon:null,x:1310,y:290,region:'east',mission:5},
- {id:'gate',name:'국경 관문',icon:'gate',x:1441,y:331,region:'east',mission:6},
- {id:'oathcamp',name:'관문 너머 야영지',icon:'camp',x:1472,y:300,region:'east',hub:'oathcamp',small:true}
+ {id:'village',name:'잿빛 마을',icon:'village',x:1150,y:620,region:'east',mission:1,hub:'village'},
+ {id:'garrison',name:'국경 수비대 진영',icon:'camp',x:1235,y:585,region:'east',hub:'camp'},
+ {id:'forest',name:'숲길',icon:null,x:1292,y:505,region:'east',mission:2},
+ {id:'bridge',name:'무너진 다리',icon:null,x:1262,y:442,region:'east',mission:3},
+ {id:'bivouac',name:'강가 야영',icon:'camp',x:1305,y:398,region:'east',hub:'bivouac',small:true},
+ {id:'fortress',name:'버려진 성채',icon:'ruin',x:1361,y:360,region:'east',mission:4,hub:'fortress'},
+ {id:'ridge',name:'국경 능선',icon:null,x:1325,y:275,region:'east',mission:5},
+ {id:'gate',name:'국경 관문',icon:'gate',x:1432,y:333,region:'east',mission:6},
+ {id:'oathcamp',name:'관문 너머 야영지',icon:'camp',x:1458,y:295,region:'east',hub:'oathcamp',small:true}
 ];
-export const HUB_SITE={village:'village',camp:'garrison',bivouac:'bivouac',fortress:'fortress',oathcamp:'oathcamp'};
+export const HUB_SITE={village:'village',village_raid:'village',camp:'garrison',bivouac:'bivouac',fortress:'fortress',oathcamp:'oathcamp'};
 // ACT I march order (W1): village → garrison → forest → bridge → bivouac → fortress → ridge → gate → oath camp.
 export const ACT1_ROUTE=['village','garrison','forest','bridge','bivouac','fortress','ridge','gate','oathcamp'];
 export const siteById=id=>SITES.find(s=>s.id===id);

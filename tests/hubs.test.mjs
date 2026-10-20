@@ -13,7 +13,7 @@ const at=(hub,x,y)=>({frontier:{hub,x,y}});
 function reachable(id){const h=HUBS[id],seen=new Set([h.spawn.join()]),q=[h.spawn];while(q.length){const [x,y]=q.shift();for(const [dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const k=`${x+dx},${y+dy}`;if(!seen.has(k)&&walkable(at(id,x+dx,y+dy),x+dx,y+dy)){seen.add(k);q.push([x+dx,y+dy]);}}}return seen;}
 
 test('W3 table: every ACT I story moment has its hub',()=>{
- const want={'1:preparation':'village','1:aftermath':'village','2:preparation':'camp','2:aftermath':'camp','3:preparation':'camp','3:aftermath':'bivouac','4:preparation':'bivouac','4:aftermath':'fortress','5:preparation':'fortress','5:aftermath':'fortress','6:preparation':'fortress','6:aftermath':'oathcamp'};
+ const want={'1:preparation':'village','1:aftermath':'village_raid','2:preparation':'camp','2:aftermath':'camp','3:preparation':'camp','3:aftermath':'bivouac','4:preparation':'bivouac','4:aftermath':'fortress','5:preparation':'fortress','5:aftermath':'fortress','6:preparation':'fortress','6:aftermath':'oathcamp'};
  for(const [k,hub] of Object.entries(want)){const [m,phase]=k.split(':');assert.equal(hubFor(+m,phase),hub,k);
   const s=newGame(7,null,+m);enterHub(s,{aftermath:phase==='aftermath',story:false});assert.equal(s.frontier.hub,hub,`enterHub ${k}`);assert.ok(walkable(s,s.frontier.x,s.frontier.y),`spawn ${k}`);}
 });
@@ -31,19 +31,19 @@ test('painted hubs: 24×16 masks, every walkable tile reachable, NPCs/places/doo
 });
 
 test('every painted hub sells weapons and items and seats Lia at the war table',()=>{
- for(const [id,h] of Object.entries(ART_HUBS)){const kinds=new Set(h.npcs.flatMap(n=>n.services||(n.service?[n.service]:[])));
+ for(const [id,h] of Object.entries(ART_HUBS)){const kinds=new Set([...h.npcs.flatMap(n=>n.services||(n.service?[n.service]:[])),...h.places.filter(p=>['weapon','item'].includes(p.action)).map(p=>p.action)]);
   assert.ok(kinds.has('weapon')&&kinds.has('item'),`${id} services ${[...kinds]}`);
   assert.ok(h.npcs.some(n=>n.id==='advisor')&&h.npcs.some(n=>n.id==='lia')&&h.npcs.some(n=>n.id==='aren'),`${id} cast`);
-  const s=newGame(9,null,id==='camp'?2:id==='bivouac'?4:id==='fortress'?5:6);enterHub(s,{aftermath:id==='oathcamp',story:false});drain(s);assert.equal(s.frontier.hub,id);
+  const s=newGame(9,null,id.startsWith('village')?1:id==='camp'?2:id==='bivouac'?4:id==='fortress'?5:6);enterHub(s,{aftermath:id==='oathcamp'||id==='village_raid',story:false});drain(s);assert.equal(s.frontier.hub,id);
   assert.ok(interactions(s).some(n=>n.id==='advisor'&&n.npc),`${id} spawns at Lia's war table`);
  }
  assert.deepEqual(ART_HUBS.bivouac.npcs.find(n=>n.id==='merchant').services,['item','weapon'],'wandering merchant sells both');
  assert.deepEqual(ART_HUBS.oathcamp.npcs.find(n=>n.id==='merchant').services,['item','weapon']);
 });
 
-test('chest-bearing doors: same five building ids and interior kinds as the v0.4 Border Camp',()=>{
- const legacy={'inn-1':'barracks','warroom-2':'quarters','inn-3':'barracks','warroom-4':'quarters','depot-5':'store'};
- for(const [id,h] of Object.entries(ART_HUBS)){const doors=Object.fromEntries(h.places.filter(p=>p.action==='enter').map(p=>[p.buildingId,p.interior]));assert.deepEqual(doors,legacy,id);
+test('chest-bearing doors: same building ids and interior kinds as the v0.4 village / Border Camp',()=>{
+ const campDoors={'inn-1':'barracks','warroom-2':'quarters','inn-3':'barracks','warroom-4':'quarters','depot-5':'store'},villageDoors={'inn-1':'barracks','warroom-2':'quarters','residence-3':'house','depot-4':'store'};
+ for(const [id,h] of Object.entries(ART_HUBS)){const legacy=id.startsWith('village')?villageDoors:campDoors;const doors=Object.fromEntries(h.places.filter(p=>p.action==='enter').map(p=>[p.buildingId,p.interior]));assert.deepEqual(doors,legacy,id);
   for(const p of h.places.filter(p=>p.action==='enter')){const s=newGame(3,null,2);enterHub(s,{story:false});drain(s);s.frontier.hub=id;s.frontier.x=p.x;s.frontier.y=p.y;assert.ok(interactions(s).some(n=>n.id===p.id),`${id} ${p.id} at door`);
    assert.ok(enterInterior(s,p.buildingId),`${id} enter ${p.id}`);assert.ok(INTERIORS[s.frontier.interior].generic);s.frontier.x=INTERIORS[s.frontier.interior].spawn[0];s.frontier.y=INTERIORS[s.frontier.interior].spawn[1];assert.ok(exitInterior(s));assert.deepEqual([s.frontier.hub,s.frontier.x,s.frontier.y],[id,p.x,p.y]);}}
 });
