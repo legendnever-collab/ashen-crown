@@ -17,7 +17,7 @@ try{for(const [w,h,touch] of [[1440,900,false],[390,844,true]]){const L=`${w}x${
  // Bulwark
  await pick('eric');check(`${L} Erik selected`,(await v()).selected==='eric');await press('submenu','skills');check(`${L} skill tab lists the class action`,await p.locator('[data-do="mode"][data-id="bulwark"]').count()===1);
  await press('mode','bulwark');check(`${L} Bulwark shows its forecast`,(await v()).menu==='forecast'&&(await p.locator('#unit-popover .forecast').textContent()).includes('방벽'));
- await press('confirm');await idle();let e=await unit('eric');check(`${L} Bulwark applied (MP −4, acted)`,e.bulwark===true&&e.acted&&e.mp===e.maxMP-4);
+ await press('confirm');await idle();let e=await unit('eric');check(`${L} Bulwark applied (MP −4, acted)`,e.bulwark===true&&e.acted&&e.mp===e.maxMP-4);check(`${L} Bulwark plays its golden shield flourish (Phase F)`,(await v()).animation.lastFlourish.some(f=>f.id==='eric'&&f.action==='bulwark'));
  // Overwatch
  await pick('elina');await press('submenu','skills');await press('mode','overwatch');await press('confirm');await idle();check(`${L} Overwatch applied`,(await unit('elina')).overwatch===true);
  // Arcane Territory (tile target, second tap executes)

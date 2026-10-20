@@ -13,6 +13,8 @@ export function presentationPlan(events,units,{movement='step',speed=1,reduced=f
   else if(event.type==='attack'){
    const unit=units.find(u=>u.id===event.id),kind=attackKind(unit,event.mode),duration=(reduced?220:kind==='fireball'?1250:kind==='arrow'?680:720)/speed,impact=cursor+duration*(kind==='fireball'?.56:kind==='arrow'?.65:.46);
    plans.push({...event,kind,delay:cursor,duration,impact});lastImpact=impact;cursor+=duration;
+  }else if(event.type==='class'){// v0.5 Phase F: the class-action flourish leads; moves it causes wait for it.
+   const duration=(reduced?320:1100)/speed;plans.push({...event,delay:cursor,duration});cursor+=(reduced?120:480)/speed;
   }else{const delay=['hit','critical','miss','death'].includes(event.type)?lastImpact:Math.max(0,cursor-180/speed),duration=(['level','potential'].includes(event.type)?1400:900)/speed;plans.push({...event,delay,duration});
    if(Number.isFinite(event.toHP))hp.push({id:event.id,delay,hp:event.toHP});
   }

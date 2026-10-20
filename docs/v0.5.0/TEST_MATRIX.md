@@ -14,3 +14,4 @@
 | 패키지 | 재빌드 byte-identical, verify-release, Source ZIP/SHA256, CI | scripts + CI |
 | 세계 지도·거점 (D-052/053) | ACT I 시점별 거점 표, 마스크 연결성(모든 칸·문·장소·NPC 접근), 거점마다 무기·도구·작전 탁자, 상자 문 5개(v0.4 진영과 같은 id), 연출 장면 무대, v0.4.0 저장의 거점 재배치 | unit (`tests/hubs.test.mjs`) |
 | 세계 지도 화면 | 새 게임 소개 3줄→pre:1, 새로고침 중 유지, M03 후 행군 지도→야영 장면, 방랑 상인 도구·무기 구매, 메뉴 지도, 넘침·오류 0 | `test:world` (1440 마우스 / 390 터치) |
+| 연출 (Phase F) | 전직 행동 연출 이벤트(이동보다 먼저, 동작 줄이기 시 짧게), ACT I 1차 직업 플레이에 연출 0, 전직 카드 1회·리로드 후 재표시 없음, 장면별 음악(거점·세계 지도·전직·시련), 출시 이미지 해시 = import 기록 | unit (`tests/presentation.test.mjs`) + `test:class` + `test:legion` |

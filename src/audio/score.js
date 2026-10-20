@@ -43,9 +43,27 @@ export const SCORE={
  oath:{name:'The Ashen Oath',tempo:112,lead:'horn',arp:'ostinato',pad:'strings',drums:'battle',gain:.85,
   chords:chords('Bm G D A Bm G Em F#'),
   melody:melody('B4:2 D5:2 F#5:3 E5:1  D5:2 C#5:2 B4:4  G5:2 F#5:2 E5:2 D5:2  C#5:6 -:2  B4:2 D5:2 F#5:2 B5:2  A5:3 G5:1 F#5:4  E5:2 G5:2 F#5:2 E5:2  F#5:6 -:2')},
+ // v0.5 Phase F variations (original, 2026-10-20): hubs, the world map, the promotion rite and trials.
+ campfire:{name:'Embers Under Pines',tempo:60,lead:'flute',arp:'pluck',pad:'softpad',drums:null,gain:.72,
+  chords:chords('Am F C G Am Dm E Am'),
+  melody:melody('E5:3 D5:1 C5:2 A4:2  C5:2 D5:2 E5:4  G5:3 E5:1 D5:2 C5:2  D5:6 -:2  E5:2 A5:2 G5:2 E5:2  F5:3 E5:1 D5:4  B4:2 C5:2 D5:2 E5:2  A4:6 -:2')},
+ banner:{name:'Beneath the Ash Banner',tempo:84,lead:'horn',arp:'harp',pad:'strings',drums:null,gain:.78,
+  chords:chords('Bm G D A G D Em F#'),
+  melody:melody('F#5:4 E5:2 D5:2  B4:4 -:2 D5:2  A5:3 F#5:1 D5:2 E5:2  C#5:6 -:2  D5:2 E5:2 F#5:2 G5:2  A5:4 F#5:2 D5:2  G5:2 F#5:2 E5:2 D5:2  F#5:6 -:2')},
+ rite:{name:'The Rank of Embers',tempo:76,lead:'celesta',arp:'harp',pad:'strings',drums:'march',gain:.8,
+  chords:chords('D A Bm F#m G D Em A'),
+  melody:melody('D5:2 F#5:2 A5:4  A5:2 G5:2 F#5:2 E5:2  F#5:3 E5:1 D5:2 B4:2  C#5:6 -:2  B4:2 D5:2 G5:2 F#5:2  F#5:2 E5:2 D5:4  E5:2 G5:2 F#5:2 E5:2  A5:6 -:2')},
+ trial:{name:'Trial of the Legion',tempo:124,lead:'strings',arp:'ostinato',pad:'lowpad',drums:'battle',gain:.85,
+  chords:chords('Dm Bb C A Dm Bb Gm A'),
+  melody:melody('D5:1 D5:1 F5:2 A5:2 F5:2  Bb4:2 D5:2 F5:4  E5:2 G5:2 C5:2 E5:2  C#5:6 -:2  D5:2 A5:2 G5:2 F5:2  F5:2 D5:2 Bb4:4  Bb4:2 D5:2 G5:2 Bb5:2  A5:6 -:2')},
+ chronicle:{name:'A Map of Erdia',tempo:70,lead:'flute',arp:'harp',pad:'pad',drums:null,gain:.8,
+  chords:chords('C G Am F C Em F G'),
+  melody:melody('G4:2 C5:2 E5:4  D5:2 B4:2 G4:4  A4:2 C5:2 E5:2 A5:2  F5:6 -:2  E5:2 G5:2 C6:4  B5:2 G5:2 E5:4  F5:2 A5:2 G5:2 F5:2  G5:6 -:2')},
  fortress:{name:'Halls of the Quartermaster',tempo:108,lead:'horn',arp:'ostinato',pad:'lowpad',drums:'battle',gain:.85,
   chords:chords('Em D C B Em D C B'),
   melody:melody('E5:2 B4:2 E5:2 G5:2  F#5:2 D5:2 A4:4  G5:2 E5:2 C5:2 E5:2  D#5:6 -:2  E5:1 F#5:1 G5:2 A5:2 B5:2  A5:2 F#5:2 D5:4  C5:2 E5:2 G5:2 E5:2  B4:6 -:2')}
 };
 export const MOTIF=SCORE.title.melody.map(([n])=>n);
-export const musicScene=s=>s.narrative?.active?(s.narrative.active.key==='raid'?'tension':s.narrative.active.key.startsWith('pre:')?'story':s.frontier?.hub&&!s.frontier.hub.startsWith('village')?'camp':'story'):s.screen==='title'?'title':s.screen==='exploration'?s.frontier?.hub&&!s.frontier.hub.startsWith('village')?'camp':'village':['warroom','deployment'].includes(s.screen)?'departure':s.screen!=='battle'?'story':s.missionId===6?(s.phase==='enemy'?'enemy':'oath'):s.missionId===3||s.units.some(u=>u.team==='civilian'&&!u.rescued&&u.hp>0&&u.hp<u.maxHP/2)?'crisis':s.phase==='enemy'?'enemy':s.missionId===4?'fortress':s.missionId===5?'lion':'player';
+// Hub ambience (D-052): village / garrison & fortress / night bivouac / oath camp.
+const hubMusic=hub=>!hub||hub.startsWith('village')?'village':hub==='bivouac'?'campfire':hub==='oathcamp'?'banner':'camp';
+export const musicScene=s=>s.narrative?.active?(s.narrative.active.key==='raid'?'tension':s.narrative.active.key.startsWith('world:')?'chronicle':s.narrative.active.key.startsWith('promo:')?'rite':s.narrative.active.key.startsWith('pre:')?'story':s.frontier?.hub&&!s.frontier.hub.startsWith('village')?hubMusic(s.frontier.hub):'story'):s.screen==='title'?'title':s.screen==='exploration'?hubMusic(s.frontier?.hub):s.skirmish?.kind==='trial'&&s.screen==='battle'?'trial':['warroom','deployment'].includes(s.screen)?'departure':s.screen!=='battle'?'story':s.missionId===6?(s.phase==='enemy'?'enemy':'oath'):s.missionId===3||s.units.some(u=>u.team==='civilian'&&!u.rescued&&u.hp>0&&u.hp<u.maxHP/2)?'crisis':s.phase==='enemy'?'enemy':s.missionId===4?'fortress':s.missionId===5?'lion':'player';

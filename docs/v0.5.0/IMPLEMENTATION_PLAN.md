@@ -37,7 +37,7 @@ Branch `feature/v0.5-advanced-class` (base: main `f922a18`, official v0.4.0).
 | D | 새 전술 행동 5종 + 적 AI 대응 | 행동별 unit + tactical E2E (데스크톱·모바일) — **구현 2026-10-19** (`src/core/class-actions.js`, tests/class-actions.test.mjs 8건, `test:class` 브라우저 14×2 검사, ACT I 결과 불변) |
 | E | 전직 의식·시련 전투 5개·군단 훈련 (A안) / M03 진영 전직 (B안) | 시련 30 seed 승률 ≥ 90%, act1 회귀 PASS — **구현 2026-10-19** ([TRIALS](TRIALS.md), tests/skirmish.test.mjs, test:class-balance, test:legion) |
 | E2 | 세계 지도 + 막간 거점 6종 (사용자 요청 2026-10-20) | [WORLD_MAP_AND_HUBS](WORLD_MAP_AND_HUBS.md) W1–W4 승인 (D-052, 2026-10-20), 그림은 [ART_BRIEF_WORLD](ART_BRIEF_WORLD.md) — **설계 승인, 구현 대기** |
-| F | 외형 Tier 2 (아트 팩 import), 정보창 전직 탭, 연출·음악 변주 | 아트 해시 검증, 스크린샷 |
+| F | 외형 Tier 2 (아트 팩 import), 정보창 전직 탭, 연출·음악 변주 | 아트 해시 검증, 스크린샷 — **구현 2026-10-20**: 전직 행동 5종 + 경계 사격 반응의 전장 연출(이동보다 먼저 재생, 동작 줄이기 대응), 전직 장면 뒤 1회 '전직 카드'(전·후 반신, 새 행동, 보너스), 원곡 변주 5곡(Embers Under Pines 야영 · Beneath the Ash Banner 맹세 진영 · The Rank of Embers 전직 · Trial of the Legion 시련 · A Map of Erdia 세계 지도), 출시 이미지 전체 해시 검증 테스트 (`tests/presentation.test.mjs`) |
 | G | 마이그레이션(v0.4.0 실제 저장)·전체 밸런스·회귀·패키징·PR | 전 suite PASS, CI, PR (승인 전 병합 금지) |
 
 ## 4. 사용자 승인 질문

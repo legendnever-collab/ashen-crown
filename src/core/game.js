@@ -96,7 +96,7 @@ const targets=s.units.filter(t=>alive(t)&&(t.team==='ally'||t.team==='civilian'&
 export function advanceEnemy(s){
  if(s.screen!=='battle'||s.phase!=='enemy'||s.narrative?.active)return false;s.feedback=[];
  if(s.enemyIndex<s.enemyQueue.length){const u=findUnit(s,s.enemyQueue[s.enemyIndex++]);if(!u||!alive(u))return true;const p=planEnemy(s,u);let path=pathTo(s,u,p.x,p.y),shots=[],stopped=false;
-  if(path&&path.length>1&&s.units.some(a=>a.team==='ally'&&a.overwatch&&alive(a))){const start={x:u.x,y:u.y},mark=s.feedback.length,stop=overwatchStop(s,u,path,(a,e)=>{const r=damage(s,a,e,'attack');if(r.hit)awardXP(s,a,BALANCE.attackXP+(!alive(e)?BALANCE.killXP:0),`${e.name} 경계 사격`);return r;});
+  if(path&&path.length>1&&s.units.some(a=>a.team==='ally'&&a.overwatch&&alive(a))){const start={x:u.x,y:u.y},mark=s.feedback.length,stop=overwatchStop(s,u,path,(a,e)=>{s.feedback.push({type:'class',action:'overwatch-fire',id:a.id,target:e.id,text:'경계 사격',at:{x:e.x,y:e.y}});const r=damage(s,a,e,'attack');if(r.hit)awardXP(s,a,BALANCE.attackXP+(!alive(e)?BALANCE.killXP:0),`${e.name} 경계 사격`);return r;});
    shots=s.feedback.splice(mark);u.x=start.x;u.y=start.y;if(stop<path.length-1){stopped=true;path=path.slice(0,stop+1);p.x=path.at(-1).x;p.y=path.at(-1).y;}}
   if(path){u.x=p.x;u.y=p.y;if(path.length>1)s.feedback.push({type:'move',id:u.id,path});}s.feedback.push(...shots);
   if(stopped){s.log.push(`${u.name}: 경계 사격에 발이 묶였습니다.`);if(!alive(u)){checkOutcome(s);afterBattleEvents(s);return true;}if(p.target&&!validTarget(s,u,findUnit(s,p.target)))p.target=null;}

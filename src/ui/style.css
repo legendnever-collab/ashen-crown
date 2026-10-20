@@ -294,3 +294,21 @@
 .world-view{display:block;width:min(960px,100%);height:min(62vh,600px);border:1px solid rgba(220,182,108,.5);background:#0f1c20}
 @media(max-width:600px){.world-card{padding:10px 14px}.world-card h2{font-size:20px}.world-view{height:52vh}}
 @media(prefers-reduced-motion:reduce){.world-card{animation:none}}
+/* v0.5 Phase F promotion card */
+.promo-card{text-align:center;color:#f4ead0}
+.promo-card .eyebrow{display:block;font:bold 11px/1.4 Arial,'Ashen UI',sans-serif;letter-spacing:.16em;color:#e0b25f}
+.promo-busts{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin:10px 0 4px;position:relative}
+.promo-busts::before{content:'';position:absolute;left:50%;top:50%;width:min(420px,90%);height:70%;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(255,206,120,.35),rgba(255,206,120,0));pointer-events:none;animation:promoGlow 2.4s ease-in-out infinite}
+.promo-bust{width:min(180px,36vw);height:auto;aspect-ratio:360/440;position:relative}
+.promo-bust.before{filter:grayscale(.55) brightness(.8);opacity:.85;width:min(140px,28vw)}
+.promo-bust.after{animation:promoRise .9s cubic-bezier(.2,.8,.2,1) both;filter:drop-shadow(0 0 14px rgba(255,200,110,.55))}
+.promo-arrow{font-size:26px;color:#e0b25f;align-self:center}
+.promo-card h2{margin:8px 0 2px;font:bold 26px/1.25 Georgia,'Ashen UI',serif;color:#fbf1d6}
+.promo-en{margin:0 0 10px;color:#cdbf9d;font-size:13px;letter-spacing:.06em}
+.promo-action{margin:0 auto 8px;max-width:440px;padding:10px 14px;border:1px solid rgba(220,182,108,.55);background:rgba(20,26,34,.6);text-align:left}
+.promo-action b{color:#f4a43c}.promo-action p{margin:4px 0 0;font-size:14px;line-height:1.6}
+.promo-note{font-size:13px;color:#d8ccb0;margin:6px auto;max-width:440px}
+.promo-bonus i{display:inline-block;margin:2px 4px;padding:2px 8px;border:1px solid rgba(220,182,108,.5);font-style:normal;font-size:12px;color:#ffe4a0}
+@keyframes promoRise{from{opacity:0;transform:translateY(16px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes promoGlow{0%,100%{opacity:.6}50%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.promo-bust.after,.promo-busts::before{animation:none}}

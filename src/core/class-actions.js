@@ -50,14 +50,14 @@ export function applyClassAction(s,u,target,mode){
  if(!validClassTarget(s,u,target,mode))return {ok:false,error:'대상 또는 사거리가 올바르지 않습니다.'};
  if(u.mp<classCost(mode))return {ok:false,error:'MP가 부족합니다.'};
  u.mp-=classCost(mode);remember(s,`${u.id}_class`);const name=CLASS_ACTIONS[mode].ko;
- if(mode==='bulwark'){u.bulwark=true;s.feedback.push({type:'guard',id:u.id,text:name});s.log.push(`${u.name}: ${name}. 다음 아군 턴까지 인접 칸에 들어온 적은 멈춥니다.`);}
- else if(mode==='overwatch'){u.overwatch=true;s.feedback.push({type:'guard',id:u.id,text:name});s.log.push(`${u.name}: ${name}. 사거리 안으로 처음 들어오는 적을 쏩니다.`);}
+ if(mode==='bulwark'){u.bulwark=true;s.feedback.push({type:'class',action:'bulwark',id:u.id,text:name});s.log.push(`${u.name}: ${name}. 다음 아군 턴까지 인접 칸에 들어온 적은 멈춥니다.`);}
+ else if(mode==='overwatch'){u.overwatch=true;s.feedback.push({type:'class',action:'overwatch',id:u.id,text:name,range:[...u.range]});s.log.push(`${u.name}: ${name}. 사거리 안으로 처음 들어오는 적을 쏩니다.`);}
  else if(mode==='arcane'){const p=typeof target==='object'?target:parseTile(target),cells=runeCells(s,p);s.runes=(s.runes||[]).filter(r=>!cells.some(c=>c.x===r.x&&c.y===r.y));for(const c of cells){s.runes.push({x:c.x,y:c.y,until:s.turn+3});const k=key(c.x,c.y);if(s.burning?.[k])s.burning[k]++;}
-  s.feedback.push({type:'guard',id:u.id,text:name});s.log.push(`${u.name}: ${name} (${cells.length}칸, 3턴). 아군 MAG +3 · 적 RES −2.`);}
+  s.feedback.push({type:'class',action:'arcane',id:u.id,text:name,cells:cells.map(c=>({x:c.x,y:c.y}))});s.log.push(`${u.name}: ${name} (${cells.length}칸, 3턴). 아군 MAG +3 · 적 RES −2.`);}
  else if(mode==='recall'){const t=findUnit(s,target?.id||target),spot=recallSpot(s,u,t),from={x:t.x,y:t.y};t.x=spot.x;t.y=spot.y;const heal=Math.min(10,t.maxHP-t.hp);t.hp+=heal;
-  s.feedback.push({type:'move',id:t.id,path:[from,spot]});if(heal)s.feedback.push({type:'heal',id:t.id,text:`+${heal}`,toHP:t.hp});s.log.push(`${u.name}: ${name} → ${t.name}을(를) 곁으로 불러 ${heal} 회복.`);}
+  s.feedback.push({type:'class',action:'recall',id:u.id,target:t.id,text:name,from,to:{...spot}},{type:'move',id:t.id,path:[from,spot]});if(heal)s.feedback.push({type:'heal',id:t.id,text:`+${heal}`,toHP:t.hp});s.log.push(`${u.name}: ${name} → ${t.name}을(를) 곁으로 불러 ${heal} 회복.`);}
  else if(mode==='exchange'){const t=findUnit(s,target?.id||target),a={x:u.x,y:u.y},b={x:t.x,y:t.y};u.x=b.x;u.y=b.y;t.x=a.x;t.y=a.y;if(t.team==='enemy')t.noCounter=s.turn;
-  s.feedback.push({type:'move',id:u.id,path:[a,b]},{type:'move',id:t.id,path:[b,a]});s.log.push(`${u.name}: ${name} → ${t.name}와 위치 교환${t.team==='enemy'?' · 이번 턴 반격 불가':''}.`);}
+  s.feedback.push({type:'class',action:'exchange',id:u.id,target:t.id,text:name,from:a,to:b},{type:'move',id:u.id,path:[a,b]},{type:'move',id:t.id,path:[b,a]});s.log.push(`${u.name}: ${name} → ${t.name}와 위치 교환${t.team==='enemy'?' · 이번 턴 반격 불가':''}.`);}
  return {ok:true};
 }
 

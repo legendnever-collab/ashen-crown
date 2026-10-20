@@ -33,6 +33,9 @@ try{
  s=await snap();check('390 trial won when Kai reaches the top row',s.outcome==='victory'&&s.screen==='result');check('390 result shows the promotion',(await p.locator('.reward-chip.promo').textContent()).includes('그림자 추적자'));
  await p.screenshot({path:'test-output/legion-result-390.png'});
  await press('aftermath');await p.waitForTimeout(500);check('390 promotion scene plays on return',(await p.locator('.dialogue-name').first().textContent()).length>0);await p.screenshot({path:'test-output/legion-promo-390.png'});await drainStory(p);
+ check('390 rank-up card follows the scene (Shadowblade, Shadow Exchange)',await p.locator('.promo-card').count()===1&&(await p.locator('.promo-card').textContent()).includes('그림자 추적자')&&(await p.locator('.promo-card').textContent()).includes('그림자 교환')&&await p.locator('.promo-card canvas[data-promo]').count()===2);
+ check('390 the rite theme plays under the card',(await p.evaluate(()=>AshenCrown.audio().scene))==='rite');await p.waitForTimeout(900);await p.screenshot({path:'test-output/legion-promo-card-390.png'});await press('close-modal');
+ await p.reload();await p.waitForFunction(()=>!!window.AshenCrown);await p.waitForTimeout(400);check('390 the card is shown once',!await p.locator('.promo-card').count());
  s=await snap();const kai=s.campaign.heroes.find(h=>h.id==='kai');check('390 back in the ACT I camp with Kai promoted for good',s.screen==='exploration'&&s.missionId===6&&!s.practice&&kai.classTier===2&&s.campaign.promotions.kai?.key==='shadowblade');
  await press('legion');check('390 panel marks Kai as promoted',await p.locator('.legion-row.done').count()===1);
  // Legion Drill: all five deploy; survives a reload mid-battle
