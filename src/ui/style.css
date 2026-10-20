@@ -268,3 +268,47 @@
  .unit-popover .menu-list{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:6px}
  .unit-popover .menu-list .cmd{flex-direction:column;justify-content:center;min-height:48px;padding:4px 2px;font-size:12px;gap:2px;text-align:center}
 }
+/* v0.5.0 growth tab */
+.growth-path{display:flex;align-items:center;gap:8px;margin:2px 0 8px;flex-wrap:wrap}.growth-path .cls{padding:5px 10px;border:1px solid #6d7f7a;border-radius:4px;background:#1d363b;font-weight:bold}.growth-path .cls small{display:block;font-weight:normal;font-size:11px;color:#b9c6c0}.growth-path .cls.next{border-color:#d8bb7c;color:#f4d18d}.growth-path .cls.done{background:#4a3b17}.growth-path .arrow{color:#d8bb7c;font-size:18px}
+.growth-h{display:block;text-align:left;margin:10px 0 4px;font-size:13px;color:#f4d18d}.growth-h .prof-stars{margin-left:8px;color:#f0c44c;letter-spacing:1px}.potential-steps,.promo-checks{margin:0;padding-left:0;list-style:none;font-size:12.5px;line-height:1.7}.potential-steps li,.promo-checks li{color:#9fb0aa}.potential-steps li.done,.promo-checks li.ok{color:#e8f1d8}
+/* v0.5.0 promotion rite / Legion Drill panel */
+.legion-intro{margin:0 0 10px;color:#d9d1b8;font-size:13px}.legion-list{display:grid;gap:6px}
+.legion-row{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:10px;align-items:center;padding:6px 8px;border:1px solid #3d5a5c;border-radius:6px;background:#173136}
+.legion-row.done{border-color:#d8bb7c;background:#2b2a1c}.legion-row .card-sprite{width:52px;height:52px}
+.legion-info{display:grid;gap:2px;min-width:0}.legion-info small{color:#b9c6c0;font-weight:normal}.legion-path{color:#f4d18d;font-size:12.5px}
+.legion-checks{display:flex;flex-wrap:wrap;gap:4px 8px;font-size:11.5px}.legion-checks i{font-style:normal;color:#e48f80}.legion-checks i.ok{color:#a9dca0}
+.legion-done{color:#f4d18d;font-weight:bold;font-size:13px}.legion-row button{min-width:64px;min-height:40px}
+.legion-drill{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:10px;padding:8px 10px;border:1px dashed #6d7f7a;border-radius:6px}.legion-drill p{margin:2px 0 0;font-size:12px;color:#c9d2cc}
+.reward-chip.promo{background:#4a3b17;border-color:#d8bb7c;color:#ffe4a0}
+/* v0.5 world map of Erdia (D-052) */
+.dialogue-backdrop.world-scene{background:#0f1c20}
+.dialogue-backdrop #world-stage{position:absolute;left:0;top:0;width:100%;height:calc(100dvh - clamp(132px,25vh,214px) - 10px);display:block}
+@media(max-width:600px){.dialogue-backdrop #world-stage{height:calc(100dvh - clamp(150px,23vh,190px) - 12px)}}
+@media(max-height:500px) and (min-width:601px){.dialogue-backdrop #world-stage{height:calc(100dvh - clamp(116px,34vh,150px) - 10px)}}
+.world-scene .world-panel .dialogue-copy{left:28px}
+.world-card{position:absolute;left:max(16px,env(safe-area-inset-left));top:max(14px,env(safe-area-inset-top));z-index:2;padding:14px 22px 14px 18px;background:linear-gradient(180deg,rgba(18,24,32,.9),rgba(8,11,16,.92));border:1px solid rgba(220,182,108,.7);border-left:4px solid #c0703a;color:#f4ead0;max-width:min(360px,calc(100% - 32px));animation:worldCard .8s ease-out both}
+.world-card .eyebrow{display:block;font:bold 11px/1.4 Arial,'Ashen UI',sans-serif;letter-spacing:.14em;color:#e0b25f}
+.world-card h2{margin:4px 0 2px;font:bold 26px/1.2 Georgia,'Ashen UI',serif;color:#fbf1d6}
+.world-card p{margin:0;font:15px/1.5 Arial,'Ashen UI',sans-serif;color:#e8dcc0}
+@keyframes worldCard{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.world-view{display:block;width:min(960px,100%);height:min(62vh,600px);border:1px solid rgba(220,182,108,.5);background:#0f1c20}
+@media(max-width:600px){.world-card{padding:10px 14px}.world-card h2{font-size:20px}.world-view{height:52vh}}
+@media(prefers-reduced-motion:reduce){.world-card{animation:none}}
+/* v0.5 Phase F promotion card */
+.promo-card{text-align:center;color:#f4ead0}
+.promo-card .eyebrow{display:block;font:bold 11px/1.4 Arial,'Ashen UI',sans-serif;letter-spacing:.16em;color:#e0b25f}
+.promo-busts{display:flex;align-items:flex-end;justify-content:center;gap:8px;margin:10px 0 4px;position:relative}
+.promo-busts::before{content:'';position:absolute;left:50%;top:50%;width:min(420px,90%);height:70%;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(255,206,120,.35),rgba(255,206,120,0));pointer-events:none;animation:promoGlow 2.4s ease-in-out infinite}
+.promo-bust{width:min(180px,36vw);height:auto;aspect-ratio:360/440;position:relative}
+.promo-bust.before{filter:grayscale(.55) brightness(.8);opacity:.85;width:min(140px,28vw)}
+.promo-bust.after{animation:promoRise .9s cubic-bezier(.2,.8,.2,1) both;filter:drop-shadow(0 0 14px rgba(255,200,110,.55))}
+.promo-arrow{font-size:26px;color:#e0b25f;align-self:center}
+.promo-card h2{margin:8px 0 2px;font:bold 26px/1.25 Georgia,'Ashen UI',serif;color:#fbf1d6}
+.promo-en{margin:0 0 10px;color:#cdbf9d;font-size:13px;letter-spacing:.06em}
+.promo-action{margin:0 auto 8px;max-width:440px;padding:10px 14px;border:1px solid rgba(220,182,108,.55);background:rgba(20,26,34,.6);text-align:left}
+.promo-action b{color:#f4a43c}.promo-action p{margin:4px 0 0;font-size:14px;line-height:1.6}
+.promo-note{font-size:13px;color:#d8ccb0;margin:6px auto;max-width:440px}
+.promo-bonus i{display:inline-block;margin:2px 4px;padding:2px 8px;border:1px solid rgba(220,182,108,.5);font-style:normal;font-size:12px;color:#ffe4a0}
+@keyframes promoRise{from{opacity:0;transform:translateY(16px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes promoGlow{0%,100%{opacity:.6}50%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.promo-bust.after,.promo-busts::before{animation:none}}

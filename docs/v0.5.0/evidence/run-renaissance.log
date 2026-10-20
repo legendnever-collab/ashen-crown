@@ -1,0 +1,142 @@
+PASS 1440x1000@1 Quest starts closed as a scroll button
+PASS 1440x1000@1 Quest collapses
+PASS 1440x1000@1 Quest preference saves before deferred toggle
+PASS 1440x1000@1 Quest preference survives reload
+PASS 1440x1000@1 Quest expands with keyboard
+PASS 1440x1000@1 Enter saves expanded preference
+PASS 1440x1000@1 Expanded preference survives reload
+PASS 1440x1000@1 Space collapses and saves preference
+PASS 1440x1000@1 Space preference survives reload
+PASS 1440x1000@1 Pointer expands Quest
+PASS 1440x1000@1 Pointer collapse saves preference
+PASS 1440x1000@1 NPC dialogue stays on current map
+PASS 1440x1000@1 NPC dialogue preserves player/camera
+PASS 1440x1000@1 Forge is a new walkable interior without automatic trade UI
+PASS 1440x1000@1 Shop owner opens weapon-first catalogue
+PASS 1440x1000@1 Equipment presents portraits/eligibility/delta
+PASS 1440x1000@1 Preview does not debit Gold
+PASS 1440x1000@1 Cancel preserves assets and interior
+PASS 1440x1000@1 Purchase equips exact instance and maintains catalogue/location
+PASS 1440x1000@1 Comparison equals actual combat stats
+PASS 1440x1000@1 Consecutive purchase remains inside with unique instances
+PASS 1440x1000@1 Interior/gear/return coordinates survive reload
+PASS 1440x1000@1 Explicit exit returns to exact doorway
+PASS 1440x1000@1 Re-entry works
+PASS 1440x1000@1 Consumable purchase stays inside shop
+PASS Failed-save transaction rolls back all assets and equipped stats
+PASS Failed-save reload retains original purchase and interior
+PASS 1440x1000@1 War Council has summaries and no readiness checkboxes
+PASS 1440x1000@1 Selection opens the command menu without cells; 이동 then previews legal movement
+PASS 1440x1000@1 Movement remains uncommitted until explicit confirmation
+PASS 1440x1000@1 Adjacent attack opens forecast after movement
+PASS 1440x1000@1 Confirmed attack resolves and consumes action
+PASS 1440x1000@1 Restart restores checkpoint resources and turn
+PASS 1440x1000@1 Battle restart checkpoint persists
+PASS 1440x1000@1 Native graphics are 128/256 with crisp scaling
+PASS 1440x1000@1 Layout stays within viewport
+PASS Standard desktop backing pixels are at least 4× measured v0.3 baseline
+PASS 1440x900@2 Quest starts closed as a scroll button
+PASS 1440x900@2 Quest collapses
+PASS 1440x900@2 Quest preference saves before deferred toggle
+PASS 1440x900@2 Quest preference survives reload
+PASS 1440x900@2 Quest expands with keyboard
+PASS 1440x900@2 Enter saves expanded preference
+PASS 1440x900@2 Expanded preference survives reload
+PASS 1440x900@2 Space collapses and saves preference
+PASS 1440x900@2 Space preference survives reload
+PASS 1440x900@2 Pointer expands Quest
+PASS 1440x900@2 Pointer collapse saves preference
+PASS 1440x900@2 NPC dialogue stays on current map
+PASS 1440x900@2 NPC dialogue preserves player/camera
+PASS 1440x900@2 Forge is a new walkable interior without automatic trade UI
+PASS 1440x900@2 Shop owner opens weapon-first catalogue
+PASS 1440x900@2 Equipment presents portraits/eligibility/delta
+PASS 1440x900@2 Preview does not debit Gold
+PASS 1440x900@2 Cancel preserves assets and interior
+PASS 1440x900@2 Purchase equips exact instance and maintains catalogue/location
+PASS 1440x900@2 Comparison equals actual combat stats
+PASS 1440x900@2 Consecutive purchase remains inside with unique instances
+PASS 1440x900@2 Interior/gear/return coordinates survive reload
+PASS 1440x900@2 Explicit exit returns to exact doorway
+PASS 1440x900@2 Re-entry works
+PASS 1440x900@2 Consumable purchase stays inside shop
+PASS 1440x900@2 War Council has summaries and no readiness checkboxes
+PASS 1440x900@2 Selection opens the command menu without cells; 이동 then previews legal movement
+PASS 1440x900@2 Movement remains uncommitted until explicit confirmation
+PASS 1440x900@2 Adjacent attack opens forecast after movement
+PASS 1440x900@2 Confirmed attack resolves and consumes action
+PASS 1440x900@2 Restart restores checkpoint resources and turn
+PASS 1440x900@2 Battle restart checkpoint persists
+PASS 1440x900@2 Native graphics are 128/256 with crisp scaling
+PASS 1440x900@2 Layout stays within viewport
+PASS 390x844@2 Quest starts closed as a scroll button
+PASS 390x844@2 Quest collapses
+PASS 390x844@2 Quest preference saves before deferred toggle
+PASS 390x844@2 Quest preference survives reload
+PASS 390x844@2 Quest expands with keyboard
+PASS 390x844@2 Enter saves expanded preference
+PASS 390x844@2 Expanded preference survives reload
+PASS 390x844@2 Space collapses and saves preference
+PASS 390x844@2 Space preference survives reload
+PASS 390x844@2 Pointer expands Quest
+PASS 390x844@2 Pointer collapse saves preference
+PASS 390x844@2 NPC dialogue stays on current map
+PASS 390x844@2 NPC dialogue preserves player/camera
+PASS 390x844@2 Forge is a new walkable interior without automatic trade UI
+PASS 390x844@2 Shop owner opens weapon-first catalogue
+PASS 390x844@2 Equipment presents portraits/eligibility/delta
+PASS 390x844@2 Preview does not debit Gold
+PASS 390x844@2 Cancel preserves assets and interior
+PASS 390x844@2 Purchase equips exact instance and maintains catalogue/location
+PASS 390x844@2 Comparison equals actual combat stats
+PASS 390x844@2 Consecutive purchase remains inside with unique instances
+PASS 390x844@2 Interior/gear/return coordinates survive reload
+PASS 390x844@2 Explicit exit returns to exact doorway
+PASS 390x844@2 Re-entry works
+PASS 390x844@2 Consumable purchase stays inside shop
+PASS 390x844@2 War Council has summaries and no readiness checkboxes
+PASS 390x844@2 Selection opens the command menu without cells; 이동 then previews legal movement
+PASS 390x844@2 Movement remains uncommitted until explicit confirmation
+PASS 390x844@2 Adjacent attack opens forecast after movement
+PASS 390x844@2 Confirmed attack resolves and consumes action
+PASS 390x844@2 Restart restores checkpoint resources and turn
+PASS 390x844@2 Battle restart checkpoint persists
+PASS 390x844@2 Native graphics are 128/256 with crisp scaling
+PASS 390x844@2 Layout stays within viewport
+PASS 844x390@1 Quest starts closed as a scroll button
+PASS 844x390@1 Quest collapses
+PASS 844x390@1 Quest preference saves before deferred toggle
+PASS 844x390@1 Quest preference survives reload
+PASS 844x390@1 Quest expands with keyboard
+PASS 844x390@1 Enter saves expanded preference
+PASS 844x390@1 Expanded preference survives reload
+PASS 844x390@1 Space collapses and saves preference
+PASS 844x390@1 Space preference survives reload
+PASS 844x390@1 Pointer expands Quest
+PASS 844x390@1 Pointer collapse saves preference
+PASS 844x390@1 NPC dialogue stays on current map
+PASS 844x390@1 NPC dialogue preserves player/camera
+PASS 844x390@1 Forge is a new walkable interior without automatic trade UI
+PASS 844x390@1 Shop owner opens weapon-first catalogue
+PASS 844x390@1 Equipment presents portraits/eligibility/delta
+PASS 844x390@1 Preview does not debit Gold
+PASS 844x390@1 Cancel preserves assets and interior
+PASS 844x390@1 Purchase equips exact instance and maintains catalogue/location
+PASS 844x390@1 Comparison equals actual combat stats
+PASS 844x390@1 Consecutive purchase remains inside with unique instances
+PASS 844x390@1 Interior/gear/return coordinates survive reload
+PASS 844x390@1 Explicit exit returns to exact doorway
+PASS 844x390@1 Re-entry works
+PASS 844x390@1 Consumable purchase stays inside shop
+PASS 844x390@1 War Council has summaries and no readiness checkboxes
+PASS 844x390@1 Selection opens the command menu without cells; 이동 then previews legal movement
+PASS 844x390@1 Movement remains uncommitted until explicit confirmation
+PASS 844x390@1 Adjacent attack opens forecast after movement
+PASS 844x390@1 Confirmed attack resolves and consumes action
+PASS 844x390@1 Restart restores checkpoint resources and turn
+PASS 844x390@1 Battle restart checkpoint persists
+PASS 844x390@1 Native graphics are 128/256 with crisp scaling
+PASS 844x390@1 Layout stays within viewport
+PASS Renaissance browser flows have zero runtime errors
+PASS Standalone has zero external requests
+141 Renaissance checks PASS

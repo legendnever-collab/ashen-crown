@@ -210,7 +210,9 @@ export const CAST={
  aide:{name:'작전 보좌관',skin:'pale',hair:'#2a2430',style:'swept',body:'coat',coat:'#3f3a63',trim:'#c9b07a',legs:'#2a2840',boots:'#1f1d2a',weapon:'papers',eye:'#4a3a5a'}
 };
 // M06 looks that have painted sheets; their pixel fallback borrows an existing look.
-CAST.executor={...CAST.pursuerCaptain,name:'봉쇄 집행관',weapon:'spear'};CAST.inspector={...CAST.quartermaster,name:'군령부 감찰관',weapon:'sword'};
+CAST.executor={...CAST.pursuerCaptain,name:'봉쇄 집행관',weapon:'spear'};
+// v0.5 tier-2 looks: painted sheets come from the art pack; the pixel fallback reuses the tier-1 figure.
+for(const id of ['eric','elina','lia','sain','kai'])CAST[`${id}_t2`]={...CAST[id==='eric'?'eric_adv':id]};CAST.inspector={...CAST.quartermaster,name:'군령부 감찰관',weapon:'sword'};
 export function wagonSprite(){return cached('wagon',()=>{const p=new Pix(48,52),W=ramp('#7a5634'),C=ramp('#e2d6b4');
  p.box(5,30,38,10,W);for(let x=7;x<42;x+=6)p.rect(x,31,1,8,W[1]);
  for(let y=10;y<31;y++){const half=17-Math.round(Math.pow((y-10)/20,0.5)*0)-((y<14)?(14-y):0);for(let x=24-half;x<24+half;x++){let t=x<14?3:x>36?1:2;if((x-6)%8===0)t=1;p.set(x,y,C[t]);}}

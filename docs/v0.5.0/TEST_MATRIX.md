@@ -1,0 +1,17 @@
+# v0.5.0 Test Matrix (계획)
+
+| 영역 | 검증 | 도구 |
+|---|---|---|
+| 기존 회귀 | 다음 결과가 불변: 161 unit, balance(M01), campaign-balance, economy-balance, m05/m06/act1-balance (A안 기준), 기존 browser 17 suite | npm test, 기존 suites |
+| 잠재력·숙련 | tacticalMemory 소급 판정; practice 기록 제외; 단계별 로그; ★ 구간 경계값 | unit |
+| 전직 | 조건 미충족 시 의식 불가; 시련 승리 시 1회만 확정; 재시도·연습 격리; classTier·외형 전환 | unit + `class-e2e` |
+| 새 행동 | 방벽 정지 / 경계 사격 반응 1회·이동 종료 / 마력 지형 2턴·화염 연장 / 귀환의 기도 빈칸·회복 / 그림자 교환 대상 제한·반격 봉쇄 | unit (`tests/class-actions.test.mjs`) + `test:class` (1440 마우스 / 390×844 터치) |
+| 적 AI | 차단·룬·경계 범위 회피, 교착 0, 결정적 seed 재현 | unit + balance |
+| 시련·훈련 | 시련 5종 × 30 seed 승률 ≥ 90%, 새 행동 미사용 시 난이도 상승 측정, 훈련 Lv 6 도달 전투 수 | `class-balance` |
+| 저장 | Schema 8 ← 0–7 import; 실제 v0.4.0 저장(M06 이후 진영, 전투 중)으로 이어하기; 백업/복원 | `migration-v040` |
+| UI | 스킬 탭 전직 행동; 정보창 전직·숙련; 모바일 3열 메뉴; 1440 / 844×390 / 390×844 / 360×640 / 430×932 넘침 0; 런타임 오류 0 | Playwright |
+| 아트 | 아트 팩 SHA256 검증; Tier 2 반신·시트 렌더; fallback 표기 | unit + 스크린샷 |
+| 패키지 | 재빌드 byte-identical, verify-release, Source ZIP/SHA256, CI | scripts + CI |
+| 세계 지도·거점 (D-052/053) | ACT I 시점별 거점 표, 마스크 연결성(모든 칸·문·장소·NPC 접근), 거점마다 무기·도구·작전 탁자, 상자 문 5개(v0.4 진영과 같은 id), 연출 장면 무대, v0.4.0 저장의 거점 재배치 | unit (`tests/hubs.test.mjs`) |
+| 세계 지도 화면 | 새 게임 소개 3줄→pre:1, 새로고침 중 유지, M03 후 행군 지도→야영 장면, 방랑 상인 도구·무기 구매, 메뉴 지도, 넘침·오류 0 | `test:world` (1440 마우스 / 390 터치) |
+| 연출 (Phase F) | 전직 행동 연출 이벤트(이동보다 먼저, 동작 줄이기 시 짧게), ACT I 1차 직업 플레이에 연출 0, 전직 카드 1회·리로드 후 재표시 없음, 장면별 음악(거점·세계 지도·전직·시련), 출시 이미지 해시 = import 기록 | unit (`tests/presentation.test.mjs`) + `test:class` + `test:legion` |

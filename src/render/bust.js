@@ -46,6 +46,8 @@ function bustFromCast(id){const k=CAST[id]||CAST.bandit,chief=/captain|Captain|q
 export function bustKey(u,missionId=1){
  if(!u)return 'refugee';
  if(u.kind==='lion'||u.id==='baldrick')return 'baldrick';
+ // v0.5 promoted look (tier-2 art pack); without the art the tier-1 painting is used, never a mock-up.
+ if((u.classTier||1)>=2&&BUST_SPEC[u.id]&&PAINTED?.[`${u.id}_t2`])return `${u.id}_t2`;
  if(u.id==='eric'&&(appearanceFor(u)?.tier||1)>=2)return 'eric_adv';
  if(BUST_SPEC[u.id])return u.id;
  if(u.team==='commander')return 'aren';
@@ -274,6 +276,6 @@ export function drawBust(c,u,{expression='neutral',missionId=1}={}){const key=bu
  if(img){const W=c.canvas.width,H=c.canvas.height;whenPainted(c,img,`bust|${key}|${expression}`,()=>{c.clearRect(0,0,W,H);c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';const k=Math.min(W/img.naturalWidth,H/img.naturalHeight),w=img.naturalWidth*k,h=img.naturalHeight*k;c.drawImage(img,(W-w)/2,H-h,w,h);},()=>drawVectorBust(c,key,expression));return key;}
  drawVectorBust(c,key,expression);return key;}
 // Head-and-shoulders crop of the painted bust for small square portraits (dock, unit sheet, council…).
-const HEAD_CROP={lia:[150,150,430],sain:[140,70,440],default:[150,40,420]};
+const HEAD_CROP={lia:[150,150,430],lia_t2:[150,150,430],sain:[140,70,440],default:[150,40,420]};
 export function drawPaintedHead(c,u,{expression='neutral',missionId=1}={}){const key=bustKey(u,missionId),img=paintedImage(key,expression);if(!img)return false;const W=c.canvas.width,H=c.canvas.height,[sx,sy,ss]=HEAD_CROP[paintedId(key)]||HEAD_CROP.default;
  whenPainted(c,img,`head|${key}|${expression}`,()=>{c.save();c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,W,H);c.fillStyle='#22383c';c.fillRect(0,0,W,H);const g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(255,230,180,.10)');g.addColorStop(1,'rgba(0,0,0,.25)');c.fillStyle=g;c.fillRect(0,0,W,H);c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';const f=img.naturalWidth/720;c.drawImage(img,sx*f,sy*f,ss*f,ss*f,0,0,W,H);c.restore();},()=>{});return true;}

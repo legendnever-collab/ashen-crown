@@ -1,0 +1,105 @@
+PASS false: a new game opens on the Erdia world map (D-052)
+PASS false: pre-battle scene uses pixel actors and portraits
+PASS false: story reload restores exact current line
+PASS false: playable Aren is separate from five tactical heroes
+PASS false: keyboard moves Erik
+PASS false: map destination click walks through legal cells
+PASS false: unvisited Fast Travel is disabled
+PASS false: NPC dialogue locks exploration
+PASS false: dialogue consumes keyboard without walking
+PASS false: interrupted affiliation event survives reload
+PASS false: lia personal encounter offers decision
+PASS false: lia affiliates once
+PASS false: lia conversation cannot duplicate membership
+PASS false: sain personal encounter offers decision
+PASS false: sain affiliates once
+PASS false: sain conversation cannot duplicate membership
+PASS false: kai personal encounter offers decision
+PASS false: kai affiliates once
+PASS false: kai conversation cannot duplicate membership
+PASS false: building collision blocks movement
+PASS false: Town location, visited state and affiliations restore
+PASS false: visited landmark Fast Travel works
+PASS false: forge has original interior
+PASS false: weapon comparison shows actual before/after
+PASS false: cancelled purchase leaves Gold intact
+PASS false: confirmed purchase deducted once
+PASS false: raw and equipped stats visibly separated
+PASS false: equipped sword changes effective attack
+PASS false: incompatible class cannot equip sword
+PASS false: upgrade preview shows single-level improvement
+PASS false: upgrade costs 40 and marks +1
+PASS false: reload retains purchase, upgrade, equip and Gold
+PASS false: second upgrade unavailable
+PASS false: purchased Ward Tonic carries into inventory
+PASS false: buy/sell spread cannot create currency
+PASS false: insufficient Gold explains disabled purchase
+PASS false: council displays terrain, intelligence and essential objective
+PASS false: preparation can return to hub
+PASS false: readiness checkbox gates removed
+PASS false: battle requires explicit confirmation
+PASS false: cancelled departure preserves formation
+PASS false: explicit confirmation enters existing tactical combat
+PASS false: purchased tool really applies in battle and consumes action
+PASS false: canonical consumable not consumed before victory
+PASS false: stage restart restores purchased consumable and exact Gold
+PASS false: restart checkpoint remains after reload
+PASS false: natural defeat reaches result
+PASS false: defeat returns to camp preparation without economic loss
+PASS false: failed persistence rolls back entire transaction
+PASS false: cancelled failed transaction remains cancelled after reload
+PASS false: audio runs offline with original variants
+PASS true: a new game opens on the Erdia world map (D-052)
+PASS true: pre-battle scene uses pixel actors and portraits
+PASS true: story reload restores exact current line
+PASS true: playable Aren is separate from five tactical heroes
+PASS true: keyboard moves Erik
+PASS true: map destination click walks through legal cells
+PASS true: unvisited Fast Travel is disabled
+PASS true: NPC dialogue locks exploration
+PASS true: dialogue consumes keyboard without walking
+PASS true: interrupted affiliation event survives reload
+PASS true: lia personal encounter offers decision
+PASS true: lia affiliates once
+PASS true: lia conversation cannot duplicate membership
+PASS true: sain personal encounter offers decision
+PASS true: sain affiliates once
+PASS true: sain conversation cannot duplicate membership
+PASS true: kai personal encounter offers decision
+PASS true: kai affiliates once
+PASS true: kai conversation cannot duplicate membership
+PASS true: building collision blocks movement
+PASS true: Town location, visited state and affiliations restore
+PASS true: visited landmark Fast Travel works
+PASS true: forge has original interior
+PASS true: weapon comparison shows actual before/after
+PASS true: cancelled purchase leaves Gold intact
+PASS true: confirmed purchase deducted once
+PASS true: raw and equipped stats visibly separated
+PASS true: equipped sword changes effective attack
+PASS true: incompatible class cannot equip sword
+PASS true: upgrade preview shows single-level improvement
+PASS true: upgrade costs 40 and marks +1
+PASS true: reload retains purchase, upgrade, equip and Gold
+PASS true: second upgrade unavailable
+PASS true: purchased Ward Tonic carries into inventory
+PASS true: buy/sell spread cannot create currency
+PASS true: insufficient Gold explains disabled purchase
+PASS true: council displays terrain, intelligence and essential objective
+PASS true: preparation can return to hub
+PASS true: readiness checkbox gates removed
+PASS true: battle requires explicit confirmation
+PASS true: cancelled departure preserves formation
+PASS true: explicit confirmation enters existing tactical combat
+PASS true: purchased tool really applies in battle and consumes action
+PASS true: canonical consumable not consumed before victory
+PASS true: stage restart restores purchased consumable and exact Gold
+PASS true: restart checkpoint remains after reload
+PASS true: natural defeat reaches result
+PASS true: defeat returns to camp preparation without economic loss
+PASS true: failed persistence rolls back entire transaction
+PASS true: cancelled failed transaction remains cancelled after reload
+PASS true: audio runs offline with original variants
+PASS Frontier interactions have no runtime errors
+PASS Frontier assets request no HTTP resources
+104 Frontier UI checks PASS

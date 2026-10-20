@@ -1,0 +1,9 @@
+order,id,kind,file,size,references,prompt_file
+1,world_map,world,world_map.png,1536x1024,"layout_world_map.png, style_aren_neutral.png",prompts/01_world_map.txt
+2,world_icons,icons,world_icons.png,1024x1024,"world_map.png (your approved result), style_aren_neutral.png",prompts/02_world_icons.txt
+3,hub_village_day,hub,hub_village_day.png,1536x1024,"layout_hub_village.png, scale_reference.png, sprite_eric_sheet.png, style_aren_neutral.png",prompts/03_hub_village_day.txt
+4,hub_village_raid,hub,hub_village_raid.png,1536x1024,"hub_village_day.png (your approved result), layout_hub_village_raid.png",prompts/04_hub_village_raid.txt
+5,hub_garrison,hub,hub_garrison.png,1536x1024,"layout_hub_garrison.png, hub_village_day.png, scale_reference.png, sprite_eric_sheet.png",prompts/05_hub_garrison.txt
+6,hub_bivouac_night,hub,hub_bivouac_night.png,1536x1024,"layout_hub_bivouac.png, hub_village_day.png, scale_reference.png, sprite_eric_sheet.png",prompts/06_hub_bivouac_night.txt
+7,hub_fortress,hub,hub_fortress.png,1536x1024,"layout_hub_fortress.png, hub_village_day.png, scale_reference.png, sprite_eric_sheet.png",prompts/07_hub_fortress.txt
+8,hub_oathcamp,hub,hub_oathcamp.png,1536x1024,"layout_hub_oathcamp.png, hub_village_day.png, scale_reference.png, sprite_eric_sheet.png",prompts/08_hub_oathcamp.txt

@@ -1,0 +1,9 @@
+Attached hub_village_day.png is the approved village map. Repaint the EXACT same map — identical layout, buildings, paths, camera and framing — as it looks the same evening right after a bandit raid. Use image editing on hub_village_day.png rather than a fresh generation so the layout cannot drift.
+Changes: several houses at the bottom-left are burnt down to charred beams with thin smoke; scorch marks on the item shop awning; the inn has become a makeshift infirmary with cots and bandages outside; a smouldering broken cart and a few sealed wooden supply crates in the square; scattered debris and trampled fences; warm orange sunset light mixed with grey smoke. Paths and the square stay walkable and clear. No people, no text, no UI.
+
+Additional requirements for this run:
+- Edit your final hub_village_day.png; do not generate from scratch. Buildings that are not burnt keep identical outlines and doors.
+- Thin smoke only; no large flames over paths or doorways.
+Painting style: match the attached approved character art (style_aren_neutral.png, style_eric_neutral.png) — hand-painted fantasy illustration with confident contours, painterly cel shading with soft gradients, warm rim light, rich but slightly earthy colors, detailed but readable textures. Original world: do not imitate any existing game's map, town, emblem or layout.
+Attach: hub_village_day.png (your final result), layout_hub_village_raid.png.
+Output: one PNG, exactly 1536x1024 px landscape.

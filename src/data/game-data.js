@@ -1,5 +1,5 @@
-export const VERSION = '0.4.0';
-export const SCHEMA = 7;
+export const VERSION = '0.5.0';
+export const SCHEMA = 8;
 export const WIDTH = 12, HEIGHT = 10;
 // v0.4 benchmark pass: physical cut (fraction), evade (%), fire multiplier and per-class
 // movement live together so the tap readout can describe each tile in one line.
@@ -56,5 +56,5 @@ export const BALANCE = {xpLevel:100,attackXP:22,killXP:28,healXP:24,rescueXP:45,
 // Explicit profiles: future advancement data only, no promotion UI.
 export const CLASS_MOVEMENT={knight:{base:2,profile:'infantry'},archer:{base:3,profile:'infantry'},mage:{base:3,profile:'infantry'},healer:{base:3,profile:'infantry'},rogue:{base:4,profile:'rogue'},mountedKnight:{base:5,profile:'cavalry',future:true}};
 export const HERO_CLASS={eric:'knight',elina:'archer',lia:'mage',sain:'healer',kai:'rogue'};
-export const TERRAIN_COSTS={infantry:{r:1,g:1,v:1,b:1,f:2,m:3,d:2,s:3},rogue:{r:1,g:1,v:1,b:1,f:1,m:1,d:1,s:2},cavalry:{r:1,g:1,v:1,b:1,f:1,m:Infinity,d:1,s:Infinity}};
-export const PROFILE_KO={infantry:'보병',rogue:'도적',cavalry:'기병'};
+export const TERRAIN_COSTS={infantry:{r:1,g:1,v:1,b:1,f:2,m:3,d:2,s:3},rogue:{r:1,g:1,v:1,b:1,f:1,m:1,d:1,s:2},ranger:{r:1,g:1,v:1,b:1,f:1,m:3,d:2,s:3},cavalry:{r:1,g:1,v:1,b:1,f:1,m:Infinity,d:1,s:Infinity}};
+export const PROFILE_KO={infantry:'보병',rogue:'도적',cavalry:'기병',ranger:'레인저'};

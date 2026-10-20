@@ -1,0 +1,17 @@
+Attached layout_world_map.png is a rough LAYOUT SKETCH of an original fantasy continent called Erdia. Follow its coastline, the five regions, the mountain range, the main river (which runs from the north-east gorge south-west then west across the middle to the west coast), and the site positions closely. Labels in the sketch are for you only.
+Paint a hand-painted fantasy campaign map for a classic tactical RPG: a top-down view of the whole continent on aged parchment with soft painted terrain, gentle relief shading, painted coastlines with light waves in a muted blue-green sea.
+Terrain by region:
+- North: a long snowy mountain range with dark pine forests and grey stone foothills; a narrow grey canyon cutting south-west out of the mountains.
+- West: green rolling plains, small woods, windmill fields, a wide river mouth with a natural harbor on the west coast.
+- Center: golden farmland and gentle hills along the great river, a wide open plain around the site of the royal city.
+- South: warm red-ochre cliffs, high plateaus and sun-baked valleys reaching the southern coast.
+- East: ash-tinted conifer forests, rolling hills and a deep river gorge running north to south; a long border wall ridge at the far north-east.
+- Far east edge: the land fades into drifting mist (unknown lands).
+Do NOT paint any cities, castles, icons, political borders, roads, labels, letters, compass rose, legend, frame or UI — terrain only. Keep each site position listed in 00_START_HERE.md as a clear, fairly flat patch of ground about 80 px across so an icon can be placed there later.
+
+Additional requirements for this run:
+- The four hub maps in references/approved_*.jpg are already approved; match their palette and brush texture (warm, saturated, painterly).
+- Keep every site position listed in 00_START_HERE.md as a calm, fairly flat patch about 80 px across: no trees, rocks, cliffs, water edges or relief inside it. Small grass or field texture is fine. Check each one in a 100x100 crop before delivering.
+Painting style: match the attached approved character art (style_aren_neutral.png, style_eric_neutral.png) — hand-painted fantasy illustration with confident contours, painterly cel shading with soft gradients, warm rim light, rich but slightly earthy colors, detailed but readable textures. Original world: do not imitate any existing game's map, town, emblem or layout.
+Attach: layout_world_map.png, style_aren_neutral.png, approved_hub_garrison.jpg.
+Output: one PNG, exactly 1536x1024 px landscape.
