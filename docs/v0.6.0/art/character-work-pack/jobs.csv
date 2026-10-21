@@ -1,0 +1,26 @@
+order,kind,id,expression,file,size,references,prompt_file
+1,bust,cassian,neutral,bust_cassian_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png",prompts/01_bust_cassian_neutral.txt
+2,bust,cassian,concerned,bust_cassian_concerned.png,1024x1280,bust_cassian_neutral.png (your approved result),prompts/02_bust_cassian_concerned.txt
+3,bust,cassian,determined,bust_cassian_determined.png,1024x1280,bust_cassian_neutral.png (your approved result),prompts/03_bust_cassian_determined.txt
+4,bust,cassian,sad,bust_cassian_sad.png,1024x1280,bust_cassian_neutral.png (your approved result),prompts/04_bust_cassian_sad.txt
+5,bust,leonora,neutral,bust_leonora_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png",prompts/05_bust_leonora_neutral.txt
+6,bust,leonora,concerned,bust_leonora_concerned.png,1024x1280,bust_leonora_neutral.png (your approved result),prompts/06_bust_leonora_concerned.txt
+7,bust,leonora,determined,bust_leonora_determined.png,1024x1280,bust_leonora_neutral.png (your approved result),prompts/07_bust_leonora_determined.txt
+8,bust,leonora,sad,bust_leonora_sad.png,1024x1280,bust_leonora_neutral.png (your approved result),prompts/08_bust_leonora_sad.txt
+9,bust,thea,neutral,bust_thea_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png",prompts/09_bust_thea_neutral.txt
+10,bust,thea,concerned,bust_thea_concerned.png,1024x1280,bust_thea_neutral.png (your approved result),prompts/10_bust_thea_concerned.txt
+11,bust,thea,determined,bust_thea_determined.png,1024x1280,bust_thea_neutral.png (your approved result),prompts/11_bust_thea_determined.txt
+12,bust,thea,sad,bust_thea_sad.png,1024x1280,bust_thea_neutral.png (your approved result),prompts/12_bust_thea_sad.txt
+13,bust,dario,neutral,bust_dario_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png",prompts/13_bust_dario_neutral.txt
+14,bust,dario,concerned,bust_dario_concerned.png,1024x1280,bust_dario_neutral.png (your approved result),prompts/14_bust_dario_concerned.txt
+15,bust,dario,determined,bust_dario_determined.png,1024x1280,bust_dario_neutral.png (your approved result),prompts/15_bust_dario_determined.txt
+16,bust,dario,sad,bust_dario_sad.png,1024x1280,bust_dario_neutral.png (your approved result),prompts/16_bust_dario_sad.txt
+17,sprite,thea,,sprite_thea.png,1024x768,"bust_thea_neutral.png (your approved result), ref_sprite_cavalry.png",prompts/17_sprite_thea.txt
+18,sprite,dario,,sprite_dario.png,1024x768,"bust_dario_neutral.png (your approved result), ref_sprite_eric.png",prompts/18_sprite_dario.txt
+19,sprite,ironInfantry,,sprite_ironInfantry.png,1024x768,"ref_sprite_ironSpear.png, style_aren_neutral.png",prompts/19_sprite_ironInfantry.txt
+20,sprite,ironDeserter,,sprite_ironDeserter.png,1024x768,"ref_sprite_ironSpear.png, style_aren_neutral.png",prompts/20_sprite_ironDeserter.txt
+21,sprite,mercSpear,,sprite_mercSpear.png,1024x768,"ref_sprite_ironSpear.png, style_aren_neutral.png",prompts/21_sprite_mercSpear.txt
+22,sprite,assassin,,sprite_assassin.png,1024x768,"ref_sprite_eric.png, style_aren_neutral.png",prompts/22_sprite_assassin.txt
+23,sprite,lordA,,sprite_lordA.png,1024x768,"ref_sprite_ironSpear.png, style_aren_neutral.png",prompts/23_sprite_lordA.txt
+24,sprite,lordB,,sprite_lordB.png,1024x768,"ref_sprite_ironSpear.png, style_aren_neutral.png",prompts/24_sprite_lordB.txt
+25,sprite,councillor,,sprite_councillor.png,1024x768,"ref_sprite_eric.png, style_aren_neutral.png",prompts/25_sprite_councillor.txt

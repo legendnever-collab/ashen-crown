@@ -1,0 +1,4 @@
+Using the attached bust_dario_neutral.png as the exact model sheet: same character, same outfit, same pose, same framing, same lighting and same style. Change ONLY the facial expression to: determined — brows lowered, firm mouth, intense eyes.
+Output: PNG exactly 1024x1280, transparent background (or flat pure green #00FF00), nothing else changed, no text.
+Painting style: match the attached approved art (style_aren_neutral.png, ref_bust_baldrick_neutral.png) — semi-realistic painted character art for a classic tactical RPG dialogue portrait: confident inked contour lines, painterly cel shading with soft gradients, strong warm rim light, rich saturated but slightly earthy colors, detailed metal and cloth textures, expressive mature faces (not chibi, not western cartoon, not photo-real). Original characters: do not copy any existing game's character, costume, emblem or logo.
+Attach: bust_dario_neutral.png (your approved result).

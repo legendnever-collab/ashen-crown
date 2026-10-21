@@ -1,0 +1,19 @@
+Paint a SPRITE SHEET of 8 different treasure chests for the interiors of a classic tactical RPG, in the same painting style and the same high three-quarter top-down view (about 60 degrees, front face toward the viewer) as the attached approved interiors (int_north_inn.jpg, int_port_tavern.jpg).
+Canvas 1024x1024, a 4-column x 4-row grid of 256x256 cells (see layout_chests_act2.png; paint no grid lines and no text).
+Rows 1 and 3: each chest CLOSED. Rows 2 and 4: the SAME chest OPEN — lid raised, the inside visible, EMPTY (dark wood, no coins, no items, no glow) — at exactly the same position, size and angle as the closed chest directly above it.
+Every chest: centered horizontally in its cell, chest body about 150-190 px wide, the bottom of the chest resting on a baseline 40 px above the cell bottom, a soft contact shadow, the whole chest and open lid inside the cell. Scale: in the interiors one tile is 128 px, and these chests are drawn at half size there.
+Background: fully TRANSPARENT (if impossible, flat pure green #00FF00 and nothing else). No text, letters, numbers, emblems or symbols.
+Cells, left to right:
+Row 1 = chests 1-4 closed, row 2 = chests 1-4 open, row 3 = chests 5-8 closed, row 4 = chests 5-8 open.
+  1. frost_chest (castle town house): a northern pine chest with iron corners, a fur pelt thrown over its lid, a dusting of frost.
+  2. fur_trunk (castle town inn): a traveller's trunk covered in grey fur and leather with iron studs.
+  3. sled_crate (castle town storehouse): a low wide crate on short sled runners, rimed with frost, rope lashing.
+  4. iron_lockbox (Iron Crown checkpoint office): a squat blackened-iron lockbox with steel-blue painted bands and a heavy lock (no emblem).
+  5. sea_chest (Velmar tavern): a sailor's sea chest of tarred wood with brass corners and rope beckets.
+  6. merchant_coffer (Velmar townhouse): a lacquered green-and-gold merchant coffer with a domed lid and brass feet.
+  7. cargo_crate (Velmar warehouse): a harbor cargo crate with a rope net and a painted plain color band (no letters).
+  8. council_strongbox (Velmar council hall): an ornate strongbox of pale wood and silver with several different locks, one per lord.
+
+Painting style: match the attached approved art (style_aren_neutral.png and the attached exterior hub map) — hand-painted fantasy illustration with confident contours, painterly cel shading with soft gradients, warm rim light, rich but slightly earthy colors, detailed but readable textures. Original world: do not imitate any existing game's rooms, furniture designs, emblems or layout.
+Attach: layout_chests_act2.png, approved_chests_act1.png if you have it, int_north_inn.jpg, int_port_tavern.jpg (your approved results).
+Output: one PNG with transparency (or pure #00FF00 background), exactly 1024x1024 px.

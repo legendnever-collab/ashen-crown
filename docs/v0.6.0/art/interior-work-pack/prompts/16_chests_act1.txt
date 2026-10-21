@@ -1,0 +1,23 @@
+Paint a SPRITE SHEET of 12 different treasure chests for the interiors of a classic tactical RPG, in the same painting style and the same high three-quarter top-down view (about 60 degrees, front face toward the viewer) as the attached approved interiors (int_village_house.jpg, int_tent_soldier.jpg, int_fort_barracks.jpg).
+Canvas 1536x1024, a 6-column x 4-row grid of 256x256 cells (see layout_chests.png; paint no grid lines and no text).
+Rows 1 and 3: each chest CLOSED. Rows 2 and 4: the SAME chest OPEN — lid raised, the inside visible, EMPTY (dark wood, no coins, no items, no glow) — at exactly the same position, size and angle as the closed chest directly above it.
+Every chest: centered horizontally in its cell, chest body about 150-190 px wide, the bottom of the chest resting on a baseline 40 px above the cell bottom, a soft contact shadow, the whole chest and open lid inside the cell. Scale: in the interiors one tile is 128 px, and these chests are drawn at half size there.
+Background: fully TRANSPARENT (if impossible, flat pure green #00FF00 and nothing else). No text, letters, numbers, emblems or symbols.
+Cells, left to right:
+Row 1 = chests 1-6 closed, row 2 = chests 1-6 open, row 3 = chests 7-12 closed, row 4 = chests 7-12 open.
+  1. village_chest (village house): a painted pine blanket chest with a faded red-and-ochre folk flower pattern and a simple iron hasp.
+  2. militia_locker (village barracks): a plain oak footlocker with rope handles and a short wooden club strapped to the lid.
+  3. grain_bin (village storehouse): a rustic lidded grain bin of rough planks with a burlap sack draped over one corner and loose straw.
+  4. elder_coffer (elder's hall): a carved walnut coffer with brass corners and a small brass lock plate.
+  5. field_locker (soldier tent): an army field footlocker of dark wood with two leather buckle straps and a rolled bedroll tied on top.
+  6. medic_chest (triage tent): a pale wooden field medicine chest wrapped with a white cloth band and a plain red cloth tie (no symbol), herb bundles tucked under the strap.
+  7. supply_crate (supply tent): a sturdy army supply crate of pale planks with rope handles and an iron-hinged lid.
+  8. officer_strongbox (command tent / commander quarters): a compact black iron-bound strongbox with a heavy padlock and a red wax seal on a cord.
+  9. document_coffer (operations tent / records hall): a brown leather-covered document coffer with brass clasps and two rolled maps tied to the lid.
+  10. armory_chest (fortress armory): a long heavy oak armory chest banded with dark iron, studded, with iron ring handles.
+  11. fort_locker (fortress barracks): an old dark-oak footlocker with iron studs and corner plates, a bit worn and scratched.
+  12. old_chest (fallback (anywhere)): a classic dusty old wooden treasure chest with a rounded lid, iron bands and a big keyhole.
+Each chest must clearly fit its room and differ in silhouette and material, yet all twelve belong to one painted world.
+Painting style: match the attached approved art (style_aren_neutral.png and the attached exterior hub map) — hand-painted fantasy illustration with confident contours, painterly cel shading with soft gradients, warm rim light, rich but slightly earthy colors, detailed but readable textures. Original world: do not imitate any existing game's rooms, furniture designs, emblems or layout.
+Attach: layout_chests.png, int_village_house.jpg, int_tent_soldier.jpg, int_fort_barracks.jpg (your approved results).
+Output: one PNG with transparency (or pure #00FF00 background), exactly 1536x1024 px landscape.
