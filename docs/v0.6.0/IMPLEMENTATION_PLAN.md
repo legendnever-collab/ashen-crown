@@ -2,7 +2,7 @@
 
 Branch `feature/v0.6-act2-three-banners` (base: main `33577c4`, official v0.5.0 / tag v0.5.0).
 - PR은 사용자가 직접 플레이하고 승인하기 전까지 병합하지 않는다.
-- 설계: [ACT2_DESIGN](ACT2_DESIGN.md) (PROPOSED, Q1–Q4 승인 대기).
+- 설계: [ACT2_DESIGN](ACT2_DESIGN.md) (Q1–Q4 승인, D-055).
 
 ## 1. 원칙
 1. **ACT I과 v0.5 보존.** M01–M06 규칙·보상·EXP·30 seed 결과, 전직·시련·훈련, 경제(상점 품목·가격·상자)를 바꾸지 않는다.
@@ -35,7 +35,7 @@ Branch `feature/v0.6-act2-three-banners` (base: main `33577c4`, official v0.5.0 
 | Phase | 산출물 | 완료 조건 |
 |---|---|---|
 | A | 코드 감사 + v0.5.0 태그·릴리스 | **완료 2026-10-21** (tag v0.5.0, run 39574780277) |
-| B | 설계 승인 (Q1–Q4) | DECISION_LOG 기록 |
+| B | 설계 승인 (Q1–Q4) | DECISION_LOG 기록 — **완료 2026-10-21 (D-055)** |
 | C | 엔진: schema 9, 세력 신뢰, 동맹군 팀·AI, 출전 6, 신규 지형, ACT II 시점표 | unit + ACT I/v0.5 회귀 불변 |
 | D | M07 북부의 군령 + M08 협곡 방어전 + 성하 마을(임시) + 테아 | 미션 unit + 30 seed 밸런스 + 브라우저 |
 | E | M09 자유의 도시 + M10 두 영주의 전쟁(삼파전) + 벨마르(임시) + 다리오 | 같은 기준 |
