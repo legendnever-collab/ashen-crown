@@ -3,7 +3,7 @@
 // Interior kinds, building ids, chest ids and chest rewards are unchanged — this only picks the look.
 // A room with a painted layout (ROOM_LAYOUTS, filled in when the art pack arrives) replaces the
 // procedural interior template; until then the template is used and only the chest style changes.
-import {HUBS} from './frontier-data.js';
+import {HUBS,INTERIORS} from './frontier-data.js';
 
 export const ROOM_FAMILY={village:'village',garrison:'tent',bivouac:'tent',oathcamp:'tent',fortress:'fort',castletown:'north',velmar:'port'};
 const RV6_BY_KIND={
@@ -26,9 +26,40 @@ export const ROOM_CHESTS={
 export const CHEST_STYLES=['village_chest','militia_locker','grain_bin','elder_coffer','field_locker','medic_chest','supply_crate','officer_strongbox','document_coffer','armory_chest','fort_locker','old_chest',
  'frost_chest','fur_trunk','sled_crate','iron_lockbox','sea_chest','merchant_coffer','cargo_crate','council_strongbox'];
 
-// Painted room layouts, keyed by room id: {art, width, height, spawn, mask, doors:[[x,y]…], props, chests:[[id,x,y]…], npcs, night}.
-// Empty until the user's interior art pack is imported (docs/v0.6.0/INTERIORS_AND_CHESTS.md).
-export const ROOM_LAYOUTS={};
+// Painted rooms (art pack A, imported 2026-10-25): each painting is 12×8 tiles; the mask ('.' walkable, '#' solid) is
+// authored over the painting, chest tiles are solid and drawn by the game, the doorway is the two bottom-centre tiles.
+// npc: [x,y] where the room's shopkeeper stands behind the counter (talk reach 2, across the counter).
+const RV6_DOOR='#####..#####';
+export const ROOM_LAYOUTS={
+ int_village_house:{name:'민가',chests:[['a',1,4]],mask:['###.########','#.........##','##.........#','#..........#','#..........#']},
+ int_village_forge:{name:'대장간',npc:[6,4],mask:['#####....###','#.........##','#..........#','#...####...#','#..........#']},
+ int_village_shop:{name:'도구점',npc:[5,3],mask:['####.....###','##.........#','#...####...#','#..........#','#..........#']},
+ int_village_barracks:{name:'민병 병영',chests:[['a',1,4],['b',10,2]],mask:['###..#######','#...####...#','##..####...#','#.........##','#..........#']},
+ int_village_hall:{name:'촌장 회관',chests:[['a',10,4]],mask:['##########.#','########...#','#.........##','#..........#','#..........#']},
+ int_village_store:{name:'보급 창고',chests:[['a',10,4],['b',3,4]],mask:['######.#####','#..........#','#..#......##','#..........#','#..........#']},
+ int_tent_soldier:{name:'병사 천막',chests:[['a',1,4],['b',10,2]],mask:['#.#..##.#.##','#..........#','##.........#','#..........#','#..........#']},
+ int_tent_triage:{name:'구호 천막',chests:[['a',1,4],['b',10,2]],mask:['####.#..#.##','##.........#','##.........#','#.......####','#..........#']},
+ int_tent_command:{name:'지휘 천막',chests:[['a',10,4]],mask:['############','#...#####..#','#.......#.##','#..........#','#..........#']},
+ int_tent_operations:{name:'작전 천막',chests:[['a',10,4]],mask:['###.########','##..####...#','#...####..##','#..........#','#..........#']},
+ int_tent_supply:{name:'보급 천막',chests:[['a',10,4],['b',3,4]],mask:['####.#######','#..........#','#..#......##','#..........#','#..........#']},
+ int_fort_barracks:{name:'성채 병영',chests:[['a',1,4],['b',10,2]],mask:['#.........##','#...####...#','##..####...#','#..........#','#...#..#...#']},
+ int_fort_armory:{name:'무기고',chests:[['a',10,4],['b',3,4]],mask:['##.##..#####','#..........#','#..#......##','#..........#','#...#..#...#']},
+ int_fort_records:{name:'기록실',chests:[['a',10,4]],mask:['############','#...####...#','#...####..##','#..........#','#...#..#...#']},
+ int_fort_command:{name:'지휘관 숙소',chests:[['a',10,4]],mask:['############','#...####...#','#...####..##','#..........#','#...#..#...#']}
+};
+const roomCache=new Map();
+// The painted room for a building, or null (then the procedural interior template is used). Same interior kind,
+// chest ids and service as the template; only the floor plan and the look change. A night hub dims the room.
+export function paintedRoom(hubId,interior,buildingId){
+ const id=roomId(hubId,interior,buildingId),L=ROOM_LAYOUTS[id],base=INTERIORS[interior];if(!L||!base)return null;
+ const night=!!HUBS[hubId]?.night,key=`${id}:${night}`;if(roomCache.has(key))return roomCache.get(key);
+ const mask=['############','############',...L.mask,RV6_DOOR],chests=L.chests||[],exit=[6,6];
+ const room={name:`${L.name} · 내부`,tone:'interior',painted:true,art:id,night,width:12,height:8,spawn:exit,generic:base.generic,service:base.service,mask,doors:[[5,7],[6,7]],
+  buildings:chests.map(([chestId,x,y])=>({type:'chest',x,y,w:1,h:1,label:'',chestId})),
+  npcs:(base.npcs||[]).map(n=>L.npc?{...n,x:L.npc[0],y:L.npc[1],reach:2}:n),
+  places:[{id:'exit',name:'밖으로 나가기',x:exit[0],y:exit[1],action:'exit'},...chests.map(([chestId,x,y])=>({id:`chest:${chestId}`,name:'보물상자',x,y,action:'chest',chestId}))]};
+ roomCache.set(key,room);return room;
+}
 
 // Which room a building shows: hub kind → family, then the building's sign, then its interior kind.
 export function roomId(hubId,interior,buildingId){

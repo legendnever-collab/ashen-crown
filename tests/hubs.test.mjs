@@ -5,7 +5,7 @@ import {HUBS,INTERIORS} from '../src/data/frontier-data.js';
 import {ART_HUBS,hubFor,stageHubFor} from '../src/data/hubs-v05.js';
 import {STORY} from '../src/data/story.js';
 import {newGame} from '../src/core/game.js';
-import {enterHub,walkable,interactions,enterInterior,exitInterior,frontierPath} from '../src/core/frontier.js';
+import {enterHub,walkable,interactions,enterInterior,exitInterior,frontierPath,currentHub} from '../src/core/frontier.js';
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {drain} from './campaign-policy.mjs';
 
@@ -45,7 +45,7 @@ test('chest-bearing doors: same building ids and interior kinds as the v0.4 vill
  const campDoors={'inn-1':'barracks','warroom-2':'quarters','inn-3':'barracks','warroom-4':'quarters','depot-5':'store'},villageDoors={'inn-1':'barracks','warroom-2':'quarters','residence-3':'house','depot-4':'store'};
  for(const [id,h] of Object.entries(ART_HUBS)){const legacy=id.startsWith('village')?villageDoors:campDoors;const doors=Object.fromEntries(h.places.filter(p=>p.action==='enter').map(p=>[p.buildingId,p.interior]));assert.deepEqual(doors,legacy,id);
   for(const p of h.places.filter(p=>p.action==='enter')){const s=newGame(3,null,2);enterHub(s,{story:false});drain(s);s.frontier.hub=id;s.frontier.x=p.x;s.frontier.y=p.y;assert.ok(interactions(s).some(n=>n.id===p.id),`${id} ${p.id} at door`);
-   assert.ok(enterInterior(s,p.buildingId),`${id} enter ${p.id}`);assert.ok(INTERIORS[s.frontier.interior].generic);s.frontier.x=INTERIORS[s.frontier.interior].spawn[0];s.frontier.y=INTERIORS[s.frontier.interior].spawn[1];assert.ok(exitInterior(s));assert.deepEqual([s.frontier.hub,s.frontier.x,s.frontier.y],[id,p.x,p.y]);}}
+   assert.ok(enterInterior(s,p.buildingId),`${id} enter ${p.id}`);assert.ok(INTERIORS[s.frontier.interior].generic);[s.frontier.x,s.frontier.y]=currentHub(s).spawn;assert.ok(exitInterior(s));assert.deepEqual([s.frontier.hub,s.frontier.x,s.frontier.y],[id,p.x,p.y]);}}
 });
 
 test('staged scenes use the hub of their moment',()=>{

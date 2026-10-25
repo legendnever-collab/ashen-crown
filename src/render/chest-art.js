@@ -33,7 +33,8 @@ const CHEST_LOOKS={
 // Draws a chest occupying the 64-px tile whose top-left is (x, y).
 export function drawChest(c,x,y,style,state='closed'){
  const open=state==='open',img=chestImage(`${style}_${open?'open':'closed'}`);
- if(img){c.drawImage(img,x,y+64-54,64,64*img.naturalHeight/img.naturalWidth);return;}
+ // Painted cells are drawn 1.2× a tile wide (the chest itself is about 0.85 tile), centred, resting on the tile's bottom edge.
+ if(img){const w=77,h=w*img.naturalHeight/img.naturalWidth;c.drawImage(img,x+32-w/2,y+64-h*216/256,w,h);return;}
  const s=CHEST_LOOKS[style]||CHEST_LOOKS.old_chest,r=(col,a,d,w,h)=>pixel(c,col,x+a,y+d,w,h);
  const sh=s.shape,top=sh==='low'?30:sh==='small'?24:sh==='long'?22:18,left=sh==='small'?14:sh==='long'?2:8,w=64-left*2,bottom=sh==='low'?54:56;
  pixelOval(c,'rgba(12,24,24,.35)',x+32,y+bottom,w/2+4,5);
