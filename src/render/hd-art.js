@@ -44,6 +44,8 @@ const GRASS=['#43623a','#527440','#5f8445','#6d924c','#8cad5c'].map(col);
 const DIRT=['#6e5638','#86694a','#9e8058','#b7996b','#cdb283'].map(col);
 const SAND=['#a58a5a','#bba06a','#cdb27a','#dcc48e','#ebd8a6'].map(col);
 const WATER=['#1f3f5c','#2a5674','#346c8a','#4f8ca3','#8cc2c9'].map(col);
+// v0.6 ACT II snow and ice (M07–M08). Only maps that contain snow use them; ACT I ground is unchanged.
+const SNOW=['#9fb0bd','#bccad4','#d6e0e7','#e7eef2','#f6f9fb'].map(col),ICE=['#6f98ae','#88afc3','#a3c4d4','#c0dae4','#e3f1f6'].map(col);
 const STONE=ramp('#8a8778'),MOSS=ramp('#5d7a43'),WOOD=ramp('#8a6040'),PLASTER=ramp('#dccaa0'),ROOF=ramp('#a3593b'),THATCH=ramp('#b98d4f');
 const LEAF=['#1d3528','#284a33','#36623d','#4e8248','#71a455'].map(col);
 const FLAG=ramp('#a29a86'),PLANK=ramp('#8a6442'),WALLR=ramp('#6e6a60');
@@ -60,18 +62,21 @@ function groundPixel(kind,gx,gy){
  if(kind==='flag'){return FLAG[2];}
  if(kind==='plank'){const row=Math.floor(gy/8),seam=gy%8===7,joint=(gx+row*29)%41===0;const n=noise(gx,gy*.25,10,12);let t=n<.4?1:2;if(seam||joint)t=0;else if(gy%8===0)t=3;return PLANK[t];}
  if(kind==='wall'){return WALLR[2];}
+ if(kind==='snow'){const n=noise(gx,gy,20,13)*.75+noise(gx,gy,5,14)*.25;let t=2;if(n<.3)t=dither(gx,gy,(.3-n)*6)?1:2;else if(n>.64)t=dither(gx,gy,(n-.64)*6)?3:2;return SNOW[t];}
+ if(kind==='ice'){const n=noise(gx,gy,16,15);const crack=Math.abs(Math.sin(gx*.21+gy*.47+noise(gx,gy,9,16)*6))<.04;return crack?ICE[0]:ICE[n<.35?1:n>.7?3:2];}
  return GRASS[2];
 }
-const KIND={g:'grass',f:'grass',v:'grass',t:'grass',h:'grass',r:'dirt',x:'grass',m:'grass',d:'sand',w:'water',b:'water',s:'swamp',k:'flag',q:'flag',p:'plank'};
+const KIND={g:'grass',f:'grass',v:'grass',t:'grass',h:'grass',r:'dirt',x:'grass',m:'grass',d:'sand',w:'water',b:'water',s:'swamp',k:'flag',q:'flag',p:'plank',n:'snow',i:'ice'};
+const SNOW_BASE={g:'snow',f:'snow',v:'snow',t:'snow',h:'snow',x:'snow',m:'snow'};
 // paints the full terrain ground; decor (trees, houses, rocks) is returned as sortable objects
 export function paintGround(map,{theme=''}={}){
- const H=map.length,W=map[0].length,T=HD_TILE,p=new Pix(W*T,H*T),objects=[],fort=theme==='fortress';
+ const H=map.length,W=map[0].length,T=HD_TILE,p=new Pix(W*T,H*T),objects=[],fort=theme==='fortress',snowy=theme==='snow';
  for(let ty=0;ty<H;ty++)for(let tx=0;tx<W;tx++){
-  const t=map[ty][tx],kind=fort&&t==='x'?'wall':KIND[t]||'grass';
+  const t=map[ty][tx],kind=fort&&t==='x'?'wall':snowy&&SNOW_BASE[t]||KIND[t]||'grass';
   for(let y=0;y<T;y++)for(let x=0;x<T;x++){const gx=tx*T+x,gy=ty*T+y;let k=kind;
    // organic edges: dirt/sand/water tiles fray into neighbouring grass
-   if(['dirt','sand','water','swamp'].includes(kind)){const same=(dx,dy)=>(KIND[tileAt(map,tx+dx,ty+dy)]??kind)===kind||(kind==='water'&&tileAt(map,tx+dx,ty+dy)==='b')||(kind==='dirt'&&['r','h'].includes(tileAt(map,tx+dx,ty+dy)));const j=2+noise(gx,gy,6,9)*5;let dmin=99;if(!same(-1,0))dmin=Math.min(dmin,x);if(!same(1,0))dmin=Math.min(dmin,T-1-x);if(!same(0,-1))dmin=Math.min(dmin,y);if(!same(0,1))dmin=Math.min(dmin,T-1-y);for(const [dx,dy,cx,cy]of[[-1,-1,0,0],[1,-1,T-1,0],[-1,1,0,T-1],[1,1,T-1,T-1]])if(same(dx,0)&&same(0,dy)&&!same(dx,dy))dmin=Math.min(dmin,Math.hypot(x-cx,y-cy));if(dmin<j)k='grass';else if(dmin<j+1.2)k=kind==='water'?'foam':'rim';}
-   let c=k==='rim'?(kind==='dirt'?DIRT[0]:kind==='sand'?SAND[0]:col('#33483a')):k==='foam'?WATER[4]:groundPixel(k,gx,gy);
+   if(['dirt','sand','water','swamp','ice'].includes(kind)){const same=(dx,dy)=>(KIND[tileAt(map,tx+dx,ty+dy)]??kind)===kind||(kind==='water'&&['b','i'].includes(tileAt(map,tx+dx,ty+dy)))||(kind==='ice'&&tileAt(map,tx+dx,ty+dy)==='w')||(kind==='dirt'&&['r','h'].includes(tileAt(map,tx+dx,ty+dy)));const j=2+noise(gx,gy,6,9)*5;let dmin=99;if(!same(-1,0))dmin=Math.min(dmin,x);if(!same(1,0))dmin=Math.min(dmin,T-1-x);if(!same(0,-1))dmin=Math.min(dmin,y);if(!same(0,1))dmin=Math.min(dmin,T-1-y);for(const [dx,dy,cx,cy]of[[-1,-1,0,0],[1,-1,T-1,0],[-1,1,0,T-1],[1,1,T-1,T-1]])if(same(dx,0)&&same(0,dy)&&!same(dx,dy))dmin=Math.min(dmin,Math.hypot(x-cx,y-cy));if(dmin<j)k=snowy?'snow':'grass';else if(dmin<j+1.2)k=kind==='water'?'foam':'rim';}
+   let c=k==='rim'?(kind==='dirt'?DIRT[0]:kind==='sand'?SAND[0]:kind==='ice'?ICE[0]:snowy?SNOW[0]:col('#33483a')):k==='foam'?WATER[4]:groundPixel(k,gx,gy);
    p.set(gx,gy,c);}
   const ox=tx*T,oy=ty*T,R=(i)=>hash(tx,ty,i);
   // surface detail

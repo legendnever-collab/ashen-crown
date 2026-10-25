@@ -7,6 +7,7 @@ import {ACT2_HUB_SPECS} from './hubs-v06.js';
 // Which hub a story moment uses. phase: 'preparation' | 'aftermath'.
 export function hubFor(missionId,phase='preparation'){
  const after=phase==='aftermath';
+ if(missionId>=7)return act2HubFor(missionId,phase); // v0.6 Phase D: ACT II moments
  if(missionId<=1)return after?'village_raid':'village';
  if(missionId===2||missionId===3&&!after)return 'camp';
  if(missionId===3||missionId===4&&!after)return 'bivouac';
@@ -14,9 +15,9 @@ export function hubFor(missionId,phase='preparation'){
  if(missionId>=4&&missionId<=6)return 'fortress';
  return 'oathcamp';
 }
-// v0.6 ACT II plan (D-055 §6, PROPOSED): Ironhold's castle town for M07–M08, the march bivouac after M08, Velmar for
-// M09–M10. hubFor switches to it in Phase D, when the castle town and Velmar hubs exist (LAST_MISSION is still 6).
-export function act2HubFor(missionId,phase='preparation'){const after=phase==='aftermath';if(missionId===7||missionId===8&&!after)return 'castletown';if(missionId===8)return 'bivouac';return 'velmar';}
+// v0.6 ACT II (D-055 §6, PROPOSED): Ironhold's castle town for M07–M08, the canyon bivouac ('march', the bivouac painting)
+// after M08, Velmar for M09–M10.
+export function act2HubFor(missionId,phase='preparation'){const after=phase==='aftermath';if(missionId===7||missionId===8&&!after)return 'castletown';if(missionId===8)return 'march';return 'velmar';}
 // Story key → hub used as the staged backdrop ('pre:3', 'after:3:loss', '6:oath' …).
 export function stageHubFor(key){
  const m=/^(pre|after):(\d+)/.exec(key);if(m)return hubFor(+m[2],m[1]==='after'?'aftermath':'preparation');
@@ -158,4 +159,6 @@ const HV5_SPECS={
 };
 // v0.6 ACT II hubs (art pack C) are built the same way; only act2HubFor (Phase D) routes the story to them.
 Object.assign(HV5_SPECS,ACT2_HUB_SPECS);
+// After the canyon (M08) the legion camps under the grey canyon: the bivouac painting and layout, with Thea at the fire.
+HV5_SPECS.march={...HV5_SPECS.bivouac,name:'Canyon Bivouac · 협곡 야영지',npcs:[...HV5_SPECS.bivouac.npcs,['thea','테아 · 모닥불',14,6,{kind:'hero'}]]};
 export const ART_HUBS=Object.fromEntries(Object.entries(HV5_SPECS).map(([id,spec])=>[id,hv5Build(id,spec)]));

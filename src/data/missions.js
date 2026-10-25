@@ -1,4 +1,4 @@
-import {MAP,ENEMIES,CIVILIANS,REINFORCEMENTS} from './game-data.js';
+import {MAP,ENEMIES,CIVILIANS,REINFORCEMENTS,TERRAIN} from './game-data.js';
 const grid=rows=>rows.map(r=>r.split(''));
 const patrol=(id,name,x,y,kind='bandit',hp=28)=>({id,name,x,y,kind,hp,atk:12,def:4,res:3,spd:6,mov:3,range:kind==='archer'?[2,3]:[1,1]});
 export const MISSIONS={
@@ -78,6 +78,44 @@ MISSIONS[6]=authored({id:6,title:'재의 맹세',en:'The Ashen Oath',
  threatTurn:3,par:10,sealTurn:11,level:7,turnLimit:16,escortOnly:true,healCivilians:true,
  objective:'피난민 호위 → 봉인석 2개 해제(TURN 11 종료 전) → 봉쇄 집행관 격파 또는 생존 장수 전원 관문 북쪽 철수',
  brief:'장수가 인접한 피난민은 매 턴 관문 쪽으로 2칸 이동합니다(HP 절반 이하는 세인의 치유가 필요). 피난민 2명 통과 또는 TURN 5에 2단계: 봉인석에 인접해 해제(리아 1회, 다른 장수 2회 누적). 서쪽 레버는 측면 관문을 엽니다. 동쪽 봉화를 부수면 3단계 증원이 오지 않습니다.'});
+// v0.6 ACT II (D-055 §3, Phase D; maps, numbers and names PROPOSED). M07 Northern Orders: an Iron Crown supply
+// convoy of three wagons drives up the snowy road to Ironhold's gate while deserters ambush it; Thea's escort (AI
+// allies) rides with it. Two wagons through the gate wins. M08 Canyon Defense: hold the grey canyon beside Baldrick's
+// troops; the command order (hold the canyon / send a rescue squad to the rear village) is chosen before battle.
+const ally=(id,name,look,x,y,stats={})=>({id,name,look,kind:'soldier',x,y,hp:34,atk:14,def:8,res:3,spd:5,mov:3,range:[1,1],...stats});
+const deserter=(id,name,x,y,stats={})=>unit(id,name,'bandit',x,y,{hp:32,atk:15,def:6,res:3,spd:6,mov:3,movementProfile:'rogue',...stats});
+MISSIONS[7]=authored({id:7,title:'북부의 군령',en:'Northern Orders',
+ rows:['mmmmmmmnrrnmmmmmmm','mmmmmnnrrrrnnmmmmm','mffnnnnrrrrnnnnmmm','fffnnnnrrrrnnnnnmm','ffnnnnnrrrrnnnnnnm','fnnnnnnrrrrnnnnnnn','wwwwwwwiiiiwwwwiww','wwwwwwwiiiiwwwwiww','nnnnnnnrrrrnnnnnnf','nfnnnnnrrrrhnnnnff','ffnnnnnrrrrnnnnnnf','fnnnnnnrrrrnnnnnnn','nnnnnnnrrrrnnnnnnn','nnnnnnnrrrrnnnnnnn'],
+ enemies:[
+  deserter('boss','탈영병 대장',2,3,{kind:'captain',hp:60,atk:17,def:8,res:4,spd:7}),
+  deserter('d1','탈영병',1,4),deserter('d2','탈영병',4,2),deserter('d3','탈영병',16,8),deserter('d4','탈영병',17,10),
+  unit('a1','탈영 궁수','archer',16,2,{hp:26,atk:14,def:3,res:3,spd:7,mov:2,movementProfile:'rogue'}),unit('a2','탈영 궁수','archer',15,1,{hp:26,atk:14,def:3,res:3,spd:7,mov:2,movementProfile:'rogue'})],
+ civilians:[{id:'w1',name:'보급 마차',kind:'wagon',x:8,y:12,hp:48,def:7,res:5},{id:'w2',name:'보급 마차',kind:'wagon',x:9,y:12,hp:48,def:7,res:5},{id:'w3',name:'보급 마차',kind:'wagon',x:8,y:13,hp:48,def:7,res:5}],
+ allies:[ally('thea_escort','테아 · 수송 호위대장','thea',10,12,{kind:'cavalry',hp:40,atk:16,def:7,spd:9,mov:5,movementProfile:'cavalry'}),ally('ic1','철왕관 보병','ironInfantry',7,12),ally('ic2','철왕관 보병','ironInfantry',9,13)],
+ waves:[{turn:3,story:'7:ambush',units:[deserter('r1','후미 습격병',0,13),deserter('r2','후미 습격병',17,13)]},{turn:5,story:'7:gatewave',units:[deserter('r3','성문 습격병',7,1),deserter('r4','성문 습격병',11,1)]}],
+ capture:'boss',
+ deployZone:s=>{const base=[];for(let y=10;y<=13;y++)for(let x=3;x<=14;x++)if(!MISSIONS[7].civilians.some(c=>c.x===x&&c.y===y)&&!MISSIONS[7].allies.some(a=>a.x===x&&a.y===y))base.push([x,y]);return zone(base);},
+ deployments:{recommended:[[7,11],[10,11],[6,12],[11,12],[6,13],[11,13]],assault:[[7,10],[10,10],[6,11],[11,11],[7,11],[10,11]],defense:[[7,11],[10,11],[7,13],[10,13],[6,12],[11,12]]},
+ threatTurn:2,par:9,turnLimit:14,level:8,deployLimit:6,convoyGoal:2,
+ objective:'보급 마차 3대 중 2대를 북쪽 성문까지 호위 (마차 2대를 잃으면 패배)',
+ brief:'마차는 TURN 2부터 매 턴 길을 따라 북쪽으로 2칸 갑니다. 옆에 적이 붙으면 1칸만 가고, 장수가 길을 막으면 못 지나갑니다. 탈영병은 눈길(이동 1)과 숲에 익숙합니다. 탈영병 대장은 HP 절반 이하에서 인접해 생포할 수 있습니다. TURN 3 후미, TURN 5 성문 앞 증원.'});
+MISSIONS[8]=authored({id:8,title:'협곡 방어전',en:'Canyon Defense',
+ rows:['xxxxxnnrrnnxxxxx','xxxxnnnrrnnnxxxx','xxxnnnnrrnnnnxxx','xxmmnnnrrnnnmmxx','xxmmxnnrrnnxmmxx','xxxxmnnrrnnmxxxx','xxxxnnnrrnnnxxxx','xxxnnnnrrnnnnxxx','xxnnnfnrrnfnnnxx','xxnnnnnrrnnnnnxx','xxmmxnnrrnnxmmxx','xxmmxxnrrnxxmmxx','xnnnnnnrrnnnnnnx','nnvvnnnrrnnnvvnn','nnvvnnnrrnnnvvnn','nnnnnnnrrnnnnnnn'],
+ enemies:[
+  unit('m1','용병 창병','spear',5,1,{hp:32,atk:15,def:7,res:3,spd:6}),unit('m2','용병 창병','spear',10,1,{hp:32,atk:15,def:7,res:3,spd:6}),
+  unit('m3','용병 창병','spear',6,2,{hp:32,atk:15,def:7,res:3,spd:6}),unit('m4','용병 창병','spear',9,2,{hp:32,atk:15,def:7,res:3,spd:6}),
+  unit('a1','용병 궁수','archer',4,2,{hp:26,atk:14,def:3,res:3,spd:7}),unit('a2','용병 궁수','archer',11,2,{hp:26,atk:14,def:3,res:3,spd:7})],
+ civilians:[{id:'v1',name:'후위 마을 노인',x:2,y:13,hp:24,def:2},{id:'v2',name:'후위 마을 어머니',x:3,y:14,hp:24,def:2},{id:'v3',name:'후위 마을 소년',x:13,y:13,hp:24,def:2}],
+ allies:[ally('baldrick','발드릭 로엔 · 검은 사자','lion',7,5,{kind:'lion',hp:84,atk:18,def:9,res:5,spd:7,post:{x:7,y:5},leash:1}),ally('ic1','철왕관 보병','ironInfantry',6,5,{post:{x:6,y:5},leash:1}),ally('ic2','철왕관 보병','ironInfantry',9,5,{post:{x:9,y:5},leash:1})],
+ objects:[sealObject('rf1','낙석 장치','rockfall',4,5,{zone:[5,7,3,6]}),sealObject('rf2','낙석 장치','rockfall',11,5,{zone:[8,10,3,6]})],
+ waves:[{turn:3,story:'8:wave',units:[unit('m5','용병 창병','spear',6,0,{hp:32,atk:15,def:7,res:3,spd:6}),unit('m6','용병 창병','spear',9,0,{hp:32,atk:15,def:7,res:3,spd:6}),unit('m7','용병 창병','spear',5,1,{hp:32,atk:15,def:7,res:3,spd:6}),unit('a3','용병 궁수','archer',8,0,{hp:26,atk:14,def:3,res:3,spd:7})]},
+  {turn:7,story:'8:captain',units:[unit('boss','용병단장','captain',7,0,{hp:84,atk:19,def:9,res:5,spd:7,mov:3,holdUntil:8}),unit('g1','단장 호위병','spear',6,0,{hp:34,atk:16,def:8,res:3,spd:6}),unit('g2','단장 호위병','spear',9,0,{hp:34,atk:16,def:8,res:3,spd:6})]},
+  {turn:6,raid:true,units:[unit('s1','용병 습격조','bandit',0,13,{hp:28,atk:15,def:5,res:3,spd:8,mov:4}),unit('s2','용병 습격조','bandit',0,15,{hp:28,atk:15,def:5,res:3,spd:8,mov:4}),unit('s3','용병 습격조','bandit',15,15,{hp:28,atk:15,def:5,res:3,spd:8,mov:4})]}],
+ deployZone:s=>{const base=[];for(let y=6;y<=9;y++)for(let x=3;x<=12;x++)base.push([x,y]);for(let y=12;y<=13;y++)for(let x=4;x<=11;x++)base.push([x,y]);return zone(base.filter(([x,y])=>Number.isFinite(TERRAIN[MISSIONS[8].map[y][x]].cost)&&!MISSIONS[8].allies.some(a=>a.x===x&&a.y===y)));},
+ deployments:{recommended:[[6,7],[9,7],[5,8],[10,8],[7,9],[8,9]],assault:[[5,6],[10,6],[6,7],[9,7],[7,7],[8,7]],defense:[[6,9],[9,9],[5,8],[10,8],[7,12],[8,12]]},
+ threatTurn:6,par:9,turnLimit:10,level:9,deployLimit:6,breachRow:12,orderTurn:6,
+ objective:'TURN 10까지 협곡 사수 또는 TURN 7에 오는 용병단장 격파 (북쪽 적이 12번째 줄 아래로 넘어오면 패배)',
+ brief:'위쪽 목은 발드릭의 병사가 지킵니다. 양쪽 벼랑의 낙석 장치(한 번씩)를 작동하면 위쪽 목 앞의 적에게 큰 피해를 줍니다. 출전 전에 사령부 명령(협곡 사수 / 후위 마을 구출조)을 정합니다. TURN 3 북쪽 2진, TURN 6 남쪽 습격조, TURN 7 용병단장과 호위병 도착(TURN 8까지 입구 사수).'});
 // v0.5.0 Phase E (D-047): promotion trials (101–105) and the repeatable Legion Drill (110). Non-story
 // skirmishes after ACT I: never pushed into campaign.completed, no gold, permanent EXP (mission level 7).
 // goal: survive (turn N ends with `protect` alive) · rout (all enemies down by `limit`) · reach (hero at row ≤ y)

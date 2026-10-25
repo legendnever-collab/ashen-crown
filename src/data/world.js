@@ -20,7 +20,8 @@ export const REGIONS=[
 export const SITES=[
  {id:'capital',name:'왕도 아우렐리아',icon:'capital',x:790,y:455,region:'center'},
  {id:'stronghold',name:'철관성',icon:'stronghold',x:710,y:207,region:'north'},
- {id:'canyon',name:'회색 협곡',icon:null,x:690,y:300,region:'north'},
+ {id:'canyon',name:'회색 협곡',icon:'camp',x:690,y:300,region:'north',mission:8,hub:'march',small:true},
+ {id:'northroad',name:'북부 수송로',icon:null,x:800,y:240,region:'north',mission:7},
  {id:'freecity',name:'자유도시 벨마르',icon:'freecity',x:270,y:525,region:'west'},
  {id:'lordA',name:'영주성',icon:'ruin',x:423,y:411,region:'west',small:true},
  {id:'lordB',name:'영주성',icon:'ruin',x:433,y:651,region:'west',small:true},
@@ -36,12 +37,14 @@ export const SITES=[
  {id:'gate',name:'국경 관문',icon:'gate',x:1432,y:333,region:'east',mission:6},
  {id:'oathcamp',name:'관문 너머 야영지',icon:'camp',x:1458,y:295,region:'east',hub:'oathcamp',small:true}
 ];
-export const HUB_SITE={village:'village',village_raid:'village',camp:'garrison',bivouac:'bivouac',fortress:'fortress',oathcamp:'oathcamp',castletown:'stronghold',velmar:'freecity'};
+export const HUB_SITE={village:'village',village_raid:'village',camp:'garrison',bivouac:'bivouac',fortress:'fortress',oathcamp:'oathcamp',castletown:'stronghold',march:'canyon',velmar:'freecity'};
 // ACT I march order (W1): village → garrison → forest → bridge → bivouac → fortress → ridge → gate → oath camp.
 export const ACT1_ROUTE=['village','garrison','forest','bridge','bivouac','fortress','ridge','gate','oathcamp'];
 // ACT II first half (D-055 §6): oath camp → Ironhold's castle town → the grey canyon → Velmar. Drawn from v0.6 Phase F.
 export const ACT2_ROUTE=['oathcamp','stronghold','canyon','freecity'];
+// The whole march for the world map (ACT II legs are drawn once ACT I is complete).
+export const FULL_ROUTE=[...ACT1_ROUTE,...ACT2_ROUTE.slice(1)];
 export const siteById=id=>SITES.find(s=>s.id===id);
 // How far along the march the legion has come, from completed missions.
-export function routeReached(campaign,hub){const c=campaign?.completed||[];let i=ACT1_ROUTE.indexOf(HUB_SITE[hub]||'village');for(const [m,site] of [[1,'village'],[2,'forest'],[3,'bridge'],[4,'fortress'],[5,'ridge']])if(c.includes(m))i=Math.max(i,ACT1_ROUTE.indexOf(site));if(c.includes(5)&&hub==='oathcamp')i=ACT1_ROUTE.length-1;return Math.max(0,i);}
+export function routeReached(campaign,hub){const c2=campaign?.completed||[];if(HUB_SITE[hub]&&ACT2_ROUTE.includes(HUB_SITE[hub])&&HUB_SITE[hub]!=='oathcamp'||c2.includes(7)){let j=FULL_ROUTE.indexOf(HUB_SITE[hub]);if(c2.includes(7))j=Math.max(j,FULL_ROUTE.indexOf('stronghold'));if(c2.includes(8))j=Math.max(j,FULL_ROUTE.indexOf('canyon'));return Math.max(ACT1_ROUTE.length-1,j);}const c=campaign?.completed||[];let i=ACT1_ROUTE.indexOf(HUB_SITE[hub]||'village');for(const [m,site] of [[1,'village'],[2,'forest'],[3,'bridge'],[4,'fortress'],[5,'ridge']])if(c.includes(m))i=Math.max(i,ACT1_ROUTE.indexOf(site));if(c.includes(5)&&hub==='oathcamp')i=ACT1_ROUTE.length-1;return Math.max(0,i);}
 export const siteKnown=(site,campaign)=>site.region==='east'||REGIONS.find(r=>r.id===site.region)?.shown(campaign||{completed:[]});

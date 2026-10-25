@@ -10,7 +10,7 @@ import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {drain} from './campaign-policy.mjs';
 
 const at=(hub,x,y)=>({frontier:{hub,x,y}});
-const ACT2=['castletown','velmar']; // v0.6 art pack C: town hubs with the village's four chest doors plus two shop doors
+const ACT2=['castletown','velmar'],PLACED=[...ACT2,'march']; // v0.6 art pack C: town hubs with the village's four chest doors plus two shop doors; 'march' is the canyon bivouac (M08 aftermath)
 function reachable(id){const h=HUBS[id],seen=new Set([h.spawn.join()]),q=[h.spawn];while(q.length){const [x,y]=q.shift();for(const [dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const k=`${x+dx},${y+dy}`;if(!seen.has(k)&&walkable(at(id,x+dx,y+dy),x+dx,y+dy)){seen.add(k);q.push([x+dx,y+dy]);}}}return seen;}
 
 test('W3 table: every ACT I story moment has its hub',()=>{
@@ -36,7 +36,7 @@ test('every painted hub sells weapons and items and seats Lia at the war table',
   assert.ok(kinds.has('weapon')&&kinds.has('item'),`${id} services ${[...kinds]}`);
   assert.ok(h.npcs.some(n=>n.id==='advisor')&&h.npcs.some(n=>n.id==='lia')&&h.npcs.some(n=>n.id==='aren'),`${id} cast`);
   const s=newGame(9,null,id.startsWith('village')?1:id==='camp'?2:id==='bivouac'?4:id==='fortress'?5:6);enterHub(s,{aftermath:id==='oathcamp'||id==='village_raid',story:false});drain(s);
-  if(ACT2.includes(id)){s.frontier.hub=id;[s.frontier.x,s.frontier.y]=h.spawn;}else assert.equal(s.frontier.hub,id); // ACT II hubs: placed directly until Phase D routes the story there
+  if(PLACED.includes(id)){s.frontier.hub=id;[s.frontier.x,s.frontier.y]=h.spawn;}else assert.equal(s.frontier.hub,id); // ACT II hubs: placed directly (their own story moments are covered by mission07/08 tests)
   assert.ok(interactions(s).some(n=>n.id==='advisor'&&n.npc),`${id} spawns at Lia's war table`);
  }
  assert.deepEqual(ART_HUBS.bivouac.npcs.find(n=>n.id==='merchant').services,['item','weapon'],'wandering merchant sells both');

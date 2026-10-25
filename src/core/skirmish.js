@@ -1,4 +1,5 @@
-// v0.5.0 Phase E (D-047): promotion trials and the Legion Drill, launched from the ACT I camp.
+// v0.5.0 Phase E (D-047): promotion trials and the Legion Drill, launched from the ACT I camp — and, from v0.6 Phase D,
+// from any ACT II camp (before or after a mission); the legion returns to the same moment.
 // The camp state is rebuilt on return from the (updated) campaign, so nothing of the M01–M06 flow changes.
 import {MISSIONS,LAST_MISSION} from '../data/missions.js';
 import {CLASS_TREE} from '../data/classes.js';
@@ -10,7 +11,7 @@ import {enqueueStory} from './narrative.js';
 
 export const TRIAL_MISSION={eric:101,elina:102,lia:103,sain:104,kai:105},DRILL_MISSION=110;
 export const skirmishOf=s=>MISSIONS[s?.missionId]?.skirmish||null;
-export function canStartSkirmish(s){return s?.screen==='exploration'&&!s.practice&&!s.narrative?.active&&s.missionId===LAST_MISSION&&s.frontier?.phase==='aftermath'&&act1Complete(s)&&!!s.campaign?.choices?.m06_oath&&Array.isArray(s.campaign.heroes);}
+export function canStartSkirmish(s){return s?.screen==='exploration'&&!s.practice&&!s.narrative?.active&&(s.missionId===6&&s.frontier?.phase==='aftermath'||s.missionId>6&&s.missionId<=LAST_MISSION)&&act1Complete(s)&&!!s.campaign?.choices?.m06_oath&&Array.isArray(s.campaign.heroes);}
 export function trialState(s,id){const st=promotionStatus(s,id);return {...st,available:canStartSkirmish(s)&&st.eligible&&!st.promoted};}
 
 // Builds the battle. `force` is for tests and balance scripts only (skips the promotion conditions).
@@ -34,6 +35,6 @@ export function returnToCamp(s){const sk=s.skirmish;if(!sk)return null;
  const campaign=structuredClone(s.outcome==='victory'?s.campaign:(s.stageStart?.campaign||s.campaign));if(s.outcome!=='victory'&&s.campaign.dialogueMemory)campaign.dialogueMemory=structuredClone(s.campaign.dialogueMemory);
  const c=newGame(sk.returnSeed,campaign,sk.returnMission);c.practice=false;c.outcome=sk.returnOutcome;c.reason=sk.returnReason;c.economy=structuredClone(campaign.economy);c.frontier=structuredClone(sk.frontier);
  c.narrative.seen=[...(s.narrative?.seen||[])];c.narrative.history=structuredClone(s.narrative?.history||[]);
- enterHub(c,{aftermath:true,story:false});
+ enterHub(c,{aftermath:sk.frontier?.phase!=='preparation',story:false});
  const promoted=s.outcome==='victory'&&skirmishOf(s)?.kind==='trial'?skirmishOf(s).hero:null;if(promoted&&classTierOf(c.campaign.heroes.find(h=>h.id===promoted))>=2)enqueueStory(c,`promo:${promoted}`);
  return c;}

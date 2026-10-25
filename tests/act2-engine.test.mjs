@@ -92,7 +92,8 @@ test('faction trust: seeded from ACT I, clamped −2…+3, shown as stages, vali
 });
 
 test('ACT II hub plan and the west reveal; ACT I hub table unchanged',()=>{
- assert.deepEqual([[7,'preparation'],[7,'aftermath'],[8,'preparation'],[8,'aftermath'],[9,'preparation'],[9,'aftermath'],[10,'preparation'],[10,'aftermath']].map(([m,p])=>act2HubFor(m,p)),['castletown','castletown','castletown','bivouac','velmar','velmar','velmar','velmar']);
+ assert.deepEqual([[7,'preparation'],[7,'aftermath'],[8,'preparation'],[8,'aftermath'],[9,'preparation'],[9,'aftermath'],[10,'preparation'],[10,'aftermath']].map(([m,p])=>act2HubFor(m,p)),['castletown','castletown','castletown','march','velmar','velmar','velmar','velmar']);
+ assert.deepEqual([7,8].flatMap(m=>['preparation','aftermath'].map(p=>hubFor(m,p))),['castletown','castletown','castletown','march'],'Phase D: hubFor routes M07–M08 to the ACT II hubs');
  assert.deepEqual([1,2,3,4,5,6].flatMap(m=>['preparation','aftermath'].map(p=>hubFor(m,p))),['village','village_raid','camp','camp','camp','bivouac','bivouac','fortress','fortress','fortress','fortress','oathcamp']);
  const west=REGIONS.find(r=>r.id==='west');assert.ok(!west.shown({completed:[1,2,3,4,5,6,7]}));assert.ok(west.shown({completed:[1,2,3,4,5,6,7,8]}));
 });

@@ -26,7 +26,7 @@ export const ACT2_HUB_SPECS={
    ['residence-3','HOME','민가',1,10,4,3,2,12],['depot-4','SUPPLY','창고',16,10,6,3,21,12]],
   places:[['square','성하 광장',12,10],['gate','성하 입구',11,14],['advisor','작전 탁자 · 광장',10,8]],
   npcs:[...heroes({aren:[13,9],elina:[16,3],elinaName:'엘리나 · 성문 관찰',lia:[11,6],sain:[8,9],sainName:'세인 · 피난민 천막',kai:[15,6],kaiName:'카이 · 광장',advisor:[10,7]}),
-   ['elder','성하 촌장',4,9],['refugee','피난민',11,12],['guard','성문 보초',12,3]],
+   ['elder','성하 촌장',4,9],['refugee','피난민',11,12],['guard','성문 보초',12,3],['thea','테아 · 수송 호위대장',16,6,{kind:'hero'}]],
   lights:[[275,225,110,'fire'],[580,350,80,'fire'],[960,350,80,'fire'],[580,560,80,'fire'],[960,560,80,'fire'],[550,815,110,'fire'],[700,875,70,'fire'],[865,865,70,'fire']]},
  velmar:{name:'Velmar Market · 벨마르 시장',kind:'velmar',tone:'village',art:'hub_velmar',spawn:[13,10],stage:{x:800,y:670},
   mask:[

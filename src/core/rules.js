@@ -41,8 +41,8 @@ export function rangeFor(u,mode='attack',s=null){const t2=(u.classTier||1)>=2;if
  return s&&base[1]>=2&&mode!=='skill'&&TERRAIN[missionOf(s).map[u.y]?.[u.x]]?.high?[base[0],base[1]+1]:base;}
 export function validTarget(s,u,t,mode='attack'){
  if(!u||!t||!alive(u)||!alive(t))return false;
- const d=distance(u,t);if(t.team==='object')return mode==='search'&&u.team==='ally'&&d===1&&!t.locked&&!t.inert;if(mode==='search')return false;if(mode==='capture')return s.missionId===2&&t.id==='boss'&&t.team==='enemy'&&t.hp<=t.maxHP/2&&d===1;
- if(mode==='rescue')return t.team==='civilian'&&t.kind!=='wagon'&&!missionOf(s).escortOnly&&d===1;
+ const d=distance(u,t);if(t.team==='object')return mode==='search'&&u.team==='ally'&&d===1&&!t.locked&&!t.inert;if(mode==='search')return false;if(mode==='capture')return (s.missionId===2||missionOf(s).capture===t.id)&&t.id==='boss'&&t.team==='enemy'&&t.hp<=t.maxHP/2&&d===1;
+ if(mode==='rescue')return t.team==='civilian'&&t.kind!=='wagon'&&!missionOf(s).escortOnly&&(!missionOf(s).orderTurn||s.campaign?.choices?.m08_order==='rescue')&&d===1;
  if(mode==='skill'&&u.id==='eric')return t.id===u.id;
  if(mode==='skill'&&u.id==='sain')return (t.team==='ally'||t.team==='civilian'&&missionOf(s).healCivilians&&t.kind!=='wagon')&&d>=rangeFor(u,mode,s)[0]&&d<=rangeFor(u,mode,s)[1];
  const [min,max]=rangeFor(u,mode,s);return hostile(s,u,t)&&d>=min&&d<=max;
@@ -52,7 +52,7 @@ export function strikeStats(s,u,t,mode='attack'){
  u=effectiveStats(s,u);t=effectiveStats(s,t);
  const magic=mode==='skill'&&u.id==='lia',aim=mode==='skill'&&u.id==='elina',quick=mode==='skill'&&u.id==='kai';
  const ground=terrainAt(t.x,t.y,s),defense=magic?t.res:t.def,burning=!!s.burning?.[key(t.x,t.y)];
- let raw=Math.max(1,(magic?u.mag:u.atk)-defense-(ground.defense||0)+(aim?2:0)+(magic&&u.hp<=u.maxHP/2?4:0)+(quick&&flank(s,u,t)?6:0));
+ let raw=Math.max(1,(magic?u.mag:u.atk)-defense-(ground.defense||0)+(aim?2:0)+(magic&&u.hp<=u.maxHP/2?4:0)+(quick&&flank(s,u,t)?6:0)+(mode==='skill'&&u.id==='thea'?charge(u):0));
  let dmg=Math.max(1,Math.round(magic?raw*(ground.fire??1):raw*(1-(ground.phys||0))));
  if(t.id==='eric'&&t.hp<=t.maxHP*.3)dmg=Math.max(1,Math.floor(dmg*.85));
  // M05 lion formation (mission data only; M01–04 have no formation): living bearers give adjacent
@@ -67,6 +67,9 @@ export function strikeStats(s,u,t,mode='attack'){
  const crit=magic?0:Math.min(12,Math.max(3,Math.round((u.spd-t.spd)/2)+5));
  return {damage:dmg,hit,crit,magic,fire:magic,terrainMul:magic?(ground.fire??1):1-(ground.phys||0),flank:quick&&flank(s,u,t),burning};
 }
+// v0.6 Thea's Charge (PROPOSED): +4 damage; after running 3+ tiles this turn, +3 more and the target cannot strike back.
+export const charge=u=>4+((u.chargeRun||0)>=3?3:0);
+export const chargeBreaks=(u,mode)=>mode==='skill'&&u?.id==='thea'&&(u.chargeRun||0)>=3;
 export const isolated=(s,t)=>t.team==='ally'&&!s.units.some(a=>a.team==='ally'&&alive(a)&&a.id!==t.id&&distance(a,t)===1);
 // Tier-1 Guard covers melee only; the Guardian Knight (tier 2) also takes the first ranged or magic hit.
 export function guardFor(s,u,t,mode){const melee=!(mode==='skill'&&u.id==='lia')&&distance(u,t)===1;return s.units.find(g=>alive(g)&&g.team===t.team&&g.id!==t.id&&(g.guarding&&!g.guardUsed||g.guardTarget===t.id)&&distance(g,t)===1&&(melee||(g.classTier||1)>=2))||null;}
@@ -76,7 +79,7 @@ export function forecast(s,u,t,mode='attack'){
  if(mode==='capture')return {capture:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='rescue')return {rescue:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='search')return {search:true,damage:0,hit:100,counter:0,after:t.hp};
- const guard=guardFor(s,u,t,mode),victim=guard||t,stats=strikeStats(s,u,victim,mode),canCounter=validTarget(s,victim,u,'attack')&&!counterBlocked(s,victim)&&victim.hp>stats.damage;
+ const guard=guardFor(s,u,t,mode),victim=guard||t,stats=strikeStats(s,u,victim,mode),canCounter=validTarget(s,victim,u,'attack')&&!counterBlocked(s,victim)&&!chargeBreaks(u,mode)&&victim.hp>stats.damage;
  const counter=canCounter?strikeStats(s,victim,u).damage:0;
  return {...stats,counter,counterHit:canCounter?strikeStats(s,victim,u).hit:0,after:Math.max(0,victim.hp-stats.damage),guard:guard?.id,victim:victim.id};
 }

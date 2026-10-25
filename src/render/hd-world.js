@@ -43,8 +43,9 @@ export function drawTownBuilding(c,b,tone,state){const s=townBuildingSprite(b,to
  if(b.label){c.font='bold 11px sans-serif';c.textAlign='center';const tx=x+b.w*32,ty=bottom-s.height*K+28*K;const w=c.measureText(b.label).width+10;c.fillStyle='rgba(30,22,16,.78)';c.fillRect(tx-w/2,ty-11,w,15);c.fillStyle='#f2ddb0';c.fillText(b.label,tx,ty);c.textAlign='left';}}
 
 // ---------- figures ----------
-const ENEMY_LOOK={6:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},5:{lion:'lion',bearer:'bearer',spear:'ironSpear',archer:'ironArcher',cavalry:'cavalry',captain:'lion'},1:{bandit:'bandit',archer:'archer',captain:'captain'},2:{bandit:'deserter',archer:'archer',captain:'deserterCaptain'},3:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},4:{bandit:'fortGuard',archer:'fortArcher',captain:'quartermaster'}};
+const ENEMY_LOOK={7:{bandit:'ironDeserter',archer:'ironArcher',captain:'deserterCaptain'},8:{spear:'mercSpear',archer:'archer',captain:'mercSpear',bandit:'assassin'},6:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},5:{lion:'lion',bearer:'bearer',spear:'ironSpear',archer:'ironArcher',cavalry:'cavalry',captain:'lion'},1:{bandit:'bandit',archer:'archer',captain:'captain'},2:{bandit:'deserter',archer:'archer',captain:'deserterCaptain'},3:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},4:{bandit:'fortGuard',archer:'fortArcher',captain:'quartermaster'}};
 export function hdCastFor(u,missionId=1){
+ if(u.look&&CAST[u.look])return u.look; // v0.6: mission data may name a look (allied escorts, Baldrick, ACT II troops)
  if(CAST[u.id]&&u.team!=='enemy'){if((u.classTier||1)>=2&&CAST[`${u.id}_t2`])return `${u.id}_t2`;return u.id==='eric'&&appearanceFor(u)?.tier>=2?'eric_adv':u.id;}
  if(u.team==='commander'||u.id==='aren')return 'aren';
  if(u.id==='advisor')return 'aide';

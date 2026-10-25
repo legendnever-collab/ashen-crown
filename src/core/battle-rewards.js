@@ -1,6 +1,6 @@
 import {GEAR,TOOLS} from '../data/frontier-data.js';
 // Supplement existing first-clear Gold, never replace or repeat it.
-export function supplementalRewards(missionId,{rescued=0,captured=false,seal=false,orders=false,broken=false,wagons=0,refugees=0,beacon=false}={}){
+export function supplementalRewards(missionId,{rescued=0,captured=false,seal=false,orders=false,broken=false,wagons=0,refugees=0,beacon=false,convoy=0,captured7=false,villagers=0,captain8=false}={}){
  const reward=(suffix,kind,type,amount=1,optional=false)=>({id:`v032:m${missionId}:${suffix}`,missionId,kind,type,amount,optional});
  if(missionId===1)return [reward('supply','item','medium'),...(rescued===2?[reward('rescue','item','ward',1,true)]:[])];
  if(missionId===2)return [reward('supply','item','ether'),...(captured?[reward('capture','gold',null,30,true)]:[])];
@@ -9,9 +9,13 @@ export function supplementalRewards(missionId,{rescued=0,captured=false,seal=fal
  if(missionId===4)return [v4('supply','item','medium'),...(seal?[v4('seal-notes','gear','focusCharm',1,true)]:[]),...(orders?[v4('orders','gold',null,40,true)]:[]),...(seal&&orders?[v4('all-evidence','item','ether',1,true)]:[])];
  if(missionId===5)return [v4('supply-mp','item','ether'),v4('supply-hp','item','medium'),...(broken?[v4('formation-broken','gear','heavyShield',1,true)]:[]),...(wagons===2?[v4('both-wagons','gold',null,50,true)]:[])];
  if(missionId===6)return [v4('supply-hp','item','medium'),v4('supply-mp','item','ether'),...(refugees===4?[v4('all-refugees','gear','trailBoots',1,true)]:[]),...(beacon?[v4('beacon','gold',null,60,true)]:[])];
+ // v0.6 ACT II (PROPOSED): first-clear supplies plus optional rewards for a full convoy, a captured captain, rescued villagers.
+ const v6=(suffix,kind,type,amount=1,optional=false)=>({...reward(suffix,kind,type,amount,optional),id:`v060:m${missionId}:${suffix}`});
+ if(missionId===7)return [v6('supply-hp','item','medium'),v6('supply-mp','item','ether'),...(convoy===3?[v6('full-convoy','gold',null,70,true)]:[]),...(captured7?[v6('captain','item','ward',1,true)]:[])];
+ if(missionId===8)return [v6('supply-hp','item','medium'),v6('supply-mp','item','ether'),...(villagers===3?[v6('all-villagers','gear','focusCharm',1,true)]:[]),...(captain8?[v6('captain','gold',null,80,true)]:[])];
  return [];
 }
-export const knownRewards=()=>[1,2,3,4,5,6].flatMap(id=>supplementalRewards(id,{rescued:2,captured:true,seal:true,orders:true,broken:true,wagons:2,refugees:4,beacon:true}));
+export const knownRewards=()=>[1,2,3,4,5,6,7,8].flatMap(id=>supplementalRewards(id,{rescued:2,captured:true,seal:true,orders:true,broken:true,wagons:2,refugees:4,beacon:true,convoy:3,captured7:true,villagers:3,captain8:true}));
 export function initRewardLedger(e){e.rewardClaims??=[];e.rewardHistory??=[];e.rewardPending??=[];return e;}
 export function deliverRewards(e){let count=0;for(let i=0;i<e.rewardPending.length;){const r=e.rewardPending[i];if(r.kind==='item'&&Object.values(e.items).reduce((a,b)=>a+b,0)<6){e.items[r.type]++;}else if(r.kind==='gear'&&e.gear.length<24){e.gear.push({id:`g${e.next++}`,type:r.type,level:0});}else{i++;continue;}e.rewardPending.splice(i,1);count++;}return count;}
 export function grantSupplemental(e,missionId,context={},legacy=false){initRewardLedger(e);const grants=[];for(const r of supplementalRewards(missionId,context)){if(e.rewardClaims.includes(r.id))continue;e.rewardClaims.push(r.id);e.rewardHistory.push({...r,legacy});if(r.kind==='gold')e.gold+=r.amount;else for(let n=0;n<r.amount;n++)e.rewardPending.push({...r});grants.push(r);}deliverRewards(e);return grants;}

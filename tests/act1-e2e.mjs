@@ -120,7 +120,7 @@ try{for(const [width,height,touch]of viewports){
  check(`${label} oath saved, its scenes play and the ACT I card names the Ashen Legion`,s.campaign.choices.m06_oath==='comrades'&&s.campaign.flags.ashen_oath_focus==='comrades'&&s.narrative.seen.includes('6:oath:comrades')&&s.narrative.seen.includes('act1:complete')&&s.narrative.seen.includes('after:6')&&(await p.locator('.act1-card').textContent()).includes('재의 군단'));
  if(width===1440||width===390)await p.screenshot({path:`${shots}/act1-complete-${width}.png`});
  await cmd('close-modal');await p.waitForTimeout(150);
- check(`${label} camp shows the ACT II teaser and offers no next departure`,(await p.locator('#app').textContent()).includes('ACT II')&&!await p.locator('[data-do="next-mission"]').count());
+ check(`${label} camp names ACT II and offers the march to Mission 7 (D-064)`,(await p.locator('#app').textContent()).includes('ACT II')&&(await p.locator('[data-do="next-mission"]').first().textContent().catch(()=>'')).includes('Mission 7'));
  await p.reload();await settle();s=await snap();
  check(`${label} oath and ACT I completion survive reload without repeating`,s.campaign.choices.m06_oath==='comrades'&&s.campaign.choices.act1_seen==='yes'&&!await p.locator('.act1-card').count()&&!await p.locator('[data-do="oath-pick"]').count());
  await ctx.close();

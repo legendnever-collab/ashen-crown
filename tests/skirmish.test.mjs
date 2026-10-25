@@ -10,8 +10,8 @@ import {newGame,checkOutcome} from '../src/core/game.js';
 
 const ready={kai_rescue:4,kai_bypass:2,m6_kai_lever:1};
 
-test('skirmishes are outside the campaign: LAST_MISSION stays 6, ids 101–105 and 110 are flagged',()=>{
- assert.equal(LAST_MISSION,6);for(const id of [101,102,103,104,105,110])assert.ok(MISSIONS[id].skirmish,id);
+test('skirmishes are outside the campaign: LAST_MISSION is the last story mission (8 in v0.6 Phase D), ids 101–105 and 110 are flagged',()=>{
+ assert.equal(LAST_MISSION,8);for(const id of [101,102,103,104,105,110])assert.ok(MISSIONS[id].skirmish,id);
  assert.deepEqual(Object.values(TRIAL_MISSION),[101,102,103,104,105]);assert.equal(DRILL_MISSION,110);
 });
 

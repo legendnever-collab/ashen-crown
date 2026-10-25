@@ -31,7 +31,7 @@ export class BattleRenderer{
  diagnostics(now=performance.now()){return {motion:[...this.motion].map(([id,m])=>({id,...motionAt(m.path,now-m.start,m.movement,m.speed)})),active:this.effects.filter(e=>now>=e.start&&now<e.start+e.duration).map(e=>({type:e.type,kind:e.kind,phase:e.kind?effectPhase(e,now):'feedback',id:e.id,target:e.target})),lastWalk:this.lastWalk||null,lastPresentation:this.lastPresentation||[],lastFlourish:this.lastFlourish||[],rangeStyle:RANGE_STYLE};}
  tick(now){this.draw(now);requestAnimationFrame(this.tick);}
  draw(now){const c=this.ctx,s=this.getState(),ui=this.getUI();if(!s||!['battle','deployment','result','title'].includes(s.screen))return;const {width:WIDTH,height:HEIGHT}=missionOf(s);c.setTransform(this.dpr,0,0,this.dpr,0,0);c.clearRect(0,0,this.w,this.h);rect(c,'#172b2b',0,0,this.w,this.h);
-  if(this.mapId!==s.missionId){this.mapId=s.missionId;const m=missionOf(s),map=m.id===3?m.map.map(r=>r.map(t=>t==='x'?'w':t)):m.map;this.hd=hdGround('m'+m.id,map,map.some(r=>r.includes('k'))?'fortress':'');this.hdCovered=hdCovered(m.layers.buildings);this.facing=new Map();this.lastPos=new Map();}
+  if(this.mapId!==s.missionId){this.mapId=s.missionId;const m=missionOf(s),map=m.id===3?m.map.map(r=>r.map(t=>t==='x'?'w':t)):m.map;this.hd=hdGround('m'+m.id,map,map.some(r=>r.includes('k'))?'fortress':map.some(r=>r.includes('n'))?'snow':'');this.hdCovered=hdCovered(m.layers.buildings);this.facing=new Map();this.lastPos=new Map();}
   const follow=ui.pendingMove||s.units.find(u=>u.id===ui.selected);if(this.mapCamera.key!==String(s.missionId)){this.mapCamera.layout(this.w,this.h,WIDTH,HEIGHT,{key:String(s.missionId),follow});}this.mapCamera.zoom=this.zoom;this.mapCamera.offset={...this.pan};const camera=this.mapCamera.layout(this.w,this.h,WIDTH,HEIGHT,{key:String(s.missionId),follow});this.camera=camera;const {x,y,scale}=camera;c.translate(x,y);c.scale(scale,scale);c.imageSmoothingEnabled=false;
   drawHDGround(c,this.hd);
   const selected=s.units.find(u=>u.id===ui.selected),deploy=s.screen==='deployment';
@@ -88,6 +88,13 @@ function drawMissionObject(c,u,x,y,now){const done=u.rescued,glow=.5+.3*Math.sin
   if(!done){c.fillStyle=`rgba(240,206,120,${glow*.4})`;c.fillRect(x-18,y-22,36,46);}return;}
  if(u.kind==='gate'){if(done){rect(c,'#4a3424',x-30,y-26,8,48);rect(c,'#4a3424',x+22,y-26,8,48);return;}
   rect(c,'#3a281a',x-30,y-30,60,54);for(let i=0;i<5;i++)rect(c,i%2?'#6b4a30':'#5a3e28',x-28+i*11.5,y-28,11,50);rect(c,'#8a8f94',x-30,y-14,60,4);rect(c,'#8a8f94',x-30,y+8,60,4);return;}
+ if(u.kind==='rockfall'){c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+22,22,6,0,0,Math.PI*2);c.fill();
+  if(done){for(const [a,b,r] of [[-14,16,6],[-2,18,5],[10,15,7],[4,8,4]]){rect(c,'#5d5a55',x+a-r,y+b-r,r*2,r*2);rect(c,'#7a766f',x+a-r,y+b-r,r*2,2);}rect(c,'#4a3424',x-20,y+4,4,18);rect(c,'#4a3424',x+16,y+10,4,12);return;}
+  // v0.6 M08 rockfall device (original): a timber crib holding boulders, a rope and a wedge to knock out.
+  rect(c,'#3a281a',x-22,y-14,5,36);rect(c,'#3a281a',x+17,y-14,5,36);rect(c,'#5a3e28',x-22,y-16,44,5);rect(c,'#5a3e28',x-22,y+6,44,4);
+  for(const [a,b,r] of [[-10,-24,8],[6,-26,9],[-2,-36,7],[12,-38,6],[-14,-38,6]]){rect(c,'#6b6760',x+a-r,y+b-r,r*2,r*2);rect(c,'#8d887f',x+a-r,y+b-r,r*2,3);rect(c,'#4e4b46',x+a-r,y+b+r-3,r*2,3);}
+  rect(c,'#c9a24a',x-3,y+10,6,10);c.strokeStyle='#d8c08a';c.lineWidth=2;c.beginPath();c.moveTo(x,y+10);c.lineTo(x+20,y-12);c.stroke();
+  c.fillStyle=`rgba(240,206,120,${glow*.35})`;c.fillRect(x-26,y-48,52,74);return;}
  drawEvidence(c,u,x,y,now);}
 // Original evidence markers: a strapped document chest with a pulsing seal glow (no external art).
 function drawEvidence(c,u,x,y,now){const glow=.45+.25*Math.sin(now/320+u.x);c.fillStyle=`rgba(240,206,120,${glow*.45})`;c.fillRect(x-22,y-6,44,30);
