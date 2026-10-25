@@ -1,6 +1,6 @@
 import {launchTestBrowser} from './browser-helper.mjs';import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {pathToFileURL} from 'node:url';
 import {newGame} from '../src/core/game.js';import {enterHub,syncFrontier} from '../src/core/frontier.js';import {transact,effectiveStats} from '../src/core/economy.js';import {serialize} from '../src/persistence/save-manager.js';import {drain} from './campaign-policy.mjs';import {HUBS} from '../src/data/frontier-data.js';import {hubFor} from '../src/data/hubs-v05.js';
-const browser=await launchTestBrowser({headless:true,args:['--no-sandbox','--disable-gpu']});const checks=[],errors=[];let external=0;const shots='docs/v0.5.0/screenshots';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
+const browser=await launchTestBrowser({headless:true,args:['--no-sandbox','--disable-gpu']});const checks=[],errors=[];let external=0;const shots='docs/v0.6.0/screenshots';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const check=(name,ok)=>{assert.ok(ok,name);checks.push({name,status:'PASS'});console.log('PASS',name);};
 function fixture(mission=1,x=null,y=null){const s=newGame(20261016,null,mission);enterHub(s);drain(s);if(x!=null){s.frontier.x=x;s.frontier.y=y;}syncFrontier(s);return s;}
 const advisorAt=mission=>HUBS[hubFor(mission)].npcs.find(n=>n.id==='advisor');
