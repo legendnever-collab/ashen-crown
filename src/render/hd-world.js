@@ -91,8 +91,14 @@ function drawPaintedFigure(c,img,x,footY,{facing,frame,pose,alpha}){const sheet=
  if(pose==='death'){c.globalAlpha*=.45;c.translate(0,-8);c.rotate(-Math.PI/2);}if(mirror)c.scale(-1,1);
  c.drawImage(sheet,col*cell,row*cell,cell,cell,-D/2,-D*120/128,D,D);c.restore();}
 // scale (v0.6, user feedback 2026-10-25): exploration hubs, rooms and staged dialogue draw figures 1.5× around the foot point; battle stays 1×.
-export function drawHDFigure(c,castId,x,footY,{facing='down',frame=0,pose='idle',alpha=1,scale=1}={}){
- if(scale!==1){c.save();c.translate(x,footY);c.scale(scale,scale);c.translate(-x,-footY);drawHDFigure(c,castId,x,footY,{facing,frame,pose,alpha});c.restore();return;}
+// v0.6 (user feedback 2026-10-25, D-061): the v0.4–v0.6 painted enemy and NPC sheets were drawn shorter than the heroes
+// (head-to-foot 84–99 px in a 128 cell vs 98–108 for heroes), so soldiers looked small beside the legion. Each listed
+// sheet is drawn larger around its foot point: rank and file to about hero height (104), captains a little taller (110).
+export const FIGURE_FIT={executor:1.3,baldrick:1.24,garr:1.22,guard:1.16,ironSpear:1.16,fortGuard:1.14,ironInfantry:1.13,lordA:1.13,lordB:1.13,
+ archer:1.12,mercSpear:1.12,fortArcher:1.11,smith:1.11,pursuerCaptain:1.16,bearer:1.08,assassin:1.07,pursuer:1.07,cavalry:1.06,pursuerArcher:1.06,ironDeserter:1.05,deserterCaptain:1.08};
+export function drawHDFigure(c,castId,x,footY,{facing='down',frame=0,pose='idle',alpha=1,scale=1,fitted=false}={}){
+ const fit=!fitted&&FIGURE_FIT[spriteIdFor(castId)];if(fit&&paintedSheet(castId))scale*=fit;
+ if(scale!==1){c.save();c.translate(x,footY);c.scale(scale,scale);c.translate(-x,-footY);drawHDFigure(c,castId,x,footY,{facing,frame,pose,alpha,fitted:true});c.restore();return;}
  const sheet=paintedSheet(castId);if(sheet){drawPaintedFigure(c,sheet,x,footY,{facing,frame,pose,alpha});return;}
  if(castId==='beacon'){drawBeacon(c,x,footY,pose==='death',alpha);return;}
  if(castId==='wagon'){const w=wagonSprite();c.save();c.globalAlpha*=pose==='death'?.4:alpha;hdBlit(c,w,x-24*HD_K,footY-50*HD_K);c.restore();return;}

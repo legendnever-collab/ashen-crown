@@ -62,6 +62,8 @@ export function migrate(s){
  if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');
  // v0.6 (D-060): character names are written in Hangul; saves made before keep English names on board until renamed here.
  if(s?.schema===SCHEMA)koreanNames(s);
+ // v0.6 (D-062): rewritten scenes can differ in length; a save paused inside a scene resumes on its last line at most.
+ if(s?.schema===SCHEMA)for(const n of [s.narrative,s.stageStart?.narrative]){const a=n?.active,len=a&&STORY[a.key]?.length;if(len&&Number.isInteger(a.index)&&a.index>=len)a.index=len-1;}
  // v0.5 hubs (D-052): every load re-anchors the frontier to the hub of its story moment (spatial only).
  if(s?.schema===SCHEMA){if(s.frontier)alignFrontier(s.frontier,s.missionId,s.screen);if(s.campaign?.frontier)alignFrontier(s.campaign.frontier,s.missionId,s.screen);if(s.skirmish?.frontier)alignFrontier(s.skirmish.frontier,s.skirmish.returnMission,'exploration');if(s.stageStart?.frontier)alignFrontier(s.stageStart.frontier,s.stageStart.missionId,s.stageStart.screen);if(s.stageStart?.campaign?.frontier)alignFrontier(s.stageStart.campaign.frontier,s.stageStart.missionId,s.stageStart.screen);}
  return validate(s);

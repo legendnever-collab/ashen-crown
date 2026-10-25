@@ -110,7 +110,7 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'story-next':case 'story-skip':advanceStory(state,action==='story-skip');commit();if(!state.narrative.active)promptTurnEnd();if(!state.narrative.active&&state.phase==='enemy'&&state.screen==='battle')enemyLoop();break;
  case 'story-fast':state.narrative.fast=!state.narrative.fast;commit();break;
  case 'story-auto':state.narrative.auto=!state.narrative.auto;commit();break;
- case 'story-log':modal('Dialogue History',`<div class="history">${state.narrative.history.map(l=>`<p><b>${esc(SPEAKERS[l.speaker]?.name||'적')}</b> · ${esc(l.text)}</p>`).join('')||'<p>아직 기록이 없습니다.</p>'}</div>`,'');break;
+ case 'story-log':modal('Dialogue History',`<div class="history">${state.narrative.history.map(l=>`<p><b>${esc(l.name||SPEAKERS[l.speaker]?.name||'적')}</b> · ${esc(l.text)}</p>`).join('')||'<p>아직 기록이 없습니다.</p>'}</div>`,'');break;
  case 'audio':showAudio();break;
  case 'campaign':showCampaign();break;
  case 'world-map':showWorldMap();break;
@@ -212,7 +212,7 @@ window.AshenCrown=Object.freeze({version:VERSION,audio:()=>audio.diagnostics(),s
 
 // v0.4 feedback: classic SRPG dialogue window — painted bust overlapping a translucent box, name in
 // amber, tap anywhere to advance; only Auto/Skip stay on screen (top-right).
-function renderStory(){clearTimeout(autoTimer);const l=storyLine(state),n=state.narrative;if(!l){$('#story-root').innerHTML='';return;}ui.menu=null;$('#unit-popover').hidden=true;if(l.world){renderWorldStory(l,n);return;}const staged=l.stage&&!n.active.key.startsWith('npc:');const speaker=findUnit(state,l.speaker)||SPEAKERS[l.speaker]||{id:'boss',name:'적'},name=speaker.ko||speaker.name;
+function renderStory(){clearTimeout(autoTimer);const l=storyLine(state),n=state.narrative;if(!l){$('#story-root').innerHTML='';return;}ui.menu=null;$('#unit-popover').hidden=true;if(l.world){renderWorldStory(l,n);return;}const staged=l.stage&&!n.active.key.startsWith('npc:');const speaker=findUnit(state,l.speaker)||SPEAKERS[l.speaker]||{id:'boss',name:'적'},name=l.name||speaker.ko||speaker.name;
  $('#story-root').innerHTML=`<section class="dialogue-backdrop ${staged?'staged-scene':'in-place-dialogue'}" role="dialog" aria-modal="true" aria-label="스토리 대화 · 화면을 누르면 다음" data-do="story-next">${staged?'<canvas id="scene-stage" width="1024" height="768" aria-label="인물들이 대화하는 장면"></canvas>':''}<div class="story-controls"><button data-do="story-auto" class="${n.auto?'on':''}" aria-pressed="${n.auto}">자동</button><button data-do="story-skip">스킵</button></div><div class="dialogue-panel ${ui.reduced?'reduced':''}" data-expression="${l.expression}"><canvas class="story-portrait story-bust" width="720" height="880" data-sprite="${esc(speaker.id)}" data-bust="1" aria-label="${esc(name)}"></canvas><div class="dialogue-copy"><h3 class="dialogue-name">${esc(name)}</h3><p class="dialogue-text">${esc(l.text)}</p></div><span class="dialogue-next" aria-hidden="true"></span><span class="sr-only">${n.active.index+1} / ${STORY[n.active.key].length}</span></div></section>`;const face=$('#story-root [data-sprite]');if(face)face.dataset.expression=l.expression;if(n.auto)autoTimer=setTimeout(()=>{if(!$('#modal-root').children.length)dispatch('story-next');},Math.max(2600,l.text.length*75));}
 // v0.5 world-map interlude (D-052): the chronicle line narrates over the map; the card names the region.
 function renderWorldStory(l,n){const k=`${n.active.key}:${n.active.index}`;if(worldStart.key!==k)worldStart={key:k,time:performance.now()};const c=l.world.card;
