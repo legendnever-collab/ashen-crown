@@ -2,7 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {newGame,startBattle,performAction,beginEnemyPhase,advanceEnemy,checkOutcome,nextMission,planEnemy,moveUnit} from '../src/core/game.js';
 import {findUnit,alive,validTarget,distance,movement} from '../src/core/rules.js';
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
-import {MISSIONS,LAST_MISSION} from '../src/data/missions.js';
+import {MISSIONS,LAST_MISSION} from '../src/data/missions.js';import {ACT1_FINALE} from '../src/core/progression.js';
 import {STORY} from '../src/data/story.js';
 import {rulesOf} from '../src/core/mission-rules.js';
 import {supplementalRewards,knownRewards} from '../src/core/battle-rewards.js';
@@ -19,7 +19,7 @@ const endTurn=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanc
 const quiet=s=>{for(const u of s.units)if(u.team==='enemy'&&u.id!=='boss')u.hp=0;};
 
 test('M06 data: 18×16 border gate, presets in the deployment zone, four refugees (two injured), locked seal stones, M05 → M06, last mission',()=>{
- const m=MISSIONS[6];assert.deepEqual([m.width,m.height],[18,16]);assert.ok(m.map.every(r=>r.length===18));assert.equal(LAST_MISSION,6);
+ const m=MISSIONS[6];assert.deepEqual([m.width,m.height],[18,16]);assert.ok(m.map.every(r=>r.length===18));assert.equal(ACT1_FINALE,6);assert.ok(LAST_MISSION>=6);
  const s=newGame(6006,campaign(),6),zone=m.deployZone(s);for(const preset of Object.values(m.deployments))for(const [x,y]of preset)assert.ok(zone.has(`${x},${y}`),`${x},${y}`);
  const refugees=s.units.filter(u=>u.team==='civilian');assert.equal(refugees.length,4);assert.equal(refugees.filter(r=>r.hp<=r.maxHP/2).length,2);
  assert.ok(s.units.filter(u=>u.kind==='sealstone').every(o=>o.locked&&o.progress===0));

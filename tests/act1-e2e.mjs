@@ -5,8 +5,8 @@ import fs from 'node:fs';import path from 'node:path';import assert from 'node:a
 import {newGame,startBattle,nextMission} from '../src/core/game.js';import {enterHub,syncFrontier} from '../src/core/frontier.js';import {findUnit} from '../src/core/rules.js';
 import {serialize} from '../src/persistence/save-manager.js';import {playBattle} from './player-policy.mjs';import {playCampaignBattle,drain} from './campaign-policy.mjs';
 
-const shots='docs/v0.5.0/screenshots';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
-const url=pathToFileURL(path.resolve('releases/Ashen_Crown_v0.5.0.html')).href,checks=[],errors=[];let external=0;
+const shots='docs/v0.6.0/screenshots';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(path.resolve('releases/Ashen_Crown_v0.6.0.html')).href,checks=[],errors=[];let external=0;
 const check=(name,ok)=>{assert.ok(ok,name);checks.push({name,status:'PASS'});console.log('PASS',name);};
 
 // Deterministic legal campaign through M03, then the real aftermath hub.
@@ -120,7 +120,7 @@ try{for(const [width,height,touch]of viewports){
  check(`${label} oath saved, its scenes play and the ACT I card names the Ashen Legion`,s.campaign.choices.m06_oath==='comrades'&&s.campaign.flags.ashen_oath_focus==='comrades'&&s.narrative.seen.includes('6:oath:comrades')&&s.narrative.seen.includes('act1:complete')&&s.narrative.seen.includes('after:6')&&(await p.locator('.act1-card').textContent()).includes('재의 군단'));
  if(width===1440||width===390)await p.screenshot({path:`${shots}/act1-complete-${width}.png`});
  await cmd('close-modal');await p.waitForTimeout(150);
- check(`${label} camp shows the ACT II teaser and offers no next departure`,(await p.locator('#app').textContent()).includes('ACT II')&&!await p.locator('[data-do="next-mission"]').count());
+ check(`${label} camp names ACT II and offers the march to Mission 7 (D-064)`,(await p.locator('#app').textContent()).includes('ACT II')&&(await p.locator('[data-do="next-mission"]').first().textContent().catch(()=>'')).includes('Mission 7'));
  await p.reload();await settle();s=await snap();
  check(`${label} oath and ACT I completion survive reload without repeating`,s.campaign.choices.m06_oath==='comrades'&&s.campaign.choices.act1_seen==='yes'&&!await p.locator('.act1-card').count()&&!await p.locator('[data-do="oath-pick"]').count());
  await ctx.close();

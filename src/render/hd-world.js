@@ -43,8 +43,9 @@ export function drawTownBuilding(c,b,tone,state){const s=townBuildingSprite(b,to
  if(b.label){c.font='bold 11px sans-serif';c.textAlign='center';const tx=x+b.w*32,ty=bottom-s.height*K+28*K;const w=c.measureText(b.label).width+10;c.fillStyle='rgba(30,22,16,.78)';c.fillRect(tx-w/2,ty-11,w,15);c.fillStyle='#f2ddb0';c.fillText(b.label,tx,ty);c.textAlign='left';}}
 
 // ---------- figures ----------
-const ENEMY_LOOK={6:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},5:{lion:'lion',bearer:'bearer',spear:'ironSpear',archer:'ironArcher',cavalry:'cavalry',captain:'lion'},1:{bandit:'bandit',archer:'archer',captain:'captain'},2:{bandit:'deserter',archer:'archer',captain:'deserterCaptain'},3:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},4:{bandit:'fortGuard',archer:'fortArcher',captain:'quartermaster'}};
+const ENEMY_LOOK={7:{bandit:'ironDeserter',archer:'ironArcher',captain:'deserterCaptain'},8:{spear:'mercSpear',archer:'archer',captain:'mercSpear',bandit:'assassin'},6:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},5:{lion:'lion',bearer:'bearer',spear:'ironSpear',archer:'ironArcher',cavalry:'cavalry',captain:'lion'},1:{bandit:'bandit',archer:'archer',captain:'captain'},2:{bandit:'deserter',archer:'archer',captain:'deserterCaptain'},3:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},4:{bandit:'fortGuard',archer:'fortArcher',captain:'quartermaster'}};
 export function hdCastFor(u,missionId=1){
+ if(u.look&&CAST[u.look])return u.look; // v0.6: mission data may name a look (allied escorts, Baldrick, ACT II troops)
  if(CAST[u.id]&&u.team!=='enemy'){if((u.classTier||1)>=2&&CAST[`${u.id}_t2`])return `${u.id}_t2`;return u.id==='eric'&&appearanceFor(u)?.tier>=2?'eric_adv':u.id;}
  if(u.team==='commander'||u.id==='aren')return 'aren';
  if(u.id==='advisor')return 'aide';
@@ -53,7 +54,7 @@ export function hdCastFor(u,missionId=1){
  if(missionId===6&&u.id==='boss')return 'executor';
  if(missionId===6&&u.team==='enemy'&&/^g\d/.test(u.id))return 'fortGuard';
  if(missionId===6&&u.id==='i1')return 'inspector';
- if(u.team==='civilian'){const n=String(u.name||'');return /Mira/.test(n)?'mira':/Tomas/.test(n)?'farmer':CAST[u.id]?u.id:'refugee';}
+ if(u.team==='civilian'){const n=String(u.name||'');return /Mira|미라/.test(n)?'mira':/Tomas|토마스/.test(n)?'farmer':CAST[u.id]?u.id:'refugee';}
  if(u.burns)return 'torch';
  if(missionId===4&&/^r\d/.test(u.id))return 'storeman';
  return (ENEMY_LOOK[missionId]||ENEMY_LOOK[1])[u.kind]||'bandit';
@@ -90,7 +91,15 @@ function drawPaintedFigure(c,img,x,footY,{facing,frame,pose,alpha}){const sheet=
  c.save();c.globalAlpha*=alpha;c.imageSmoothingEnabled=true;c.imageSmoothingQuality='low';c.translate(x+lean[0],footY+lean[1]);
  if(pose==='death'){c.globalAlpha*=.45;c.translate(0,-8);c.rotate(-Math.PI/2);}if(mirror)c.scale(-1,1);
  c.drawImage(sheet,col*cell,row*cell,cell,cell,-D/2,-D*120/128,D,D);c.restore();}
-export function drawHDFigure(c,castId,x,footY,{facing='down',frame=0,pose='idle',alpha=1}={}){
+// scale (v0.6, user feedback 2026-10-25): exploration hubs, rooms and staged dialogue draw figures 1.5× around the foot point; battle stays 1×.
+// v0.6 (user feedback 2026-10-25, D-061): the v0.4–v0.6 painted enemy and NPC sheets were drawn shorter than the heroes
+// (head-to-foot 84–99 px in a 128 cell vs 98–108 for heroes), so soldiers looked small beside the legion. Each listed
+// sheet is drawn larger around its foot point: rank and file to about hero height (104), captains a little taller (110).
+export const FIGURE_FIT={executor:1.3,baldrick:1.24,garr:1.22,guard:1.16,ironSpear:1.16,fortGuard:1.14,ironInfantry:1.13,lordA:1.13,lordB:1.13,
+ archer:1.12,mercSpear:1.12,fortArcher:1.11,smith:1.11,pursuerCaptain:1.16,bearer:1.08,assassin:1.07,pursuer:1.07,cavalry:1.06,pursuerArcher:1.06,ironDeserter:1.05,deserterCaptain:1.08};
+export function drawHDFigure(c,castId,x,footY,{facing='down',frame=0,pose='idle',alpha=1,scale=1,fitted=false}={}){
+ const fit=!fitted&&FIGURE_FIT[spriteIdFor(castId)];if(fit&&paintedSheet(castId))scale*=fit;
+ if(scale!==1){c.save();c.translate(x,footY);c.scale(scale,scale);c.translate(-x,-footY);drawHDFigure(c,castId,x,footY,{facing,frame,pose,alpha,fitted:true});c.restore();return;}
  const sheet=paintedSheet(castId);if(sheet){drawPaintedFigure(c,sheet,x,footY,{facing,frame,pose,alpha});return;}
  if(castId==='beacon'){drawBeacon(c,x,footY,pose==='death',alpha);return;}
  if(castId==='wagon'){const w=wagonSprite();c.save();c.globalAlpha*=pose==='death'?.4:alpha;hdBlit(c,w,x-24*HD_K,footY-50*HD_K);c.restore();return;}

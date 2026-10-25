@@ -44,6 +44,8 @@ const GRASS=['#43623a','#527440','#5f8445','#6d924c','#8cad5c'].map(col);
 const DIRT=['#6e5638','#86694a','#9e8058','#b7996b','#cdb283'].map(col);
 const SAND=['#a58a5a','#bba06a','#cdb27a','#dcc48e','#ebd8a6'].map(col);
 const WATER=['#1f3f5c','#2a5674','#346c8a','#4f8ca3','#8cc2c9'].map(col);
+// v0.6 ACT II snow and ice (M07–M08). Only maps that contain snow use them; ACT I ground is unchanged.
+const SNOW=['#9fb0bd','#bccad4','#d6e0e7','#e7eef2','#f6f9fb'].map(col),ICE=['#6f98ae','#88afc3','#a3c4d4','#c0dae4','#e3f1f6'].map(col);
 const STONE=ramp('#8a8778'),MOSS=ramp('#5d7a43'),WOOD=ramp('#8a6040'),PLASTER=ramp('#dccaa0'),ROOF=ramp('#a3593b'),THATCH=ramp('#b98d4f');
 const LEAF=['#1d3528','#284a33','#36623d','#4e8248','#71a455'].map(col);
 const FLAG=ramp('#a29a86'),PLANK=ramp('#8a6442'),WALLR=ramp('#6e6a60');
@@ -60,18 +62,21 @@ function groundPixel(kind,gx,gy){
  if(kind==='flag'){return FLAG[2];}
  if(kind==='plank'){const row=Math.floor(gy/8),seam=gy%8===7,joint=(gx+row*29)%41===0;const n=noise(gx,gy*.25,10,12);let t=n<.4?1:2;if(seam||joint)t=0;else if(gy%8===0)t=3;return PLANK[t];}
  if(kind==='wall'){return WALLR[2];}
+ if(kind==='snow'){const n=noise(gx,gy,20,13)*.75+noise(gx,gy,5,14)*.25;let t=2;if(n<.3)t=dither(gx,gy,(.3-n)*6)?1:2;else if(n>.64)t=dither(gx,gy,(n-.64)*6)?3:2;return SNOW[t];}
+ if(kind==='ice'){const n=noise(gx,gy,16,15);const crack=Math.abs(Math.sin(gx*.21+gy*.47+noise(gx,gy,9,16)*6))<.04;return crack?ICE[0]:ICE[n<.35?1:n>.7?3:2];}
  return GRASS[2];
 }
-const KIND={g:'grass',f:'grass',v:'grass',t:'grass',h:'grass',r:'dirt',x:'grass',m:'grass',d:'sand',w:'water',b:'water',s:'swamp',k:'flag',q:'flag',p:'plank'};
+const KIND={g:'grass',f:'grass',v:'grass',t:'grass',h:'grass',r:'dirt',x:'grass',m:'grass',d:'sand',w:'water',b:'water',s:'swamp',k:'flag',q:'flag',p:'plank',n:'snow',i:'ice'};
+const SNOW_BASE={g:'snow',f:'snow',v:'snow',t:'snow',h:'snow',x:'snow',m:'snow'};
 // paints the full terrain ground; decor (trees, houses, rocks) is returned as sortable objects
 export function paintGround(map,{theme=''}={}){
- const H=map.length,W=map[0].length,T=HD_TILE,p=new Pix(W*T,H*T),objects=[],fort=theme==='fortress';
+ const H=map.length,W=map[0].length,T=HD_TILE,p=new Pix(W*T,H*T),objects=[],fort=theme==='fortress',snowy=theme==='snow';
  for(let ty=0;ty<H;ty++)for(let tx=0;tx<W;tx++){
-  const t=map[ty][tx],kind=fort&&t==='x'?'wall':KIND[t]||'grass';
+  const t=map[ty][tx],kind=fort&&t==='x'?'wall':snowy&&SNOW_BASE[t]||KIND[t]||'grass';
   for(let y=0;y<T;y++)for(let x=0;x<T;x++){const gx=tx*T+x,gy=ty*T+y;let k=kind;
    // organic edges: dirt/sand/water tiles fray into neighbouring grass
-   if(['dirt','sand','water','swamp'].includes(kind)){const same=(dx,dy)=>(KIND[tileAt(map,tx+dx,ty+dy)]??kind)===kind||(kind==='water'&&tileAt(map,tx+dx,ty+dy)==='b')||(kind==='dirt'&&['r','h'].includes(tileAt(map,tx+dx,ty+dy)));const j=2+noise(gx,gy,6,9)*5;let dmin=99;if(!same(-1,0))dmin=Math.min(dmin,x);if(!same(1,0))dmin=Math.min(dmin,T-1-x);if(!same(0,-1))dmin=Math.min(dmin,y);if(!same(0,1))dmin=Math.min(dmin,T-1-y);for(const [dx,dy,cx,cy]of[[-1,-1,0,0],[1,-1,T-1,0],[-1,1,0,T-1],[1,1,T-1,T-1]])if(same(dx,0)&&same(0,dy)&&!same(dx,dy))dmin=Math.min(dmin,Math.hypot(x-cx,y-cy));if(dmin<j)k='grass';else if(dmin<j+1.2)k=kind==='water'?'foam':'rim';}
-   let c=k==='rim'?(kind==='dirt'?DIRT[0]:kind==='sand'?SAND[0]:col('#33483a')):k==='foam'?WATER[4]:groundPixel(k,gx,gy);
+   if(['dirt','sand','water','swamp','ice'].includes(kind)){const same=(dx,dy)=>(KIND[tileAt(map,tx+dx,ty+dy)]??kind)===kind||(kind==='water'&&['b','i'].includes(tileAt(map,tx+dx,ty+dy)))||(kind==='ice'&&tileAt(map,tx+dx,ty+dy)==='w')||(kind==='dirt'&&['r','h'].includes(tileAt(map,tx+dx,ty+dy)));const j=2+noise(gx,gy,6,9)*5;let dmin=99;if(!same(-1,0))dmin=Math.min(dmin,x);if(!same(1,0))dmin=Math.min(dmin,T-1-x);if(!same(0,-1))dmin=Math.min(dmin,y);if(!same(0,1))dmin=Math.min(dmin,T-1-y);for(const [dx,dy,cx,cy]of[[-1,-1,0,0],[1,-1,T-1,0],[-1,1,0,T-1],[1,1,T-1,T-1]])if(same(dx,0)&&same(0,dy)&&!same(dx,dy))dmin=Math.min(dmin,Math.hypot(x-cx,y-cy));if(dmin<j)k=snowy?'snow':'grass';else if(dmin<j+1.2)k=kind==='water'?'foam':'rim';}
+   let c=k==='rim'?(kind==='dirt'?DIRT[0]:kind==='sand'?SAND[0]:kind==='ice'?ICE[0]:snowy?SNOW[0]:col('#33483a')):k==='foam'?WATER[4]:groundPixel(k,gx,gy);
    p.set(gx,gy,c);}
   const ox=tx*T,oy=ty*T,R=(i)=>hash(tx,ty,i);
   // surface detail
@@ -182,7 +187,7 @@ export const CAST={
  aren:{name:'아렌',skin:'warm',hair:'#25323a',style:'swept',body:'coat',coat:'#6c7a82',trim:'#d6b06a',cape:'#9c3f36',legs:'#37414a',boots:'#2f2a28',weapon:'sheathed',eye:'#5a4a40'},
  bandit:{name:'산적',skin:'tan',hair:'#3e2c22',style:'short',bandana:'#a23d32',body:'leather',coat:'#7a5a3e',trim:'#5a4030',legs:'#4b3e30',boots:'#3a2c20',weapon:'axe',beard:'stubble',eye:'#3a2a22'},
  archer:{name:'산적 궁수',skin:'warm',hair:'#4a3626',style:'short',hood:'#6b4e36',body:'leather',coat:'#85663f',trim:'#a23d32',legs:'#4b3e30',boots:'#3a2c20',weapon:'bow',back:'quiver',eye:'#3a2a22'},
- captain:{name:'Garr',skin:'tan',hair:'#3a241c',style:'mohawk',body:'fur',coat:'#7c3a2e',fur:'#8a7558',trim:'#c9a24a',legs:'#3e3026',boots:'#2c221a',weapon:'greataxe',beard:'full',eye:'#2a1a14',big:true},
+ captain:{name:'가르',skin:'tan',hair:'#3a241c',style:'mohawk',body:'fur',coat:'#7c3a2e',fur:'#8a7558',trim:'#c9a24a',legs:'#3e3026',boots:'#2c221a',weapon:'greataxe',beard:'full',eye:'#2a1a14',big:true},
  torch:{name:'횃불 병참병',skin:'warm',hair:'#3b302a',style:'short',helm:'cap',helmColor:'#6b6d6a',body:'tunic',coat:'#5f6a63',trim:'#a28a5a',legs:'#44494a',boots:'#2f2c28',weapon:'torch',eye:'#3a2a22'},
  quartermaster:{name:'병참관',skin:'pale',hair:'#5a5a5e',style:'swept',body:'coat',coat:'#4e5560',trim:'#c9b07a',legs:'#33373e',boots:'#26262a',weapon:'ledger',beard:'mustache',eye:'#3a3a40'},
  elder:{name:'마을 어른',skin:'warm',hair:'#e6e1d6',style:'bald',body:'robe',coat:'#7b5b42',trim:'#c2a36d',legs:'#5a4634',boots:'#3d2f22',weapon:'cane',beard:'long',eye:'#4a3a2c',stoop:true},
@@ -190,8 +195,8 @@ export const CAST={
  merchant:{name:'도구 상인',skin:'fair',hair:'#6a4a30',style:'short',helm:'beret',helmColor:'#3f7a5a',body:'vest',coat:'#d7c49a',vest:'#3f7a5a',trim:'#d8b46a',legs:'#5a4a36',boots:'#4a3a28',weapon:'satchel',eye:'#4a3a2c'},
  refugee:{name:'피난민',skin:'warm',hair:'#4a3a30',style:'long',scarfHead:'#9a8f7c',body:'shawl',coat:'#8c8a7e',shawl:'#b0866a',trim:'#7a6a54',legs:'#6a6254',boots:'#4a4034',weapon:'bundle',eye:'#3a2a22'},
  child:{name:'아이',skin:'fair',hair:'#8a5a34',style:'short',body:'tunic',coat:'#c98a4a',trim:'#f0d090',legs:'#5a5040',boots:'#4a3a28',weapon:'none',eye:'#3a2a22',small:true},
- farmer:{name:'Tomas',skin:'tan',hair:'#5a3a24',style:'short',helm:'straw',helmColor:'#d8b866',body:'tunic',coat:'#b8a07a',trim:'#7a5a3a',legs:'#5a5040',boots:'#4a3a28',weapon:'none',eye:'#3a2a22'},
- mira:{name:'Mira',skin:'fair',hair:'#9a5a3a',style:'long',scarfHead:'#c7b18a',body:'shawl',coat:'#a59c8a',shawl:'#8a6a8a',trim:'#c7b18a',legs:'#6a6254',boots:'#4a4034',weapon:'none',bandage:true,eye:'#4a3a2c'},
+ farmer:{name:'토마스',skin:'tan',hair:'#5a3a24',style:'short',helm:'straw',helmColor:'#d8b866',body:'tunic',coat:'#b8a07a',trim:'#7a5a3a',legs:'#5a5040',boots:'#4a3a28',weapon:'none',eye:'#3a2a22'},
+ mira:{name:'미라',skin:'fair',hair:'#9a5a3a',style:'long',scarfHead:'#c7b18a',body:'shawl',coat:'#a59c8a',shawl:'#8a6a8a',trim:'#c7b18a',legs:'#6a6254',boots:'#4a4034',weapon:'none',bandage:true,eye:'#4a3a2c'},
  guard:{name:'경비병',skin:'fair',hair:'#2f2a26',style:'short',helm:'kettle',helmColor:'#9aa4a8',body:'tunic',coat:'#4f6b84',trim:'#c9b07a',legs:'#3a4652',boots:'#2c2a26',weapon:'spear',eye:'#3a3a40'},
  eric_adv:{name:'에릭',skin:'warm',hair:'#6b4630',style:'short',helm:'knight',body:'plate',coat:'#3f7fa3',tabard:'#3f7fa3',trim:'#e7c783',legs:'#40505c',boots:'#5b4632',weapon:'sword',off:'shield',shield:'#3f7fa3',eye:'#2f5d78',cape:'#5d425e'},
  deserter:{name:'탈영병',skin:'warm',hair:'#4a3a2a',style:'short',body:'tunic',coat:'#6a7058',trim:'#8a7a54',legs:'#4a4a3a',boots:'#3a3226',weapon:'sword',beard:'stubble',eye:'#3a2a22'},
@@ -207,6 +212,18 @@ export const CAST={
  ironSpear:{name:'철왕관 창병',skin:'warm',hair:'#3b302a',style:'short',helm:'kettle',helmColor:'#6e737a',body:'plate',metal:'#7d838a',coat:'#3a3e48',tabard:'#3a3e48',trim:'#c9a24a',legs:'#2e3038',boots:'#1f1f24',weapon:'spear',eye:'#3a2a22'},
  ironArcher:{name:'철왕관 궁수',skin:'fair',hair:'#4a3626',style:'short',helm:'cap',helmColor:'#3a3e48',body:'leather',coat:'#4a4f5a',trim:'#c9a24a',legs:'#2e3038',boots:'#1f1f24',weapon:'bow',back:'quiver',eye:'#3a2a22'},
  cavalry:{name:'철왕관 기병',horse:'#8a5a3a',barding:'#3a3e48',skin:'tan',hair:'#2a2420',style:'short',helm:'knight',helmMetal:'#7d838a',body:'plate',metal:'#7d838a',coat:'#3a3e48',tabard:'#7a2e2a',trim:'#c9a24a',legs:'#2e3038',boots:'#1f1f24',weapon:'spear',eye:'#3a2a22',mounted:true},
+ // v0.6 ACT II cast (pack B, D-059). Painted sheets are used; these are the procedural fallbacks and the palette for small UI.
+ thea:{name:'테아',horse:'#9a9a96',barding:'#4f6b84',skin:'fair',hair:'#a5532c',style:'ponytail',body:'plate',metal:'#6f7f8f',coat:'#4f6b84',tabard:'#4f6b84',trim:'#c9b07c',legs:'#2e3038',boots:'#1f1f24',weapon:'spear',eye:'#4f6b84',mounted:true},
+ dario:{name:'다리오',skin:'tan',hair:'#1e1a18',style:'long',body:'leather',coat:'#7a2e30',trim:'#c9a24a',scarf:'#3f7f74',legs:'#4a3a2c',boots:'#3a2a20',weapon:'sword',beard:'stubble',eye:'#3a2a22'},
+ cassian:{name:'카시안',skin:'fair',hair:'#2e2c2c',style:'swept',body:'coat',coat:'#3c5677',fur:'#5e5a56',trim:'#b8bec4',cape:'#3c5677',legs:'#2a2e36',boots:'#1d1d20',weapon:'sheathed',eye:'#7f878e'},
+ leonora:{name:'레오노라',skin:'fair',hair:'#c9b48a',style:'braid',body:'coat',coat:'#3f6a4a',trim:'#c8ced3',cape:'#2f5a3c',legs:'#d8cfb4',boots:'#4a3a28',weapon:'sword',eye:'#7a6a40'},
+ ironInfantry:{name:'통령국 보병',skin:'warm',hair:'#3b302a',style:'short',helm:'kettle',helmColor:'#6e737a',body:'plate',metal:'#7d838a',coat:'#4f6b84',tabard:'#4f6b84',fur:'#8a8680',trim:'#b8bec4',legs:'#2e3038',boots:'#1f1f24',weapon:'spear',off:'shield',shield:'#4f6b84',eye:'#3a2a22'},
+ ironDeserter:{name:'통령국 탈영병',skin:'warm',hair:'#3a2c22',style:'short',body:'plate',metal:'#6a6e74',coat:'#4f6b84',fur:'#6e665e',trim:'#7a6a50',legs:'#3a3a3a',boots:'#2a2620',weapon:'axe',beard:'stubble',eye:'#3a2a22'},
+ mercSpear:{name:'용병 창병',skin:'warm',hair:'#3a2c22',style:'short',helm:'kettle',helmColor:'#7d838a',body:'leather',coat:'#8a2e2a',tabard:'#1f1d1d',trim:'#5a4030',legs:'#3a2c22',boots:'#2a2018',weapon:'spear',eye:'#3a2a22'},
+ assassin:{name:'자객',skin:'warm',hair:'#2a2420',style:'short',hood:'#4a5444',body:'leather',coat:'#3e463a',trim:'#2a2a26',legs:'#2e322a',boots:'#22241f',weapon:'daggers',eye:'#3a2a22'},
+ lordA:{name:'영주군(청백)',skin:'warm',hair:'#3b302a',style:'short',helm:'kettle',helmColor:'#b8bec4',body:'plate',metal:'#9aa0a6',coat:'#2f4f8a',tabard:'#e8e4d8',trim:'#2f4f8a',legs:'#2e3038',boots:'#1f1f24',weapon:'spear',off:'shield',shield:'#2f4f8a',eye:'#3a2a22'},
+ lordB:{name:'영주군(주황)',skin:'warm',hair:'#3b302a',style:'short',helm:'kettle',helmColor:'#7d838a',body:'plate',metal:'#7d838a',coat:'#c8682a',tabard:'#6a4428',trim:'#c8682a',legs:'#2e3038',boots:'#1f1f24',weapon:'spear',eye:'#3a2a22'},
+ councillor:{name:'벨마르 의원',skin:'fair',hair:'#b8b0a4',style:'short',helm:'beret',helmColor:'#3f6a4a',body:'robe',coat:'#3f6a4a',trim:'#e6dcc0',legs:'#d8cfb4',boots:'#4a3a28',weapon:'satchel',beard:'full',beardColor:'#b8b0a4',eye:'#4a3a2c'},
  aide:{name:'작전 보좌관',skin:'pale',hair:'#2a2430',style:'swept',body:'coat',coat:'#3f3a63',trim:'#c9b07a',legs:'#2a2840',boots:'#1f1d2a',weapon:'papers',eye:'#4a3a5a'}
 };
 // M06 looks that have painted sheets; their pixel fallback borrows an existing look.

@@ -17,7 +17,9 @@ export function potentialOf(campaign,hero){
 export function proficiencyOf(campaign,id){const count=PROFICIENCY_SOURCE[id]?.(campaign?.tacticalMemory||{})||0;return {count,stars:PROFICIENCY_STEPS.filter(t=>count>=t).length,next:PROFICIENCY_STEPS.find(t=>count<t)??null};}
 // Bonus is live only for promoted heroes, so tier-1 combat stays identical to v0.4.0.
 export function proficiencyBonus(s,u){if(u?.team!=='ally'||classTierOf(u)<2)return {};const {stars}=proficiencyOf(s.campaign,u.id),e=PROFICIENCY_EFFECT[u.id]||{};return Object.fromEntries(Object.entries(e).map(([k,v])=>[k,v*stars]));}
-export const act1Complete=s=>!!s.campaign?.flags?.act1_completed||(s.campaign?.completed||[]).includes(LAST_MISSION);
+// ACT I ends with M06 (LAST_MISSION grows as ACT II missions arrive).
+export const ACT1_FINALE=6;
+export const act1Complete=s=>!!s.campaign?.flags?.act1_completed||(s.campaign?.completed||[]).includes(ACT1_FINALE);
 export function promotionStatus(s,id){
  const h=heroRecord(s,id),next=nextClassOf(h);if(!h||!next)return {id,eligible:false,promoted:classTierOf(h)>=2,next:null,checks:[]};
  const pot=potentialOf(s.campaign,h),checks=[

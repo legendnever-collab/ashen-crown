@@ -312,3 +312,14 @@
 @keyframes promoRise{from{opacity:0;transform:translateY(16px) scale(.94)}to{opacity:1;transform:none}}
 @keyframes promoGlow{0%,100%{opacity:.6}50%{opacity:1}}
 @media(prefers-reduced-motion:reduce){.promo-bust.after,.promo-busts::before{animation:none}}
+
+/* v0.6 faction relations panel */
+.faction-list{display:grid;gap:10px}
+.faction-row{border:1px solid #4d5a58;border-left:6px solid var(--banner);border-radius:8px;padding:10px 12px;background:#18292b}
+.faction-row h3{margin:0 0 4px;font-size:1rem;display:flex;align-items:center;gap:8px}
+.faction-row .banner-chip{width:14px;height:20px;background:var(--banner);clip-path:polygon(0 0,100% 0,100% 100%,50% 78%,0 100%)}
+.faction-row.unmet{opacity:.6;border-left-color:#4d5a58}
+.faction-row.unmet .banner-chip{background:#4d5a58}
+.faction-stage{margin:4px 0}
+.faction-stage b{display:inline-block;min-width:3.2em;padding:1px 8px;border-radius:999px;background:#2b3b3d;text-align:center}
+.stage-wary b{background:#6b3a33;color:#ffd9cf}.stage-neutral b{background:#3b4648}.stage-trusted b{background:#355d45;color:#dff5df}.stage-allied b{background:#7a6324;color:#fff3cf}

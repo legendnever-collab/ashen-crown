@@ -1,7 +1,8 @@
 import {legacyRewardCatchup} from '../core/battle-rewards.js';
 import {ensureEconomy,validateEconomy} from '../core/economy.js';
 import {migrateFrontier,frontierState,validateFrontier,alignFrontier} from '../core/frontier.js';
-import {SCHEMA,WIDTH,HEIGHT,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS} from '../data/game-data.js';
+import {SCHEMA,WIDTH,HEIGHT,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,ALL_HEROES,RECRUIT_HEROES,partyIds} from '../data/game-data.js';
+import {validTrust} from '../core/factions.js';
 import {terrainAt,alive} from '../core/rules.js';
 import {MISSIONS,missionOf} from '../data/missions.js';
 import {maxUnits,missionUnitIds,rulesOf} from '../core/mission-rules.js';
@@ -14,24 +15,27 @@ export function validate(s){
  if(!Number.isInteger(s.turn)||s.turn<1||s.turn>10000||!Number.isInteger(s.rng)||s.rng<0||s.rng>4294967295)throw Error('턴 또는 RNG 상태가 손상되었습니다.');
  if(!Array.isArray(s.units)||s.units.length<10||s.units.length>(MISSIONS[s.missionId]?Math.max(14,maxUnits(MISSIONS[s.missionId])):14)||!Array.isArray(s.log)||!s.campaign||!Array.isArray(s.campaign.results)||!Number.isInteger(s.campaign.clears)||!Array.isArray(s.missionStart))throw Error('필수 게임 기록이 없습니다.');
  if(!MISSIONS[s.missionId]||typeof s.practice!=='boolean')throw Error('Mission 기록이 손상되었습니다.');
- const mission=missionOf(s);const known=new Set([...HEROES.map(u=>u.id),...missionUnitIds(mission)]),ids=new Set(),occupied=new Set();
- for(const u of s.units){if(!known.has(u.id)||ids.has(u.id)||!['ally','enemy','civilian','object'].includes(u.team))throw Error('장수 목록이 손상되었습니다.');ids.add(u.id);
-  const expected=HEROES.some(h=>h.id===u.id)?'ally':mission.civilians.some(c=>c.id===u.id)?'civilian':(mission.objects||[]).some(o=>o.id===u.id)?'object':'enemy';if(u.team!==expected||typeof u.name!=='string'||u.name.length>120||!Array.isArray(u.range)||u.range.length!==2||u.range.some(n=>!Number.isInteger(n)||n<0||n>12)||u.range[0]>u.range[1])throw Error('유닛 분류 또는 사거리가 손상되었습니다.');
+ const mission=missionOf(s),party=partyIds(s.campaign),allies=mission.allies||[];
+ if(s.campaign.roster!=null&&(!Array.isArray(s.campaign.roster)||s.campaign.roster.length>RECRUIT_HEROES.length||new Set(s.campaign.roster).size!==s.campaign.roster.length||s.campaign.roster.some(id=>!RECRUIT_HEROES.some(h=>h.id===id))))throw Error('군단 합류 기록이 손상되었습니다.');
+ if(!validTrust(s.campaign))throw Error('세력 신뢰 기록이 손상되었습니다.');
+ const known=new Set([...party,...missionUnitIds(mission),...allies.map(a=>a.id)]),ids=new Set(),occupied=new Set();
+ for(const u of s.units){if(!known.has(u.id)||ids.has(u.id)||!['ally','allied','enemy','civilian','object'].includes(u.team))throw Error('장수 목록이 손상되었습니다.');ids.add(u.id);
+  const expected=party.includes(u.id)?'ally':allies.some(a=>a.id===u.id)?'allied':mission.civilians.some(c=>c.id===u.id)?'civilian':(mission.objects||[]).some(o=>o.id===u.id)?'object':'enemy';if(u.team!==expected||typeof u.name!=='string'||u.name.length>120||!Array.isArray(u.range)||u.range.length!==2||u.range.some(n=>!Number.isInteger(n)||n<0||n>12)||u.range[0]>u.range[1])throw Error('유닛 분류 또는 사거리가 손상되었습니다.');
   for(const k of ['hp','maxHP','mp','maxMP','atk','def','mag','res','spd','mov','x','y'])if(!Number.isFinite(u[k])||u[k]<0||!Number.isInteger(u[k]))throw Error('유닛 수치가 올바르지 않습니다.');
   if(u.classMovementModifier!=null&&(!Number.isInteger(u.classMovementModifier)||u.classMovementModifier<0||u.classMovementModifier>5)||u.movementProfile!=null&&!['infantry','rogue','cavalry','ranger'].includes(u.movementProfile))throw Error('병종 이동 정보가 손상되었습니다.');
   if(u.hp>u.maxHP||u.mp>u.maxMP||u.maxHP<1||u.x>=mission.width||u.y>=mission.height||!Number.isFinite(terrainAt(u.x,u.y,s)?.cost))throw Error('유닛 위치 또는 HP가 손상되었습니다.');
   if(alive(u)){const p=`${u.x},${u.y}`;if(occupied.has(p))throw Error('유닛이 중복 배치되었습니다.');occupied.add(p);}
   if(u.recoveryPhase!=null&&(typeof u.recoveryPhase!=='string'||!/^([1-9][0-9]*):(player|enemy)$/.test(u.recoveryPhase)||Number(u.recoveryPhase.split(':')[0])>s.turn))throw Error('회복 Phase 기록이 손상되었습니다.');
-  if(u.team==='ally'&&(!HEROES.some(h=>h.id===u.id)||!Number.isInteger(u.level)||u.level<1||!Number.isInteger(u.xp)||u.xp<0||u.xp>=100||!Array.isArray(u.clues)||!Array.isArray(u.growthHistory)||!Array.isArray(u.highlights)||!Array.isArray(u.healTargets)))throw Error('성장 기록이 손상되었습니다.');
+  if(u.team==='ally'&&(!party.includes(u.id)||!Number.isInteger(u.level)||u.level<1||!Number.isInteger(u.xp)||u.xp<0||u.xp>=100||!Array.isArray(u.clues)||!Array.isArray(u.growthHistory)||!Array.isArray(u.highlights)||!Array.isArray(u.healTargets)))throw Error('성장 기록이 손상되었습니다.');
   if(u.team==='ally'&&(!Number.isInteger(u.earnedXP)||u.earnedXP<0||u.clues.some(c=>typeof c!=='string')||u.highlights.some(h=>typeof h!=='string')||u.growthHistory.some(g=>!g||!Number.isInteger(g.level)||!g.changes)||typeof u.moved!=='boolean'||typeof u.acted!=='boolean'))throw Error('장수 행동 또는 성장 기록이 손상되었습니다.');
  }
- for(const u of [...HEROES,...mission.enemies,...mission.civilians,...(mission.objects||[])])if(!ids.has(u.id))throw Error('필수 유닛이 없습니다.');
+ for(const id of [...party,...[...mission.enemies,...mission.civilians,...(mission.objects||[]),...allies].map(u=>u.id)])if(!ids.has(id))throw Error('필수 유닛이 없습니다.');
  if(!Array.isArray(s.enemyQueue)||!Number.isInteger(s.enemyIndex)||s.enemyIndex<0||s.enemyIndex>s.enemyQueue.length||!s.undo||!Number.isInteger(s.potions)||s.potions<0||s.potions>2)throw Error('전투 상태가 손상되었습니다.');
- if(s.enemyQueue.some(id=>!s.units.some(u=>u.id===id&&u.team==='enemy')))throw Error('AI 순서가 손상되었습니다.');
- if(s.campaign.heroes!==null){if(!Array.isArray(s.campaign.heroes)||s.campaign.heroes.length!==5||new Set(s.campaign.heroes.map(u=>u.id)).size!==5)throw Error('군단 성장 저장이 손상되었습니다.');for(const u of s.campaign.heroes){if(!HEROES.some(h=>h.id===u.id)||!Array.isArray(u.clues)||!Array.isArray(u.growthHistory)||['level','xp','maxHP','maxMP','atk','def','mag','res','spd'].some(k=>!Number.isInteger(u[k])||u[k]<0))throw Error('군단 수치가 손상되었습니다.');}}
- if(s.log.some(l=>typeof l!=='string')||s.missionStart.length!==5||s.missionStart.some(m=>!m||!HEROES.some(h=>h.id===m.id)||!m.stats||!Number.isInteger(m.level)))throw Error('미션 기록이 손상되었습니다.');
+ if(s.enemyQueue.some(id=>!s.units.some(u=>u.id===id&&(u.team==='enemy'||u.team==='allied'))))throw Error('AI 순서가 손상되었습니다.');
+ if(s.campaign.heroes!==null){const n=s.campaign.heroes.length;if(!Array.isArray(s.campaign.heroes)||n<5||n>ALL_HEROES.length||new Set(s.campaign.heroes.map(u=>u.id)).size!==n||HEROES.some(h=>!s.campaign.heroes.some(u=>u.id===h.id)))throw Error('군단 성장 저장이 손상되었습니다.');for(const u of s.campaign.heroes){if(!party.includes(u.id)||!Array.isArray(u.clues)||!Array.isArray(u.growthHistory)||['level','xp','maxHP','maxMP','atk','def','mag','res','spd'].some(k=>!Number.isInteger(u[k])||u[k]<0))throw Error('군단 수치가 손상되었습니다.');}}
+ if(s.log.some(l=>typeof l!=='string')||s.missionStart.length!==party.length||s.missionStart.some(m=>!m||!party.includes(m.id)||!m.stats||!Number.isInteger(m.level)))throw Error('미션 기록이 손상되었습니다.');
  if(s.outcome!==null&&!['victory','defeat'].includes(s.outcome)||s.screen==='result'&&!s.outcome)throw Error('미션 결과가 손상되었습니다.');
- if(s.stageStart!=null){const initial=s.stageStart;if(initial.stageStart!=null||initial.screen!=='battle'||initial.phase!=='player'||initial.turn!==1||initial.initialSeed!==s.initialSeed||initial.rng!==s.initialSeed||initial.potions!==2||initial.reinforced||initial.missionId!==s.missionId||!(initial.units?.length>=(5+mission.enemies.length+mission.civilians.length+(mission.objects||[]).length)&&initial.units.length<=(5+mission.enemies.length+mission.civilians.length+(mission.objects||[]).length+(mission.waves||[]).filter(w=>w.trigger==='start').reduce((n,w)=>n+w.units.length,0)))||initial.units?.some(u=>u.team==='ally'&&(u.moved||u.acted)||u.team==='civilian'&&u.rescued))throw Error('스테이지 시작 기록이 손상되었습니다.');validate(initial);}
+ if(s.stageStart!=null){const initial=s.stageStart;if(initial.stageStart!=null||initial.screen!=='battle'||initial.phase!=='player'||initial.turn!==1||initial.initialSeed!==s.initialSeed||initial.rng!==s.initialSeed||initial.potions!==2||initial.reinforced||initial.missionId!==s.missionId||!(initial.units?.length>=(party.length+allies.length+mission.enemies.length+mission.civilians.length+(mission.objects||[]).length)&&initial.units.length<=(party.length+allies.length+mission.enemies.length+mission.civilians.length+(mission.objects||[]).length+(mission.waves||[]).filter(w=>w.trigger==='start').reduce((n,w)=>n+w.units.length,0)))||initial.units?.some(u=>u.team==='ally'&&(u.moved||u.acted)||u.team==='civilian'&&u.rescued))throw Error('스테이지 시작 기록이 손상되었습니다.');validate(initial);}
  const n=s.narrative,c=s.campaign;
  if(!n||!Array.isArray(n.queue)||!Array.isArray(n.events)||!Array.isArray(n.seen)||!Array.isArray(n.history)||n.queue.length>50||n.history.length>250||[...n.queue,...n.events,...n.seen].some(k=>!STORY[k]))throw Error('대화 기록이 손상되었습니다.');
  if(n.active&&(!STORY[n.active.key]||!Number.isInteger(n.active.index)||n.active.index<0||n.active.index>=STORY[n.active.key].length))throw Error('대화 위치가 손상되었습니다.');
@@ -52,11 +56,21 @@ export function migrate(s){
  if(s?.schema===5){s.schema=6;s.version='0.3.3';s.frontier=migrateFrontier(s.frontier,s.missionId);s.campaign.frontier=migrateFrontier(s.campaign.frontier,s.missionId);if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema===6){s.schema=7;s.version='0.4.0';s.campaign.choices??={};if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema===7){s.schema=8;s.version='0.5.0';s.campaign.promotions??={};if(s.stageStart)s.stageStart=migrate(s.stageStart);}
+ // v0.6 (Phase C): an empty ACT II roster. Faction trust is seeded from the ACT I choices when ACT II begins
+ // (factions.js ensureTrust), so a save from the middle of ACT I keeps its M04 ledger choice open.
+ if(s?.schema===8){s.schema=9;s.version='0.6.0';s.campaign.roster??=[];if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');
+ // v0.6 (D-060): character names are written in Hangul; saves made before keep English names on board until renamed here.
+ if(s?.schema===SCHEMA)koreanNames(s);
+ // v0.6 (D-062): rewritten scenes can differ in length; a save paused inside a scene resumes on its last line at most.
+ if(s?.schema===SCHEMA)for(const n of [s.narrative,s.stageStart?.narrative]){const a=n?.active,len=a&&STORY[a.key]?.length;if(len&&Number.isInteger(a.index)&&a.index>=len)a.index=len-1;}
  // v0.5 hubs (D-052): every load re-anchors the frontier to the hub of its story moment (spatial only).
  if(s?.schema===SCHEMA){if(s.frontier)alignFrontier(s.frontier,s.missionId,s.screen);if(s.campaign?.frontier)alignFrontier(s.campaign.frontier,s.missionId,s.screen);if(s.skirmish?.frontier)alignFrontier(s.skirmish.frontier,s.skirmish.returnMission,'exploration');if(s.stageStart?.frontier)alignFrontier(s.stageStart.frontier,s.stageStart.missionId,s.stageStart.screen);if(s.stageStart?.campaign?.frontier)alignFrontier(s.stageStart.campaign.frontier,s.stageStart.missionId,s.stageStart.screen);}
  return validate(s);
 }
+const KO_NAMES={'Erik':'에릭','Elina':'엘리나','Lia':'리아','Sain':'세인','Kai':'카이','Thea':'테아','Dario':'다리오','Rook':'룩','Varr':'바르','Cinder':'신더','Ash Bow':'애시 보우',
+ 'Garr — Bandit Captain':'가르 — 산적 두목','North Raider':'북쪽 습격대원','North Bow':'북쪽 궁수','Mira':'미라','부상한 Mira':'부상한 미라','Tomas':'토마스','Baldrick Roen · 검은 사자':'발드릭 로엔 · 검은 사자'};
+function koreanNames(s){for(const list of [s.units,s.campaign?.heroes,s.stageStart?.units,s.stageStart?.campaign?.heroes])for(const u of list||[])if(KO_NAMES[u.name])u.name=KO_NAMES[u.name];}
 export function serialize(s){validate(s);const data=JSON.stringify({...s,feedback:[]});return JSON.stringify({format:'AshenCrown',schema:SCHEMA,checksum:checksum(data),data});}
 export function deserialize(text){if(typeof text!=='string'||text.length>5000000)throw Error('저장 크기가 올바르지 않습니다.');const envelope=JSON.parse(text);if(envelope.format!=='AshenCrown'||typeof envelope.data!=='string'||checksum(envelope.data)!==envelope.checksum)throw Error('저장 검증에 실패했습니다.');return migrate(JSON.parse(envelope.data));}
 export function saveGame(s,storage){let old,previousBackup,writing=false;try{const data=serialize(s);old=storage.getItem(SAVE_KEY);previousBackup=storage.getItem(BACKUP_KEY);if(old){try{deserialize(old);storage.setItem(BACKUP_KEY,old);}catch{}}

@@ -1,0 +1,55 @@
+// v0.6 ACT II painted hubs (art pack C, imported 2026-10-25; D-055 §6, PROPOSED). Same 24×16 / 64 px format as
+// the v0.5 hubs: the walk mask is authored over the painting, every door is at the painted threshold (the pack's
+// QA lists where the paintings moved a door off its sketch tile), and NPCs stand off one-tile streets.
+// They are built with the other hubs but hubFor still sends ACT I to ACT I hubs; act2HubFor takes them over in Phase D.
+const heroes=(pos)=>[['aren','아렌 · 군단장',...pos.aren,{kind:'commander'}],['elina',pos.elinaName,...pos.elina,{kind:'hero'}],['lia','리아 · 군사',...pos.lia,{kind:'hero'}],['sain',pos.sainName,...pos.sain,{kind:'hero'}],['kai',pos.kaiName,...pos.kai,{kind:'hero'}],['advisor','리아의 작전 탁자 · 작전 회의',...pos.advisor,{kind:'advisor'}]];
+export const ACT2_HUB_SPECS={
+ castletown:{name:'Ironhold Lower Town · 철관성 성하 마을',kind:'castletown',tone:'village',art:'hub_castletown',spawn:[10,8],paintedTable:true,stage:{x:770,y:620},
+  mask:[
+   '########################',
+   '########################',
+   '########.#.......#######',
+   '########.........#######',
+   '########.........#######',
+   '#........#....##......##',
+   '#######..##.#....#######',
+   '#######..#####....######',
+   '#######..#.###.#.#######',
+   '##....#..#....#.......##',
+   '#...............########',
+   '#####.#####...##########',
+   '#####.#####....#########',
+   '#.....#####..#.........#',
+   '###########..###########',
+   '########################'],
+  doors:[['forge','BLACKSMITH','대장간',1,1,6,4,3,4],['shop','ITEM SHOP','잡화점',17,1,6,4,20,4],['inn-1','INN','여관',1,5,5,4,2,8],['warroom-2','CHECKPOINT','검문소',18,5,5,4,20,8],
+   ['residence-3','HOME','민가',1,10,4,3,2,12],['depot-4','SUPPLY','창고',16,10,6,3,21,12]],
+  places:[['square','성하 광장',12,10],['gate','성하 입구',11,14],['advisor','작전 탁자 · 광장',10,8]],
+  npcs:[...heroes({aren:[13,9],elina:[16,3],elinaName:'엘리나 · 성문 관찰',lia:[11,6],sain:[8,9],sainName:'세인 · 피난민 천막',kai:[15,6],kaiName:'카이 · 광장',advisor:[10,7]}),
+   ['elder','성하 촌장',4,9],['refugee','피난민',11,12],['guard','성문 보초',12,3],['thea','테아 · 수송 호위대장',16,6,{kind:'hero'}]],
+  lights:[[275,225,110,'fire'],[580,350,80,'fire'],[960,350,80,'fire'],[580,560,80,'fire'],[960,560,80,'fire'],[550,815,110,'fire'],[700,875,70,'fire'],[865,865,70,'fire']]},
+ velmar:{name:'Velmar Market · 벨마르 시장',kind:'velmar',tone:'village',art:'hub_velmar',spawn:[13,10],stage:{x:800,y:670},
+  mask:[
+   '########################',
+   '########################',
+   '################.#######',
+   '################.#######',
+   '####.................###',
+   '#########.###.#...######',
+   '#########.###..##.######',
+   '#########.#######.######',
+   '########....##....######',
+   '#####....##....##...####',
+   '###########....##...####',
+   '############..##########',
+   '############..##########',
+   '######........##########',
+   '############..##########',
+   '########################'],
+  doors:[['shop','ITEM SHOP','약재상',5,1,5,3,6,3],['warroom-2','COUNCIL HALL','의회 회관',10,0,6,4,13,3],['forge','BLACKSMITH','용병 무기점',17,1,6,3,20,3],
+   ['residence-3','HOME','연립주택',5,5,4,4,6,8],['inn-1','TAVERN','항구 주점',18,5,5,4,19,8],['depot-4','WAREHOUSE','항구 창고',4,10,7,3,6,12]],
+  places:[['square','시장 광장',12,10],['gate','항구 길',12,14],['advisor','작전 탁자 · 시장',13,10]],
+  npcs:[...heroes({aren:[5,9],elina:[16,2],elinaName:'엘리나 · 골목',lia:[14,9],sain:[18,10],sainName:'세인 · 주점 앞',kai:[4,4],kaiName:'카이 · 부두',advisor:[14,10]}),
+   ['elder','시장 관리인',17,10],['refugee','피난민',19,10],['guard','항구 경비병',13,14]],
+  lights:[[650,330,70,'lantern'],[925,320,70,'lantern'],[1025,330,70,'lantern'],[720,600,70,'lantern'],[940,620,70,'lantern'],[760,830,70,'lantern'],[910,820,70,'lantern']]}
+};

@@ -1,6 +1,6 @@
 // Tabbed unit sheet in the spirit of classic tactical SRPG info windows: ability grades,
 // equipment, tactics, a short biography and class/terrain aptitude with an attack-range grid.
-import {HEROES,TERRAIN,TERRAIN_COSTS,CLASS_MOVEMENT,HERO_CLASS,PROFILE_KO} from '../data/game-data.js';
+import {HEROES,TERRAIN,TERRAIN_COSTS,CLASS_MOVEMENT,HERO_CLASS,PROFILE_KO,heroDef} from '../data/game-data.js';
 import {GEAR} from '../data/frontier-data.js';
 import {effectiveStats} from '../core/economy.js';
 import {rangeFor,skillCost} from '../core/rules.js';
@@ -29,7 +29,7 @@ const grade=v=>v>=24?'S':v>=19?'A':v>=14?'B':v>=10?'C':v>=6?'D':'E';
 function rangeGrid(min,max){let cells='';for(let y=-3;y<=3;y++)for(let x=-3;x<=3;x++){const d=Math.abs(x)+Math.abs(y),cls=d===0?'self':d>=min&&d<=max?'hit':'';cells+=`<i class="${cls}"></i>`;}return `<div class="range-grid" aria-label="공격 범위 ${min}–${max}">${cells}</div>`;}
 
 export function unitInfoHTML(s,u,tab,esc,portrait){
- const hero=HEROES.find(h=>h.id===u.id),v=u.team==='ally'?effectiveStats(s,u):u,profile=u.movementProfile||CLASS_MOVEMENT[HERO_CLASS[u.id]]?.profile||'infantry';
+ const hero=heroDef(u.id),v=u.team==='ally'?effectiveStats(s,u):u,profile=u.movementProfile||CLASS_MOVEMENT[HERO_CLASS[u.id]]?.profile||'infantry';
  const tabs=[['ability','능력'],['equipment','장비'],['tactics','기술'],['growth','성장'],['bio','열전'],['class','병종']].filter(([id])=>id!=='growth'||hero).map(([id,label])=>`<button data-do="unit-info" data-id="${u.id}|${id}" class="${tab===id?'active':''}">${label}</button>`).join('');
  const bar=(label,a,b,cls)=>`<div class="info-bar ${cls}"><span>${label}</span><div><i style="width:${Math.round(100*a/Math.max(1,b))}%"></i></div><b>${a}/${b}</b></div>`;
  const head=`<div class="info-head">${portrait(u)}<div><h3>${esc(u.name)} <small>${u.team==='ally'?'아군':u.team==='enemy'?'적군':'주민'}</small></h3><p>${esc((hero&&classOf(u)?.ko)||CLASS_KO[u.className]||KIND_KO[u.kind]||u.className||'')} · LV ${u.level??'—'}</p>${bar('HP',u.hp,u.maxHP,'hp')}${u.maxMP?bar('MP',u.mp,u.maxMP,'mp'):''}${u.team==='ally'?bar('EXP',u.xp,100,'xp'):''}</div></div>`;

@@ -1,5 +1,5 @@
 import {effectiveStats} from './economy.js';
-import {MAP,TERRAIN,WIDTH,HEIGHT,BALANCE,HEROES,CLASS_MOVEMENT,HERO_CLASS,TERRAIN_COSTS} from '../data/game-data.js';
+import {MAP,TERRAIN,WIDTH,HEIGHT,BALANCE,HEROES,CLASS_MOVEMENT,HERO_CLASS,TERRAIN_COSTS,heroDef} from '../data/game-data.js';
 import {missionOf} from '../data/missions.js';
 import {remember} from './narrative.js';
 import {proficiencyBonus,classGrowth} from './progression.js';
@@ -10,6 +10,10 @@ export const alive=u=>u.hp>0&&!u.rescued&&!u.benched;
 export const terrainAt=(x,y,s)=>TERRAIN[(s?missionOf(s).map:MAP)[y]?.[x]];
 export const findUnit=(s,id)=>s.units.find(u=>u.id===id);
 export const at=(s,x,y)=>s.units.find(u=>alive(u)&&u.x===x&&u.y===y);
+// v0.6 sides (Phase C): the player's heroes ('ally') and AI-led allied troops ('allied') share the legion side;
+// enemies may belong to rival factions that fight each other (M10). With ACT I teams this is exactly 'teams differ'.
+export const sideOf=u=>u.team==='ally'||u.team==='allied'?'legion':u.team;
+export function hostile(s,a,b){if(!a||!b||a.team==='civilian'||b.team==='civilian'||a.team==='object'||b.team==='object')return false;const sa=sideOf(a),sb=sideOf(b);if(sa!==sb)return true;return sa==='enemy'&&!!a.faction&&!!b.faction&&a.faction!==b.faction&&!s?.truce;}
 export function nextRandom(state){const next=(Math.imul(state>>>0,1664525)+1013904223)>>>0;return {state:next,value:next/4294967296};}
 export function roll(s){const r=nextRandom(s.rng);s.rng=r.state;return r.value;}
 export function terrainCost(s,u,x,y){const type=missionOf(s).map[y]?.[x];if(!type||missionOf(s).layers.collision[y]?.[x]||!Number.isFinite(TERRAIN[type]?.cost))return Infinity;const profile=u.movementProfile||CLASS_MOVEMENT[HERO_CLASS[u.id]]?.profile||'infantry';return TERRAIN_COSTS[profile]?.[type]??TERRAIN[type].cost;}
@@ -19,7 +23,7 @@ export function movement(s,u,ignore=false){
  while(queue.length){queue.sort((a,b)=>a.c-b.c);const p=queue.shift();if(p.c!==costs.get(key(p.x,p.y)))continue;
   if(zoc&&zoc.has(key(p.x,p.y)))continue; // v0.5 Bulwark: an enemy in Erik's zone cannot move on (entering stops it, starting there pins it)
   for(const [dx,dy] of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,t=terrainAt(x,y,s);if(!t||!Number.isFinite(t.cost))continue;
-   const occupant=at(s,x,y);if(!ignore&&occupant&&occupant.id!==u.id&&occupant.team!==u.team)continue;
+   const occupant=at(s,x,y);if(!ignore&&occupant&&occupant.id!==u.id&&sideOf(occupant)!==sideOf(u))continue;
    const c=p.c+terrainCost(s,u,x,y),k=key(x,y);
    if(c<=allowance&&c<(costs.get(k)??Infinity)){costs.set(k,c);prev.set(k,key(p.x,p.y));queue.push({x,y,c});}
   }
@@ -31,22 +35,24 @@ export function movement(s,u,ignore=false){
 export function bulwarkZone(s){const keepers=s.units.filter(a=>a.team==='ally'&&a.bulwark&&alive(a));if(!keepers.length)return null;const z=new Set();for(const a of keepers)for(const [dx,dy]of[[0,-1],[-1,0],[1,0],[0,1]])z.add(key(a.x+dx,a.y+dy));return z;}
 export const counterBlocked=(s,v)=>v.noCounter===s.turn&&s.phase==='player';
 export function pathTo(s,u,x,y){const {costs,prev}=movement(s,u);let k=key(x,y);if(!costs.has(k))return null;const path=[];while(k){const [px,py]=k.split(',').map(Number);path.unshift({x:px,y:py});k=prev.get(k);}return path;}
-export function skillCost(u){const h=HEROES.find(h=>h.id===u.id);return (h?.cost||0)+(u.id==='lia'&&u.hp<=u.maxHP/2&&(u.classTier||1)<2?1:0);}
-export function rangeFor(u,mode='attack',s=null){const t2=(u.classTier||1)>=2;if(t2&&mode==='skill'&&u.id==='sain')return [0,3];if(t2&&s&&mode==='skill'&&u.id==='elina'&&['f','v'].includes(missionOf(s).map[u.y]?.[u.x]))return [2,4];return mode==='skill'&&u.id==='lia'?[1,3]:mode==='skill'&&u.id==='sain'?[0,2]:mode==='skill'&&u.id==='eric'?[0,0]:u.range;}
+export function skillCost(u){const h=heroDef(u.id);return (h?.cost||0)+(u.id==='lia'&&u.hp<=u.maxHP/2&&(u.classTier||1)<2?1:0);}
+export function rangeFor(u,mode='attack',s=null){const t2=(u.classTier||1)>=2;if(t2&&mode==='skill'&&u.id==='sain')return [0,3];if(t2&&s&&mode==='skill'&&u.id==='elina'&&['f','v'].includes(missionOf(s).map[u.y]?.[u.x]))return [2,4];const base=mode==='skill'&&u.id==='lia'?[1,3]:mode==='skill'&&u.id==='sain'?[0,2]:mode==='skill'&&u.id==='eric'?[0,0]:u.range;
+ // v0.6 rooftop high ground: a bow (range 2+) standing on a roof reaches one tile further. No roofs in ACT I.
+ return s&&base[1]>=2&&mode!=='skill'&&TERRAIN[missionOf(s).map[u.y]?.[u.x]]?.high?[base[0],base[1]+1]:base;}
 export function validTarget(s,u,t,mode='attack'){
  if(!u||!t||!alive(u)||!alive(t))return false;
- const d=distance(u,t);if(t.team==='object')return mode==='search'&&u.team==='ally'&&d===1&&!t.locked&&!t.inert;if(mode==='search')return false;if(mode==='capture')return s.missionId===2&&t.id==='boss'&&t.team==='enemy'&&t.hp<=t.maxHP/2&&d===1;
- if(mode==='rescue')return t.team==='civilian'&&t.kind!=='wagon'&&!missionOf(s).escortOnly&&d===1;
+ const d=distance(u,t);if(t.team==='object')return mode==='search'&&u.team==='ally'&&d===1&&!t.locked&&!t.inert;if(mode==='search')return false;if(mode==='capture')return (s.missionId===2||missionOf(s).capture===t.id)&&t.id==='boss'&&t.team==='enemy'&&t.hp<=t.maxHP/2&&d===1;
+ if(mode==='rescue')return t.team==='civilian'&&t.kind!=='wagon'&&!missionOf(s).escortOnly&&(!missionOf(s).orderTurn||s.campaign?.choices?.m08_order==='rescue')&&d===1;
  if(mode==='skill'&&u.id==='eric')return t.id===u.id;
  if(mode==='skill'&&u.id==='sain')return (t.team==='ally'||t.team==='civilian'&&missionOf(s).healCivilians&&t.kind!=='wagon')&&d>=rangeFor(u,mode,s)[0]&&d<=rangeFor(u,mode,s)[1];
- const [min,max]=rangeFor(u,mode,s);return u.team!==t.team&&t.team!=='civilian'&&d>=min&&d<=max;
+ const [min,max]=rangeFor(u,mode,s);return hostile(s,u,t)&&d>=min&&d<=max;
 }
 export function flank(s,u,t){return s.units.some(a=>a.team===u.team&&alive(a)&&a.id!==u.id&&distance(a,t)===1&&((u.x<t.x&&a.x>t.x)||(u.x>t.x&&a.x<t.x)||(u.y<t.y&&a.y>t.y)||(u.y>t.y&&a.y<t.y)));}
 export function strikeStats(s,u,t,mode='attack'){
  u=effectiveStats(s,u);t=effectiveStats(s,t);
  const magic=mode==='skill'&&u.id==='lia',aim=mode==='skill'&&u.id==='elina',quick=mode==='skill'&&u.id==='kai';
  const ground=terrainAt(t.x,t.y,s),defense=magic?t.res:t.def,burning=!!s.burning?.[key(t.x,t.y)];
- let raw=Math.max(1,(magic?u.mag:u.atk)-defense+(aim?2:0)+(magic&&u.hp<=u.maxHP/2?4:0)+(quick&&flank(s,u,t)?6:0));
+ let raw=Math.max(1,(magic?u.mag:u.atk)-defense-(ground.defense||0)+(aim?2:0)+(magic&&u.hp<=u.maxHP/2?4:0)+(quick&&flank(s,u,t)?6:0)+(mode==='skill'&&u.id==='thea'?charge(u):0));
  let dmg=Math.max(1,Math.round(magic?raw*(ground.fire??1):raw*(1-(ground.phys||0))));
  if(t.id==='eric'&&t.hp<=t.maxHP*.3)dmg=Math.max(1,Math.floor(dmg*.85));
  // M05 lion formation (mission data only; M01–04 have no formation): living bearers give adjacent
@@ -61,6 +67,9 @@ export function strikeStats(s,u,t,mode='attack'){
  const crit=magic?0:Math.min(12,Math.max(3,Math.round((u.spd-t.spd)/2)+5));
  return {damage:dmg,hit,crit,magic,fire:magic,terrainMul:magic?(ground.fire??1):1-(ground.phys||0),flank:quick&&flank(s,u,t),burning};
 }
+// v0.6 Thea's Charge (PROPOSED): +4 damage; after running 3+ tiles this turn, +3 more and the target cannot strike back.
+export const charge=u=>4+((u.chargeRun||0)>=3?3:0);
+export const chargeBreaks=(u,mode)=>mode==='skill'&&u?.id==='thea'&&(u.chargeRun||0)>=3;
 export const isolated=(s,t)=>t.team==='ally'&&!s.units.some(a=>a.team==='ally'&&alive(a)&&a.id!==t.id&&distance(a,t)===1);
 // Tier-1 Guard covers melee only; the Guardian Knight (tier 2) also takes the first ranged or magic hit.
 export function guardFor(s,u,t,mode){const melee=!(mode==='skill'&&u.id==='lia')&&distance(u,t)===1;return s.units.find(g=>alive(g)&&g.team===t.team&&g.id!==t.id&&(g.guarding&&!g.guardUsed||g.guardTarget===t.id)&&distance(g,t)===1&&(melee||(g.classTier||1)>=2))||null;}
@@ -70,7 +79,7 @@ export function forecast(s,u,t,mode='attack'){
  if(mode==='capture')return {capture:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='rescue')return {rescue:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='search')return {search:true,damage:0,hit:100,counter:0,after:t.hp};
- const guard=guardFor(s,u,t,mode),victim=guard||t,stats=strikeStats(s,u,victim,mode),canCounter=validTarget(s,victim,u,'attack')&&!counterBlocked(s,victim)&&victim.hp>stats.damage;
+ const guard=guardFor(s,u,t,mode),victim=guard||t,stats=strikeStats(s,u,victim,mode),canCounter=validTarget(s,victim,u,'attack')&&!counterBlocked(s,victim)&&!chargeBreaks(u,mode)&&victim.hp>stats.damage;
  const counter=canCounter?strikeStats(s,victim,u).damage:0;
  return {...stats,counter,counterHit:canCounter?strikeStats(s,victim,u).hit:0,after:Math.max(0,victim.hp-stats.damage),guard:guard?.id,victim:victim.id};
 }
@@ -81,7 +90,7 @@ export function xpScale(s,u){const lv=missionOf(s)?.level;if(!lv)return 1;const 
 export function awardXP(s,u,amount,reason){
  if(u.team!=='ally'||!amount)return;amount=Math.max(1,Math.round(amount*xpScale(s,u)));
  u.xp+=amount;u.earnedXP+=amount;u.highlights.push(reason);s.feedback.push({type:'xp',id:u.id,text:`+${amount} EXP`});
- let leveled=false;while(u.xp>=BALANCE.xpLevel){leveled=true;u.xp-=BALANCE.xpLevel;u.level++;const g={...HEROES.find(h=>h.id===u.id).growth};for(const [k,v]of Object.entries(classGrowth(u)))g[k]=(g[k]||0)+v;const changes={...g};for(const [stat,n] of Object.entries(g)){if(stat==='hp'){u.maxHP+=n;u.hp=Math.min(u.maxHP,u.hp+n);}else if(stat==='mp'){u.maxMP+=n;u.mp=Math.min(u.maxMP,u.mp+n);}else u[stat]+=n;}if(u.id==='eric'&&u.level>=5)u.appearanceTier=2;u.growthHistory.push({level:u.level,changes});s.feedback.push({type:'level',id:u.id,text:`LEVEL ${u.level}`,toHP:u.hp});s.log.push(`${u.name} → LV ${u.level}. 성장이 새로운 힘으로 이어집니다.`);}
+ let leveled=false;while(u.xp>=BALANCE.xpLevel){leveled=true;u.xp-=BALANCE.xpLevel;u.level++;const g={...heroDef(u.id).growth};for(const [k,v]of Object.entries(classGrowth(u)))g[k]=(g[k]||0)+v;const changes={...g};for(const [stat,n] of Object.entries(g)){if(stat==='hp'){u.maxHP+=n;u.hp=Math.min(u.maxHP,u.hp+n);}else if(stat==='mp'){u.maxMP+=n;u.mp=Math.min(u.maxMP,u.mp+n);}else u[stat]+=n;}if(u.id==='eric'&&u.level>=5)u.appearanceTier=2;u.growthHistory.push({level:u.level,changes});s.feedback.push({type:'level',id:u.id,text:`LEVEL ${u.level}`,toHP:u.hp});s.log.push(`${u.name} → LV ${u.level}. 성장이 새로운 힘으로 이어집니다.`);}
  if(leveled){u.hp=u.maxHP;u.mp=u.maxMP;s.log.push(`${u.name}: 레벨업으로 HP/MP 전부 회복.`);}
 }
 export function discover(s,u,clue){if(!u.clues.includes(clue)){u.clues.push(clue);s.feedback.push({type:'potential',id:u.id,text:'POTENTIAL DISCOVERED'});s.log.push(`Potential Clue Discovered — ${clue} (1/3). 각성은 아직 해금되지 않았습니다.`);}}

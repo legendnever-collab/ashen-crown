@@ -24,16 +24,30 @@ def bust(png):
     art = png.convert('RGBA').resize((704, 880), Image.LANCZOS)
     canvas = Image.new('RGBA', (720, 880), (0, 0, 0, 0)); canvas.paste(art, (8, 0)); return canvas
 
-def sheet(png):
-    png = png.convert('RGBA'); out = Image.new('RGBA', (512, 384), (0, 0, 0, 0))
+# v0.6 pack B (D-059): the ACT II sheets were drawn about 15% smaller than the v0.4 cast. Each listed sheet is scaled
+# uniformly around its foot anchor (128,240) so the body height matches the existing heroes and soldiers.
+SHEET_SCALE = {'thea': 1.11, 'dario': 1.17, 'ironInfantry': 1.11, 'ironDeserter': 1.14, 'mercSpear': 1.09,
+               'assassin': 1.17, 'lordA': 1.11, 'lordB': 1.12, 'councillor': 1.18}
+
+def fit(cell, k):
+    if k == 1: return cell, 0
+    big = cell.resize((round(256*k), round(256*k)), Image.LANCZOS); out = Image.new('RGBA', (256, 256), (0, 0, 0, 0))
+    ox, oy = round(128-128*k), round(240-240*k); out.paste(big, (ox, oy), big)
+    lost = sum(1 for v in big.getchannel('A').getdata() if v > 128) - sum(1 for v in out.getchannel('A').getdata() if v > 128)
+    return out, lost
+
+def sheet(png, k=1):
+    png = png.convert('RGBA'); out = Image.new('RGBA', (512, 384), (0, 0, 0, 0)); clipped = 0
     for r in range(3):
         for c in range(4):
-            cell = png.crop((c*256, r*256, c*256+256, r*256+256)).resize((128, 128), Image.LANCZOS)
+            cell, lost = fit(png.crop((c*256, r*256, c*256+256, r*256+256)), k); clipped += lost
+            cell = cell.resize((128, 128), Image.LANCZOS)
             px = cell.load()
             for y in range(120, 128):
                 for x in range(128):
                     if px[x, y][3] <= 4: px[x, y] = (0, 0, 0, 0)
             out.paste(cell, (c*128, r*128))
+    if clipped: print(f'  scale {k}: {clipped} opaque px outside cells (weapon tips) clipped')
     return out
 
 def main(pack):
@@ -46,7 +60,7 @@ def main(pack):
         if r['kind'] == 'bust':
             payload, q = webp(bust(img), 96*1024); dest = BUST_DIR/f"bust_{r['id']}_{r['expression']}.webp"
         else:
-            payload, q = webp(sheet(img), 60*1024); dest = SPRITE_DIR/f"sprite_{r['id']}.webp"
+            payload, q = webp(sheet(img, SHEET_SCALE.get(r['id'], 1)), 60*1024); dest = SPRITE_DIR/f"sprite_{r['id']}.webp"
         dest.write_bytes(payload); log.append((r['kind'], r['id'], r['expression'], dest.name, len(payload), q, hashlib.sha256(payload).hexdigest(), r['sha256']))
     with open(ROOT/'src/assets/art-import-log.csv', 'a', newline='') as f:
         w = csv.writer(f)

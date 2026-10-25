@@ -20,11 +20,11 @@ test('ACT I complete camp loads as schema 8 with every asset kept and promotion 
  for(const h of before.campaign.heroes){const now=s.campaign.heroes.find(x=>x.id===h.id);assert.equal(now.classTier??1,1);for(const k of ['level','xp','maxHP','atk','def','mag','res','spd'])assert.equal(now[k],h[k],`${h.id}.${k}`);}
  assert.ok(act1Complete(s));for(const id of ['eric','elina','lia','sain','kai']){const st=promotionStatus(s,id);assert.equal(st.checks.length,3);assert.ok(st.checks[0].ok,'ACT I check passes');
   assert.equal(st.potential.step,potentialOf(s.campaign,s.campaign.heroes.find(h=>h.id===id)).step);assert.ok(proficiencyOf(s.campaign,id).stars>=0);}
- assert.equal(deserialize(serialize(s)).schema,8);
+ assert.equal(deserialize(serialize(s)).schema,9);
 });
 
 test('M05 mid-battle save resumes and can be won under v0.5.0 rules',()=>{
- const before=raw('m05-battle'),s=load('m05-battle');assert.equal(s.screen,'battle');assert.equal(s.missionId,5);assert.equal(s.stageStart.schema,8);
+ const before=raw('m05-battle'),s=load('m05-battle');assert.equal(s.screen,'battle');assert.equal(s.missionId,5);assert.equal(s.stageStart.schema,9);
  for(const u of before.units){const now=findUnit(s,u.id);assert.deepEqual([now.x,now.y,now.hp],[u.x,u.y,u.hp],u.id);}
  playCampaignBattle(s,true);assert.equal(s.outcome,'victory');
 });

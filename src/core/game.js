@@ -1,7 +1,7 @@
 import {applyTerrainRecovery,recoveryValue} from './terrain-recovery.js';
 import {ensureEconomy,commitEconomyReward,useTool,effectiveStats} from './economy.js';
-import {VERSION,SCHEMA,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,DEPLOYMENTS,BALANCE} from '../data/game-data.js';
-import {distance,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,forecast,strikeStats,guardFor,roll,awardXP,discover,terrainAt,counterBlocked} from './rules.js';
+import {VERSION,SCHEMA,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,DEPLOYMENTS,BALANCE,partyHeroes,partyIds} from '../data/game-data.js';
+import {distance,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,forecast,strikeStats,guardFor,roll,awardXP,discover,terrainAt,counterBlocked,hostile,chargeBreaks} from './rules.js';
 import {MISSIONS,missionOf,LAST_MISSION} from '../data/missions.js';
 import {rulesOf,objectUnit,searchEvidence} from './mission-rules.js';
 import {narrativeState,enqueueStory,remember,setStoryFlag,afterBattleEvents} from './narrative.js';
@@ -10,28 +10,36 @@ import {isClassMode,applyClassAction,overwatchStop,hazardAt,expireClassEffects} 
 import {CLASS_ACTIONS} from '../data/classes.js';
 export function newGame(seed=20261014,campaign=null,missionId=1){
  const mission=MISSIONS[missionId];
- const units=HEROES.map((h,i)=>{const old=campaign?.heroes?.find(a=>a.id===h.id);const u={...structuredClone(h),team:'ally',maxHP:h.hp,maxMP:h.mp,x:(mission.deployments||DEPLOYMENTS).recommended[i][0],y:(mission.deployments||DEPLOYMENTS).recommended[i][1],xp:0,earnedXP:0,growthHistory:[],clues:[],highlights:[],healTargets:[],moved:false,acted:false,hitThisTurn:false,shadowBonus:0,guardTarget:null};
+ const spots=(mission.deployments||DEPLOYMENTS).recommended;
+ const units=partyHeroes(campaign).map((h,i)=>{const old=campaign?.heroes?.find(a=>a.id===h.id);const u={...structuredClone(h),team:'ally',maxHP:h.hp,maxMP:h.mp,x:spots[i]?.[0]??-1,y:spots[i]?.[1]??-1,xp:0,earnedXP:0,growthHistory:[],clues:[],highlights:[],healTargets:[],moved:false,acted:false,hitThisTurn:false,shadowBonus:0,guardTarget:null};
   if(old){for(const k of ['level','xp','maxHP','maxMP','atk','def','mag','res','spd','growthHistory','clues','appearanceTier','classTier','storyTier','classMovementModifier','movementProfile'])if(old[k]!==undefined)u[k]=structuredClone(old[k]);u.hp=u.maxHP;u.mp=u.maxMP;}u.name=h.name;u.ko=h.ko;u.appearanceTier=u.appearanceTier|| (u.id==='eric'&&u.level>=5?2:1);return u;
  });
- units.push(...mission.enemies.map(e=>({...structuredClone(e),team:'enemy',maxHP:e.hp,mp:0,maxMP:0,mag:0,moved:false,acted:false,spawnTurn:0})),...mission.civilians.map(({startHP,...c})=>({...c,team:'civilian',kind:c.kind||'civilian',hp:startHP||c.hp||BALANCE.civilianHP,maxHP:c.hp||BALANCE.civilianHP,mp:0,maxMP:0,atk:0,def:c.def??1,res:c.res??1,mag:0,spd:0,mov:0,range:[0,0],rescued:false})),...(mission.objects||[]).map(objectUnit));
- campaign=structuredClone(campaign||{heroes:null,results:[],clears:0});campaign.completed=campaign.completed||[];campaign.flags=campaign.flags||{};campaign.bonds=campaign.bonds||{};campaign.tacticalMemory=campaign.tacticalMemory||{};campaign.choices=campaign.choices||{};campaign.promotions=campaign.promotions||{};
- const result={missionId,practice:campaign.completed.includes(missionId)&&!mission.skirmish,narrative:{...narrativeState(),seen:campaign.dialogueMemory?.seen||[],history:campaign.dialogueMemory?.history||[]},version:VERSION,schema:SCHEMA,screen:'title',phase:'player',turn:1,rng:seed>>>0,initialSeed:seed>>>0,units,log:[mission.objective,mission.brief],feedback:[],reinforced:false,enemyQueue:[],enemyIndex:0,undo:{},outcome:null,campaign,missionStart:units.filter(u=>u.team==='ally').map(u=>({id:u.id,level:u.level,stats:{maxHP:u.maxHP,atk:u.atk,def:u.def,mag:u.mag}})),potions:2};ensureEconomy(result);rulesOf(result)?.init(result);return result;
+ units.push(...mission.enemies.map(e=>({...structuredClone(e),team:'enemy',maxHP:e.hp,mp:0,maxMP:0,mag:0,moved:false,acted:false,spawnTurn:0})),...mission.civilians.map(({startHP,...c})=>({...c,team:'civilian',kind:c.kind||'civilian',hp:startHP||c.hp||BALANCE.civilianHP,maxHP:c.hp||BALANCE.civilianHP,mp:0,maxMP:0,atk:0,def:c.def??1,res:c.res??1,mag:0,spd:0,mov:0,range:[0,0],rescued:false})),...(mission.objects||[]).map(objectUnit),...(mission.allies||[]).map(alliedUnit));
+ campaign=structuredClone(campaign||{heroes:null,results:[],clears:0});campaign.completed=campaign.completed||[];campaign.flags=campaign.flags||{};campaign.bonds=campaign.bonds||{};campaign.tacticalMemory=campaign.tacticalMemory||{};campaign.choices=campaign.choices||{};campaign.promotions=campaign.promotions||{};campaign.roster=campaign.roster||[];
+ const result={missionId,practice:campaign.completed.includes(missionId)&&!mission.skirmish,narrative:{...narrativeState(),seen:campaign.dialogueMemory?.seen||[],history:campaign.dialogueMemory?.history||[]},version:VERSION,schema:SCHEMA,screen:'title',phase:'player',turn:1,rng:seed>>>0,initialSeed:seed>>>0,units,log:[mission.objective,mission.brief],feedback:[],reinforced:false,enemyQueue:[],enemyIndex:0,undo:{},outcome:null,campaign,missionStart:units.filter(u=>u.team==='ally').map(u=>({id:u.id,level:u.level,stats:{maxHP:u.maxHP,atk:u.atk,def:u.def,mag:u.mag}})),potions:2};ensureEconomy(result);placeParty(result);rulesOf(result)?.init(result);return result;
 }
+// v0.6 (Phase C): AI-led allied troops (team 'allied', D-055) — they fight beside the legion but take no orders and earn no EXP.
+export const alliedUnit=a=>({...structuredClone(a),team:'allied',maxHP:a.hp,mp:0,maxMP:0,mag:a.mag||0,moved:false,acted:false});
+// Sortie size per mission (D-055 Q2: six from M07; M01–M06 field the five). Recruits beyond the limit start in reserve,
+// and any hero without an authored spot takes the first free tile of the deployment zone.
+export const deployLimit=s=>missionOf(s).deployLimit??5;
+function placeParty(s){const heroes=s.units.filter(u=>u.team==='ally');let out=heroes.length;for(const u of [...heroes].reverse()){if(out<=deployLimit(s))break;if(SORTIE_LOCKED.includes(u.id))continue;u.benched=true;out--;}
+ for(const u of heroes){if(u.x>=0&&u.y>=0)continue;const free=[...deployZoneOf(s)].map(k=>k.split(',').map(Number)).find(([x,y])=>!at(s,x,y)&&Number.isFinite(terrainAt(x,y,s)?.cost)&&!s.units.some(o=>o!==u&&o.x===x&&o.y===y));if(free)[u.x,u.y]=free;else{u.benched=true;[u.x,u.y]=[0,0];}}}
 export function setDeployment(s,id,x,y){const zone=missionOf(s).deployZone?.(s);if(s.screen!=='deployment'||(zone?!zone.has(`${x},${y}`):(y<7||y>9||x<1||x>10))||!Number.isFinite(terrainAt(x,y,s)?.cost))return false;const u=findUnit(s,id);if(!u||u.team!=='ally')return false;const other=at(s,x,y);if(other&&other.team!=='ally')return false;if(other){other.x=u.x;other.y=u.y;}u.x=x;u.y=y;return true;}
-export function presetDeployment(s,name){if(s.screen!=='deployment')return;HEROES.forEach((h,i)=>{const u=findUnit(s,h.id);[u.x,u.y]=(missionOf(s).deployments||DEPLOYMENTS)[name][i];});}
+export function presetDeployment(s,name){if(s.screen!=='deployment')return;const spots=(missionOf(s).deployments||DEPLOYMENTS)[name];partyIds(s.campaign).forEach((id,i)=>{const u=findUnit(s,id);if(u&&spots[i])[u.x,u.y]=spots[i];});}
 // Sortie (2026-10-18 feedback): heroes can be left in reserve before battle. Erik, the playable lead, always goes.
 export const SORTIE_LOCKED=['eric'];
 // deployable tiles: the mission's authored zone, or the legacy M01–M03 band (x 1–10, y 7–9)
 export function deployZoneOf(s){const z=missionOf(s).deployZone?.(s);if(z)return z;const out=new Set();for(let y=7;y<=9;y++)for(let x=1;x<=10;x++)out.add(`${x},${y}`);return out;}
 export function setSortie(s,id,on){const u=findUnit(s,id);if(!u||u.team!=='ally'||!['exploration','warroom','deployment'].includes(s.screen)||(!on&&SORTIE_LOCKED.includes(id)))return false;
- if(!on&&s.units.filter(a=>a.team==='ally'&&!a.benched).length<=1)return false;if(on&&u.benched){const zone=deployZoneOf(s);if(at(s,u.x,u.y)||!zone.has(`${u.x},${u.y}`)){const free=[...zone].map(k=>k.split(',').map(Number)).find(([x,y])=>!at(s,x,y)&&Number.isFinite(terrainAt(x,y,s)?.cost));if(free)[u.x,u.y]=free;}}
+ const out=s.units.filter(a=>a.team==='ally'&&!a.benched).length;if(!on&&out<=1||on&&u.benched&&out>=deployLimit(s))return false;if(on&&u.benched){const zone=deployZoneOf(s);if(at(s,u.x,u.y)||!zone.has(`${u.x},${u.y}`)){const free=[...zone].map(k=>k.split(',').map(Number)).find(([x,y])=>!at(s,x,y)&&Number.isFinite(terrainAt(x,y,s)?.cost));if(free)[u.x,u.y]=free;}}
  if(on)delete u.benched;else u.benched=true;return true;}
-export function startBattle(s){if(s.screen!=='deployment')return false;s.screen='battle';applyTerrainRecovery(s);s.log.push(missionOf(s).brief);const {stageStart,...initial}=s;s.stageStart=structuredClone({...initial,feedback:[]});return true;}
+export function startBattle(s){if(s.screen!=='deployment'||s.units.filter(a=>a.team==='ally'&&!a.benched).length>deployLimit(s))return false;s.screen='battle';applyTerrainRecovery(s);s.log.push(missionOf(s).brief);const {stageStart,...initial}=s;s.stageStart=structuredClone({...initial,feedback:[]});return true;}
 export function canAct(s,u){return s.screen==='battle'&&s.phase==='player'&&!s.narrative?.active&&u?.team==='ally'&&alive(u)&&!u.acted;}
 // v0.5: a promoted Kai may still move after Quick Strike (strikeMove = this turn); otherwise moving needs an unspent action.
 export function canMove(s,u){return s.screen==='battle'&&s.phase==='player'&&!s.narrative?.active&&u?.team==='ally'&&alive(u)&&!u.moved&&(!u.acted||u.strikeMove===s.turn);}
-export function moveUnit(s,id,x,y){const u=findUnit(s,id);if(!canMove(s,u)||(u.x===x&&u.y===y))return null;const path=pathTo(s,u,x,y);if(!path)return null;if(u.acted){delete u.strikeMove;delete s.undo[id];}else s.undo[id]={x:u.x,y:u.y};u.x=x;u.y=y;u.moved=true;s.feedback.push({type:'move',id,path});return path;}
-export function undoMove(s,id){const u=findUnit(s,id),origin=s.undo[id];if(!canAct(s,u)||!origin||at(s,origin.x,origin.y))return false;u.x=origin.x;u.y=origin.y;u.moved=false;delete s.undo[id];return true;}
+export function moveUnit(s,id,x,y){const u=findUnit(s,id);if(!canMove(s,u)||(u.x===x&&u.y===y))return null;const path=pathTo(s,u,x,y);if(!path)return null;if(u.acted){delete u.strikeMove;delete s.undo[id];}else s.undo[id]={x:u.x,y:u.y};u.x=x;u.y=y;u.moved=true;if(u.id==='thea')u.chargeRun=path.length-1;s.feedback.push({type:'move',id,path});return path;}
+export function undoMove(s,id){const u=findUnit(s,id),origin=s.undo[id];if(!canAct(s,u)||!origin||at(s,origin.x,origin.y))return false;u.x=origin.x;u.y=origin.y;u.moved=false;if(u.chargeRun)u.chargeRun=0;delete s.undo[id];return true;}
 function consumeAction(s,u){u.acted=true;delete s.undo[u.id];}
 function damage(s,u,t,mode,counter=false){
  let victim=guardFor(s,u,t,mode)||t;s.feedback.push({type:'attack',id:u.id,target:victim.id,mode,counter});const fromHP=victim.hp;const stats=strikeStats(s,u,victim,mode),hit=roll(s)*100<stats.hit,critical=roll(s)*100<stats.crit;
@@ -57,28 +65,29 @@ export function performAction(s,id,mode,targetId){
  consumeAction(s,u);if(s.missionId===3&&u.id==='kai'&&u.y<=4)remember(s,'kai_bypass');
  if(mode==='skill'&&u.id==='kai'&&(u.classTier||1)>=2&&!u.moved)u.strikeMove=s.turn;
  if(mode==='search'){const custom=rulesOf(s)?.search?.(s,u,t);if(!custom)searchEvidence(s,u,t);awardXP(s,u,30,`${t.name} ${custom?'작동':'조사'}`);}
+ else if(mode==='capture'&&s.missionId!==2){rulesOf(s)?.capture?.(s,u,t);awardXP(s,u,50,`${t.name} 생포`);}
  else if(mode==='capture'){t.rescued=true;setStoryFlag(s,'mission_02_prisoner_captured');setStoryFlag(s,'mission_02_supply_route_discovered');remember(s,`${u.id}_capture`);awardXP(s,u,50,'도주 대장 생포');enqueueStory(s,'2:capture');s.log.push('포로 확보 · 보급로 진술을 얻었습니다.');}
  else if(mode==='rescue'){t.rescued=true;remember(s,`${u.id}_rescue`);awardXP(s,u,BALANCE.rescueXP,`${t.name} 구출`);s.log.push(`${u.name}: ${t.name}을 안전한 피난로로 구출했습니다.`);s.feedback.push({type:'rescue',id:t.id,text:'RESCUED'});if(u.id==='kai')discover(s,u,'Shadow Exchange');}
- else if(mode==='skill'&&u.id==='eric'){u.guarding=true;u.guardUsed=false;u.guardTarget=null;awardXP(s,u,12,'방어 태세');s.log.push('Erik: 방어 태세. 다음 아군 턴까지 DEF +3, 인접 동료가 받는 첫 근접 공격을 대신 받습니다.');s.feedback.push({type:'guard',id:u.id,text:'GUARD'});}
+ else if(mode==='skill'&&u.id==='eric'){u.guarding=true;u.guardUsed=false;u.guardTarget=null;awardXP(s,u,12,'방어 태세');s.log.push('에릭: 방어 태세. 다음 아군 턴까지 DEF +3, 인접 동료가 받는 첫 근접 공격을 대신 받습니다.');s.feedback.push({type:'guard',id:u.id,text:'GUARD'});}
  else if(mode==='skill'&&u.id==='sain'){
   const heal=Math.min(12+effectiveStats(s,u).mag+(proficiencyBonus(s,u).heal||0),t.maxHP-t.hp);t.hp+=heal;s.feedback.push({type:'heal',id:t.id,text:`+${heal}`,toHP:t.hp});
   const extra=s.units.filter(a=>a.team==='ally'&&alive(a)&&a.id!==t.id&&distance(a,t)===1&&a.hp<a.maxHP).sort((a,b)=>a.hp/a.maxHP-b.hp/b.maxHP)[0];let splash=0;if(extra){splash=Math.min(4,extra.maxHP-extra.hp);extra.hp+=splash;s.feedback.push({type:'heal',id:extra.id,text:`+${splash}`,toHP:extra.hp});}
   if(heal||splash)remember(s,'sain_heal');
-  if(heal||splash){if(!u.healTargets.includes(t.id))u.healTargets.push(t.id);awardXP(s,u,Math.min(BALANCE.healXP,10+Math.floor((heal+splash)/2)),`${t.name} 치유`);}if(extra&&splash)discover(s,u,'Divine Recall');s.log.push(`Sain: ${t.name} +${heal} HP${extra?`, Gentle Hands → ${extra.name} +${splash}`:''}. 치유할 때마다 EXP를 얻습니다.`);
+  if(heal||splash){if(!u.healTargets.includes(t.id))u.healTargets.push(t.id);awardXP(s,u,Math.min(BALANCE.healXP,10+Math.floor((heal+splash)/2)),`${t.name} 치유`);}if(extra&&splash)discover(s,u,'Divine Recall');s.log.push(`세인: ${t.name} +${heal} HP${extra?`, Gentle Hands → ${extra.name} +${splash}`:''}. 치유할 때마다 EXP를 얻습니다.`);
  }else{
   const r=damage(s,u,t,mode);if(r.hit){awardXP(s,u,BALANCE.attackXP+(!alive(r.victim)?BALANCE.killXP:0),`${r.victim.name} ${alive(r.victim)?'공격':'격파'}`);if(u.id==='elina'&&['f','v'].includes(sTerrain(s,u))){discover(s,u,'Overwatch');remember(s,'elina_forest_shot');}if(u.id==='lia'&&!alive(r.victim)){discover(s,u,'Arcane Territory');remember(s,'lia_kill');}}
-  if(alive(r.victim)&&validTarget(s,r.victim,u)&&!counterBlocked(s,r.victim))damage(s,r.victim,u,'attack',true);
+  if(alive(r.victim)&&validTarget(s,r.victim,u)&&!counterBlocked(s,r.victim)&&!chargeBreaks(u,mode))damage(s,r.victim,u,'attack',true);
  }
  rulesOf(s)?.onAction?.(s,u,mode,t);
  checkOutcome(s);afterBattleEvents(s);return {ok:true};
 }
 function sTerrain(s,u){return terrainAt(u.x,u.y,s).name==='Forest'?'f':terrainAt(u.x,u.y,s).name==='Village'?'v':'g';}
-export function beginEnemyPhase(s){if(s.screen!=='battle'||s.phase!=='player'||s.narrative?.active)return false;s.phase='enemy';s.undo={};rulesOf(s)?.beforeEnemyPhase?.(s);burnUnits(s,'enemy');s.enemyQueue=s.units.filter(u=>u.team==='enemy'&&alive(u)).map(u=>u.id);s.enemyIndex=0;s.feedback=[];applyTerrainRecovery(s);s.log.push(`TURN ${s.turn} · ENEMY PHASE`);return true;}
+export function beginEnemyPhase(s){if(s.screen!=='battle'||s.phase!=='player'||s.narrative?.active)return false;s.phase='enemy';s.undo={};rulesOf(s)?.beforeEnemyPhase?.(s);burnUnits(s,'enemy');burnUnits(s,'allied');s.enemyQueue=[...s.units.filter(u=>u.team==='allied'&&alive(u)),...s.units.filter(u=>u.team==='enemy'&&alive(u))].map(u=>u.id);s.enemyIndex=0;s.feedback=[];applyTerrainRecovery(s);s.log.push(`TURN ${s.turn} · ENEMY PHASE`);return true;}
 export function planEnemy(s,u){
  const reachable=movement(s,u).costs;
  const custom=rulesOf(s)?.planEnemy?.(s,u,reachable);if(custom)return custom;
  if(s.missionId===2&&u.id==='boss'){const cells=[...reachable].map(([p,c])=>{const [x,y]=p.split(',').map(Number);return {x,y,c};}).sort((a,b)=>a.y-b.y||Math.abs(a.x-5)-Math.abs(b.x-5)||a.c-b.c);const d=cells[0];return {...d,target:null,reason:'북쪽 출구로 도주'};}
-const targets=s.units.filter(t=>alive(t)&&(t.team==='ally'||t.team==='civilian'&&s.turn>=missionOf(s).threatTurn));let best=null;
+const targets=s.units.filter(t=>alive(t)&&(hostile(s,u,t)||t.team==='civilian'&&s.turn>=missionOf(s).threatTurn));let best=null;
  const hazards=!!s.runes||s.units.some(a=>a.team==='ally'&&a.overwatch&&alive(a)),hz=(x,y)=>hazards?hazardAt(s,u,x,y):0; // v0.5 overwatch/runes; 0 in ACT I
  for(const [pos,cost] of reachable){const [x,y]=pos.split(',').map(Number),actor={...u,x,y};for(const t of targets){const d=distance(actor,t);if(d<u.range[0]||d>u.range[1])continue;
    const f=strikeStats(s,actor,t);const priority=t.team==='civilian'?38:u.kind==='captain'?16-t.def:t.id==='sain'?12:t.id==='lia'?8:0;
@@ -87,30 +96,42 @@ const targets=s.units.filter(t=>alive(t)&&(t.team==='ally'||t.team==='civilian'&
  if(best)return best;
  // Attack and the M02 escape objective always win over retreat. Only local, useful recovery.
  if(u.hp/u.maxHP<.5){const sites=[...reachable].map(([p,c])=>{const [x,y]=p.split(',').map(Number);return {x,y,c,value:recoveryValue(s,u,x,y)};}).filter(p=>p.value>0&&targets.some(t=>distance(p,t)<=3)).sort((a,b)=>b.value-a.value||a.c-b.c);if(sites.length)return {...sites[0],target:null,reason:'인근 보급 거점 확보'};}
- const objectives=s.units.filter(t=>alive(t)&&(t.team==='ally'||t.team==='civilian'&&s.turn>=missionOf(s).threatTurn));if(!objectives.length)return {x:u.x,y:u.y,target:null,reason:'대상 없음'};
+ const objectives=s.units.filter(t=>alive(t)&&(hostile(s,u,t)||t.team==='civilian'&&s.turn>=missionOf(s).threatTurn));if(!objectives.length)return {x:u.x,y:u.y,target:null,reason:'대상 없음'};
  // Path distance respects blocked ruins and units; ignore occupancy only for strategic pursuit.
  const ranked=objectives.map(t=>({t,d:distance(u,t)-(u.kind==='captain'&&t.team==='civilian'?3:0)})).sort((a,b)=>a.d-b.d);const t=ranked[0].t;
  const mapDist=new Map([[key(t.x,t.y),0]]),q=[{x:t.x,y:t.y,c:0}];while(q.length){q.sort((a,b)=>a.c-b.c);const p=q.shift();for(const [dx,dy]of[[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,ter=terrainAt(x,y,s);if(!ter||!Number.isFinite(ter.cost))continue;const c=p.c+terrainAt(p.x,p.y,s).cost,k=key(x,y);if(c<(mapDist.get(k)??Infinity)){mapDist.set(k,c);q.push({x,y,c});}}}
  let dest={x:u.x,y:u.y,score:Infinity};for(const [p,c]of reachable){const [x,y]=p.split(',').map(Number),d=mapDist.get(p)??1000;const score=d+c*.01+hz(x,y)*.25;if(score<dest.score)dest={x,y,score};}return {...dest,target:null,reason:`${t.name} 방향으로 지형 경로 이동`};
 }
+// v0.6 allied AI (D-055 M07–M08): allied troops keep their post (u.post, within u.leash tiles) and strike the best
+// hostile target in reach; with no post they advance on the nearest foe. Missions may override (rules.planAllied).
+export function planAllied(s,u){
+ const reachable=movement(s,u).costs;const custom=rulesOf(s)?.planAllied?.(s,u,reachable);if(custom)return custom;
+ const post=u.post,leash=u.leash??0,ok=(x,y)=>!post||Math.abs(x-post.x)+Math.abs(y-post.y)<=leash;
+ const foes=s.units.filter(t=>alive(t)&&hostile(s,u,t));let best=null;
+ for(const [pos,cost] of reachable){const [x,y]=pos.split(',').map(Number);if(!ok(x,y))continue;const actor={...u,x,y};for(const t of foes){const d=distance(actor,t);if(d<u.range[0]||d>u.range[1])continue;const f=strikeStats(s,actor,t);const score=f.damage+(t.hp<=f.damage?30:0)-cost*.3;if(!best||score>best.score)best={x,y,target:t.id,score,reason:`대열 유지 · ${t.name} 공격`};}}
+ if(best)return best;
+ if(post){let dest={x:u.x,y:u.y,score:Infinity};for(const [p,c] of reachable){const [x,y]=p.split(',').map(Number),d=Math.abs(x-post.x)+Math.abs(y-post.y);if(d+c*.01<dest.score)dest={x,y,score:d+c*.01};}return {...dest,target:null,reason:'명령대로 대열 유지'};}
+ if(!foes.length)return {x:u.x,y:u.y,target:null,reason:'대상 없음'};
+ const t=foes.sort((a,b)=>distance(u,a)-distance(u,b))[0];let dest={x:u.x,y:u.y,score:distance(u,t)};for(const [p] of reachable){const [x,y]=p.split(',').map(Number),d=Math.abs(x-t.x)+Math.abs(y-t.y);if(d<dest.score)dest={x,y,score:d};}return {...dest,target:null,reason:`${t.name} 방향으로 전진`};
+}
 export function advanceEnemy(s){
  if(s.screen!=='battle'||s.phase!=='enemy'||s.narrative?.active)return false;s.feedback=[];
- if(s.enemyIndex<s.enemyQueue.length){const u=findUnit(s,s.enemyQueue[s.enemyIndex++]);if(!u||!alive(u))return true;const p=planEnemy(s,u);let path=pathTo(s,u,p.x,p.y),shots=[],stopped=false;
-  if(path&&path.length>1&&s.units.some(a=>a.team==='ally'&&a.overwatch&&alive(a))){const start={x:u.x,y:u.y},mark=s.feedback.length,stop=overwatchStop(s,u,path,(a,e)=>{s.feedback.push({type:'class',action:'overwatch-fire',id:a.id,target:e.id,text:'경계 사격',at:{x:e.x,y:e.y}});const r=damage(s,a,e,'attack');if(r.hit)awardXP(s,a,BALANCE.attackXP+(!alive(e)?BALANCE.killXP:0),`${e.name} 경계 사격`);return r;});
+ if(s.enemyIndex<s.enemyQueue.length){const u=findUnit(s,s.enemyQueue[s.enemyIndex++]);if(!u||!alive(u))return true;const p=u.team==='allied'?planAllied(s,u):planEnemy(s,u);let path=pathTo(s,u,p.x,p.y),shots=[],stopped=false;
+  if(u.team==='enemy'&&path&&path.length>1&&s.units.some(a=>a.team==='ally'&&a.overwatch&&alive(a))){const start={x:u.x,y:u.y},mark=s.feedback.length,stop=overwatchStop(s,u,path,(a,e)=>{s.feedback.push({type:'class',action:'overwatch-fire',id:a.id,target:e.id,text:'경계 사격',at:{x:e.x,y:e.y}});const r=damage(s,a,e,'attack');if(r.hit)awardXP(s,a,BALANCE.attackXP+(!alive(e)?BALANCE.killXP:0),`${e.name} 경계 사격`);return r;});
    shots=s.feedback.splice(mark);u.x=start.x;u.y=start.y;if(stop<path.length-1){stopped=true;path=path.slice(0,stop+1);p.x=path.at(-1).x;p.y=path.at(-1).y;}}
   if(path){u.x=p.x;u.y=p.y;if(path.length>1)s.feedback.push({type:'move',id:u.id,path});}s.feedback.push(...shots);
   if(stopped){s.log.push(`${u.name}: 경계 사격에 발이 묶였습니다.`);if(!alive(u)){checkOutcome(s);afterBattleEvents(s);return true;}if(p.target&&!validTarget(s,u,findUnit(s,p.target)))p.target=null;}
-  s.log.push(`AI · ${u.name}: ${p.reason}.`);if(p.target){const t=findUnit(s,p.target);const r=damage(s,u,t,'attack');if(t.team==='ally'&&alive(r.victim)&&validTarget(s,r.victim,u)){const counter=damage(s,r.victim,u,'attack',true);if(counter.hit)awardXP(s,r.victim,!alive(u)?BALANCE.attackXP+BALANCE.killXP:10,`${u.name} 반격`);}}
+  s.log.push(`AI · ${u.name}: ${p.reason}.`);if(p.target){const t=findUnit(s,p.target);const r=damage(s,u,t,'attack');if((t.team==='ally'||t.team==='allied'||t.team==='enemy')&&alive(r.victim)&&validTarget(s,r.victim,u)){const counter=damage(s,r.victim,u,'attack',true);if(counter.hit)awardXP(s,r.victim,!alive(u)?BALANCE.attackXP+BALANCE.killXP:10,`${u.name} 반격`);}}
   checkOutcome(s);afterBattleEvents(s);return true;
  }
  s.turn++;s.phase='player';s.enemyQueue=[];s.enemyIndex=0;
- for(const u of s.units.filter(u=>u.team==='ally')){u.shadowBonus=u.id==='kai'&&!u.hitThisTurn?1:0;u.hitThisTurn=false;u.ward=false;u.guardTarget=null;u.guarding=false;u.guardUsed=false;u.moved=false;u.acted=false;}
+ for(const u of s.units.filter(u=>u.team==='ally')){u.shadowBonus=u.id==='kai'&&!u.hitThisTurn?1:0;u.hitThisTurn=false;u.ward=false;u.guardTarget=null;u.guarding=false;u.guardUsed=false;u.moved=false;u.acted=false;if(u.chargeRun)u.chargeRun=0;}
  expireClassEffects(s);
  if(s.missionId===1&&s.turn===2)s.log.push('북쪽 숲에서 발소리가 들립니다. TURN 3에 북서·북동 모서리로 산적 2명이 진입합니다.');
  if(s.turn>=3&&!s.reinforced&&missionOf(s).reinforcements.length){for(const e of missionOf(s).reinforcements){let pos={x:e.x,y:e.y};if(at(s,pos.x,pos.y)){const free=[];for(let y=0;y<missionOf(s).height;y++)for(let x=0;x<missionOf(s).width;x++)if(!at(s,x,y)&&Number.isFinite(terrainAt(x,y,s).cost))free.push({x,y});free.sort((a,b)=>distance(a,e)-distance(b,e));pos=free[0];}s.units.push({...structuredClone(e),...pos,team:'enemy',maxHP:e.hp,mp:0,maxMP:0,mag:0,spawnTurn:s.turn});s.feedback.push({type:'spawn',id:e.id,text:'REINFORCEMENT'});}s.reinforced=true;s.log.push('적 증원 2명 출현. 이번 Player Phase 동안 먼저 대응할 수 있습니다.');}
  rulesOf(s)?.onTurnStart?.(s);
  ageFires(s);burnUnits(s,'ally');
- if(s.missionId===1&&s.turn===4)s.log.push('Garr: “피난민을 잡아라!” 다음 TURN 5부터 산적이 주민을 직접 공격합니다.');
+ if(s.missionId===1&&s.turn===4)s.log.push('가르: “피난민을 잡아라!” 다음 TURN 5부터 산적이 주민을 직접 공격합니다.');
  applyTerrainRecovery(s);
  if(s.missionId===3)escortCivilians(s);
  checkOutcome(s);afterBattleEvents(s);
@@ -124,7 +145,7 @@ export function checkOutcome(s){
  else if(s.missionId===2){const boss=findUnit(s,'boss');if(boss.rescued||boss.hp<=0||boss.y===0||s.turn>8||s.units.filter(u=>u.team==='enemy').every(u=>!alive(u)))finish(s,'victory',boss.rescued?'포로와 보급로 진술 확보.':'추격 종료. 상자의 흔적은 남았지만 진술은 얻지 못했습니다.');}
  else if(s.missionId===3){const saved=civ.filter(c=>c.rescued).length;if(s.turn>10)finish(s,'defeat','제한 10턴 안에 철수하지 못했습니다.');else if(saved>0&&heroes.filter(alive).every(u=>u.y<=2)){setStoryFlag(s,'mission_03_bridge_held');setStoryFlag(s,'mission_03_refugees_saved',saved);finish(s,'victory',`${saved}/2 주민 구조, 생존 장수 철수 완료.`);}else if(civ.every(c=>c.hp<=0))finish(s,'defeat','구조와 안전한 철수를 제한 턴 안에 완료하지 못했습니다.');}
  else if(civ.some(c=>c.hp<=0))finish(s,'defeat','주민을 잃어 필수 구출 목표를 달성할 수 없습니다.');
- else if(civ.every(c=>c.rescued)&&findUnit(s,'boss').hp<=0)finish(s,'victory','두 주민이 무사히 탈출했고 Garr를 격파했습니다.');
+ else if(civ.every(c=>c.rescued)&&findUnit(s,'boss').hp<=0)finish(s,'victory','두 주민이 무사히 탈출했고 가르를 격파했습니다.');
  return s.outcome;
 }
 function finish(s,outcome,reason){
