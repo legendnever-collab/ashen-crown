@@ -3,7 +3,7 @@
 // a schema-8 (v0.5.0) save restored through the visible backup UI. 1440×900 and 390×844 touch.
 import {launchTestBrowser} from './browser-helper.mjs';import {drainStory} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,checksum} from '../src/persistence/save-manager.js';import {actOneCamp} from './skirmish-policy.mjs';
-import {newGame} from '../src/core/game.js';import {enterHub,chestKey} from '../src/core/frontier.js';import {HUBS,INTERIORS} from '../src/data/frontier-data.js';import {drain} from './campaign-policy.mjs';
+import {newGame} from '../src/core/game.js';import {enterHub,chestKey} from '../src/core/frontier.js';import {HUBS,INTERIORS} from '../src/data/frontier-data.js';import {drain} from './campaign-policy.mjs';import {joinRoster} from '../src/core/roster.js';
 const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.6.0.html').href;fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const check=(name,ok)=>{assert.ok(ok,name);n++;console.log('PASS',name);};
 // Put Eric inside a building of the current hub (as if he walked in), optionally with chest 'a' already opened.
@@ -24,6 +24,10 @@ try{
   check(`${label} three banners, only the Iron Crown met, shown as a stage`,rows===3&&met===1&&['경계','중립','신뢰','동맹'].includes(stage.trim()));
   check(`${label} panel fits the screen`,await p.evaluate(()=>{const m=document.querySelector('.modal');return m.scrollWidth<=m.clientWidth+1;}));
   await p.screenshot({path:`test-output/act2-factions-${label}.png`});await press('close-modal');
+  // Pack B (D-059): recruits joined in camp show their painted heads in the party sheet.
+  {const camp=actOneCamp(20261021,6);joinRoster(camp,'thea',8);joinRoster(camp,'dario',9);await restore(camp);await press('inventory');
+   for(const id of ['thea','dario']){await press('inventory',id);await p.waitForTimeout(400);check(`${label} ${id} party sheet uses the painted bust`,await p.locator('.doll-portrait canvas').first().evaluate(c=>c.dataset.painting||'')===`head|${id}|neutral`);}
+   await p.screenshot({path:`test-output/act2-party-dario-${label}.png`});await press('close-modal');}
   for(const [name,make,room] of [['village house',villageHouse,'민가'],['triage tent',triage,'병영'],['oath camp tent',o=>inside(actOneCamp(20261021,6),'inn-1',o),'병영']]){
    for(const opened of [false,true]){await restore(make(opened));const s=await snap();
     check(`${label} ${name} ${opened?'opened':'closed'} chest room loads`,s.frontier.interior&&s.frontier.interiorBuilding&&(s.economy.chests||[]).includes(`m${s.missionId}:${s.frontier.hub}:${s.frontier.interiorBuilding}:a`)===opened);

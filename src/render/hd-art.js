@@ -207,6 +207,18 @@ export const CAST={
  ironSpear:{name:'철왕관 창병',skin:'warm',hair:'#3b302a',style:'short',helm:'kettle',helmColor:'#6e737a',body:'plate',metal:'#7d838a',coat:'#3a3e48',tabard:'#3a3e48',trim:'#c9a24a',legs:'#2e3038',boots:'#1f1f24',weapon:'spear',eye:'#3a2a22'},
  ironArcher:{name:'철왕관 궁수',skin:'fair',hair:'#4a3626',style:'short',helm:'cap',helmColor:'#3a3e48',body:'leather',coat:'#4a4f5a',trim:'#c9a24a',legs:'#2e3038',boots:'#1f1f24',weapon:'bow',back:'quiver',eye:'#3a2a22'},
  cavalry:{name:'철왕관 기병',horse:'#8a5a3a',barding:'#3a3e48',skin:'tan',hair:'#2a2420',style:'short',helm:'knight',helmMetal:'#7d838a',body:'plate',metal:'#7d838a',coat:'#3a3e48',tabard:'#7a2e2a',trim:'#c9a24a',legs:'#2e3038',boots:'#1f1f24',weapon:'spear',eye:'#3a2a22',mounted:true},
+ // v0.6 ACT II cast (pack B, D-059). Painted sheets are used; these are the procedural fallbacks and the palette for small UI.
+ thea:{name:'테아',horse:'#9a9a96',barding:'#4f6b84',skin:'fair',hair:'#a5532c',style:'ponytail',body:'plate',metal:'#6f7f8f',coat:'#4f6b84',tabard:'#4f6b84',trim:'#c9b07c',legs:'#2e3038',boots:'#1f1f24',weapon:'spear',eye:'#4f6b84',mounted:true},
+ dario:{name:'다리오',skin:'tan',hair:'#1e1a18',style:'long',body:'leather',coat:'#7a2e30',trim:'#c9a24a',scarf:'#3f7f74',legs:'#4a3a2c',boots:'#3a2a20',weapon:'sword',beard:'stubble',eye:'#3a2a22'},
+ cassian:{name:'카시안',skin:'fair',hair:'#2e2c2c',style:'swept',body:'coat',coat:'#3c5677',fur:'#5e5a56',trim:'#b8bec4',cape:'#3c5677',legs:'#2a2e36',boots:'#1d1d20',weapon:'sheathed',eye:'#7f878e'},
+ leonora:{name:'레오노라',skin:'fair',hair:'#c9b48a',style:'braid',body:'coat',coat:'#3f6a4a',trim:'#c8ced3',cape:'#2f5a3c',legs:'#d8cfb4',boots:'#4a3a28',weapon:'sword',eye:'#7a6a40'},
+ ironInfantry:{name:'통령국 보병',skin:'warm',hair:'#3b302a',style:'short',helm:'kettle',helmColor:'#6e737a',body:'plate',metal:'#7d838a',coat:'#4f6b84',tabard:'#4f6b84',fur:'#8a8680',trim:'#b8bec4',legs:'#2e3038',boots:'#1f1f24',weapon:'spear',off:'shield',shield:'#4f6b84',eye:'#3a2a22'},
+ ironDeserter:{name:'통령국 탈영병',skin:'warm',hair:'#3a2c22',style:'short',body:'plate',metal:'#6a6e74',coat:'#4f6b84',fur:'#6e665e',trim:'#7a6a50',legs:'#3a3a3a',boots:'#2a2620',weapon:'axe',beard:'stubble',eye:'#3a2a22'},
+ mercSpear:{name:'용병 창병',skin:'warm',hair:'#3a2c22',style:'short',helm:'kettle',helmColor:'#7d838a',body:'leather',coat:'#8a2e2a',tabard:'#1f1d1d',trim:'#5a4030',legs:'#3a2c22',boots:'#2a2018',weapon:'spear',eye:'#3a2a22'},
+ assassin:{name:'자객',skin:'warm',hair:'#2a2420',style:'short',hood:'#4a5444',body:'leather',coat:'#3e463a',trim:'#2a2a26',legs:'#2e322a',boots:'#22241f',weapon:'daggers',eye:'#3a2a22'},
+ lordA:{name:'영주군(청백)',skin:'warm',hair:'#3b302a',style:'short',helm:'kettle',helmColor:'#b8bec4',body:'plate',metal:'#9aa0a6',coat:'#2f4f8a',tabard:'#e8e4d8',trim:'#2f4f8a',legs:'#2e3038',boots:'#1f1f24',weapon:'spear',off:'shield',shield:'#2f4f8a',eye:'#3a2a22'},
+ lordB:{name:'영주군(주황)',skin:'warm',hair:'#3b302a',style:'short',helm:'kettle',helmColor:'#7d838a',body:'plate',metal:'#7d838a',coat:'#c8682a',tabard:'#6a4428',trim:'#c8682a',legs:'#2e3038',boots:'#1f1f24',weapon:'spear',eye:'#3a2a22'},
+ councillor:{name:'벨마르 의원',skin:'fair',hair:'#b8b0a4',style:'short',helm:'beret',helmColor:'#3f6a4a',body:'robe',coat:'#3f6a4a',trim:'#e6dcc0',legs:'#d8cfb4',boots:'#4a3a28',weapon:'satchel',beard:'full',beardColor:'#b8b0a4',eye:'#4a3a2c'},
  aide:{name:'작전 보좌관',skin:'pale',hair:'#2a2430',style:'swept',body:'coat',coat:'#3f3a63',trim:'#c9b07a',legs:'#2a2840',boots:'#1f1d2a',weapon:'papers',eye:'#4a3a5a'}
 };
 // M06 looks that have painted sheets; their pixel fallback borrows an existing look.

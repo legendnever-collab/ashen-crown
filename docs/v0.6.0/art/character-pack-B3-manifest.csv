@@ -1,0 +1,8 @@
+kind,id,expression,file,width,height,bytes,sha256
+sprite,ironInfantry,,png/sprite_ironInfantry.png,1024,768,431185,2b6c76ab7c20d3a9a1f62888e0fc20609cf8b14e16dd63816f3a25eca1d0f633
+sprite,ironDeserter,,png/sprite_ironDeserter.png,1024,768,528323,f00d1052b231ee7ed17a9a7fb09c7e546d3208f90b255a9755f7f3251f1fcb42
+sprite,mercSpear,,png/sprite_mercSpear.png,1024,768,431785,fd145474060086317b85b649f2b12f99164e996e2581d3e983517ebf608558bd
+sprite,assassin,,png/sprite_assassin.png,1024,768,480548,5d73bbaae6430e0ed73e50033ac7de08f3b726f7eead4c6b9b0da4c383c78cb1
+sprite,lordA,,png/sprite_lordA.png,1024,768,428376,91d4bbf8224fe9c7b029c594e7f981681b47836378d1eb8ac700f78429625e35
+sprite,lordB,,png/sprite_lordB.png,1024,768,441730,7125bfcab6a0cf6f6b43f12b75e36de479f766b4abb34f0a27a4636a71c9a627
+sprite,councillor,,png/sprite_councillor.png,1024,768,509464,ecbbdbc44caa10bf4443cb8286bec4cdafdd98f9f41d6361968d9ad7d748f006

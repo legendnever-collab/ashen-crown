@@ -50,6 +50,8 @@ export function bustKey(u,missionId=1){
  if((u.classTier||1)>=2&&BUST_SPEC[u.id]&&PAINTED?.[`${u.id}_t2`])return `${u.id}_t2`;
  if(u.id==='eric'&&(appearanceFor(u)?.tier||1)>=2)return 'eric_adv';
  if(BUST_SPEC[u.id])return u.id;
+ // v0.6 ACT II recruits and leaders (pack B, D-059): painted busts by id; without the art the cast vector bust below.
+ if(['thea','dario','cassian','leonora'].includes(u.id)&&u.team!=='enemy')return PAINTED?.[u.id]?u.id:'cast:'+u.id;
  if(u.team==='commander')return 'aren';
  if(u.team==='civilian')return 'refugee';
  const look={1:{captain:'captain',archer:'archer'},2:{captain:'deserterCaptain',bandit:'deserter'},3:{captain:'pursuerCaptain',bandit:'pursuer',archer:'pursuerArcher'},4:{captain:'quartermaster',bandit:'fortGuard',archer:'fortArcher'},5:{bearer:'bearer',spear:'ironSpear',archer:'ironArcher',cavalry:'cavalry'},6:{captain:'executor',bandit:'pursuer',archer:'pursuerArcher'}}[missionId]||{};
