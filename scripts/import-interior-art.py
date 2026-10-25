@@ -3,6 +3,7 @@
 
 Pack layout (work pack return format): manifest.csv with id,kind,path,width,height,bytes,sha256.
   interior 1536x1024 (12x8 tiles of 128) -> src/assets/rooms/<id>.webp at 1152x768 (1.5x the 64-px world tile)
+  hub      1536x1024 (24x16 tiles of 64) -> src/assets/hubs/<id>.webp, same size (ACT II pack C)
   chests   1536x1024 / 1024x1024 sheet of 256-px cells, closed row above open row -> src/assets/chests/<style>_<closed|open>.webp
            at 128x128 each (chest baseline 216/256 of the cell, kept); alpha below 20 is cleared (matting fringe).
 SHA256 of every master is checked against the manifest first. No network access.
@@ -13,7 +14,7 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
-ROOM_DIR, CHEST_DIR = ROOT/'src/assets/rooms', ROOT/'src/assets/chests'
+ROOM_DIR, CHEST_DIR, HUB_DIR = ROOT/'src/assets/rooms', ROOT/'src/assets/chests', ROOT/'src/assets/hubs'
 SHEETS = {  # sheet id -> styles in reading order (columns per row pair)
  'chests_act1': (6, ['village_chest', 'militia_locker', 'grain_bin', 'elder_coffer', 'field_locker', 'medic_chest',
                      'supply_crate', 'officer_strongbox', 'document_coffer', 'armory_chest', 'fort_locker', 'old_chest']),
@@ -45,6 +46,9 @@ def main(pack):
         if r['kind'] == 'interior':
             payload, q = webp(img.convert('RGB').resize((1152, 768), Image.LANCZOS), 240*1024); dest = ROOM_DIR/f"{r['id']}.webp"
             dest.write_bytes(payload); log.append(('room', r['id'], dest.name, len(payload), q, hashlib.sha256(payload).hexdigest(), r['sha256']))
+        elif r['kind'] == 'hub':
+            payload, q = webp(img.convert('RGB'), 380*1024, (84, 80, 76, 72, 68, 64, 60, 56)); dest = HUB_DIR/f"{r['id']}.webp"
+            dest.write_bytes(payload); log.append(('hub', r['id'], dest.name, len(payload), q, hashlib.sha256(payload).hexdigest(), r['sha256']))
         elif r['kind'] == 'chests':
             cols, styles = SHEETS[r['id']]
             for style, state, cell in cells(img, cols, styles):
@@ -55,6 +59,6 @@ def main(pack):
         w = csv.writer(f)
         if f.tell() == 0: w.writerow(['kind', 'id', 'webp', 'bytes', 'quality', 'webp_sha256', 'source_sha256'])
         w.writerows(log)
-    print(f"{len(log)} assets: {sum(l[3] for l in log)} bytes ({sum(1 for l in log if l[0]=='room')} rooms, {sum(1 for l in log if l[0]=='chest')} chest cells)")
+    print(f"{len(log)} assets: {sum(l[3] for l in log)} bytes ({sum(1 for l in log if l[0]=='hub')} hubs, {sum(1 for l in log if l[0]=='room')} rooms, {sum(1 for l in log if l[0]=='chest')} chest cells)")
 
 if __name__ == '__main__': main(sys.argv[1])

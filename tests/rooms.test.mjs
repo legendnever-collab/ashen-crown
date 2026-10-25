@@ -1,4 +1,4 @@
-// v0.6 painted interiors (D-056, art pack A): every ACT I building opens a painted room whose authored walk mask
+// v0.6 painted interiors (D-056, art packs A and C): every ACT I and ACT II town building opens a painted room whose authored walk mask
 // keeps the doorway, every floor tile, every chest and the shopkeeper reachable; chest ids, interior kinds and
 // rewards are those of the v0.4 templates; the shipped WebPs equal the hash-verified import log.
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import crypto from 'node:crypto';
@@ -10,11 +10,14 @@ import {transact} from '../src/core/economy.js';
 import {serialize,deserialize,migrate} from '../src/persistence/save-manager.js';
 import {drain} from './campaign-policy.mjs';
 
-const ACT1_HUBS=['village','village_raid','camp','bivouac','fortress','oathcamp'];
-const rooms=()=>ACT1_HUBS.flatMap(hub=>[...HUBS[hub].places.filter(p=>p.action==='enter').map(p=>[hub,p.interior,p.buildingId]),...(hub.startsWith('village')?[[hub,'weapon',undefined],[hub,'item',undefined]]:[])]);
+const ACT1_HUBS=['village','village_raid','camp','bivouac','fortress','oathcamp'],ACT2_HUBS=['castletown','velmar'];
+const roomsOf=hubs=>hubs.flatMap(hub=>[...HUBS[hub].places.filter(p=>p.action==='enter').map(p=>[hub,p.interior,p.buildingId]),...(hub.startsWith('village')?[[hub,'weapon',undefined],[hub,'item',undefined]]:[]),
+ ...HUBS[hub].places.filter(p=>['weapon','item'].includes(p.action)&&!hub.startsWith('village')).map(p=>[hub,p.action,p.buildingId])]);
+const rooms=()=>roomsOf([...ACT1_HUBS,...ACT2_HUBS]);
 
-test('all 15 painted rooms are used by the ACT I hubs, each with a 12×8 mask',()=>{
- const used=new Set(rooms().map(r=>roomId(...r)));assert.deepEqual([...used].sort(),Object.keys(ROOM_LAYOUTS).sort());assert.equal(used.size,15);
+test('all 27 painted rooms are used (15 by the ACT I hubs, 12 by the ACT II towns), each with a 12×8 mask',()=>{
+ const used=new Set(rooms().map(r=>roomId(...r)));assert.deepEqual([...used].sort(),Object.keys(ROOM_LAYOUTS).sort());assert.equal(used.size,27);
+ assert.equal(new Set(roomsOf(ACT1_HUBS).map(r=>roomId(...r))).size,15);assert.equal(new Set(roomsOf(ACT2_HUBS).map(r=>roomId(...r))).size,12);
  for(const r of rooms()){const h=paintedRoom(...r);assert.ok(h,r.join(':'));assert.equal(h.mask.length,8);assert.ok(h.mask.every(row=>row.length===12));}
 });
 
@@ -50,7 +53,7 @@ test('night hubs dim the same room; a v0.5 save standing on an old template tile
 test('shipped room and chest WebPs equal the hash-verified import log',()=>{
  const root=new URL('../src/assets/',import.meta.url),sha=p=>crypto.createHash('sha256').update(fs.readFileSync(new URL(p,root))).digest('hex');
  const [head,...rows]=fs.readFileSync(new URL('room-art-import-log.csv',root),'utf8').trim().split('\n'),cols=head.split(','),last=new Map();for(const r of rows){const o=Object.fromEntries(cols.map((c,i)=>[c,r.split(',')[i]]));last.set(o.webp,o);}
- const all=[...last.values()];assert.equal(all.filter(r=>r.kind==='room').length,15);assert.equal(all.filter(r=>r.kind==='chest').length,24);
- for(const r of all)assert.equal(sha(`${r.kind==='room'?'rooms':'chests'}/${r.webp}`),r.webp_sha256,r.webp);
+ const all=[...last.values()];assert.equal(all.filter(r=>r.kind==='room').length,27);assert.equal(all.filter(r=>r.kind==='chest').length,40);assert.equal(all.filter(r=>r.kind==='hub').length,2);
+ for(const r of all)assert.equal(sha(`${{room:'rooms',chest:'chests',hub:'hubs'}[r.kind]}/${r.webp}`),r.webp_sha256,r.webp);
  for(const id of Object.keys(ROOM_LAYOUTS))assert.ok(last.has(`${id}.webp`),id);
 });

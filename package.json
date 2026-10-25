@@ -37,7 +37,8 @@
     "test:world": "node tests/world-e2e.mjs",
     "test:migration-v040": "node tests/migration-v040.mjs",
     "test:class-balance": "node tests/class-balance.mjs",
-    "test:act2": "node tests/act2-e2e.mjs"
+    "test:act2": "node tests/act2-e2e.mjs",
+    "test:act2-hubs": "node tests/act2-hubs-e2e.mjs"
   },
   "devDependencies": {
     "playwright": "1.58.2"

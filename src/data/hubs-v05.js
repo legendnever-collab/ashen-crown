@@ -1,3 +1,4 @@
+import {ACT2_HUB_SPECS} from './hubs-v06.js';
 // v0.5.0 painted interlude hubs (D-052). Each hub is one 1536×1024 painting = 24×16 tiles of 64 px.
 // mask: '.' walkable, '#' solid (authored over the painting). Doors use the same five building ids in
 // every camp-type hub so chest records and saved interiors stay valid when the legion moves on.
@@ -155,4 +156,6 @@ const HV5_SPECS={
    ['merchant','방랑 상인 · 도구와 무기',5,9,{services:['item','weapon']}],['elder','진영 관리인',15,4],['refugee','피난 주민',13,3],['guard','보초',13,12]],
   lights:[[815,490,170,'fire'],[625,420,90,'lantern'],[945,420,90,'lantern'],[625,610,90,'lantern'],[945,610,90,'lantern'],[680,830,100,'torch'],[855,830,100,'torch'],[300,500,120,'fire']]}
 };
+// v0.6 ACT II hubs (art pack C) are built the same way; only act2HubFor (Phase D) routes the story to them.
+Object.assign(HV5_SPECS,ACT2_HUB_SPECS);
 export const ART_HUBS=Object.fromEntries(Object.entries(HV5_SPECS).map(([id,spec])=>[id,hv5Build(id,spec)]));

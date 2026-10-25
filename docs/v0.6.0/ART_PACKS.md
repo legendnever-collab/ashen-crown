@@ -6,7 +6,7 @@
 |---|---|---|---|
 | A 건물 내부 (D-056) | `scripts/make-interior-work-pack.py` | ACT I 방 15곳 + 상자 시트(12종) = 16장 | `Ashen_Crown_v060_Interior_Art_Pack.zip` — **받음·반영 2026-10-25 (D-057)** |
 | B ACT II 인물 (D-055 §7) | `scripts/make-act2-character-pack.py` | 지도자 2명 반신 8, 새 동료 2명 반신 8 + 시트 2, 병종 시트 7 = 25장 | `…Character_Art_Pack_B1/_B2/_B3.zip` — **받음·반영 2026-10-25 (D-059)** |
-| C ACT II 거점 (D-055 §6, D-056) | `scripts/make-act2-hub-pack.py` | 성하 마을, 벨마르 시장 + 방 12곳 + 상자 시트(8종) = 15장 | `…ACT2_Hub_Art_Pack.zip` (또는 _C1/_C2) |
+| C ACT II 거점 (D-055 §6, D-056) | `scripts/make-act2-hub-pack.py` | 성하 마을, 벨마르 시장 + 방 12곳 + 상자 시트(8종) = 15장 | `Ashen_Crown_v060_ACT2_Hub_Art_Pack.zip` — **받음·반영 2026-10-25 (D-063)** |
 
 합계 56장입니다. 설계안 §7의 27장(인물 25장 + 거점 2장)에, 사용자가 요청한 방과 상자 29장이 더해졌습니다.
 

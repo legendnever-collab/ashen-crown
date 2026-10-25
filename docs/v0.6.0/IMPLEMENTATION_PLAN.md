@@ -59,6 +59,11 @@ Branch `feature/v0.6-act2-three-banners` (base: main `33577c4`, official v0.5.0 
 ### 5.1 이후 반영 (2026-10-25)
 - **D-057:** 팩 A의 손그림 방 15곳과 상자 24칸을 넣었습니다(`rooms-v06.js`, `import-interior-art.py`).
 - **D-058:** 거점, 방, 대화 무대의 인물을 1.5배로 그립니다. 전투 맵은 1배 그대로입니다(`frontier-renderer.js` `HUB_FIGURE_SCALE`).
+- **D-061:** 적군과 NPC 그림의 몸 크기를 영웅 그림에 맞췄습니다(`hd-world.js` `FIGURE_FIT`).
+- **D-062:** ACT I 대화가 서로 이어지도록 고쳤습니다. 거점 대화는 장면마다 따로 썼습니다(`talk-v06.js`, `docs/v0.6.0/DIALOGUE_SCRIPT.md`).
+- **D-063:** 팩 C를 넣었습니다. 성하 마을과 벨마르 시장 거점, 방 12곳, ACT II 상자 8종(16칸)입니다(`hubs-v06.js`, `rooms-v06.js`).
+  - 이야기는 Phase D에서 `act2HubFor`를 연결할 때 두 거점으로 갑니다.
+  - 그 전에는 테스트 전용 페이지(`tests/harness/act2-preview.js`)로만 들어가 봅니다. 출시 HTML에는 들어가지 않습니다.
 
 ## 4. 리스크
 
