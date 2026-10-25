@@ -3,6 +3,8 @@ import {HUBS} from '../data/frontier-data.js';
 import {explorationHero,currentHub,chestKey,exitDoor} from '../core/frontier.js';
 import {drawTile,drawSprite,pixel} from './art.js';
 import {drawBuilding,drawFire} from './world-art.js';
+import {drawChest} from './chest-art.js';
+import {frontierRoom,chestStyle} from '../data/rooms-v06.js';
 import {MapCamera,drawMinimap} from './camera.js';
 import {hdGround,drawHDGround,drawHDObject,hdObjectKey,drawTownBuilding,drawHDFigure,hdCastFor,hdDirection} from './hd-world.js';
 const TOWN_TYPES=new Set(['forge','shop','inn','warroom','residence','depot']);
@@ -24,7 +26,7 @@ export function drawHub(canvas,s,{line=null,time=performance.now()}={}){
  const map=hubTerrain(h),hd=painted?{objects:[]}:hdGround(`hub:${h.name}:${h.width}x${h.height}:${h.tone}`,h.tone==='interior'?map.map(r=>r.map(()=>'p')):map,'',o=>{const tx=Math.floor(o.x/48),ty=Math.floor((o.y-1)/48);return (o.kind==='tree'||o.kind==='bush')&&(tx<=0||ty<=0||tx>=h.width-1||ty>=h.height-1);});if(painted){if(art)c.drawImage(art,0,0,h.width*64,h.height*64);else pixel(c,'#2a3328',0,0,h.width*64,h.height*64);}else drawHDGround(c,hd);
  if(h.tone==='interior'){for(let y=0;y<h.height;y++){pixel(c,'#4a4140',0,y*64,64,64);pixel(c,'#4a4140',(h.width-1)*64,y*64,64,64);}pixel(c,'#473d3a',0,0,h.width*64,64);pixel(c,'#c4aa7f',64,62,(h.width-2)*64,3);const door=exitDoor(h);for(let x=0;x<h.width;x++)if(x!==door.x)pixel(c,'#4a4140',x*64,(h.height-1)*64,64,64);pixel(c,'#5d4a36',door.x*64,(h.height-1)*64,64,64);pixel(c,'#2b221b',door.x*64+6,(h.height-1)*64+4,52,60);pixel(c,'#e9d29a',door.x*64+10,(h.height-1)*64+8,44,6);pixel(c,'#a0453a',door.x*64+8,(h.height-1)*64-10,48,10);c.fillStyle='#f3e1b2';c.font='bold 12px sans-serif';c.textAlign='center';c.fillText('출구 ↓',door.x*64+32,(h.height-1)*64+38);c.textAlign='left';}
  const burned=!!s.campaign.flags.mission_01_completed;
- const opened=new Set(s.economy?.chests||[]),buildingState=b=>b.type==='chest'?(opened.has(chestKey(s,b.chestId))?'open':'closed'):burned&&f.hub==='village'&&b.type==='residence'?'burned':line&&s.narrative.active?.key==='raid'&&b.type==='residence'?'burning':'intact';const drawB=b=>TOWN_TYPES.has(b.type)&&h.tone!=='interior'?drawTownBuilding(c,b,h.tone,buildingState(b)):drawBuilding(c,b,time,buildingState(b));
+ const opened=new Set(s.economy?.chests||[]),buildingState=b=>b.type==='chest'?(opened.has(chestKey(s,b.chestId))?'open':'closed'):burned&&f.hub==='village'&&b.type==='residence'?'burned':line&&s.narrative.active?.key==='raid'&&b.type==='residence'?'burning':'intact';const room=frontierRoom(f),drawB=b=>b.type==='chest'?drawChest(c,b.x*64,b.y*64,chestStyle(room,b.chestId),buildingState(b)):TOWN_TYPES.has(b.type)&&h.tone!=='interior'?drawTownBuilding(c,b,h.tone,buildingState(b)):drawBuilding(c,b,time,buildingState(b));
  if(line&&!painted){for(const o of hd.objects)drawHDObject(c,o,time);for(const b of h.buildings)drawB(b);}
  if(painted)drawHubLights(c,h,time);else if(h.tone==='camp')drawFire(c,7*64,6*64,time,.65);
  if(line){const cast=(line.actors||['aren',line.speaker]).filter((id,i,a)=>a.indexOf(id)===i);const sx=h.stage?.x??220,sy=h.stage?.y??424;cast.forEach((id,i)=>{const actor=s.units.find(u=>u.id===id)||{id,team:id==='aren'?'commander':'civilian'};drawHDFigure(c,hdCastFor(actor),sx+i*75,sy+i%2*30,{facing:'down'});if(id===line.speaker)pixel(c,'#f5d594',sx-4+i*75,sy-82+i%2*30,8,8);});}

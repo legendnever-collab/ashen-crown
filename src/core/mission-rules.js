@@ -214,4 +214,5 @@ export function searchEvidence(s,u,t){
  if(t.evidence==='orders'&&u.id==='kai')enqueueStory(s,`${s.missionId}:search:orders:kai`);
 }
 export const missionUnitIds=m=>[...m.enemies,...m.reinforcements,...m.civilians,...(m.objects||[]),...(m.waves||[]).flatMap(w=>w.units)].map(u=>u.id);
-export const maxUnits=m=>5+missionUnitIds(m).length;
+// v0.6: room for ACT II recruits (up to seven heroes) and allied troops.
+export const maxUnits=m=>7+missionUnitIds(m).length+(m.allies||[]).length;

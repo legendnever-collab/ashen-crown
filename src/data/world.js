@@ -11,7 +11,7 @@ export const REGIONS=[
   poly:[[600,360],[700,340],[850,330],[960,340],[1040,420],[1010,560],[1000,680],[820,650],[640,640],[520,700],[560,520]]},
  {id:'north',name:'철왕관 통령령',faction:'Iron Crown Dominion',color:'#6f86a0',label:[760,150],shown:c=>c.completed.includes(5),
   poly:[[300,120],[420,70],[640,72],[820,90],[1000,72],[1150,85],[1240,130],[1180,250],[1050,300],[900,330],[760,330],[600,330],[450,300],[300,280],[240,250],[250,170]]},
- {id:'west',name:'자유도시 연맹',faction:'Free Lords Alliance',color:'#7aa35a',label:[330,430],shown:()=>false,
+ {id:'west',name:'자유도시 연맹',faction:'Free Lords Alliance',color:'#7aa35a',label:[330,430],shown:c=>c.completed.includes(8),
   poly:[[170,450],[150,330],[200,290],[300,280],[450,300],[560,330],[600,360],[560,520],[520,700],[430,760],[300,790],[230,760],[160,680],[150,560]]},
  {id:'south',name:'성화령',faction:'Order of the Sacred Flame',color:'#c4553f',label:[760,740],shown:()=>false,
   poly:[[520,700],[640,640],[820,650],[1000,680],[1120,720],[1200,760],[1200,830],[1060,920],[900,960],[700,960],[560,930],[420,900],[300,850],[230,760],[300,790],[430,760]]}
@@ -36,9 +36,11 @@ export const SITES=[
  {id:'gate',name:'국경 관문',icon:'gate',x:1432,y:333,region:'east',mission:6},
  {id:'oathcamp',name:'관문 너머 야영지',icon:'camp',x:1458,y:295,region:'east',hub:'oathcamp',small:true}
 ];
-export const HUB_SITE={village:'village',village_raid:'village',camp:'garrison',bivouac:'bivouac',fortress:'fortress',oathcamp:'oathcamp'};
+export const HUB_SITE={village:'village',village_raid:'village',camp:'garrison',bivouac:'bivouac',fortress:'fortress',oathcamp:'oathcamp',castletown:'stronghold',velmar:'freecity'};
 // ACT I march order (W1): village → garrison → forest → bridge → bivouac → fortress → ridge → gate → oath camp.
 export const ACT1_ROUTE=['village','garrison','forest','bridge','bivouac','fortress','ridge','gate','oathcamp'];
+// ACT II first half (D-055 §6): oath camp → Ironhold's castle town → the grey canyon → Velmar. Drawn from v0.6 Phase F.
+export const ACT2_ROUTE=['oathcamp','stronghold','canyon','freecity'];
 export const siteById=id=>SITES.find(s=>s.id===id);
 // How far along the march the legion has come, from completed missions.
 export function routeReached(campaign,hub){const c=campaign?.completed||[];let i=ACT1_ROUTE.indexOf(HUB_SITE[hub]||'village');for(const [m,site] of [[1,'village'],[2,'forest'],[3,'bridge'],[4,'fortress'],[5,'ridge']])if(c.includes(m))i=Math.max(i,ACT1_ROUTE.indexOf(site));if(c.includes(5)&&hub==='oathcamp')i=ACT1_ROUTE.length-1;return Math.max(0,i);}

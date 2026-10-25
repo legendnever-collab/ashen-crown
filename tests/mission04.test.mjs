@@ -69,7 +69,7 @@ test('M04 saves: mid-battle round trip, burned state, restart to stage start, sc
  const back=deserialize(serialize(s));assert.deepEqual(back.missionState,s.missionState);assert.equal(back.units.find(u=>u.id==='e2').rescued,true);
  const r=restartStage(back);assert.equal(r.turn,1);assert.ok(r.units.filter(u=>u.team==='object').every(alive));assert.deepEqual(r.missionState.burned,[]);
  const bad=structuredClone(s);bad.missionState.burned=['ledger'];assert.throws(()=>deserialize(serialize(bad)));
- const old=newGame(9);old.schema=6;delete old.campaign.choices;old.screen='title';const m=migrate(old);assert.equal(m.schema,8);assert.deepEqual(m.campaign.choices,{});
+ const old=newGame(9);old.schema=6;delete old.campaign.choices;old.screen='title';const m=migrate(old);assert.equal(m.schema,9);assert.deepEqual(m.campaign.choices,{});
 });
 
 test('Supplemental reward definitions are stable and unique; M01–03 rewards unchanged',()=>{

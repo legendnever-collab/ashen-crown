@@ -13,6 +13,9 @@ export function hubFor(missionId,phase='preparation'){
  if(missionId>=4&&missionId<=6)return 'fortress';
  return 'oathcamp';
 }
+// v0.6 ACT II plan (D-055 §6, PROPOSED): Ironhold's castle town for M07–M08, the march bivouac after M08, Velmar for
+// M09–M10. hubFor switches to it in Phase D, when the castle town and Velmar hubs exist (LAST_MISSION is still 6).
+export function act2HubFor(missionId,phase='preparation'){const after=phase==='aftermath';if(missionId===7||missionId===8&&!after)return 'castletown';if(missionId===8)return 'bivouac';return 'velmar';}
 // Story key → hub used as the staged backdrop ('pre:3', 'after:3:loss', '6:oath' …).
 export function stageHubFor(key){
  const m=/^(pre|after):(\d+)/.exec(key);if(m)return hubFor(+m[2],m[1]==='after'?'aftermath':'preparation');

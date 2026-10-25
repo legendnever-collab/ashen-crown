@@ -1,5 +1,5 @@
-export const VERSION = '0.5.0';
-export const SCHEMA = 8;
+export const VERSION = '0.6.0';
+export const SCHEMA = 9;
 export const WIDTH = 12, HEIGHT = 10;
 // v0.4 benchmark pass: physical cut (fraction), evade (%), fire multiplier and per-class
 // movement live together so the tap readout can describe each tile in one line.
@@ -17,7 +17,12 @@ export const TERRAIN = {
   w: {name:'Deep Water',ko:'깊은 물',cost:Infinity,defense:0,phys:0,evade:0,fire:0,color:'#31576b'},
   k: {name:'Keep Floor',ko:'성채 바닥',cost:1,defense:0,phys:0,evade:0,fire:1,color:'#7d7a6e'},
   q: {name:'Rampart',ko:'성벽 위',cost:1,defense:0,phys:.25,evade:5,fire:1,color:'#5f6763'},
-  x: {name:'Ruin',ko:'벽·폐허', cost:Infinity, defense:0, phys:0, evade:0, fire:0, color:'#434646'}
+  x: {name:'Ruin',ko:'벽·폐허', cost:Infinity, defense:0, phys:0, evade:0, fire:0, color:'#434646'},
+  // v0.6 ACT II terrain (PROPOSED, D-055 §3): snow, ice bridge, rooftop high ground, city alley.
+  n: {name:'Snow',ko:'눈밭',cost:2,defense:0,phys:0,evade:0,fire:.5,color:'#d9e2e6'},
+  i: {name:'Ice Bridge',ko:'얼음 다리',cost:1,defense:0,phys:0,evade:-10,fire:.5,color:'#a9c8d6'},
+  o: {name:'Rooftop',ko:'지붕',cost:2,defense:2,phys:0,evade:10,fire:1.25,high:true,color:'#9a5a46'},
+  l: {name:'Alley',ko:'골목',cost:1,defense:0,phys:0,evade:5,fire:1,color:'#8d8576'}
 };
 export const MAP = [
   'ffggrrrrggff',
@@ -38,6 +43,18 @@ export const HEROES = [
  {id:'sain',name:'Sain',ko:'세인',className:'Healer',role:'Support',level:2,hp:31,mp:24,atk:8,def:4,mag:15,res:10,spd:6,mov:3,range:[1,1],skill:'Heal',cost:4,talent:'Gentle Hands',color:'#ebd591',growth:{hp:3,mp:4,atk:1,def:1,mag:2,res:2,spd:1},description:'Heal 사거리 1–2, 자기 회복 가능. 대상 옆의 부상 동료 한 명에게도 4 HP 회복.',clue:'Divine Recall',goal:'치유로 동료를 살리고 Gentle Hands의 연결 회복을 경험하세요.'},
  {id:'kai',name:'Kai',ko:'카이',className:'Rogue',role:'Mobility',level:1,hp:32,mp:12,atk:14,def:4,mag:3,res:4,spd:12,mov:4,range:[1,1],skill:'Quick Strike',cost:3,talent:'Shadow Step',color:'#e49a71',growth:{hp:4,mp:2,atk:2,def:1,mag:0,res:1,spd:2},description:'피격 없이 턴을 마치면 다음 턴 MOV +1. Quick Strike는 적 반대편 아군과 협공하면 피해 +6.',clue:'Shadow Exchange',goal:'빠른 이동으로 주민을 구출하고 협공 위치를 만드세요.'}
 ];
+// v0.6 ACT II recruits (D-055 Q2; names, stats and skills PROPOSED). They exist only after joining
+// (campaign.roster); ACT I parties stay exactly the five heroes above.
+export const RECRUIT_HEROES = [
+ {id:'thea',name:'Thea',ko:'테아',className:'Lancer',role:'Cavalry',level:1,hp:34,mp:10,atk:15,def:7,mag:2,res:3,spd:8,mov:5,range:[1,1],skill:'Charge',cost:3,talent:'Escort Captain',color:'#7f9fc0',growth:{hp:4,mp:1,atk:2,def:2,mag:0,res:1,spd:1},description:'철왕관 기병 창기사. 넓은 이동력으로 전열을 돌파합니다. (돌격 규칙은 v0.6 Phase D에서 확정)',clue:'Iron Vanguard',goal:'호위와 돌파로 기병의 길을 여세요.'},
+ {id:'dario',name:'Dario',ko:'다리오',className:'Sellsword',role:'Duelist',level:1,hp:33,mp:10,atk:16,def:5,mag:2,res:3,spd:10,mov:3,range:[1,1],skill:'Riposte',cost:3,talent:'Free Blade',color:'#b5525a',growth:{hp:4,mp:1,atk:2,def:1,mag:0,res:1,spd:2},description:'벨마르 용병 검사. 반격에 강한 근접 결투가입니다. (반격 규칙은 v0.6 Phase E에서 확정)',clue:'Paid in Full',goal:'반격으로 전선을 버티세요.'}
+];
+export const CORE_HERO_IDS = HEROES.map(h=>h.id);
+export const ALL_HEROES = [...HEROES,...RECRUIT_HEROES];
+export const heroDef = id=>ALL_HEROES.find(h=>h.id===id);
+// The heroes a campaign fields: the five, then recruits in joining order.
+export const partyIds = campaign=>[...CORE_HERO_IDS,...(campaign?.roster||[]).filter(id=>RECRUIT_HEROES.some(h=>h.id===id))];
+export const partyHeroes = campaign=>partyIds(campaign).map(heroDef);
 export const DEPLOYMENTS = {recommended:[[5,8],[3,8],[6,8],[6,9],[8,8]],assault:[[5,7],[3,7],[6,7],[5,8],[8,7]],defense:[[5,7],[4,8],[6,8],[5,9],[7,8]]};
 export const ENEMIES = [
  {id:'b1',name:'Rook',kind:'bandit',x:3,y:5,hp:24,atk:11,def:3,res:2,spd:5,mov:3,range:[1,1]},
@@ -54,7 +71,7 @@ export const CIVILIANS = [{id:'c1',name:'Mira',x:2,y:3},{id:'c2',name:'Tomas',x:
 export const BALANCE = {xpLevel:100,attackXP:22,killXP:28,healXP:24,rescueXP:45,guardXP:30,clearXP:35,parTurn:8,civilianThreatTurn:5,civilianHP:28};
 
 // Explicit profiles: future advancement data only, no promotion UI.
-export const CLASS_MOVEMENT={knight:{base:2,profile:'infantry'},archer:{base:3,profile:'infantry'},mage:{base:3,profile:'infantry'},healer:{base:3,profile:'infantry'},rogue:{base:4,profile:'rogue'},mountedKnight:{base:5,profile:'cavalry',future:true}};
-export const HERO_CLASS={eric:'knight',elina:'archer',lia:'mage',sain:'healer',kai:'rogue'};
-export const TERRAIN_COSTS={infantry:{r:1,g:1,v:1,b:1,f:2,m:3,d:2,s:3},rogue:{r:1,g:1,v:1,b:1,f:1,m:1,d:1,s:2},ranger:{r:1,g:1,v:1,b:1,f:1,m:3,d:2,s:3},cavalry:{r:1,g:1,v:1,b:1,f:1,m:Infinity,d:1,s:Infinity}};
+export const CLASS_MOVEMENT={knight:{base:2,profile:'infantry'},archer:{base:3,profile:'infantry'},mage:{base:3,profile:'infantry'},healer:{base:3,profile:'infantry'},rogue:{base:4,profile:'rogue'},mountedKnight:{base:5,profile:'cavalry'},swordsman:{base:3,profile:'infantry'}};
+export const HERO_CLASS={eric:'knight',elina:'archer',lia:'mage',sain:'healer',kai:'rogue',thea:'mountedKnight',dario:'swordsman'};
+export const TERRAIN_COSTS={infantry:{r:1,g:1,v:1,b:1,f:2,m:3,d:2,s:3,n:2,i:1,o:2,l:1},rogue:{r:1,g:1,v:1,b:1,f:1,m:1,d:1,s:2,n:1,i:1,o:1,l:1},ranger:{r:1,g:1,v:1,b:1,f:1,m:3,d:2,s:3,n:2,i:1,o:2,l:1},cavalry:{r:1,g:1,v:1,b:1,f:1,m:Infinity,d:1,s:Infinity,n:2,i:2,o:Infinity,l:2}};
 export const PROFILE_KO={infantry:'보병',rogue:'도적',cavalry:'기병',ranger:'레인저'};

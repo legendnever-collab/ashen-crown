@@ -1,6 +1,6 @@
 import {initRewardLedger,grantSupplemental,deliverRewards,validateRewardLedger} from './battle-rewards.js';
 import {GEAR,TOOLS} from '../data/frontier-data.js';
-import {HEROES} from '../data/game-data.js';
+import {HEROES,ALL_HEROES} from '../data/game-data.js';
 export const CARRY_CAPACITY=6,GEAR_CAPACITY=24;
 export const rewardFor=id=>({1:100,2:120,3:140,4:160,5:180,6:200}[id]||0);
 export function initialEconomy(completed=[]){return {gold:180+[...new Set(completed)].reduce((a,id)=>a+rewardFor(id),0),items:{medium:0,ether:0,ward:0},gear:[],equipped:Object.fromEntries(HEROES.map(h=>[h.id,{weapon:null,armor:null,accessory:null}])),next:1,nonce:0,transactions:[],rewards:[...new Set(completed)],rewardClaims:[],rewardHistory:[],rewardPending:[]};}
@@ -12,7 +12,7 @@ export function equipmentLabel(e,hero){return Object.entries(e.equipped[hero]).m
 export function validateEconomy(e){if(e?.chests!=null&&(!Array.isArray(e.chests)||e.chests.length>400||e.chests.some(k=>typeof k!=='string'||k.length>60)||new Set(e.chests).size!==e.chests.length))throw Error('상자 기록이 손상되었습니다.');
  if(!e||!Number.isSafeInteger(e.gold)||e.gold<0||e.gold>1000000||!e.items||Object.keys(e.items).length!==3||Object.entries(e.items).some(([id,n])=>!TOOLS[id]||!Number.isInteger(n)||n<0)||itemCount(e)>CARRY_CAPACITY||!Array.isArray(e.gear)||e.gear.length>GEAR_CAPACITY||!Number.isSafeInteger(e.next)||e.next<1||!Number.isSafeInteger(e.nonce)||e.nonce<0||!Array.isArray(e.transactions)||e.transactions.length>100||e.transactions.some(t=>typeof t!=='string')||!Array.isArray(e.rewards)||e.rewards.some(id=>![1,2,3,4,5,6].includes(id))||new Set(e.rewards).size!==e.rewards.length)throw Error('자산 저장이 손상되었습니다.');
  const ids=new Set();for(const g of e.gear){if(!g||!GEAR[g.type]||typeof g.id!=='string'||!/^g[1-9][0-9]*$/.test(g.id)||ids.has(g.id)||Number(g.id.slice(1))>=e.next||![0,1].includes(g.level))throw Error('장비 저장이 손상되었습니다.');ids.add(g.id);}
- if(!e.equipped||Object.keys(e.equipped).length!==5)throw Error('장착 저장이 손상되었습니다.');const used=new Set();for(const h of HEROES){const slots=e.equipped[h.id];if(!slots||Object.keys(slots).length!==3||!['weapon','armor','accessory'].every(k=>Object.hasOwn(slots,k)))throw Error('장비 슬롯이 손상되었습니다.');for(const [slot,id]of Object.entries(slots)){if(id===null)continue;const g=e.gear.find(a=>a.id===id),type=GEAR[g?.type];if(!g||type.slot!==slot||!type.heroes.includes(h.id)||used.has(id))throw Error('장착 호환성이 손상되었습니다.');used.add(id);}}
+ if(!e.equipped||HEROES.some(h=>!e.equipped[h.id])||Object.keys(e.equipped).some(id=>!ALL_HEROES.some(h=>h.id===id)))throw Error('장착 저장이 손상되었습니다.');const used=new Set();for(const h of ALL_HEROES.filter(h=>e.equipped[h.id])){const slots=e.equipped[h.id];if(!slots||Object.keys(slots).length!==3||!['weapon','armor','accessory'].every(k=>Object.hasOwn(slots,k)))throw Error('장비 슬롯이 손상되었습니다.');for(const [slot,id]of Object.entries(slots)){if(id===null)continue;const g=e.gear.find(a=>a.id===id),type=GEAR[g?.type];if(!g||type.slot!==slot||!type.heroes.includes(h.id)||used.has(id))throw Error('장착 호환성이 손상되었습니다.');used.add(id);}}
  validateRewardLedger(e);return e;
 }
 // Stale confirmation tokens never apply twice, even after a reload.
