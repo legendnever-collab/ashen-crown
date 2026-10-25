@@ -56,6 +56,10 @@ Branch `feature/v0.6-act2-three-banners` (base: main `33577c4`, official v0.5.0 
 | ACT II 시점표와 지도 | `act2HubFor`(M07–M08 성하 마을, M08 후 야영, M09–M10 벨마르)는 거점이 생기는 Phase D에서 `hubFor`에 연결합니다. 서부는 M08 완료 뒤 공개되고, `ACT2_ROUTE`를 추가했습니다 | `hubs-v05.js`, `world.js` |
 | 방과 상자 (D-056) | 거점 종류에 맞는 방 계열(마을/천막/성채/북부/항구)과 방마다 맞는 상자 스타일 20종을 정했습니다. 손그림 상자 시트가 없으면 코드로 그린 임시 상자를 씁니다. 손그림 방은 팩 A가 오면 `ROOM_LAYOUTS`에 넣습니다 | `rooms-v06.js`, `chest-art.js` |
 
+### 5.1 이후 반영 (2026-10-25)
+- **D-057:** 팩 A의 손그림 방 15곳과 상자 24칸을 넣었습니다(`rooms-v06.js`, `import-interior-art.py`).
+- **D-058:** 거점, 방, 대화 무대의 인물을 1.5배로 그립니다. 전투 맵은 1배 그대로입니다(`frontier-renderer.js` `HUB_FIGURE_SCALE`).
+
 ## 4. 리스크
 
 | 리스크 | 대응 |

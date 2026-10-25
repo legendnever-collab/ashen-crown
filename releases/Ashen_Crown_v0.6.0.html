@@ -2655,7 +2655,9 @@ function drawPaintedFigure(c,img,x,footY,{facing,frame,pose,alpha}){const sheet=
  c.save();c.globalAlpha*=alpha;c.imageSmoothingEnabled=true;c.imageSmoothingQuality='low';c.translate(x+lean[0],footY+lean[1]);
  if(pose==='death'){c.globalAlpha*=.45;c.translate(0,-8);c.rotate(-Math.PI/2);}if(mirror)c.scale(-1,1);
  c.drawImage(sheet,col*cell,row*cell,cell,cell,-D/2,-D*120/128,D,D);c.restore();}
-function drawHDFigure(c,castId,x,footY,{facing='down',frame=0,pose='idle',alpha=1}={}){
+// scale (v0.6, user feedback 2026-10-25): exploration hubs, rooms and staged dialogue draw figures 1.5× around the foot point; battle stays 1×.
+function drawHDFigure(c,castId,x,footY,{facing='down',frame=0,pose='idle',alpha=1,scale=1}={}){
+ if(scale!==1){c.save();c.translate(x,footY);c.scale(scale,scale);c.translate(-x,-footY);drawHDFigure(c,castId,x,footY,{facing,frame,pose,alpha});c.restore();return;}
  const sheet=paintedSheet(castId);if(sheet){drawPaintedFigure(c,sheet,x,footY,{facing,frame,pose,alpha});return;}
  if(castId==='beacon'){drawBeacon(c,x,footY,pose==='death',alpha);return;}
  if(castId==='wagon'){const w=wagonSprite();c.save();c.globalAlpha*=pose==='death'?.4:alpha;hdBlit(c,w,x-24*HD_K,footY-50*HD_K);c.restore();return;}
@@ -2898,6 +2900,8 @@ function drawMinimap(canvas,map,actors,camera,objectives=[]){
 
 // src/render/frontier-renderer.js
 const TOWN_TYPES=new Set(['forge','shop','inn','warroom','residence','depot']);
+// Figures on hubs, in rooms and on the dialogue stage are drawn 1.5× (user choice 2026-10-25, D-058); the battle map keeps 1×.
+const HUB_FIGURE_SCALE=1.5;const FS=HUB_FIGURE_SCALE,STAGE_GAP=Math.round(75*FS*.9);
 const hubCamera=new MapCamera();
 let hubTerrainCache=null;
 // v0.5 painted hubs (D-052): one WebP per hub, decoded once; the mask doubles as the minimap terrain.
@@ -2906,7 +2910,7 @@ function hubArt(id){if(!HUB_ART[id])return null;let img=hubImages.get(id);if(!im
 function drawHubLights(c,h,time){if(!h.lights?.length)return;c.save();c.globalCompositeOperation='lighter';for(const [x,y,r,kind] of h.lights){const flick=kind==='fire'?.82+.18*Math.sin(time/90+x)*Math.sin(time/37+y):.9+.1*Math.sin(time/400+x),g=c.createRadialGradient(x,y,0,x,y,r*flick);const a=(kind==='fire'?.22:.14)*(h.night?1.25:1);g.addColorStop(0,`rgba(255,170,80,${a})`);g.addColorStop(1,'rgba(255,140,60,0)');c.fillStyle=g;c.fillRect(x-r,y-r,r*2,r*2);}c.restore();}
 function hubTerrain(h){if(h.mask)return h.mask.map(r=>[...r].map(ch=>ch==='.'?'r':'x'));return Array.from({length:h.height},(_,y)=>Array.from({length:h.width},(_,x)=>h.tone==='interior'?'r':x===0||y===0||x===h.width-1||y===h.height-1?'f':x===7||y===4||y===7||y===11?'r':'g'));}
 // staged dialogue: fill the stage (cover) and frame the speaking cast above the dialogue window
-function stageCamera(line,width,height,h){const n=(line.actors||['aren',line.speaker]).filter((id,i,a)=>a.indexOf(id)===i).length,mw=h.width*64,mh=h.height*64,scale=Math.max(width/mw,height/mh),fx=(h.stage?.x??220)+75*(n-1)/2,fy=(h.stage?.y??424)+16,clamp=(v,lo)=>Math.min(0,Math.max(lo,v));return {x:clamp(width/2-fx*scale,width-mw*scale),y:clamp(height*.42-fy*scale,height-mh*scale),scale};}
+function stageCamera(line,width,height,h){const n=(line.actors||['aren',line.speaker]).filter((id,i,a)=>a.indexOf(id)===i).length,mw=h.width*64,mh=h.height*64,scale=Math.max(width/mw,height/mh),fx=(h.stage?.x??220)+STAGE_GAP*(n-1)/2,fy=(h.stage?.y??424)+16-Math.round(30*(FS-1)),clamp=(v,lo)=>Math.min(0,Math.max(lo,v));return {x:clamp(width/2-fx*scale,width-mw*scale),y:clamp(height*.42-fy*scale,height-mh*scale),scale};}
 function drawHub(canvas,s,{line=null,time=performance.now()}={}){
  const c=canvas.getContext('2d'),f=s.frontier,h=line?HUBS[line.stage]:currentHub(s),box=canvas.getBoundingClientRect(),width=Math.max(1,box.width||1024),height=Math.max(1,box.height||768),resolution=width<600?Math.max(1,window.devicePixelRatio||1):Math.max(2.1,window.devicePixelRatio||1);
  if(canvas.width!==Math.round(width*resolution)||canvas.height!==Math.round(height*resolution)){canvas.width=Math.round(width*resolution);canvas.height=Math.round(height*resolution);}c.setTransform(resolution,0,0,resolution,0,0);c.imageSmoothingEnabled=false;pixel(c,'#172c31',0,0,width,height);
@@ -2920,12 +2924,12 @@ function drawHub(canvas,s,{line=null,time=performance.now()}={}){
  const opened=new Set(s.economy?.chests||[]),buildingState=b=>b.type==='chest'?(opened.has(chestKey(s,b.chestId))?'open':'closed'):burned&&f.hub==='village'&&b.type==='residence'?'burned':line&&s.narrative.active?.key==='raid'&&b.type==='residence'?'burning':'intact';const room=frontierRoom(f),drawB=b=>b.type==='chest'?drawChest(c,b.x*64,b.y*64,chestStyle(room,b.chestId),buildingState(b)):TOWN_TYPES.has(b.type)&&h.tone!=='interior'?drawTownBuilding(c,b,h.tone,buildingState(b)):drawBuilding(c,b,time,buildingState(b));
  if(line&&!painted){for(const o of hd.objects)drawHDObject(c,o,time);for(const b of h.buildings)drawB(b);}
  if(painted)drawHubLights(c,h,time);else if(h.tone==='camp')drawFire(c,7*64,6*64,time,.65);
- if(line){const cast=(line.actors||['aren',line.speaker]).filter((id,i,a)=>a.indexOf(id)===i);const sx=h.stage?.x??220,sy=h.stage?.y??424;cast.forEach((id,i)=>{const actor=s.units.find(u=>u.id===id)||{id,team:id==='aren'?'commander':'civilian'};drawHDFigure(c,hdCastFor(actor),sx+i*75,sy+i%2*30,{facing:'down'});if(id===line.speaker)pixel(c,'#f5d594',sx-4+i*75,sy-82+i%2*30,8,8);});}
+ if(line){const cast=(line.actors||['aren',line.speaker]).filter((id,i,a)=>a.indexOf(id)===i);const sx=h.stage?.x??220,sy=h.stage?.y??424;cast.forEach((id,i)=>{const actor=s.units.find(u=>u.id===id)||{id,team:id==='aren'?'commander':'civilian'};drawHDFigure(c,hdCastFor(actor),sx+i*STAGE_GAP,sy+i%2*30,{facing:'down',scale:FS});if(id===line.speaker)pixel(c,'#f5d594',sx-4+i*STAGE_GAP,sy-Math.round(82*FS)+i%2*30,8,8);});}
  else{const near=n=>Math.abs(n.x-f.x)+Math.abs(n.y-f.y)<=1,talking=n=>s.narrative.active?.key.startsWith('npc:')&&s.narrative.active.key.endsWith(`:${n.id}`);
   const items=[...hd.objects.map(o=>({y:hdObjectKey(o),draw:()=>drawHDObject(c,o,time)})),...(painted?h.buildings.filter(b=>b.type==='chest'):h.buildings).map(b=>({y:(b.y+b.h)*64-2,draw:()=>drawB(b)})),...h.npcs.map((n,k)=>({y:(n.y+1)*64,draw:()=>{if(n.kind==='advisor'){if(!h.paintedTable)drawWarTable(c,n.x*64+32,n.y*64+58,time);if(near(n)||talking(n))pixel(c,'#f0d291',n.x*64+28,n.y*64-6,8,8);return;}const still=near(n)||talking(n),t=time/1700+k*1.7+n.x,dx=still?0:Math.round(Math.sin(t)*9),moving=!still&&Math.abs(Math.cos(t))>.3,actor=s.units.find(u=>u.id===n.id)||{...n,team:'civilian'},x=n.x*64+32+dx,y=n.y*64+36;
     const facing=still?hdDirection(f.x-n.x,f.y-n.y,'down'):moving?(Math.cos(t)>0?'right':'left'):'down';
-    c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(x,y+23,13,4,0,0,Math.PI*2);c.fill();drawHDFigure(c,hdCastFor(actor),x,y+24,{facing,frame:moving?1+Math.floor(time/260)%4:0});if(near(n)||talking(n))pixel(c,'#f0d291',n.x*64+28,n.y*64-30,8,8);}})),
-   {y:(f.y+1)*64+1,draw:()=>{const hero=explorationHero(s),px=f.x*64+32,py=f.y*64+36-(s.doorStep?26:0);c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(px,py+23,13,4,0,0,Math.PI*2);c.fill();drawHDFigure(c,hdCastFor(hero),px,py+24,{facing:f.facing||'down',frame:s.walking?1+Math.floor(time/110)%4:0});pixel(c,'#e4c580',px-20,py+29,40,2);}}];
+    c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(x,y+23,13*FS,4*FS,0,0,Math.PI*2);c.fill();drawHDFigure(c,hdCastFor(actor),x,y+24,{facing,frame:moving?1+Math.floor(time/260)%4:0,scale:FS});if(near(n)||talking(n))pixel(c,'#f0d291',n.x*64+28,n.y*64+60-Math.round(90*FS),8,8);}})),
+   {y:(f.y+1)*64+1,draw:()=>{const hero=explorationHero(s),px=f.x*64+32,py=f.y*64+36-(s.doorStep?26:0);c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(px,py+23,13*FS,4*FS,0,0,Math.PI*2);c.fill();drawHDFigure(c,hdCastFor(hero),px,py+24,{facing:f.facing||'down',frame:s.walking?1+Math.floor(time/110)%4:0,scale:FS});pixel(c,'#e4c580',px-30,py+29,60,2);}}];
   for(const it of items.sort((a,b)=>a.y-b.y))it.draw();}
  if(!line&&new URLSearchParams(location.search).get('debugMap')==='1'){
  c.save();c.lineWidth=1;c.strokeStyle='#91bcc055';for(let x=0;x<h.width;x++)for(let y=0;y<h.height;y++)c.strokeRect(x*64,y*64,64,64);

@@ -90,7 +90,9 @@ function drawPaintedFigure(c,img,x,footY,{facing,frame,pose,alpha}){const sheet=
  c.save();c.globalAlpha*=alpha;c.imageSmoothingEnabled=true;c.imageSmoothingQuality='low';c.translate(x+lean[0],footY+lean[1]);
  if(pose==='death'){c.globalAlpha*=.45;c.translate(0,-8);c.rotate(-Math.PI/2);}if(mirror)c.scale(-1,1);
  c.drawImage(sheet,col*cell,row*cell,cell,cell,-D/2,-D*120/128,D,D);c.restore();}
-export function drawHDFigure(c,castId,x,footY,{facing='down',frame=0,pose='idle',alpha=1}={}){
+// scale (v0.6, user feedback 2026-10-25): exploration hubs, rooms and staged dialogue draw figures 1.5× around the foot point; battle stays 1×.
+export function drawHDFigure(c,castId,x,footY,{facing='down',frame=0,pose='idle',alpha=1,scale=1}={}){
+ if(scale!==1){c.save();c.translate(x,footY);c.scale(scale,scale);c.translate(-x,-footY);drawHDFigure(c,castId,x,footY,{facing,frame,pose,alpha});c.restore();return;}
  const sheet=paintedSheet(castId);if(sheet){drawPaintedFigure(c,sheet,x,footY,{facing,frame,pose,alpha});return;}
  if(castId==='beacon'){drawBeacon(c,x,footY,pose==='death',alpha);return;}
  if(castId==='wagon'){const w=wagonSprite();c.save();c.globalAlpha*=pose==='death'?.4:alpha;hdBlit(c,w,x-24*HD_K,footY-50*HD_K);c.restore();return;}
