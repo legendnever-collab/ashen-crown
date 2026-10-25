@@ -60,10 +60,15 @@ export function migrate(s){
  // (factions.js ensureTrust), so a save from the middle of ACT I keeps its M04 ledger choice open.
  if(s?.schema===8){s.schema=9;s.version='0.6.0';s.campaign.roster??=[];if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');
+ // v0.6 (D-060): character names are written in Hangul; saves made before keep English names on board until renamed here.
+ if(s?.schema===SCHEMA)koreanNames(s);
  // v0.5 hubs (D-052): every load re-anchors the frontier to the hub of its story moment (spatial only).
  if(s?.schema===SCHEMA){if(s.frontier)alignFrontier(s.frontier,s.missionId,s.screen);if(s.campaign?.frontier)alignFrontier(s.campaign.frontier,s.missionId,s.screen);if(s.skirmish?.frontier)alignFrontier(s.skirmish.frontier,s.skirmish.returnMission,'exploration');if(s.stageStart?.frontier)alignFrontier(s.stageStart.frontier,s.stageStart.missionId,s.stageStart.screen);if(s.stageStart?.campaign?.frontier)alignFrontier(s.stageStart.campaign.frontier,s.stageStart.missionId,s.stageStart.screen);}
  return validate(s);
 }
+const KO_NAMES={'Erik':'에릭','Elina':'엘리나','Lia':'리아','Sain':'세인','Kai':'카이','Thea':'테아','Dario':'다리오','Rook':'룩','Varr':'바르','Cinder':'신더','Ash Bow':'애시 보우',
+ 'Garr — Bandit Captain':'가르 — 산적 두목','North Raider':'북쪽 습격대원','North Bow':'북쪽 궁수','Mira':'미라','부상한 Mira':'부상한 미라','Tomas':'토마스','Baldrick Roen · 검은 사자':'발드릭 로엔 · 검은 사자'};
+function koreanNames(s){for(const list of [s.units,s.campaign?.heroes,s.stageStart?.units,s.stageStart?.campaign?.heroes])for(const u of list||[])if(KO_NAMES[u.name])u.name=KO_NAMES[u.name];}
 export function serialize(s){validate(s);const data=JSON.stringify({...s,feedback:[]});return JSON.stringify({format:'AshenCrown',schema:SCHEMA,checksum:checksum(data),data});}
 export function deserialize(text){if(typeof text!=='string'||text.length>5000000)throw Error('저장 크기가 올바르지 않습니다.');const envelope=JSON.parse(text);if(envelope.format!=='AshenCrown'||typeof envelope.data!=='string'||checksum(envelope.data)!==envelope.checksum)throw Error('저장 검증에 실패했습니다.');return migrate(JSON.parse(envelope.data));}
 export function saveGame(s,storage){let old,previousBackup,writing=false;try{const data=serialize(s);old=storage.getItem(SAVE_KEY);previousBackup=storage.getItem(BACKUP_KEY);if(old){try{deserialize(old);storage.setItem(BACKUP_KEY,old);}catch{}}

@@ -67,12 +67,12 @@ export function performAction(s,id,mode,targetId){
  if(mode==='search'){const custom=rulesOf(s)?.search?.(s,u,t);if(!custom)searchEvidence(s,u,t);awardXP(s,u,30,`${t.name} ${custom?'작동':'조사'}`);}
  else if(mode==='capture'){t.rescued=true;setStoryFlag(s,'mission_02_prisoner_captured');setStoryFlag(s,'mission_02_supply_route_discovered');remember(s,`${u.id}_capture`);awardXP(s,u,50,'도주 대장 생포');enqueueStory(s,'2:capture');s.log.push('포로 확보 · 보급로 진술을 얻었습니다.');}
  else if(mode==='rescue'){t.rescued=true;remember(s,`${u.id}_rescue`);awardXP(s,u,BALANCE.rescueXP,`${t.name} 구출`);s.log.push(`${u.name}: ${t.name}을 안전한 피난로로 구출했습니다.`);s.feedback.push({type:'rescue',id:t.id,text:'RESCUED'});if(u.id==='kai')discover(s,u,'Shadow Exchange');}
- else if(mode==='skill'&&u.id==='eric'){u.guarding=true;u.guardUsed=false;u.guardTarget=null;awardXP(s,u,12,'방어 태세');s.log.push('Erik: 방어 태세. 다음 아군 턴까지 DEF +3, 인접 동료가 받는 첫 근접 공격을 대신 받습니다.');s.feedback.push({type:'guard',id:u.id,text:'GUARD'});}
+ else if(mode==='skill'&&u.id==='eric'){u.guarding=true;u.guardUsed=false;u.guardTarget=null;awardXP(s,u,12,'방어 태세');s.log.push('에릭: 방어 태세. 다음 아군 턴까지 DEF +3, 인접 동료가 받는 첫 근접 공격을 대신 받습니다.');s.feedback.push({type:'guard',id:u.id,text:'GUARD'});}
  else if(mode==='skill'&&u.id==='sain'){
   const heal=Math.min(12+effectiveStats(s,u).mag+(proficiencyBonus(s,u).heal||0),t.maxHP-t.hp);t.hp+=heal;s.feedback.push({type:'heal',id:t.id,text:`+${heal}`,toHP:t.hp});
   const extra=s.units.filter(a=>a.team==='ally'&&alive(a)&&a.id!==t.id&&distance(a,t)===1&&a.hp<a.maxHP).sort((a,b)=>a.hp/a.maxHP-b.hp/b.maxHP)[0];let splash=0;if(extra){splash=Math.min(4,extra.maxHP-extra.hp);extra.hp+=splash;s.feedback.push({type:'heal',id:extra.id,text:`+${splash}`,toHP:extra.hp});}
   if(heal||splash)remember(s,'sain_heal');
-  if(heal||splash){if(!u.healTargets.includes(t.id))u.healTargets.push(t.id);awardXP(s,u,Math.min(BALANCE.healXP,10+Math.floor((heal+splash)/2)),`${t.name} 치유`);}if(extra&&splash)discover(s,u,'Divine Recall');s.log.push(`Sain: ${t.name} +${heal} HP${extra?`, Gentle Hands → ${extra.name} +${splash}`:''}. 치유할 때마다 EXP를 얻습니다.`);
+  if(heal||splash){if(!u.healTargets.includes(t.id))u.healTargets.push(t.id);awardXP(s,u,Math.min(BALANCE.healXP,10+Math.floor((heal+splash)/2)),`${t.name} 치유`);}if(extra&&splash)discover(s,u,'Divine Recall');s.log.push(`세인: ${t.name} +${heal} HP${extra?`, Gentle Hands → ${extra.name} +${splash}`:''}. 치유할 때마다 EXP를 얻습니다.`);
  }else{
   const r=damage(s,u,t,mode);if(r.hit){awardXP(s,u,BALANCE.attackXP+(!alive(r.victim)?BALANCE.killXP:0),`${r.victim.name} ${alive(r.victim)?'공격':'격파'}`);if(u.id==='elina'&&['f','v'].includes(sTerrain(s,u))){discover(s,u,'Overwatch');remember(s,'elina_forest_shot');}if(u.id==='lia'&&!alive(r.victim)){discover(s,u,'Arcane Territory');remember(s,'lia_kill');}}
   if(alive(r.victim)&&validTarget(s,r.victim,u)&&!counterBlocked(s,r.victim))damage(s,r.victim,u,'attack',true);
@@ -130,7 +130,7 @@ export function advanceEnemy(s){
  if(s.turn>=3&&!s.reinforced&&missionOf(s).reinforcements.length){for(const e of missionOf(s).reinforcements){let pos={x:e.x,y:e.y};if(at(s,pos.x,pos.y)){const free=[];for(let y=0;y<missionOf(s).height;y++)for(let x=0;x<missionOf(s).width;x++)if(!at(s,x,y)&&Number.isFinite(terrainAt(x,y,s).cost))free.push({x,y});free.sort((a,b)=>distance(a,e)-distance(b,e));pos=free[0];}s.units.push({...structuredClone(e),...pos,team:'enemy',maxHP:e.hp,mp:0,maxMP:0,mag:0,spawnTurn:s.turn});s.feedback.push({type:'spawn',id:e.id,text:'REINFORCEMENT'});}s.reinforced=true;s.log.push('적 증원 2명 출현. 이번 Player Phase 동안 먼저 대응할 수 있습니다.');}
  rulesOf(s)?.onTurnStart?.(s);
  ageFires(s);burnUnits(s,'ally');
- if(s.missionId===1&&s.turn===4)s.log.push('Garr: “피난민을 잡아라!” 다음 TURN 5부터 산적이 주민을 직접 공격합니다.');
+ if(s.missionId===1&&s.turn===4)s.log.push('가르: “피난민을 잡아라!” 다음 TURN 5부터 산적이 주민을 직접 공격합니다.');
  applyTerrainRecovery(s);
  if(s.missionId===3)escortCivilians(s);
  checkOutcome(s);afterBattleEvents(s);
@@ -144,7 +144,7 @@ export function checkOutcome(s){
  else if(s.missionId===2){const boss=findUnit(s,'boss');if(boss.rescued||boss.hp<=0||boss.y===0||s.turn>8||s.units.filter(u=>u.team==='enemy').every(u=>!alive(u)))finish(s,'victory',boss.rescued?'포로와 보급로 진술 확보.':'추격 종료. 상자의 흔적은 남았지만 진술은 얻지 못했습니다.');}
  else if(s.missionId===3){const saved=civ.filter(c=>c.rescued).length;if(s.turn>10)finish(s,'defeat','제한 10턴 안에 철수하지 못했습니다.');else if(saved>0&&heroes.filter(alive).every(u=>u.y<=2)){setStoryFlag(s,'mission_03_bridge_held');setStoryFlag(s,'mission_03_refugees_saved',saved);finish(s,'victory',`${saved}/2 주민 구조, 생존 장수 철수 완료.`);}else if(civ.every(c=>c.hp<=0))finish(s,'defeat','구조와 안전한 철수를 제한 턴 안에 완료하지 못했습니다.');}
  else if(civ.some(c=>c.hp<=0))finish(s,'defeat','주민을 잃어 필수 구출 목표를 달성할 수 없습니다.');
- else if(civ.every(c=>c.rescued)&&findUnit(s,'boss').hp<=0)finish(s,'victory','두 주민이 무사히 탈출했고 Garr를 격파했습니다.');
+ else if(civ.every(c=>c.rescued)&&findUnit(s,'boss').hp<=0)finish(s,'victory','두 주민이 무사히 탈출했고 가르를 격파했습니다.');
  return s.outcome;
 }
 function finish(s,outcome,reason){

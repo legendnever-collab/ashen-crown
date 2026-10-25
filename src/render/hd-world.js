@@ -53,7 +53,7 @@ export function hdCastFor(u,missionId=1){
  if(missionId===6&&u.id==='boss')return 'executor';
  if(missionId===6&&u.team==='enemy'&&/^g\d/.test(u.id))return 'fortGuard';
  if(missionId===6&&u.id==='i1')return 'inspector';
- if(u.team==='civilian'){const n=String(u.name||'');return /Mira/.test(n)?'mira':/Tomas/.test(n)?'farmer':CAST[u.id]?u.id:'refugee';}
+ if(u.team==='civilian'){const n=String(u.name||'');return /Mira|미라/.test(n)?'mira':/Tomas|토마스/.test(n)?'farmer':CAST[u.id]?u.id:'refugee';}
  if(u.burns)return 'torch';
  if(missionId===4&&/^r\d/.test(u.id))return 'storeman';
  return (ENEMY_LOOK[missionId]||ENEMY_LOOK[1])[u.kind]||'bandit';

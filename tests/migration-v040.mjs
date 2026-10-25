@@ -1,6 +1,8 @@
 // Browser migration (v0.5.0 Phase G): saves made by the actually shipped v0.4.0 HTML and by the
 // v0.4.0 source (tests/fixtures/v040) open in v0.5.0 through the visible backup dialog.
 import {launchTestBrowser} from './browser-helper.mjs';import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {pathToFileURL} from 'node:url';import {drainStory} from './story-helper.mjs';
+// v0.6 (D-060): names were rewritten in Hangul; compare saves without the display name.
+const nmStrip=a=>(a||[]).map(({name,...u})=>u);
 const browser=await launchTestBrowser({headless:true,args:['--no-sandbox','--disable-gpu']}),checks=[],errors=[];const check=(name,ok)=>{assert.ok(ok,name);checks.push({name,status:'PASS'});console.log('PASS',name);};
 const fixture=n=>JSON.parse(fs.readFileSync(`tests/fixtures/v040/v040-${n}.json`,'utf8'));
 try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await ctx.setOffline(true);
@@ -15,9 +17,9 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  const p=await ctx.newPage();p.on('pageerror',e=>errors.push(`v050: ${e.message}`));await p.goto(pathToFileURL(path.resolve('releases/Ashen_Crown_v0.6.0.html')).href);await p.waitForFunction(()=>!!window.AshenCrown);if(await p.locator('[data-do="new"]').count()){await cmd(p,'new');}await drainStory(p);
  const restore=async text=>{await drainStory(p);await cmd(p,'menu');await cmd(p,'backup');await p.locator('#backup-text').fill(text);await cmd(p,'restore');await p.waitForFunction(()=>!AshenCrown.view().busy);await p.waitForTimeout(300);};
  await restore(villageText);let s=await snapshot(p);
- check('v0.4.0 village save opens in the painted village (schema 9, gold kept, legal position)',s.schema===9&&s.screen==='exploration'&&s.frontier.hub==='village'&&s.economy.gold===village.economy.gold&&JSON.stringify(s.campaign.heroes)===JSON.stringify(village.campaign.heroes));
+ check('v0.4.0 village save opens in the painted village (schema 9, gold kept, legal position)',s.schema===9&&s.screen==='exploration'&&s.frontier.hub==='village'&&s.economy.gold===village.economy.gold&&JSON.stringify(nmStrip(s.campaign.heroes))===JSON.stringify(nmStrip(village.campaign.heroes)));
  check('Imported village save does not replay the world-map intro',!s.narrative.active?.key?.startsWith('world:'));
- await restore(battleText);s=await snapshot(p);check('v0.4.0 battle and its checkpoint migrate unchanged',s.screen==='battle'&&s.stageStart.schema===9&&JSON.stringify(s.units)===JSON.stringify(battle.units)&&JSON.stringify(s.economy)===JSON.stringify(battle.economy));
+ await restore(battleText);s=await snapshot(p);check('v0.4.0 battle and its checkpoint migrate unchanged',s.screen==='battle'&&s.stageStart.schema===9&&JSON.stringify(nmStrip(s.units))===JSON.stringify(nmStrip(battle.units))&&JSON.stringify(s.economy)===JSON.stringify(battle.economy));
  await cmd(p,'menu');await cmd(p,'restart-stage');await cmd(p,'confirm-restart-stage');await p.waitForFunction(()=>!AshenCrown.view().busy);s=await snapshot(p);check('Restart of a migrated v0.4.0 battle works',s.screen==='battle'&&s.turn===1);
  // 3. Source-built fixtures: ACT I complete camp (Border Camp in v0.4.0) and a mid-M05 battle.
  const done=fixture('act1-complete'),before=JSON.parse(JSON.parse(done.save).data);await restore(done.save);s=await snapshot(p);

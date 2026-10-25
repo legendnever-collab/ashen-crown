@@ -1,5 +1,7 @@
 // Browser migration: saves made by the actually shipped v0.3.3 HTML (and the v0.3.3-source fixtures) open in v0.4.0.
 import {launchTestBrowser} from './browser-helper.mjs';import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {pathToFileURL} from 'node:url';import {drainStory} from './story-helper.mjs';
+// v0.6 (D-060): names were rewritten in Hangul; compare saves without the display name.
+const nmStrip=a=>(a||[]).map(({name,...u})=>u);
 const browser=await launchTestBrowser({headless:true,args:['--no-sandbox','--disable-gpu']}),checks=[],errors=[];const check=(name,ok)=>{assert.ok(ok,name);checks.push({name,status:'PASS'});console.log('PASS',name);};
 const fixture=n=>JSON.parse(fs.readFileSync(`tests/fixtures/v033/v033-${n}.json`,'utf8')).save;
 try{const ctx=await browser.newContext();await ctx.setOffline(true);
@@ -14,7 +16,7 @@ try{const ctx=await browser.newContext();await ctx.setOffline(true);
  const p=await ctx.newPage();p.on('pageerror',e=>errors.push(`v040: ${e.message}`));await p.goto(pathToFileURL(path.resolve('releases/Ashen_Crown_v0.6.0.html')).href);
  const restore=async text=>{await cmd(p,'menu');await cmd(p,'backup');await p.locator('#backup-text').fill(text);await cmd(p,'restore');await p.waitForFunction(()=>!AshenCrown.view().busy);};
  await restore(villageText);let s=await snapshot(p);check('v0.3.3 village save imports as schema 9 in the same place',s.schema===9&&s.screen==='exploration'&&s.frontier.x===village.frontier.x&&s.frontier.y===village.frontier.y&&s.economy.gold===village.economy.gold);
- await restore(battleText);s=await snapshot(p);check('v0.3.3 battle and its stage checkpoint migrate unchanged',s.screen==='battle'&&s.stageStart.schema===9&&JSON.stringify(s.units)===JSON.stringify(battle.units)&&JSON.stringify(s.economy)===JSON.stringify(battle.economy));
+ await restore(battleText);s=await snapshot(p);check('v0.3.3 battle and its stage checkpoint migrate unchanged',s.screen==='battle'&&s.stageStart.schema===9&&JSON.stringify(nmStrip(s.units))===JSON.stringify(nmStrip(battle.units))&&JSON.stringify(s.economy)===JSON.stringify(battle.economy));
  await cmd(p,'menu');await cmd(p,'restart-stage');await cmd(p,'confirm-restart-stage');await p.waitForFunction(()=>!AshenCrown.view().busy);s=await snapshot(p);check('Restart of a migrated v0.3.3 battle works',s.screen==='battle'&&s.turn===1);
  // 3. The source-built fixtures: mid-M02 battle and the M03 aftermath camp with purchases.
  await restore(fixture('m02-battle'));s=await snapshot(p);check('v0.3.3 Mission 02 battle fixture resumes',s.screen==='battle'&&s.missionId===2&&await p.locator('canvas').count()>0);

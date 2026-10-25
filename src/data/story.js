@@ -7,7 +7,7 @@ import {LAST_MISSION} from './missions.js';
 Object.assign(FRONTIER_SCENES,FRONTIER_V04);Object.assign(ADVISOR_BRIEFINGS,ADVISOR_V04);
 const line=(speaker,text,expression='neutral')=>({speaker,text,expression});
 export const STORY={
- '1:intro':[line('aren','왕실 명령을 기다릴 여유는 없다. …에릭, 주민부터 지켜라.','determined'),line('eric','알았다. 이번엔 한 사람도 안 놓친다.'),line('elina','숲에 궁수, 북쪽엔 Garr. …뒤쪽에서도 발소리가 나요. 기분 나쁘게.'),line('lia','스승님 봉인 흔적을 쫓다가 머문 마을이에요! 불이 기록까지 삼키기 전에 막아야 해요.'),line('sain','신분이 어떻든, 다친 분부터 돕겠습니다.'),line('kai','저 상자 봤어? 군용 인장이야. …뭐, 일단 사람부터 꺼내자.')],
+ '1:intro':[line('aren','왕실 명령을 기다릴 여유는 없다. …에릭, 주민부터 지켜라.','determined'),line('eric','알았다. 이번엔 한 사람도 안 놓친다.'),line('elina','숲에 궁수, 북쪽엔 가르. …뒤쪽에서도 발소리가 나요. 기분 나쁘게.'),line('lia','스승님 봉인 흔적을 쫓다가 머문 마을이에요! 불이 기록까지 삼키기 전에 막아야 해요.'),line('sain','신분이 어떻든, 다친 분부터 돕겠습니다.'),line('kai','저 상자 봤어? 군용 인장이야. …뭐, 일단 사람부터 꺼내자.')],
  '1:turn2':[line('elina','북쪽 숲이 움직여요. 다음 턴, 양쪽 모서리로 증원이 붙을 거예요.','concerned'),line('eric','퇴로부터 열어 둬. 주민 옆에 있는 사람부터 움직여.')],
  '1:turn4':[line('boss','우리도 굶고 있단 말이다! 피난민을 잡아!','determined'),line('sain','배고픔이 사람을 해쳐도 되는 이유는 안 됩니다. 서둘러요.','concerned')],
  '1:encounter':[line('boss','왕국은 우릴 버렸어. 이젠 알아서 살아남을 뿐이다.'),line('eric','그래서 이 마을을 버리겠다고? 칼 내려.','determined')],
@@ -29,7 +29,7 @@ export const STORY={
  '3:end':[line('aren','잿빛 밤에도… 난 명령서를 쥐고 있었다. 그 봉인 명령 때문에 피난민들이 갇혔지.','sad'),line('eric','그걸 너 혼자 짊어질 필요는 없어. 이번엔 같이 정한다.'),line('aren','성채의 보급 기록을 확인하자. 명령이 어디서 시작됐는지 알아야 한다.','determined'),line('lia','돌 밑에 남은 기록은 제가 찾을게요. 진실이 사람을 다치게 하지 않도록, 같이요.')],
  defeat:[line('aren','철수한다. …이번 판단을 돌아보고, 다시 준비하자.','sad')]
 };
-export const SPEAKERS={chronicle:{id:'chronicle',name:'Chronicle',ko:'연대기'},aren:{id:'aren',name:'Aren Valter',ko:'아렌',team:'commander'},eric:{id:'eric',name:'Erik',ko:'에릭'},elina:{id:'elina',name:'Elina',ko:'엘리나'},lia:{id:'lia',name:'Lia',ko:'리아'},sain:{id:'sain',name:'Sain',ko:'세인'},kai:{id:'kai',name:'Kai',ko:'카이'}};
+export const SPEAKERS={chronicle:{id:'chronicle',name:'연대기',ko:'연대기'},aren:{id:'aren',name:'아렌 발터',ko:'아렌',team:'commander'},eric:{id:'eric',name:'에릭',ko:'에릭'},elina:{id:'elina',name:'엘리나',ko:'엘리나'},lia:{id:'lia',name:'리아',ko:'리아'},sain:{id:'sain',name:'세인',ko:'세인'},kai:{id:'kai',name:'카이',ko:'카이'}};
 
 for(const [key,lines]of Object.entries(FRONTIER_SCENES))STORY[key]=lines.map(([speaker,text],i)=>({...line(speaker,text,i%4===1?'concerned':i%4===2?'determined':'neutral'),stage:stageHubFor(key),focus:i%3,actors:['aren','eric','elina','lia','sain','kai']}));
 for(let mission=1;mission<=LAST_MISSION;mission++)for(const phase of ['preparation','aftermath'])for(const [id,copy]of Object.entries(NPC_LINES)){
@@ -44,8 +44,8 @@ STORY['after:3:loss']=[{...line('sain','모두를 구하진 못했어요. 돌아
 STORY['npc:evidence']=[line('lia','왕실 군용 인장은 확실해요. 근데 누가 보냈는지는… 아직 몰라요.')];
 STORY['npc:bond']=[line('eric','카이랑 같이 세인을 지킨 날은 기억한다. 방식은 달라도 같은 사람을 지켰지.'),line('kai','돌아올 데가 있다는 거, 그날 알았어.')];
 
-SPEAKERS.advisor={id:'advisor',name:'Staff Aide',ko:'작전 보좌관',team:'civilian'};
-SPEAKERS.baldrick={id:'baldrick',name:'Baldrick Roen',ko:'발드릭',team:'enemy',kind:'lion'};
+SPEAKERS.advisor={id:'advisor',name:'작전 보좌관',ko:'작전 보좌관',team:'civilian'};
+SPEAKERS.baldrick={id:'baldrick',name:'발드릭 로엔',ko:'발드릭',team:'enemy',kind:'lion'};
 for(let mission=1;mission<=LAST_MISSION;mission++)for(const phase of ['preparation','aftermath']){
  const lines=phase==='aftermath'?(mission===LAST_MISSION?[['lia','다들 돌아왔네요. 다음 작전은… 아직 정보가 모자라요. 정리되면 바로 말할게요.'],['eric','지금은 다들 쉬게 하자.']]:mission===3?[['lia','성채로 가는 길은 확보했어요! 동료들 먼저 살펴보고 출발을 정해요.'],['eric','같이 돌아온 사람부터 보자.']]:[['lia','전투 기록 정리하는 중이에요. 동료들 둘러보고 나서 다음 이동을 정해요.']]):ADVISOR_BRIEFINGS[mission];
  const actors=lines.some(([who])=>who==='advisor')?['eric','lia','advisor']:['eric','lia'];

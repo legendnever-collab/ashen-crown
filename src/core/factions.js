@@ -3,7 +3,7 @@
 export const FACTIONS={
  iron:{name:'철왕관 통령국',en:'Iron Crown Dominion',leader:'카시안',color:'#6f86a0',motto:'통일 없이는 평화도 없다.'},
  free:{name:'자유 영주 연맹',en:'Free Lords Alliance',leader:'레오노라',color:'#7aa35a',motto:'왕 없는 세상에도 질서는 존재한다.'},
- flame:{name:'성화 교단',en:'Order of the Sacred Flame',leader:'루시앙',color:'#c4553f',motto:'왕국을 멸망시킨 것은 인간의 탐욕이다.'}
+ flame:{name:'성화 교단',en:'Order of the Sacred Flame',leader:'루시안',color:'#c4553f',motto:'왕국을 멸망시킨 것은 인간의 탐욕이다.'}
 };
 export const TRUST_MIN=-2,TRUST_MAX=3;
 export const TRUST_STAGES=[
