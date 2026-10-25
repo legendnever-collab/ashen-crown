@@ -19,10 +19,17 @@ function drawHubLights(c,h,time){if(!h.lights?.length)return;c.save();c.globalCo
 export function hubTerrain(h){if(h.mask)return h.mask.map(r=>[...r].map(ch=>ch==='.'?'r':'x'));return Array.from({length:h.height},(_,y)=>Array.from({length:h.width},(_,x)=>h.tone==='interior'?'r':x===0||y===0||x===h.width-1||y===h.height-1?'f':x===7||y===4||y===7||y===11?'r':'g'));}
 // staged dialogue: fill the stage (cover) and frame the speaking cast above the dialogue window
 function stageCamera(line,width,height,h){const n=(line.actors||['aren',line.speaker]).filter((id,i,a)=>a.indexOf(id)===i).length,mw=h.width*64,mh=h.height*64,scale=Math.max(width/mw,height/mh),fx=(h.stage?.x??220)+STAGE_GAP*(n-1)/2,fy=(h.stage?.y??424)+16-Math.round(30*(FS-1)),clamp=(v,lo)=>Math.min(0,Math.max(lo,v));return {x:clamp(width/2-fx*scale,width-mw*scale),y:clamp(height*.42-fy*scale,height-mh*scale),scale};}
+// HUD overlays on the hub map (v0.6 fix): the right-hand action column, the bottom controls and the top bar cover
+// the map's edge rows at common sizes (1440×900: the castle town's bottom-right door sat under 소지품). Measured each frame.
+function hudPad(canvas,box){const wrap=canvas.parentElement;if(!wrap||!box.width)return null;const p={top:0,right:0,bottom:0,left:0};
+ for(const el of wrap.querySelectorAll('.frontier-actions,.hub-map-controls,.location-tag,.interaction-list,.dpad,.hub-top,#hub-minimap')){const r=el.getBoundingClientRect();if(!r.width||!r.height||getComputedStyle(el).display==='none')continue;
+  const top=r.top-box.top,left=r.left-box.left,right=box.right-r.right;
+  if(r.height>r.width*1.2&&left>box.width*.5)p.right=Math.max(p.right,box.right-r.left+8);else if(top>box.height*.45)p.bottom=Math.max(p.bottom,box.bottom-r.top+8);else if(r.bottom-box.top<box.height*.3)p.top=Math.max(p.top,r.bottom-box.top+8);}
+ p.right=Math.min(p.right,box.width*.35);p.bottom=Math.min(p.bottom,box.height*.35);p.top=Math.min(p.top,box.height*.3);return p;}
 export function drawHub(canvas,s,{line=null,time=performance.now()}={}){
  const c=canvas.getContext('2d'),f=s.frontier,h=line?HUBS[line.stage]:currentHub(s),box=canvas.getBoundingClientRect(),width=Math.max(1,box.width||1024),height=Math.max(1,box.height||768),resolution=width<600?Math.max(1,window.devicePixelRatio||1):Math.max(2.1,window.devicePixelRatio||1);
  if(canvas.width!==Math.round(width*resolution)||canvas.height!==Math.round(height*resolution)){canvas.width=Math.round(width*resolution);canvas.height=Math.round(height*resolution);}c.setTransform(resolution,0,0,resolution,0,0);c.imageSmoothingEnabled=false;pixel(c,'#172c31',0,0,width,height);
- const camera=line?stageCamera(line,width,height,h):hubCamera.layout(width,height,h.width,h.height,{follow:{x:f.x,y:f.y},key:`${f.hub}:${f.interior||'outside'}`});
+ const camera=line?stageCamera(line,width,height,h):hubCamera.layout(width,height,h.width,h.height,{follow:{x:f.x,y:f.y},key:`${f.hub}:${f.interior||'outside'}`,pad:hudPad(canvas,box)});
  c.translate(camera.x,camera.y);c.scale(camera.scale,camera.scale);
  const art=h.art?hubArt(h.art):null,painted=!!h.art;
  const map=hubTerrain(h),hd=painted?{objects:[]}:hdGround(`hub:${h.name}:${h.width}x${h.height}:${h.tone}`,h.tone==='interior'?map.map(r=>r.map(()=>'p')):map,'',o=>{const tx=Math.floor(o.x/48),ty=Math.floor((o.y-1)/48);return (o.kind==='tree'||o.kind==='bush')&&(tx<=0||ty<=0||tx>=h.width-1||ty>=h.height-1);});if(painted){if(art)c.drawImage(art,0,0,h.width*64,h.height*64);else pixel(c,'#2a3328',0,0,h.width*64,h.height*64);}else drawHDGround(c,hd);

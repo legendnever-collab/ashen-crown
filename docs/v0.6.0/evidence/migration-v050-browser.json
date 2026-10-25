@@ -1,0 +1,53 @@
+{
+  "checks": [
+    {
+      "name": "Shipped v0.5.0 village save is schema 8",
+      "status": "PASS"
+    },
+    {
+      "name": "Shipped v0.5.0 battle checkpoint generated",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.5.0 village save opens in the painted village (schema 9, gold kept, legal position)",
+      "status": "PASS"
+    },
+    {
+      "name": "Imported village save does not replay the world-map intro",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.5.0 battle and its checkpoint migrate unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "Restart of a migrated v0.5.0 battle works",
+      "status": "PASS"
+    },
+    {
+      "name": "ACT I complete save opens in the oath camp with every asset kept and the promotion intact",
+      "status": "PASS"
+    },
+    {
+      "name": "The migrated camp offers the march to Mission 7 (ACT II)",
+      "status": "PASS"
+    },
+    {
+      "name": "A v0.5.0 campaign reaches the castle town for Mission 7",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.5.0 Mission 06 battle resumes",
+      "status": "PASS"
+    },
+    {
+      "name": "Migrated save reloads as the current version",
+      "status": "PASS"
+    },
+    {
+      "name": "No runtime errors in either build",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}

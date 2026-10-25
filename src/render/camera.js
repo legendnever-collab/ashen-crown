@@ -5,12 +5,15 @@ export class MapCamera{
  focus(x,y){this.target={x,y};this.offset={x:0,y:0};}
  zoomBy(factor){this.zoom=Math.max(.35,Math.min(2.4,this.zoom*factor));}
  panBy(x,y){this.offset.x+=x;this.offset.y+=y;}
- layout(width,height,mapWidth,mapHeight,{follow=null,key='',smooth=true}={}){
+ layout(width,height,mapWidth,mapHeight,{follow=null,key='',smooth=true,pad=null}={}){
   if(this.key!==key){this.key=key;this.reset();}
   const base=width<600||height<300?40:64,tilePixels=Math.max(base,Math.min(width/mapWidth,base*1.5))*this.zoom,scale=tilePixels/64;
   const point=this.target||follow||{x:mapWidth/2-.5,y:mapHeight/2-.5};
-  const clamp=(v,extent,view)=>extent<=view?(view-extent)/2:Math.max(view-extent,Math.min(0,v));
-  let x=clamp(width/2-(point.x+.5)*tilePixels+this.offset.x,mapWidth*tilePixels,width),y=clamp(height/2-(point.y+.5)*tilePixels+this.offset.y,mapHeight*tilePixels,height);
+  // pad (v0.6, hubs only): screen margins covered by HUD overlays. The map may scroll that far past its edge so
+  // the edge rows (doors at the bottom of a town) come out from under the buttons when Erik walks there.
+  const p={top:0,right:0,bottom:0,left:0,...(pad||{})};
+  const clamp=(v,extent,view,a,b)=>extent<=view-a-b?a+(view-a-b-extent)/2:extent<=view&&!(a||b)?(view-extent)/2:Math.max(view-b-extent,Math.min(a,v));
+  let x=clamp(width/2-(point.x+.5)*tilePixels+this.offset.x,mapWidth*tilePixels,width,p.left,p.right),y=clamp(height/2-(point.y+.5)*tilePixels+this.offset.y,mapHeight*tilePixels,height,p.top,p.bottom);
   if(smooth&&this.current&&Math.abs(this.current.scale-scale)<.001){x=this.current.x+(x-this.current.x)*.3;y=this.current.y+(y-this.current.y)*.3;}
   this.current={x:Math.round(x*2)/2,y:Math.round(y*2)/2,scale,width,height,mapWidth,mapHeight};return this.current;
  }

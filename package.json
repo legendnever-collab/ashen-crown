@@ -40,7 +40,9 @@
     "test:act2": "node tests/act2-e2e.mjs",
     "test:act2-hubs": "node tests/act2-hubs-e2e.mjs",
     "test:act2-balance": "node tests/act2-balance.mjs",
-    "test:act2-campaign": "node tests/act2-campaign-e2e.mjs"
+    "test:act2-campaign": "node tests/act2-campaign-e2e.mjs",
+    "test:hub-doors": "node tests/hub-doors-e2e.mjs",
+    "test:migration-v050": "node tests/migration-v050.mjs"
   },
   "devDependencies": {
     "playwright": "1.58.2"

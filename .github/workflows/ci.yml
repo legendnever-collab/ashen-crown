@@ -26,8 +26,9 @@ jobs:
       - run: npm run test:m06-balance
       - run: npm run test:act1-balance
       - run: npm run test:class-balance
+      - run: npm run test:act2-balance
       - run: npm run build
-      - run: git diff --exit-code -- index.html releases/Ashen_Crown_v0.5.0.html
+      - run: git diff --exit-code -- index.html releases/Ashen_Crown_v0.6.0.html
       - run: python scripts/verify-release.py
       - uses: actions/upload-artifact@v4
         if: always()
@@ -49,7 +50,9 @@ jobs:
           - suite_group: campaign
             suites: campaign economy-balance migration-v02
           - suite_group: act1
-            suites: act1 migration-v033 migration-v040 mobile-command class legion world act2
+            suites: act1 migration-v033 migration-v040 mobile-command class legion world
+          - suite_group: act2
+            suites: act2 act2-hubs act2-campaign hub-doors migration-v050
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

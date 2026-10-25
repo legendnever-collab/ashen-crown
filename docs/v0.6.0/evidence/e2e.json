@@ -1,0 +1,259 @@
+{
+  "url": "file:///home/claude/ashen-crown/releases/Ashen_Crown_v0.6.0.html",
+  "results": [
+    {
+      "name": "Title screen and Korean UI",
+      "status": "PASS"
+    },
+    {
+      "name": "Intro story",
+      "status": "PASS"
+    },
+    {
+      "name": "War room and five hero previews",
+      "status": "PASS"
+    },
+    {
+      "name": "Lia identity preview (sortie tile)",
+      "status": "PASS"
+    },
+    {
+      "name": "Free deployment",
+      "status": "PASS"
+    },
+    {
+      "name": "Deployment swap preserves identity",
+      "status": "PASS"
+    },
+    {
+      "name": "Recommended deployment starts battle",
+      "status": "PASS"
+    },
+    {
+      "name": "Move using legal path",
+      "status": "PASS"
+    },
+    {
+      "name": "Undo before action",
+      "status": "PASS"
+    },
+    {
+      "name": "file:// refresh restores exact state",
+      "status": "PASS"
+    },
+    {
+      "name": "Legal move kai → 9,5 at turn 1",
+      "status": "PASS"
+    },
+    {
+      "name": "Forecast before kai skill",
+      "status": "PASS"
+    },
+    {
+      "name": "Legal move lia → 6,6 at turn 1",
+      "status": "PASS"
+    },
+    {
+      "name": "Forecast before lia skill",
+      "status": "PASS"
+    },
+    {
+      "name": "Forecast before elina skill",
+      "status": "PASS"
+    },
+    {
+      "name": "Legal move sain → 7,7 at turn 1",
+      "status": "PASS"
+    },
+    {
+      "name": "Legal move eric → 5,6 at turn 1",
+      "status": "PASS"
+    },
+    {
+      "name": "Legal move kai → 9,4 at turn 2",
+      "status": "PASS"
+    },
+    {
+      "name": "Forecast before kai rescue",
+      "status": "PASS"
+    },
+    {
+      "name": "Forecast before lia skill",
+      "status": "PASS"
+    },
+    {
+      "name": "Legal move elina → 2,6 at turn 2",
+      "status": "PASS"
+    },
+    {
+      "name": "Legal move sain → 6,5 at turn 2",
+      "status": "PASS"
+    },
+    {
+      "name": "Forecast before sain attack",
+      "status": "PASS"
+    },
+    {
+      "name": "Legal move eric → 5,4 at turn 2",
+      "status": "PASS"
+    },
+    {
+      "name": "Forecast before eric attack",
+      "status": "PASS"
+    },
+    {
+      "name": "Legal move kai → 7,4 at turn 3",
+      "status": "PASS"
+    },
+    {
+      "name": "Forecast before kai skill",
+      "status": "PASS"
+    },
+    {
+      "name": "Legal move lia → 6,5 at turn 3",
+      "status": "PASS"
+    },
+    {
+      "name": "Forecast before lia skill",
+      "status": "PASS"
+    },
+    {
+      "name": "Legal move elina → 2,5 at turn 3",
+      "status": "PASS"
+    },
+    {
+      "name": "Forecast before eric attack",
+      "status": "PASS"
+    },
+    {
+      "name": "Forecast before kai skill",
+      "status": "PASS"
+    },
+    {
+      "name": "Legal move lia → 5,5 at turn 4",
+      "status": "PASS"
+    },
+    {
+      "name": "Forecast before lia skill",
+      "status": "PASS"
+    },
+    {
+      "name": "Legal move elina → 2,4 at turn 4",
+      "status": "PASS"
+    },
+    {
+      "name": "Forecast before elina rescue",
+      "status": "PASS"
+    },
+    {
+      "name": "Forecast before eric attack",
+      "status": "PASS"
+    },
+    {
+      "name": "Legal move kai → 7,5 at turn 5",
+      "status": "PASS"
+    },
+    {
+      "name": "Forecast before kai skill",
+      "status": "PASS"
+    },
+    {
+      "name": "Attack preview and confirm",
+      "status": "PASS"
+    },
+    {
+      "name": "Civilian rescue through actual UI",
+      "status": "PASS"
+    },
+    {
+      "name": "Reinforcements appear with player opportunity",
+      "status": "PASS"
+    },
+    {
+      "name": "Captain defeated and Mission Clear",
+      "status": "PASS"
+    },
+    {
+      "name": "Growth result for five heroes",
+      "status": "PASS"
+    },
+    {
+      "name": "Visible level gains",
+      "status": "PASS"
+    },
+    {
+      "name": "Win with some heroes incapacitated",
+      "status": "PASS"
+    },
+    {
+      "name": "Victory permanently restored",
+      "status": "PASS"
+    },
+    {
+      "name": "Replay keeps growth",
+      "status": "PASS"
+    },
+    {
+      "name": "Invalid paste rejected safely",
+      "status": "PASS"
+    },
+    {
+      "name": "Valid paste restores verified snapshot",
+      "status": "PASS"
+    },
+    {
+      "name": "Natural civilian failure leads to defeat",
+      "status": "PASS"
+    },
+    {
+      "name": "Defeat retry available",
+      "status": "PASS"
+    },
+    {
+      "name": "Corrupt main save recovers last good",
+      "status": "PASS"
+    },
+    {
+      "name": "Recovery warning visible",
+      "status": "PASS"
+    },
+    {
+      "name": "Mouse wheel zoom",
+      "status": "PASS"
+    },
+    {
+      "name": "Pan supports drag",
+      "status": "PASS"
+    },
+    {
+      "name": "No page overflow at desktop",
+      "status": "PASS"
+    },
+    {
+      "name": "Mobile hero selection immediately updates dock",
+      "status": "PASS"
+    },
+    {
+      "name": "Mobile pointer tap moves hero",
+      "status": "PASS"
+    },
+    {
+      "name": "Mobile page stays within viewport",
+      "status": "PASS"
+    },
+    {
+      "name": "Mobile battle commands require no dialog",
+      "status": "PASS"
+    },
+    {
+      "name": "Standalone has zero external network requests",
+      "status": "PASS"
+    },
+    {
+      "name": "No JavaScript runtime errors",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "external": 0
+}
