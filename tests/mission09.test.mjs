@@ -37,21 +37,21 @@ test('M08 → M09: the legion reaches Velmar; Thea stands in the town only when 
 test('delegates: a hero beside one brings them into the hall; assassins hunt delegates over the rooftops',()=>{
  const s=battle(),v=findUnit(s,'v1'),eric=findUnit(s,'eric');next(s,eric,v);assert.ok(validTarget(s,eric,v,'rescue'));assert.ok(performAction(s,'eric','rescue','v1').ok);assert.ok(v.rescued);assert.ok(s.narrative.events.includes('9:hall'));
  const h=findUnit(s,'h1'),mark=findUnit(s,'v3');h.x=mark.x-1;h.y=mark.y;beginEnemyPhase(s);const p=planEnemy(s,h);assert.equal(p.target,'v3','an assassin strikes the delegate in reach');
- const boss=findUnit(s,'boss');assert.equal(planEnemy(s,boss).x,boss.x,'the leader keeps to his roof before TURN 4');
+ assert.equal(findUnit(s,'boss'),undefined,'the leader is not on the board before TURN 5');s.turn=5;rulesOf(s).onTurnStart(s);assert.ok(findUnit(s,'boss')?.hunter,'he arrives with the TURN 5 wave');assert.ok(s.narrative.events.includes('9:alley'));
 });
 
 test('outcome: two delegates lost is a defeat; the leader captured below half HP wins; holding to TURN 10 wins',()=>{
  let s=battle();for(const id of ['v1','v2'])findUnit(s,id).hp=0;rulesOf(s).checkOutcome(s,finish(s));assert.equal(s.outcome,'defeat');
- s=battle();const boss=findUnit(s,'boss'),eric=findUnit(s,'eric');next(s,eric,boss);assert.equal(validTarget(s,eric,boss,'capture'),false,'full HP');boss.hp=Math.floor(boss.maxHP/2);
+ s=battle();s.turn=5;rulesOf(s).onTurnStart(s);const boss=findUnit(s,'boss'),eric=findUnit(s,'eric');next(s,eric,boss);assert.equal(validTarget(s,eric,boss,'capture'),false,'full HP');boss.hp=Math.floor(boss.maxHP/2);
  assert.ok(validTarget(s,eric,boss,'capture'));assert.ok(performAction(s,'eric','capture','boss').ok);assert.ok(boss.captured&&s.missionState.captured&&s.campaign.flags.mission_09_assassin_captured);checkOutcome(s);assert.equal(s.outcome,'victory');assert.match(s.reason,/생포/);
- s=battle();s.turn=11;rulesOf(s).checkOutcome(s,finish(s));assert.equal(s.outcome,'victory');
+ s=battle();rulesOf(s).checkOutcome(s,finish(s));assert.equal(s.outcome,null,'no early victory before the leader arrives');s.turn=11;rulesOf(s).checkOutcome(s,finish(s));assert.equal(s.outcome,'victory');
 });
 
 test('Free Lords trust: every delegate safe +1; a lost delegate leaves it; the captured leader opens the ledger scene; practice changes nothing',()=>{
- for(const [lost,free] of [[0,1],[1,0]]){const s=battle();findUnit(s,'boss').hp=0;if(lost)findUnit(s,'v2').hp=0;checkOutcome(s);assert.equal(s.outcome,'victory');assert.equal(s.campaign.factionTrust.free,free);assert.ok(s.campaign.flags.act2_free_met);
+ for(const [lost,free] of [[0,1],[1,0]]){const s=battle();s.turn=5;rulesOf(s).onTurnStart(s);findUnit(s,'boss').hp=0;if(lost)findUnit(s,'v2').hp=0;checkOutcome(s);assert.equal(s.outcome,'victory');assert.equal(s.campaign.factionTrust.free,free);assert.ok(s.campaign.flags.act2_free_met);
   enterHub(s,{aftermath:true});assert.equal(s.frontier.hub,'velmar');assert.ok(s.narrative.events.includes('after:9:none'));}
- const s=battle();const boss=findUnit(s,'boss');boss.rescued=true;boss.captured=true;s.missionState.captured=true;s.campaign.flags.mission_09_assassin_captured=true;checkOutcome(s);enterHub(s,{aftermath:true});assert.ok(s.narrative.events.includes('after:9:captured'));
- const p=newGame(5,camp({completed:[1,2,3,4,5,6,7,8,9]}),9);assert.ok(p.practice);p.screen='battle';findUnit(p,'boss').hp=0;checkOutcome(p);assert.equal(p.outcome,'victory');assert.equal(p.campaign.factionTrust.free,0);
+ const s=battle();s.turn=5;rulesOf(s).onTurnStart(s);const boss=findUnit(s,'boss');boss.rescued=true;boss.captured=true;s.missionState.captured=true;s.campaign.flags.mission_09_assassin_captured=true;checkOutcome(s);enterHub(s,{aftermath:true});assert.ok(s.narrative.events.includes('after:9:captured'));
+ const p=newGame(5,camp({completed:[1,2,3,4,5,6,7,8,9]}),9);assert.ok(p.practice);p.screen='battle';p.turn=5;rulesOf(p).onTurnStart(p);findUnit(p,'boss').hp=0;checkOutcome(p);assert.equal(p.outcome,'victory');assert.equal(p.campaign.factionTrust.free,0);
 });
 
 test('M09 save round trip mid-battle keeps the allies and the mission state',()=>{

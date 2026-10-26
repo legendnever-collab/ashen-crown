@@ -27,13 +27,12 @@ export const M9={
  init(s){s.missionState={waves:[],captured:false};if(!s.practice)ensureTrust(s.campaign);},
  clearLabel:'벨마르 의회 사수',
  validState(m){return !!m&&typeof m==='object'&&Array.isArray(m.waves)&&m.waves.every(n=>Number.isInteger(n)&&n>0)&&typeof m.captured==='boolean';},
- status(s){const m=missionOf(s),boss=findUnit(s,'boss'),hall=delegatesOf(s).filter(v=>v.rescued).length;return `대표 피신 ${hall}/3${lostOf(s)?` · 잃은 대표 ${lostOf(s)}`:''} · ${s.missionState.captured?'우두머리 생포':boss&&!alive(boss)?'우두머리 격파':`우두머리 HP ${boss?Math.round(100*Math.max(0,boss.hp)/boss.maxHP):0}%`} · ${Math.max(0,m.turnLimit+1-s.turn)}턴 남음`;},
+ status(s){const m=missionOf(s),boss=findUnit(s,'boss'),hall=delegatesOf(s).filter(v=>v.rescued).length;return `대표 피신 ${hall}/3${lostOf(s)?` · 잃은 대표 ${lostOf(s)}`:''} · ${!boss?'우두머리 TURN 5 출현':s.missionState.captured?'우두머리 생포':!alive(boss)?'우두머리 격파':`우두머리 HP ${Math.round(100*Math.max(0,boss.hp)/boss.maxHP)}%`} · ${Math.max(0,m.turnLimit+1-s.turn)}턴 남음`;},
  optional(s){const f=s.campaign.flags;return `의회 대표 ${f.mission_09_delegates_saved??savedOf(s)}/3 무사${(f.mission_09_assassin_captured||s.missionState?.captured)?' · 자객 우두머리 생포':''}`;},
  onTurnStart(s){act2Waves(s);if(s.turn===missionOf(s).threatTurn)enqueueStory(s,'9:threat');},
  beforeEnemyPhase(){},
- // Assassins hunt the delegates over the rooftops; the leader keeps to his roof until TURN 4, striking what comes close.
+ // Assassins (and their leader, who arrives on TURN 5) hunt the delegates over the rooftops.
  planEnemy(s,u,reachable){if(!u.hunter)return null;
-  if(u.id==='boss'&&s.turn<u.holdUntil)return holdPlan(s,u,'지붕 위에서 대기');
   const marks=delegatesOf(s).filter(alive);if(!marks.length)return null;
   const hit=strikeFrom(s,u,reachable,marks,'대표 암살 시도');if(hit)return hit;
   const goal=marks.sort((a,b)=>distance(u,a)-distance(u,b))[0];let dest={x:u.x,y:u.y,score:distance(u,goal)};
@@ -45,7 +44,7 @@ export const M9={
  afterDamage(s,v){if(v.team==='civilian'&&v.hp<=0)enqueueStory(s,'9:lost');},
  checkOutcome(s,finish){const m=missionOf(s),boss=findUnit(s,'boss'),tail=` · 대표 ${savedOf(s)}/3 무사`;
   if(lostOf(s)>=2)return finish(s,'defeat','의회 대표를 두 명 이상 잃었습니다.');
-  if(downOf(boss))return finish(s,'victory',`${s.missionState.captured?'자객 우두머리 생포':'자객 우두머리 격파'} · 습격대 퇴각${tail}.`);
+  if(boss&&downOf(boss))return finish(s,'victory',`${s.missionState.captured?'자객 우두머리 생포':'자객 우두머리 격파'} · 습격대 퇴각${tail}.`);
   if(s.turn>m.turnLimit)return finish(s,'victory',`TURN ${m.turnLimit}까지 의회 사수${tail}.`);
  },
  beforeCommit(s){setStoryFlag(s,'mission_09_delegates_saved',savedOf(s));setStoryFlag(s,'mission_09_assassin_captured',!!s.missionState.captured);},
