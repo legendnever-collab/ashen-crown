@@ -286,15 +286,15 @@ function offerOrder(){if(state.screen!=='deployment'||!needsOrder()||state.narra
  if(!state.narrative.events.includes('8:order')){enqueueStory(state,'8:order');openStory(state);commit();return;}
  modal('사령부 명령',`<p>발드릭이 봉인된 명령서를 펼친다. 「TURN 6에 후위 마을을 포기하고 협곡을 사수하라.」 군단은 어떻게 할까요?</p>`,frontierButton('order-pick','<b>명령을 따른다</b> — 협곡 사수, TURN 6에 후위 마을 포기','hold',false,'primary')+frontierButton('order-pick','<b>구출조를 보낸다</b> — 협곡을 지키며 후위 마을 주민 구출','rescue'));}
 // M10 (D-067): before the two lords' battle the legion chooses a side or mediation, on the deployment screen.
-const needsStance=()=>state.missionId===10&&!state.practice&&!state.campaign.choices?.m10_stance;
+function needsStance(){return state.missionId===10&&!state.practice&&!state.campaign.choices?.m10_stance;}
 function offerStance(){if(state.screen!=='deployment'||!needsStance()||state.narrative.active||$('#modal-root').children.length)return;
  if(!state.narrative.events.includes('10:stance')){enqueueStory(state,'10:stance');openStory(state);commit();return;}
  modal('두 영주의 전쟁',`<p>오스윈 경과 브레넌 경이 각자 군단의 도움을 청한다. 레오노라는 둘을 멈춰 달라고 한다. 군단은 어떻게 할까요? 고른 뒤에는 바꿀 수 없습니다.</p>`,frontierButton('stance-pick','<b>오스윈 경을 돕는다</b> — 청백군과 함께 브레넌 경 격파·생포','a',false,'primary')+frontierButton('stance-pick','<b>브레넌 경을 돕는다</b> — 주황군과 함께 오스윈 경 격파·생포','b',false,'primary')+frontierButton('stance-pick','<b>중재한다</b> — 두 영주를 모두 생포 (어렵지만 연맹 신뢰가 더 오름)','mediate'));}
 // Thea joins after M08 (D-055 §5): once her scene has played, a card shows her joining the legion.
-const RECRUIT_CARD={thea:{scene:'after:8:thea:joined',title:'테아 · 기병 창기사',en:'Thea · Lancer',action:'돌격 (Charge)',text:'근접 공격 피해 +4. 이번 턴 3칸 이상 달린 뒤 쓰면 피해 +3 더, 반격을 받지 않습니다. 기병이라 이동 5, 숲 1, 산길·지붕은 들어갈 수 없습니다.',level:8},
- dario:{scene:'after:10:dario:joined',title:'다리오 · 용병 검사',en:'Dario · Sellsword',action:'받아치기 (Riposte)',text:'근접 공격 피해 +2. 쓴 뒤 다음 아군 턴까지 다리오의 반격 피해가 +8이 됩니다. 평소에도 반격 피해 +4 (용병의 칼).',level:9}};
+function recruitCards(){return {thea:{scene:'after:8:thea:joined',title:'테아 · 기병 창기사',en:'Thea · Lancer',action:'돌격 (Charge)',text:'근접 공격 피해 +4. 이번 턴 3칸 이상 달린 뒤 쓰면 피해 +3 더, 반격을 받지 않습니다. 기병이라 이동 5, 숲 1, 산길·지붕은 들어갈 수 없습니다.',level:8},
+ dario:{scene:'after:10:dario:joined',title:'다리오 · 용병 검사',en:'Dario · Sellsword',action:'받아치기 (Riposte)',text:'근접 공격 피해 +2. 쓴 뒤 다음 아군 턴까지 다리오의 반격 피해가 +8이 됩니다. 평소에도 반격 피해 +4 (용병의 칼).',level:9}};}
 function offerRecruitCard(){const c=state.campaign;if(state.screen!=='exploration'||state.practice||state.narrative.active||$('#modal-root').children.length)return;
- const id=Object.keys(RECRUIT_CARD).find(id=>c.roster?.includes(id)&&state.narrative.seen?.includes(RECRUIT_CARD[id].scene)&&!c.choices?.[`recruit_card_${id}`]);if(!id)return;const card=RECRUIT_CARD[id];
+ const cards=recruitCards(),id=Object.keys(cards).find(id=>c.roster?.includes(id)&&state.narrative.seen?.includes(cards[id].scene)&&!c.choices?.[`recruit_card_${id}`]);if(!id)return;const card=cards[id];
  c.choices[`recruit_card_${id}`]='seen';save();const u=findUnit(state,id)||c.heroes?.find(h=>h.id===id);
  modal('새 동료',`<div class="promo-card"><div class="eyebrow">NEW COMRADE · 재의 군단</div><div class="promo-busts"><canvas class="promo-bust after" width="360" height="440" data-recruit="${id}" aria-label="${esc(card.title)}"></canvas></div><h2>${esc(card.title)}</h2><p class="promo-en">${card.en} · LV ${u?.level||card.level}</p><div class="promo-action"><b>${card.action}</b><p>${card.text}</p></div><p class="promo-note">다음 전투부터 출전 6명 중 한 자리를 맡을 수 있습니다.</p></div>`,frontierButton('close-modal','군단으로','',false,'primary'));
  document.querySelectorAll('[data-recruit]').forEach(cv=>drawBust(cv.getContext('2d'),u||{id},{expression:'determined',missionId:state.missionId}));}
