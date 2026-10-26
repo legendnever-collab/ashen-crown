@@ -9,7 +9,7 @@ import {spawnWave} from './mission-rules.js';
 import {ensureTrust,adjustTrust} from './factions.js';
 import {joinRoster} from './roster.js';
 
-function act2Waves(s){const m=missionOf(s),st=s.missionState;for(const w of m.waves){if(s.turn!==w.turn||st.waves.includes(w.turn))continue;st.waves.push(w.turn);spawnWave(s,w.units);
+export function act2Waves(s){const m=missionOf(s),st=s.missionState;for(const w of m.waves){if(s.turn!==w.turn||st.waves.includes(w.turn))continue;st.waves.push(w.turn);spawnWave(s,w.units);
  if(w.story)enqueueStory(s,w.story);s.log.push(`적 증원 ${w.units.length}명 출현.`);}}
 const convoyOf=s=>s.units.filter(u=>u.kind==='wagon');
 const throughOf=s=>convoyOf(s).filter(w=>w.rescued).length;

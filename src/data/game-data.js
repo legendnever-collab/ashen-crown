@@ -46,8 +46,8 @@ export const HEROES = [
 // v0.6 ACT II recruits (D-055 Q2; names, stats and skills PROPOSED). They exist only after joining
 // (campaign.roster); ACT I parties stay exactly the five heroes above.
 export const RECRUIT_HEROES = [
- {id:'thea',name:'테아',ko:'테아',className:'Lancer',role:'Cavalry',level:1,hp:34,mp:10,atk:15,def:7,mag:2,res:3,spd:8,mov:5,range:[1,1],skill:'Charge',cost:3,talent:'Escort Captain',color:'#7f9fc0',growth:{hp:4,mp:1,atk:2,def:2,mag:0,res:1,spd:1},description:'철왕관 기병 창기사. 넓은 이동력으로 전열을 돌파합니다. (돌격 규칙은 v0.6 Phase D에서 확정)',clue:'Iron Vanguard',goal:'호위와 돌파로 기병의 길을 여세요.'},
- {id:'dario',name:'다리오',ko:'다리오',className:'Sellsword',role:'Duelist',level:1,hp:33,mp:10,atk:16,def:5,mag:2,res:3,spd:10,mov:3,range:[1,1],skill:'Riposte',cost:3,talent:'Free Blade',color:'#b5525a',growth:{hp:4,mp:1,atk:2,def:1,mag:0,res:1,spd:2},description:'벨마르 용병 검사. 반격에 강한 근접 결투가입니다. (반격 규칙은 v0.6 Phase E에서 확정)',clue:'Paid in Full',goal:'반격으로 전선을 버티세요.'}
+ {id:'thea',name:'테아',ko:'테아',className:'Lancer',role:'Cavalry',level:1,hp:34,mp:10,atk:15,def:7,mag:2,res:3,spd:8,mov:5,range:[1,1],skill:'Charge',cost:3,talent:'Escort Captain',color:'#7f9fc0',growth:{hp:4,mp:1,atk:2,def:2,mag:0,res:1,spd:1},description:'철왕관 기병 창기사. 돌격: 근접 피해 +4, 3칸 이상 달린 뒤에는 +7에 반격을 받지 않습니다.',clue:'Iron Vanguard',goal:'호위와 돌파로 기병의 길을 여세요.'},
+ {id:'dario',name:'다리오',ko:'다리오',className:'Sellsword',role:'Duelist',level:1,hp:33,mp:10,atk:16,def:5,mag:2,res:3,spd:10,mov:3,range:[1,1],skill:'Riposte',cost:3,talent:'Free Blade',color:'#b5525a',growth:{hp:4,mp:1,atk:2,def:1,mag:0,res:1,spd:2},description:'벨마르 용병 검사. 반격 피해 +4. 받아치기: 근접 피해 +2, 다음 아군 턴까지 반격 피해 +8.',clue:'Paid in Full',goal:'반격으로 전선을 버티세요.'}
 ];
 export const CORE_HERO_IDS = HEROES.map(h=>h.id);
 export const ALL_HEROES = [...HEROES,...RECRUIT_HEROES];

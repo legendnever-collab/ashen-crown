@@ -43,6 +43,7 @@ function bustFromCast(id){const k=CAST[id]||CAST.bandit,chief=/captain|Captain|q
  coat:k.coat,metal:k.metal||k.helmColor||'#7d838a',under:k.tabard||k.coat,trim:k.trim||'#a28a5a',shirt:'#3a3436',leather:k.coat,fur:k.fur,apron:k.apron,cape:k.cape,
  hat:k.helm==='kettle'?'kettle':k.helm==='cap'?'cap':k.bandana?'bandana':k.hood?'hood':null,hatColor:k.helmColor||k.bandana||k.hood,
  beard:k.beard,beardColor:k.beardColor,hoodDown:k.hood&&k.helm?k.hood:null,mail:k.helm==='kettle'};}
+const LORD_LOOK={oswin:'lordA',brennan:'lordB'};
 export function bustKey(u,missionId=1){
  if(!u)return 'refugee';
  if(u.kind==='lion'||u.id==='baldrick')return 'baldrick';
@@ -52,9 +53,12 @@ export function bustKey(u,missionId=1){
  if(BUST_SPEC[u.id])return u.id;
  // v0.6 ACT II recruits and leaders (pack B, D-059): painted busts by id; without the art the cast vector bust below.
  if(['thea','dario','cassian','leonora'].includes(u.id)&&u.team!=='enemy')return PAINTED?.[u.id]?u.id:'cast:'+u.id;
+ // v0.6.1: the two lords of M10 speak with their army's look; mission units that name a look use it.
+ if(LORD_LOOK[u.id])return 'cast:'+LORD_LOOK[u.id];
+ if(u.look)return PAINTED?.[u.look]?u.look:'cast:'+u.look;
  if(u.team==='commander')return 'aren';
  if(u.team==='civilian')return 'refugee';
- const look={1:{captain:'captain',archer:'archer'},2:{captain:'deserterCaptain',bandit:'deserter'},3:{captain:'pursuerCaptain',bandit:'pursuer',archer:'pursuerArcher'},4:{captain:'quartermaster',bandit:'fortGuard',archer:'fortArcher'},5:{bearer:'bearer',spear:'ironSpear',archer:'ironArcher',cavalry:'cavalry'},6:{captain:'executor',bandit:'pursuer',archer:'pursuerArcher'}}[missionId]||{};
+ const look={1:{captain:'captain',archer:'archer'},2:{captain:'deserterCaptain',bandit:'deserter'},3:{captain:'pursuerCaptain',bandit:'pursuer',archer:'pursuerArcher'},4:{captain:'quartermaster',bandit:'fortGuard',archer:'fortArcher'},5:{bearer:'bearer',spear:'ironSpear',archer:'ironArcher',cavalry:'cavalry'},6:{captain:'executor',bandit:'pursuer',archer:'pursuerArcher'},7:{bandit:'ironDeserter',archer:'ironArcher',captain:'deserterCaptain'},8:{spear:'mercSpear',captain:'mercSpear',bandit:'assassin'},9:{spear:'mercSpear',assassin:'assassin',captain:'assassin'}}[missionId]||{};
  return 'cast:'+(look[u.kind]||(u.kind==='captain'?'captain':'bandit'));
 }
 const bustSpecOf=key=>key.startsWith('cast:')?bustFromCast(key.slice(5)):BUST_SPEC[key];

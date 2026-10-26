@@ -22,6 +22,7 @@ import {missionOf,MISSIONS} from '../data/missions.js';
 import {LAST_MISSION} from '../data/missions.js';
 import {rulesOf} from '../core/mission-rules.js';
 import {chooseDeserters,chooseOrder} from '../core/mission-rules-v06.js';
+import {chooseStance} from '../core/mission-rules-v061.js';
 import {SPEAKERS,STORY} from '../data/story.js';
 import {introStory,openStory,storyLine,advanceStory,setStoryFlag,enqueueStory} from '../core/narrative.js';
 import {musicScene,SCORE} from '../audio/score.js';
@@ -65,7 +66,7 @@ function render(){
  $('#logentries').innerHTML=state.log.slice(-18).map(l=>`<div>${esc(l)}</div>`).join('');$('#logentries').scrollTop=$('#logentries').scrollHeight;
  renderObjectives();$('#battle-minimap').hidden=!(battle||deploy);app.classList.toggle('exploring',state.screen==='exploration');app.classList.toggle('in-battle',battle||deploy);app.classList.toggle('journal-open',ui.journal);$('#rail').hidden=!(battle||deploy);$('.field').append(questPanel);$('#screen').innerHTML='';
  if(battle||deploy){$('#rail').innerHTML=renderDock(state,ui,esc,portrait,(label,value,max,cls)=>bar(label,label==='HP'?renderer.displayHP(u):value,max,cls));}else{renderScreen();$('#rail').innerHTML=`<div class="eyebrow">COMMANDER’S NOTES</div><h3 style="margin:13px 0">한 사람씩, 하나의 가능성</h3><p style="font-size:13px">다섯 장수의 역할을 연결하세요. 숲의 사수, 동료를 지키는 기사, 빠른 구출과 치유가 전장의 흐름을 바꿉니다.</p><div class="rule"></div><div class="eyebrow">MISSION OBJECTIVES</div><p style="font-size:12px;margin:10px 0">주민 2명 구출 + 가르 격파<br>선택 목표: 전원 생존 · 8턴 이내 · Eric의 단서</p><div class="rule"></div><div class="muted">완료한 미션: ${state.campaign.clears}회<br>v${VERSION} · 오리지널 픽셀 아트<br>오프라인 실행 · 로컬 저장</div><button class="small" data-do="help" style="margin-top:18px">조작과 전투 규칙</button>`;}
- const pop=$('#unit-popover');pop.innerHTML=menuHTML(state,ui,esc);pop.hidden=!pop.innerHTML;positionPopover();syncTurnPrompt();renderStory();paintPortraits();const hubCanvas=$('#frontier-map');if(hubCanvas){drawHub(hubCanvas,state);followAren();}const stage=$('#scene-stage');if(stage)drawHub(stage,state,{line:storyLine(state)});offerAffiliation();offerAdvisor();offerParley();offerOrder();offerOath();offerAct1();offerPromotion();offerRecruitCard();
+ const pop=$('#unit-popover');pop.innerHTML=menuHTML(state,ui,esc);pop.hidden=!pop.innerHTML;positionPopover();syncTurnPrompt();renderStory();paintPortraits();const hubCanvas=$('#frontier-map');if(hubCanvas){drawHub(hubCanvas,state);followAren();}const stage=$('#scene-stage');if(stage)drawHub(stage,state,{line:storyLine(state)});offerAffiliation();offerAdvisor();offerParley();offerOrder();offerStance();offerOath();offerAct1();offerPromotion();offerRecruitCard();
 }
 function positionPopover(){
  const pop=$('#unit-popover');if(!pop||pop.hidden)return;const selected=findUnit(state,ui.selected),unit=findUnit(state,ui.preview||ui.selected),anchor=ui.pendingMove||unit;if(!anchor)return;
@@ -127,6 +128,7 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'deserters-pick':{if(!needsDeserters()||!chooseDeserters(state,id))break;closeModal();enqueueStory(state,`after:7:${id}`);openStory(state);commit();break;}
  case 'deserters-choice':showDeserterChoice();break;
  case 'order-pick':{if(!needsOrder()||state.screen!=='deployment'||!chooseOrder(state,id))break;closeModal();enqueueStory(state,`8:order:${id}`);openStory(state);commit();break;}
+ case 'stance-pick':{if(!needsStance()||state.screen!=='deployment'||!chooseStance(state,id))break;closeModal();enqueueStory(state,`10:stance:${id}`);openStory(state);commit();break;}
  case 'records-pick':{if(state.missionId!==4||state.practice||state.frontier?.phase!=='aftermath'||state.campaign.choices?.m04_records_choice||!['kept','reported'].includes(id))break;state.campaign.choices??={};state.campaign.choices.m04_records_choice=id;closeModal();enqueueStory(state,`after:4:${id}`);openStory(state);commit();break;}
  case 'appearance':showAppearance();break;
  case 'new':state=newGame(state.initialSeed,state.campaign,state.campaign.completed.includes(1)?Math.min(LAST_MISSION,(state.campaign.completed.at(-1)||0)+1):1);ui.selected='eric';enterHub(state);commit();break;
@@ -134,7 +136,7 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'sortie-add':case 'sortie-remove':{if(setSortie(state,ui.selected,action==='sortie-add'))commit();break;}
  case 'select':{const u=findUnit(state,id);if(!u||u.team!=='ally'||state.screen==='battle'&&!alive(u)||state.screen==='deployment'&&u.benched)break;ui.selected=id;ui.menu=state.screen==='battle'?'root':null;ui.mode=state.screen==='deployment'?'deploy':initialMode(u);renderer.focus(u.x,u.y);ui.preview=null;ui.notice=null;ui.inspected=null;ui.phaseConfirm=false;render();break;}
  case 'preset':presetDeployment(state,id);commit();break;
- case 'start-battle':if(state.screen==='deployment'&&needsParley()){offerParley();break;}if(state.screen==='deployment'&&needsOrder()){offerOrder();break;}if(state.screen==='deployment'){modal('출전 최종 확인',`<p><b>${esc(missionOf(state).objective)}</b></p><p>${esc(councilInfo(state).plan)}</p><p>Equipment / Items / Formation / Objective<br>기본 장비로 출전 가능 · 구매 준비는 선택입니다.</p><p>기본 회복약 2개 + 구매 도구 ${itemCount(state.economy)}개. 출전 이후 장비 변경은 잠깁니다.</p>`,'<button class="primary" data-do="confirm-battle">출전 확정</button><button data-do="close-modal">계속 준비</button>');}break;
+ case 'start-battle':if(state.screen==='deployment'&&needsParley()){offerParley();break;}if(state.screen==='deployment'&&needsOrder()){offerOrder();break;}if(state.screen==='deployment'&&needsStance()){offerStance();break;}if(state.screen==='deployment'){modal('출전 최종 확인',`<p><b>${esc(missionOf(state).objective)}</b></p><p>${esc(councilInfo(state).plan)}</p><p>Equipment / Items / Formation / Objective<br>기본 장비로 출전 가능 · 구매 준비는 선택입니다.</p><p>기본 회복약 2개 + 구매 도구 ${itemCount(state.economy)}개. 출전 이후 장비 변경은 잠깁니다.</p>`,'<button class="primary" data-do="confirm-battle">출전 확정</button><button data-do="close-modal">계속 준비</button>');}break;
  case 'confirm-battle':if(startBattle(state)){closeModal();ui.mode='choose';ui.notice=null;commit();}break;
  case 'open-unit-menu':ui.menu=ui.pendingMove?'move-confirm':'root';render();break;
  case 'submenu':ui.menu=id;render();break;
@@ -231,7 +233,7 @@ function showAudio(){modal('Original Music',`<p>${esc(audio.diagnostics().track)
 function showAppearance(){modal('Character Appearance',`<p>에릭은 LV 5에 Advanced 의상으로 성장합니다. 외형 시범이며 전직 능력은 후속 버전에서 추가합니다.</p><div class="appearance-grid">${HEROES.map(h=>{const u=findUnit(state,h.id);return `<article><h3>${u.name} · Tier ${u.appearanceTier}</h3>${portrait(u)}${u.id==='eric'?'<canvas class="portrait" width="256" height="256" data-tier-preview="2"></canvas><p>Advanced Preview · LV 5</p>':'<p>Advanced / Elite 의상은 후속 제작</p>'}</article>`;}).join('')}</div>`,'');paintPortraits();const c=$('[data-tier-preview]'),adv={...findUnit(state,'eric'),appearanceTier:2,level:Math.max(5,findUnit(state,'eric').level)};if(drawPaintedHead(c.getContext('2d'),adv))c.style.imageRendering='auto';else drawPortrait(c.getContext('2d'),adv);}
 
 function questExplore(){const f=state.frontier,m=missionOf(state),next=MISSIONS[state.missionId+1];if(f.interior)return `<b>${esc(currentHub(state).name)}</b><p>${INTERIORS[f.interior]?.generic?'보물상자를 찾아보자.':'주인에게 말을 걸어 거래하자.'}</p>`;
- if(f.phase==='aftermath')return `<b>전투 후 정비</b><p>${state.missionId===4&&!state.practice&&!state.campaign.choices?.m04_records_choice?'성채 기록을 어떻게 할지 정하자.':state.missionId===7&&needsDeserters()?'붙잡은 탈영병의 처분을 정하자.':state.missionId===6&&!state.practice&&!state.campaign.choices?.m06_oath?'재의 맹세: 군단의 맹세를 정하자.':next?`동료들과 이야기한 뒤 출발: ${esc(next.title)}${state.missionId===6?' · ACT II 세 개의 깃발':''}`:'ACT II 전반 계속 · M09 자유의 도시 — 다음 업데이트'}</p>`;
+ if(f.phase==='aftermath')return `<b>전투 후 정비</b><p>${state.missionId===4&&!state.practice&&!state.campaign.choices?.m04_records_choice?'성채 기록을 어떻게 할지 정하자.':state.missionId===7&&needsDeserters()?'붙잡은 탈영병의 처분을 정하자.':state.missionId===6&&!state.practice&&!state.campaign.choices?.m06_oath?'재의 맹세: 군단의 맹세를 정하자.':next?`동료들과 이야기한 뒤 출발: ${esc(next.title)}${state.missionId===6?' · ACT II 세 개의 깃발':state.missionId===8?' · 자유도시 벨마르':''}`:'ACT II 전반 완결 · 다음 이야기 M11 성화의 행렬 — 다음 업데이트'}</p>`;
  return `<b>${esc(m.title)}</b><p>광장 동쪽 · 리아와 작전 회의</p><p class="quest-opt">${f.events.some(k=>k.endsWith(':aren'))?'✓':'◇'} 아렌 · ${f.visited[f.hub].includes('forge')?'✓':'◇'} 무기점 · ${f.visited[f.hub].includes('shop')?'✓':'◇'} 도구점</p>`;}
 function turnLabel(s){const m=missionOf(s),limit=m.turnLimit,t=String(s.turn).padStart(2,'0');return limit?`턴 ${t} / ${limit}`:`턴 ${t} · 권장 ${m.par}`;}
 function showRecordsChoice(){if(state.missionId!==4||state.practice||state.frontier?.phase!=='aftermath'||state.campaign.choices?.m04_records_choice)return;modal('기록의 행방',`<p>성채에서 확보한 보급 장부를 어떻게 다룰까요? 어느 쪽을 골라도 이야기는 이어지며, 이후 명령의 문구와 동료의 반응이 달라집니다.</p>`,`<button class="primary" data-do="records-pick" data-id="kept">원본을 군단이 보관한다</button><button class="primary" data-do="records-pick" data-id="reported">사본을 군령부에 정식 보고한다</button><button data-do="close-modal">조금 더 생각한다</button>`);}
@@ -283,11 +285,19 @@ const needsOrder=()=>state.missionId===8&&!state.practice&&!state.campaign.choic
 function offerOrder(){if(state.screen!=='deployment'||!needsOrder()||state.narrative.active||$('#modal-root').children.length)return;
  if(!state.narrative.events.includes('8:order')){enqueueStory(state,'8:order');openStory(state);commit();return;}
  modal('사령부 명령',`<p>발드릭이 봉인된 명령서를 펼친다. 「TURN 6에 후위 마을을 포기하고 협곡을 사수하라.」 군단은 어떻게 할까요?</p>`,frontierButton('order-pick','<b>명령을 따른다</b> — 협곡 사수, TURN 6에 후위 마을 포기','hold',false,'primary')+frontierButton('order-pick','<b>구출조를 보낸다</b> — 협곡을 지키며 후위 마을 주민 구출','rescue'));}
+// M10 (D-067): before the two lords' battle the legion chooses a side or mediation, on the deployment screen.
+const needsStance=()=>state.missionId===10&&!state.practice&&!state.campaign.choices?.m10_stance;
+function offerStance(){if(state.screen!=='deployment'||!needsStance()||state.narrative.active||$('#modal-root').children.length)return;
+ if(!state.narrative.events.includes('10:stance')){enqueueStory(state,'10:stance');openStory(state);commit();return;}
+ modal('두 영주의 전쟁',`<p>오스윈 경과 브레넌 경이 각자 군단의 도움을 청한다. 레오노라는 둘을 멈춰 달라고 한다. 군단은 어떻게 할까요? 고른 뒤에는 바꿀 수 없습니다.</p>`,frontierButton('stance-pick','<b>오스윈 경을 돕는다</b> — 청백군과 함께 브레넌 경 격파·생포','a',false,'primary')+frontierButton('stance-pick','<b>브레넌 경을 돕는다</b> — 주황군과 함께 오스윈 경 격파·생포','b',false,'primary')+frontierButton('stance-pick','<b>중재한다</b> — 두 영주를 모두 생포 (어렵지만 연맹 신뢰가 더 오름)','mediate'));}
 // Thea joins after M08 (D-055 §5): once her scene has played, a card shows her joining the legion.
-function offerRecruitCard(){const c=state.campaign;if(state.screen!=='exploration'||state.practice||state.narrative.active||$('#modal-root').children.length||!c.roster?.includes('thea')||!state.narrative.seen?.includes('after:8:thea:joined')||c.choices?.recruit_card_thea)return;
- c.choices.recruit_card_thea='seen';save();const u=findUnit(state,'thea')||c.heroes?.find(h=>h.id==='thea');
- modal('새 동료',`<div class="promo-card"><div class="eyebrow">NEW COMRADE · 재의 군단</div><div class="promo-busts"><canvas class="promo-bust after" width="360" height="440" data-recruit="thea" aria-label="테아"></canvas></div><h2>테아 · 기병 창기사</h2><p class="promo-en">Thea · Lancer · LV ${u?.level||8}</p><div class="promo-action"><b>돌격 (Charge)</b><p>근접 공격 피해 +4. 이번 턴 3칸 이상 달린 뒤 쓰면 피해 +3 더, 반격을 받지 않습니다. 기병이라 이동 5, 숲 1, 산길·지붕은 들어갈 수 없습니다.</p></div><p class="promo-note">다음 전투부터 출전 6명 중 한 자리를 맡을 수 있습니다.</p></div>`,frontierButton('close-modal','군단으로','',false,'primary'));
- document.querySelectorAll('[data-recruit]').forEach(cv=>drawBust(cv.getContext('2d'),u||{id:'thea'},{expression:'determined',missionId:state.missionId}));}
+const RECRUIT_CARD={thea:{scene:'after:8:thea:joined',title:'테아 · 기병 창기사',en:'Thea · Lancer',action:'돌격 (Charge)',text:'근접 공격 피해 +4. 이번 턴 3칸 이상 달린 뒤 쓰면 피해 +3 더, 반격을 받지 않습니다. 기병이라 이동 5, 숲 1, 산길·지붕은 들어갈 수 없습니다.',level:8},
+ dario:{scene:'after:10:dario:joined',title:'다리오 · 용병 검사',en:'Dario · Sellsword',action:'받아치기 (Riposte)',text:'근접 공격 피해 +2. 쓴 뒤 다음 아군 턴까지 다리오의 반격 피해가 +8이 됩니다. 평소에도 반격 피해 +4 (용병의 칼).',level:9}};
+function offerRecruitCard(){const c=state.campaign;if(state.screen!=='exploration'||state.practice||state.narrative.active||$('#modal-root').children.length)return;
+ const id=Object.keys(RECRUIT_CARD).find(id=>c.roster?.includes(id)&&state.narrative.seen?.includes(RECRUIT_CARD[id].scene)&&!c.choices?.[`recruit_card_${id}`]);if(!id)return;const card=RECRUIT_CARD[id];
+ c.choices[`recruit_card_${id}`]='seen';save();const u=findUnit(state,id)||c.heroes?.find(h=>h.id===id);
+ modal('새 동료',`<div class="promo-card"><div class="eyebrow">NEW COMRADE · 재의 군단</div><div class="promo-busts"><canvas class="promo-bust after" width="360" height="440" data-recruit="${id}" aria-label="${esc(card.title)}"></canvas></div><h2>${esc(card.title)}</h2><p class="promo-en">${card.en} · LV ${u?.level||card.level}</p><div class="promo-action"><b>${card.action}</b><p>${card.text}</p></div><p class="promo-note">다음 전투부터 출전 6명 중 한 자리를 맡을 수 있습니다.</p></div>`,frontierButton('close-modal','군단으로','',false,'primary'));
+ document.querySelectorAll('[data-recruit]').forEach(cv=>drawBust(cv.getContext('2d'),u||{id},{expression:'determined',missionId:state.missionId}));
 const needsParley=()=>state.missionId===5&&!state.practice&&!state.campaign.choices?.m05_erik_answer;
 function offerParley(){if(state.screen!=='deployment'||!needsParley()||state.narrative.active||$('#modal-root').children.length)return;
  if(!state.narrative.events.includes('5:parley')){enqueueStory(state,'5:parley');openStory(state);commit();return;}
@@ -296,7 +306,7 @@ function offerAdvisor(){
  const f=state.frontier;if(state.screen!=='exploration'||!f.advisorPending||state.narrative.active||$('#modal-root').children.length)return;
  if(!interactions(state).some(n=>n.id==='advisor'&&n.npc)){f.advisorPending=false;syncFrontier(state);save();return;}
  const done=f.phase==='aftermath';
- modal('군사 리아',`<div class="strategist-line">${portrait(state.units.find(u=>u.id==='lia'),'card-sprite')}<p>${done?state.missionId===LAST_MISSION?'협곡을 지켰어요. 다음은 서쪽, 자유도시 벨마르예요. M09 자유의 도시는 다음 업데이트에서 이어져요.':'동료들 먼저 둘러보고, 다음 이야기를 골라요.':'에릭, 작전 회의 시작할까요?'}</p></div>`,
+ modal('군사 리아',`<div class="strategist-line">${portrait(state.units.find(u=>u.id==='lia'),'card-sprite')}<p>${done?state.missionId===LAST_MISSION?'물레 마을의 불이 꺼졌어요. 다음은 남쪽, 성화의 깃발이에요. M11 성화의 행렬은 다음 업데이트에서 이어져요.':'동료들 먼저 둘러보고, 다음 이야기를 골라요.':'에릭, 작전 회의 시작할까요?'}</p></div>`,
  (!done?frontierButton('advisor-operation','다음 작전을 듣는다','',false,'primary'):'')+frontierButton('mission-status','현재 임무를 확인한다')+frontierButton('close-modal','아직 준비가 필요하다'));
 }
 
@@ -323,7 +333,7 @@ async function frontierDispatch(action,id=''){
  if(action==='advisor-locate')await prepareCouncil();
  if(action==='advisor-operation'){if(openCouncil(state)){closeModal();commit();}else offerCouncilRecovery();}
  if(action==='advisor-recover'){if(recoverCouncil(state)){closeModal();commit();}}
- if(action==='mission-status'){const intel=councilInfo(state);modal('현재 임무',`<p>${esc(missionOf(state).title)}</p><p>${f.phase==='aftermath'?state.missionId===LAST_MISSION?'ACT II 전반 · 회색 협곡 사수. 다음 이야기 M09 자유의 도시 — 다음 업데이트.':'전투를 마쳤습니다. 동료를 살핀 뒤 다음 이야기를 선택하세요.':esc(intel.plan)}</p>`,frontierButton('advisor-menu','작전 대화로 돌아가기'));}
+ if(action==='mission-status'){const intel=councilInfo(state);modal('현재 임무',`<p>${esc(missionOf(state).title)}</p><p>${f.phase==='aftermath'?state.missionId===LAST_MISSION?'ACT II 전반 완결 · 두 영주의 전쟁 종결. 다음 이야기 M11 성화의 행렬 — 다음 업데이트.':'전투를 마쳤습니다. 동료를 살핀 뒤 다음 이야기를 선택하세요.':esc(intel.plan)}</p>`,frontierButton('advisor-menu','작전 대화로 돌아가기'));}
  if(action==='advisor-menu'){closeModal();offerAdvisor();}
  if(action==='enter-building'){closeModal();if(enterInterior(state,id)){hubCamera.reset();commit();}}
  if(action==='walk'){const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[id];if(d)walkAren(...d);}

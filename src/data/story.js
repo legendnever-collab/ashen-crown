@@ -1,12 +1,14 @@
 import {stageHubFor,hubFor} from './hubs-v05.js';
 import {FRONTIER_SCENES,NPC_LINES,ADVISOR_BRIEFINGS,HUBS} from './frontier-data.js';
 import {NPC_TALK,ADVISOR_AFTER} from './talk-v06.js';
+import {NPC_TALK_V061,ADVISOR_AFTER_V061} from './talk-v061.js';
 import {STORY_V06,FRONTIER_V06,ADVISOR_V06} from './story-v06.js';
+import {STORY_V061,FRONTIER_V061,ADVISOR_V061} from './story-v061.js';
 import {STORY_V04,FRONTIER_V04,ADVISOR_V04} from './story-v04.js';
 import {STORY_V05} from './story-v05.js';
 import {STORY_WORLD} from './story-world.js';
 import {LAST_MISSION} from './missions.js';
-Object.assign(FRONTIER_SCENES,FRONTIER_V04);Object.assign(ADVISOR_BRIEFINGS,ADVISOR_V04,ADVISOR_V06);
+Object.assign(FRONTIER_SCENES,FRONTIER_V04);Object.assign(ADVISOR_BRIEFINGS,ADVISOR_V04,ADVISOR_V06,ADVISOR_V061);Object.assign(NPC_TALK,NPC_TALK_V061);Object.assign(ADVISOR_AFTER,ADVISOR_AFTER_V061);
 const line=(speaker,text,expression='neutral')=>({speaker,text,expression});
 export const STORY={
  '1:intro':[line('aren','왕실 명령을 기다릴 여유는 없다. …에릭, 주민부터 지켜라.','determined'),line('eric','알았다. 이번엔 한 사람도 안 놓친다. 엘리나, 적은 어디 있지?'),line('elina','숲에 궁수, 북쪽엔 가르. …뒤쪽에서도 발소리가 나요. 기분 나쁘게.','concerned'),line('lia','뒤쪽까지요? 불이 번지면 사람도 기록도 다 잃어요! 스승님 흔적을 쫓다 머문 마을인데, 여기서 끝나게 둘 순 없어요.'),line('sain','리아 말대로 서둘러야겠네요. 다친 분은 신분이 어떻든 제가 먼저 돕겠습니다.'),line('kai','그럼 세인 갈 길은 내가 터 줄게. …근데 저 상자 봤어? 군용 인장이야. 뭐, 그건 사람부터 꺼내고 보자.')],
@@ -46,6 +48,9 @@ SPEAKERS.advisor={id:'advisor',name:'작전 보좌관',ko:'작전 보좌관',tea
 SPEAKERS.baldrick={id:'baldrick',name:'발드릭 로엔',ko:'발드릭',team:'enemy',kind:'lion'};
 // v0.6 ACT II (PROPOSED names, D-060 Hangul): Thea the Iron Crown escort captain, Cassian the Dominion's leader.
 SPEAKERS.thea={id:'thea',name:'테아',ko:'테아',team:'ally'};SPEAKERS.cassian={id:'cassian',name:'카시안',ko:'카시안',team:'enemy'};
+// v0.6.1 (PROPOSED names): Dario the Velmar sellsword, Leonora the Free Lords' chair, the two lords of M10.
+SPEAKERS.dario={id:'dario',name:'다리오',ko:'다리오',team:'ally'};SPEAKERS.leonora={id:'leonora',name:'레오노라',ko:'레오노라',team:'ally'};
+SPEAKERS.oswin={id:'oswin',name:'오스윈 경',ko:'오스윈',team:'enemy'};SPEAKERS.brennan={id:'brennan',name:'브레넌 경',ko:'브레넌',team:'enemy'};
 for(let mission=1;mission<=LAST_MISSION;mission++)for(const phase of ['preparation','aftermath']){
  const lines=phase==='aftermath'?ADVISOR_AFTER[mission]:ADVISOR_BRIEFINGS[mission];
  const actors=lines.some(([who])=>who==='advisor')?['eric','lia','advisor']:['eric','lia'];
@@ -58,11 +63,14 @@ for(const [moment,talks]of Object.entries(NPC_TALK)){const [mission,phase]=momen
  for(const [id,lines]of Object.entries(talks)){const label=SPEAKERS[id]?.team==='civilian'?hub?.npcs.find(n=>n.id===id)?.name.split(' · ')[0]:null;
   STORY[`npc:${moment}:${id}`]=lines.map(([speaker,text,expression])=>({...line(speaker,text,expression),...(label&&speaker===id?{name:label}:{}),inPlace:true,actors:['eric',id],focus:speaker==='eric'?0:1}));}}
 Object.assign(STORY,STORY_V04);
-Object.assign(STORY,STORY_V06);
-for(const [key,{actors,lines}]of Object.entries(FRONTIER_V06))STORY[key]=lines.map(([speaker,text,expression],i)=>({...line(speaker,text,expression||'neutral'),stage:stageHubFor(key),focus:i%3,actors}));
+Object.assign(STORY,STORY_V06,STORY_V061);
+for(const [key,{actors,lines}]of Object.entries({...FRONTIER_V06,...FRONTIER_V061}))STORY[key]=lines.map(([speaker,text,expression],i)=>({...line(speaker,text,expression||'neutral'),stage:stageHubFor(key),focus:i%3,actors}));
 // Thea after the canyon: she joins (D-055 §5) or stays with the Iron Crown; her camp talk follows that.
 STORY['npc:8:aftermath:thea:joined']=[['thea','에릭, 군단에서는 정찰 보고를 누구한테 하면 되죠?'],['eric','리아의 작전 탁자로. 그리고 다친 데가 있으면 세인한테 먼저.'],['thea','명령 체계가 생각보다 느슨하네요. …아니, 서로를 먼저 보는 체계겠죠.','determined'],['eric','금방 익숙해질 거다. 오늘은 쉬어.']].map(([sp,t,e])=>({...line(sp,t,e),inPlace:true,actors:['eric','thea'],focus:sp==='eric'?0:1}));
 STORY['npc:8:aftermath:thea:parted']=[['thea','에릭, 떠나기 전에 인사하러 왔어요.'],['eric','성하 마을로 돌아가나?'],['thea','네. 수송로는 여전히 제 일이니까요. 그래도 군단이 지나간 길은 기억할게요.','concerned'],['eric','언젠가 그 길에서 다시 보자.']].map(([sp,t,e])=>({...line(sp,t,e),inPlace:true,actors:['eric','thea'],focus:sp==='eric'?0:1}));
+// Dario after the two lords' war: he joins (D-055 §5) or stays to rebuild the mill village.
+STORY['npc:10:aftermath:dario:joined']=[['dario','에릭, 군단에선 보수를 어떻게 나누지?'],['eric','보수는 없다. 대신 같이 먹고 같이 돌아온다.'],['dario','…이상한 계약이군. 근데 나쁘지 않아.','determined'],['eric','곧 익숙해질 거다. 카이한테 요령을 물어봐.']].map(([sp,t,e])=>({...line(sp,t,e),inPlace:true,actors:['eric','dario'],focus:sp==='eric'?0:1}));
+STORY['npc:10:aftermath:dario:parted']=[['dario','에릭, 떠나기 전에 한마디 하려고.'],['eric','물레 마을에 남는다고 했지.'],['dario','응. 물레방아부터 다시 세워야 해. 그래도 군단이 한 일은 마을 사람들이 오래 얘기할 거야.','concerned'],['eric','언젠가 다시 같은 편에 서자.']].map(([sp,t,e])=>({...line(sp,t,e),inPlace:true,actors:['eric','dario'],focus:sp==='eric'?0:1}));
 Object.assign(STORY,STORY_V05);
 Object.assign(STORY,STORY_WORLD);
 // M06 camp: each companion's reason to stay replaces the generic preparation talk (PROPOSED wording).

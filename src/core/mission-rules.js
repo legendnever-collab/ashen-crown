@@ -3,6 +3,7 @@ import {missionOf} from '../data/missions.js';
 import {alive,at,distance,findUnit,terrainAt,strikeStats,isolated} from './rules.js';
 import {enqueueStory,setStoryFlag,remember} from './narrative.js';
 import {ACT2_RULES} from './mission-rules-v06.js';
+import {ACT2B_RULES} from './mission-rules-v061.js';
 
 export const objectUnit=o=>({...structuredClone(o),team:'object',hp:1,maxHP:1,mp:0,maxMP:0,atk:0,def:0,mag:0,res:0,spd:0,mov:0,range:[0,0],rescued:false});
 export const enemyUnit=(e,spawnTurn=0)=>({...structuredClone(e),team:'enemy',maxHP:e.hp,mp:0,maxMP:0,mag:0,moved:false,acted:false,spawnTurn});
@@ -204,7 +205,7 @@ const SK={
   if(s.turn>m.turnLimit)return finish(s,'defeat',`TURN ${m.turnLimit} 안에 목표를 달성하지 못했습니다.`);
  }
 };
-export const MISSION_RULES={4:M4,5:M5,6:M6,...ACT2_RULES,101:SK,102:SK,103:SK,104:SK,105:SK,110:SK};
+export const MISSION_RULES={4:M4,5:M5,6:M6,...ACT2_RULES,...ACT2B_RULES,101:SK,102:SK,103:SK,104:SK,105:SK,110:SK};
 export const rulesOf=s=>MISSION_RULES[s?.missionId]||null;
 
 export function searchEvidence(s,u,t){
