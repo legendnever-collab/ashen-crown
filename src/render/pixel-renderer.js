@@ -4,7 +4,7 @@ import {MapCamera,drawMinimap} from './camera.js';
 import {drawBuilding,drawFire} from './world-art.js';
 import {MAP,WIDTH,HEIGHT} from '../data/game-data.js';
 import {missionOf} from '../data/missions.js';
-import {alive,movement,validTarget} from '../core/rules.js';
+import {alive,movement,validTarget,litAt,lightSources,watchedTiles,FACING} from '../core/rules.js';
 import {TILE,drawTile,drawSprite,pixel,pixelOval} from './art.js';
 import {RANGE_STYLE,moveDuration,motionAt,presentationPlan} from './animation.js';
 import {drawCombatEffect,effectPhase,drawClassEffect} from './combat-effects.js';
@@ -47,6 +47,9 @@ export class BattleRenderer{
    else if(['attack','skill','rescue','capture'].includes(ui.mode))for(let ty=0;ty<HEIGHT;ty++)for(let tx=0;tx<WIDTH;tx++){const dummy={x:tx,y:ty,hp:1,team:ui.mode==='skill'&&['sain','eric'].includes(selected.id)?'ally':ui.mode==='rescue'?'civilian':ui.mode==='search'?'object':'enemy',id:ui.mode==='capture'?'boss':'preview'};if(validTarget(s,selected,dummy,ui.mode)){this.drawnRanges++;rect(c,ui.mode==='rescue'||selected.id==='sain'&&ui.mode==='skill'?RANGE_STYLE.support.fill:RANGE_STYLE.attack.fill,tx*TILE+1,ty*TILE+1,60,60);}}
   }
   const lion=rulesOf(s);if(lion?.auraCells&&s.screen==='battle'){for(const p of lion.auraCells(s)){if(p.x<0||p.y<0||p.x>=WIDTH||p.y>=HEIGHT)continue;rect(c,'rgba(201,162,74,.16)',p.x*TILE,p.y*TILE,TILE,TILE);c.strokeStyle='rgba(232,198,110,.55)';c.lineWidth=1;c.setLineDash([4,4]);c.strokeRect(p.x*TILE+2,p.y*TILE+2,TILE-4,TILE-4);c.setLineDash([]);}}
+  // v0.7 M12 stealth (D-068): the tiles quiet guards watch (red) and, on each guard, where it turns next (pale chevron).
+  if(missionOf(s).stealth&&['battle','deployment'].includes(s.screen)){const alert=s.missionState?.alert||0;for(const k of watchedTiles(s)){const [wx,wy]=k.split(',').map(Number);rect(c,alert?'rgba(236,84,60,.30)':'rgba(220,70,56,.22)',wx*TILE,wy*TILE,TILE,TILE);c.strokeStyle='rgba(255,140,110,.55)';c.lineWidth=1;c.strokeRect(wx*TILE+3,wy*TILE+3,TILE-6,TILE-6);}
+   for(const g of s.units)if(g.watch&&alive(g)&&!g.awake&&g.turns?.length>1){const nx=g.turns[((g.turnIndex||0)+1)%g.turns.length],[dx,dy]=FACING[nx]||[0,1],cx=g.x*TILE+32+dx*24,cy=g.y*TILE+32+dy*24;c.fillStyle='rgba(255,226,190,.75)';c.beginPath();c.moveTo(cx+dx*7,cy+dy*7);c.lineTo(cx-dy*6-dx*3,cy+dx*6-dy*3);c.lineTo(cx+dy*6-dx*3,cy-dx*6-dy*3);c.closePath();c.fill();}}
   for(const k of Object.keys(s.burning||{})){const [fx,fy]=k.split(',').map(Number);rect(c,'rgba(226,108,48,.28)',fx*TILE,fy*TILE,TILE,TILE);drawFire(c,fx*TILE+32,fy*TILE+44,now,.78);}
   if(s.turn===2&&s.screen==='battle')for(const spawn of missionOf(s).reinforcements){const sx=spawn.x*TILE,sy=spawn.y*TILE;rect(c,'#e1af63',sx,sy,TILE,3);rect(c,'#e1af63',sx,sy,3,TILE);c.fillStyle='#ffdb87';c.font='bold 24px monospace';c.fillText('!',sx+28,sy+34);}
   const threatIds=new Set(s.screen==='battle'&&s.phase==='player'&&lion?.threats?lion.threats(s):[]);
@@ -54,7 +57,7 @@ export class BattleRenderer{
   for(const o of this.hd.objects){if(o.kind==='house'&&this.hdCovered.has((o.x/48)+','+(o.y/48-1)))continue;drawables.push({key:hdObjectKey(o),draw:()=>drawHDObject(c,o,now)});}
   for(const o of hdLayerBuildings(missionOf(s).layers.buildings,stateOf))drawables.push({key:hdObjectKey(o),draw:()=>drawHDObject(c,o,now)});
   for(const o of s.units.filter(u=>u.team==='object'&&u.rescued&&!u.evidence)){const ox=o.x*TILE+32,oy=o.y*TILE+37;drawables.push({key:oy+27.5,draw:()=>drawMissionObject(c,o,ox,oy,now)});}
-  const actors=s.units.filter(u=>(alive(u)||this.displayHP(u,now)>0)&&!u.rescued&&!u.benched);for(const u of actors){let ux=u.x*TILE+32,uy=u.y*TILE+37,pose='idle';let facing=this.facing.get(u.id);if(!facing){const foes=s.units.filter(v=>alive(v)&&(u.team==='enemy'?v.team==='ally':v.team==='enemy'));const t=foes.sort((a,b)=>Math.abs(a.x-u.x)+Math.abs(a.y-u.y)-Math.abs(b.x-u.x)-Math.abs(b.y-u.y))[0];facing=t?hdDirection(t.x-u.x,t.y-u.y,'down'):'down';}const m=this.motion.get(u.id);if(m){const p=motionAt(m.path,now-m.start,m.movement,m.speed),prev=this.lastPos.get(u.id);if(prev)facing=hdDirection(p.x-prev.x,p.y-prev.y,facing);this.lastPos.set(u.id,{x:p.x,y:p.y});ux=p.x*TILE+32;uy=p.y*TILE+37;pose=p.done?'idle':'walk';if(p.done&&!ui.pendingMove){this.motion.delete(u.id);this.lastPos.delete(u.id);}}else if(ui.pendingMove?.id===u.id){ux=ui.pendingMove.x*TILE+32;uy=ui.pendingMove.y*TILE+37;const path=ui.pendingMove.path||[];if(path.length>1){const a=path[path.length-2],b=path[path.length-1];facing=hdDirection(b.x-a.x,b.y-a.y,facing);}}
+  const actors=s.units.filter(u=>(alive(u)||this.displayHP(u,now)>0)&&!u.rescued&&!u.benched);for(const u of actors){let ux=u.x*TILE+32,uy=u.y*TILE+37,pose='idle';let facing=u.watch&&!u.awake&&u.facing?u.facing:this.facing.get(u.id);if(!facing){const foes=s.units.filter(v=>alive(v)&&(u.team==='enemy'?v.team==='ally':v.team==='enemy'));const t=foes.sort((a,b)=>Math.abs(a.x-u.x)+Math.abs(a.y-u.y)-Math.abs(b.x-u.x)-Math.abs(b.y-u.y))[0];facing=t?hdDirection(t.x-u.x,t.y-u.y,'down'):'down';}const m=this.motion.get(u.id);if(m){const p=motionAt(m.path,now-m.start,m.movement,m.speed),prev=this.lastPos.get(u.id);if(prev)facing=hdDirection(p.x-prev.x,p.y-prev.y,facing);this.lastPos.set(u.id,{x:p.x,y:p.y});ux=p.x*TILE+32;uy=p.y*TILE+37;pose=p.done?'idle':'walk';if(p.done&&!ui.pendingMove){this.motion.delete(u.id);this.lastPos.delete(u.id);}}else if(ui.pendingMove?.id===u.id){ux=ui.pendingMove.x*TILE+32;uy=ui.pendingMove.y*TILE+37;const path=ui.pendingMove.path||[];if(path.length>1){const a=path[path.length-2],b=path[path.length-1];facing=hdDirection(b.x-a.x,b.y-a.y,facing);}}
    const effects=this.effects.filter(e=>e.id===u.id&&now>=e.start&&now-e.start<e.duration),atk=effects.find(e=>e.type==='attack');if(atk){pose='attack';const t=s.units.find(v=>v.id===atk.target);if(t&&t.id!==u.id)facing=hdDirection(t.x-u.x,t.y-u.y,facing);}
    this.facing.set(u.id,facing);
    drawables.push({key:uy+27.5,draw:()=>{
@@ -69,6 +72,9 @@ export class BattleRenderer{
    }});
   }
   drawables.sort((a,b)=>a.key-b.key);for(const d of drawables)d.draw();
+  // v0.7 M11 night (D-068): tiles outside every light are covered in dark blue; lit tiles get a faint warm glow.
+  if(missionOf(s).night){const src=lightSources(s);for(let ty=0;ty<HEIGHT;ty++)for(let tx=0;tx<WIDTH;tx++){const d=Math.min(...src.map(p=>Math.abs(p.x-tx)+Math.abs(p.y-ty)-p.r));
+   rect(c,d<=0?'rgba(255,186,96,.08)':d===1?'rgba(10,14,34,.44)':'rgba(6,8,26,.64)',tx*TILE,ty*TILE,TILE,TILE);}}
   if(ui.pendingMove){for(const [i,p] of ui.pendingMove.path.entries()){rect(c,i===ui.pendingMove.path.length-1?'#ffe5a0':'#d2ebdf',p.x*TILE+28,p.y*TILE+29,8,5);}c.strokeStyle='#ffe0a2';c.lineWidth=3;c.strokeRect(ui.pendingMove.x*TILE+2,ui.pendingMove.y*TILE+2,60,60);}
   if(ui.hover&&ui.hover.x>=0&&ui.hover.x<WIDTH&&ui.hover.y>=0&&ui.hover.y<HEIGHT){c.strokeStyle='#e4ddbd';c.lineWidth=2;c.strokeRect(ui.hover.x*TILE+1,ui.hover.y*TILE+1,60,60);}
   this.effects=this.effects.filter(e=>now<e.start+e.duration);for(const e of this.effects){const u=s.units.find(u=>u.id===e.id);if(!u||now<e.start||e.type==='move')continue;if(e.type==='attack'){drawCombatEffect(c,e,s.units,now,this.reduced);continue;}if(e.type==='class')drawClassEffect(c,e,s.units,now,this.reduced);const age=(now-e.start)/e.duration;if(e.type==='heal'||e.type==='guard'){const radius=8+age*22;pixelOval(c,e.type==='heal'?'rgba(147,219,164,.35)':'rgba(151,205,237,.35)',u.x*TILE+32,u.y*TILE+32,radius,radius/2);}if(e.type==='death'){drawHDFigure(c,hdCastFor(u,s.missionId),u.x*TILE+32,u.y*TILE+61,{pose:'death',facing:this.facing?.get(u.id)||'down'});}
@@ -77,6 +83,9 @@ export class BattleRenderer{
 }
 // M06 mission objects (original): rune seal stones, the side-gate lever and the side gate itself.
 function drawMissionObject(c,u,x,y,now){const done=u.rescued,glow=.5+.3*Math.sin(now/300+u.x);
+ // v0.7 M11 roadside brazier (original): an iron bowl on a stone post; lit braziers burn and glow.
+ if(u.kind==='brazier'){c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+22,14,5,0,0,Math.PI*2);c.fill();rect(c,'#6a645a',x-6,y-2,12,24);rect(c,'#857e72',x-6,y-2,12,3);rect(c,'#3a3632',x-14,y-10,28,9);rect(c,'#58524a',x-14,y-10,28,2);
+  if(u.lit){const f=Math.sin(now/90+u.x)*1.5;c.fillStyle=`rgba(255,180,90,${.18+glow*.12})`;c.beginPath();c.ellipse(x,y-14,30,22,0,0,Math.PI*2);c.fill();for(const [w,h,col] of [[10,18+f,'#e2582a'],[7,13+f,'#f39a3a'],[4,8+f,'#ffe08a']]){c.fillStyle=col;c.beginPath();c.moveTo(x-w,y-10);c.quadraticCurveTo(x-w*.6,y-10-h*.6,x,y-10-h);c.quadraticCurveTo(x+w*.6,y-10-h*.6,x+w,y-10);c.closePath();c.fill();}}else{rect(c,'#2a2624',x-10,y-13,20,4);c.fillStyle=`rgba(240,206,120,${glow*.35})`;c.fillRect(x-18,y-24,36,48);}return;}
  if(u.kind==='sealstone'){c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+22,15,5,0,0,Math.PI*2);c.fill();
   if(done){rect(c,'#3c3f48',x-13,y+8,12,14);rect(c,'#4c505a',x+2,y+2,11,20);rect(c,'#5d616c',x-13,y+8,12,2);rect(c,'#6a6f7a',x+2,y+2,11,2);rect(c,'#9fd1e6',x-2,y+12,3,3);return;}
   rect(c,'#2e3038',x-13,y-26,26,48);rect(c,'#4a4d58',x-12,y-25,24,46);rect(c,'#5d616c',x-12,y-25,24,3);rect(c,'#3c3f48',x+8,y-22,4,43);

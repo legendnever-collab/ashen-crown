@@ -1,4 +1,4 @@
-export const VERSION = '0.6.1';
+export const VERSION = '0.7.0';
 export const SCHEMA = 9;
 export const WIDTH = 12, HEIGHT = 10;
 // v0.4 benchmark pass: physical cut (fraction), evade (%), fire multiplier and per-class
@@ -22,7 +22,9 @@ export const TERRAIN = {
   n: {name:'Snow',ko:'눈밭',cost:2,defense:0,phys:0,evade:0,fire:.5,color:'#d9e2e6'},
   i: {name:'Ice Bridge',ko:'얼음 다리',cost:1,defense:0,phys:0,evade:-10,fire:.5,color:'#a9c8d6'},
   o: {name:'Rooftop',ko:'지붕',cost:2,defense:2,phys:0,evade:10,fire:1.25,high:true,color:'#9a5a46'},
-  l: {name:'Alley',ko:'골목',cost:1,defense:0,phys:0,evade:5,fire:1,color:'#8d8576'}
+  l: {name:'Alley',ko:'골목',cost:1,defense:0,phys:0,evade:5,fire:1,color:'#8d8576'},
+  // v0.7 (D-068, PROPOSED): the Sacred Flame sanctuary floor (M11) heals like a village.
+  z: {name:'Sanctuary',ko:'성소 바닥',cost:1,defense:0,phys:0,evade:0,fire:1,hpRecovery:.10,mpRecovery:.05,color:'#c8b47e'}
 };
 export const MAP = [
   'ffggrrrrggff',
@@ -47,7 +49,9 @@ export const HEROES = [
 // (campaign.roster); ACT I parties stay exactly the five heroes above.
 export const RECRUIT_HEROES = [
  {id:'thea',name:'테아',ko:'테아',className:'Lancer',role:'Cavalry',level:1,hp:34,mp:10,atk:15,def:7,mag:2,res:3,spd:8,mov:5,range:[1,1],skill:'Charge',cost:3,talent:'Escort Captain',color:'#7f9fc0',growth:{hp:4,mp:1,atk:2,def:2,mag:0,res:1,spd:1},description:'철왕관 기병 창기사. 돌격: 근접 피해 +4, 3칸 이상 달린 뒤에는 +7에 반격을 받지 않습니다.',clue:'Iron Vanguard',goal:'호위와 돌파로 기병의 길을 여세요.'},
- {id:'dario',name:'다리오',ko:'다리오',className:'Sellsword',role:'Duelist',level:1,hp:33,mp:10,atk:16,def:5,mag:2,res:3,spd:10,mov:3,range:[1,1],skill:'Riposte',cost:3,talent:'Free Blade',color:'#b5525a',growth:{hp:4,mp:1,atk:2,def:1,mag:0,res:1,spd:2},description:'벨마르 용병 검사. 반격 피해 +4. 받아치기: 근접 피해 +2, 다음 아군 턴까지 반격 피해 +8.',clue:'Paid in Full',goal:'반격으로 전선을 버티세요.'}
+ {id:'dario',name:'다리오',ko:'다리오',className:'Sellsword',role:'Duelist',level:1,hp:33,mp:10,atk:16,def:5,mag:2,res:3,spd:10,mov:3,range:[1,1],skill:'Riposte',cost:3,talent:'Free Blade',color:'#b5525a',growth:{hp:4,mp:1,atk:2,def:1,mag:0,res:1,spd:2},description:'벨마르 용병 검사. 반격 피해 +4. 받아치기: 근접 피해 +2, 다음 아군 턴까지 반격 피해 +8.',clue:'Paid in Full',goal:'반격으로 전선을 버티세요.'},
+ // v0.7 (D-068 Q2; name, stats and skill PROPOSED): the Sacred Flame's pilgrim warden.
+ {id:'ines',name:'이네스',ko:'이네스',className:'Pilgrim Warden',role:'Protector',level:1,hp:36,mp:10,atk:15,def:8,mag:3,res:6,spd:6,mov:3,range:[1,1],skill:'Sanctuary Oath',cost:3,talent:'Sanctuary',color:'#d8c27a',growth:{hp:5,mp:1,atk:2,def:2,mag:0,res:1,spd:1},description:'성화 순례 수호자. 성역: 곁의 아군이 받는 피해 −2. 성역의 맹세: 근접 공격 후 다음 아군 턴까지 곁의 아군 피해 −4, 자신도 −2.',clue:'Open Gate',goal:'곁의 동료를 지키며 전열을 세우세요.'}
 ];
 export const CORE_HERO_IDS = HEROES.map(h=>h.id);
 export const ALL_HEROES = [...HEROES,...RECRUIT_HEROES];
@@ -71,7 +75,7 @@ export const CIVILIANS = [{id:'c1',name:'미라',x:2,y:3},{id:'c2',name:'토마�
 export const BALANCE = {xpLevel:100,attackXP:22,killXP:28,healXP:24,rescueXP:45,guardXP:30,clearXP:35,parTurn:8,civilianThreatTurn:5,civilianHP:28};
 
 // Explicit profiles: future advancement data only, no promotion UI.
-export const CLASS_MOVEMENT={knight:{base:2,profile:'infantry'},archer:{base:3,profile:'infantry'},mage:{base:3,profile:'infantry'},healer:{base:3,profile:'infantry'},rogue:{base:4,profile:'rogue'},mountedKnight:{base:5,profile:'cavalry'},swordsman:{base:3,profile:'infantry'}};
-export const HERO_CLASS={eric:'knight',elina:'archer',lia:'mage',sain:'healer',kai:'rogue',thea:'mountedKnight',dario:'swordsman'};
+export const CLASS_MOVEMENT={knight:{base:2,profile:'infantry'},archer:{base:3,profile:'infantry'},mage:{base:3,profile:'infantry'},healer:{base:3,profile:'infantry'},rogue:{base:4,profile:'rogue'},mountedKnight:{base:5,profile:'cavalry'},swordsman:{base:3,profile:'infantry'},warden:{base:3,profile:'infantry'}};
+export const HERO_CLASS={eric:'knight',elina:'archer',lia:'mage',sain:'healer',kai:'rogue',thea:'mountedKnight',dario:'swordsman',ines:'warden'};
 export const TERRAIN_COSTS={infantry:{r:1,g:1,v:1,b:1,f:2,m:3,d:2,s:3,n:2,i:1,o:2,l:1},rogue:{r:1,g:1,v:1,b:1,f:1,m:1,d:1,s:2,n:1,i:1,o:1,l:1},ranger:{r:1,g:1,v:1,b:1,f:1,m:3,d:2,s:3,n:2,i:1,o:2,l:1},cavalry:{r:1,g:1,v:1,b:1,f:1,m:Infinity,d:1,s:Infinity,n:2,i:2,o:Infinity,l:2}};
 export const PROFILE_KO={infantry:'보병',rogue:'도적',cavalry:'기병',ranger:'레인저'};

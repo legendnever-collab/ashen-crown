@@ -70,7 +70,7 @@ function groundPixel(kind,gx,gy){
  if(kind==='ice'){const n=noise(gx,gy,16,15);const crack=Math.abs(Math.sin(gx*.21+gy*.47+noise(gx,gy,9,16)*6))<.04;return crack?ICE[0]:ICE[n<.35?1:n>.7?3:2];}
  return GRASS[2];
 }
-const KIND={g:'grass',f:'grass',v:'grass',t:'grass',h:'grass',r:'dirt',x:'grass',m:'grass',d:'sand',w:'water',b:'water',s:'swamp',k:'flag',q:'flag',p:'plank',n:'snow',i:'ice',o:'roof',l:'cobble'};
+const KIND={g:'grass',f:'grass',v:'grass',t:'grass',h:'grass',r:'dirt',x:'grass',m:'grass',d:'sand',w:'water',b:'water',s:'swamp',k:'flag',q:'flag',p:'plank',n:'snow',i:'ice',o:'roof',l:'cobble',z:'flag'};
 const SNOW_BASE={g:'snow',f:'snow',v:'snow',t:'snow',h:'snow',x:'snow',m:'snow'};
 // paints the full terrain ground; decor (trees, houses, rocks) is returned as sortable objects
 export function paintGround(map,{theme=''}={}){
@@ -228,6 +228,14 @@ export const CAST={
  lordA:{name:'영주군(청백)',skin:'warm',hair:'#3b302a',style:'short',helm:'kettle',helmColor:'#b8bec4',body:'plate',metal:'#9aa0a6',coat:'#2f4f8a',tabard:'#e8e4d8',trim:'#2f4f8a',legs:'#2e3038',boots:'#1f1f24',weapon:'spear',off:'shield',shield:'#2f4f8a',eye:'#3a2a22'},
  lordB:{name:'영주군(주황)',skin:'warm',hair:'#3b302a',style:'short',helm:'kettle',helmColor:'#7d838a',body:'plate',metal:'#7d838a',coat:'#c8682a',tabard:'#6a4428',trim:'#c8682a',legs:'#2e3038',boots:'#1f1f24',weapon:'spear',eye:'#3a2a22'},
  councillor:{name:'벨마르 의원',skin:'fair',hair:'#b8b0a4',style:'short',helm:'beret',helmColor:'#3f6a4a',body:'robe',coat:'#3f6a4a',trim:'#e6dcc0',legs:'#d8cfb4',boots:'#4a3a28',weapon:'satchel',beard:'full',beardColor:'#b8b0a4',eye:'#4a3a2c'},
+ // v0.7 ACT II part 2 cast (D-068, PROPOSED looks; art pack D will replace these procedural fallbacks).
+ lucien:{name:'루시안',skin:'fair',hair:'#d8d4cc',style:'long',body:'robe',coat:'#ece4d0',trim:'#c9a24a',cape:'#a0302a',legs:'#e0d6bc',boots:'#6a5a44',weapon:'staff',orb:'#f0a040',beard:'full',beardColor:'#d8d4cc',eye:'#b07a2a'},
+ ines:{name:'이네스',skin:'tan',hair:'#1c1816',style:'short',body:'plate',metal:'#8a9096',coat:'#ece4d0',tabard:'#ece4d0',trim:'#a0302a',cape:'#a0302a',legs:'#5a5048',boots:'#3a3026',weapon:'greataxe',off:'shield',shield:'#ece4d0',eye:'#3a2a1c'},
+ flameKnight:{name:'성화 기사',skin:'fair',hair:'#4a3626',style:'short',helm:'knight',helmMetal:'#b8bec4',body:'plate',metal:'#b8bec4',coat:'#ece4d0',tabard:'#ece4d0',trim:'#a0302a',legs:'#5a5048',boots:'#3a3026',weapon:'sword',off:'shield',shield:'#ece4d0',eye:'#3a2a22'},
+ pilgrim:{name:'순례자',skin:'warm',hair:'#5a4a3a',style:'short',hood:'#b8ab90',body:'robe',coat:'#b8ab90',trim:'#a0302a',legs:'#8a7e66',boots:'#5a4a34',weapon:'torch',eye:'#3a2a22'},
+ ashRaider:{name:'재 약탈단',skin:'warm',hair:'#2a2420',style:'long',bandana:'#6a2422',body:'leather',coat:'#2e2a28',trim:'#5a3a2a',legs:'#2a2624',boots:'#1e1a18',weapon:'axe',eye:'#3a2a22'},
+ monasteryGuard:{name:'수도원 경비',skin:'fair',hair:'#3a302a',style:'short',hood:'#7a7a74',body:'robe',coat:'#7a7a74',trim:'#a07a3a',legs:'#5a5a54',boots:'#3a3a36',weapon:'staff',orb:'#8a7a5a',eye:'#3a3a40'},
+ abbot:{name:'침묵의 원장',skin:'pale',hair:'#b8b4ac',style:'bald',body:'robe',coat:'#2e2c2c',trim:'#7a7a74',cape:'#4a4846',legs:'#3a3836',boots:'#24221f',weapon:'torch',beard:'long',beardColor:'#b8b4ac',eye:'#4a4a50',stoop:true},
  aide:{name:'작전 보좌관',skin:'pale',hair:'#2a2430',style:'swept',body:'coat',coat:'#3f3a63',trim:'#c9b07a',legs:'#2a2840',boots:'#1f1d2a',weapon:'papers',eye:'#4a3a5a'}
 };
 // M06 looks that have painted sheets; their pixel fallback borrows an existing look.

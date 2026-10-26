@@ -10,7 +10,7 @@ try{for(const [width,height,touch]of [[1440,1000,false],[390,844,true],[844,390,
  const story=async()=>{for(let i=0;i<50&&await p.locator('[data-do="story-next"]').count();i++)await cmd('story-next');};
  const restore=async s=>{await cmd('menu');await cmd('backup');await p.locator('#backup-text').fill(typeof s==='string'?s:serialize(s));await cmd('restore');};
  const tile=async(x,y)=>{await p.locator('#frontier-map').scrollIntoViewIfNeeded();await p.waitForTimeout(250);const t=await p.evaluate(([x,y])=>{const b=document.querySelector('#frontier-map').getBoundingClientRect(),c=AshenCrown.view().hubCamera;return{x:b.x+c.x+(x+.5)*64*c.scale,y:b.y+c.y+(y+.5)*64*c.scale};},[x,y]);touch?await p.touchscreen.tap(t.x,t.y):await p.mouse.click(t.x,t.y);await p.waitForFunction(()=>!AshenCrown.view().busy);};
- await p.goto(pathToFileURL(path.resolve('releases/Ashen_Crown_v0.6.1.html')).href);await cmd('new');await story();if(await p.locator('#quest-panel').evaluate(e=>e.open))await p.locator('#quest-panel summary').click();
+ await p.goto(pathToFileURL(path.resolve('releases/Ashen_Crown_v0.7.0.html')).href);await cmd('new');await story();if(await p.locator('#quest-panel').evaluate(e=>e.open))await p.locator('#quest-panel summary').click();
  check(`${label} Erik owns exploration, no duplicate growth`,(await snap()).frontier.actorId==='eric'&&(await snap()).units.filter(u=>u.id==='eric').length===1);
  check(`${label} Aren commander and advisor visible in map UI`,(await p.locator('.frontier-heading').textContent()).includes('에릭')&&!await p.locator('[data-do="place"][data-id="council"]').count());
  for(const mission of [1])for(const [kind,id,x]of [['weapon','forge',5],['item','shop',21]]){

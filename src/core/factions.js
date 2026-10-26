@@ -1,5 +1,5 @@
 // v0.6 faction trust (D-055 Q3, PROPOSED values). Three banners, each −2…+3, shown on a camp panel as a stage
-// (경계 / 중립 / 신뢰 / 동맹) rather than a number. v0.6 moves only the Iron Crown and the Free Lords.
+// (경계 / 중립 / 신뢰 / 동맹) rather than a number. v0.6 moves the Iron Crown and the Free Lords; v0.7 the Sacred Flame.
 export const FACTIONS={
  iron:{name:'철왕관 통령국',en:'Iron Crown Dominion',leader:'카시안',color:'#6f86a0',motto:'통일 없이는 평화도 없다.'},
  free:{name:'자유 영주 연맹',en:'Free Lords Alliance',leader:'레오노라',color:'#7aa35a',motto:'왕 없는 세상에도 질서는 존재한다.'},
@@ -33,4 +33,4 @@ export function factionRows(campaign){
  const t=campaign.factionTrust||initialTrust(campaign),met=metFactions(campaign);
  return Object.entries(FACTIONS).map(([id,f])=>({id,...f,met:met.includes(id),value:t[id],stage:trustStage(t[id])}));
 }
-export function metFactions(campaign){const c=campaign.completed||[],out=[];if(c.includes(5))out.push('iron');if(campaign.flags?.act2_free_met||c.includes(8))out.push('free');if(campaign.flags?.act2_flame_met)out.push('flame');return out;}
+export function metFactions(campaign){const c=campaign.completed||[],out=[];if(c.includes(5))out.push('iron');if(campaign.flags?.act2_free_met||c.includes(8))out.push('free');if(campaign.flags?.act2_flame_met||c.includes(11))out.push('flame');return out;}

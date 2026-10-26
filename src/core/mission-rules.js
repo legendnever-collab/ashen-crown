@@ -4,6 +4,7 @@ import {alive,at,distance,findUnit,terrainAt,strikeStats,isolated} from './rules
 import {enqueueStory,setStoryFlag,remember} from './narrative.js';
 import {ACT2_RULES} from './mission-rules-v06.js';
 import {ACT2B_RULES} from './mission-rules-v061.js';
+import {ACT2C_RULES} from './mission-rules-v070.js';
 
 export const objectUnit=o=>({...structuredClone(o),team:'object',hp:1,maxHP:1,mp:0,maxMP:0,atk:0,def:0,mag:0,res:0,spd:0,mov:0,range:[0,0],rescued:false});
 export const enemyUnit=(e,spawnTurn=0)=>({...structuredClone(e),team:'enemy',maxHP:e.hp,mp:0,maxMP:0,mag:0,moved:false,acted:false,spawnTurn});
@@ -205,7 +206,7 @@ const SK={
   if(s.turn>m.turnLimit)return finish(s,'defeat',`TURN ${m.turnLimit} 안에 목표를 달성하지 못했습니다.`);
  }
 };
-export const MISSION_RULES={4:M4,5:M5,6:M6,...ACT2_RULES,...ACT2B_RULES,101:SK,102:SK,103:SK,104:SK,105:SK,110:SK};
+export const MISSION_RULES={4:M4,5:M5,6:M6,...ACT2_RULES,...ACT2B_RULES,...ACT2C_RULES,101:SK,102:SK,103:SK,104:SK,105:SK,110:SK};
 export const rulesOf=s=>MISSION_RULES[s?.missionId]||null;
 
 export function searchEvidence(s,u,t){
@@ -216,5 +217,5 @@ export function searchEvidence(s,u,t){
  if(t.evidence==='orders'&&u.id==='kai')enqueueStory(s,`${s.missionId}:search:orders:kai`);
 }
 export const missionUnitIds=m=>[...m.enemies,...m.reinforcements,...m.civilians,...(m.objects||[]),...(m.waves||[]).flatMap(w=>w.units)].map(u=>u.id);
-// v0.6: room for ACT II recruits (up to seven heroes) and allied troops.
-export const maxUnits=m=>7+missionUnitIds(m).length+(m.allies||[]).length;
+// v0.6: room for ACT II recruits (up to eight heroes from v0.7) and allied troops.
+export const maxUnits=m=>8+missionUnitIds(m).length+(m.allies||[]).length;

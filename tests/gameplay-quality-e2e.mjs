@@ -9,7 +9,7 @@ try{for(const [width,height,touch] of [[1440,1000,false],[390,844,true],[844,390
  const s=()=>p.evaluate(()=>window.AshenCrown.snapshot());
  const press=async(action,id)=>{const l=p.locator(`[data-do="${action}"]${id?`[data-id="${id}"]`:''}`).first();if(action==='walk'&&!await l.isVisible()){await l.evaluate(b=>b.click());return;}touch?await l.tap():await l.click();};
  const restore=async(text)=>{await press('menu');await press('backup');await p.locator('#backup-text').fill(text);await press('restore');};
- await p.goto(pathToFileURL(path.resolve('releases/Ashen_Crown_v0.6.1.html')).href);await press('new');await drainStory(p);
+ await p.goto(pathToFileURL(path.resolve('releases/Ashen_Crown_v0.7.0.html')).href);await press('new');await drainStory(p);
  // v0.5 painted village (D-052): arrival at Lia's war table (19,9), the table is directly north.
  await p.keyboard.press('ArrowUp');check(`${label} advisor collision blocks occupied tile`,(await s()).frontier.x===19&&(await s()).frontier.y===9);
  await p.keyboard.press('ArrowLeft');check(`${label} single press one step`,(await s()).frontier.x===18);await p.waitForTimeout(300);check(`${label} release remains stopped`,(await s()).frontier.x===18);await press('walk','right');check(`${label} short D-pad tap is exactly one step`,(await s()).frontier.x===19);await p.keyboard.press('ArrowLeft');

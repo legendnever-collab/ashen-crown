@@ -62,11 +62,37 @@ export function strikeStats(s,u,t,mode='attack'){
   if(near(t)&&!magic)dmg=Math.max(1,dmg-form.def);else if(near(t)&&magic)dmg=Math.max(1,dmg-form.def);
   if(near(u))formHit=form.hit;
   if(u.id==='boss'&&isolated(s,t)&&!(t.guarding&&!t.guardUsed))dmg+=form.charge;}
+ // v0.7 (D-068, PROPOSED): a quiet monastery guard struck from outside its watch is caught unaware (+5 damage, +30 hit);
+ // Ines's Sanctuary takes 2 (4 after her oath) off the damage a legion unit beside her receives.
+ const sneak=surprised(s,u,t);if(sneak)dmg+=5;
+ const cut=sanctuaryCut(s,t);if(cut)dmg=Math.max(1,dmg-cut);
  const standing=missionOf(s).map[u.y][u.x];const hawk=u.id==='elina'&&(standing==='f'||standing==='v')?12:0;
- const hit=Math.max(70,Math.min(100,(magic?100:97)+Math.round((u.spd-t.spd)*1.5)-(ground.evade||0)+hawk+(aim?18:0)+(u.hit||0)+(proficiencyBonus(s,u).hit||0)+formHit-(t.dodge||0)));
+ let hit=Math.max(70,Math.min(100,(magic?100:97)+Math.round((u.spd-t.spd)*1.5)-(ground.evade||0)+hawk+(aim?18:0)+(u.hit||0)+(proficiencyBonus(s,u).hit||0)+formHit-(t.dodge||0)));
+ // v0.7 night (M11): a legion attacker standing in light aims better; any target outside the light is harder to hit.
+ if(missionOf(s).night)hit=Math.max(40,Math.min(100,hit+(sideOf(u)==='legion'&&litAt(s,u.x,u.y)?10:0)-(litAt(s,t.x,t.y)?0:15)));
+ if(sneak)hit=Math.min(100,hit+30);
  const crit=magic?0:Math.min(12,Math.max(3,Math.round((u.spd-t.spd)/2)+5));
- return {damage:dmg,hit,crit,magic,fire:magic,terrainMul:magic?(ground.fire??1):1-(ground.phys||0),flank:quick&&flank(s,u,t),burning};
+ return {damage:dmg,hit,crit,magic,fire:magic,terrainMul:magic?(ground.fire??1):1-(ground.phys||0),flank:quick&&flank(s,u,t),burning,sneak,sanctuary:cut};
 }
+// ---------- v0.7 ACT II part 2 (D-068; rules and numbers PROPOSED). ACT I and M07–M10 never meet these. ----------
+// Night (M11): lit braziers and the sanctuary tiles each light the tiles within `night.radius` (Manhattan).
+export function lightSources(s){const m=missionOf(s);if(!m?.night)return null;const r=m.night.radius,out=(m.night.fixed||[]).map(([x,y])=>({x,y,r}));
+ for(const u of s.units||[])if(u.kind==='brazier'&&u.lit)out.push({x:u.x,y:u.y,r});return out;}
+export function litAt(s,x,y){const src=lightSources(s);return !src||src.some(p=>Math.abs(p.x-x)+Math.abs(p.y-y)<=p.r);}
+// Stealth (M12): a quiet guard watches the two tiles ahead (three once the monastery is suspicious) and the two tiles
+// diagonally ahead; walls block the view. Awake guards (after the alarm) have no watch, they fight.
+export const FACING={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};
+export function watchCells(s,g){const out=new Set();if(!g?.watch||!alive(g)||g.awake)return out;
+ const [dx,dy]=FACING[g.facing]||FACING.down,reach=(s.missionState?.alert||0)>=1?3:2,open=(x,y)=>Number.isFinite(terrainAt(x,y,s)?.cost);
+ for(let i=1;i<=reach;i++){const x=g.x+dx*i,y=g.y+dy*i;if(!open(x,y))break;out.add(key(x,y));}
+ if(open(g.x+dx,g.y+dy))for(const [sx,sy] of dx?[[0,1],[0,-1]]:[[1,0],[-1,0]]){const x=g.x+dx+sx,y=g.y+dy+sy;if(open(x,y))out.add(key(x,y));}
+ return out;}
+export function watchedTiles(s){const out=new Set();if(!missionOf(s)?.stealth)return out;for(const g of s.units||[])for(const k of watchCells(s,g))out.add(k);return out;}
+export const surprised=(s,u,t)=>!!missionOf(s)?.stealth&&!!t?.watch&&!t.awake&&sideOf(u)==='legion'&&!watchCells(s,t).has(key(u.x,u.y));
+// Ines (Sanctuary): legion units beside her take 2 less damage (4 after her oath this turn, which also covers her).
+export function sanctuaryCut(s,t){if(!t||sideOf(t)!=='legion')return 0;let cut=t.id==='ines'&&t.sanctuary?2:0;
+ for(const a of s.units||[])if((a.id==='ines'||a.sanctuaryAura)&&a.id!==t.id&&alive(a)&&sideOf(a)==='legion'&&distance(a,t)===1)cut=Math.max(cut,a.sanctuary?4:2);
+ return cut;}
 // v0.6 Thea's Charge (PROPOSED): +4 damage; after running 3+ tiles this turn, +3 more and the target cannot strike back.
 export const charge=u=>4+((u.chargeRun||0)>=3?3:0);
 export const chargeBreaks=(u,mode)=>mode==='skill'&&u?.id==='thea'&&(u.chargeRun||0)>=3;
