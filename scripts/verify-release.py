@@ -9,7 +9,9 @@ def packaged(p):
     rel=p.relative_to(root).parts
     if any(part in {'.git','node_modules','test-output','__pycache__'} for part in rel) or p.suffix=='.zip' or 'SHA256SUMS' in p.name: return False
     if len(rel)>=3 and rel[0]=='docs' and rel[2]=='screenshots': return False
-    if rel[0]=='releases' and p.suffix=='.html' and p.name!=f'Ashen_Crown_v{version}.html': return False
+    # D-066 (v0.6.1): the built HTML (index.html and this release's standalone) is left out too — `npm run build`
+    # regenerates both byte-identically and the standalone ships as its own release asset (ZIP 90 MB -> ~54 MB).
+    if rel==('index.html',) or (rel[0]=='releases' and p.suffix=='.html'): return False
     return True
 version=json.loads((root/'package.json').read_text())['version']
 release=root/'releases'
@@ -32,6 +34,7 @@ with tempfile.TemporaryDirectory() as tmp:
     source=Path(tmp)/'ashen-crown'
     subprocess.run(['node','scripts/build.mjs'],cwd=source,check=True)
     assert (source/'releases'/f'Ashen_Crown_v{version}.html').read_bytes()==(release/f'Ashen_Crown_v{version}.html').read_bytes()
+    assert (source/'index.html').read_bytes()==(root/'index.html').read_bytes(), 'index.html rebuild differs'
     tested=subprocess.run(['npm','test'],cwd=source,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
     if tested.returncode:
         print(tested.stdout)

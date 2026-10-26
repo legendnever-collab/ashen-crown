@@ -4,7 +4,7 @@ import {chromium} from 'playwright';import fs from 'node:fs';import path from 'n
 import {frontierPath,currentHub} from '../src/core/frontier.js';import {effectiveStats} from '../src/core/economy.js';import {drainStory} from './story-helper.mjs';
 const browser=await launchTestBrowser({headless:true,...process.env.BROWSER_EXECUTABLE?{executablePath:process.env.BROWSER_EXECUTABLE}:{},args:['--no-sandbox','--disable-gpu','--no-zygote',...(process.env.BROWSER_SINGLE_PROCESS?['--single-process']:[])]});
 const checks=[],errors=[],measurements=[];let external=0;fs.mkdirSync('test-output',{recursive:true});fs.mkdirSync('test-output/screenshots',{recursive:true});const check=(name,ok)=>{assert.ok(ok,name);checks.push({name,status:'PASS'});console.log('PASS',name);};
-const url=pathToFileURL(path.resolve('releases/Ashen_Crown_v0.6.0.html')).href;
+const url=pathToFileURL(path.resolve('releases/Ashen_Crown_v0.6.1.html')).href;
 try{for(const [w,h,dpr,touch]of [[1440,1000,1,false],[1440,900,2,false],[390,844,2,true],[844,390,1,true]]){
  const label=`${w}x${h}@${dpr}`,ctx=await browser.newContext({viewport:{width:w,height:h},deviceScaleFactor:dpr,hasTouch:touch,isMobile:touch});await ctx.setOffline(true);const p=await ctx.newPage();p.on('pageerror',e=>errors.push(e.message));p.on('request',r=>{if(/^https?:/.test(r.url()))external++;});const s=()=>p.evaluate(()=>window.AshenCrown.snapshot()),v=()=>p.evaluate(()=>window.AshenCrown.view());
  const press=(a,id)=>frontierPress(p,touch,a,id);

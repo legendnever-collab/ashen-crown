@@ -6,7 +6,7 @@ import {newGame,startBattle,nextMission} from '../src/core/game.js';import {ente
 import {serialize} from '../src/persistence/save-manager.js';import {playBattle} from './player-policy.mjs';import {playCampaignBattle,drain} from './campaign-policy.mjs';
 
 const shots='docs/v0.6.0/screenshots';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
-const url=pathToFileURL(path.resolve('releases/Ashen_Crown_v0.6.0.html')).href,checks=[],errors=[];let external=0;
+const url=pathToFileURL(path.resolve('releases/Ashen_Crown_v0.6.1.html')).href,checks=[],errors=[];let external=0;
 const check=(name,ok)=>{assert.ok(ok,name);checks.push({name,status:'PASS'});console.log('PASS',name);};
 
 // Deterministic legal campaign through M03, then the real aftermath hub.

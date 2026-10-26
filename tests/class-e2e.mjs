@@ -13,7 +13,7 @@ try{for(const [w,h,touch] of [[1440,900,false],[390,844,true]]){const L=`${w}x${
  const v=()=>p.evaluate(()=>AshenCrown.view()),snap=()=>p.evaluate(()=>AshenCrown.snapshot()),unit=async id=>(await snap()).units.find(u=>u.id===id);
  const idle=()=>p.waitForFunction(()=>!AshenCrown.view().busy,{},{timeout:30000});
  const pick=async id=>{if(await p.locator('[data-do="close-unit-menu"]').count())await press('close-unit-menu');const u=await unit(id);await tile(u.x,u.y);if((await v()).selected!==id){await press('reset-camera');await tile(u.x,u.y);}};
- await p.goto(pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.6.0.html').href);await press('new');await drainStory(p);await press('menu');await press('backup');await p.fill('#backup-text',serialize(setup()));await press('restore');await drainStory(p);await p.waitForTimeout(500);
+ await p.goto(pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.6.1.html').href);await press('new');await drainStory(p);await press('menu');await press('backup');await p.fill('#backup-text',serialize(setup()));await press('restore');await drainStory(p);await p.waitForTimeout(500);
  // Bulwark
  await pick('eric');check(`${L} Erik selected`,(await v()).selected==='eric');await press('submenu','skills');check(`${L} skill tab lists the class action`,await p.locator('[data-do="mode"][data-id="bulwark"]').count()===1);
  await press('mode','bulwark');check(`${L} Bulwark shows its forecast`,(await v()).menu==='forecast'&&(await p.locator('#unit-popover .forecast').textContent()).includes('방벽'));

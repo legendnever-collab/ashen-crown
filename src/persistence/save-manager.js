@@ -1,7 +1,7 @@
 import {legacyRewardCatchup} from '../core/battle-rewards.js';
 import {ensureEconomy,validateEconomy} from '../core/economy.js';
 import {migrateFrontier,frontierState,validateFrontier,alignFrontier} from '../core/frontier.js';
-import {SCHEMA,WIDTH,HEIGHT,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,ALL_HEROES,RECRUIT_HEROES,partyIds} from '../data/game-data.js';
+import {SCHEMA,VERSION,WIDTH,HEIGHT,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,ALL_HEROES,RECRUIT_HEROES,partyIds} from '../data/game-data.js';
 import {validTrust} from '../core/factions.js';
 import {terrainAt,alive} from '../core/rules.js';
 import {MISSIONS,missionOf} from '../data/missions.js';
@@ -60,6 +60,8 @@ export function migrate(s){
  // (factions.js ensureTrust), so a save from the middle of ACT I keeps its M04 ledger choice open.
  if(s?.schema===8){s.schema=9;s.version='0.6.0';s.campaign.roster??=[];if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');
+ // v0.6.1: a save of the current schema made by an earlier build of it (e.g. v0.6.0) is now this version.
+ if(s?.schema===SCHEMA&&s.version!==VERSION){s.version=VERSION;if(s.stageStart?.version)s.stageStart.version=VERSION;}
  // v0.6 (D-060): character names are written in Hangul; saves made before keep English names on board until renamed here.
  if(s?.schema===SCHEMA)koreanNames(s);
  // v0.6 (D-062): rewritten scenes can differ in length; a save paused inside a scene resumes on its last line at most.

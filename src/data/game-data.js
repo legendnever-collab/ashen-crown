@@ -1,4 +1,4 @@
-export const VERSION = '0.6.0';
+export const VERSION = '0.6.1';
 export const SCHEMA = 9;
 export const WIDTH = 12, HEIGHT = 10;
 // v0.4 benchmark pass: physical cut (fraction), evade (%), fire multiplier and per-class

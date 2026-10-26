@@ -5,7 +5,7 @@
 //    to hit the 소지품 button for the castle town's bottom-right warehouse.
 import {launchTestBrowser} from './browser-helper.mjs';import {drainStory} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import fs from 'node:fs';
 import {serialize} from '../src/persistence/save-manager.js';import {actOneCamp} from './skirmish-policy.mjs';import {newGame} from '../src/core/game.js';import {enterHub,currentHub,syncFrontier} from '../src/core/frontier.js';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.6.0.html').href,b=await launchTestBrowser({headless:true,args:['--no-sandbox']});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.6.1.html').href,b=await launchTestBrowser({headless:true,args:['--no-sandbox']});
 const mk=(m,after)=>{const c=structuredClone(actOneCamp(20261021,8).campaign);const done=Array.from({length:after?m:m-1},(_,i)=>i+1);c.completed=done;c.factionTrust={iron:1,free:0,flame:0};Object.assign(c.choices,{m07_deserters:'legion',m08_order:'hold'});const s=newGame(5,c,m);enterHub(s,{aftermath:after,story:false});return s;};
 const CASES=[[1,false],[2,false],[3,true],[4,true],[6,true],[7,false],[8,true]];let bad=0,n=0;
 try{for(const [label,viewport,touch] of [['1440',{width:1440,height:900},false],['1280',{width:1280,height:720},false],['390',{width:390,height:844},true]]){
