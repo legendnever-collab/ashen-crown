@@ -30,7 +30,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  check('A v0.6.0 campaign reaches Velmar for Mission 9',s.missionId===9&&s.frontier.hub==='velmar'&&!s.practice);
  await p.screenshot({path:'test-output/migration-v060-velmar.png'});
  await restore(fixture('m08-battle').save);s=await snapshot(p);check('v0.6.0 Mission 08 battle resumes',s.screen==='battle'&&s.missionId===8&&s.stageStart.schema===9);
- await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===9&&s.version==='0.6.1'&&s.missionId===8);
+ await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===9&&s.version==='0.7.0'&&s.missionId===8);
  check('No runtime errors in either build',errors.length===0);await ctx.close();
 }finally{fs.mkdirSync('test-output',{recursive:true});fs.writeFileSync('test-output/migration-v060-browser.json',JSON.stringify({checks,errors},null,2));await browser.close();}
 console.log(`${checks.length} v0.6.0 browser migration checks PASS`);

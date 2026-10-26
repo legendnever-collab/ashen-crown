@@ -42,7 +42,7 @@ try{
   await restore(m10Won());await drainStory(p);if(await p.locator('[data-do="aftermath"]').count()){await press('aftermath');await drainStory(p);}
   s=await snap();check(`${label} Velmar after M10 with Dario in the legion`,s.frontier.hub==='velmar'&&s.campaign.roster.includes('dario')&&s.frontier.members.includes('dario'));
   check(`${label} Dario's joining card`,(await p.locator('.promo-card').textContent().catch(()=>'')).includes('다리오'));await p.screenshot({path:`${shots}/dario-joins-${label}.png`});await press('close-modal');
-  check(`${label} the camp says ACT II's first half is complete`,(await p.locator('#screen').textContent()).includes('M11'));
+  check(`${label} the camp now leads on to Mission 11 (v0.7.0)`,(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 11'));
   check(`${label} no runtime errors`,errors.length===0);if(errors.length)console.log(errors);await ctx.close();
  }
  fs.writeFileSync('test-output/act2b-campaign-e2e.json',JSON.stringify({checks:n},null,1));console.log(`act2b-campaign-e2e: ${n} checks passed`);

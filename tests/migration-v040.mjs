@@ -29,7 +29,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  check('Aren\'s rite panel is offered in the oath camp',await p.locator('[data-do="legion"]').count()===1);await cmd(p,'legion');check('Rite panel lists five heroes with conditions',await p.locator('.legion-row').count()===5);await cmd(p,'close-modal');
  await p.screenshot({path:'test-output/migration-v040-oathcamp.png'});
  await restore(fixture('m05-battle').save);s=await snapshot(p);check('v0.4.0 Mission 05 battle resumes',s.screen==='battle'&&s.missionId===5&&s.stageStart.schema===9);
- await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===9&&s.version==='0.6.1'&&s.missionId===5);
+ await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===9&&s.version==='0.7.0'&&s.missionId===5);
  check('No runtime errors in either build',errors.length===0);await ctx.close();
 }finally{fs.mkdirSync('test-output',{recursive:true});fs.writeFileSync('test-output/migration-v040-browser.json',JSON.stringify({checks,errors},null,2));await browser.close();}
 console.log(`${checks.length} v0.4.0 browser migration checks PASS`);

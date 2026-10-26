@@ -53,3 +53,11 @@ test('v0.6.1 ACT II music: the castle town marches, Velmar has its square, the t
  for(const [m,track] of [[7,'northmarch'],[8,'northmarch'],[9,'player'],[10,'threeway']]){const s=newGame(3,{...c,completed:c.completed.filter(id=>id<m)},m);s.screen='deployment';startBattle(s);drain(s);s.narrative.active=null;s.phase='player';
   for(const v of s.units.filter(u=>u.team==='civilian'))v.hp=v.maxHP;assert.equal(musicScene(s),track,`M0${m}`);s.phase='enemy';assert.equal(musicScene(s),'enemy');}
 });
+test('v0.7.0 music: the pilgrim village and the night procession share the flame hymn; the monastery stays silent until the bell',()=>{
+ for(const id of ['procession','silence'])assert.equal(SCORE[id].melody.reduce((a,[,d])=>a+d,0),SCORE[id].chords.length*8,id);
+ for(const [hub,track] of Object.entries({pilgrim:'procession',refuge:'campfire'})){const s=newGame(3,null,1);s.screen='exploration';s.frontier={hub};assert.equal(musicScene(s),track,hub);}
+ const c={heroes:null,results:[],clears:11,completed:[1,2,3,4,5,6,7,8,9,10,11],flags:{act1_completed:true},choices:{}};
+ let s=newGame(3,{...c,completed:c.completed.slice(0,10)},11);s.screen='deployment';startBattle(s);drain(s);s.narrative.active=null;s.phase='player';assert.equal(musicScene(s),'procession');s.phase='enemy';assert.equal(musicScene(s),'enemy');
+ s=newGame(3,c,12);s.screen='deployment';startBattle(s);drain(s);s.narrative.active=null;s.phase='player';assert.equal(musicScene(s),'silence');s.phase='enemy';assert.equal(musicScene(s),'silence');
+ s.missionState.alert=2;s.phase='player';assert.equal(musicScene(s),'player');s.phase='enemy';assert.equal(musicScene(s),'enemy');
+});
