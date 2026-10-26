@@ -1,7 +1,7 @@
 # Ashen Crown v0.7.0 — The Three Banners
 ACT I (Missions 01–06 of the original four-act, 30-mission campaign) with promotions, and ACT II 「세 개의 깃발」 Missions 07–12. After the Ashen Oath the legion marches north to the castle town below Ironhold (M07–M08, Thea), west to the free city of Velmar (M09–M10, Dario), then south to the Order of the Sacred Flame: M11 성화의 행렬 escorts pilgrims along a night road lit by braziers, and M12 침묵의 수도원 sneaks past watching guards to save the monastery's records before the abbot burns them. Ines, the Order's pilgrim warden, can join. New in v0.7.0: M11–M12, the pilgrim village (temporary painting until art pack D), light and stealth rules, Ines and Sanctuary, Sain's past, two original tracks.
 
-v0.7.0 is a release candidate on feature/v0.7-flame-and-lion (design approved 2026-10-26 23:47 KST, D-068/D-069); it is not merged before the user plays and approves it. v0.6.1 and earlier features are included and preserved. Next: M13–M14 and the ACT II completion in v0.7.1.
+v0.7.0 approved for merge by the user in chat (2026-10-27 06:16 KST) after receiving the release candidate (design D-068, details D-069, approval D-070); the merge SHA is recorded in the v0.7.0 release notes and on GitHub. v0.6.1 and earlier features are included and preserved. Next: M13–M14 and the ACT II completion in v0.7.1.
 
 - [Standalone HTML](releases/Ashen_Crown_v0.7.0.html)
 - [Source ZIP](releases/Ashen_Crown_v0.7.0_Source.zip)

@@ -1,5 +1,5 @@
 # Next Tasks
-1. v0.7.0 release candidate (feature/v0.7-flame-and-lion): send the build to the user; open the PR (CI) but never merge before the user plays and approves it. After approval: record the PR, CI run and merge SHA in docs/v0.7.0/RELEASE_NOTES.md; tag/Release only when the user asks.
+1. v0.7.0: merge approved by the user (2026-10-27 06:16 KST, D-070). Record the merge SHA and main CI in docs/v0.7.0/RELEASE_NOTES.md; tag/Release only when the user asks. v0.7.1 (M13–M14) in development on feature/v0.7.1-lion-and-alliance.
 2. Art work pack D (28 images, docs/v0.7.0/art/act2b-work-pack): when the user returns the zips, verify SHA256, import busts/sheets (scripts/import-art.py) and the pilgrim village with its 8 rooms and chest sheet (scripts/import-interior-art.py), author the walk masks over the new painting, and drop the dusk-tinted Ashen Village fallback.
 3. Play-test watch items for v0.7.0: M11 pacing (policy wins in 8–10 turns, all four pilgrims in 17/30), M12 stealth difficulty (the policy never triggers the bell before the ledger), Ines's Sanctuary numbers, light hit modifiers (+10 / −15).
 4. Next on the user's instruction: v0.7.1 — M13 검은 사자의 결단 (persuasion, resolve threshold 6), M14 부서진 동맹 (betrayal at TURN 4, recruits of the betraying faction may leave), ACT II completion card, one track (검은 사자의 결단). Awakening (Tier 3) not started.

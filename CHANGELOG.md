@@ -1,5 +1,5 @@
-# v0.7.0 — The Three Banners · ACT II Missions 11–12 (release candidate, 2026-10-27)
-- Design approved by the user (2026-10-26 23:47 KST, "좋아 이대로 진행하자", D-068); implementation details D-069. Not merged before the user plays and approves the release candidate.
+# v0.7.0 — The Three Banners · ACT II Missions 11–12 (merge approved by the user, 2026-10-27)
+- Release: the user approved the merge in chat (2026-10-27 06:16 KST, "병합하고 다음버전 진행해줘", D-070) after receiving the release candidate. Design approved 2026-10-26 23:47 KST (D-068); implementation details D-069. PR #14 hosted CI run 40363637648 6/6 (attempt 2).
 - M11 성화의 행렬: four pilgrims walk a night road to the sanctuary (two tiles in light, one in the dark); three roadside braziers are lit by search; light changes hit chances (legion in light +10, any target in the dark −15) and heals pilgrims; Ines and two Sacred Flame knights escort; raider waves on TURN 3/5/7; Lucien's offer in the camp (the flame oath).
 - M12 침묵의 수도원: seven guards watch ahead and turn in order; suspicion and the bell (all guards wake, three from the dormitory, the abbot burns unsecured records three turns later); sneak attacks; three records (ledger, seal study, Order roll); the abbot can be captured; the records choice in the camp (return / take / copy).
 - Ines (pilgrim warden): Sanctuary (adjacent allies take −2) and Sanctuary Oath; joins at Lv 10 after M12 when the Order trusts the legion or the records were copied; eight-hero roster with sorties of six.

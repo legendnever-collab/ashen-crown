@@ -1,5 +1,5 @@
 # Ashen Crown v0.7.0 — The Three Banners / QA Report
-Updated 2026-10-27 KST. Release candidate on feature/v0.7-flame-and-lion. The user approved the ACT II part 2 design on 2026-10-26 23:47 KST (D-068); the implementation details are D-069. The PR must not be merged before the user plays and approves this release candidate.
+Updated 2026-10-27 KST. The user received the v0.7.0 release candidate and approved the merge in chat on 2026-10-27 06:16 KST ("병합하고 다음버전 진행해줘", D-070). Design approved 2026-10-26 23:47 KST (D-068); implementation details D-069. Hosted CI on PR #14 head ef79d05: run 40363637648, attempt 1 had two jobs cancelled by the 30-minute limit while installing the browser, attempt 2 (failed jobs re-run) 6/6 success.
 
 Baseline main dcafb731c15e252bf61d69d24b987f820e0dc989 (v0.6.1). Source checkpoint b24b925 plus the release commit (build description "ACT II Missions 07–12", documentation, evidence and packaging).
 
@@ -82,4 +82,3 @@ The first full run checked 111 doors in hub-doors. The suite was then extended t
 - Physical phones, Safari and Firefox.
 - Long-term browser storage eviction.
 - Real-PC frame times (performance numbers are headless).
-- Hosted CI on this branch: recorded in the release notes once the PR runs.
