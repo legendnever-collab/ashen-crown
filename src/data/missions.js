@@ -116,6 +116,48 @@ MISSIONS[8]=authored({id:8,title:'협곡 방어전',en:'Canyon Defense',
  threatTurn:6,par:9,turnLimit:10,level:9,deployLimit:6,breachRow:12,orderTurn:6,
  objective:'TURN 10까지 협곡 사수 또는 TURN 7에 오는 용병단장 격파 (북쪽 적이 12번째 줄 아래로 넘어오면 패배)',
  brief:'위쪽 목은 발드릭의 병사가 지킵니다. 양쪽 벼랑의 낙석 장치(한 번씩)를 작동하면 위쪽 목 앞의 적에게 큰 피해를 줍니다. 출전 전에 사령부 명령(협곡 사수 / 후위 마을 구출조)을 정합니다. TURN 3 북쪽 2진, TURN 6 남쪽 습격조, TURN 7 용병단장과 호위병 도착(TURN 8까지 입구 사수).'});
+// v0.6.1 ACT II (D-055 §3, D-067; maps, numbers and names PROPOSED). M09 The Free City: raiders strike Velmar's market
+// square on the day the lords' delegates meet; escort the three delegates into the council hall (rescue) while assassins
+// on the rooftops hunt them; the assassin leader can be taken alive. M10 Two Lords' War: Lord Oswin (blue-white) and
+// Lord Brennan (orange) fight over the village between their camps; before battle the legion supports one of them or
+// tries to mediate (capture both commanders).
+const raider9=(id,x,y,stats={})=>unit(id,'벨마르 습격대','spear',x,y,{hp:32,atk:15,def:6,res:3,spd:7,mov:3,...stats});
+const assassin9=(id,name,x,y,stats={})=>unit(id,name,'assassin',x,y,{hp:28,atk:17,def:4,res:4,spd:10,mov:5,movementProfile:'rogue',hunter:true,...stats});
+MISSIONS[9]=authored({id:9,title:'자유의 도시',en:'The Free City',
+ rows:['wwrxxxxkkkkxxxxxxx','wwrooolkkkkloooolx','wwrooolkkkkloooolx','wwrooolrrrrloooolx','bbrooorrrrrroooolx','bbrlxxrrrrrrxxxllx','wwrxxxrxrrxrxxxxlx','wwrxxxrrxxrrxxxxlx','wwrooorrrrrroooolx','wwrooorrrrrroooolx','wwrooolrrrrloooolx','wwrlllrrrrrrlllllx','wwrrhrrrrrrrrrrrlx','wwrrrrrrrrrrrrrrrx'],
+ enemies:[
+  assassin9('h1','자객',4,2),assassin9('h2','자객',13,9),
+  raider9('m1',7,3),raider9('m2',10,3),raider9('m3',13,4),
+  unit('a1','습격대 궁수','archer',3,9,{hp:26,atk:14,def:3,res:3,spd:7,mov:3}),unit('a2','습격대 궁수','archer',14,1,{hp:26,atk:14,def:3,res:3,spd:7,mov:3})],
+ civilians:[{id:'v1',name:'청백 깃발 대표',look:'councillor',x:6,y:5,hp:30,def:3,res:3},{id:'v2',name:'주황 깃발 대표',look:'councillor',x:11,y:5,hp:30,def:3,res:3},{id:'v3',name:'항구 의원',look:'councillor',x:8,y:4,hp:30,def:3,res:3}],
+ allies:[ally('dario_blade','다리오 · 용병 검사','dario',16,8,{kind:'swordsman',hp:40,atk:17,def:6,spd:10,mov:4,post:{x:13,y:7},leash:3}),ally('vg1','항구 경비병','guard',2,8,{post:{x:2,y:6},leash:2}),ally('vg2','항구 경비병','guard',2,10,{post:{x:2,y:9},leash:2})],
+ waves:[{turn:3,story:'9:harbor',units:[raider9('s1',0,4),raider9('s2',1,5)]},{turn:5,story:'9:alley',units:[assassin9('boss','그림자 자객 우두머리',16,1,{kind:'captain',hp:60,atk:18,def:6,res:5,spd:11,mov:4}),assassin9('h3','자객',15,1),raider9('s3',16,2)]}],
+ capture:'boss',
+ deployZone:s=>{const base=[];for(let y=11;y<=13;y++)for(let x=3;x<=15;x++)base.push([x,y]);return zone(base.filter(([x,y])=>Number.isFinite(TERRAIN[MISSIONS[9].map[y][x]].cost)));},
+ deployments:{recommended:[[7,11],[10,11],[6,12],[11,12],[8,12],[9,12]],assault:[[7,11],[10,11],[8,11],[9,11],[6,11],[11,11]],defense:[[7,12],[10,12],[5,12],[12,12],[8,13],[9,13]]},
+ threatTurn:3,par:8,turnLimit:10,level:9,deployLimit:6,
+ objective:'의회 대표 3명을 의회 회관으로 피신(인접해 구출) · 2명 이상 잃으면 패배 · TURN 5에 나타나는 그림자 자객 우두머리 격파·생포 또는 TURN 10까지 버티면 승리',
+ brief:'대표 곁에서 구출하면 회관 안으로 피신합니다. 자객은 지붕(이동 2, 방어 +2, 활 사거리 +1)을 타고 대표만 노립니다. 일반 습격대는 TURN 3부터 대표를 노립니다. TURN 3 항구 부두, TURN 5 동쪽 골목에 우두머리와 증원. 우두머리는 HP 절반 이하에서 인접해 생포할 수 있습니다.'});
+const lord10=(id,side,x,y,stats={})=>unit(id,side==='a'?'청백 영주군':'주황 영주군','spear',x,y,{hp:34,atk:16,def:8,res:3,spd:6,mov:3,faction:side,look:side==='a'?'lordA':'lordB',...stats});
+const lordBow10=(id,side,x,y)=>unit(id,side==='a'?'청백 궁병':'주황 궁병','archer',x,y,{hp:28,atk:15,def:4,res:3,spd:7,mov:3,faction:side,look:side==='a'?'lordA':'lordB'});
+MISSIONS[10]=authored({id:10,title:'두 영주의 전쟁',en:"Two Lords' War",
+ rows:['ggggxxxxrrxxxxggsw','ggggxttttttttxggsw','gffgxttttttttxggsw','gffgxxxxrrxxxxggsw','ggggggggrrggggffsw','gggggggxrrxgggffsw','ggggggvvrrvvggffsw','rrhrrrrrrrggggggsw','rrrrrrrrrrggggggsw','ggggggvvrrvvggffsw','gggggggxrrxgggffsw','ggggggggrrggggffsw','gffgxxxxrrxxxxggsw','gffgxttttttttxggsw','ggggxttttttttxggsw','ggggxxxxrrxxxxggsw'],
+ enemies:[
+  lord10('boss','a',8,1,{name:'오스윈 경 · 청백 깃발',kind:'captain',hp:120,atk:20,def:10,res:5,spd:7,holdUntil:5}),
+  lord10('lg1','a',8,2,{name:'청백 친위대',hp:40,def:11}),lord10('lg2','a',9,2,{name:'청백 친위대',hp:40,def:11}),
+  lord10('la1','a',6,2),lord10('la2','a',11,2),lordBow10('la3','a',9,3),lord10('la4','a',12,4),lord10('la7','a',7,1),
+  lord10('boss2','b',9,14,{name:'브레넌 경 · 주황 깃발',kind:'captain',hp:120,atk:20,def:10,res:5,spd:7,holdUntil:5}),
+  lord10('lg3','b',8,13,{name:'주황 친위대',hp:40,def:11}),lord10('lg4','b',9,13,{name:'주황 친위대',hp:40,def:11}),
+  lord10('lb1','b',6,13),lord10('lb2','b',11,13),lordBow10('lb3','b',8,12),lord10('lb4','b',5,11),lord10('lb7','b',10,14)],
+ civilians:[{id:'v1',name:'마을 노인',x:6,y:7,hp:26,def:2},{id:'v2',name:'마을 아이',look:'child',x:11,y:8,hp:22,def:1},{id:'v3',name:'방앗간 주인',x:7,y:9,hp:26,def:2}],
+ allies:[ally('dario_blade','다리오 · 용병 검사','dario',2,5,{kind:'swordsman',hp:42,atk:18,def:6,spd:10,mov:4})],
+ waves:[{turn:4,story:'10:reinforce',units:[lord10('la5','a',8,0),lord10('la6','a',9,0),lord10('lb5','b',8,15),lord10('lb6','b',9,15)]}],
+ capture:['boss','boss2'],
+ deployZone:s=>{const base=[];for(let y=4;y<=11;y++)for(let x=0;x<=3;x++)base.push([x,y]);return zone(base.filter(([x,y])=>Number.isFinite(TERRAIN[MISSIONS[10].map[y][x]].cost)&&!(x===2&&y===5)));},
+ deployments:{recommended:[[3,7],[3,8],[2,6],[2,9],[1,7],[1,8]],assault:[[3,7],[3,8],[3,6],[3,9],[2,7],[2,8]],defense:[[2,7],[2,8],[1,6],[1,9],[0,7],[0,8]]},
+ threatTurn:5,par:10,turnLimit:12,level:10,deployLimit:6,stanceChoice:true,
+ objective:'출전 전 선택 — 지원: 상대 영주 지휘관 격파·생포 / 중재: 두 지휘관 모두 생포(생포한 쪽 군은 물러남) · TURN 12 안에',
+ brief:'두 영주군은 서로도 싸웁니다. 지원을 고르면 그 영주군이 동맹군이 되고, 그 영주는 쓰러지지 않습니다. 중재는 두 지휘관을 HP 절반 이하에서 인접해 생포해야 하며, 한 명이라도 쓰러뜨리면 중재는 실패합니다(전투는 두 지휘관이 모두 쓰러지면 끝납니다). TURN 5부터 병사들이 마을 주민을 노립니다. TURN 4 양쪽 증원.'});
 // v0.5.0 Phase E (D-047): promotion trials (101–105) and the repeatable Legion Drill (110). Non-story
 // skirmishes after ACT I: never pushed into campaign.completed, no gold, permanent EXP (mission level 7).
 // goal: survive (turn N ends with `protect` alive) · rout (all enemies down by `limit`) · reach (hero at row ≤ y)

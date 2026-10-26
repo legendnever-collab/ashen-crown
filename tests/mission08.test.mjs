@@ -60,5 +60,5 @@ test('Thea joins after the canyon when the Iron Crown trusts the legion and the 
 test('M07 → M08 → camp: nextMission chain, M08 save round trip, practice changes nothing',()=>{
  const seven=newGame(4,camp({completed:[1,2,3,4,5,6]}),7);seven.outcome='victory';seven.campaign.completed.push(7);const s=nextMission(seven);assert.equal(s.missionId,8);enterHub(s);assert.equal(s.frontier.hub,'castletown');
  const b=battle();turn(b);const r=deserialize(serialize(b));assert.deepEqual(r.missionState,b.missionState);
- assert.equal(nextMission(Object.assign(newGame(2,camp({completed:[1,2,3,4,5,6,7,8]}),8),{outcome:'victory'})),null,'M08 is the last story mission of this update');
+ const nine=nextMission(Object.assign(newGame(2,camp({completed:[1,2,3,4,5,6,7,8]}),8),{outcome:'victory'}));assert.equal(nine.missionId,9,'M08 leads to M09 in Velmar (v0.6.1)');enterHub(nine);assert.equal(nine.frontier.hub,'velmar');
 });

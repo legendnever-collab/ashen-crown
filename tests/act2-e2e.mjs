@@ -4,7 +4,7 @@
 import {launchTestBrowser} from './browser-helper.mjs';import {drainStory} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,checksum} from '../src/persistence/save-manager.js';import {actOneCamp} from './skirmish-policy.mjs';
 import {newGame} from '../src/core/game.js';import {enterHub,chestKey} from '../src/core/frontier.js';import {HUBS,INTERIORS} from '../src/data/frontier-data.js';import {drain} from './campaign-policy.mjs';import {joinRoster} from '../src/core/roster.js';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.6.0.html').href;fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.6.1.html').href;fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const check=(name,ok)=>{assert.ok(ok,name);n++;console.log('PASS',name);};
 // Put Eric inside a building of the current hub (as if he walked in), optionally with chest 'a' already opened.
 function inside(s,buildingId,opened=false){const f=s.frontier,door=HUBS[f.hub].places.find(p=>p.buildingId===buildingId);f.returnPosition={hub:f.hub,x:door.x,y:door.y,facing:'up'};f.interior=door.interior;f.interiorBuilding=buildingId;[f.x,f.y]=INTERIORS[door.interior].spawn;f.facing='up';s.campaign.frontier=structuredClone(f);

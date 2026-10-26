@@ -49,6 +49,7 @@ const SNOW=['#9fb0bd','#bccad4','#d6e0e7','#e7eef2','#f6f9fb'].map(col),ICE=['#6
 const STONE=ramp('#8a8778'),MOSS=ramp('#5d7a43'),WOOD=ramp('#8a6040'),PLASTER=ramp('#dccaa0'),ROOF=ramp('#a3593b'),THATCH=ramp('#b98d4f');
 const LEAF=['#1d3528','#284a33','#36623d','#4e8248','#71a455'].map(col);
 const FLAG=ramp('#a29a86'),PLANK=ramp('#8a6442'),WALLR=ramp('#6e6a60');
+const COBBLE=['#5e594c','#978f7a','#a49c86','#b3ab93'].map(col);
 
 const tileAt=(map,x,y)=>map[y]?.[x];
 const isLike=(t,set)=>t!==undefined&&set.includes(t);
@@ -63,16 +64,19 @@ function groundPixel(kind,gx,gy){
  if(kind==='plank'){const row=Math.floor(gy/8),seam=gy%8===7,joint=(gx+row*29)%41===0;const n=noise(gx,gy*.25,10,12);let t=n<.4?1:2;if(seam||joint)t=0;else if(gy%8===0)t=3;return PLANK[t];}
  if(kind==='wall'){return WALLR[2];}
  if(kind==='snow'){const n=noise(gx,gy,20,13)*.75+noise(gx,gy,5,14)*.25;let t=2;if(n<.3)t=dither(gx,gy,(.3-n)*6)?1:2;else if(n>.64)t=dither(gx,gy,(n-.64)*6)?3:2;return SNOW[t];}
+ // v0.6.1 Velmar (M09): clay roof tiles on rooftop high ground and cobbles on alleys and the market square.
+ if(kind==='roof'){const row=Math.floor(gy/6),off=(row%2)*4,ly=gy%6,seam=(gx+off)%8===0,n=noise(gx,gy,10,17);return ly===5?ROOF[0]:ly===0?ROOF[3]:seam?ROOF[1]:ROOF[n<.4?1:2];}
+ if(kind==='cobble'){const row=Math.floor(gy/7),off=(row%2)*4,cx=Math.floor((gx+off)/8),grout=gy%7===6||(gx+off)%8===7;if(grout)return COBBLE[0];const h=hash(cx,row,3);return COBBLE[h<.33?1:h<.7?2:3];}
  if(kind==='ice'){const n=noise(gx,gy,16,15);const crack=Math.abs(Math.sin(gx*.21+gy*.47+noise(gx,gy,9,16)*6))<.04;return crack?ICE[0]:ICE[n<.35?1:n>.7?3:2];}
  return GRASS[2];
 }
-const KIND={g:'grass',f:'grass',v:'grass',t:'grass',h:'grass',r:'dirt',x:'grass',m:'grass',d:'sand',w:'water',b:'water',s:'swamp',k:'flag',q:'flag',p:'plank',n:'snow',i:'ice'};
+const KIND={g:'grass',f:'grass',v:'grass',t:'grass',h:'grass',r:'dirt',x:'grass',m:'grass',d:'sand',w:'water',b:'water',s:'swamp',k:'flag',q:'flag',p:'plank',n:'snow',i:'ice',o:'roof',l:'cobble'};
 const SNOW_BASE={g:'snow',f:'snow',v:'snow',t:'snow',h:'snow',x:'snow',m:'snow'};
 // paints the full terrain ground; decor (trees, houses, rocks) is returned as sortable objects
 export function paintGround(map,{theme=''}={}){
- const H=map.length,W=map[0].length,T=HD_TILE,p=new Pix(W*T,H*T),objects=[],fort=theme==='fortress',snowy=theme==='snow';
+ const H=map.length,W=map[0].length,T=HD_TILE,p=new Pix(W*T,H*T),objects=[],fort=theme==='fortress',snowy=theme==='snow',city=theme==='city';
  for(let ty=0;ty<H;ty++)for(let tx=0;tx<W;tx++){
-  const t=map[ty][tx],kind=fort&&t==='x'?'wall':snowy&&SNOW_BASE[t]||KIND[t]||'grass';
+  const t=map[ty][tx],kind=(fort||city)&&t==='x'?'wall':city&&(t==='r'||t==='h')?'cobble':snowy&&SNOW_BASE[t]||KIND[t]||'grass';
   for(let y=0;y<T;y++)for(let x=0;x<T;x++){const gx=tx*T+x,gy=ty*T+y;let k=kind;
    // organic edges: dirt/sand/water tiles fray into neighbouring grass
    if(['dirt','sand','water','swamp','ice'].includes(kind)){const same=(dx,dy)=>(KIND[tileAt(map,tx+dx,ty+dy)]??kind)===kind||(kind==='water'&&['b','i'].includes(tileAt(map,tx+dx,ty+dy)))||(kind==='ice'&&tileAt(map,tx+dx,ty+dy)==='w')||(kind==='dirt'&&['r','h'].includes(tileAt(map,tx+dx,ty+dy)));const j=2+noise(gx,gy,6,9)*5;let dmin=99;if(!same(-1,0))dmin=Math.min(dmin,x);if(!same(1,0))dmin=Math.min(dmin,T-1-x);if(!same(0,-1))dmin=Math.min(dmin,y);if(!same(0,1))dmin=Math.min(dmin,T-1-y);for(const [dx,dy,cx,cy]of[[-1,-1,0,0],[1,-1,T-1,0],[-1,1,0,T-1],[1,1,T-1,T-1]])if(same(dx,0)&&same(0,dy)&&!same(dx,dy))dmin=Math.min(dmin,Math.hypot(x-cx,y-cy));if(dmin<j)k=snowy?'snow':'grass';else if(dmin<j+1.2)k=kind==='water'?'foam':'rim';}
@@ -92,7 +96,7 @@ export function paintGround(map,{theme=''}={}){
   // objects
   if(t==='f'){const spots=[[12,30],[34,28],[23,45],[8,46],[40,46]],n=3+(R(50)<.5?1:0);for(let i=0;i<n;i++){const [sx,sy]=spots[(i+Math.floor(R(49)*5))%5];objects.push({kind:'tree',x:ox+sx+Math.floor(R(51+i)*5)-2,y:oy+sy,size:.66+R(60+i)*.16,seed:tx*31+ty*17+i});}}
   if(t==='g'&&R(70)<.07)objects.push({kind:'bush',x:ox+10+Math.floor(R(71)*28),y:oy+16+Math.floor(R(72)*26),seed:tx+ty*7});
-  if(t==='x'&&!fort)objects.push({kind:'ruin',x:ox,y:oy+T,seed:tx*13+ty});
+  if(t==='x'&&!fort&&!city)objects.push({kind:'ruin',x:ox,y:oy+T,seed:tx*13+ty});
   if(t==='m')objects.push({kind:'crag',x:ox,y:oy+T,seed:tx*7+ty*3});
   if(t==='b')objects.push({kind:'bridge',x:ox,y:oy,key:oy-48,seed:tx,map,tx,ty});
   if(t==='v')objects.push({kind:'house',x:ox,y:oy+T,seed:tx*5+ty*11,w:1,h:1});

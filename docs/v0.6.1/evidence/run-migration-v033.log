@@ -1,0 +1,11 @@
+PASS Shipped v0.3.3 village save is schema 6
+PASS Shipped v0.3.3 battle checkpoint generated
+PASS v0.3.3 village save imports as schema 9 in the same place
+PASS v0.3.3 battle and its stage checkpoint migrate unchanged
+PASS Restart of a migrated v0.3.3 battle works
+PASS v0.3.3 Mission 02 battle fixture resumes
+PASS v0.3.3 M03 aftermath keeps gear, items and gold
+PASS v0.3.3 aftermath offers the Mission 4 departure
+PASS Migrated campaign moves on to Mission 04 with its purse
+PASS Migrated M04 camp is saved as the current version and reloads
+PASS No runtime errors in either build

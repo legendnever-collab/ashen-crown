@@ -59,11 +59,22 @@ export const SCORE={
  chronicle:{name:'A Map of Erdia',tempo:70,lead:'flute',arp:'harp',pad:'pad',drums:null,gain:.8,
   chords:chords('C G Am F C Em F G'),
   melody:melody('G4:2 C5:2 E5:4  D5:2 B4:2 G4:4  A4:2 C5:2 E5:2 A5:2  F5:6 -:2  E5:2 G5:2 C6:4  B5:2 G5:2 E5:4  F5:2 A5:2 G5:2 F5:2  G5:6 -:2')},
+ // v0.6.1 ACT II (original, 2026-10-26; D-055 §7): the northern march (castle town, M07–M08 battles), Velmar's
+ // market square (Velmar hub) and the two lords' field (M10 player phase).
+ northmarch:{name:'Banners in the Snow',tempo:100,lead:'horn',arp:'ostinato',pad:'strings',drums:'march',gain:.82,
+  chords:chords('Gm Eb Bb F Gm Cm D7 D'),
+  melody:melody('G4:2 Bb4:2 D5:3 C5:1  Bb4:2 G4:2 Eb5:4  D5:2 F5:2 Bb5:3 A5:1  A5:2 F5:2 C5:4  D5:1 D5:1 G5:2 Bb5:2 A5:2  G5:2 Eb5:2 C5:4  F#5:2 A5:2 C6:2 A5:2  F#5:6 -:2')},
+ freecity:{name:'Lanterns over Velmar',tempo:104,lead:'pluck',arp:'harp',pad:'softpad',drums:null,gain:.78,
+  chords:chords('D C G D Bm G A7 D'),
+  melody:melody('F#5:2 A5:2 D6:2 A5:2  G5:2 E5:2 C5:4  B4:2 D5:2 G5:3 F#5:1  F#5:4 D5:4  B4:1 C#5:1 D5:2 F#5:2 B5:2  A5:2 G5:2 D5:4  E5:2 G5:2 C#6:2 A5:2  D6:6 -:2')},
+ threeway:{name:'Two Banners, One Field',tempo:132,lead:'strings',arp:'ostinato',pad:'lowpad',drums:'battle',gain:.85,
+  chords:chords('Cm Ab Bb G Cm Fm G7 G'),
+  melody:melody('C5:1 Eb5:1 G5:2 C6:2 G5:2  Ab5:2 Eb5:2 C5:4  D5:2 F5:2 Bb5:2 F5:2  B4:6 -:2  G5:1 G5:1 Eb5:2 C5:2 Eb5:2  F5:2 Ab5:2 C6:4  B5:2 G5:2 F5:2 D5:2  G5:6 -:2')},
  fortress:{name:'Halls of the Quartermaster',tempo:108,lead:'horn',arp:'ostinato',pad:'lowpad',drums:'battle',gain:.85,
   chords:chords('Em D C B Em D C B'),
   melody:melody('E5:2 B4:2 E5:2 G5:2  F#5:2 D5:2 A4:4  G5:2 E5:2 C5:2 E5:2  D#5:6 -:2  E5:1 F#5:1 G5:2 A5:2 B5:2  A5:2 F#5:2 D5:4  C5:2 E5:2 G5:2 E5:2  B4:6 -:2')}
 };
 export const MOTIF=SCORE.title.melody.map(([n])=>n);
 // Hub ambience (D-052): village / garrison & fortress / night bivouac / oath camp.
-const hubMusic=hub=>!hub||hub.startsWith('village')?'village':hub==='bivouac'?'campfire':hub==='oathcamp'?'banner':'camp';
-export const musicScene=s=>s.narrative?.active?(s.narrative.active.key==='raid'?'tension':s.narrative.active.key.startsWith('world:')?'chronicle':s.narrative.active.key.startsWith('promo:')?'rite':s.narrative.active.key.startsWith('pre:')?'story':s.frontier?.hub&&!s.frontier.hub.startsWith('village')?hubMusic(s.frontier.hub):'story'):s.screen==='title'?'title':s.screen==='exploration'?hubMusic(s.frontier?.hub):s.skirmish?.kind==='trial'&&s.screen==='battle'?'trial':['warroom','deployment'].includes(s.screen)?'departure':s.screen!=='battle'?'story':s.missionId===6?(s.phase==='enemy'?'enemy':'oath'):s.missionId===3||s.units.some(u=>u.team==='civilian'&&!u.rescued&&u.hp>0&&u.hp<u.maxHP/2)?'crisis':s.phase==='enemy'?'enemy':s.missionId===4?'fortress':s.missionId===5?'lion':'player';
+const hubMusic=hub=>!hub||hub.startsWith('village')?'village':hub==='bivouac'||hub==='march'?'campfire':hub==='oathcamp'?'banner':hub==='castletown'?'northmarch':hub==='velmar'?'freecity':'camp';
+export const musicScene=s=>s.narrative?.active?(s.narrative.active.key==='raid'?'tension':s.narrative.active.key.startsWith('world:')?'chronicle':s.narrative.active.key.startsWith('promo:')?'rite':s.narrative.active.key.startsWith('pre:')?'story':s.frontier?.hub&&!s.frontier.hub.startsWith('village')?hubMusic(s.frontier.hub):'story'):s.screen==='title'?'title':s.screen==='exploration'?hubMusic(s.frontier?.hub):s.skirmish?.kind==='trial'&&s.screen==='battle'?'trial':['warroom','deployment'].includes(s.screen)?'departure':s.screen!=='battle'?'story':s.missionId===6?(s.phase==='enemy'?'enemy':'oath'):s.missionId===10?(s.phase==='enemy'?'enemy':'threeway'):s.missionId===3||s.units.some(u=>u.team==='civilian'&&!u.rescued&&u.hp>0&&u.hp<u.maxHP/2)?'crisis':s.phase==='enemy'?'enemy':s.missionId===4?'fortress':s.missionId===5?'lion':s.missionId===7||s.missionId===8?'northmarch':'player';

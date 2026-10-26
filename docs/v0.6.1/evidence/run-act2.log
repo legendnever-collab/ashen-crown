@@ -1,0 +1,29 @@
+PASS 1440 no faction panel before ACT II
+PASS 1440 ACT I complete: faction panel offered
+PASS 1440 three banners, only the Iron Crown met, shown as a stage
+PASS 1440 panel fits the screen
+PASS 1440 thea party sheet uses the painted bust
+PASS 1440 dario party sheet uses the painted bust
+PASS 1440 village house closed chest room loads
+PASS 1440 village house opened chest room loads
+PASS 1440 triage tent closed chest room loads
+PASS 1440 triage tent opened chest room loads
+PASS 1440 oath camp tent closed chest room loads
+PASS 1440 oath camp tent opened chest room loads
+PASS 1440 no runtime errors
+PASS 390 no faction panel before ACT II
+PASS 390 ACT I complete: faction panel offered
+PASS 390 three banners, only the Iron Crown met, shown as a stage
+PASS 390 panel fits the screen
+PASS 390 thea party sheet uses the painted bust
+PASS 390 dario party sheet uses the painted bust
+PASS 390 village house closed chest room loads
+PASS 390 village house opened chest room loads
+PASS 390 triage tent closed chest room loads
+PASS 390 triage tent opened chest room loads
+PASS 390 oath camp tent closed chest room loads
+PASS 390 oath camp tent opened chest room loads
+PASS 390 no runtime errors
+PASS schema 8 camp save restores as schema 9 in the oath camp with the five heroes
+PASS schema 8 restore: no runtime errors
+act2-e2e: 28 checks passed

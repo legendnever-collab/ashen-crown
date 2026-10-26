@@ -6,6 +6,10 @@ import {openStory,advanceStory} from '../src/core/narrative.js';
 // v0.6 ACT II: M07 escorts the convoy (deserters near a wagon, else the wagons); M08 holds the canyon (northern
 // mercenaries); with the rescue order Sain and Kai head for the rear village from TURN 4.
 function act2Goals(s,u){const live=t=>alive(t)&&t.team==='enemy';
+ if(s.missionId===9){const marks=s.units.filter(v=>v.team==='civilian'&&alive(v)),boss=s.units.find(t=>t.id==='boss'&&live(t)),hunters=s.units.filter(e=>live(e)&&marks.some(v=>distance(e,v)<=4));
+  if(marks.length&&['kai','sain','thea','eric','dario'].includes(u?.id))return marks;if(hunters.length)return hunters;return boss?[boss]:s.units.filter(live);}
+ if(s.missionId===10){const st=s.campaign.choices?.m10_stance||'mediate',lords=s.units.filter(t=>(st==='a'?['boss2']:st==='b'?['boss']:['boss','boss2']).includes(t.id)&&live(t)),folk=s.units.filter(v=>v.team==='civilian'&&alive(v));
+  if(folk.length&&['sain','kai'].includes(u?.id))return folk;const guards=s.units.filter(e=>live(e)&&lords.some(l=>e.faction===l.faction&&distance(e,l)<=3));return lords.length?[...lords,...guards]:s.units.filter(live);}
  if(s.missionId===7){const wagons=s.units.filter(w=>w.kind==='wagon'&&alive(w)),foes=s.units.filter(e=>live(e)&&wagons.some(w=>distance(e,w)<=4));return foes.length?foes:wagons.length?wagons:s.units.filter(live);}
  const villagers=s.units.filter(v=>v.team==='civilian'&&alive(v));if(s.campaign.choices?.m08_order==='rescue'&&villagers.length&&['sain','kai'].includes(u?.id))return villagers;
  const devices=s.units.filter(d=>d.kind==='rockfall'&&!d.rescued&&s.units.filter(e=>live(e)&&e.x>=d.zone[0]&&e.x<=d.zone[1]&&e.y>=d.zone[2]&&e.y<=d.zone[3]).length>=1);if(devices.length&&u?.id===(s.campaign.choices?.m08_order==='rescue'?'elina':'kai'))return devices;
@@ -28,6 +32,7 @@ export function campaignAction(s,u,capture=true){
   else if(f.guard===true)score=0;
   else{score=f.damage*f.hit/100*3+(f.after===0?50:0)-f.counter;
    if(s.missionId===2&&t.id==='boss'){score+=100;if(capture&&f.after===0)score=-500;}
+   if(s.missionId===10&&(s.campaign.choices?.m10_stance||'mediate')==='mediate'&&['boss','boss2'].includes(t.id)&&f.after===0)score=-500; // mediation: never kill a lord
    if(s.missionId===3){if(civ.length)score+=20;else score+=t.y<u.y?100:10;}
    if(s.missionId>=7)score+=200+(t.id==='boss'?30:0)+(s.missionId===7&&s.units.some(w=>w.kind==='wagon'&&alive(w)&&distance(w,t)<=1)?60:0);
    if(s.missionId===6){if(t.id==='boss'&&s.missionState.phase===3)score+=60;if(/^k\d/.test(t.id))score+=25;if(/^r\d/.test(t.id))score+=30;}
@@ -41,4 +46,4 @@ export function campaignAction(s,u,capture=true){
  }
  return best||{id:u.id,x:u.x,y:u.y,mode:'wait'};
 }
-export function playCampaignBattle(s,capture=true){const trace=[];let steps=0;drain(s);while(!s.outcome&&steps++<150){for(const id of ['kai','lia','elina','sain','eric']){const u=findUnit(s,id);if(!canAct(s,u))continue;const a=campaignAction(s,u,capture);if(a.x!==u.x||a.y!==u.y){if(!moveUnit(s,id,a.x,a.y))throw Error('illegal move');trace.push({type:'move',id,x:a.x,y:a.y});}const action=performAction(s,id,a.mode,a.target);if(!action.ok)throw Error(action.error);trace.push({type:'action',id,mode:a.mode,target:a.target});drain(s);if(s.outcome)break;}if(!s.outcome){beginEnemyPhase(s);trace.push({type:'phase'});while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);}}return {outcome:s.outcome,turn:s.turn,trace,saved:s.units.filter(u=>u.team==='civilian'&&u.rescued).length,captured:!!s.campaign.flags.mission_02_prisoner_captured};}
+export function playCampaignBattle(s,capture=true){const trace=[];let steps=0;drain(s);while(!s.outcome&&steps++<150){for(const id of ['kai','lia','elina','sain','eric','thea','dario']){const u=findUnit(s,id);if(!canAct(s,u))continue;const a=campaignAction(s,u,capture);if(a.x!==u.x||a.y!==u.y){if(!moveUnit(s,id,a.x,a.y))throw Error('illegal move');trace.push({type:'move',id,x:a.x,y:a.y});}const action=performAction(s,id,a.mode,a.target);if(!action.ok)throw Error(action.error);trace.push({type:'action',id,mode:a.mode,target:a.target});drain(s);if(s.outcome)break;}if(!s.outcome){beginEnemyPhase(s);trace.push({type:'phase'});while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);}}return {outcome:s.outcome,turn:s.turn,trace,saved:s.units.filter(u=>u.team==='civilian'&&u.rescued).length,captured:!!s.campaign.flags.mission_02_prisoner_captured};}

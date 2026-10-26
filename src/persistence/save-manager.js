@@ -1,7 +1,7 @@
 import {legacyRewardCatchup} from '../core/battle-rewards.js';
 import {ensureEconomy,validateEconomy} from '../core/economy.js';
 import {migrateFrontier,frontierState,validateFrontier,alignFrontier} from '../core/frontier.js';
-import {SCHEMA,WIDTH,HEIGHT,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,ALL_HEROES,RECRUIT_HEROES,partyIds} from '../data/game-data.js';
+import {SCHEMA,VERSION,WIDTH,HEIGHT,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,ALL_HEROES,RECRUIT_HEROES,partyIds} from '../data/game-data.js';
 import {validTrust} from '../core/factions.js';
 import {terrainAt,alive} from '../core/rules.js';
 import {MISSIONS,missionOf} from '../data/missions.js';
@@ -20,7 +20,7 @@ export function validate(s){
  if(!validTrust(s.campaign))throw Error('세력 신뢰 기록이 손상되었습니다.');
  const known=new Set([...party,...missionUnitIds(mission),...allies.map(a=>a.id)]),ids=new Set(),occupied=new Set();
  for(const u of s.units){if(!known.has(u.id)||ids.has(u.id)||!['ally','allied','enemy','civilian','object'].includes(u.team))throw Error('장수 목록이 손상되었습니다.');ids.add(u.id);
-  const expected=party.includes(u.id)?'ally':allies.some(a=>a.id===u.id)?'allied':mission.civilians.some(c=>c.id===u.id)?'civilian':(mission.objects||[]).some(o=>o.id===u.id)?'object':'enemy';if(u.team!==expected||typeof u.name!=='string'||u.name.length>120||!Array.isArray(u.range)||u.range.length!==2||u.range.some(n=>!Number.isInteger(n)||n<0||n>12)||u.range[0]>u.range[1])throw Error('유닛 분류 또는 사거리가 손상되었습니다.');
+  const expected=party.includes(u.id)?'ally':allies.some(a=>a.id===u.id)?'allied':mission.civilians.some(c=>c.id===u.id)?'civilian':(mission.objects||[]).some(o=>o.id===u.id)?'object':u.faction&&u.faction===s.campaign?.choices?.m10_stance?'allied':'enemy';if(u.team!==expected||typeof u.name!=='string'||u.name.length>120||!Array.isArray(u.range)||u.range.length!==2||u.range.some(n=>!Number.isInteger(n)||n<0||n>12)||u.range[0]>u.range[1])throw Error('유닛 분류 또는 사거리가 손상되었습니다.');
   for(const k of ['hp','maxHP','mp','maxMP','atk','def','mag','res','spd','mov','x','y'])if(!Number.isFinite(u[k])||u[k]<0||!Number.isInteger(u[k]))throw Error('유닛 수치가 올바르지 않습니다.');
   if(u.classMovementModifier!=null&&(!Number.isInteger(u.classMovementModifier)||u.classMovementModifier<0||u.classMovementModifier>5)||u.movementProfile!=null&&!['infantry','rogue','cavalry','ranger'].includes(u.movementProfile))throw Error('병종 이동 정보가 손상되었습니다.');
   if(u.hp>u.maxHP||u.mp>u.maxMP||u.maxHP<1||u.x>=mission.width||u.y>=mission.height||!Number.isFinite(terrainAt(u.x,u.y,s)?.cost))throw Error('유닛 위치 또는 HP가 손상되었습니다.');
@@ -60,6 +60,8 @@ export function migrate(s){
  // (factions.js ensureTrust), so a save from the middle of ACT I keeps its M04 ledger choice open.
  if(s?.schema===8){s.schema=9;s.version='0.6.0';s.campaign.roster??=[];if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');
+ // v0.6.1: a save of the current schema made by an earlier build of it (e.g. v0.6.0) is now this version.
+ if(s?.schema===SCHEMA&&s.version!==VERSION){s.version=VERSION;if(s.stageStart?.version)s.stageStart.version=VERSION;}
  // v0.6 (D-060): character names are written in Hangul; saves made before keep English names on board until renamed here.
  if(s?.schema===SCHEMA)koreanNames(s);
  // v0.6 (D-062): rewritten scenes can differ in length; a save paused inside a scene resumes on its last line at most.

@@ -17,5 +17,9 @@ export const STORY_WORLD={
   w5('첫 번째 깃발 아래, 철관성의 성하 마을. 질서는 피난처를 주는 대신 무언가를 요구한다.',{focus:'north',prev:'continent',from:'oathcamp',to:'castletown',card:{act:ACT2,region:'철왕관 통령령',place:'철관성 성하 마을'}})
  ],
  'world:march':[w5('회색 협곡을 지켜 낸 밤. 군단은 협곡 아래에 야영을 친다. 서쪽으로, 자유도시 벨마르로 가는 길이 보인다.',{focus:'north',from:'castletown',to:'march',card:{act:ACT2,region:'철왕관 통령령',place:'협곡 야영지'}})],
+ 'world:velmar':[
+  w5('협곡을 지나 서쪽으로. 철왕관의 길이 끝나는 곳에 자유 영주들의 땅이 펼쳐진다.',{focus:'continent',from:'march',to:'velmar'}),
+  w5('두 번째 깃발 아래, 항구 도시 벨마르. 이 도시는 누구에게도 무릎 꿇지 않는다. 대신 누구도 지켜 주지 않는다.',{focus:'west',prev:'continent',from:'march',to:'velmar',card:{act:ACT2,region:'자유도시 연맹',place:'자유도시 벨마르'}})
+ ],
  'world:oathcamp':[w5('피난민과 함께 국경 관문을 넘었다. 왕실의 명령은 이제 그들 뒤에 있다.',{focus:'east',from:'fortress',to:'oathcamp',card:{act:ACT1,region:'동부 변경',place:'관문 너머 야영지'}})]
 };

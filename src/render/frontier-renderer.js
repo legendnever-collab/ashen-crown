@@ -1,6 +1,6 @@
 import {drawWarTable} from './hd-world.js';
 import {HUBS} from '../data/frontier-data.js';
-import {explorationHero,currentHub,chestKey,exitDoor} from '../core/frontier.js';
+import {explorationHero,currentHub,chestKey,exitDoor,npcsFor} from '../core/frontier.js';
 import {drawTile,drawSprite,pixel} from './art.js';
 import {drawBuilding,drawFire} from './world-art.js';
 import {drawChest} from './chest-art.js';
@@ -27,7 +27,7 @@ function hudPad(canvas,box){const wrap=canvas.parentElement;if(!wrap||!box.width
   if(r.height>r.width*1.2&&left>box.width*.5)p.right=Math.max(p.right,box.right-r.left+8);else if(top>box.height*.45)p.bottom=Math.max(p.bottom,box.bottom-r.top+8);else if(r.bottom-box.top<box.height*.3)p.top=Math.max(p.top,r.bottom-box.top+8);}
  p.right=Math.min(p.right,box.width*.35);p.bottom=Math.min(p.bottom,box.height*.35);p.top=Math.min(p.top,box.height*.3);return p;}
 export function drawHub(canvas,s,{line=null,time=performance.now()}={}){
- const c=canvas.getContext('2d'),f=s.frontier,h=line?HUBS[line.stage]:currentHub(s),box=canvas.getBoundingClientRect(),width=Math.max(1,box.width||1024),height=Math.max(1,box.height||768),resolution=width<600?Math.max(1,window.devicePixelRatio||1):Math.max(2.1,window.devicePixelRatio||1);
+ const c=canvas.getContext('2d'),f=s.frontier,h=line?npcsFor(s,HUBS[line.stage]):currentHub(s),box=canvas.getBoundingClientRect(),width=Math.max(1,box.width||1024),height=Math.max(1,box.height||768),resolution=width<600?Math.max(1,window.devicePixelRatio||1):Math.max(2.1,window.devicePixelRatio||1);
  if(canvas.width!==Math.round(width*resolution)||canvas.height!==Math.round(height*resolution)){canvas.width=Math.round(width*resolution);canvas.height=Math.round(height*resolution);}c.setTransform(resolution,0,0,resolution,0,0);c.imageSmoothingEnabled=false;pixel(c,'#172c31',0,0,width,height);
  const camera=line?stageCamera(line,width,height,h):hubCamera.layout(width,height,h.width,h.height,{follow:{x:f.x,y:f.y},key:`${f.hub}:${f.interior||'outside'}`,pad:hudPad(canvas,box)});
  c.translate(camera.x,camera.y);c.scale(camera.scale,camera.scale);

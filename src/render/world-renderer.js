@@ -5,7 +5,7 @@ import {WORLD_SIZE,CONTINENT,REGIONS,SITES,HUB_SITE,ACT1_ROUTE,FULL_ROUTE,siteBy
 const WORLD_ART=typeof ASHEN_WORLD!=='undefined'?ASHEN_WORLD:null,worldImages=new Map();
 function worldImage(id){if(!WORLD_ART?.[id])return null;let img=worldImages.get(id);if(!img){img=new Image();img.src=WORLD_ART[id];worldImages.set(id,img);}return img.complete&&img.naturalWidth?img:null;}
 const ease=t=>t<0?0:t>1?1:t*t*(3-2*t);
-const FOCUS={continent:{x:768,y:512,zoom:1},east:{x:1290,y:450,zoom:1.55},north:{x:800,y:260,zoom:1.45}};
+const FOCUS={continent:{x:768,y:512,zoom:1},east:{x:1290,y:450,zoom:1.55},north:{x:800,y:260,zoom:1.45},west:{x:380,y:520,zoom:1.45}};
 function poly(c,pts){c.beginPath();pts.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();}
 function fallbackMap(c){
  c.fillStyle='#9fbfc9';c.fillRect(0,0,WORLD_SIZE.w,WORLD_SIZE.h);

@@ -21,7 +21,7 @@ export class MapCamera{
 }
 export function drawMinimap(canvas,map,actors,camera,objectives=[]){
  const c=canvas.getContext('2d'),w=map[0].length,h=map.length;canvas.width=192;canvas.height=Math.round(192*h/w);c.imageSmoothingEnabled=false;const sx=canvas.width/w,sy=canvas.height/h;
- const colors={f:'#395e4b',g:'#73835b',r:'#b9a17a',x:'#4b5050',w:'#477b96',b:'#bb9361',v:'#98734d',m:'#89917d',s:'#556f63',d:'#c2ad7b',n:'#d9e2e6',i:'#a9c8d6'};
+ const colors={f:'#395e4b',g:'#73835b',r:'#b9a17a',x:'#4b5050',w:'#477b96',b:'#bb9361',v:'#98734d',m:'#89917d',s:'#556f63',d:'#c2ad7b',n:'#d9e2e6',i:'#a9c8d6',o:'#9a5a46',l:'#8d8576'};
  for(let y=0;y<h;y++)for(let x=0;x<w;x++){c.fillStyle=colors[map[y][x]]||'#987655';c.fillRect(x*sx,y*sy,sx+.5,sy+.5);}
  for(const o of objectives){c.fillStyle='#f3dc83';c.fillRect(o.x*sx-1,o.y*sy-1,sx+2,sy+2);}
  for(const a of actors.filter(a=>a.hp!==0&&!a.rescued)){c.fillStyle=a.team==='enemy'?'#fa7d75':a.team==='civilian'?'#f5dfa2':'#86e0ef';c.fillRect(a.x*sx+sx*.2,a.y*sy+sy*.2,sx*.6,sy*.6);}

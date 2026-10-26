@@ -50,6 +50,7 @@ export const ACT2_HUB_SPECS={
    ['residence-3','HOME','연립주택',5,5,4,4,6,8],['inn-1','TAVERN','항구 주점',18,5,5,4,19,8],['depot-4','WAREHOUSE','항구 창고',4,10,7,3,6,12]],
   places:[['square','시장 광장',12,10],['gate','항구 길',12,14],['advisor','작전 탁자 · 시장',13,10]],
   npcs:[...heroes({aren:[5,9],elina:[16,2],elinaName:'엘리나 · 골목',lia:[14,9],sain:[18,10],sainName:'세인 · 주점 앞',kai:[4,4],kaiName:'카이 · 부두',advisor:[14,10]}),
-   ['elder','시장 관리인',17,10],['refugee','피난민',19,10],['guard','항구 경비병',13,14]],
+   ['elder','시장 관리인',17,10],['refugee','피난민',19,10],['guard','항구 경비병',13,14],
+   ['dario','다리오 · 용병 검사',14,8,{kind:'hero'}],['thea','테아 · 항구 길',13,12,{kind:'hero',requires:'thea'}]],
   lights:[[650,330,70,'lantern'],[925,320,70,'lantern'],[1025,330,70,'lantern'],[720,600,70,'lantern'],[940,620,70,'lantern'],[760,830,70,'lantern'],[910,820,70,'lantern']]}
 };
