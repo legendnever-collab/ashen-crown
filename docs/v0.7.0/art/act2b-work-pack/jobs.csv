@@ -1,0 +1,29 @@
+order,kind,id,expression,file,size,references,prompt_file
+1,bust,lucien,neutral,bust_lucien_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png",prompts/01_bust_lucien_neutral.txt
+2,bust,lucien,concerned,bust_lucien_concerned.png,1024x1280,bust_lucien_neutral.png (your approved result),prompts/02_bust_lucien_concerned.txt
+3,bust,lucien,determined,bust_lucien_determined.png,1024x1280,bust_lucien_neutral.png (your approved result),prompts/03_bust_lucien_determined.txt
+4,bust,lucien,sad,bust_lucien_sad.png,1024x1280,bust_lucien_neutral.png (your approved result),prompts/04_bust_lucien_sad.txt
+5,sprite,lucien,,sprite_lucien.png,1024x768,"bust_lucien_neutral.png (your approved result), ref_sprite_eric.png",prompts/05_sprite_lucien.txt
+6,bust,ines,neutral,bust_ines_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png",prompts/06_bust_ines_neutral.txt
+7,bust,ines,concerned,bust_ines_concerned.png,1024x1280,bust_ines_neutral.png (your approved result),prompts/07_bust_ines_concerned.txt
+8,bust,ines,determined,bust_ines_determined.png,1024x1280,bust_ines_neutral.png (your approved result),prompts/08_bust_ines_determined.txt
+9,bust,ines,sad,bust_ines_sad.png,1024x1280,bust_ines_neutral.png (your approved result),prompts/09_bust_ines_sad.txt
+10,sprite,ines,,sprite_ines.png,1024x768,"bust_ines_neutral.png (your approved result), ref_sprite_eric.png",prompts/10_sprite_ines.txt
+11,sprite,cassian,,sprite_cassian.png,1024x768,"bust_cassian_neutral.png (attached, approved in pack B), ref_sprite_eric.png",prompts/11_sprite_cassian.txt
+12,sprite,leonora,,sprite_leonora.png,1024x768,"bust_leonora_neutral.png (attached, approved in pack B), ref_sprite_eric.png",prompts/12_sprite_leonora.txt
+13,sprite,flameKnight,,sprite_flameKnight.png,1024x768,"ref_sprite_ironSpear.png, style_aren_neutral.png",prompts/13_sprite_flameKnight.txt
+14,sprite,pilgrim,,sprite_pilgrim.png,1024x768,"ref_sprite_eric.png, style_aren_neutral.png",prompts/14_sprite_pilgrim.txt
+15,sprite,ashRaider,,sprite_ashRaider.png,1024x768,"ref_sprite_eric.png, style_aren_neutral.png",prompts/15_sprite_ashRaider.txt
+16,sprite,monasteryGuard,,sprite_monasteryGuard.png,1024x768,"ref_sprite_ironSpear.png, style_aren_neutral.png",prompts/16_sprite_monasteryGuard.txt
+17,sprite,abbot,,sprite_abbot.png,1024x768,"ref_sprite_eric.png, style_aren_neutral.png",prompts/17_sprite_abbot.txt
+18,sprite,maskedRaider,,sprite_maskedRaider.png,1024x768,"ref_sprite_eric.png, style_aren_neutral.png",prompts/18_sprite_maskedRaider.txt
+19,hub,hub_pilgrim,,hub_pilgrim.jpg,1536x1024,"layout_hub_pilgrim.png, scale_reference.png, sprite_eric_sheet.png, approved_hub_castletown.jpg, approved_hub_velmar.jpg",prompts/19_hub_pilgrim.txt
+20,interior,int_pilgrim_hostel,,int_pilgrim_hostel.jpg,1536x1024,"layout_int_pilgrim_hostel.png, scale_reference_interior.png, hub_pilgrim.jpg (your approved result), approved_int_port_tavern.jpg",prompts/20_int_pilgrim_hostel.txt
+21,interior,int_pilgrim_smithy,,int_pilgrim_smithy.jpg,1536x1024,"layout_int_pilgrim_smithy.png, scale_reference_interior.png, hub_pilgrim.jpg (your approved result), int_pilgrim_hostel.jpg (your approved result)",prompts/21_int_pilgrim_smithy.txt
+22,interior,int_pilgrim_apothecary,,int_pilgrim_apothecary.jpg,1536x1024,"layout_int_pilgrim_apothecary.png, scale_reference_interior.png, hub_pilgrim.jpg (your approved result), int_pilgrim_hostel.jpg (your approved result)",prompts/22_int_pilgrim_apothecary.txt
+23,interior,int_pilgrim_hospice,,int_pilgrim_hospice.jpg,1536x1024,"layout_int_pilgrim_hospice.png, scale_reference_interior.png, hub_pilgrim.jpg (your approved result), int_pilgrim_hostel.jpg (your approved result)",prompts/23_int_pilgrim_hospice.txt
+24,interior,int_pilgrim_house,,int_pilgrim_house.jpg,1536x1024,"layout_int_pilgrim_house.png, scale_reference_interior.png, hub_pilgrim.jpg (your approved result), int_pilgrim_hostel.jpg (your approved result)",prompts/24_int_pilgrim_house.txt
+25,interior,int_pilgrim_granary,,int_pilgrim_granary.jpg,1536x1024,"layout_int_pilgrim_granary.png, scale_reference_interior.png, hub_pilgrim.jpg (your approved result), int_pilgrim_hostel.jpg (your approved result)",prompts/25_int_pilgrim_granary.txt
+26,interior,int_pilgrim_chapel,,int_pilgrim_chapel.jpg,1536x1024,"layout_int_pilgrim_chapel.png, scale_reference_interior.png, hub_pilgrim.jpg (your approved result), int_pilgrim_hostel.jpg (your approved result)",prompts/26_int_pilgrim_chapel.txt
+27,interior,int_pilgrim_copyists,,int_pilgrim_copyists.jpg,1536x1024,"layout_int_pilgrim_copyists.png, scale_reference_interior.png, hub_pilgrim.jpg (your approved result), int_pilgrim_hostel.jpg (your approved result)",prompts/27_int_pilgrim_copyists.txt
+28,chests,chests_pilgrim,,chests_pilgrim.png,1024x512,"layout_chests_pilgrim.png, approved_chests_act2.png, int_pilgrim_hostel.jpg (your approved result)",prompts/28_chests_pilgrim.txt

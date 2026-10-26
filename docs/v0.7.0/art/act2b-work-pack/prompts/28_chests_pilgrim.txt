@@ -1,0 +1,15 @@
+Paint a SPRITE SHEET of 4 different treasure chests for the interiors of a classic tactical RPG, in the same painting style and the same high three-quarter top-down view (about 60 degrees, front face toward the viewer) as the attached approved interiors (int_pilgrim_hostel.jpg).
+Canvas 1024x512, a 4-column x 2-row grid of 256x256 cells (see layout_chests_pilgrim.png; paint no grid lines and no text).
+Rows 1 and 3: each chest CLOSED. Rows 2 and 4: the SAME chest OPEN — lid raised, the inside visible, EMPTY (dark wood, no coins, no items, no glow) — at exactly the same position, size and angle as the closed chest directly above it.
+Every chest: centered horizontally in its cell, chest body about 150-190 px wide, the bottom of the chest resting on a baseline 40 px above the cell bottom, a soft contact shadow, the whole chest and open lid inside the cell. Scale: in the interiors one tile is 128 px, and these chests are drawn at half size there.
+Background: fully TRANSPARENT (if impossible, flat pure green #00FF00 and nothing else). No text, letters, numbers, emblems or symbols.
+Cells, left to right:
+Row 1 = chests 1-4 closed, row 2 = chests 1-4 open (empty), each open cell lined up exactly with the closed cell above it.
+  1. pilgrim_trunk (pilgrims hostel): a pilgrim's travel trunk of pale wood with leather straps and a crimson cord tied around it.
+  2. relief_chest (hospice): a white-painted medicine chest with plain gold-colored corners and a simple brass latch (no symbols).
+  3. olive_chest (village house): a small olive-wood chest with a carved vine pattern along the lid edge.
+  4. relief_crate (relief granary): a sturdy relief crate of rough planks with a crimson cloth band nailed around it (no letters).
+
+Painting style: match the attached approved art (style_aren_neutral.png and the attached exterior hub map) — hand-painted fantasy illustration with confident contours, painterly cel shading with soft gradients, warm rim light, rich but slightly earthy colors, detailed but readable textures. Original world: do not imitate any existing game's rooms, furniture designs, emblems or layout.
+Attach: layout_chests_pilgrim.png, approved_chests_act2.png, int_pilgrim_hostel.jpg (your approved result).
+Output: one PNG with transparency (or pure #00FF00 background), exactly 1024x512 px.

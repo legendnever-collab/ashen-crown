@@ -1,0 +1,12 @@
+Using the attached portrait (or description) as the costume and color reference, draw the same character as a small full-body battle-map figure for a classic tactical RPG, in the same painted style simplified for small size (clean dark outline, readable silhouette, about 3.5 heads tall — slightly heroic, not chibi). Match the scale and layout of the attached ref_sprite_eric.png exactly.
+Camera: classic top-down three-quarter SRPG map view (looking down about 45 degrees, no isometric rotation).
+ONE sprite sheet, PNG, exactly 1024x768, a 4-column x 3-row grid of 256x256 cells, transparent background (or flat pure green #00FF00), no grid lines, no text:
+- Row 1: facing DOWN (toward the camera)
+- Row 2: facing RIGHT (side view; the game mirrors it for left)
+- Row 3: facing UP (back view)
+- Column 1: standing idle · Column 2: walking step A (left foot forward) · Column 3: walking step B (right foot forward) · Column 4: attack pose with the weapon swung or thrust in the facing direction.
+Every frame: same scale, centered horizontally in its cell, FEET (or hooves) ON THE SAME BASELINE 16 px above the cell bottom, the whole figure including the weapon inside the cell, consistent colors in all 12 frames.
+Character: a night raider who preys on travellers where the old ward has weakened, soot-smeared leather and mismatched scraps of armor, a dark-red cloth tied over the lower face, wild unkempt hair
+Weapon: a heavy cleaver-like falchion
+Painting style: match the attached approved art (style_aren_neutral.png, ref_bust_baldrick_neutral.png) — semi-realistic painted character art for a classic tactical RPG dialogue portrait: confident inked contour lines, painterly cel shading with soft gradients, strong warm rim light, rich saturated but slightly earthy colors, detailed metal and cloth textures, expressive mature faces (not chibi, not western cartoon, not photo-real). Original characters: do not copy any existing game's character, costume, emblem or logo.
+Attach: ref_sprite_eric.png, style_aren_neutral.png.
