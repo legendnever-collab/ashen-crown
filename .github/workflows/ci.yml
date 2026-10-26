@@ -52,7 +52,9 @@ jobs:
           - suite_group: act1
             suites: act1 migration-v033 migration-v040 mobile-command class legion world
           - suite_group: act2
-            suites: act2 act2-hubs act2-campaign act2b-campaign act2c-campaign hub-doors migration-v050 migration-v060 migration-v061
+            suites: act2 act2-hubs act2-campaign act2b-campaign hub-doors migration-v050 migration-v060
+          - suite_group: act2b
+            suites: act2c-campaign act2d-campaign migration-v061 migration-v070
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

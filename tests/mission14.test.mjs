@@ -35,6 +35,12 @@ test('TURN 4: the betraying leader leaves, its guards turn on the legion; masked
  const back=deserialize(serialize(s));assert.equal(findUnit(back,'lg1').team,findUnit(s,'lg1').team,'a turned guard saves as an enemy');
 });
 
+test('each banner can be the one that turns: its leader leaves and its guards attack',()=>{
+ for(const [f,trust,lead,guards] of [['iron',{iron:0,free:1,flame:1},'cassian',['ig1','ig2']],['free',{iron:2,free:0,flame:1},'leonora',['fg1','fg2']],['flame',{iron:1,free:1,flame:-1},'lucien',['lg1','lg2']]]){
+  const s=battle({factionTrust:trust});quiet(s);for(let i=0;i<3;i++)enemyPhase(s);assert.equal(s.missionState.betrayer,f);assert.ok(findUnit(s,lead).withdrawn,lead);
+  for(const g of guards.map(id=>findUnit(s,id)))assert.ok(g.team==='enemy'||!alive(g),g.id);assert.ok(s.narrative.events.includes(`14:betray:${f}`));}
+});
+
 test('leaders walk south and leave by the exit row; two loyal leaders out win; a loyal leader down after the betrayal loses',()=>{
  let s=battle();quiet(s);for(let i=0;i<12&&!s.outcome;i++)enemyPhase(s);assert.equal(s.outcome,'victory');assert.match(s.reason,/출구 도착/);assert.ok(s.missionState.arrived.length>=2);
  s=battle();quiet(s);for(let i=0;i<3;i++)enemyPhase(s);findUnit(s,'leonora').hp=0;rulesOf(s).checkOutcome(s,finish);assert.equal(s.outcome,'defeat');

@@ -17,7 +17,7 @@ const lionFloor13=b=>Math.ceil(b.maxHP/2);
 // Resolve carried in from ACT I–II (PROPOSED, D-068 §6): Erik's answer at the ridge, the canyon order kept, the Iron Crown's trust.
 export function resolveSources(c){const out=[];if(c?.choices?.m05_erik_answer==='acknowledged')out.push('m05');if(c?.choices?.m08_order==='hold')out.push('m08');if((c?.factionTrust?.iron??0)>=2)out.push('iron');return out;}
 const RESOLVE_KO={m05:'M05 "구해 주신 목숨입니다"',m08:'M08 협곡 사수 명령',iron:'철왕관 신뢰 2 이상',eric:'에릭의 설득',thea:'테아의 말',camp:'야영지를 지킨 턴'};
-function addResolve(s,why){const st=s.missionState,m=missionOf(s);if(st.halted)return;st.resolve++;st.sources.push(why);s.feedback.push({type:'potential',id:'boss',text:`결단 ${st.resolve}/${m.persuade.threshold}`});
+function addResolve(s,why){const st=s.missionState,m=missionOf(s);if(st.halted)return;st.resolve++;st.sources.push(why);s.feedback.push({type:'rescue',id:'boss',text:`결단 ${st.resolve}/${m.persuade.threshold}`});
  s.log.push(`발드릭의 결단 +1 (${RESOLVE_KO[why]||why}) · ${st.resolve}/${m.persuade.threshold}`);
  if(st.resolve>=m.persuade.threshold){st.halted=true;for(const e of s.units.filter(u=>u.team==='enemy'&&alive(u))){e.benched=true;e.withdrawn=true;}enqueueStory(s,'13:halt');s.log.push('발드릭이 손을 들어 군을 멈춥니다. 철왕관 병사들이 무기를 내립니다.');}
  else if(st.resolve===m.persuade.threshold-1)enqueueStory(s,'13:waver');}
