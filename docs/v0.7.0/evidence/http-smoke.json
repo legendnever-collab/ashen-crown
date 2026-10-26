@@ -1,0 +1,21 @@
+{
+  "checks": [
+    {
+      "name": "HTTP title-to-battle flow",
+      "status": "PASS"
+    },
+    {
+      "name": "HTTP move requires confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "HTTP confirmed move persists",
+      "status": "PASS"
+    },
+    {
+      "name": "HTTP no runtime errors",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}

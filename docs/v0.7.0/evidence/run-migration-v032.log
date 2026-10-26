@@ -1,0 +1,9 @@
+PASS Actual shipped v032 equipped-interior schema5 fixture
+PASS Actual shipped v032 battle checkpoint generated
+PASS Actual v032 shop imports schema6 Erik preserving assets and growth
+PASS Actual v032 exterior return retained
+PASS Actual v032 battle and departure checkpoint migrate
+PASS Actual v032 restart preserves departure equipment
+PASS Blocked War Room legacy position repaired without loss
+PASS Recovered actual v032 assets can depart through advisor
+PASS Actual v032 migration has no runtime errors

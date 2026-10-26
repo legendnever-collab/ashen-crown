@@ -158,6 +158,43 @@ MISSIONS[10]=authored({id:10,title:'두 영주의 전쟁',en:"Two Lords' War",
  threatTurn:5,par:10,turnLimit:12,level:10,deployLimit:6,stanceChoice:true,
  objective:'출전 전 선택 — 지원: 상대 영주 지휘관 격파·생포 / 중재: 두 지휘관 모두 생포(생포한 쪽 군은 물러남) · TURN 12 안에',
  brief:'두 영주군은 서로도 싸웁니다. 지원을 고르면 그 영주군이 동맹군이 되고, 그 영주는 쓰러지지 않습니다. 중재는 두 지휘관을 HP 절반 이하에서 인접해 생포해야 하며, 한 명이라도 쓰러뜨리면 중재는 실패합니다(전투는 두 지휘관이 모두 쓰러지면 끝납니다). TURN 5부터 병사들이 마을 주민을 노립니다. TURN 4 양쪽 증원.'});
+// v0.7.0 ACT II part 2 (D-068; maps, numbers and names PROPOSED). M11 The Flame Procession: Lucien's pilgrims walk the
+// night valley road to the southern sanctuary (two tiles a turn in light, one in the dark); lighting the three braziers
+// (search) lights the road; ash raiders hunt them from the dark. Ines and two Sacred Flame knights escort as allies.
+const ashRaider=(id,x,y,stats={})=>unit(id,'재 약탈단','bandit',x,y,{hp:30,atk:16,def:5,res:3,spd:8,mov:4,movementProfile:'rogue',look:'ashRaider',...stats});
+const ashBow=(id,x,y)=>unit(id,'재 약탈단 궁수','archer',x,y,{hp:26,atk:15,def:3,res:3,spd:8,mov:3,look:'ashRaider'});
+MISSIONS[11]=authored({id:11,title:'성화의 행렬',en:'The Flame Procession',
+ rows:['xxxxxxzzzzzxxxxxxx','mmffggzzzzzggffmmm','mfffggggrggggfffmm','ffffgggfrfgggfffff','fffgggggrgggggffff','ffggggfgrgfggggfff','fggggffgrgffggggff','ggggggggrggggggggg','fgggfgggrgggfggggf','ffggggggrgggggggff','mffgggggrggggggffm','mmfgggggrgggggfmmm','mmffggggrggggffmmm','mmmfggggrggggfmmmm'],
+ enemies:[ashRaider('r1',2,6),ashRaider('r2',15,5),ashRaider('r3',3,3),ashRaider('r4',14,8),ashBow('a1',13,3),ashBow('a2',4,8)],
+ civilians:[{id:'p1',name:'순례자 노사제',look:'pilgrim',kind:'pilgrim',x:8,y:10,hp:26,def:3,res:4},{id:'p2',name:'순례자',look:'pilgrim',kind:'pilgrim',x:8,y:11,hp:26,def:3,res:3},{id:'p3',name:'순례자 어머니',look:'pilgrim',kind:'pilgrim',x:8,y:12,hp:26,def:3,res:3},{id:'p4',name:'순례자 소년',look:'pilgrim',kind:'pilgrim',x:8,y:13,hp:24,def:2,res:3}],
+ allies:[ally('ines_warden','이네스 · 순례 수호자','ines',9,11,{kind:'warden',hp:44,atk:17,def:10,res:7,spd:6,mov:3,sanctuaryAura:true}),ally('fk1','성화 기사','flameKnight',7,11,{hp:38,atk:16,def:9,res:5}),ally('fk2','성화 기사','flameKnight',9,13,{hp:38,atk:16,def:9,res:5})],
+ objects:[sealObject('br1','길가 화로','brazier',7,10),sealObject('br2','길가 화로','brazier',9,7),sealObject('br3','길가 화로','brazier',7,4)],
+ waves:[{turn:3,story:'11:wave',units:[ashRaider('r5',4,13),ashRaider('r6',13,12)]},{turn:5,story:'11:flank',units:[ashRaider('r7',0,7),ashRaider('r8',17,7),ashBow('a3',0,9)]},
+  {turn:7,story:'11:captain',units:[ashRaider('boss',15,2,{name:'재 약탈단 두목',kind:'captain',hp:72,atk:19,def:8,res:5,spd:9,mov:4}),ashRaider('r9',14,1),ashRaider('r10',1,2)]}],
+ night:{radius:2,fixed:[[6,1],[7,1],[8,1],[9,1],[10,1]]},sanctuaryRow:1,road:['r','z'],
+ deployZone:s=>{const base=[];for(let y=10;y<=13;y++)for(let x=4;x<=12;x++)base.push([x,y]);const m=MISSIONS[11],taken=[...m.civilians,...m.allies,...m.objects];return zone(base.filter(([x,y])=>Number.isFinite(TERRAIN[m.map[y][x]].cost)&&!taken.some(u=>u.x===x&&u.y===y)));},
+ deployments:{recommended:[[7,12],[9,12],[6,11],[10,11],[7,13],[10,13]],assault:[[7,12],[9,12],[6,10],[10,10],[6,11],[10,11]],defense:[[7,12],[9,12],[7,13],[10,12],[6,12],[10,13]]},
+ threatTurn:2,par:9,turnLimit:12,level:10,deployLimit:6,arriveGoal:3,escortOnly:true,
+ objective:'순례자 4명 중 3명을 성소(맨 위)까지 호위 또는 TURN 12 새벽까지 버팀 · 순례자 2명 이상 잃으면 패배',
+ brief:'순례자는 TURN 2부터 길을 따라 성소로 걷습니다. 빛 안에서는 2칸, 어둠에서는 1칸. 적이 곁에 붙거나 장수가 길을 막으면 멈춥니다. 길가 화로 3개에 인접해 조사하면 불이 켜져 반경 2칸이 밝아집니다. 빛 안의 아군은 명중 +10, 빛 밖의 대상을 노리면 명중 −15. 빛 안의 순례자는 아군 턴마다 HP +5. TURN 3 아래쪽, TURN 5 양옆 숲, TURN 7 북동쪽 숲에 두목.'});
+// M12 The Silent Monastery: sneak into the Order's monastery archive. Quiet guards watch ahead of them and turn in a
+// fixed order; a hero seen raises suspicion, a second sighting or noise rings the bell (alarm: guards wake, three come
+// from the dormitory, and the abbot burns every record not yet secured three turns later).
+const monk=(id,x,y,facing,turns,stats={})=>unit(id,'수도원 경비','spear',x,y,{hp:40,atk:16,def:8,res:4,spd:7,mov:0,alertMov:3,look:'monasteryGuard',watch:true,facing,turns,...stats});
+MISSIONS[12]=authored({id:12,title:'침묵의 수도원',en:'The Silent Monastery',
+ rows:['xxxxxxxxxxxxxxxxxx','xkkkkkxkkkkxkkkkkx','xkkkkkxkkkkxkkkkkx','xkkkkkxkkkkxkkkkkx','xxxkxxxxkkxxxxkxxx','xkkkkkkkkkkkkkkkkx','xkkxkggggggggkxkkx','xkkkkggggggggkkkkx','xkkxkggggggggkxkkx','xkkxkkkkkkkkkkxkkx','xxxxxxxxkkxxxxxxxx','gggfggggrrggggfggg','ggffgggrrrrgggffgg','gfffgggrrrrgggfffg'],
+ enemies:[
+  monk('g1',8,9,'down',['down','left','up','right']),monk('g2',5,7,'right',['right','down','left','up']),monk('g3',12,7,'left',['left','up','right','down']),
+  monk('g4',3,5,'right',['right','down']),monk('g5',14,5,'left',['left','down']),monk('g6',3,3,'down',['down','right']),monk('g7',14,2,'down',['down','left']),
+  unit('boss','침묵의 원장','captain',2,2,{hp:84,atk:19,def:8,res:7,spd:6,mov:0,alertMov:3,look:'abbot'})],
+ objects:[evidence('rec_ledger','장부 기록','ledger',1,1),evidence('rec_seal','봉인술 연구','seal',16,1),evidence('rec_roster','교단 명부','roster',8,1)],
+ waves:[{turn:99,alarm:true,story:'12:dorm',units:[monk('w1',1,7,'right',[],{awake:true,mov:3}),monk('w2',2,8,'right',[],{awake:true,mov:3}),monk('w3',1,9,'up',[],{awake:true,mov:3})]}],
+ capture:'boss',stealth:true,burnDelay:3,
+ deployZone:s=>{const base=[];for(let y=11;y<=13;y++)for(let x=0;x<18;x++)base.push([x,y]);return zone(base.filter(([x,y])=>Number.isFinite(TERRAIN[MISSIONS[12].map[y][x]].cost)));},
+ deployments:{recommended:[[8,11],[9,11],[7,12],[10,12],[8,12],[9,12]],assault:[[8,11],[9,11],[7,11],[10,11],[8,12],[9,12]],defense:[[7,12],[10,12],[8,13],[9,13],[6,12],[11,12]]},
+ threatTurn:99,par:10,turnLimit:14,level:11,deployLimit:6,
+ objective:'장부 기록 확보(인접해 조사) + 침묵의 원장 격파·생포 · 장부 기록이 불타거나 TURN 14를 넘기면 패배',
+ brief:'경비는 바라보는 방향 앞 2칸과 앞 대각선 2칸을 감시하고, 적 턴마다 정해진 순서로 돌아섭니다(붉은 칸). 적 턴이 시작될 때 감시 칸에 장수가 있으면 의심(감시 3칸), 한 번 더 들키거나 경비를 한 번에 쓰러뜨리지 못하면 종이 울립니다(경보). 경보가 울리면 경비가 모두 움직이고 숙소에서 셋이 나오며, 3턴 뒤 원장이 확보하지 못한 기록을 태웁니다. 감시 밖에서 조용한 경비를 치면 기습(명중 +30, 피해 +5). 원장은 HP 절반 이하에서 인접해 생포할 수 있습니다.'});
 // v0.5.0 Phase E (D-047): promotion trials (101–105) and the repeatable Legion Drill (110). Non-story
 // skirmishes after ACT I: never pushed into campaign.completed, no gold, permanent EXP (mission level 7).
 // goal: survive (turn N ends with `protect` alive) · rout (all enemies down by `limit`) · reach (hero at row ≤ y)

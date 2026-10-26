@@ -52,7 +52,7 @@ export function bustKey(u,missionId=1){
  if(u.id==='eric'&&(appearanceFor(u)?.tier||1)>=2)return 'eric_adv';
  if(BUST_SPEC[u.id])return u.id;
  // v0.6 ACT II recruits and leaders (pack B, D-059): painted busts by id; without the art the cast vector bust below.
- if(['thea','dario','cassian','leonora'].includes(u.id)&&u.team!=='enemy')return PAINTED?.[u.id]?u.id:'cast:'+u.id;
+ if(['thea','dario','cassian','leonora','ines','lucien'].includes(u.id)&&u.team!=='enemy')return PAINTED?.[u.id]?u.id:'cast:'+u.id;
  // v0.6.1: the two lords of M10 speak with their army's look; mission units that name a look use it.
  if(LORD_LOOK[u.id])return 'cast:'+LORD_LOOK[u.id];
  if(u.look)return PAINTED?.[u.look]?u.look:'cast:'+u.look;

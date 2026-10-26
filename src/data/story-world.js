@@ -21,5 +21,11 @@ export const STORY_WORLD={
   w5('협곡을 지나 서쪽으로. 철왕관의 길이 끝나는 곳에 자유 영주들의 땅이 펼쳐진다.',{focus:'continent',from:'march',to:'velmar'}),
   w5('두 번째 깃발 아래, 항구 도시 벨마르. 이 도시는 누구에게도 무릎 꿇지 않는다. 대신 누구도 지켜 주지 않는다.',{focus:'west',prev:'continent',from:'march',to:'velmar',card:{act:ACT2,region:'자유도시 연맹',place:'자유도시 벨마르'}})
  ],
+ // v0.7 (D-068): the third banner.
+ 'world:pilgrim':[
+  w5('벨마르를 떠나 남쪽으로. 들판이 끝나는 곳, 언덕 위 대성당의 불빛이 밤새 꺼지지 않는다.',{focus:'continent',from:'velmar',to:'pilgrim'}),
+  w5('세 번째 깃발 아래, 성화 대성당 아래의 순례자 마을. 이곳은 누구에게나 빵을 나눈다. 그리고 맹세를 묻는다.',{focus:'south',prev:'continent',from:'velmar',to:'pilgrim',card:{act:ACT2,region:'성화령',place:'순례자 마을'}})
+ ],
+ 'world:refuge':[w5('침묵의 수도원에서 돌아온 밤. 군단은 순례자 마을 아래 언덕에 피난민과 함께 야영을 친다.',{focus:'south',from:'pilgrim',to:'refuge',card:{act:ACT2,region:'성화령',place:'피난민 야영지'}})],
  'world:oathcamp':[w5('피난민과 함께 국경 관문을 넘었다. 왕실의 명령은 이제 그들 뒤에 있다.',{focus:'east',from:'fortress',to:'oathcamp',card:{act:ACT1,region:'동부 변경',place:'관문 너머 야영지'}})]
 };

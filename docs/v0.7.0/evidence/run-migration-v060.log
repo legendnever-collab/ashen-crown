@@ -1,0 +1,13 @@
+PASS Shipped v0.6.0 village save is schema 9
+PASS Shipped v0.6.0 battle checkpoint generated
+PASS v0.6.0 village save opens in the painted village (schema 9, gold kept, legal position)
+PASS Imported village save does not replay the world-map intro
+PASS v0.6.0 battle and its checkpoint migrate unchanged
+PASS Restart of a migrated v0.6.0 battle works
+PASS v0.6.0 canyon-bivouac save opens with every asset kept and Thea in the legion
+PASS The migrated camp now offers Mission 9 (Velmar)
+PASS A v0.6.0 campaign reaches Velmar for Mission 9
+PASS v0.6.0 Mission 08 battle resumes
+PASS Migrated save reloads as the current version
+PASS No runtime errors in either build
+12 v0.6.0 browser migration checks PASS

@@ -14,7 +14,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  await cmd(old,'npc','advisor');await drainStory(old);if(await old.locator('[data-do="advisor-operation"]').count())await cmd(old,'advisor-operation');await drainStory(old);await cmd(old,'deploy');await cmd(old,'start-battle');await drainStory(old);
  const battle=await snapshot(old),battleText=await backup(old);check('Shipped v0.5.0 battle checkpoint generated',battle.screen==='battle'&&battle.stageStart.schema===8);
  // 2. Restore each into v0.6.0.
- const p=await ctx.newPage();p.on('pageerror',e=>errors.push(`v060: ${e.message}`));await p.goto(pathToFileURL(path.resolve('releases/Ashen_Crown_v0.6.1.html')).href);await p.waitForFunction(()=>!!window.AshenCrown);if(await p.locator('[data-do="new"]').count()){await cmd(p,'new');}await drainStory(p);
+ const p=await ctx.newPage();p.on('pageerror',e=>errors.push(`v060: ${e.message}`));await p.goto(pathToFileURL(path.resolve('releases/Ashen_Crown_v0.7.0.html')).href);await p.waitForFunction(()=>!!window.AshenCrown);if(await p.locator('[data-do="new"]').count()){await cmd(p,'new');}await drainStory(p);
  const restore=async text=>{await drainStory(p);await cmd(p,'menu');await cmd(p,'backup');await p.locator('#backup-text').fill(text);await cmd(p,'restore');await p.waitForFunction(()=>!AshenCrown.view().busy);await p.waitForTimeout(300);};
  await restore(villageText);let s=await snapshot(p);
  check('v0.5.0 village save opens in the painted village (schema 9, gold kept, legal position)',s.schema===9&&s.screen==='exploration'&&s.frontier.hub==='village'&&s.economy.gold===village.economy.gold&&JSON.stringify(nmStrip(s.campaign.heroes))===JSON.stringify(nmStrip(village.campaign.heroes)));
@@ -30,7 +30,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  check('A v0.5.0 campaign reaches the castle town for Mission 7',s.missionId===7&&s.frontier.hub==='castletown'&&!s.practice&&s.campaign.factionTrust.iron===-1);
  await p.screenshot({path:'test-output/migration-v050-castletown.png'});
  await restore(fixture('m06-battle').save);s=await snapshot(p);check('v0.5.0 Mission 06 battle resumes',s.screen==='battle'&&s.missionId===6&&s.stageStart.schema===9);
- await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===9&&s.version==='0.6.1'&&s.missionId===6);
+ await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===9&&s.version==='0.7.0'&&s.missionId===6);
  check('No runtime errors in either build',errors.length===0);await ctx.close();
 }finally{fs.mkdirSync('test-output',{recursive:true});fs.writeFileSync('test-output/migration-v050-browser.json',JSON.stringify({checks,errors},null,2));await browser.close();}
 console.log(`${checks.length} v0.5.0 browser migration checks PASS`);

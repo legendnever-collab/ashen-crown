@@ -14,8 +14,8 @@ const load=name=>deserialize(fixture(name).save);
 
 test('fixtures are genuine v0.6.0 schema-9 saves',()=>{for(const n of ['m08-camp','m08-battle']){const f=fixture(n);assert.equal(f.version,'0.6.0');assert.equal(f.schema,9);assert.equal(raw(n).version,'0.6.0');}});
 
-test('the v0.6.0 end-of-content camp (canyon bivouac, Thea joined) loads as v0.6.1 with every asset kept',()=>{
- const before=raw('m08-camp'),s=load('m08-camp');assert.equal(s.schema,SCHEMA);assert.equal(s.version,VERSION);assert.equal(VERSION,'0.6.1');
+test('the v0.6.0 end-of-content camp (canyon bivouac, Thea joined) loads as the current version with every asset kept',()=>{
+ const before=raw('m08-camp'),s=load('m08-camp');assert.equal(s.schema,SCHEMA);assert.equal(s.version,VERSION);
  assert.equal(s.frontier.hub,'march');assert.equal(s.frontier.phase,'aftermath');assert.deepEqual(s.campaign.roster,['thea']);
  for(const k of ['completed','economy','flags','choices','promotions','factionTrust','trustLog'])assert.deepEqual(s.campaign[k],before.campaign[k],k);
  assert.equal(deserialize(serialize(s)).version,VERSION);

@@ -1,0 +1,33 @@
+PASS 1440 new game opens the Erdia world map first
+PASS 1440 world canvas is painted
+PASS 1440 third line zooms to the Eastern March with the ACT I card
+PASS 1440 world map survives reload mid-intro
+PASS 1440 the intro hands over to the village morning (pre:1)
+PASS 1440 M03 won on the result screen
+PASS 1440 aftermath shows the travel map to the bivouac first
+PASS 1440 then the staged campfire scene plays in the bivouac
+PASS 1440 M04 preparation in the painted bivouac at Lia's table
+PASS 1440 the merchant's stall offers items and weapons together
+PASS 1440 buying a potion at the stall spends Gold once and reopens the stall shop
+PASS 1440 the same merchant sells weapons
+PASS 1440 no shop interior was entered
+PASS 1440 menu opens the world map
+PASS 1440 no horizontal overflow
+PASS 1440 no runtime errors
+PASS 390 new game opens the Erdia world map first
+PASS 390 world canvas is painted
+PASS 390 third line zooms to the Eastern March with the ACT I card
+PASS 390 world map survives reload mid-intro
+PASS 390 the intro hands over to the village morning (pre:1)
+PASS 390 M03 won on the result screen
+PASS 390 aftermath shows the travel map to the bivouac first
+PASS 390 then the staged campfire scene plays in the bivouac
+PASS 390 M04 preparation in the painted bivouac at Lia's table
+PASS 390 the merchant's stall offers items and weapons together
+PASS 390 buying a potion at the stall spends Gold once and reopens the stall shop
+PASS 390 the same merchant sells weapons
+PASS 390 no shop interior was entered
+PASS 390 menu opens the world map
+PASS 390 no horizontal overflow
+PASS 390 no runtime errors
+32 world checks PASS

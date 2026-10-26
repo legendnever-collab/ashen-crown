@@ -1,0 +1,23 @@
+{
+ "checks": [
+  "1440 ACT I camp offers the rite panel",
+  "1440 panel lists five heroes with conditions",
+  "1440 only Kai (Lv 6, potential 3/3) may start a trial",
+  "1440 no runtime errors",
+  "390 Kai trial starts (PROMOTION TRIAL, Kai provisionally Shadowblade, others in reserve)",
+  "390 Kai reaches the sentinel",
+  "390 exchange forecast on the sentinel",
+  "390 Shadow Exchange puts Kai in the gate",
+  "390 trial won when Kai reaches the top row",
+  "390 result shows the promotion",
+  "390 promotion scene plays on return",
+  "390 rank-up card follows the scene (Shadowblade, Shadow Exchange)",
+  "390 the rite theme plays under the card",
+  "390 the card is shown once",
+  "390 back in the ACT I camp with Kai promoted for good",
+  "390 panel marks Kai as promoted",
+  "390 Legion Drill starts with all five heroes",
+  "390 drill survives reload (skirmish return point kept)",
+  "390 no runtime errors"
+ ]
+}

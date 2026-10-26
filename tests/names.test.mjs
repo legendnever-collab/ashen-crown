@@ -16,7 +16,7 @@ test('character names contain no Latin letters',()=>{
  for(const m of Object.values(MISSIONS))for(const u of [...m.enemies,...(m.reinforcements||[]),...m.civilians,...(m.allies||[]),...(m.waves||[]).flatMap(w=>w.units)])names.push([`M${m.id}:${u.id}`,u.name]);
  for(const [id,c] of Object.entries(CAST))names.push([`cast:${id}`,c.name]);
  for(const [id,name] of names)assert.ok(typeof name==='string'&&name&&!latin.test(name),`${id}: ${name}`);
- assert.deepEqual(HEROES.map(h=>h.name),['에릭','엘리나','리아','세인','카이']);assert.deepEqual(RECRUIT_HEROES.map(h=>h.name),['테아','다리오']);
+ assert.deepEqual(HEROES.map(h=>h.name),['에릭','엘리나','리아','세인','카이']);assert.deepEqual(RECRUIT_HEROES.map(h=>h.name),['테아','다리오','이네스']);
  assert.equal(SPEAKERS.aren.name,'아렌 발터');assert.equal(SPEAKERS.baldrick.name,'발드릭 로엔');
 });
 test('a save made with English names is renamed on load',()=>{

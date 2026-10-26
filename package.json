@@ -1,6 +1,6 @@
 {
   "name": "ashen-crown",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "private": true,
   "type": "module",
   "description": "Original pixel fantasy SRPG: The Ashen Village",
@@ -44,7 +44,9 @@
     "test:hub-doors": "node tests/hub-doors-e2e.mjs",
     "test:migration-v050": "node tests/migration-v050.mjs",
     "test:act2b-campaign": "node tests/act2b-campaign-e2e.mjs",
-    "test:migration-v060": "node tests/migration-v060.mjs"
+    "test:migration-v060": "node tests/migration-v060.mjs",
+    "test:act2c-campaign": "node tests/act2c-campaign-e2e.mjs",
+    "test:migration-v061": "node tests/migration-v061.mjs"
   },
   "devDependencies": {
     "playwright": "1.58.2"

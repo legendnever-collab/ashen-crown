@@ -1,6 +1,6 @@
 import {GEAR,TOOLS} from '../data/frontier-data.js';
 // Supplement existing first-clear Gold, never replace or repeat it.
-export function supplementalRewards(missionId,{rescued=0,captured=false,seal=false,orders=false,broken=false,wagons=0,refugees=0,beacon=false,convoy=0,captured7=false,villagers=0,captain8=false,delegates=0,captured9=false,villagers10=0,mediated=false}={}){
+export function supplementalRewards(missionId,{rescued=0,captured=false,seal=false,orders=false,broken=false,wagons=0,refugees=0,beacon=false,convoy=0,captured7=false,villagers=0,captain8=false,delegates=0,captured9=false,villagers10=0,mediated=false,pilgrims=0,braziers=0,silent12=false,abbot12=false}={}){
  const reward=(suffix,kind,type,amount=1,optional=false)=>({id:`v032:m${missionId}:${suffix}`,missionId,kind,type,amount,optional});
  if(missionId===1)return [reward('supply','item','medium'),...(rescued===2?[reward('rescue','item','ward',1,true)]:[])];
  if(missionId===2)return [reward('supply','item','ether'),...(captured?[reward('capture','gold',null,30,true)]:[])];
@@ -17,9 +17,13 @@ export function supplementalRewards(missionId,{rescued=0,captured=false,seal=fal
  const v61=(suffix,kind,type,amount=1,optional=false)=>({...reward(suffix,kind,type,amount,optional),id:`v061:m${missionId}:${suffix}`});
  if(missionId===9)return [v61('supply-hp','item','medium'),v61('supply-mp','item','ether'),...(delegates===3?[v61('all-delegates','gear','longbow',1,true)]:[]),...(captured9?[v61('assassin','item','ward',1,true)]:[])];
  if(missionId===10)return [v61('supply-hp','item','medium'),v61('supply-mp','item','ether'),...(villagers10===3?[v61('all-villagers','gold',null,80,true)]:[]),...(mediated?[v61('truce','gear','travelCloak',1,true)]:[])];
+ // v0.7.0 (PROPOSED, D-068): M11 every pilgrim through → a mercy staff, all three braziers lit → 70 gold; M12 the ledger secured before the bell → balanced daggers, the abbot taken alive → a ward.
+ const v7=(suffix,kind,type,amount=1,optional=false)=>({...reward(suffix,kind,type,amount,optional),id:`v070:m${missionId}:${suffix}`});
+ if(missionId===11)return [v7('supply-hp','item','medium'),v7('supply-mp','item','ether'),...(pilgrims===4?[v7('all-pilgrims','gear','mercyStaff',1,true)]:[]),...(braziers===3?[v7('braziers','gold',null,70,true)]:[])];
+ if(missionId===12)return [v7('supply-hp','item','medium'),v7('supply-mp','item','ether'),...(silent12?[v7('silent','gear','daggers',1,true)]:[]),...(abbot12?[v7('abbot','item','ward',1,true)]:[])];
  return [];
 }
-export const knownRewards=()=>[1,2,3,4,5,6,7,8,9,10].flatMap(id=>supplementalRewards(id,{rescued:2,captured:true,seal:true,orders:true,broken:true,wagons:2,refugees:4,beacon:true,convoy:3,captured7:true,villagers:3,captain8:true,delegates:3,captured9:true,villagers10:3,mediated:true}));
+export const knownRewards=()=>[1,2,3,4,5,6,7,8,9,10,11,12].flatMap(id=>supplementalRewards(id,{rescued:2,captured:true,seal:true,orders:true,broken:true,wagons:2,refugees:4,beacon:true,convoy:3,captured7:true,villagers:3,captain8:true,delegates:3,captured9:true,villagers10:3,mediated:true,pilgrims:4,braziers:3,silent12:true,abbot12:true}));
 export function initRewardLedger(e){e.rewardClaims??=[];e.rewardHistory??=[];e.rewardPending??=[];return e;}
 export function deliverRewards(e){let count=0;for(let i=0;i<e.rewardPending.length;){const r=e.rewardPending[i];if(r.kind==='item'&&Object.values(e.items).reduce((a,b)=>a+b,0)<6){e.items[r.type]++;}else if(r.kind==='gear'&&e.gear.length<24){e.gear.push({id:`g${e.next++}`,type:r.type,level:0});}else{i++;continue;}e.rewardPending.splice(i,1);count++;}return count;}
 export function grantSupplemental(e,missionId,context={},legacy=false){initRewardLedger(e);const grants=[];for(const r of supplementalRewards(missionId,context)){if(e.rewardClaims.includes(r.id))continue;e.rewardClaims.push(r.id);e.rewardHistory.push({...r,legacy});if(r.kind==='gold')e.gold+=r.amount;else for(let n=0;n<r.amount;n++)e.rewardPending.push({...r});grants.push(r);}deliverRewards(e);return grants;}

@@ -17,7 +17,9 @@ export function hubFor(missionId,phase='preparation'){
 }
 // v0.6 ACT II (D-055 §6, PROPOSED): Ironhold's castle town for M07–M08, the canyon bivouac ('march', the bivouac painting)
 // after M08, Velmar for M09–M10.
-export function act2HubFor(missionId,phase='preparation'){const after=phase==='aftermath';if(missionId===7||missionId===8&&!after)return 'castletown';if(missionId===8)return 'march';return 'velmar';}
+export function act2HubFor(missionId,phase='preparation'){const after=phase==='aftermath';if(missionId===7||missionId===8&&!after)return 'castletown';if(missionId===8)return 'march';
+ // v0.7 (D-068): the pilgrim village below the Sacred Flame cathedral for M11–M12, the refugee camp after M12.
+ if(missionId===11||missionId===12&&!after)return 'pilgrim';if(missionId>=12)return 'refuge';return 'velmar';}
 // Story key → hub used as the staged backdrop ('pre:3', 'after:3:loss', '6:oath' …).
 export function stageHubFor(key){
  const m=/^(pre|after):(\d+)/.exec(key);if(m)return hubFor(+m[2],m[1]==='after'?'aftermath':'preparation');
@@ -35,7 +37,7 @@ function hv5Build(id,spec){
   buildings.push({x,y,w,h,label,type,buildingId:bid,entrance,returnPoint:{tileX:dx,tileY:dy+1},interiorScene:interior,painted:true});
   places.push(shop?{id:bid,name,x:dx,y:dy+1,action:shop,entrance,buildingId:bid}:{id:bid,name,x:dx,y:dy+1,action:'enter',entrance,buildingId:bid,interior,hub:id});}
  const npcs=spec.npcs.map(([nid,name,x,y,extra])=>({id:nid,name,x,y,...(extra||{})}));
- return {name:spec.name,tone:spec.tone||'camp',kind:spec.kind,art:spec.art,width:24,height:16,spawn:spec.spawn,mask,stage:spec.stage,lights:spec.lights||[],paintedTable:!!spec.paintedTable,night:!!spec.night,buildings,places,npcs};
+ return {name:spec.name,tone:spec.tone||'camp',kind:spec.kind,art:spec.art,width:24,height:16,spawn:spec.spawn,mask,stage:spec.stage,lights:spec.lights||[],paintedTable:!!spec.paintedTable,night:!!spec.night,dusk:!!spec.dusk,buildings,places,npcs};
 }
 const hv5Heroes=(pos)=>[['aren','아렌 · 군단장',...pos.aren,{kind:'commander'}],['elina',pos.elinaName,...pos.elina,{kind:'hero'}],['lia','리아 · 군사',...pos.lia,{kind:'hero'}],['sain',pos.sainName,...pos.sain,{kind:'hero'}],['kai',pos.kaiName,...pos.kai,{kind:'hero'}],['advisor','리아의 작전 탁자 · 작전 회의',...pos.advisor,{kind:'advisor'}]];
 
@@ -161,4 +163,16 @@ const HV5_SPECS={
 Object.assign(HV5_SPECS,ACT2_HUB_SPECS);
 // After the canyon (M08) the legion camps under the grey canyon: the bivouac painting and layout, with Thea at the fire.
 HV5_SPECS.march={...HV5_SPECS.bivouac,name:'Canyon Bivouac · 협곡 야영지',npcs:[...HV5_SPECS.bivouac.npcs,['thea','테아 · 모닥불',14,6,{kind:'hero'}]]};
+// v0.7 (D-068, PROPOSED): the pilgrim village below the Sacred Flame cathedral (M11–M12). Until art pack D arrives it is
+// drawn with the Ashen Village painting tinted to dusk (temporary: that village's layout, doors and rooms). After M12 the
+// legion camps with the refugees under the night bivouac painting. Recruits stand there only when they joined.
+HV5_SPECS.pilgrim={...HV5_VILLAGE,name:'Pilgrim Village · 순례자 마을',kind:'pilgrim',art:'hub_village_day',dusk:true,
+ places:[['square','순례자 광장',12,8],['exit','남쪽 순례길',11,14],['advisor','작전 탁자 · 순례자 회관',19,9]],
+ npcs:[...hv5Heroes({aren:[16,8],elina:[12,1],elinaName:'엘리나 · 언덕길',lia:[18,8],sain:[5,8],sainName:'세인 · 구호원 앞',kai:[15,5],kaiName:'카이 · 골목',advisor:[19,8]}),
+  ['elder','순례자 마을 사제',22,9],['refugee','피난민',7,8],['guard','성화 기사',12,14],['ines','이네스 · 순례 수호자',9,4,{kind:'hero'}],
+  ['thea','테아 · 언덕길',13,4,{kind:'hero',requires:'thea'}],['dario','다리오 · 광장',20,4,{kind:'hero',requires:'dario'}]],
+ lights:[[190,180,90,'lantern'],[770,560,140,'fire'],[420,300,80,'lantern'],[1120,300,80,'lantern'],[560,620,70,'lantern'],[1010,620,70,'lantern']]};
+HV5_SPECS.refuge={...HV5_SPECS.bivouac,name:'Refugee Camp · 피난민 야영지',kind:'refuge',
+ npcs:[...HV5_SPECS.bivouac.npcs.map(n=>n[0]==='elder'?['elder','순례자 사제',16,5]:n[0]==='refugee'?['refugee','피난민',10,10]:n),
+  ['ines','이네스 · 모닥불',14,6,{kind:'hero',requires:'ines'}],['thea','테아 · 경계',13,4,{kind:'hero',requires:'thea'}],['dario','다리오 · 모닥불',11,9,{kind:'hero',requires:'dario'}]]};
 export const ART_HUBS=Object.fromEntries(Object.entries(HV5_SPECS).map(([id,spec])=>[id,hv5Build(id,spec)]));

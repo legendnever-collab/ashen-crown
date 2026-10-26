@@ -1,0 +1,114 @@
+PASS 1440x900 M03 aftermath offers Mission 4
+PASS 1440x900 M04 opens in camp preparation with pre:4 scene seen
+PASS 1440x900 advisor briefing leads to the M04 War Council
+PASS 1440x900 M04 deployment uses the authored fortress presets
+PASS 1440x900 M04 battle starts with three evidence objects and archive boss holding
+PASS 1440x900 M04 objective bar shows evidence and burn timer
+PASS 1440x900 M04 battle has no horizontal overflow
+PASS 1440x900 Search forecast is labelled and costs no HP
+PASS 1440x900 Lia searches the seal record and her teacher-notation scene plays
+PASS 1440x900 searched record leaves the board, ledger still pending
+PASS 1440x900 ledger + fallen quartermaster = victory with M04 flags and first-clear Gold
+PASS 1440x900 result shows evidence summary and sends the legion back to camp first
+PASS 1440x900 M04 aftermath asks for the records decision
+PASS 1440x900 records choice modal lists both options
+PASS 1440x900 choice saved and its scene plays once
+PASS 1440x900 choice survives reload; Mission 5 is offered after the decision
+PASS 1440x900 aftermath layout has no horizontal overflow
+PASS 1440x900 M05 opens in camp with the black-lion report
+PASS 1440x900 M05 council names both victory routes
+PASS 1440x900 parley plays on deployment and asks for Erik's answer
+PASS 1440x900 answer saved and its scene plays
+PASS 1440x900 M05 battle starts with formation, two wagons and the objective bar
+PASS 1440x900 M05 battle has no horizontal overflow
+PASS 1440x900 Baldrick withdraws without falling: victory A with flags and Heavy Shield
+PASS 1440x900 withdrawal and farewell scenes match the answer
+PASS 1440x900 M05 aftermath plays the camp talk for the chosen answer
+PASS 1440x900 M06 opens in camp with the royal order matching the records choice
+PASS 1440x900 M06 council explains the three phases
+PASS 1440x900 M06 battle: four refugees, two locked seal stones, phase bar
+PASS 1440x900 M06 battle has no horizontal overflow
+PASS 1440x900 unseal forecast names the seal stone
+PASS 1440x900 Lia unseals in one action → phase 3 and Erik's Oath Banner
+PASS 1440x900 M06 victory sets ACT I flags and the finale rewards
+PASS 1440x900 M06 aftermath plays the oath scene and asks for the oath focus
+PASS 1440x900 oath saved, its scenes play and the ACT I card names the Ashen Legion
+PASS 1440x900 camp names ACT II and offers the march to Mission 7 (D-064)
+PASS 1440x900 oath and ACT I completion survive reload without repeating
+PASS 390x844 M03 aftermath offers Mission 4
+PASS 390x844 M04 opens in camp preparation with pre:4 scene seen
+PASS 390x844 advisor briefing leads to the M04 War Council
+PASS 390x844 M04 deployment uses the authored fortress presets
+PASS 390x844 M04 battle starts with three evidence objects and archive boss holding
+PASS 390x844 M04 objective bar shows evidence and burn timer
+PASS 390x844 M04 battle has no horizontal overflow
+PASS 390x844 Search forecast is labelled and costs no HP
+PASS 390x844 Lia searches the seal record and her teacher-notation scene plays
+PASS 390x844 searched record leaves the board, ledger still pending
+PASS 390x844 ledger + fallen quartermaster = victory with M04 flags and first-clear Gold
+PASS 390x844 result shows evidence summary and sends the legion back to camp first
+PASS 390x844 M04 aftermath asks for the records decision
+PASS 390x844 records choice modal lists both options
+PASS 390x844 choice saved and its scene plays once
+PASS 390x844 choice survives reload; Mission 5 is offered after the decision
+PASS 390x844 aftermath layout has no horizontal overflow
+PASS 390x844 M05 opens in camp with the black-lion report
+PASS 390x844 M05 council names both victory routes
+PASS 390x844 parley plays on deployment and asks for Erik's answer
+PASS 390x844 answer saved and its scene plays
+PASS 390x844 M05 battle starts with formation, two wagons and the objective bar
+PASS 390x844 M05 battle has no horizontal overflow
+PASS 390x844 Baldrick withdraws without falling: victory A with flags and Heavy Shield
+PASS 390x844 withdrawal and farewell scenes match the answer
+PASS 390x844 M05 aftermath plays the camp talk for the chosen answer
+PASS 390x844 M06 opens in camp with the royal order matching the records choice
+PASS 390x844 M06 council explains the three phases
+PASS 390x844 M06 battle: four refugees, two locked seal stones, phase bar
+PASS 390x844 M06 battle has no horizontal overflow
+PASS 390x844 unseal forecast names the seal stone
+PASS 390x844 Lia unseals in one action → phase 3 and Erik's Oath Banner
+PASS 390x844 M06 victory sets ACT I flags and the finale rewards
+PASS 390x844 M06 aftermath plays the oath scene and asks for the oath focus
+PASS 390x844 oath saved, its scenes play and the ACT I card names the Ashen Legion
+PASS 390x844 camp names ACT II and offers the march to Mission 7 (D-064)
+PASS 390x844 oath and ACT I completion survive reload without repeating
+PASS 844x390 M03 aftermath offers Mission 4
+PASS 844x390 M04 opens in camp preparation with pre:4 scene seen
+PASS 844x390 advisor briefing leads to the M04 War Council
+PASS 844x390 M04 deployment uses the authored fortress presets
+PASS 844x390 M04 battle starts with three evidence objects and archive boss holding
+PASS 844x390 M04 objective bar shows evidence and burn timer
+PASS 844x390 M04 battle has no horizontal overflow
+PASS 844x390 Search forecast is labelled and costs no HP
+PASS 844x390 Lia searches the seal record and her teacher-notation scene plays
+PASS 844x390 searched record leaves the board, ledger still pending
+PASS 844x390 ledger + fallen quartermaster = victory with M04 flags and first-clear Gold
+PASS 844x390 result shows evidence summary and sends the legion back to camp first
+PASS 844x390 M04 aftermath asks for the records decision
+PASS 844x390 records choice modal lists both options
+PASS 844x390 choice saved and its scene plays once
+PASS 844x390 choice survives reload; Mission 5 is offered after the decision
+PASS 844x390 aftermath layout has no horizontal overflow
+PASS 844x390 M05 opens in camp with the black-lion report
+PASS 844x390 M05 council names both victory routes
+PASS 844x390 parley plays on deployment and asks for Erik's answer
+PASS 844x390 answer saved and its scene plays
+PASS 844x390 M05 battle starts with formation, two wagons and the objective bar
+PASS 844x390 M05 battle has no horizontal overflow
+PASS 844x390 Baldrick withdraws without falling: victory A with flags and Heavy Shield
+PASS 844x390 withdrawal and farewell scenes match the answer
+PASS 844x390 M05 aftermath plays the camp talk for the chosen answer
+PASS 844x390 M06 opens in camp with the royal order matching the records choice
+PASS 844x390 M06 council explains the three phases
+PASS 844x390 M06 battle: four refugees, two locked seal stones, phase bar
+PASS 844x390 M06 battle has no horizontal overflow
+PASS 844x390 unseal forecast names the seal stone
+PASS 844x390 Lia unseals in one action → phase 3 and Erik's Oath Banner
+PASS 844x390 M06 victory sets ACT I flags and the finale rewards
+PASS 844x390 M06 aftermath plays the oath scene and asks for the oath focus
+PASS 844x390 oath saved, its scenes play and the ACT I card names the Ashen Legion
+PASS 844x390 camp names ACT II and offers the march to Mission 7 (D-064)
+PASS 844x390 oath and ACT I completion survive reload without repeating
+PASS ACT I browser run has zero runtime errors
+PASS ACT I standalone makes zero HTTP requests
+113 ACT I checks PASS

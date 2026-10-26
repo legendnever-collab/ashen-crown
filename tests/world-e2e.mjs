@@ -5,7 +5,7 @@ import {launchTestBrowser} from './browser-helper.mjs';import {pathToFileURL} fr
 import {serialize} from '../src/persistence/save-manager.js';import {newGame,startBattle} from '../src/core/game.js';import {enterHub} from '../src/core/frontier.js';import {HUBS} from '../src/data/frontier-data.js';
 import {drain,playCampaignBattle} from './campaign-policy.mjs';import {drainStory} from './story-helper.mjs';
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const results=[];const check=(name,ok)=>{assert.ok(ok,name);n++;results.push(name);console.log('PASS',name);};
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.6.1.html').href;fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.7.0.html').href;fs.mkdirSync('test-output',{recursive:true});
 // M03 won, still on the result screen, legion last stood in the Border Camp.
 function m3Won(){const s=newGame(20261020,{heroes:null,results:[],clears:2,completed:[1,2],flags:{mission_01_completed:true},tacticalMemory:{}},3);enterHub(s,{story:false});drain(s);s.screen='deployment';startBattle(s);playCampaignBattle(s,true);return s;}
 function bivouac(near=false){const s=newGame(20261021,{heroes:null,results:[],clears:3,completed:[1,2,3],flags:{mission_01_completed:true},tacticalMemory:{}},4);enterHub(s,{story:false});drain(s);if(near){s.frontier.x=9;s.frontier.y=8;s.campaign.frontier=structuredClone(s.frontier);}return s;}

@@ -61,7 +61,7 @@ export function performAction(s,id,mode,targetId){
  if(!validTarget(s,u,t,mode))return {ok:false,error:'대상 또는 사거리가 올바르지 않습니다.'};
  if(mode==='skill'&&u.mp<skillCost(u))return {ok:false,error:'MP가 부족합니다.'};
  if(t?.id==='boss'&&['attack','skill','capture'].includes(mode))enqueueStory(s,`${s.missionId}:encounter`);
- if(mode==='skill'){u.mp-=skillCost(u);remember(s,`${u.id}_skill`);if(u.id==='dario')u.riposte=true;}
+ if(mode==='skill'){u.mp-=skillCost(u);remember(s,`${u.id}_skill`);if(u.id==='dario')u.riposte=true;if(u.id==='ines')u.sanctuary=true;}
  consumeAction(s,u);if(s.missionId===3&&u.id==='kai'&&u.y<=4)remember(s,'kai_bypass');
  if(mode==='skill'&&u.id==='kai'&&(u.classTier||1)>=2&&!u.moved)u.strikeMove=s.turn;
  if(mode==='search'){const custom=rulesOf(s)?.search?.(s,u,t);if(!custom)searchEvidence(s,u,t);awardXP(s,u,30,`${t.name} ${custom?'작동':'조사'}`);}
@@ -125,7 +125,7 @@ export function advanceEnemy(s){
   checkOutcome(s);afterBattleEvents(s);return true;
  }
  s.turn++;s.phase='player';s.enemyQueue=[];s.enemyIndex=0;
- for(const u of s.units.filter(u=>u.team==='ally')){u.shadowBonus=u.id==='kai'&&!u.hitThisTurn?1:0;u.hitThisTurn=false;u.ward=false;u.guardTarget=null;u.guarding=false;u.guardUsed=false;u.moved=false;u.acted=false;if(u.chargeRun)u.chargeRun=0;if(u.riposte)u.riposte=false;}
+ for(const u of s.units.filter(u=>u.team==='ally')){u.shadowBonus=u.id==='kai'&&!u.hitThisTurn?1:0;u.hitThisTurn=false;u.ward=false;u.guardTarget=null;u.guarding=false;u.guardUsed=false;u.moved=false;u.acted=false;if(u.chargeRun)u.chargeRun=0;if(u.riposte)u.riposte=false;if(u.sanctuary)u.sanctuary=false;}
  expireClassEffects(s);
  if(s.missionId===1&&s.turn===2)s.log.push('북쪽 숲에서 발소리가 들립니다. TURN 3에 북서·북동 모서리로 산적 2명이 진입합니다.');
  if(s.turn>=3&&!s.reinforced&&missionOf(s).reinforcements.length){for(const e of missionOf(s).reinforcements){let pos={x:e.x,y:e.y};if(at(s,pos.x,pos.y)){const free=[];for(let y=0;y<missionOf(s).height;y++)for(let x=0;x<missionOf(s).width;x++)if(!at(s,x,y)&&Number.isFinite(terrainAt(x,y,s).cost))free.push({x,y});free.sort((a,b)=>distance(a,e)-distance(b,e));pos=free[0];}s.units.push({...structuredClone(e),...pos,team:'enemy',maxHP:e.hp,mp:0,maxMP:0,mag:0,spawnTurn:s.turn});s.feedback.push({type:'spawn',id:e.id,text:'REINFORCEMENT'});}s.reinforced=true;s.log.push('적 증원 2명 출현. 이번 Player Phase 동안 먼저 대응할 수 있습니다.');}

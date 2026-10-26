@@ -1,0 +1,23 @@
+PASS 1440 M08 camp offers Mission 9 toward Velmar
+PASS 1440 the world card names the Free Lords and Velmar
+PASS 1440 Velmar hub for M09 with Dario at the tavern side
+PASS 1440 M09 battle: three delegates, Dario and two harbour guards as allies
+PASS 1440 M09 camp after the capture plays the ledger-cord scene
+PASS 1440 M10: the two lords' choice is shown before battle
+PASS 1440 M10 battle supporting Oswin: the blue-white army fights beside the legion
+PASS 1440 Velmar after M10 with Dario in the legion
+PASS 1440 Dario's joining card
+PASS 1440 the camp now leads on to Mission 11 (v0.7.0)
+PASS 1440 no runtime errors
+PASS 390 M08 camp offers Mission 9 toward Velmar
+PASS 390 the world card names the Free Lords and Velmar
+PASS 390 Velmar hub for M09 with Dario at the tavern side
+PASS 390 M09 battle: three delegates, Dario and two harbour guards as allies
+PASS 390 M09 camp after the capture plays the ledger-cord scene
+PASS 390 M10: the two lords' choice is shown before battle
+PASS 390 M10 battle supporting Oswin: the blue-white army fights beside the legion
+PASS 390 Velmar after M10 with Dario in the legion
+PASS 390 Dario's joining card
+PASS 390 the camp now leads on to Mission 11 (v0.7.0)
+PASS 390 no runtime errors
+act2b-campaign-e2e: 22 checks passed
