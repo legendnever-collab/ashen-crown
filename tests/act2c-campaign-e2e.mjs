@@ -49,7 +49,7 @@ try{
   check(`${label} returning the records: the Order trusts the legion, Ines joins`,s.frontier.hub==='refuge'&&s.campaign.choices.m12_records==='return'&&s.campaign.roster.includes('ines')&&s.frontier.members.includes('ines'));
   for(let i=0;i<3&&!await p.locator('.promo-card').count();i++){await drainStory(p);await p.waitForTimeout(300);}
   check(`${label} Ines's joining card`,(await p.locator('.promo-card').textContent().catch(()=>'')).includes('이네스'));await p.screenshot({path:`${shots}/ines-joins-${label}.png`});await press('close-modal');
-  check(`${label} the camp says M13 comes in the next update`,(await p.locator('#screen').textContent()).includes('M13'));
+  check(`${label} the camp now leads on to Mission 13 (v0.7.1)`,(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 13'));
   check(`${label} no runtime errors`,errors.length===0);if(errors.length)console.log(errors);await ctx.close();
  }
  fs.writeFileSync('test-output/act2c-campaign-e2e.json',JSON.stringify({checks:n},null,1));console.log(`act2c-campaign-e2e: ${n} checks passed`);

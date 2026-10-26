@@ -1,0 +1,25 @@
+PASS 1440 M06 camp offers the next story (Mission 7)
+PASS 1440 the ACT II card names the first banner
+PASS 1440 castle town hub for M07 with Thea at the plaza
+PASS 1440 M07 council shows the six-seat sortie
+PASS 1440 M07 battle: convoy of three, Thea and two soldiers as allies
+PASS 1440 M07 camp after the battle asks what to do with the deserters
+PASS 1440 taking the deserters along is recorded (no trust change)
+PASS 1440 M08: Baldrick's order is shown before battle
+PASS 1440 M08 battle with the rescue squad, Baldrick on the line, rockfall devices
+PASS 1440 canyon bivouac after M08 with Thea in the legion
+PASS 1440 Thea's joining card
+PASS 1440 no runtime errors
+PASS 390 M06 camp offers the next story (Mission 7)
+PASS 390 the ACT II card names the first banner
+PASS 390 castle town hub for M07 with Thea at the plaza
+PASS 390 M07 council shows the six-seat sortie
+PASS 390 M07 battle: convoy of three, Thea and two soldiers as allies
+PASS 390 M07 camp after the battle asks what to do with the deserters
+PASS 390 taking the deserters along is recorded (no trust change)
+PASS 390 M08: Baldrick's order is shown before battle
+PASS 390 M08 battle with the rescue squad, Baldrick on the line, rockfall devices
+PASS 390 canyon bivouac after M08 with Thea in the legion
+PASS 390 Thea's joining card
+PASS 390 no runtime errors
+act2-campaign-e2e: 24 checks passed

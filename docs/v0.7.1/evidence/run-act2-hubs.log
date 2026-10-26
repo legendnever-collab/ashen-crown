@@ -1,0 +1,122 @@
+Test page test-output/act2-preview.html: 27165601 bytes
+PASS 1440 castletown placed
+PASS 1440 castletown shows the painted town at Lia's table
+PASS 1440 castletown: Erik walks on the painted street
+PASS 1440 castletown forge room 
+PASS 1440 castletown forge: inside
+PASS 1440 castletown forge: the doorway leads back to the town
+PASS 1440 castletown forge room with opened chests
+PASS 1440 castletown forge: inside
+PASS 1440 castletown shop room 
+PASS 1440 castletown shop: inside
+PASS 1440 castletown shop: the doorway leads back to the town
+PASS 1440 castletown shop room with opened chests
+PASS 1440 castletown shop: inside
+PASS 1440 castletown inn-1 room 
+PASS 1440 castletown inn-1: inside
+PASS 1440 castletown inn-1: the doorway leads back to the town
+PASS 1440 castletown inn-1 room with opened chests
+PASS 1440 castletown inn-1: inside
+PASS 1440 castletown warroom-2 room 
+PASS 1440 castletown warroom-2: inside
+PASS 1440 castletown warroom-2: the doorway leads back to the town
+PASS 1440 castletown warroom-2 room with opened chests
+PASS 1440 castletown warroom-2: inside
+PASS 1440 castletown residence-3 room 
+PASS 1440 castletown residence-3: inside
+PASS 1440 castletown residence-3: the doorway leads back to the town
+PASS 1440 castletown residence-3 room with opened chests
+PASS 1440 castletown residence-3: inside
+PASS 1440 castletown depot-4 room 
+PASS 1440 castletown depot-4: inside
+PASS 1440 castletown depot-4: the doorway leads back to the town
+PASS 1440 castletown depot-4 room with opened chests
+PASS 1440 castletown depot-4: inside
+PASS 1440 velmar placed
+PASS 1440 velmar shows the painted town at Lia's table
+PASS 1440 velmar: Erik walks on the painted street
+PASS 1440 velmar forge room 
+PASS 1440 velmar forge: inside
+PASS 1440 velmar forge: the doorway leads back to the town
+PASS 1440 velmar forge room with opened chests
+PASS 1440 velmar forge: inside
+PASS 1440 velmar shop room 
+PASS 1440 velmar shop: inside
+PASS 1440 velmar shop: the doorway leads back to the town
+PASS 1440 velmar shop room with opened chests
+PASS 1440 velmar shop: inside
+PASS 1440 velmar inn-1 room 
+PASS 1440 velmar inn-1: inside
+PASS 1440 velmar inn-1: the doorway leads back to the town
+PASS 1440 velmar inn-1 room with opened chests
+PASS 1440 velmar inn-1: inside
+PASS 1440 velmar warroom-2 room 
+PASS 1440 velmar warroom-2: inside
+PASS 1440 velmar warroom-2: the doorway leads back to the town
+PASS 1440 velmar warroom-2 room with opened chests
+PASS 1440 velmar warroom-2: inside
+PASS 1440 velmar residence-3 room 
+PASS 1440 velmar residence-3: inside
+PASS 1440 velmar residence-3: the doorway leads back to the town
+PASS 1440 velmar residence-3 room with opened chests
+PASS 1440 velmar residence-3: inside
+PASS 1440 velmar depot-4 room 
+PASS 1440 velmar depot-4: inside
+PASS 1440 velmar depot-4: the doorway leads back to the town
+PASS 1440 velmar depot-4 room with opened chests
+PASS 1440 velmar depot-4: inside
+PASS 1440 no runtime errors
+PASS 390 castletown placed
+PASS 390 castletown shows the painted town at Lia's table
+PASS 390 castletown forge room 
+PASS 390 castletown forge: inside
+PASS 390 castletown forge room with opened chests
+PASS 390 castletown forge: inside
+PASS 390 castletown shop room 
+PASS 390 castletown shop: inside
+PASS 390 castletown shop room with opened chests
+PASS 390 castletown shop: inside
+PASS 390 castletown inn-1 room 
+PASS 390 castletown inn-1: inside
+PASS 390 castletown inn-1 room with opened chests
+PASS 390 castletown inn-1: inside
+PASS 390 castletown warroom-2 room 
+PASS 390 castletown warroom-2: inside
+PASS 390 castletown warroom-2 room with opened chests
+PASS 390 castletown warroom-2: inside
+PASS 390 castletown residence-3 room 
+PASS 390 castletown residence-3: inside
+PASS 390 castletown residence-3 room with opened chests
+PASS 390 castletown residence-3: inside
+PASS 390 castletown depot-4 room 
+PASS 390 castletown depot-4: inside
+PASS 390 castletown depot-4 room with opened chests
+PASS 390 castletown depot-4: inside
+PASS 390 velmar placed
+PASS 390 velmar shows the painted town at Lia's table
+PASS 390 velmar forge room 
+PASS 390 velmar forge: inside
+PASS 390 velmar forge room with opened chests
+PASS 390 velmar forge: inside
+PASS 390 velmar shop room 
+PASS 390 velmar shop: inside
+PASS 390 velmar shop room with opened chests
+PASS 390 velmar shop: inside
+PASS 390 velmar inn-1 room 
+PASS 390 velmar inn-1: inside
+PASS 390 velmar inn-1 room with opened chests
+PASS 390 velmar inn-1: inside
+PASS 390 velmar warroom-2 room 
+PASS 390 velmar warroom-2: inside
+PASS 390 velmar warroom-2 room with opened chests
+PASS 390 velmar warroom-2: inside
+PASS 390 velmar residence-3 room 
+PASS 390 velmar residence-3: inside
+PASS 390 velmar residence-3 room with opened chests
+PASS 390 velmar residence-3: inside
+PASS 390 velmar depot-4 room 
+PASS 390 velmar depot-4: inside
+PASS 390 velmar depot-4 room with opened chests
+PASS 390 velmar depot-4: inside
+PASS 390 no runtime errors
+act2-hubs-e2e: 120 checks passed

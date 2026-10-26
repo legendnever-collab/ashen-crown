@@ -1,0 +1,113 @@
+{
+  "checks": [
+    {
+      "name": "New Korean option glyphs are bundled",
+      "status": "PASS"
+    },
+    {
+      "name": "Tap opens compact command list beside the unit, no cells yet",
+      "status": "PASS"
+    },
+    {
+      "name": "Skill category opens real ability and MP cost",
+      "status": "PASS"
+    },
+    {
+      "name": "Info sheet shows talent, grades and potential clues",
+      "status": "PASS"
+    },
+    {
+      "name": "Info sheet class tab shows terrain aptitude and attack range grid",
+      "status": "PASS"
+    },
+    {
+      "name": "Tools show shared potion count and disabled use at full HP",
+      "status": "PASS"
+    },
+    {
+      "name": "Movement range is vivid blue",
+      "status": "PASS"
+    },
+    {
+      "name": "Invalid destination is rejected without changing state",
+      "status": "PASS"
+    },
+    {
+      "name": "Walking renders intermediate positions instead of teleport",
+      "status": "PASS"
+    },
+    {
+      "name": "Arrival asks for explicit move confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "Before confirmation state, RNG, move and save remain unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "Pending move blocks phase and keeps confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "Cancel walks back and consumes no movement or RNG",
+      "status": "PASS"
+    },
+    {
+      "name": "Reload before confirmation restores original position and movement",
+      "status": "PASS"
+    },
+    {
+      "name": "Instant movement still requires confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "Confirm consumes movement exactly once",
+      "status": "PASS"
+    },
+    {
+      "name": "Walk and weak-effect preferences persist",
+      "status": "PASS"
+    },
+    {
+      "name": "Fire Bolt shows cast, travelling fireball and explosion",
+      "status": "PASS"
+    },
+    {
+      "name": "Impact feedback follows projectile arrival",
+      "status": "PASS"
+    },
+    {
+      "name": "Fire Bolt spends actual MP and finishes action",
+      "status": "PASS"
+    },
+    {
+      "name": "Attack range uses vivid red",
+      "status": "PASS"
+    },
+    {
+      "name": "Archer arrow flies then impacts",
+      "status": "PASS"
+    },
+    {
+      "name": "Enemy phase contains actual axe swings",
+      "status": "PASS"
+    },
+    {
+      "name": "Enemy phase returns control to player",
+      "status": "PASS"
+    },
+    {
+      "name": "Potion requires submenu confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "Potion uses actual HP cap, inventory and action",
+      "status": "PASS"
+    },
+    {
+      "name": "Tactical menu and VFX have no runtime errors",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}

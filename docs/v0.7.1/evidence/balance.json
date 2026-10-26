@@ -1,0 +1,1090 @@
+{
+  "runs": 30,
+  "results": [
+    {
+      "preset": "recommended",
+      "seed": 1,
+      "guard": false,
+      "outcome": "victory",
+      "turn": 5,
+      "alive": 3,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 2,
+          "earnedXP": 111
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 102
+        },
+        {
+          "id": "lia",
+          "level": 4,
+          "earnedXP": 305
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 22
+        },
+        {
+          "id": "kai",
+          "level": 1,
+          "earnedXP": 99
+        }
+      ]
+    },
+    {
+      "preset": "recommended",
+      "seed": 1,
+      "guard": true,
+      "outcome": "victory",
+      "turn": 5,
+      "alive": 4,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 1,
+          "earnedXP": 71
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 124
+        },
+        {
+          "id": "lia",
+          "level": 3,
+          "earnedXP": 277
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 22
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 178
+        }
+      ]
+    },
+    {
+      "preset": "recommended",
+      "seed": 42,
+      "guard": false,
+      "outcome": "victory",
+      "turn": 6,
+      "alive": 3,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 2,
+          "earnedXP": 133
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 124
+        },
+        {
+          "id": "lia",
+          "level": 4,
+          "earnedXP": 365
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 22
+        },
+        {
+          "id": "kai",
+          "level": 1,
+          "earnedXP": 99
+        }
+      ]
+    },
+    {
+      "preset": "recommended",
+      "seed": 42,
+      "guard": true,
+      "outcome": "victory",
+      "turn": 5,
+      "alive": 4,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 1,
+          "earnedXP": 71
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 124
+        },
+        {
+          "id": "lia",
+          "level": 3,
+          "earnedXP": 277
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 22
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 178
+        }
+      ]
+    },
+    {
+      "preset": "recommended",
+      "seed": 20261014,
+      "guard": false,
+      "outcome": "victory",
+      "turn": 5,
+      "alive": 4,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 2,
+          "earnedXP": 111
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 102
+        },
+        {
+          "id": "lia",
+          "level": 3,
+          "earnedXP": 237
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 22
+        },
+        {
+          "id": "kai",
+          "level": 3,
+          "earnedXP": 234
+        }
+      ]
+    },
+    {
+      "preset": "recommended",
+      "seed": 20261014,
+      "guard": true,
+      "outcome": "victory",
+      "turn": 5,
+      "alive": 4,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 1,
+          "earnedXP": 71
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 124
+        },
+        {
+          "id": "lia",
+          "level": 3,
+          "earnedXP": 277
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 22
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 178
+        }
+      ]
+    },
+    {
+      "preset": "recommended",
+      "seed": 77,
+      "guard": false,
+      "outcome": "victory",
+      "turn": 5,
+      "alive": 3,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 2,
+          "earnedXP": 111
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 102
+        },
+        {
+          "id": "lia",
+          "level": 4,
+          "earnedXP": 305
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 22
+        },
+        {
+          "id": "kai",
+          "level": 1,
+          "earnedXP": 99
+        }
+      ]
+    },
+    {
+      "preset": "recommended",
+      "seed": 77,
+      "guard": true,
+      "outcome": "victory",
+      "turn": 5,
+      "alive": 4,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 1,
+          "earnedXP": 71
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 124
+        },
+        {
+          "id": "lia",
+          "level": 3,
+          "earnedXP": 277
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 22
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 178
+        }
+      ]
+    },
+    {
+      "preset": "recommended",
+      "seed": 313,
+      "guard": false,
+      "outcome": "victory",
+      "turn": 6,
+      "alive": 3,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 2,
+          "earnedXP": 133
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 124
+        },
+        {
+          "id": "lia",
+          "level": 4,
+          "earnedXP": 365
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 22
+        },
+        {
+          "id": "kai",
+          "level": 1,
+          "earnedXP": 99
+        }
+      ]
+    },
+    {
+      "preset": "recommended",
+      "seed": 313,
+      "guard": true,
+      "outcome": "victory",
+      "turn": 5,
+      "alive": 4,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 1,
+          "earnedXP": 71
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 124
+        },
+        {
+          "id": "lia",
+          "level": 3,
+          "earnedXP": 277
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 22
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 178
+        }
+      ]
+    },
+    {
+      "preset": "assault",
+      "seed": 1,
+      "guard": false,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 5,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 1,
+          "earnedXP": 57
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 129
+        },
+        {
+          "id": "lia",
+          "level": 2,
+          "earnedXP": 139
+        },
+        {
+          "id": "sain",
+          "level": 3,
+          "earnedXP": 148
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 169
+        }
+      ]
+    },
+    {
+      "preset": "assault",
+      "seed": 1,
+      "guard": true,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 5,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 2,
+          "earnedXP": 109
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 101
+        },
+        {
+          "id": "lia",
+          "level": 2,
+          "earnedXP": 139
+        },
+        {
+          "id": "sain",
+          "level": 3,
+          "earnedXP": 147
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 169
+        }
+      ]
+    },
+    {
+      "preset": "assault",
+      "seed": 42,
+      "guard": false,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 5,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 1,
+          "earnedXP": 57
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 129
+        },
+        {
+          "id": "lia",
+          "level": 2,
+          "earnedXP": 139
+        },
+        {
+          "id": "sain",
+          "level": 3,
+          "earnedXP": 150
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 169
+        }
+      ]
+    },
+    {
+      "preset": "assault",
+      "seed": 42,
+      "guard": true,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 5,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 1,
+          "earnedXP": 71
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 129
+        },
+        {
+          "id": "lia",
+          "level": 2,
+          "earnedXP": 139
+        },
+        {
+          "id": "sain",
+          "level": 3,
+          "earnedXP": 148
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 169
+        }
+      ]
+    },
+    {
+      "preset": "assault",
+      "seed": 20261014,
+      "guard": false,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 5,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 1,
+          "earnedXP": 79
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 129
+        },
+        {
+          "id": "lia",
+          "level": 2,
+          "earnedXP": 139
+        },
+        {
+          "id": "sain",
+          "level": 3,
+          "earnedXP": 144
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 169
+        }
+      ]
+    },
+    {
+      "preset": "assault",
+      "seed": 20261014,
+      "guard": true,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 5,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 2,
+          "earnedXP": 109
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 101
+        },
+        {
+          "id": "lia",
+          "level": 2,
+          "earnedXP": 139
+        },
+        {
+          "id": "sain",
+          "level": 3,
+          "earnedXP": 142
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 169
+        }
+      ]
+    },
+    {
+      "preset": "assault",
+      "seed": 77,
+      "guard": false,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 5,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 1,
+          "earnedXP": 79
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 129
+        },
+        {
+          "id": "lia",
+          "level": 2,
+          "earnedXP": 139
+        },
+        {
+          "id": "sain",
+          "level": 3,
+          "earnedXP": 150
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 169
+        }
+      ]
+    },
+    {
+      "preset": "assault",
+      "seed": 77,
+      "guard": true,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 5,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 2,
+          "earnedXP": 109
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 101
+        },
+        {
+          "id": "lia",
+          "level": 2,
+          "earnedXP": 139
+        },
+        {
+          "id": "sain",
+          "level": 3,
+          "earnedXP": 148
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 169
+        }
+      ]
+    },
+    {
+      "preset": "assault",
+      "seed": 313,
+      "guard": false,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 5,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 1,
+          "earnedXP": 79
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 129
+        },
+        {
+          "id": "lia",
+          "level": 2,
+          "earnedXP": 139
+        },
+        {
+          "id": "sain",
+          "level": 3,
+          "earnedXP": 144
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 169
+        }
+      ]
+    },
+    {
+      "preset": "assault",
+      "seed": 313,
+      "guard": true,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 5,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 2,
+          "earnedXP": 109
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 101
+        },
+        {
+          "id": "lia",
+          "level": 2,
+          "earnedXP": 139
+        },
+        {
+          "id": "sain",
+          "level": 3,
+          "earnedXP": 142
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 169
+        }
+      ]
+    },
+    {
+      "preset": "defense",
+      "seed": 1,
+      "guard": false,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 5,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 2,
+          "earnedXP": 139
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 101
+        },
+        {
+          "id": "lia",
+          "level": 3,
+          "earnedXP": 245
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 59
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 199
+        }
+      ]
+    },
+    {
+      "preset": "defense",
+      "seed": 1,
+      "guard": true,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 5,
+      "potential": true,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 1,
+          "earnedXP": 87
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 151
+        },
+        {
+          "id": "lia",
+          "level": 3,
+          "earnedXP": 207
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 86
+        },
+        {
+          "id": "kai",
+          "level": 3,
+          "earnedXP": 227
+        }
+      ]
+    },
+    {
+      "preset": "defense",
+      "seed": 42,
+      "guard": false,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 5,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 2,
+          "earnedXP": 139
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 101
+        },
+        {
+          "id": "lia",
+          "level": 3,
+          "earnedXP": 245
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 57
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 199
+        }
+      ]
+    },
+    {
+      "preset": "defense",
+      "seed": 42,
+      "guard": true,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 4,
+      "potential": true,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 1,
+          "earnedXP": 87
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 151
+        },
+        {
+          "id": "lia",
+          "level": 3,
+          "earnedXP": 207
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 77
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 194
+        }
+      ]
+    },
+    {
+      "preset": "defense",
+      "seed": 20261014,
+      "guard": false,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 5,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 2,
+          "earnedXP": 167
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 101
+        },
+        {
+          "id": "lia",
+          "level": 2,
+          "earnedXP": 185
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 59
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 199
+        }
+      ]
+    },
+    {
+      "preset": "defense",
+      "seed": 20261014,
+      "guard": true,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 4,
+      "potential": true,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 1,
+          "earnedXP": 87
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 151
+        },
+        {
+          "id": "lia",
+          "level": 3,
+          "earnedXP": 207
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 77
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 194
+        }
+      ]
+    },
+    {
+      "preset": "defense",
+      "seed": 77,
+      "guard": false,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 5,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 2,
+          "earnedXP": 139
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 101
+        },
+        {
+          "id": "lia",
+          "level": 3,
+          "earnedXP": 245
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 59
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 199
+        }
+      ]
+    },
+    {
+      "preset": "defense",
+      "seed": 77,
+      "guard": true,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 5,
+      "potential": true,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 1,
+          "earnedXP": 87
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 151
+        },
+        {
+          "id": "lia",
+          "level": 3,
+          "earnedXP": 207
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 88
+        },
+        {
+          "id": "kai",
+          "level": 3,
+          "earnedXP": 227
+        }
+      ]
+    },
+    {
+      "preset": "defense",
+      "seed": 313,
+      "guard": false,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 5,
+      "potential": false,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 2,
+          "earnedXP": 167
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 101
+        },
+        {
+          "id": "lia",
+          "level": 2,
+          "earnedXP": 185
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 59
+        },
+        {
+          "id": "kai",
+          "level": 2,
+          "earnedXP": 199
+        }
+      ]
+    },
+    {
+      "preset": "defense",
+      "seed": 313,
+      "guard": true,
+      "outcome": "victory",
+      "turn": 4,
+      "alive": 5,
+      "potential": true,
+      "levels": [
+        {
+          "id": "eric",
+          "level": 1,
+          "earnedXP": 87
+        },
+        {
+          "id": "elina",
+          "level": 3,
+          "earnedXP": 151
+        },
+        {
+          "id": "lia",
+          "level": 3,
+          "earnedXP": 207
+        },
+        {
+          "id": "sain",
+          "level": 2,
+          "earnedXP": 86
+        },
+        {
+          "id": "kai",
+          "level": 3,
+          "earnedXP": 227
+        }
+      ]
+    }
+  ],
+  "civilianFailure": {
+    "outcome": "defeat",
+    "turn": 6,
+    "reason": "주민을 잃어 필수 구출 목표를 달성할 수 없습니다."
+  }
+}
