@@ -1,0 +1,23 @@
+PASS 1440: stage progress actually changed after attack
+PASS 1440: reset confirmation explains rollback
+PASS 1440: cancelling reset preserves exact current progress
+PASS 1440: reset restores exact stage start and assault formation
+PASS 1440: renderer and commands are ready after reset
+PASS 1440: checkpoint and reset state survive reload
+PASS 1440: repeated reset permits movement and attack
+PASS 1440: natural civilian failure before reset
+PASS 1440: result reset revives objectives and removes current defeat
+PASS 360: stage progress actually changed after attack
+PASS 360: reset confirmation explains rollback
+PASS 360: cancelling reset preserves exact current progress
+PASS 360: reset restores exact stage start and assault formation
+PASS 360: renderer and commands are ready after reset
+PASS 360: checkpoint and reset state survive reload
+PASS 360: repeated reset permits movement and attack
+PASS 360: natural civilian failure before reset
+PASS 360: result reset revives objectives and removes current defeat
+PASS Legacy checkpoint absence is explained
+PASS Legacy reset safely returns to deployment
+PASS Restart save failure is visible instead of a success toast
+PASS Restart UI has no runtime errors
+22 stage restart checks PASS

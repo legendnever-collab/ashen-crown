@@ -6,7 +6,8 @@ APPROVED_DIRECTION, 2026-10-14 user v0.3 Master Task. Story CANON과 실제 구�
 - v0.4.0 The Broken Allegiance: M04–06, abandoned fort / royal supply investigation / Baldrick / Ashen Oath, ACT I completion. Previously v0.3 scope moved here, not deleted. Released 2026-10-19 after user play approval (tag v0.4.0).
 - v0.5.0 Advanced Class & Character Progression (Ranks of the Ashen Legion): tactical class evolution, advanced growth and hero-specific appearance — promotions after ACT I with trials and the Legion Drill, potential and proficiency, the world map of Erdia and six painted interlude hubs. Merge approved by the user 2026-10-20. Awakening (Tier 3) is reserved for ACT II.
 - v0.6.0 The Three Banners (ACT II, part 1): M07 북부의 군령 and M08 협곡 방어전 in the castle town below Ironhold — allied armies, sorties of six, faction trust, Thea as the first recruit; painted rooms and chests, connected dialogue, Hangul names. Merge approved by the user 2026-10-26 (D-065).
-- Next: ACT II part 2 — M09 자유의 도시, M10 두 영주의 전쟁 (three-way battle), Velmar market, Dario, ACT II tracks and world-map pass (v0.6 plan Phases E–F); then M11–M14 and awakening (Tier 3).
+- v0.6.1 The Three Banners (ACT II, part 1 complete): M09 자유의 도시 and M10 두 영주의 전쟁 in Velmar — rooftop assassins, a three-way battle with support or mediation, Dario as the second recruit, three original ACT II tracks. Merge approved by the user 2026-10-26 (D-067).
+- Next: v0.7.0 ACT II part 2 — M11–M14 (Order of the Sacred Flame, Sain's past, Baldrick's decision) and awakening (Tier 3).
 - Subsequent: ACT III–IV, relationship branches and three endings. Preserve 4 acts / 30 missions.
 
 

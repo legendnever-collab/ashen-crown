@@ -1,0 +1,13 @@
+PASS Shipped v0.4.0 village save is schema 7
+PASS Shipped v0.4.0 battle checkpoint generated
+PASS v0.4.0 village save opens in the painted village (schema 9, gold kept, legal position)
+PASS Imported village save does not replay the world-map intro
+PASS v0.4.0 battle and its checkpoint migrate unchanged
+PASS Restart of a migrated v0.4.0 battle works
+PASS ACT I complete save moves into the oath camp with every asset kept
+PASS Aren's rite panel is offered in the oath camp
+PASS Rite panel lists five heroes with conditions
+PASS v0.4.0 Mission 05 battle resumes
+PASS Migrated save reloads as the current version
+PASS No runtime errors in either build
+12 v0.4.0 browser migration checks PASS
