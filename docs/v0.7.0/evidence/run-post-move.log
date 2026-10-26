@@ -1,0 +1,5 @@
+{"viewport":"1440x900","activated":{"menu":"root","mode":"move"},"hit":{"tag":"CANVAS","id":"battle-map","menu":false},"menu":"forecast","selected":"eric","mode":"attack","attackPreview":true}
+{"viewport":"390x844","activated":{"menu":"root","mode":"move"},"hit":{"tag":"CANVAS","id":"battle-map","menu":false},"menu":"forecast","selected":"eric","mode":"attack","attackPreview":true}
+{"viewport":"360x640","activated":{"menu":"root","mode":"move"},"hit":{"tag":"CANVAS","id":"battle-map","menu":false},"menu":"forecast","selected":"eric","mode":"attack","attackPreview":true}
+{"viewport":"844x390","activated":{"menu":"root","mode":"move"},"hit":{"tag":"CANVAS","id":"battle-map","menu":false},"menu":"forecast","selected":"eric","mode":"attack","attackPreview":true}
+8 post-move regression scenarios PASS

@@ -1,0 +1,53 @@
+{
+  "checks": [
+    {
+      "name": "Shipped v0.6.1 village save is schema 9",
+      "status": "PASS"
+    },
+    {
+      "name": "Shipped v0.6.1 battle checkpoint generated",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.6.1 village save opens in the painted village (schema 9, gold kept, legal position)",
+      "status": "PASS"
+    },
+    {
+      "name": "Imported village save does not replay the world-map intro",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.6.1 battle and its checkpoint migrate unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "Restart of a migrated v0.6.1 battle works",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.6.1 Velmar camp save opens with every asset kept and Thea and Dario in the legion",
+      "status": "PASS"
+    },
+    {
+      "name": "The migrated camp now offers Mission 11 (the pilgrim village)",
+      "status": "PASS"
+    },
+    {
+      "name": "A v0.6.1 campaign reaches the pilgrim village for Mission 11",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.6.1 Mission 10 battle resumes",
+      "status": "PASS"
+    },
+    {
+      "name": "Migrated save reloads as the current version",
+      "status": "PASS"
+    },
+    {
+      "name": "No runtime errors in either build",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}

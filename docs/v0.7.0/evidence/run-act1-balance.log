@@ -1,0 +1,31 @@
+# ACT I balance report (M01→M06, legal policy)
+
+Executed 2026-10-26 15:45 UTC with `node tests/act1-balance.mjs 30 20261014` — 30 seeds, rules API only, no shopping, no state edits.
+
+**Full ACT I clears: 30/30 (100%)**
+
+| Mission | Played | Wins | Win % | Win turns (avg) | Par / Limit | Heroes standing | Avg level in | Gold in → out | Civilians safe (M05: wagons) |
+|---|---|---|---|---|---|---|---|---|---|
+| M01 잿빛 마을의 습격 | 30 | 30 | 100% | 4–6 (5.0) | 8 / — | 3.8/5.0 | 1.4 | 180.0 → 280.0 | 2.0/2 |
+| M02 숲길의 추격 | 30 | 30 | 100% | 3–3 (3.0) | 8 / 8 | 5.0/5.0 | 2.5 | 280.0 → 415.0 | — |
+| M03 무너진 다리 | 30 | 30 | 100% | 5–9 (5.9) | 10 / 10 | 4.1/5.0 | 3.1 | 415.0 → 555.0 | 2.0/2 |
+| M04 버려진 성채 | 30 | 30 | 100% | 7–13 (9.1) | 9 / 14 | 4.3/5.0 | 4.4 | 555.0 → 755.0 | — |
+| M05 국경의 사자 | 30 | 30 | 100% | 7–11 (9.1) | 8 / 10 | 3.0/5.0 | 5.8 | 755.0 → 985.0 | 2.0/2 |
+| M06 재의 맹세 | 30 | 30 | 100% | 12–16 (13.9) | 10 / 16 | 4.9/5.0 | 6.8 | 985.0 → 1185.0 | 1.0/4 |
+
+## Losses
+
+- none
+
+## Levels after ACT I (completed runs)
+
+| Hero | Min | Avg | Max |
+|---|---|---|---|
+| eric | 4 | 4.6 | 5 |
+| elina | 6 | 7.2 | 8 |
+| lia | 13 | 13.0 | 13 |
+| sain | 5 | 5.7 | 9 |
+| kai | 8 | 9.3 | 11 |
+
+Final gold (completed runs): 1170–1200, avg 1185.0.
+

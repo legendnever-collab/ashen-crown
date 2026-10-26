@@ -1,3 +1,13 @@
+# v0.7.0 — The Three Banners · ACT II Missions 11–12 (release candidate, 2026-10-27)
+- Design approved by the user (2026-10-26 23:47 KST, "좋아 이대로 진행하자", D-068); implementation details D-069. Not merged before the user plays and approves the release candidate.
+- M11 성화의 행렬: four pilgrims walk a night road to the sanctuary (two tiles in light, one in the dark); three roadside braziers are lit by search; light changes hit chances (legion in light +10, any target in the dark −15) and heals pilgrims; Ines and two Sacred Flame knights escort; raider waves on TURN 3/5/7; Lucien's offer in the camp (the flame oath).
+- M12 침묵의 수도원: seven guards watch ahead and turn in order; suspicion and the bell (all guards wake, three from the dormitory, the abbot burns unsecured records three turns later); sneak attacks; three records (ledger, seal study, Order roll); the abbot can be captured; the records choice in the camp (return / take / copy).
+- Ines (pilgrim warden): Sanctuary (adjacent allies take −2) and Sanctuary Oath; joins at Lv 10 after M12 when the Order trusts the legion or the records were copied; eight-hero roster with sorties of six.
+- Story and world: south region and route (pilgrim village, Silent Monastery, refugee camp), Sacred Flame trust row, Lucien, Sain's past up to her excommunication, the ledger cord in the Order's relief supplies (no name).
+- Art and music: art work pack D generator (28 images, scripts/make-act2b-art-pack.py); until the pack arrives the pilgrim village uses the Ashen Village painting tinted to dusk and the new cast is drawn by the game. Two original tracks: Procession of the Sacred Flame, The Silent Monastery.
+- Saves: schema 9 unchanged; real v0.6.1 saves (shipped HTML and v0.6.1-source fixtures) continue to M11.
+- Tests: mission11/12 and migration-v061 unit suites; act2c-campaign and migration-v061 browser suites; act2-balance runs M01→M12 over 30 seeds.
+
 # v0.6.1 — The Three Banners · ACT II Missions 09–10 (merge approved by the user, 2026-10-26)
 - Release: the user approved the merge in chat (2026-10-26 20:22 KST, "좋아 병합해줘") after receiving the release candidate. Build description names ACT II Missions 07–10; release notes, Test Report, Source ZIP (D-066: without the built HTML) and SHA256 manifests.
 - v0.6.0 wrap-up: tag v0.6.0 and its GitHub Release published (one-time workflow, removed); PR #12, CI runs and merge SHA recorded in docs/v0.6.0/RELEASE_NOTES.md; War Council headings use the mission title (M07+ showed only the number); the Source ZIP leaves out the built HTML, which verify-release rebuilds and compares (D-066).
