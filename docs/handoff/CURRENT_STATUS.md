@@ -1,4 +1,6 @@
 # Current Status
+Updated 2026-10-26 23:40 KST. v0.6.1 is merged (PR #13 → dcafb73; main CI 40326828260 6/6). v0.7 design proposal for ACT II part 2 (M11–M14): docs/v0.7.0/ACT2B_DESIGN.md on feature/v0.7-flame-and-lion, awaiting the user's answers (Q1–Q5). No code before approval.
+
 Updated 2026-10-26 KST (night). Current Version: v0.6.1 — The Three Banners (ACT II Missions 07–10), approved for merge by the user in chat on 2026-10-26 20:22 KST ("좋아 병합해줘", after receiving the release candidate). ACT I with promotions; ACT II M07–M08 (castle town, Thea) and M09–M10 (Velmar, Dario). The PR number, hosted CI run and merge SHA are recorded in docs/v0.6.1/RELEASE_NOTES.md after the merge and on GitHub. Executed validation on the final build: releases/Ashen_Crown_v0.6.1_Test_Report.md. Next: v0.7.0 ACT II part 2 (M11–M14), only on the user's instruction.
 
 Updated 2026-10-26 KST (evening). In development: v0.6.1 on feature/v0.6.1-free-city — ACT II M09 자유의 도시 and M10 두 영주의 전쟁, Velmar in the story, Dario, three ACT II tracks, v0.6.0 wrap-up (tag v0.6.0 published, D-066 smaller Source ZIP). The user asked on 2026-10-26 18:23 KST to continue with everything offered at the v0.6.0 merge. A release-candidate build goes to the user for play; no PR is merged before the user's approval. main remains the official v0.6.0 (tag v0.6.0).
