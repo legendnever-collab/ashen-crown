@@ -4,7 +4,7 @@ import {launchTestBrowser} from './browser-helper.mjs';import {drainStory} from 
 import {serialize} from '../src/persistence/save-manager.js';import {actOneCamp} from './skirmish-policy.mjs';
 const camp=actOneCamp(20261021,6,{kai_rescue:4,kai_bypass:2,m6_kai_lever:1});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const results=[];const check=(name,ok)=>{assert.ok(ok,name);n++;results.push(name);console.log('PASS',name);};
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.7.0.html').href;
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.7.1.html').href;
 try{
  // Desktop: panel layout and conditions
  {const ctx=await b.newContext({viewport:{width:1440,height:900}});await ctx.setOffline(true);const p=await ctx.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));

@@ -28,7 +28,7 @@ jobs:
       - run: npm run test:class-balance
       - run: npm run test:act2-balance
       - run: npm run build
-      - run: git diff --exit-code -- index.html releases/Ashen_Crown_v0.7.0.html
+      - run: git diff --exit-code -- index.html releases/Ashen_Crown_v0.7.1.html
       - run: python scripts/verify-release.py
       - uses: actions/upload-artifact@v4
         if: always()
