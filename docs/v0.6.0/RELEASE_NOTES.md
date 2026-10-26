@@ -3,7 +3,8 @@
 **ACT I(Mission 01–06) + 전직, 그리고 ACT II의 시작 Mission 07–08.** 오프라인 standalone HTML 하나로 실행됩니다. 첨부된 `Ashen_Crown_v0.6.0.html`을 내려받아 브라우저로 열면 됩니다.
 
 사용자 승인: 2026-10-26 05:56 KST. 사용자가 Phase D 빌드를 플레이한 뒤 마을 문 하나를 고치고 병합하자고 했습니다("한가지 minor tuning 후 병합하자 … 이 부분만 수정해줘"). 수정 내용은 아래 '마을 문'에 있습니다.
-병합: PR 번호, hosted CI run, 병합 SHA는 병합 뒤 이 문서와 GitHub에 기록합니다.
+병합: PR #12 → main `28bce957324a1ad82faeae531f11fcac175c5b84` (2026-10-26 07:52 KST).
+PR head `a278f9d`에서 hosted CI(Game validation) run 40240173459가 6/6 성공했고, 병합 후 main에서도 run 40242216079가 6/6 성공했습니다. 병합 트리는 CI 검증 트리와 같습니다. 첫 CI run 40239893483은 GitHub 실행 환경이 Ubuntu 26으로 바뀌어 브라우저 설치 단계에서 멈췄고, Ubuntu 24.04로 고정한 뒤 통과했습니다.
 
 ## ACT II — 북쪽으로
 재의 맹세 뒤 군단은 피난민이 머물 땅을 찾아 북쪽, 철왕관 통령령으로 향합니다.
@@ -65,8 +66,8 @@
 | 파일 | 내용 |
 |---|---|
 | `Ashen_Crown_v0.6.0.html` | 실행 파일. SHA256 `51a958eedd2c75ff33ba7312fb304a5e4b106c86c1e11af81aebcd8b48ee75fc` |
-| `Ashen_Crown_v0.6.0_Source.zip` | 소스, 문서, 검증 기록 |
-| `Ashen_Crown_v0.6.0_Test_Report.md` | 최종 빌드 검증 보고서 |
+| `Ashen_Crown_v0.6.0_Source.zip` | 소스, 문서, 검증 기록. SHA256 `d480fd408e87d139427e5987950d947168d9f8d49c547a26ce3f4e03eb86861a` |
+| `Ashen_Crown_v0.6.0_Test_Report.md` | 최종 빌드 검증 보고서. SHA256 `a04caed0ae93bcd1de0621f1fb90f029537b9d8711240f6640693f19fd71088b` |
 | `Ashen_Crown_v0.6.0_SHA256SUMS` | 위 세 파일의 체크섬 목록 |
 
 소스 ZIP에는 테스트 스크린샷과 이전 버전 실행 파일이 들어 있지 않습니다(D-054). 두 가지 모두 저장소와 각 버전 릴리스에 있습니다.
