@@ -5,7 +5,7 @@
 // procedural interior template; until then the template is used and only the chest style changes.
 import {HUBS,INTERIORS} from './frontier-data.js';
 
-export const ROOM_FAMILY={village:'village',garrison:'tent',bivouac:'tent',oathcamp:'tent',fortress:'fort',castletown:'north',velmar:'port',pilgrim:'village',refuge:'tent'};
+export const ROOM_FAMILY={village:'village',garrison:'tent',bivouac:'tent',oathcamp:'tent',fortress:'fort',castletown:'north',velmar:'port',pilgrim:'village',refuge:'tent',summit:'tent'};
 const RV6_BY_KIND={
  village:{house:'int_village_house',weapon:'int_village_forge',item:'int_village_shop',barracks:'int_village_barracks',quarters:'int_village_hall',store:'int_village_store'},
  tent:{barracks:'int_tent_soldier',quarters:'int_tent_command',store:'int_tent_supply'},

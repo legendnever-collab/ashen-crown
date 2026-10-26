@@ -42,6 +42,8 @@ export function rangeFor(u,mode='attack',s=null){const t2=(u.classTier||1)>=2;if
 export function validTarget(s,u,t,mode='attack'){
  if(!u||!t||!alive(u)||!alive(t))return false;
  const d=distance(u,t);if(t.team==='object')return mode==='search'&&u.team==='ally'&&d===1&&!t.locked&&!t.inert;if(mode==='search')return false;if(mode==='capture')return (s.missionId===2&&t.id==='boss'||[].concat(missionOf(s).capture||[]).includes(t.id))&&t.team==='enemy'&&t.hp<=t.maxHP/2&&d===1;
+ // v0.7.1 (D-071): Erik persuades Baldrick from beside him (once a turn); Thea may speak to him once in the battle.
+ if(mode==='persuade')return canPersuade(s,u,t)&&d===1;
  if(mode==='rescue')return t.team==='civilian'&&t.kind!=='wagon'&&!missionOf(s).escortOnly&&(!missionOf(s).orderTurn||s.campaign?.choices?.m08_order==='rescue')&&d===1;
  if(mode==='skill'&&u.id==='eric')return t.id===u.id;
  if(mode==='skill'&&u.id==='sain')return (t.team==='ally'||t.team==='civilian'&&missionOf(s).healCivilians&&t.kind!=='wagon')&&d>=rangeFor(u,mode,s)[0]&&d<=rangeFor(u,mode,s)[1];
@@ -89,6 +91,8 @@ export function watchCells(s,g){const out=new Set();if(!g?.watch||!alive(g)||g.a
  return out;}
 export function watchedTiles(s){const out=new Set();if(!missionOf(s)?.stealth)return out;for(const g of s.units||[])for(const k of watchCells(s,g))out.add(k);return out;}
 export const surprised=(s,u,t)=>!!missionOf(s)?.stealth&&!!t?.watch&&!t.awake&&sideOf(u)==='legion'&&!watchCells(s,t).has(key(u.x,u.y));
+export function canPersuade(s,u,t){const p=missionOf(s)?.persuade,st=s?.missionState;if(!p||!u||!t||t.id!==p.target||u.team!=='ally'||!alive(t)||!st||st.halted)return false;
+ if(u.id==='eric')return st.persuadedTurn!==s.turn;if(u.id==='thea')return !st.thea;return false;}
 // Ines (Sanctuary): legion units beside her take 2 less damage (4 after her oath this turn, which also covers her).
 export function sanctuaryCut(s,t){if(!t||sideOf(t)!=='legion')return 0;let cut=t.id==='ines'&&t.sanctuary?2:0;
  for(const a of s.units||[])if((a.id==='ines'||a.sanctuaryAura)&&a.id!==t.id&&alive(a)&&sideOf(a)==='legion'&&distance(a,t)===1)cut=Math.max(cut,a.sanctuary?4:2);
@@ -107,6 +111,7 @@ export function forecast(s,u,t,mode='attack'){
  if(mode==='capture')return {capture:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='rescue')return {rescue:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='search')return {search:true,damage:0,hit:100,counter:0,after:t.hp};
+ if(mode==='persuade')return {persuade:true,damage:0,hit:100,counter:0,after:t.hp};
  const guard=guardFor(s,u,t,mode),victim=guard||t,stats=strikeStats(s,u,victim,mode),canCounter=validTarget(s,victim,u,'attack')&&!counterBlocked(s,victim)&&!chargeBreaks(u,mode)&&victim.hp>stats.damage;
  const counter=canCounter?strikeStats(s,victim,u).damage+riposteBonus(victim):0;
  return {...stats,counter,counterHit:canCounter?strikeStats(s,victim,u).hit:0,after:Math.max(0,victim.hp-stats.damage),guard:guard?.id,victim:victim.id};

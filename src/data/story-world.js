@@ -27,5 +27,7 @@ export const STORY_WORLD={
   w5('세 번째 깃발 아래, 성화 대성당 아래의 순례자 마을. 이곳은 누구에게나 빵을 나눈다. 그리고 맹세를 묻는다.',{focus:'south',prev:'continent',from:'velmar',to:'pilgrim',card:{act:ACT2,region:'성화령',place:'순례자 마을'}})
  ],
  'world:refuge':[w5('침묵의 수도원에서 돌아온 밤. 군단은 순례자 마을 아래 언덕에 피난민과 함께 야영을 친다.',{focus:'south',from:'pilgrim',to:'refuge',card:{act:ACT2,region:'성화령',place:'피난민 야영지'}})],
+ // v0.7.1 (D-071): toward the capital for the summit of the three banners.
+ 'world:summit':[w5('세 깃발이 처음으로 한자리에 모인다. 장소는 왕도 외곽, 어느 깃발의 땅도 아닌 폐허 역참.',{focus:'continent',from:'refuge',to:'summit',card:{act:ACT2,region:'왕도령',place:'폐허 역참'}})],
  'world:oathcamp':[w5('피난민과 함께 국경 관문을 넘었다. 왕실의 명령은 이제 그들 뒤에 있다.',{focus:'east',from:'fortress',to:'oathcamp',card:{act:ACT1,region:'동부 변경',place:'관문 너머 야영지'}})]
 };

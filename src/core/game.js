@@ -65,6 +65,7 @@ export function performAction(s,id,mode,targetId){
  consumeAction(s,u);if(s.missionId===3&&u.id==='kai'&&u.y<=4)remember(s,'kai_bypass');
  if(mode==='skill'&&u.id==='kai'&&(u.classTier||1)>=2&&!u.moved)u.strikeMove=s.turn;
  if(mode==='search'){const custom=rulesOf(s)?.search?.(s,u,t);if(!custom)searchEvidence(s,u,t);awardXP(s,u,30,`${t.name} ${custom?'작동':'조사'}`);}
+ else if(mode==='persuade'){rulesOf(s)?.persuade?.(s,u,t);awardXP(s,u,20,`${t.name} 설득`);}
  else if(mode==='capture'&&s.missionId!==2){rulesOf(s)?.capture?.(s,u,t);awardXP(s,u,50,`${t.name} 생포`);}
  else if(mode==='capture'){t.rescued=true;setStoryFlag(s,'mission_02_prisoner_captured');setStoryFlag(s,'mission_02_supply_route_discovered');remember(s,`${u.id}_capture`);awardXP(s,u,50,'도주 대장 생포');enqueueStory(s,'2:capture');s.log.push('포로 확보 · 보급로 진술을 얻었습니다.');}
  else if(mode==='rescue'){t.rescued=true;remember(s,`${u.id}_rescue`);awardXP(s,u,BALANCE.rescueXP,`${t.name} 구출`);s.log.push(`${u.name}: ${t.name}을 안전한 피난로로 구출했습니다.`);s.feedback.push({type:'rescue',id:t.id,text:'RESCUED'});if(u.id==='kai')discover(s,u,'Shadow Exchange');}
