@@ -297,7 +297,7 @@ function offerRecruitCard(){const c=state.campaign;if(state.screen!=='exploratio
  const id=Object.keys(RECRUIT_CARD).find(id=>c.roster?.includes(id)&&state.narrative.seen?.includes(RECRUIT_CARD[id].scene)&&!c.choices?.[`recruit_card_${id}`]);if(!id)return;const card=RECRUIT_CARD[id];
  c.choices[`recruit_card_${id}`]='seen';save();const u=findUnit(state,id)||c.heroes?.find(h=>h.id===id);
  modal('새 동료',`<div class="promo-card"><div class="eyebrow">NEW COMRADE · 재의 군단</div><div class="promo-busts"><canvas class="promo-bust after" width="360" height="440" data-recruit="${id}" aria-label="${esc(card.title)}"></canvas></div><h2>${esc(card.title)}</h2><p class="promo-en">${card.en} · LV ${u?.level||card.level}</p><div class="promo-action"><b>${card.action}</b><p>${card.text}</p></div><p class="promo-note">다음 전투부터 출전 6명 중 한 자리를 맡을 수 있습니다.</p></div>`,frontierButton('close-modal','군단으로','',false,'primary'));
- document.querySelectorAll('[data-recruit]').forEach(cv=>drawBust(cv.getContext('2d'),u||{id},{expression:'determined',missionId:state.missionId}));
+ document.querySelectorAll('[data-recruit]').forEach(cv=>drawBust(cv.getContext('2d'),u||{id},{expression:'determined',missionId:state.missionId}));}
 const needsParley=()=>state.missionId===5&&!state.practice&&!state.campaign.choices?.m05_erik_answer;
 function offerParley(){if(state.screen!=='deployment'||!needsParley()||state.narrative.active||$('#modal-root').children.length)return;
  if(!state.narrative.events.includes('5:parley')){enqueueStory(state,'5:parley');openStory(state);commit();return;}

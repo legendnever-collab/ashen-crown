@@ -3,7 +3,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import crypto from 'node:crypto';
 import {SCORE,musicScene} from '../src/audio/score.js';
 import {presentationPlan} from '../src/render/animation.js';
-import {newGame,performAction} from '../src/core/game.js';
+import {newGame,performAction,startBattle} from '../src/core/game.js';
 import {enterHub} from '../src/core/frontier.js';
 import {findUnit} from '../src/core/rules.js';
 import {startSkirmish} from '../src/core/skirmish.js';
@@ -45,3 +45,11 @@ test('promotion actions emit a class flourish that leads the moves it causes',()
 });
 
 test('ACT I tier-1 play emits no class flourish',()=>{const s=newGame(5,null,1);s.screen='deployment';enterHub(s,{story:false});drain(s);assert.ok(!(s.feedback||[]).some(e=>e.type==='class'));});
+
+test('v0.6.1 ACT II music: the castle town marches, Velmar has its square, the two lords\' field its own battle theme',()=>{
+ for(const id of ['northmarch','freecity','threeway'])assert.equal(SCORE[id].melody.reduce((a,[,d])=>a+d,0),SCORE[id].chords.length*8,id);
+ for(const [hub,track] of Object.entries({castletown:'northmarch',march:'campfire',velmar:'freecity'})){const s=newGame(3,null,1);s.screen='exploration';s.frontier={hub};assert.equal(musicScene(s),track,hub);}
+ const c={heroes:null,results:[],clears:9,completed:[1,2,3,4,5,6,7,8,9],flags:{act1_completed:true},choices:{}};
+ for(const [m,track] of [[7,'northmarch'],[8,'northmarch'],[9,'player'],[10,'threeway']]){const s=newGame(3,{...c,completed:c.completed.filter(id=>id<m)},m);s.screen='deployment';startBattle(s);drain(s);s.narrative.active=null;s.phase='player';
+  for(const v of s.units.filter(u=>u.team==='civilian'))v.hp=v.maxHP;assert.equal(musicScene(s),track,`M0${m}`);s.phase='enemy';assert.equal(musicScene(s),'enemy');}
+});
