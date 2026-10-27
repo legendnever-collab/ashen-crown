@@ -1,0 +1,21 @@
+Paint icon sheet E for Ashen Crown: one 1024x1024 PNG, a 4x4 grid of 256x256 cells, transparent background (or flat pure #00FF00), no grid lines, no labels. Follow references/layout_icons_E.png for which icon goes in which cell.
+
+Cell 01: Charm of Clarity (청명 부적): a clear crystal teardrop pendant glowing pale blue-white. This is a unique treasure: give it a soft magical glow so it reads as special.
+Cell 02: Flame Reliquary (성화의 성구): a small golden reliquary box with a tiny living flame visible through a window, warm glow (no symbols). This is a unique treasure: give it a soft magical glow so it reads as special.
+Cell 03: Mana Ring (마나의 반지): a silver ring set with a glowing blue stone. This is a unique treasure: give it a soft magical glow so it reads as special.
+Cell 04: Lion Epaulette (사자의 견장): a heavy gold-and-black shoulder epaulette shaped like a lion's mane (no face, no emblem). This is a unique treasure: give it a soft magical glow so it reads as special.
+Cell 05: Alliance Seal (동맹의 인장): a heavy round wax-seal stamp of brass with three colored cords tied around its handle (dark blue, crimson, ivory); the stamp face is plain. This is a unique treasure: give it a soft magical glow so it reads as special.
+Cell 06: status icon for Poison (독): a green poison drop over a wilting leaf. Bold simple silhouette, readable at 24 px; no disk.
+Cell 07: status icon for Confusion (혼란): swirling violet spirals and small sparks circling. Bold simple silhouette, readable at 24 px; no disk.
+Cell 08: status icon for Bind (속박): a coil of rope with a binding knot tied tight. Bold simple silhouette, readable at 24 px; no disk.
+Cell 09: status icon for Silence (침묵): a closed book bound shut with cord and a blank wax seal. Bold simple silhouette, readable at 24 px; no disk.
+Cell 10: status icon for Strengthened (강화): three golden upward chevrons glowing. Bold simple silhouette, readable at 24 px; no disk.
+Cell 11: status icon for Weakened (약화): three dull grey downward chevrons, cracked. Bold simple silhouette, readable at 24 px; no disk.
+Cell 12: command icon for Attack (공격): a single sword striking diagonally. Bold simple silhouette, readable at 24 px; no disk.
+Cell 13: command icon for Wait (대기): a small brass hourglass with sand falling. Bold simple silhouette, readable at 24 px; no disk.
+Cell 14: command icon for Persuade (설득): two open hands reaching toward each other with a warm light between them. Bold simple silhouette, readable at 24 px; no disk.
+Cell 15: command icon for Capture (생포): iron manacles linked by a short chain. Bold simple silhouette, readable at 24 px; no disk.
+Cell 16: leave empty.
+
+Painted game-item art in the same hand as the attached approved busts and chests: soft painterly rendering with visible but controlled brushwork, warm key light from the upper left, gentle rim light, rich but slightly muted Western medieval frontier colors, a subtle darker outline so the shape reads on dark UI. Objects in three-quarter view, centered, filling about 80% of their cell, every object fully inside its cell with an even margin. Each icon must still be recognisable at 40×40 px: one clear silhouette, strong value contrast, no tiny clutter. No text, letters, numbers, runes, emblems, crests, holy symbols or logos anywhere. No hands or people except the small abstract silhouettes named in a few skill icons.
+Attach: style_aren_neutral.png, approved_chests_act2.png, ref_ui_shop.jpg, layout_icons_E.png.

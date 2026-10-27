@@ -1,0 +1,21 @@
+Paint icon sheet D for Ashen Crown: one 1024x1024 PNG, a 4x4 grid of 256x256 cells, transparent background (or flat pure #00FF00), no grid lines, no labels. Follow references/layout_icons_D.png for which icon goes in which cell.
+
+Cell 01: Chrism Charm (성유 부적): a tiny glass vial of golden oil hung as a pendant on a crimson cord.
+Cell 02: Votive Band (서약의 팔찌): a woven bracelet of crimson and gold threads with small ivory beads.
+Cell 03: Cathedral Staff (대성당 지팡이): a tall ornate staff of white wood and gold with a brass lantern head holding a bright flame.
+Cell 04: Crown Guard Lance (왕관 근위 창): an ornate guard lance with a steel leaf-shaped head and a dark blue and silver pennant (plain).
+Cell 05: Crown Guard Shield (근위 대방패): a great kite shield of polished steel with dark blue enamel and silver rim (no emblem).
+Cell 06: League Saber (연맹 기사의 사브르): a fine curved saber with a crimson and gold basket hilt.
+Cell 07: League Longbow (연맹 장궁): a tall elegant longbow of pale wood with crimson and gold string wraps.
+Cell 08: Paladin Mace (성기사의 전투 철퇴): a heavy ornate war mace of white steel with gold flanges.
+Cell 09: Sacred Flame Vestment (성화 법의): a folded white and gold vestment with a crimson stole on top.
+Cell 10: Herb Pouch (약초 주머니): a small embroidered green cloth pouch overflowing with healing leaves, soft green glow. This is a unique treasure: give it a soft magical glow so it reads as special.
+Cell 11: Hawk Feather (매의 깃): a single long brown-and-white hawk feather with a faint golden shimmer. This is a unique treasure: give it a soft magical glow so it reads as special.
+Cell 12: Sage Notebook (현자의 수첩): a small worn leather notebook with a ribbon and a quill tucked in, faint warm glow (blank cover). This is a unique treasure: give it a soft magical glow so it reads as special.
+Cell 13: Wind Horseshoe (바람의 편자): a silver horseshoe with swirling pale wind wisps around it. This is a unique treasure: give it a soft magical glow so it reads as special.
+Cell 14: Twin Daggers (쌍둥이 단검): a matched pair of ornate daggers, one silver one gold, crossed, soft glow. This is a unique treasure: give it a soft magical glow so it reads as special.
+Cell 15: Shield of Silence (침묵의 방패): a dark round shield of black steel with a smooth silver center, faint cold aura (no emblem). This is a unique treasure: give it a soft magical glow so it reads as special.
+Cell 16: Mirror Cuirass (거울 흉갑): a breastplate polished like a mirror reflecting light, soft white glint. This is a unique treasure: give it a soft magical glow so it reads as special.
+
+Painted game-item art in the same hand as the attached approved busts and chests: soft painterly rendering with visible but controlled brushwork, warm key light from the upper left, gentle rim light, rich but slightly muted Western medieval frontier colors, a subtle darker outline so the shape reads on dark UI. Objects in three-quarter view, centered, filling about 80% of their cell, every object fully inside its cell with an even margin. Each icon must still be recognisable at 40×40 px: one clear silhouette, strong value contrast, no tiny clutter. No text, letters, numbers, runes, emblems, crests, holy symbols or logos anywhere. No hands or people except the small abstract silhouettes named in a few skill icons.
+Attach: style_aren_neutral.png, approved_chests_act2.png, ref_ui_shop.jpg, layout_icons_D.png.

@@ -1,0 +1,21 @@
+Paint icon sheet B for Ashen Crown: one 1024x1024 PNG, a 4x4 grid of 256x256 cells, transparent background (or flat pure #00FF00), no grid lines, no labels. Follow references/layout_icons_B.png for which icon goes in which cell.
+
+Cell 01: Tempered Sword (단련된 검): a plain tempered steel arming sword with a leather-wrapped grip, shown diagonally.
+Cell 02: Hunting Bow (사냥 활): a simple wooden hunting bow with a leather grip and a taut string, shown diagonally.
+Cell 03: Longbow (장궁): a tall dark yew longbow with a waxed string and a green grip wrap, shown diagonally.
+Cell 04: Crystal Staff (수정 지팡이): a wooden staff topped with a clear pale-blue crystal held by brass prongs.
+Cell 05: Mercy Staff (자비의 지팡이): a pale ash-wood staff with a small brass sun-disc head and a white ribbon.
+Cell 06: Balanced Daggers (균형 단검): two balanced daggers crossed, steel blades, worn leather grips.
+Cell 07: Heavy Shield (중방패): a heavy teal-blue wooden kite shield with an iron rim and a plain gold cross-band (no emblem).
+Cell 08: Light Shield (경방패): a small round light buckler of pale steel with a leather rim.
+Cell 09: Travel Cloak (여행 망토): a folded green wool travel cloak with a simple brass clasp.
+Cell 10: Trail Boots (행군 장화): a pair of sturdy brown leather marching boots.
+Cell 11: Focus Charm (집중의 부적): a small violet gem pendant on a brass chain.
+Cell 12: Steel Greatsword (강철 대검): a broad two-handed steel greatsword with a squared crossguard, dark blue-grey wrapped hilt.
+Cell 13: Knight Lance (기사 창): a long cavalry lance with a steel tip and a dark blue pennant (plain), shown diagonally.
+Cell 14: Ironwood Bow (철목 활): a recurved bow of dark ironwood reinforced with iron fittings at the tips.
+Cell 15: Plate Cuirass (판금 흉갑): a polished steel plate breastplate with riveted edges and leather straps.
+Cell 16: Iron Tower Shield (철관 방패): a tall rectangular steel tower shield with a dark blue-grey face and iron studs (no emblem).
+
+Painted game-item art in the same hand as the attached approved busts and chests: soft painterly rendering with visible but controlled brushwork, warm key light from the upper left, gentle rim light, rich but slightly muted Western medieval frontier colors, a subtle darker outline so the shape reads on dark UI. Objects in three-quarter view, centered, filling about 80% of their cell, every object fully inside its cell with an even margin. Each icon must still be recognisable at 40×40 px: one clear silhouette, strong value contrast, no tiny clutter. No text, letters, numbers, runes, emblems, crests, holy symbols or logos anywhere. No hands or people except the small abstract silhouettes named in a few skill icons.
+Attach: style_aren_neutral.png, approved_chests_act2.png, ref_ui_shop.jpg, layout_icons_B.png.
