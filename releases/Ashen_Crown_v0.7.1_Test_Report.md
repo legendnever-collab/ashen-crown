@@ -94,6 +94,11 @@ In the release candidate's first full run, act2c-campaign failed one check: it s
 - Unit tests (tests/migration-v070.test.mjs): the v0.7.0 refugee-camp save loads with completed missions, economy, flags, choices, promotions and trust unchanged and continues to M13; the mid-M12 battle resumes unchanged and is won.
 - Browser (tests/migration-v070.mjs): saves made by the shipped v0.7.0 HTML (village and Mission 01 battle) restore with their checkpoint, and restart works. The source fixtures reach the refugee camp before M13, and a reload shows v0.7.1.
 
+## Hosted CI (PR #15)
+- Release candidate c5ca873: run 40417800182, 7/7 on attempt 1.
+- Fix commit 2ff6d41: run 40495351919. On attempt 1 the exploration group failed 1 min 46 s into its test step; its log and artifact are stored on a host this workspace cannot reach, so the cause was not seen. journey (that group's first suite) was run again locally on the same build: 176/176. Attempt 2 (failed jobs re-run): 7/7 success; the exploration group ran in full (9 min).
+- The commit that records this runs CI again; its result is recorded with the merge.
+
 ## Packaging
 `python3 scripts/package.py` → `npm test` → `python3 scripts/package.py` → `python3 scripts/verify-release.py`. Results are in docs/v0.7.1/evidence and the SHA256 manifest. Following D-066, the Source ZIP leaves out the built HTML; verify-release rebuilds it from the ZIP and compares the two.
 
