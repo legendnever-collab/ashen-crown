@@ -1,5 +1,5 @@
 # Next Tasks
-1. v0.7.1 release candidate (feature/v0.7.1-lion-and-alliance): send the build, open the PR (CI), never merge before the user plays and approves it. After approval record the PR, CI run and merge SHA in docs/v0.7.1/RELEASE_NOTES.md.
+1. v0.7.1 merged (PR #15, approved with the music mute fix, D-072): record the merge SHA and the main CI run in docs/v0.7.1/RELEASE_NOTES.md at the start of the next branch. Tags and GitHub Releases only when the user asks.
 2. Art work pack D (28 images) when the user returns it: import and replace the temporary pilgrim village painting and procedural cast (Lucien, Ines, Cassian/Leonora map sheets, flame knight, pilgrim, ash raider, monastery guard, abbot, masked raider).
 3. Play-test watch items for v0.7.1: M13 persuasion pacing (resolve sources, threshold 6, TURN 5 lion hold), M14 leader escort difficulty and betrayal fairness, recruit departure rule.
 4. Next on the user's instruction: ACT III 「왕관의 진실」 design (M15–M22), returning recruits who left after M14, awakening (Tier 3).

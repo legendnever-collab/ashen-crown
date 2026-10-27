@@ -48,7 +48,8 @@
     "test:act2c-campaign": "node tests/act2c-campaign-e2e.mjs",
     "test:migration-v061": "node tests/migration-v061.mjs",
     "test:act2d-campaign": "node tests/act2d-campaign-e2e.mjs",
-    "test:migration-v070": "node tests/migration-v070.mjs"
+    "test:migration-v070": "node tests/migration-v070.mjs",
+    "test:audio-mute": "node tests/audio-mute-e2e.mjs"
   },
   "devDependencies": {
     "playwright": "1.58.2"

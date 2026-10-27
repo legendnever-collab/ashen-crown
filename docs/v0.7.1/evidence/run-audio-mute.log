@@ -1,0 +1,21 @@
+PASS 1440 music is playing (context running) · -12.7 dB
+PASS 1440 the 음악 / 효과음 window opens
+PASS 1440 Mute: the output is silent, reverb included · -Infinity dB
+PASS 1440 Mute off: the music returns at its level · -11.8 dB
+PASS 1440 BGM 0 (SFX 0): the output is silent · -Infinity dB
+PASS 1440 BGM at its lowest step still plays, quietly · -30.8 dB
+PASS 1440 Music Pause: the music is silent · -Infinity dB
+PASS 1440 Music Pause off: the music returns · -12 dB
+PASS 1440 settings are kept as chosen · {"music":0.45,"sfx":0.45,"muted":false,"paused":false}
+PASS 1440 no runtime errors
+PASS 390 music is playing (context running) · -12.7 dB
+PASS 390 the 음악 / 효과음 window opens
+PASS 390 Mute: the output is silent, reverb included · -Infinity dB
+PASS 390 Mute off: the music returns at its level · -12 dB
+PASS 390 BGM 0 (SFX 0): the output is silent · -Infinity dB
+PASS 390 BGM at its lowest step still plays, quietly · -31.3 dB
+PASS 390 Music Pause: the music is silent · -Infinity dB
+PASS 390 Music Pause off: the music returns · -12.7 dB
+PASS 390 settings are kept as chosen · {"music":0.45,"sfx":0.45,"muted":false,"paused":false}
+PASS 390 no runtime errors
+audio-mute-e2e: 20 checks passed

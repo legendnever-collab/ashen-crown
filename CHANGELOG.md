@@ -1,5 +1,6 @@
-# v0.7.1 — The Three Banners · ACT II complete, Missions 13–14 (release candidate, 2026-10-27)
-- Started with the v0.7.0 merge approval (2026-10-27 06:16 KST, D-070); details D-071. Not merged before the user plays and approves the release candidate.
+# v0.7.1 — The Three Banners · ACT II complete, Missions 13–14 (merge approved by the user, 2026-10-27)
+- Release: the user played the release candidate and approved the merge with one fix (chat 2026-10-27 18:34 KST, D-072). Started with the v0.7.0 merge approval (2026-10-27 06:16 KST, D-070); details D-071.
+- Fix (D-072): music was still faintly audible with Mute, Music Pause or BGM 0 — the reverb return bypassed the music volume (since v0.4.0). It now follows the BGM level and reaches an exact 0; the default mix is unchanged. Tests: audio-mix unit suite, audio-mute browser suite.
 - M13 검은 사자의 결단: Baldrick's lion formation marches on the refugee camp; resolve from ACT I–II choices, the new 설득 action (Erik beside Baldrick once a turn, Thea once) and calm enemy phases; 6 halts his army (Iron Crown trust −1); otherwise break the formation from TURN 5 or hold to TURN 12. Baldrick parts in every outcome.
 - M14 부서진 동맹: escort Cassian, Leonora and Lucien with their guards to the exit while masked raiders hunt them; on TURN 4 the lowest-trust banner turns on the legion; trust after the summit; the betraying banner's recruit stays or leaves (kept for ACT III).
 - ACT II completion card; summit camp; world route to the ruined waystation; one original track (The Black Lion's Decision).

@@ -31,12 +31,13 @@ act2 exit=0
 act2-hubs exit=0
 act2-campaign exit=0
 act2b-campaign exit=0
-act2c-campaign exit=0 (rerun after test fix)
+act2c-campaign exit=0
 act2d-campaign exit=0
 hub-doors exit=0
 migration-v050 exit=0
 migration-v060 exit=0
 migration-v061 exit=0
 migration-v070 exit=0
+audio-mute exit=0
 performance exit=0
 DONE

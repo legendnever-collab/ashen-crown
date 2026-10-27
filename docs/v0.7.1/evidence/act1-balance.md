@@ -1,6 +1,6 @@
 # ACT I balance report (M01→M06, legal policy)
 
-Executed 2026-10-26 21:53 UTC with `node tests/act1-balance.mjs 30 20261014` — 30 seeds, rules API only, no shopping, no state edits.
+Executed 2026-10-27 09:42 UTC with `node tests/act1-balance.mjs 30 20261014` — 30 seeds, rules API only, no shopping, no state edits.
 
 **Full ACT I clears: 30/30 (100%)**
 

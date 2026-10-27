@@ -1,0 +1,130 @@
+{
+ "checks": 20,
+ "failed": 0,
+ "results": [
+  {
+   "name": "1440 music is playing (context running)",
+   "ok": true,
+   "detail": "-12.7 dB"
+  },
+  {
+   "name": "1440 the 음악 / 효과음 window opens",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "1440 Mute: the output is silent, reverb included",
+   "ok": true,
+   "detail": "-Infinity dB"
+  },
+  {
+   "name": "1440 Mute off: the music returns at its level",
+   "ok": true,
+   "detail": "-11.8 dB"
+  },
+  {
+   "name": "1440 BGM 0 (SFX 0): the output is silent",
+   "ok": true,
+   "detail": "-Infinity dB"
+  },
+  {
+   "name": "1440 BGM at its lowest step still plays, quietly",
+   "ok": true,
+   "detail": "-30.8 dB"
+  },
+  {
+   "name": "1440 Music Pause: the music is silent",
+   "ok": true,
+   "detail": "-Infinity dB"
+  },
+  {
+   "name": "1440 Music Pause off: the music returns",
+   "ok": true,
+   "detail": "-12 dB"
+  },
+  {
+   "name": "1440 settings are kept as chosen",
+   "ok": true,
+   "detail": "{\"music\":0.45,\"sfx\":0.45,\"muted\":false,\"paused\":false}"
+  },
+  {
+   "name": "1440 no runtime errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "label": "1440",
+   "levels": {
+    "playing": -12.7,
+    "muted": null,
+    "back": -11.8,
+    "zero": null,
+    "low": -30.8,
+    "paused": null,
+    "again": -12
+   }
+  },
+  {
+   "name": "390 music is playing (context running)",
+   "ok": true,
+   "detail": "-12.7 dB"
+  },
+  {
+   "name": "390 the 음악 / 효과음 window opens",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "390 Mute: the output is silent, reverb included",
+   "ok": true,
+   "detail": "-Infinity dB"
+  },
+  {
+   "name": "390 Mute off: the music returns at its level",
+   "ok": true,
+   "detail": "-12 dB"
+  },
+  {
+   "name": "390 BGM 0 (SFX 0): the output is silent",
+   "ok": true,
+   "detail": "-Infinity dB"
+  },
+  {
+   "name": "390 BGM at its lowest step still plays, quietly",
+   "ok": true,
+   "detail": "-31.3 dB"
+  },
+  {
+   "name": "390 Music Pause: the music is silent",
+   "ok": true,
+   "detail": "-Infinity dB"
+  },
+  {
+   "name": "390 Music Pause off: the music returns",
+   "ok": true,
+   "detail": "-12.7 dB"
+  },
+  {
+   "name": "390 settings are kept as chosen",
+   "ok": true,
+   "detail": "{\"music\":0.45,\"sfx\":0.45,\"muted\":false,\"paused\":false}"
+  },
+  {
+   "name": "390 no runtime errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "label": "390",
+   "levels": {
+    "playing": -12.7,
+    "muted": null,
+    "back": -12,
+    "zero": null,
+    "low": -31.3,
+    "paused": null,
+    "again": -12.7
+   }
+  }
+ ]
+}

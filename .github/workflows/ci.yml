@@ -46,7 +46,7 @@ jobs:
           - suite_group: exploration
             suites: journey quality migration-v031 migration-v032 frontier renaissance performance
           - suite_group: tactical
-            suites: e2e mobile tactical http post-move restart
+            suites: e2e mobile tactical http post-move restart audio-mute
           - suite_group: campaign
             suites: campaign economy-balance migration-v02
           - suite_group: act1
