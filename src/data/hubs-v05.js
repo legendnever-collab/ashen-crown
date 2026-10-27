@@ -19,7 +19,9 @@ export function hubFor(missionId,phase='preparation'){
 // after M08, Velmar for M09–M10.
 export function act2HubFor(missionId,phase='preparation'){const after=phase==='aftermath';if(missionId===7||missionId===8&&!after)return 'castletown';if(missionId===8)return 'march';
  // v0.7 (D-068): the pilgrim village below the Sacred Flame cathedral for M11–M12, the refugee camp after M12.
- if(missionId===11||missionId===12&&!after)return 'pilgrim';if(missionId>=12)return 'refuge';return 'velmar';}
+ if(missionId===11||missionId===12&&!after)return 'pilgrim';if(missionId===12||missionId===13&&!after)return 'refuge';
+ // v0.7.1 (D-071): the camp before the summit at the ruined waystation (after M13, M14).
+ if(missionId>=13)return 'summit';return 'velmar';}
 // Story key → hub used as the staged backdrop ('pre:3', 'after:3:loss', '6:oath' …).
 export function stageHubFor(key){
  const m=/^(pre|after):(\d+)/.exec(key);if(m)return hubFor(+m[2],m[1]==='after'?'aftermath':'preparation');
@@ -175,4 +177,8 @@ HV5_SPECS.pilgrim={...HV5_VILLAGE,name:'Pilgrim Village · 순례자 마을',kin
 HV5_SPECS.refuge={...HV5_SPECS.bivouac,name:'Refugee Camp · 피난민 야영지',kind:'refuge',
  npcs:[...HV5_SPECS.bivouac.npcs.map(n=>n[0]==='elder'?['elder','순례자 사제',16,5]:n[0]==='refugee'?['refugee','피난민',10,10]:n),
   ['ines','이네스 · 모닥불',14,6,{kind:'hero',requires:'ines'}],['thea','테아 · 경계',13,4,{kind:'hero',requires:'thea'}],['dario','다리오 · 모닥불',11,9,{kind:'hero',requires:'dario'}]]};
+// v0.7.1 (D-071, PROPOSED): the camp before the summit outside the capital, under the oath-camp painting.
+HV5_SPECS.summit={...HV5_SPECS.oathcamp,name:'Summit Camp · 폐허 역참 야영지',kind:'summit',
+ npcs:[...HV5_SPECS.oathcamp.npcs.map(n=>n[0]==='elder'?['elder','역참 관리인',n[2],n[3]]:n[0]==='refugee'?['refugee','피난민',n[2],n[3]]:n),
+  ['thea','테아 · 경계',10,11,{kind:'hero',requires:'thea'}],['dario','다리오 · 길목',10,12,{kind:'hero',requires:'dario'}],['ines','이네스 · 천막 곁',13,11,{kind:'hero',requires:'ines'}]]};
 export const ART_HUBS=Object.fromEntries(Object.entries(HV5_SPECS).map(([id,spec])=>[id,hv5Build(id,spec)]));

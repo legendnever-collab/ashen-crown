@@ -236,6 +236,7 @@ export const CAST={
  ashRaider:{name:'재 약탈단',skin:'warm',hair:'#2a2420',style:'long',bandana:'#6a2422',body:'leather',coat:'#2e2a28',trim:'#5a3a2a',legs:'#2a2624',boots:'#1e1a18',weapon:'axe',eye:'#3a2a22'},
  monasteryGuard:{name:'수도원 경비',skin:'fair',hair:'#3a302a',style:'short',hood:'#7a7a74',body:'robe',coat:'#7a7a74',trim:'#a07a3a',legs:'#5a5a54',boots:'#3a3a36',weapon:'staff',orb:'#8a7a5a',eye:'#3a3a40'},
  abbot:{name:'침묵의 원장',skin:'pale',hair:'#b8b4ac',style:'bald',body:'robe',coat:'#2e2c2c',trim:'#7a7a74',cape:'#4a4846',legs:'#3a3836',boots:'#24221f',weapon:'torch',beard:'long',beardColor:'#b8b4ac',eye:'#4a4a50',stoop:true},
+ maskedRaider:{name:'가면 습격대',skin:'pale',hair:'#1a1a1c',style:'short',hood:'#2a2a2e',body:'leather',coat:'#2e2e32',trim:'#b8b8b0',legs:'#1e1e22',boots:'#141416',weapon:'sword',off:'shield',shield:'#1e1e22',eye:'#d8d8d0'},
  aide:{name:'작전 보좌관',skin:'pale',hair:'#2a2430',style:'swept',body:'coat',coat:'#3f3a63',trim:'#c9b07a',legs:'#2a2840',boots:'#1f1d2a',weapon:'papers',eye:'#4a3a5a'}
 };
 // M06 looks that have painted sheets; their pixel fallback borrows an existing look.

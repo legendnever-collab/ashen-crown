@@ -4,7 +4,7 @@
 import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterWarCouncil} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize} from '../src/persistence/save-manager.js';import {actOneCamp} from './skirmish-policy.mjs';
 import {newGame,startBattle,checkOutcome} from '../src/core/game.js';import {enterHub} from '../src/core/frontier.js';import {findUnit} from '../src/core/rules.js';import {drain} from './campaign-policy.mjs';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.7.0.html').href,shots='docs/v0.7.0/screenshots/act2c-campaign';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.7.1.html').href,shots='docs/v0.7.0/screenshots/act2c-campaign';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const check=(name,ok)=>{assert.ok(ok,name);n++;console.log('PASS',name);};
 const actTwo=(missionId,extra={})=>{const camp=actOneCamp(20261021,9);const c=structuredClone(camp.campaign);c.completed=[1,2,3,4,5,6,7,8,9,...(missionId>10?[10]:[]),...(missionId>11?[11]:[])];
  Object.assign(c.choices,{m04_records_choice:'kept',m07_deserters:'legion',m08_order:'hold',m10_stance:'mediate'},extra.choices||{});c.factionTrust={iron:2,free:2,flame:extra.flame??0};c.trustLog=[];c.roster=extra.roster||['thea','dario'];
@@ -49,7 +49,7 @@ try{
   check(`${label} returning the records: the Order trusts the legion, Ines joins`,s.frontier.hub==='refuge'&&s.campaign.choices.m12_records==='return'&&s.campaign.roster.includes('ines')&&s.frontier.members.includes('ines'));
   for(let i=0;i<3&&!await p.locator('.promo-card').count();i++){await drainStory(p);await p.waitForTimeout(300);}
   check(`${label} Ines's joining card`,(await p.locator('.promo-card').textContent().catch(()=>'')).includes('이네스'));await p.screenshot({path:`${shots}/ines-joins-${label}.png`});await press('close-modal');
-  check(`${label} the camp says M13 comes in the next update`,(await p.locator('#screen').textContent()).includes('M13'));
+  check(`${label} the camp now leads on to Mission 13 (v0.7.1)`,(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 13'));
   check(`${label} no runtime errors`,errors.length===0);if(errors.length)console.log(errors);await ctx.close();
  }
  fs.writeFileSync('test-output/act2c-campaign-e2e.json',JSON.stringify({checks:n},null,1));console.log(`act2c-campaign-e2e: ${n} checks passed`);

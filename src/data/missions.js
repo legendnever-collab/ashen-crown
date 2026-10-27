@@ -195,6 +195,46 @@ MISSIONS[12]=authored({id:12,title:'침묵의 수도원',en:'The Silent Monaster
  threatTurn:99,par:10,turnLimit:14,level:11,deployLimit:6,
  objective:'장부 기록 확보(인접해 조사) + 침묵의 원장 격파·생포 · 장부 기록이 불타거나 TURN 14를 넘기면 패배',
  brief:'경비는 바라보는 방향 앞 2칸과 앞 대각선 2칸을 감시하고, 적 턴마다 정해진 순서로 돌아섭니다(붉은 칸). 적 턴이 시작될 때 감시 칸에 장수가 있으면 의심(감시 3칸), 한 번 더 들키거나 경비를 한 번에 쓰러뜨리지 못하면 종이 울립니다(경보). 경보가 울리면 경비가 모두 움직이고 숙소에서 셋이 나오며, 3턴 뒤 원장이 확보하지 못한 기록을 태웁니다. 감시 밖에서 조용한 경비를 치면 기습(명중 +30, 피해 +5). 원장은 HP 절반 이하에서 인접해 생포할 수 있습니다.'});
+// v0.7.1 ACT II part 2 (D-068 §3/§6, D-071; maps, numbers and names PROPOSED). M13 The Black Lion's Decision: Cassian
+// orders Baldrick to break up the legion's refugee camp; his lion formation marches on the tents. Erik (and Thea, once)
+// can persuade him instead of attacking; resolve from ACT I–II choices and the battle decides whether he halts his army.
+const lion13=(id,name,kind,x,y,look,stats={})=>unit(id,name,kind,x,y,{look,...stats});
+MISSIONS[13]=authored({id:13,title:'검은 사자의 결단',en:"The Black Lion's Decision",
+ rows:['mmmmffgggrrgggffmm','mmffggggrrrrggggfm','mfgggggrrrrrrgggff','ffgggfggrrrrgfgggf','fggggggggrrggggggg','gggxxgggrrrggxxggg','gggxxggrrrrgggxggg','ggggggrrggrrgggggg','gfgggrrggggrrggfgg','ffggrrggvvggrrggff','fggrrgvvvvvvggrrgf','ggrrgvvvhhvvvggrrg','grrggvvvvvvvvgggrr','rrggggvvvvvvggggrr'],
+ enemies:[
+  lion13('boss','발드릭 로엔 · 검은 사자','lion',9,2,'lion',{hp:120,atk:21,def:12,res:7,spd:7,mov:3}),
+  lion13('f1','사자 기수','bearer',7,3,'bearer',{hp:44,atk:12,def:9,res:6,spd:5,mov:2}),lion13('f2','사자 기수','bearer',11,3,'bearer',{hp:44,atk:12,def:9,res:6,spd:5,mov:2}),lion13('f3','사자 기수','bearer',9,4,'bearer',{hp:44,atk:12,def:9,res:6,spd:5,mov:2}),
+  lion13('s1','철왕관 창병','spear',6,4,'ironSpear',{hp:36,atk:17,def:8,res:3,spd:6}),lion13('s2','철왕관 창병','spear',12,4,'ironSpear',{hp:36,atk:17,def:8,res:3,spd:6}),
+  lion13('s3','철왕관 창병','spear',8,5,'ironSpear',{hp:36,atk:17,def:8,res:3,spd:6}),lion13('s4','철왕관 창병','spear',10,5,'ironSpear',{hp:36,atk:17,def:8,res:3,spd:6}),
+  lion13('a1','철왕관 궁수','archer',4,2,'ironArcher',{hp:28,atk:16,def:4,res:3,spd:7}),lion13('a2','철왕관 궁수','archer',14,2,'ironArcher',{hp:28,atk:16,def:4,res:3,spd:7})],
+ civilians:[{id:'v1',name:'피난민 노인',x:6,y:11,hp:26,def:2},{id:'v2',name:'피난민 어머니',x:11,y:11,hp:26,def:2},{id:'v3',name:'피난민 아이',look:'child',x:7,y:12,hp:22,def:1},{id:'v4',name:'맹세하지 않은 순례자',look:'pilgrim',x:10,y:12,hp:26,def:2}],
+ waves:[{turn:3,story:'13:cavalry',units:[lion13('c1','철왕관 기병','cavalry',0,6,'cavalry',{hp:34,atk:17,def:6,res:2,spd:9,mov:5,movementProfile:'cavalry'}),lion13('c2','철왕관 기병','cavalry',17,6,'cavalry',{hp:34,atk:17,def:6,res:2,spd:9,mov:5,movementProfile:'cavalry'})]},
+  {turn:5,story:'13:reinforce',units:[lion13('s5','철왕관 창병','spear',8,0,'ironSpear',{hp:36,atk:17,def:8,res:3,spd:6}),lion13('s6','철왕관 창병','spear',11,0,'ironSpear',{hp:36,atk:17,def:8,res:3,spd:6})]}],
+ formation:{bearers:['f1','f2','f3'],def:2,hit:10,charge:4,leash:2},persuade:{target:'boss',threshold:6},
+ deployZone:s=>{const base=[];for(let y=7;y<=12;y++)for(let x=2;x<=15;x++)base.push([x,y]);const m=MISSIONS[13];return zone(base.filter(([x,y])=>Number.isFinite(TERRAIN[m.map[y][x]].cost)&&!m.civilians.some(c=>c.x===x&&c.y===y)));},
+ deployments:{recommended:[[8,9],[9,9],[6,10],[11,10],[7,8],[10,8]],assault:[[8,8],[9,8],[7,8],[10,8],[6,9],[11,9]],defense:[[8,10],[9,10],[5,10],[12,10],[7,9],[10,9]]},
+ threatTurn:4,par:10,turnLimit:12,level:11,deployLimit:6,lionHold:5,
+ objective:'발드릭의 결단 6 (설득·선택·피난민 보호) 또는 TURN 5부터 사자 기수 3명 격파 + 발드릭 HP 50% 이하 또는 TURN 12까지 야영지 사수 · 피난민 2명 이상 잃으면 패배',
+ brief:'에릭이 발드릭 곁에서 "설득"하면 결단이 1 오릅니다(턴마다 1번). 테아가 출전했다면 한 번 말을 건넬 수 있습니다. ACT I–II의 선택과, TURN 4부터 적 턴 동안 피난민이 다치지 않을 때마다(최대 2)도 결단이 오릅니다. 6이면 발드릭이 군을 멈춥니다. 발드릭은 TURN 5 전에는 대형이 무너져도 물러서지 않습니다. 사자 기수 곁의 적은 DEF+2·명중+10, 발드릭은 고립된 장수를 노립니다(피해+4). TURN 3 양쪽에서 기병, TURN 5 북쪽 증원.'});
+// M14 The Broken Alliance: the three leaders meet at a ruined waystation outside the capital; masked raiders (the ledger
+// cord) break in. Escort the leaders (allies) to the southern exit. On TURN 4 the banner that trusts the legion least
+// turns on it: its leader leaves the field and its guards attack.
+const guard14=(id,name,look,x,y,faction,stats={})=>ally(id,name,look,x,y,{faction,hp:40,atk:16,def:9,res:4,spd:6,mov:3,...stats});
+const leader14=(id,name,look,x,y,faction)=>ally(id,name,look,x,y,{faction,kind:'leader',leader:true,hp:64,atk:17,def:8,res:6,spd:7,mov:3});
+const masked=(id,x,y,stats={})=>unit(id,'가면 습격대','bandit',x,y,{hp:34,atk:18,def:7,res:4,spd:9,mov:4,movementProfile:'rogue',look:'maskedRaider',masked:true,...stats});
+MISSIONS[14]=authored({id:14,title:'부서진 동맹',en:'The Broken Alliance',
+ rows:['xxxxxxxkkkkxxxxxxx','xkkkkkkkkkkkkkkkkx','xkkkkkkkkkkkkkkkkx','xxxxxxkkkkkkxxxxxx','ggfgggrrrrrrgggfgg','gffggrrggggrrggffg','ggggrrgxxggrrggggg','gggrrggxxgggrrgggf','ffgrrggggggggrrggf','fggrrgggffgggrrggg','gggrrggggggggrrggg','ggggrrggggggrrgggg','gfgggrrrrrrrrgggfg','gggggggrrrrggggggg'],
+ enemies:[masked('k1',0,5),masked('k2',17,5),masked('k3',1,9),masked('k4',16,9)],
+ allies:[leader14('cassian','카시안 · 철왕관 통령','cassian',6,2,'iron'),leader14('leonora','레오노라 · 연맹 의장','leonora',9,2,'free'),leader14('lucien','루시안 · 성화 대사제','lucien',12,2,'flame'),
+  guard14('ig1','철왕관 근위병','ironInfantry',5,1,'iron'),guard14('ig2','철왕관 근위병','ironInfantry',7,1,'iron'),guard14('fg1','연맹 경비병','guard',8,1,'free'),guard14('fg2','연맹 경비병','guard',10,1,'free'),
+  guard14('lg1','성화 기사','flameKnight',11,1,'flame'),guard14('lg2','성화 기사','flameKnight',13,1,'flame')],
+ waves:[{turn:2,story:'14:raid',units:[masked('k5',0,7),masked('k6',17,7),masked('k7',0,11,{look:'maskedRaider',kind:'archer',range:[2,3],hp:28,atk:16,def:4})]},
+  {turn:4,units:[masked('k8',17,11),masked('k9',0,12)]},{turn:6,story:'14:exit',units:[masked('k10',3,13),masked('k11',14,13),masked('k12',17,8)]}],
+ deployZone:s=>{const base=[];for(let y=4;y<=8;y++)for(let x=3;x<=14;x++)base.push([x,y]);return zone(base.filter(([x,y])=>Number.isFinite(TERRAIN[MISSIONS[14].map[y][x]].cost)));},
+ deployments:{recommended:[[8,4],[9,4],[6,5],[11,5],[6,6],[10,6]],assault:[[7,4],[10,4],[5,5],[12,5],[8,5],[9,5]],defense:[[8,4],[9,4],[7,4],[10,4],[6,4],[11,4]]},
+ threatTurn:99,par:9,turnLimit:12,level:12,deployLimit:6,exitRow:13,betrayTurn:4,
+ objective:'세 지도자 중 둘 이상을 남쪽 출구(맨 아랫줄)까지 호위 · 지도자를 지킬 수 없게 되면(남은 지도자 둘 중 하나라도 쓰러짐) 패배 · TURN 12 안에',
+ brief:'카시안·레오노라·루시안과 호위병이 동맹군으로 남쪽 출구로 물러납니다. 가면 습격대는 지도자를 노리고 양옆과 남쪽에서 계속 들어옵니다. TURN 4에 군단을 가장 믿지 않는 깃발(신뢰가 가장 낮은 세력)이 군단에 칼을 돌립니다: 그 지도자는 전장을 떠나고 호위병은 적이 됩니다.'});
 // v0.5.0 Phase E (D-047): promotion trials (101–105) and the repeatable Legion Drill (110). Non-story
 // skirmishes after ACT I: never pushed into campaign.completed, no gold, permanent EXP (mission level 7).
 // goal: survive (turn N ends with `protect` alive) · rout (all enemies down by `limit`) · reach (hero at row ≤ y)

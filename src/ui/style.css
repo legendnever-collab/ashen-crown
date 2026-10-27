@@ -323,3 +323,6 @@
 .faction-stage{margin:4px 0}
 .faction-stage b{display:inline-block;min-width:3.2em;padding:1px 8px;border-radius:999px;background:#2b3b3d;text-align:center}
 .stage-wary b{background:#6b3a33;color:#ffd9cf}.stage-neutral b{background:#3b4648}.stage-trusted b{background:#355d45;color:#dff5df}.stage-allied b{background:#7a6324;color:#fff3cf}
+
+/* v0.7.1 ACT II completion card: the three banners' relations */
+.act2-relations{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}.act2-relations th,.act2-relations td{padding:5px 6px;border-bottom:1px solid rgba(240,196,106,.25);text-align:left}.act2-relations th{color:#f0c46a;font-weight:600}

@@ -10,7 +10,7 @@ import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {drain} from './campaign-policy.mjs';
 
 const at=(hub,x,y)=>({frontier:{hub,x,y}});
-const ACT2=['castletown','velmar','pilgrim'],PLACED=[...ACT2,'march','refuge']; // v0.6 art pack C: town hubs with the village's four chest doors plus two shop doors; 'march' is the canyon bivouac (M08 aftermath)
+const ACT2=['castletown','velmar','pilgrim'],PLACED=[...ACT2,'march','refuge','summit']; // v0.6 art pack C: town hubs with the village's four chest doors plus two shop doors; 'march' is the canyon bivouac (M08 aftermath)
 function reachable(id){const h=HUBS[id],seen=new Set([h.spawn.join()]),q=[h.spawn];while(q.length){const [x,y]=q.shift();for(const [dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const k=`${x+dx},${y+dy}`;if(!seen.has(k)&&walkable(at(id,x+dx,y+dy),x+dx,y+dy)){seen.add(k);q.push([x+dx,y+dy]);}}}return seen;}
 
 test('W3 table: every ACT I story moment has its hub',()=>{

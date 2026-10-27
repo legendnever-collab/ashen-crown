@@ -8,7 +8,8 @@ APPROVED_DIRECTION, 2026-10-14 user v0.3 Master Task. Story CANON과 실제 구�
 - v0.6.0 The Three Banners (ACT II, part 1): M07 북부의 군령 and M08 협곡 방어전 in the castle town below Ironhold — allied armies, sorties of six, faction trust, Thea as the first recruit; painted rooms and chests, connected dialogue, Hangul names. Merge approved by the user 2026-10-26 (D-065).
 - v0.6.1 The Three Banners (ACT II, part 1 complete): M09 자유의 도시 and M10 두 영주의 전쟁 in Velmar — rooftop assassins, a three-way battle with support or mediation, Dario as the second recruit, three original ACT II tracks. Merge approved by the user 2026-10-26 (D-067).
 - v0.7.0 The Three Banners (ACT II, part 2a): M11 성화의 행렬 and M12 침묵의 수도원 below the Sacred Flame cathedral — night light and braziers, stealth with watching guards and the bell, Ines as the third recruit, Sain's past, two original tracks. Merge approved by the user 2026-10-27 06:16 KST (D-068/D-069/D-070).
-- Next: v0.7.1 ACT II part 2b — M13 검은 사자의 결단 (persuasion), M14 부서진 동맹 (betrayal), ACT II completion card; then ACT III and awakening (Tier 3) on the user's instruction.
+- v0.7.1 The Three Banners (ACT II complete): M13 검은 사자의 결단 (persuasion and Baldrick's resolve) and M14 부서진 동맹 (the summit, masked raiders, betrayal by the lowest-trust banner, recruits who may leave), the ACT II completion card. Merged after the user's play-test with the music mute fix (D-071, D-072).
+- Next: ACT III 「왕관의 진실」 (M15–M22) and awakening (Tier 3) on the user's instruction.
 - Subsequent: ACT III–IV, relationship branches and three endings. Preserve 4 acts / 30 missions.
 
 

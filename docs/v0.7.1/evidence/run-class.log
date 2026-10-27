@@ -1,0 +1,31 @@
+PASS 1440x900 Erik selected
+PASS 1440x900 skill tab lists the class action
+PASS 1440x900 Bulwark shows its forecast
+PASS 1440x900 Bulwark applied (MP −4, acted)
+PASS 1440x900 Bulwark plays its golden shield flourish (Phase F)
+PASS 1440x900 Overwatch applied
+PASS 1440x900 Arcane shows target tiles
+PASS 1440x900 first tap previews the rune
+PASS 1440x900 second tap lays the rune
+PASS 1440x900 Recall forecast
+PASS 1440x900 Recall brings Erik next to Sain
+PASS 1440x900 Exchange forecast
+PASS 1440x900 Exchange swapped Kai and the bandit
+PASS 1440x900 Bulwark/Overwatch expire, runes last into the next turn
+PASS 1440x900 no runtime errors
+PASS 390x844 Erik selected
+PASS 390x844 skill tab lists the class action
+PASS 390x844 Bulwark shows its forecast
+PASS 390x844 Bulwark applied (MP −4, acted)
+PASS 390x844 Bulwark plays its golden shield flourish (Phase F)
+PASS 390x844 Overwatch applied
+PASS 390x844 Arcane shows target tiles
+PASS 390x844 first tap previews the rune
+PASS 390x844 second tap lays the rune
+PASS 390x844 Recall forecast
+PASS 390x844 Recall brings Erik next to Sain
+PASS 390x844 Exchange forecast
+PASS 390x844 Exchange swapped Kai and the bandit
+PASS 390x844 Bulwark/Overwatch expire, runes last into the next turn
+PASS 390x844 no runtime errors
+30 class action checks PASS

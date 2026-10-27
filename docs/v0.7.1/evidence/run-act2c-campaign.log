@@ -1,0 +1,27 @@
+PASS 1440 M10 camp offers Mission 11 toward the pilgrim village
+PASS 1440 the world card names the Sacred Flame's land and the pilgrim village
+PASS 1440 pilgrim village hub for M11 with Ines, Thea and Dario
+PASS 1440 M11 battle: four pilgrims on the road, three dark braziers, Ines and two flame knights
+PASS 1440 M11 status shows the sanctuary goal and braziers
+PASS 1440 M11 camp offers Lucien's choice (two options)
+PASS 1440 the oath raises the Order's trust and plays its scene
+PASS 1440 M12 battle: seven quiet guards, the abbot, three records; the monastery is quiet
+PASS 1440 M12 camp offers the records choice; copying is closed without Lia and Kai
+PASS 1440 returning the records: the Order trusts the legion, Ines joins
+PASS 1440 Ines's joining card
+PASS 1440 the camp now leads on to Mission 13 (v0.7.1)
+PASS 1440 no runtime errors
+PASS 390 M10 camp offers Mission 11 toward the pilgrim village
+PASS 390 the world card names the Sacred Flame's land and the pilgrim village
+PASS 390 pilgrim village hub for M11 with Ines, Thea and Dario
+PASS 390 M11 battle: four pilgrims on the road, three dark braziers, Ines and two flame knights
+PASS 390 M11 status shows the sanctuary goal and braziers
+PASS 390 M11 camp offers Lucien's choice (two options)
+PASS 390 the oath raises the Order's trust and plays its scene
+PASS 390 M12 battle: seven quiet guards, the abbot, three records; the monastery is quiet
+PASS 390 M12 camp offers the records choice; copying is closed without Lia and Kai
+PASS 390 returning the records: the Order trusts the legion, Ines joins
+PASS 390 Ines's joining card
+PASS 390 the camp now leads on to Mission 13 (v0.7.1)
+PASS 390 no runtime errors
+act2c-campaign-e2e: 26 checks passed

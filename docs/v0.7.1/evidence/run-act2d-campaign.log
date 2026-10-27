@@ -1,0 +1,31 @@
+PASS 1440 the v0.7.0 refugee camp offers Mission 13
+PASS 1440 M13 preparation at the refugee camp with Cassian's order read out
+PASS 1440 M13 battle: Baldrick, three lion bearers, four refugees; resolve shown from the saved choices
+PASS 1440 Erik beside Baldrick: the battle menu offers 설득
+PASS 1440 the forecast shows resolve +1
+PASS 1440 resolve reaches 6: Baldrick halts his army and the battle is won
+PASS 1440 the world card leads to the ruined waystation
+PASS 1440 the summit camp after M13 with Baldrick's parting scene (halted)
+PASS 1440 M14 battle: Cassian, Leonora and Lucien with six guards as allies; masked raiders
+PASS 1440 (setup) the summit is won with the Iron Crown turning
+PASS 1440 camp after the summit: Thea's scene follows whether she stayed or left
+PASS 1440 the ACT II completion card lists the three banners and points to ACT III
+PASS 1440 the camp says ACT III comes in the next update
+PASS 1440 M10 mediation: a lord at half HP beside Erik can be captured from the menu
+PASS 1440 no runtime errors
+PASS 390 the v0.7.0 refugee camp offers Mission 13
+PASS 390 M13 preparation at the refugee camp with Cassian's order read out
+PASS 390 M13 battle: Baldrick, three lion bearers, four refugees; resolve shown from the saved choices
+PASS 390 Erik beside Baldrick: the battle menu offers 설득
+PASS 390 the forecast shows resolve +1
+PASS 390 resolve reaches 6: Baldrick halts his army and the battle is won
+PASS 390 the world card leads to the ruined waystation
+PASS 390 the summit camp after M13 with Baldrick's parting scene (halted)
+PASS 390 M14 battle: Cassian, Leonora and Lucien with six guards as allies; masked raiders
+PASS 390 (setup) the summit is won with the Iron Crown turning
+PASS 390 camp after the summit: Thea's scene follows whether she stayed or left
+PASS 390 the ACT II completion card lists the three banners and points to ACT III
+PASS 390 the camp says ACT III comes in the next update
+PASS 390 M10 mediation: a lord at half HP beside Erik can be captured from the menu
+PASS 390 no runtime errors
+act2d-campaign-e2e: 30 checks passed

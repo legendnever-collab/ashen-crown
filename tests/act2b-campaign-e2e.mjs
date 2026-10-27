@@ -4,7 +4,7 @@
 import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterWarCouncil} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize} from '../src/persistence/save-manager.js';import {actOneCamp} from './skirmish-policy.mjs';
 import {newGame,startBattle,checkOutcome} from '../src/core/game.js';import {enterHub} from '../src/core/frontier.js';import {findUnit} from '../src/core/rules.js';import {rulesOf} from '../src/core/mission-rules.js';import {chooseStance} from '../src/core/mission-rules-v061.js';import {drain} from './campaign-policy.mjs';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.7.0.html').href,shots='docs/v0.6.1/screenshots/act2b-campaign';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.7.1.html').href,shots='docs/v0.6.1/screenshots/act2b-campaign';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const check=(name,ok)=>{assert.ok(ok,name);n++;console.log('PASS',name);};
 const actTwo=(missionId,extra={})=>{const camp=actOneCamp(20261021,9);const c=structuredClone(camp.campaign);c.completed=[1,2,3,4,5,6,7,8,...(missionId>9?[9]:[])];Object.assign(c.choices,{m04_records_choice:'kept',m07_deserters:'legion',m08_order:'hold'},extra.choices||{});
  c.factionTrust={iron:2,free:0,flame:0};c.trustLog=[];c.roster=extra.roster||[];Object.assign(c.flags,{act2_free_met:missionId>9},extra.flags||{});const s=newGame(20261026,c,missionId);s.economy=structuredClone(camp.economy);return s;};

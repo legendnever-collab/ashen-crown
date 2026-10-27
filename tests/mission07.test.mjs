@@ -16,7 +16,7 @@ const turn=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEn
 const clearEnemies=s=>{for(const u of s.units.filter(u=>u.team==='enemy'))u.hp=0;};
 
 test('M07 data: 18×14 snowy road, six-hero sortie, level 8, three wagons, Thea and two Iron Crown soldiers as allies',()=>{
- const m=MISSIONS[7];assert.deepEqual([m.width,m.height],[18,14]);assert.ok(m.map.every(r=>r.length===18));assert.equal(m.deployLimit,6);assert.equal(m.level,8);assert.equal(LAST_MISSION,12);
+ const m=MISSIONS[7];assert.deepEqual([m.width,m.height],[18,14]);assert.ok(m.map.every(r=>r.length===18));assert.equal(m.deployLimit,6);assert.equal(m.level,8);assert.equal(LAST_MISSION,14);
  assert.equal(m.civilians.filter(c=>c.kind==='wagon').length,3);assert.deepEqual(m.allies.map(a=>a.look),['thea','ironInfantry','ironInfantry']);
  const zone=m.deployZone();for(const p of m.deployments.recommended)assert.ok(zone.has(p.join(',')),`preset ${p}`);
  assert.ok(m.map[6].includes('i')&&m.map[6].includes('w'),'frozen river with an ice bridge');

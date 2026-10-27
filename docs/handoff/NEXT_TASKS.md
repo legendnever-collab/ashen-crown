@@ -1,4 +1,11 @@
 # Next Tasks
+1. v0.7.1 merged (PR #15, approved with the music mute fix, D-072): record the merge SHA and the main CI run in docs/v0.7.1/RELEASE_NOTES.md at the start of the next branch. Tags and GitHub Releases only when the user asks.
+2. Art work pack D (28 images) when the user returns it: import and replace the temporary pilgrim village painting and procedural cast (Lucien, Ines, Cassian/Leonora map sheets, flame knight, pilgrim, ash raider, monastery guard, abbot, masked raider).
+3. Play-test watch items for v0.7.1: M13 persuasion pacing (resolve sources, threshold 6, TURN 5 lion hold), M14 leader escort difficulty and betrayal fairness, recruit departure rule.
+4. Next on the user's instruction: ACT III 「왕관의 진실」 design (M15–M22), returning recruits who left after M14, awakening (Tier 3).
+5. Physical phones, other browser engines and long-term storage eviction remain unverified.
+
+Previous (v0.7.0, merged 2026-10-27 PR #14 → 81f11d3):
 1. v0.7.0: merge approved by the user (2026-10-27 06:16 KST, D-070). Record the merge SHA and main CI in docs/v0.7.0/RELEASE_NOTES.md; tag/Release only when the user asks. v0.7.1 (M13–M14) in development on feature/v0.7.1-lion-and-alliance.
 2. Art work pack D (28 images, docs/v0.7.0/art/act2b-work-pack): when the user returns the zips, verify SHA256, import busts/sheets (scripts/import-art.py) and the pilgrim village with its 8 rooms and chest sheet (scripts/import-interior-art.py), author the walk masks over the new painting, and drop the dusk-tinted Ashen Village fallback.
 3. Play-test watch items for v0.7.0: M11 pacing (policy wins in 8–10 turns, all four pilgrims in 17/30), M12 stealth difficulty (the policy never triggers the bell before the ledger), Ines's Sanctuary numbers, light hit modifiers (+10 / −15).

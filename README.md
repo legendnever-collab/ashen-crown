@@ -1,13 +1,13 @@
-# Ashen Crown v0.7.0 — The Three Banners
-ACT I (Missions 01–06 of the original four-act, 30-mission campaign) with promotions, and ACT II 「세 개의 깃발」 Missions 07–12. After the Ashen Oath the legion marches north to the castle town below Ironhold (M07–M08, Thea), west to the free city of Velmar (M09–M10, Dario), then south to the Order of the Sacred Flame: M11 성화의 행렬 escorts pilgrims along a night road lit by braziers, and M12 침묵의 수도원 sneaks past watching guards to save the monastery's records before the abbot burns them. Ines, the Order's pilgrim warden, can join. New in v0.7.0: M11–M12, the pilgrim village (temporary painting until art pack D), light and stealth rules, Ines and Sanctuary, Sain's past, two original tracks.
+# Ashen Crown v0.7.1 — The Three Banners
+ACT I (Missions 01–06 of the original four-act, 30-mission campaign) with promotions, and all of ACT II 「세 개의 깃발」: Missions 07–14. After the Ashen Oath the legion marches north to the castle town below Ironhold (M07–M08, Thea), west to Velmar (M09–M10, Dario) and south to the Order of the Sacred Flame (M11–M12, Ines). In M13 검은 사자의 결단 Baldrick comes to break up the refugee camp — persuade him or break his lion formation — and in M14 부서진 동맹 the three leaders' first summit is attacked by masked raiders while the banner that trusts the legion least turns on it. New in v0.7.1: M13–M14, the persuade action, betrayal and recruits who may leave, the ACT II completion card, one original track, a fix that shows 생포 wherever a mission allows capture, and a fix for music still faintly audible when muted.
 
-v0.7.0 approved for merge by the user in chat (2026-10-27 06:16 KST) after receiving the release candidate (design D-068, details D-069, approval D-070); the merge SHA is recorded in the v0.7.0 release notes and on GitHub. v0.6.1 and earlier features are included and preserved. Next: M13–M14 and the ACT II completion in v0.7.1.
+v0.7.1 was played and approved by the user (2026-10-27, D-072) with one fix: music Mute, BGM 0 and Music Pause are now fully silent. Merged via PR #15. v0.7.0 (merged 2026-10-27, PR #14) and earlier features are included and preserved. Next: ACT III 「왕관의 진실」 on the user's instruction.
 
-- [Standalone HTML](releases/Ashen_Crown_v0.7.0.html)
-- [Source ZIP](releases/Ashen_Crown_v0.7.0_Source.zip)
-- [QA report](releases/Ashen_Crown_v0.7.0_Test_Report.md)
-- [SHA256 manifest](releases/Ashen_Crown_v0.7.0_SHA256SUMS)
-- [Release notes](docs/v0.7.0/RELEASE_NOTES.md) / [ACT II part 2 design](docs/v0.7.0/ACT2B_DESIGN.md) / [dialogue script](docs/v0.7.0/DIALOGUE_SCRIPT.md)
+- [Standalone HTML](releases/Ashen_Crown_v0.7.1.html)
+- [Source ZIP](releases/Ashen_Crown_v0.7.1_Source.zip)
+- [QA report](releases/Ashen_Crown_v0.7.1_Test_Report.md)
+- [SHA256 manifest](releases/Ashen_Crown_v0.7.1_SHA256SUMS)
+- [Release notes](docs/v0.7.1/RELEASE_NOTES.md) / [ACT II part 2 design](docs/v0.7.0/ACT2B_DESIGN.md) / [dialogue script](docs/v0.7.1/DIALOGUE_SCRIPT.md)
 - [Developer entry](AGENTS.md) / [current status](docs/handoff/CURRENT_STATUS.md) / [plan](docs/v0.7.0/IMPLEMENTATION_PLAN.md)
 
 Play: WASD/arrows or held D-pad in town; click map/NPC/door. Talk to Lia's war table to start the next operation; in the War Council drag heroes between reserve and sortie (or select + arrow; Erik always deploys), then place them on the blue tiles. In battle tap a hero → 이동/공격/스킬/도구/대기/상태; 이동 shows the reachable cells; tap a target to preview and tap it again (or 행동 확정) to act.
