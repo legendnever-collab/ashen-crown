@@ -8,6 +8,8 @@ import {MISSIONS,missionOf} from '../data/missions.js';
 import {maxUnits,missionUnitIds,rulesOf} from '../core/mission-rules.js';
 import {STORY} from '../data/story.js';
 import {narrativeState} from '../core/narrative.js';
+import {validStatus} from '../core/status.js';
+import {THROW_LIMIT} from '../core/tactics.js';
 export const SAVE_KEY='ashen-crown:v1',BACKUP_KEY='ashen-crown:last-good';
 export function checksum(text){let h=2166136261;for(let i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0).toString(16);}
 export function validate(s){
@@ -27,11 +29,15 @@ export function validate(s){
   if(u.classMovementModifier!=null&&(!Number.isInteger(u.classMovementModifier)||u.classMovementModifier<0||u.classMovementModifier>5)||u.movementProfile!=null&&!['infantry','rogue','cavalry','ranger'].includes(u.movementProfile))throw Error('병종 이동 정보가 손상되었습니다.');
   if(u.hp>u.maxHP||u.mp>u.maxMP||u.maxHP<1||u.x>=mission.width||u.y>=mission.height||!Number.isFinite(terrainAt(u.x,u.y,s)?.cost))throw Error('유닛 위치 또는 HP가 손상되었습니다.');
   if(alive(u)){const p=`${u.x},${u.y}`;if(occupied.has(p))throw Error('유닛이 중복 배치되었습니다.');occupied.add(p);}
+  // v0.8.0 statuses and one-turn marks.
+  if(!validStatus(u.status)||u.provokedBy!=null&&(typeof u.provokedBy!=='object'||typeof u.provokedBy.id!=='string'||!Number.isInteger(u.provokedBy.turn))||['rally','drum','immuneUntil','provokeGuard'].some(k=>u[k]!=null&&!Number.isInteger(u[k]))||['atkDown','defDown'].some(k=>u[k]!=null&&(!Number.isInteger(u[k].n)||!Number.isInteger(u[k].until))))throw Error('상태이상 기록이 손상되었습니다.');
   if(u.recoveryPhase!=null&&(typeof u.recoveryPhase!=='string'||!/^([1-9][0-9]*):(player|enemy)$/.test(u.recoveryPhase)||Number(u.recoveryPhase.split(':')[0])>s.turn))throw Error('회복 Phase 기록이 손상되었습니다.');
   if(u.team==='ally'&&(!party.includes(u.id)||!Number.isInteger(u.level)||u.level<1||!Number.isInteger(u.xp)||u.xp<0||u.xp>=100||!Array.isArray(u.clues)||!Array.isArray(u.growthHistory)||!Array.isArray(u.highlights)||!Array.isArray(u.healTargets)))throw Error('성장 기록이 손상되었습니다.');
   if(u.team==='ally'&&(!Number.isInteger(u.earnedXP)||u.earnedXP<0||u.clues.some(c=>typeof c!=='string')||u.highlights.some(h=>typeof h!=='string')||u.growthHistory.some(g=>!g||!Number.isInteger(g.level)||!g.changes)||typeof u.moved!=='boolean'||typeof u.acted!=='boolean'))throw Error('장수 행동 또는 성장 기록이 손상되었습니다.');
  }
  for(const id of [...party,...[...mission.enemies,...mission.civilians,...(mission.objects||[]),...allies].map(u=>u.id)])if(!ids.has(id))throw Error('필수 유닛이 없습니다.');
+ const cells=v=>v==null||Array.isArray(v)&&v.length<=60&&v.every(c=>c&&Number.isInteger(c.x)&&Number.isInteger(c.y)&&(c.until==null||Number.isInteger(c.until)));
+ if(s.throws!=null&&(!Number.isInteger(s.throws)||s.throws<0||s.throws>THROW_LIMIT)||!cells(s.smoke)||!cells(s.traps))throw Error('투척 도구 기록이 손상되었습니다.');
  if(!Array.isArray(s.enemyQueue)||!Number.isInteger(s.enemyIndex)||s.enemyIndex<0||s.enemyIndex>s.enemyQueue.length||!s.undo||!Number.isInteger(s.potions)||s.potions<0||s.potions>2)throw Error('전투 상태가 손상되었습니다.');
  if(s.enemyQueue.some(id=>!s.units.some(u=>u.id===id&&(u.team==='enemy'||u.team==='allied'))))throw Error('AI 순서가 손상되었습니다.');
  if(s.campaign.heroes!==null){const n=s.campaign.heroes.length;if(!Array.isArray(s.campaign.heroes)||n<5||n>ALL_HEROES.length||new Set(s.campaign.heroes.map(u=>u.id)).size!==n||HEROES.some(h=>!s.campaign.heroes.some(u=>u.id===h.id)))throw Error('군단 성장 저장이 손상되었습니다.');for(const u of s.campaign.heroes){if(!party.includes(u.id)||!Array.isArray(u.clues)||!Array.isArray(u.growthHistory)||['level','xp','maxHP','maxMP','atk','def','mag','res','spd'].some(k=>!Number.isInteger(u[k])||u[k]<0))throw Error('군단 수치가 손상되었습니다.');}}
@@ -61,6 +67,9 @@ export function migrate(s){
  // v0.6 (Phase C): an empty ACT II roster. Faction trust is seeded from the ACT I choices when ACT II begins
  // (factions.js ensureTrust), so a save from the middle of ACT I keeps its M04 ledger choice open.
  if(s?.schema===8){s.schema=9;s.version='0.6.0';s.campaign.roster??=[];if(s.stageStart)s.stageStart=migrate(s.stageStart);}
+ // v0.8.0 (D-073): new tools join the bag lazily (items hold only the kinds ever owned), statuses and throwables live
+ // on the battle state; nothing in a schema-9 save has to change.
+ if(s?.schema===9){s.schema=10;s.version='0.8.0';if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');
  // v0.6.1: a save of the current schema made by an earlier build of it (e.g. v0.6.0) is now this version.
  if(s?.schema===SCHEMA&&s.version!==VERSION){s.version=VERSION;if(s.stageStart?.version)s.stageStart.version=VERSION;}

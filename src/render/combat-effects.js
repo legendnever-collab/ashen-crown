@@ -24,6 +24,7 @@ export function drawCombatEffect(c,e,units,now,reduced=false){
 function spark(c,x,y,f,color){for(let i=0;i<8;i++){const a=i*Math.PI/4,r=8+f*22;pixelLine(c,color,x+Math.cos(a)*r*.5,y+Math.sin(a)*r*.5,x+Math.cos(a)*r,y+Math.sin(a)*r,Math.max(1,3-f*2));}}
 // v0.5 Phase F: one flourish per promotion action (original effects). e = {action,id,target,from,to,cells,range,at}.
 const C5={bulwark:'#f6d27a',overwatch:'#9fe3a8',arcane:'#b58cf0',recall:'#ffe9a8',exchange:'#7b6aa6'};
+const C8={provoke:'#e0643c',pinningShot:'#c9a24a',flameBurst:'#f08a3a',purify:'#bfe9ff',venomEdge:'#6fbf5a',breakthrough:'#9fb6d6',rallyCry:'#f2cf6a',whirlwind:'#e6e0d0',feint:'#d07a8a',flameBrand:'#f0b85a',pilgrimLantern:'#ffe9a8',bomb:'#ff8c3a',smoke:'#c8ccd2',caltrops:'#aab4bc',net:'#c9a46a',bewilder:'#b58cf0'};
 function fx5Poly(c,x,y,r,n,rot=0){c.beginPath();for(let i=0;i<=n;i++){const a=rot+i/n*Math.PI*2;i?c.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r):c.moveTo(x+Math.cos(a)*r,y+Math.sin(a)*r);}}
 export function drawClassEffect(c,e,units,now,reduced=false){
  const p=(now-e.start)/e.duration;if(p<0||p>=1)return;const u=units.find(x=>x.id===e.id);if(!u)return;
@@ -46,5 +47,8 @@ export function drawClassEffect(c,e,units,now,reduced=false){
    if(!reduced)for(let i=0;i<10;i++){const q=(i/10+p)%1;c.globalAlpha=.9*fade*(1-q);c.fillStyle='#fff6d6';c.beginPath();c.arc(x+Math.sin(i*2.3)*18,y+10-q*90,2.5,0,Math.PI*2);c.fill();}}}
  else if(e.action==='exchange'&&e.from&&e.to){for(const pt of [e.from,e.to]){const [x,y]=mid(pt.x,pt.y);for(let i=0;i<(reduced?3:7);i++){const an=i/7*Math.PI*2+p*2,r=8+ease*24;c.globalAlpha=.55*fade;c.fillStyle=i%2?'#3b2f55':C5.exchange;c.beginPath();c.arc(x+Math.cos(an)*r,y+Math.sin(an)*r*.6,9-ease*4,0,Math.PI*2);c.fill();}}
   const [fx,fy]=mid(e.from.x,e.from.y),[tx,ty]=mid(e.to.x,e.to.y);c.globalAlpha=.7*fade;c.strokeStyle='#cbb8ff';c.lineWidth=2;c.setLineDash([4,7]);c.beginPath();c.moveTo(fx,fy);c.lineTo(tx,ty);c.stroke();c.setLineDash([]);}
+ // v0.8.0 skills and throwables (D-073): a colored burst over each cell, or a ring on the user / a beam to the target.
+ else if(C8[e.action]){const col=C8[e.action];if(e.cells?.length){for(const [i,cell] of e.cells.entries()){const [x,y]=mid(cell.x,cell.y),k=Math.max(0,Math.min(1,p*1.6-i*.06)),a=fade*k;c.globalAlpha=.34*a;c.fillStyle=col;c.fillRect(cell.x*T+3,cell.y*T+3,T-6,T-6);c.globalAlpha=.9*a;c.strokeStyle=col;c.lineWidth=3;c.beginPath();c.arc(x,y,6+ease*(reduced?14:24),0,Math.PI*2);c.stroke();}}
+  else{const t=units.find(x=>x.id===e.target)||u,[x,y]=mid(u.x,u.y),[tx,ty]=mid(t.x,t.y);c.globalAlpha=.85*fade;c.strokeStyle=col;c.lineWidth=3;if(t!==u){c.beginPath();c.moveTo(x,y-18);c.lineTo(tx,ty-10);c.stroke();}c.beginPath();c.arc(tx,ty,12+ease*(reduced?12:26),0,Math.PI*2);c.stroke();}}
  c.restore();
 }

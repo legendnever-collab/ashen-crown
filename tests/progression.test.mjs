@@ -69,8 +69,8 @@ test('skill use and Lia kills are remembered (memory only, outside practice)',()
 
 test('schema 7 saves migrate to 8: heroes read as tier 1 and an empty promotion ledger; current saves round-trip',()=>{
  const s=newGame(3);const old=JSON.parse(JSON.stringify(s));old.schema=7;old.version='0.4.0';delete old.campaign.promotions;for(const u of old.units)delete u.classTier;
- const m=migrate(old);assert.equal(m.schema,SCHEMA);assert.equal(SCHEMA,9);assert.deepEqual(m.campaign.promotions,{});assert.ok(m.units.filter(u=>u.team==='ally').every(u=>classOf(u).tier===1),'unset classTier reads as tier 1');
- const again=deserialize(serialize(m));assert.equal(again.schema,9);
+ const m=migrate(old);assert.equal(m.schema,SCHEMA);assert.equal(SCHEMA,10);assert.deepEqual(m.campaign.promotions,{});assert.ok(m.units.filter(u=>u.team==='ally').every(u=>classOf(u).tier===1),'unset classTier reads as tier 1');
+ const again=deserialize(serialize(m));assert.equal(again.schema,10);
 });
 
 test('promoted heroes resolve to the tier-2 painted look; tier 1 keeps the original (incl. Erik Mantle)',async()=>{

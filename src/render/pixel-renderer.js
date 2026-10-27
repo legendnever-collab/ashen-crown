@@ -51,6 +51,9 @@ export class BattleRenderer{
   if(missionOf(s).stealth&&['battle','deployment'].includes(s.screen)){const alert=s.missionState?.alert||0;for(const k of watchedTiles(s)){const [wx,wy]=k.split(',').map(Number);rect(c,alert?'rgba(236,84,60,.30)':'rgba(220,70,56,.22)',wx*TILE,wy*TILE,TILE,TILE);c.strokeStyle='rgba(255,140,110,.55)';c.lineWidth=1;c.strokeRect(wx*TILE+3,wy*TILE+3,TILE-6,TILE-6);}
    for(const g of s.units)if(g.watch&&alive(g)&&!g.awake&&g.turns?.length>1){const nx=g.turns[((g.turnIndex||0)+1)%g.turns.length],[dx,dy]=FACING[nx]||[0,1],cx=g.x*TILE+32+dx*24,cy=g.y*TILE+32+dy*24;c.fillStyle='rgba(255,226,190,.75)';c.beginPath();c.moveTo(cx+dx*7,cy+dy*7);c.lineTo(cx-dy*6-dx*3,cy+dx*6-dy*3);c.lineTo(cx+dy*6-dx*3,cy-dx*6-dy*3);c.closePath();c.fill();}}
   for(const k of Object.keys(s.burning||{})){const [fx,fy]=k.split(',').map(Number);rect(c,'rgba(226,108,48,.28)',fx*TILE,fy*TILE,TILE,TILE);drawFire(c,fx*TILE+32,fy*TILE+44,now,.78);}
+  // v0.8.0 (D-073): smoke clouds (grey) and caltrops (steel spikes) thrown by the legion.
+  for(const m of s.smoke||[]){rect(c,'rgba(180,184,190,.42)',m.x*TILE,m.y*TILE,TILE,TILE);c.fillStyle='rgba(225,228,232,.55)';for(const [ox,oy,r] of [[20,26,12],[40,22,10],[32,40,13]]){c.beginPath();c.arc(m.x*TILE+ox+Math.sin(now/700+ox)*2,m.y*TILE+oy,r,0,Math.PI*2);c.fill();}}
+  for(const t of s.traps||[]){for(const [ox,oy] of [[18,40],[32,30],[46,42]]){c.fillStyle='#aab4bc';c.beginPath();c.moveTo(t.x*TILE+ox,t.y*TILE+oy-7);c.lineTo(t.x*TILE+ox+5,t.y*TILE+oy+3);c.lineTo(t.x*TILE+ox-5,t.y*TILE+oy+3);c.closePath();c.fill();c.strokeStyle='#4c545a';c.lineWidth=1;c.stroke();}}
   if(s.turn===2&&s.screen==='battle')for(const spawn of missionOf(s).reinforcements){const sx=spawn.x*TILE,sy=spawn.y*TILE;rect(c,'#e1af63',sx,sy,TILE,3);rect(c,'#e1af63',sx,sy,3,TILE);c.fillStyle='#ffdb87';c.font='bold 24px monospace';c.fillText('!',sx+28,sy+34);}
   const threatIds=new Set(s.screen==='battle'&&s.phase==='player'&&lion?.threats?lion.threats(s):[]);
   const drawables=[];const stateOf=b=>s.screen==='result'&&s.outcome==='victory'?'burned':b.state;
@@ -67,6 +70,7 @@ export class BattleRenderer{
    if(u.team==='object')(u.evidence?drawEvidence:drawMissionObject)(c,u,ux,uy,now);else{c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(ux,uy+23,13,4,0,0,Math.PI*2);c.fill();drawHDFigure(c,hdCastFor(u,s.missionId),ux,uy+24,{facing,pose,frame:pose==='walk'?1+Math.floor(now/120)%4:(u.team==='ally'&&u.acted)||u.team==='civilian'||s.screen!=='battle'?0:1+Math.floor((now+u.x*97+u.y*53)/280)%4});}c.globalAlpha=1;
    if(threatIds.has(u.id)&&Math.floor(now/400)%2){c.fillStyle='#e8594a';c.beginPath();c.moveTo(ux-9,uy-50);c.lineTo(ux+9,uy-50);c.lineTo(ux,uy-38);c.closePath();c.fill();c.fillStyle='#fff2d0';c.font='bold 12px sans-serif';c.textAlign='center';c.fillText('!',ux,uy-41);c.textAlign='start';}
    if(u.guarding&&!u.guardUsed){rect(c,'#2a3a44',ux+12,uy-44,13,15);rect(c,'#e7c783',ux+13,uy-43,11,13);rect(c,'#3f7fa3',ux+15,uy-41,7,9);}
+   statusChips(c,u,s,ux,uy);
    if(u.team!=='object'&&(u.team!=='civilian'||u.hp<u.maxHP)){rect(c,'#18242a',ux-23,uy+27,46,5);rect(c,u.team==='enemy'?'#e8594a':u.team==='civilian'?'#f0cf6a':'#5fd38a',ux-22,uy+28,Math.max(1,Math.floor(44*this.displayHP(u,now)/u.maxHP)),3);}
    if(effects.some(e=>['hit','critical'].includes(e.type))&&Math.floor(now/70)%2){rect(c,'rgba(255,224,192,.5)',ux-22,uy-40,44,62);}
    }});
@@ -109,3 +113,8 @@ function drawMissionObject(c,u,x,y,now){const done=u.rescued,glow=.5+.3*Math.sin
 function drawEvidence(c,u,x,y,now){const glow=.45+.25*Math.sin(now/320+u.x);c.fillStyle=`rgba(240,206,120,${glow*.45})`;c.fillRect(x-22,y-6,44,30);
  const box=u.evidence==='ledger'?'#7a5534':u.evidence==='seal'?'#4f4a78':'#6d4a3b';rect(c,'#2a1d16',x-17,y-2,34,24);rect(c,box,x-16,y-1,32,22);rect(c,'#b98d52',x-16,y+6,32,3);rect(c,'#b98d52',x-3,y-1,6,22);
  rect(c,'#efe2bf',x-11,y-9,22,9);rect(c,'#c9b48a',x-11,y-2,22,2);rect(c,u.evidence==='seal'?'#9fd1e6':'#c8473d',x-3,y-7,6,5);rect(c,'#fff4d0',x-1,y-6,2,2);}
+// v0.8.0 status chips above a unit (poison, confusion, bind, silence, provoked, weakened, strengthened).
+const CHIP={poison:['독','#3f8f3a'],confuse:['혼','#7d4fb8'],bind:['속','#8a5a32'],silence:['침','#5d6670'],provoke:['!','#c8452f'],debuff:['↓','#43474d'],buff:['↑','#b8862f']};
+function statusChips(c,u,s,ux,uy){if(s.screen!=='battle')return;const on=[...Object.keys(u.status||{})];if(u.provokedBy&&u.provokedBy.turn===s.turn)on.push('provoke');if(u.atkDown&&s.turn<=u.atkDown.until||u.defDown&&s.turn<=u.defDown.until)on.push('debuff');if(u.rally!=null&&s.turn<=u.rally||u.drum!=null&&s.turn<=u.drum||u.provokeGuard!=null)on.push('buff');
+ on.forEach((k,i)=>{const [t,col]=CHIP[k]||['?','#555'];const x=ux-29+i*15,y=uy-50;c.fillStyle='rgba(18,22,26,.85)';c.fillRect(x-1,y-1,15,15);c.fillStyle=col;c.fillRect(x,y,13,13);c.fillStyle='#fff8e6';c.font='bold 10px sans-serif';c.textAlign='center';c.fillText(t,x+6.5,y+10.5);c.textAlign='start';});}
+

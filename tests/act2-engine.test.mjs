@@ -20,15 +20,15 @@ const battle=(seed=11,campaign=null,id=1)=>{const s=newGame(seed,campaign,id);s.
 function withTile(s,x,y,type,fn){const m=MISSIONS[s.missionId].map,old=m[y][x];m[y][x]=type;try{return fn();}finally{m[y][x]=old;}}
 
 test('schema 9: ACT I parties are exactly the five heroes, sortie limit 5, and an empty roster',()=>{
- assert.equal(SCHEMA,9);
+ assert.equal(SCHEMA,10);
  for(const id of [1,2,3,4,5,6]){const s=newGame(7,null,id);assert.deepEqual(s.units.filter(u=>u.team==='ally').map(u=>u.id),HEROES.map(h=>h.id));assert.equal(deployLimit(s),5);assert.ok(s.units.every(u=>u.team!=='allied'));assert.deepEqual(s.campaign.roster,[]);assert.ok(!s.units.some(u=>u.benched));}
 });
 
 test('schema 8 saves migrate to 9 with an empty roster and no trust yet; round trip holds',()=>{
  const s=battle(5);const old=JSON.parse(JSON.stringify(s));old.schema=8;old.version='0.5.0';delete old.campaign.roster;old.stageStart.schema=8;delete old.stageStart.campaign.roster;
- const m=migrate(old);assert.equal(m.schema,9);assert.deepEqual(m.campaign.roster,[]);assert.equal(m.campaign.factionTrust,undefined);assert.equal(m.stageStart.schema,9);
+ const m=migrate(old);assert.equal(m.schema,10);assert.deepEqual(m.campaign.roster,[]);assert.equal(m.campaign.factionTrust,undefined);assert.equal(m.stageStart.schema,10);
  assert.deepEqual(m.units.map(u=>[u.id,u.hp,u.x,u.y]),s.units.map(u=>[u.id,u.hp,u.x,u.y]));
- assert.equal(deserialize(serialize(m)).schema,9);
+ assert.equal(deserialize(serialize(m)).schema,10);
 });
 
 test('a recruit joins at a level, gets slots and a hub place, and fields only within the sortie limit',()=>{

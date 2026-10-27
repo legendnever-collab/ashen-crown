@@ -19,7 +19,7 @@ export function roll(s){const r=nextRandom(s.rng);s.rng=r.state;return r.value;}
 export function terrainCost(s,u,x,y){const type=missionOf(s).map[y]?.[x];if(!type||missionOf(s).layers.collision[y]?.[x]||!Number.isFinite(TERRAIN[type]?.cost))return Infinity;const profile=u.movementProfile||CLASS_MOVEMENT[HERO_CLASS[u.id]]?.profile||'infantry';return TERRAIN_COSTS[profile]?.[type]??TERRAIN[type].cost;}
 export function movement(s,u,ignore=false){
  const start=key(u.x,u.y), costs=new Map([[start,0]]),prev=new Map(),queue=[{x:u.x,y:u.y,c:0}];
- const allowance=effectiveStats(s,u).mov+(u.shadowBonus||0),zoc=u.team==='enemy'?bulwarkZone(s):null;
+ const allowance=u.status?.bind?0:effectiveStats(s,u).mov+(u.shadowBonus||0),zoc=u.team==='enemy'?bulwarkZone(s):null; // v0.8 bind: cannot move
  while(queue.length){queue.sort((a,b)=>a.c-b.c);const p=queue.shift();if(p.c!==costs.get(key(p.x,p.y)))continue;
   if(zoc&&zoc.has(key(p.x,p.y)))continue; // v0.5 Bulwark: an enemy in Erik's zone cannot move on (entering stops it, starting there pins it)
   for(const [dx,dy] of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,t=terrainAt(x,y,s);if(!t||!Number.isFinite(t.cost))continue;
@@ -52,10 +52,11 @@ export function validTarget(s,u,t,mode='attack'){
 export function flank(s,u,t){return s.units.some(a=>a.team===u.team&&alive(a)&&a.id!==u.id&&distance(a,t)===1&&((u.x<t.x&&a.x>t.x)||(u.x>t.x&&a.x<t.x)||(u.y<t.y&&a.y>t.y)||(u.y>t.y&&a.y<t.y)));}
 export function strikeStats(s,u,t,mode='attack'){
  u=effectiveStats(s,u);t=effectiveStats(s,t);
- const magic=mode==='skill'&&u.id==='lia',aim=mode==='skill'&&u.id==='elina',quick=mode==='skill'&&u.id==='kai';
+ const magic=mode==='skill'&&u.id==='lia'||mode==='flameBurst',aim=mode==='skill'&&u.id==='elina',quick=mode==='skill'&&u.id==='kai';
  const ground=terrainAt(t.x,t.y,s),defense=magic?t.res:t.def,burning=!!s.burning?.[key(t.x,t.y)];
  let raw=Math.max(1,(magic?u.mag:u.atk)-defense-(ground.defense||0)+(aim?2:0)+(magic&&u.hp<=u.maxHP/2?4:0)+(quick&&flank(s,u,t)?6:0)+(mode==='skill'&&u.id==='thea'?charge(u):0)+(mode==='skill'&&u.id==='dario'?2:0));
  let dmg=Math.max(1,Math.round(magic?raw*(ground.fire??1):raw*(1-(ground.phys||0))));
+ const arms=magic?1:matchup(u,t);if(arms!==1)dmg=Math.max(1,Math.round(dmg*arms));
  if(t.id==='eric'&&t.hp<=t.maxHP*.3)dmg=Math.max(1,Math.floor(dmg*.85));
  // M05 lion formation (mission data only; M01–04 have no formation): living bearers give adjacent
  // allies of theirs DEF and accuracy; Baldrick's charge punishes isolated targets unless Erik guards.
@@ -73,9 +74,22 @@ export function strikeStats(s,u,t,mode='attack'){
  // v0.7 night (M11): a legion attacker standing in light aims better; any target outside the light is harder to hit.
  if(missionOf(s).night)hit=Math.max(40,Math.min(100,hit+(sideOf(u)==='legion'&&litAt(s,u.x,u.y)?10:0)-(litAt(s,t.x,t.y)?0:15)));
  if(sneak)hit=Math.min(100,hit+30);
+ // v0.8 smoke: a legion unit inside the smoke is harder to hit until the end of that enemy phase.
+ if(sideOf(t)==='legion'&&s.smoke?.some(c=>c.x===t.x&&c.y===t.y&&c.until>=s.turn))hit=Math.max(10,hit-30);
  const crit=magic?0:Math.min(12,Math.max(3,Math.round((u.spd-t.spd)/2)+5));
- return {damage:dmg,hit,crit,magic,fire:magic,terrainMul:magic?(ground.fire??1):1-(ground.phys||0),flank:quick&&flank(s,u,t),burning,sneak,sanctuary:cut};
+ return {damage:dmg,hit,crit,magic,fire:magic,terrainMul:magic?(ground.fire??1):1-(ground.phys||0),flank:quick&&flank(s,u,t),burning,sneak,sanctuary:cut,arms};
 }
+// v0.8 class matchups (D-073 Q7; PROPOSED): cavalry beats infantry, infantry beats archers, archers beat cavalry (±20%);
+// spears fight as infantry and also beat cavalry. Mages, healers and units without a troop type are neutral.
+// As in 조조전, irregulars stand outside the triangle: bandits, assassins, rogues (Kai) and commanders are neutral.
+const HERO_ARM={eric:'infantry',elina:'archer',thea:'cavalry',dario:'infantry',ines:'infantry'};
+const KIND_ARM={cavalry:'cavalry',archer:'archer',spear:'spear',bearer:'infantry',soldier:'infantry',swordsman:'infantry',warden:'infantry',leader:'infantry'};
+// The Silent Monastery's guards fight with iron-shod quarterstaffs (monks, not spearmen): irregulars too.
+const LOOK_IRREGULAR=['monasteryGuard'];
+export const armOf=u=>u?.team==='ally'?HERO_ARM[u.id]||null:LOOK_IRREGULAR.includes(u?.look)?null:KIND_ARM[u?.kind]||null;
+const BEATS={cavalry:{infantry:1.2,archer:.8,spear:.8},infantry:{archer:1.2,cavalry:.8},spear:{archer:1.2,cavalry:1.2},archer:{cavalry:1.2,infantry:.8,spear:.8}};
+export function matchup(u,t){const a=armOf(u),b=armOf(t);return a&&b?BEATS[a]?.[b]||1:1;}
+export const ARM_KO={cavalry:'기병',infantry:'보병',archer:'궁병',spear:'창병'};
 // ---------- v0.7 ACT II part 2 (D-068; rules and numbers PROPOSED). ACT I and M07–M10 never meet these. ----------
 // Night (M11): lit braziers and the sanctuary tiles each light the tiles within `night.radius` (Manhattan).
 export function lightSources(s){const m=missionOf(s);if(!m?.night)return null;const r=m.night.radius,out=(m.night.fixed||[]).map(([x,y])=>({x,y,r}));

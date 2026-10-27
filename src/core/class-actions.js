@@ -5,13 +5,15 @@ import {CLASS_TREE,CLASS_ACTIONS} from '../data/classes.js';
 import {distance,key,alive,at,findUnit,terrainAt,terrainCost} from './rules.js';
 import {remember} from './narrative.js';
 import {missionOf} from '../data/missions.js';
+import {isTacticMode,validTacticTarget,tacticTargetCells,forecastTactic,tacticCost,TACTIC_TILE_MODES} from './tactics.js';
 
 export const CLASS_MODES=['bulwark','overwatch','arcane','recall','exchange'];
 const SELF_MODES=['bulwark','overwatch'];
-export const isClassMode=mode=>CLASS_MODES.includes(mode);
+// v0.8: the new skills and the targeted tools (core/tactics.js) share these entry points with the promotion actions.
+export const isClassMode=mode=>CLASS_MODES.includes(mode)||isTacticMode(mode);
 export function classActionOf(u){if(!u||(u.classTier||1)<2)return null;return CLASS_TREE[u.id]?.find(c=>c.tier===2)?.action||null;}
-export const classCost=mode=>CLASS_ACTIONS[mode]?.cost||0;
-export const tileTarget=mode=>mode==='arcane';
+export const classCost=mode=>isTacticMode(mode)?tacticCost(mode):CLASS_ACTIONS[mode]?.cost||0;
+export const tileTarget=mode=>mode==='arcane'||TACTIC_TILE_MODES.includes(mode);
 const parseTile=t=>{const m=/^(\d+),(\d+)$/.exec(String(t??''));return m?{x:+m[1],y:+m[2]}:null;};
 const standable=(s,u,x,y)=>Number.isFinite(terrainCost(s,u,x,y));
 const ADJ=[[0,-1],[-1,0],[1,0],[0,1]];
@@ -20,6 +22,8 @@ function recallSpot(s,sain,t){return ADJ.map(([dx,dy])=>({x:sain.x+dx,y:sain.y+d
 function runeCells(s,c){const {width,height}=missionOf(s);return [[0,0],...ADJ].map(([dx,dy])=>({x:c.x+dx,y:c.y+dy})).filter(p=>p.x>=0&&p.y>=0&&p.x<width&&p.y<height&&terrainAt(p.x,p.y,s)&&Number.isFinite(terrainAt(p.x,p.y,s).cost));}
 
 export function validClassTarget(s,u,target,mode){
+ if(isTacticMode(mode))return validTacticTarget(s,u,target,mode);
+ if(u?.status?.silence)return false;
  if(classActionOf(u)!==mode||!alive(u))return false;
  if(SELF_MODES.includes(mode))return target===u.id||target?.id===u.id;
  if(mode==='arcane'){const p=typeof target==='object'&&target?.x!=null?target:parseTile(target);if(!p||!terrainAt(p.x,p.y,s)||!Number.isFinite(terrainAt(p.x,p.y,s).cost))return false;return distance(u,p)<=3;}
@@ -30,12 +34,13 @@ export function validClassTarget(s,u,target,mode){
  return false;
 }
 // Cells the renderer highlights while a class mode is chosen.
-export function classTargetCells(s,u,mode){const out=[];if(!classActionOf(u))return out;
+export function classTargetCells(s,u,mode){const out=[];if(isTacticMode(mode))return tacticTargetCells(s,u,mode);if(!classActionOf(u))return out;
  if(SELF_MODES.includes(mode))return [{x:u.x,y:u.y}];
  if(mode==='arcane'){for(let y=u.y-3;y<=u.y+3;y++)for(let x=u.x-3;x<=u.x+3;x++)if(validClassTarget(s,u,{x,y},mode))out.push({x,y});return out;}
  for(const t of s.units)if(validClassTarget(s,u,t,mode))out.push({x:t.x,y:t.y});return out;}
 
 export function forecastClass(s,u,target,mode){
+ if(isTacticMode(mode))return forecastTactic(s,u,target,mode);
  const a=CLASS_ACTIONS[mode],base={classAction:mode,name:a.ko,cost:a.cost,hit:100,damage:0,counter:0};
  if(mode==='bulwark')return {...base,rows:[['효과','인접 칸에 들어온 적 정지'],['지속','다음 아군 턴까지']]};
  if(mode==='overwatch')return {...base,rows:[['효과',`사거리 ${u.range[0]}–${u.range[1]} 첫 진입 적 사격`],['명중 시','그 적의 이동 종료']]};
