@@ -13,11 +13,26 @@ export const GEAR={
  trailBoots:{name:'Trail Boots',icon:'⌁',slot:'accessory',heroes:['eric','elina','lia','sain','kai'],price:85,bonus:{mov:1},upgrade:{res:1},description:'구조와 우회에 유용 · MOV +1'},
  focusCharm:{name:'Focus Charm',icon:'✦',slot:'accessory',heroes:['eric','elina','lia','sain','kai'],price:45,bonus:{res:1},upgrade:{def:1},description:'신중한 대비 · RES +1'}
 };
+// v0.8.0 (D-073 Q4; PROPOSED): 13 tools. Recovery, cure and buff tools work on the user or an adjacent ally; throwables
+// fly 2–3 tiles (three per battle). `unlock` = the mission whose clear first puts the tool on sale (0: from the start;
+// null: never sold). Specialty tools are first sold in their home town and from then on by every quartermaster.
 export const TOOLS={
- medium:{name:'Medium Potion',icon:'✚',price:30,sell:12,description:'자신 HP +30 · 행동 1회',stat:'hp',amount:30},
- ether:{name:'Ether',icon:'✦',price:40,sell:16,description:'자신 MP +8 · 행동 1회',stat:'mp',amount:8},
- ward:{name:'Ward Tonic',icon:'◇',price:35,sell:14,description:'다음 Player Phase까지 자신 DEF/RES +2 · 행동 1회',stat:'ward',amount:2}
+ medium:{name:'중급 회복약',icon:'✚',price:30,sell:12,description:'자신 또는 인접 아군 HP +30 · 행동 1회',stat:'hp',amount:30,unlock:0},
+ ether:{name:'에테르',icon:'✦',price:40,sell:16,description:'자신 또는 인접 아군 MP +8 · 행동 1회',stat:'mp',amount:8,unlock:0},
+ ward:{name:'수호 강장제',icon:'◇',price:35,sell:14,description:'자신 또는 인접 아군 다음 Player Phase까지 DEF/RES +2 · 행동 1회',stat:'ward',amount:2,unlock:0},
+ herb:{name:'약초',icon:'❦',price:15,sell:6,description:'자신 또는 인접 아군 HP +15 · 행동 1회',stat:'hp',amount:15,unlock:0},
+ antidote:{name:'해독초',icon:'❧',price:20,sell:8,description:'자신 또는 인접 아군 독 해제 · 행동 1회',stat:'cure',unlock:0},
+ net:{name:'그물',icon:'⌗',price:50,sell:20,description:'투척 2–3칸 · 적 1명 [속박] 100% (지휘관 50%, 1턴)',stat:'throw',unlock:1,home:'국경 진영'},
+ drum:{name:'전고',icon:'◍',price:70,sell:28,description:'자신과 인접 아군 다음 아군 턴까지 ATK +3 · 행동 1회',stat:'buff',unlock:6,home:'철관성 성하 마을'},
+ caltrops:{name:'마름쇠',icon:'✣',price:45,sell:18,description:'투척 2–3칸 · 빈칸과 그 옆 1칸에 설치 · 밟은 적은 멈추고 6 피해',stat:'throw',unlock:6,home:'철관성 성하 마을'},
+ clarity:{name:'청심향',icon:'❂',price:35,sell:14,description:'자신 또는 인접 아군 혼란·속박·침묵 해제 · 행동 1회',stat:'cure',unlock:8,home:'벨마르'},
+ smoke:{name:'연막탄',icon:'☁',price:60,sell:24,description:'투척 2–3칸 · 십자 5칸 · 다음 적 턴까지 그 안의 아군을 노리는 명중 −30',stat:'throw',unlock:8,home:'벨마르'},
+ bomb:{name:'화약 폭탄',icon:'✸',price:110,sell:44,description:'투척 2–3칸 · 십자 5칸의 적에게 16 피해(DEF 절반 적용) · 풀·숲에 불',stat:'throw',unlock:8,home:'철관성 성하 마을'},
+ bewilder:{name:'혼란 가루',icon:'✺',price:90,sell:36,description:'투척 2–3칸 · 적 1명 [혼란] 75% (지휘관 37%, 1턴)',stat:'throw',unlock:9,home:'벨마르'},
+ elixir:{name:'엘릭서',icon:'✧',price:0,sell:60,description:'자신 또는 인접 아군 HP 전부 회복 · 상태이상 해제 · 판매하지 않음',stat:'hp',unlock:null}
 };
+// Tools on sale for this campaign (by missions cleared).
+export const toolStock=campaign=>Object.keys(TOOLS).filter(id=>{const u=TOOLS[id].unlock;return u===0||u!=null&&(campaign?.completed||[]).includes(u);});
 export const RECRUITS={lia:{characterId:'lia',availability:1,requiredFlag:null,personalEvent:'동료가 될 이유',relationshipRequirement:null,initialEquipment:'starter',initialGrowth:'existing',startingLevel:1,campPlacement:[10,5]},sain:{characterId:'sain',availability:1,requiredFlag:null,personalEvent:'구호대의 약속',relationshipRequirement:null,initialEquipment:'starter',initialGrowth:'existing',startingLevel:1,campPlacement:[3,6]},kai:{characterId:'kai',availability:1,requiredFlag:null,personalEvent:'돌아올 곳',relationshipRequirement:null,initialEquipment:'starter',initialGrowth:'existing',startingLevel:1,campPlacement:[12,8]}};
 export const HUBS={
  village:{name:'Ashen Village · 잿빛 마을',tone:'village',width:16,height:16,spawn:[7,7],

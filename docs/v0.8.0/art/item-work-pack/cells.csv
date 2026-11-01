@@ -1,0 +1,103 @@
+sheet,cell,id,kind,name_en,name_ko,description
+A,1,herb,tool,Healing Herb,약초,"Healing Herb (약초): a small bundle of fresh green healing leaves tied with twine, a few leaves loose."
+A,2,medium,tool,Medium Potion,중급 회복약,Medium Potion (중급 회복약): a stoppered round glass flask of glowing red liquid with a cork and a little twine around the neck.
+A,3,ether,tool,Ether,에테르,Ether (에테르): a stoppered slim glass vial of luminous blue liquid with a cork.
+A,4,elixir,tool,Elixir,엘릭서,"Elixir (엘릭서): an ornate small crystal bottle with gold filigree holding radiant golden-white liquid, a faint glow around it (rare)."
+A,5,antidote,tool,Antidote Herb,해독초,Antidote Herb (해독초): a sprig of pale green herb with small white flowers beside a tiny clay pot of green salve.
+A,6,clarity,tool,Clarity Incense,청심향,Clarity Incense (청심향): a small brass incense burner releasing a thin calm lavender smoke curl.
+A,7,ward,tool,Ward Tonic,수호 강장제,Ward Tonic (수호 강장제): a stoppered square glass bottle of green tonic with a small leather tag (blank).
+A,8,drum,tool,War Drum,전고,War Drum (전고): a small war drum of wood and stretched hide with crossed drumsticks resting on it.
+A,9,bomb,tool,Powder Bomb,화약 폭탄,"Powder Bomb (화약 폭탄): a round black iron powder bomb with a short lit fuse sparking, rope binding around it."
+A,10,smoke,tool,Smoke Bomb,연막탄,Smoke Bomb (연막탄): a clay smoke bomb ball wrapped in cloth with grey smoke seeping from a crack.
+A,11,bewilder,tool,Bewildering Powder,혼란 가루,Bewildering Powder (혼란 가루): a small open leather pouch spilling shimmering violet powder in a swirl.
+A,12,net,tool,Weighted Net,그물,Weighted Net (그물): a folded weighted rope net with small iron weights at its edges.
+A,13,caltrops,tool,Caltrops,마름쇠,Caltrops (마름쇠): a handful of four-pointed iron caltrops scattered on the ground.
+A,14,gold,misc,Gold,골드,"Gold (골드): a small stack of worn gold coins with one coin standing on its edge (coins plain, no markings)."
+A,15,supplyCrate,misc,Supply Crate,보급 상자,Supply Crate (보급 상자): a small wooden supply crate with rope handles and a sack on top.
+B,1,ironBlade,gear,Tempered Sword,단련된 검,"Tempered Sword (단련된 검): a plain tempered steel arming sword with a leather-wrapped grip, shown diagonally."
+B,2,huntingBow,gear,Hunting Bow,사냥 활,"Hunting Bow (사냥 활): a simple wooden hunting bow with a leather grip and a taut string, shown diagonally."
+B,3,longbow,gear,Longbow,장궁,"Longbow (장궁): a tall dark yew longbow with a waxed string and a green grip wrap, shown diagonally."
+B,4,crystalStaff,gear,Crystal Staff,수정 지팡이,Crystal Staff (수정 지팡이): a wooden staff topped with a clear pale-blue crystal held by brass prongs.
+B,5,mercyStaff,gear,Mercy Staff,자비의 지팡이,Mercy Staff (자비의 지팡이): a pale ash-wood staff with a small brass sun-disc head and a white ribbon.
+B,6,daggers,gear,Balanced Daggers,균형 단검,"Balanced Daggers (균형 단검): two balanced daggers crossed, steel blades, worn leather grips."
+B,7,heavyShield,gear,Heavy Shield,중방패,Heavy Shield (중방패): a heavy teal-blue wooden kite shield with an iron rim and a plain gold cross-band (no emblem).
+B,8,lightShield,gear,Light Shield,경방패,Light Shield (경방패): a small round light buckler of pale steel with a leather rim.
+B,9,travelCloak,gear,Travel Cloak,여행 망토,Travel Cloak (여행 망토): a folded green wool travel cloak with a simple brass clasp.
+B,10,trailBoots,gear,Trail Boots,행군 장화,Trail Boots (행군 장화): a pair of sturdy brown leather marching boots.
+B,11,focusCharm,gear,Focus Charm,집중의 부적,Focus Charm (집중의 부적): a small violet gem pendant on a brass chain.
+B,12,steelGreatsword,gear,Steel Greatsword,강철 대검,"Steel Greatsword (강철 대검): a broad two-handed steel greatsword with a squared crossguard, dark blue-grey wrapped hilt."
+B,13,knightLance,gear,Knight Lance,기사 창,"Knight Lance (기사 창): a long cavalry lance with a steel tip and a dark blue pennant (plain), shown diagonally."
+B,14,ironwoodBow,gear,Ironwood Bow,철목 활,Ironwood Bow (철목 활): a recurved bow of dark ironwood reinforced with iron fittings at the tips.
+B,15,plateCuirass,gear,Plate Cuirass,판금 흉갑,Plate Cuirass (판금 흉갑): a polished steel plate breastplate with riveted edges and leather straps.
+B,16,towerShield,gear,Iron Tower Shield,철관 방패,Iron Tower Shield (철관 방패): a tall rectangular steel tower shield with a dark blue-grey face and iron studs (no emblem).
+C,1,lancerMail,gear,Lancer Mail,기병 사슬갑옷,Lancer Mail (기병 사슬갑옷): a chainmail shirt with a dark blue-grey cloth tabard folded over it.
+C,2,steelGauntlets,gear,Steel Gauntlets,강철 건틀릿,Steel Gauntlets (강철 건틀릿): a pair of articulated steel gauntlets.
+C,3,runeforgedBlade,gear,Runeforged Blade,룬 단조검,Runeforged Blade (룬 단조검): a fine longsword whose steel shows a faint wavy forge pattern and a soft cold-blue glow along the edge (no runes or letters drawn).
+C,4,twinSabers,gear,Twin Sabers,쌍검,"Twin Sabers (쌍검): two curved sabers with brass guards crossed, crimson grip wraps."
+C,5,repeatingCrossbow,gear,Repeating Crossbow,연사 석궁,Repeating Crossbow (연사 석궁): a compact wooden repeating crossbow with a brass bolt magazine on top.
+C,6,emberRod,gear,Ember Rod,불씨 지팡이,Ember Rod (불씨 지팡이): a short dark wooden rod tipped with a glowing ember-orange stone in brass claws.
+C,7,shadowStiletto,gear,Shadow Stiletto,그림자 단검,Shadow Stiletto (그림자 단검): a slim black-bladed stiletto with a dark leather grip.
+C,8,merchantCoat,gear,Merchant Coat,상인의 외투,Merchant Coat (상인의 외투): a folded long coat of crimson and dark brown cloth with brass buttons.
+C,9,luckyCoin,gear,Lucky Coin,행운 동전,"Lucky Coin (행운 동전): a single large old brass coin on a leather cord, plain worn face (no markings)."
+C,10,windCharm,gear,Windstep Charm,바람결 부적,Windstep Charm (바람결 부적): a small charm of white feathers and a pale blue bead on a thin cord.
+C,11,duelistRapier,gear,Duelist Rapier,결투가의 레이피어,Duelist Rapier (결투가의 레이피어): an elegant rapier with a swept brass cup hilt and a long slender blade.
+C,12,flameStaff,gear,Sacred Flame Staff,성화 지팡이,Sacred Flame Staff (성화 지팡이): a white wooden staff topped with a small brass cage holding a gentle flame.
+C,13,pilgrimMace,gear,Pilgrim Mace,순례자의 철퇴,Pilgrim Mace (순례자의 철퇴): a flanged iron mace with a white-wrapped handle and a crimson tassel.
+C,14,pilgrimMantle,gear,Pilgrim Mantle,순례 망토,Pilgrim Mantle (순례 망토): a folded ivory wool mantle with a crimson border.
+C,15,sanctumTome,gear,Sanctum Tome,성소의 마도서,"Sanctum Tome (성소의 마도서): a thick leather-bound book with brass corners and a crimson ribbon, closed (blank cover)."
+C,16,wardenShield,gear,Warden Shield,수호자의 방패,Warden Shield (수호자의 방패): a large round white shield with a plain gold rim (no emblem).
+D,1,chrismCharm,gear,Chrism Charm,성유 부적,Chrism Charm (성유 부적): a tiny glass vial of golden oil hung as a pendant on a crimson cord.
+D,2,votiveBand,gear,Votive Band,서약의 팔찌,Votive Band (서약의 팔찌): a woven bracelet of crimson and gold threads with small ivory beads.
+D,3,cathedralStaff,gear,Cathedral Staff,대성당 지팡이,Cathedral Staff (대성당 지팡이): a tall ornate staff of white wood and gold with a brass lantern head holding a bright flame.
+D,4,crownGuardLance,gear,Crown Guard Lance,왕관 근위 창,Crown Guard Lance (왕관 근위 창): an ornate guard lance with a steel leaf-shaped head and a dark blue and silver pennant (plain).
+D,5,crownGuardShield,gear,Crown Guard Shield,근위 대방패,Crown Guard Shield (근위 대방패): a great kite shield of polished steel with dark blue enamel and silver rim (no emblem).
+D,6,leagueSaber,gear,League Saber,연맹 기사의 사브르,League Saber (연맹 기사의 사브르): a fine curved saber with a crimson and gold basket hilt.
+D,7,leagueLongbow,gear,League Longbow,연맹 장궁,League Longbow (연맹 장궁): a tall elegant longbow of pale wood with crimson and gold string wraps.
+D,8,paladinMace,gear,Paladin Mace,성기사의 전투 철퇴,Paladin Mace (성기사의 전투 철퇴): a heavy ornate war mace of white steel with gold flanges.
+D,9,flameVestment,gear,Sacred Flame Vestment,성화 법의,Sacred Flame Vestment (성화 법의): a folded white and gold vestment with a crimson stole on top.
+D,10,herbPouch,treasure,Herb Pouch,약초 주머니,"Herb Pouch (약초 주머니): a small embroidered green cloth pouch overflowing with healing leaves, soft green glow. This is a unique treasure: give it a soft magical glow so it reads as special."
+D,11,hawkFeather,treasure,Hawk Feather,매의 깃,Hawk Feather (매의 깃): a single long brown-and-white hawk feather with a faint golden shimmer. This is a unique treasure: give it a soft magical glow so it reads as special.
+D,12,sageNotebook,treasure,Sage Notebook,현자의 수첩,"Sage Notebook (현자의 수첩): a small worn leather notebook with a ribbon and a quill tucked in, faint warm glow (blank cover). This is a unique treasure: give it a soft magical glow so it reads as special."
+D,13,windHorseshoe,treasure,Wind Horseshoe,바람의 편자,Wind Horseshoe (바람의 편자): a silver horseshoe with swirling pale wind wisps around it. This is a unique treasure: give it a soft magical glow so it reads as special.
+D,14,twinDaggers,treasure,Twin Daggers,쌍둥이 단검,"Twin Daggers (쌍둥이 단검): a matched pair of ornate daggers, one silver one gold, crossed, soft glow. This is a unique treasure: give it a soft magical glow so it reads as special."
+D,15,silenceShield,treasure,Shield of Silence,침묵의 방패,"Shield of Silence (침묵의 방패): a dark round shield of black steel with a smooth silver center, faint cold aura (no emblem). This is a unique treasure: give it a soft magical glow so it reads as special."
+D,16,mirrorCuirass,treasure,Mirror Cuirass,거울 흉갑,"Mirror Cuirass (거울 흉갑): a breastplate polished like a mirror reflecting light, soft white glint. This is a unique treasure: give it a soft magical glow so it reads as special."
+E,1,clearCharm,treasure,Charm of Clarity,청명 부적,Charm of Clarity (청명 부적): a clear crystal teardrop pendant glowing pale blue-white. This is a unique treasure: give it a soft magical glow so it reads as special.
+E,2,flameReliquary,treasure,Flame Reliquary,성화의 성구,"Flame Reliquary (성화의 성구): a small golden reliquary box with a tiny living flame visible through a window, warm glow (no symbols). This is a unique treasure: give it a soft magical glow so it reads as special."
+E,3,manaRing,treasure,Mana Ring,마나의 반지,Mana Ring (마나의 반지): a silver ring set with a glowing blue stone. This is a unique treasure: give it a soft magical glow so it reads as special.
+E,4,lionEpaulette,treasure,Lion Epaulette,사자의 견장,"Lion Epaulette (사자의 견장): a heavy gold-and-black shoulder epaulette shaped like a lion's mane (no face, no emblem). This is a unique treasure: give it a soft magical glow so it reads as special."
+E,5,allianceSeal,treasure,Alliance Seal,동맹의 인장,"Alliance Seal (동맹의 인장): a heavy round wax-seal stamp of brass with three colored cords tied around its handle (dark blue, crimson, ivory); the stamp face is plain. This is a unique treasure: give it a soft magical glow so it reads as special."
+E,6,poison,status,Poison,독,"status icon for Poison (독): a green poison drop over a wilting leaf. Bold simple silhouette, readable at 24 px; no disk."
+E,7,confuse,status,Confusion,혼란,"status icon for Confusion (혼란): swirling violet spirals and small sparks circling. Bold simple silhouette, readable at 24 px; no disk."
+E,8,bind,status,Bind,속박,"status icon for Bind (속박): a coil of rope with a binding knot tied tight. Bold simple silhouette, readable at 24 px; no disk."
+E,9,silence,status,Silence,침묵,"status icon for Silence (침묵): a closed book bound shut with cord and a blank wax seal. Bold simple silhouette, readable at 24 px; no disk."
+E,10,buff,status,Strengthened,강화,"status icon for Strengthened (강화): three golden upward chevrons glowing. Bold simple silhouette, readable at 24 px; no disk."
+E,11,debuff,status,Weakened,약화,"status icon for Weakened (약화): three dull grey downward chevrons, cracked. Bold simple silhouette, readable at 24 px; no disk."
+E,12,attack,command,Attack,공격,"command icon for Attack (공격): a single sword striking diagonally. Bold simple silhouette, readable at 24 px; no disk."
+E,13,wait,command,Wait,대기,"command icon for Wait (대기): a small brass hourglass with sand falling. Bold simple silhouette, readable at 24 px; no disk."
+E,14,persuade,command,Persuade,설득,"command icon for Persuade (설득): two open hands reaching toward each other with a warm light between them. Bold simple silhouette, readable at 24 px; no disk."
+E,15,capture,command,Capture,생포,"command icon for Capture (생포): iron manacles linked by a short chain. Bold simple silhouette, readable at 24 px; no disk."
+F,1,guard,skill,Guard,수호,"skill icon for Guard (수호): a raised shield taking a blow, a small spark at the impact. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin steel blue rim of light; the motif fills the disk."
+F,2,provoke,skill,Provoke,도발,skill icon for Provoke (도발): a knight's gauntlet pointing forward with a red-orange shout wave around it. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin steel blue rim of light; the motif fills the disk.
+F,3,bulwark,skill,Bulwark,방벽,skill icon for Bulwark (방벽): a wall of interlocked shields with a pale blue barrier glow. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin steel blue rim of light; the motif fills the disk.
+F,4,aimedShot,skill,Aimed Shot,조준 사격,skill icon for Aimed Shot (조준 사격): an arrow flying straight with a faint target ring of light ahead of it. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin moss green rim of light; the motif fills the disk.
+F,5,pinningShot,skill,Pinning Shot,속박 사격,skill icon for Pinning Shot (속박 사격): an arrow pinning a cloth to the ground with a short binding rope around it. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin moss green rim of light; the motif fills the disk.
+F,6,overwatch,skill,Overwatch,경계 사격,"skill icon for Overwatch (경계 사격): a watchful eye shape formed by a drawn bow and arrow at rest, dusk sky. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin moss green rim of light; the motif fills the disk."
+F,7,fireBolt,skill,Fire Bolt,화염탄,skill icon for Fire Bolt (화염탄): a single bolt of fire streaking diagonally. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin soft violet rim of light; the motif fills the disk.
+F,8,flameBurst,skill,Flame Burst,화염진,skill icon for Flame Burst (화염진): a cross-shaped burst of flame spreading in four directions from the center. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin soft violet rim of light; the motif fills the disk.
+F,9,arcane,skill,Arcane Territory,마력 지형,"skill icon for Arcane Territory (마력 지형): glowing violet runic circles on the ground (abstract light patterns, no letters). Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin soft violet rim of light; the motif fills the disk."
+F,10,heal,skill,Heal,치유,skill icon for Heal (치유): warm golden light flowing from an open hand. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin pale gold rim of light; the motif fills the disk.
+F,11,purify,skill,Purify,정화,skill icon for Purify (정화): a clear water-like light washing away dark wisps from a small figure silhouette. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin pale gold rim of light; the motif fills the disk.
+F,12,recall,skill,Divine Recall,귀환의 기도,skill icon for Divine Recall (귀환의 기도): a beam of golden light pulling a distant silhouette closer. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin pale gold rim of light; the motif fills the disk.
+F,13,quickStrike,skill,Quick Strike,빠른 일격,skill icon for Quick Strike (빠른 일격): two fast slash trails crossing with motion lines. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin burnt orange rim of light; the motif fills the disk.
+F,14,venomEdge,skill,Venom Edge,독날,skill icon for Venom Edge (독날): a dagger edge dripping green venom. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin burnt orange rim of light; the motif fills the disk.
+F,15,exchange,skill,Shadow Exchange,그림자 교환,skill icon for Shadow Exchange (그림자 교환): two silhouettes swapping places with curved shadow arrows between them. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin burnt orange rim of light; the motif fills the disk.
+F,16,charge,skill,Charge,돌격,skill icon for Charge (돌격): a lance tip thrusting forward with dust and speed lines. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin slate blue rim of light; the motif fills the disk.
+G,1,breakthrough,skill,Breakthrough,돌파,skill icon for Breakthrough (돌파): a lance knocking a shield backward with a burst. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin slate blue rim of light; the motif fills the disk.
+G,2,rallyCry,skill,Rally Cry,기병의 함성,skill icon for Rally Cry (기병의 함성): a raised pennant on a lance with golden sound waves spreading. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin slate blue rim of light; the motif fills the disk.
+G,3,riposte,skill,Riposte,받아치기,skill icon for Riposte (받아치기): two blades meeting with a bright parry spark. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin deep crimson rim of light; the motif fills the disk.
+G,4,whirlwind,skill,Whirlwind,회전 베기,skill icon for Whirlwind (회전 베기): a circular sword slash trail spinning around a center point. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin deep crimson rim of light; the motif fills the disk.
+G,5,feint,skill,Feint,허점 찌르기,skill icon for Feint (허점 찌르기): a rapier thrust slipping past a shield edge. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin deep crimson rim of light; the motif fills the disk.
+G,6,sanctuaryOath,skill,Sanctuary Oath,성역의 맹세,skill icon for Sanctuary Oath (성역의 맹세): a white round shield glowing with a warm protective dome. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin ivory and gold rim of light; the motif fills the disk.
+G,7,flameBrand,skill,Flame Brand,성화 낙인,skill icon for Flame Brand (성화 낙인): a mace head glowing with a crimson-gold brand of light. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin ivory and gold rim of light; the motif fills the disk.
+G,8,pilgrimLantern,skill,Pilgrim Lantern,순례자의 등불,skill icon for Pilgrim Lantern (순례자의 등불): a small brass lantern shedding a wide soft light circle. Painted as a vignette inside a round dark disk (deep charcoal-brown) with a thin ivory and gold rim of light; the motif fills the disk.

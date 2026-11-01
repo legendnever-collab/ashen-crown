@@ -1,5 +1,8 @@
 import {missionOf} from '../src/data/missions.js';
-import {findUnit,alive,movement,validTarget,forecast,distance,terrainAt,terrainCost,watchCells} from '../src/core/rules.js';
+import {findUnit,alive,movement,validTarget,forecast,distance,terrainAt,terrainCost,watchCells,hostile} from '../src/core/rules.js';
+import {skillsOf,NEW_SKILL_MODES} from '../src/data/skills.js';
+import {validClassTarget,forecastClass} from '../src/core/class-actions.js';
+import {strikePreview} from '../src/core/tactics.js';
 import {moveUnit,performAction,canAct,beginEnemyPhase,advanceEnemy} from '../src/core/game.js';
 import {openStory,advanceStory} from '../src/core/narrative.js';
 // v0.4 missions: path distance (walls respected, units ignored) toward open evidence, then the boss.
@@ -9,6 +12,10 @@ import {openStory,advanceStory} from '../src/core/narrative.js';
 // M12: Lia and Kai each fetch a record (seal / roster) so the copy choice opens; the rest go for the ledger, then the abbot.
 // M13 policy variant: spare Baldrick and rely on persuasion (alternated by the balance harness).
 let persuadeFirst=false;export const setPersuadeFirst=v=>{persuadeFirst=!!v;};
+// v0.8.0: the new skills are on by default; balance baselines can switch them off to compare.
+// Skill usage per mission (printed at exit with SKILL_USAGE=1) to see which skills carry a mission.
+export const USAGE={};if(typeof process!=='undefined'&&process.env?.SKILL_USAGE)process.on('exit',()=>{for(const k of Object.keys(USAGE).sort())if(!/ (attack|wait|move)$/.test(k))console.error('usage',k,USAGE[k]);});
+let useTactics=true;export const setUseTactics=v=>{useTactics=!!v;};
 export function watchRisk(s,x,y){if(!missionOf(s).stealth||(s.missionState?.alert||0)>=2)return false;const k=`${x},${y}`;
  for(const g of s.units.filter(g=>g.watch&&alive(g)&&!g.awake)){if(watchCells(s,g).has(k))return true;const nx=g.turns?.length?{...g,facing:g.turns[((g.turnIndex||0)+1)%g.turns.length]}:g;if(watchCells(s,nx).has(k))return true;}return false;}
 function act2Goals(s,u){const live=t=>alive(t)&&t.team==='enemy';
@@ -35,6 +42,32 @@ function missionGoals(s,u){if(s.missionId>=7)return act2Goals(s,u);if(s.missionI
  const open=s.units.filter(o=>o.team==='object'&&o.kind==='evidence'&&alive(o));return open.length?open:s.units.filter(t=>t.id==='boss'&&alive(t));}
 function fieldDistance(s,u,goals){const d=new Map(),q=[];for(const g of goals)for(const [dx,dy]of [[0,-1],[-1,0],[1,0],[0,1]]){const x=g.x+dx,y=g.y+dy;if(Number.isFinite(terrainCost(s,u,x,y))){d.set(`${x},${y}`,0);q.push({x,y,c:0});}}while(q.length){q.sort((a,b)=>a.c-b.c);const p=q.shift();if(p.c!==d.get(`${p.x},${p.y}`))continue;for(const [dx,dy]of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,step=terrainCost(s,u,x,y),k=`${x},${y}`;if(!Number.isFinite(step))continue;const c=p.c+step;if(c<(d.get(k)??Infinity)){d.set(k,c);q.push({x,y,c});}}}return d;}
 export function drain(s){openStory(s);for(let i=0;s.narrative.active&&i<100;i++)advanceStory(s);}
+function strikeScore(s,u,t,f,capture){const civ=s.units.filter(v=>v.team==='civilian'&&alive(v));let score=f.damage*f.hit/100*3+(f.after===0?50:0)-f.counter;
+   if(s.missionId===2&&t.id==='boss'){score+=100;if(capture&&f.after===0)score=-500;}
+   if(s.missionId===10&&(s.campaign.choices?.m10_stance||'mediate')==='mediate'&&['boss','boss2'].includes(t.id)&&f.after===0)score=-500; // mediation: never kill a lord
+   if(s.missionId===3){if(civ.length)score+=20;else score+=t.y<u.y?100:10;}
+   if(s.missionId===12&&(s.missionState.alert||0)<2&&(t.watch||t.id==='boss'&&s.units.some(o=>o.evidence==='ledger'&&alive(o)))&&f.after>0)score=-500; // never strike a quiet guard without dropping it (the abbot once the ledger is safe)
+   if(s.missionId===13&&persuadeFirst&&t.id==='boss')score=-500; // persuasion run: never strike Baldrick
+   if(s.missionId>=7)score+=200+(t.id==='boss'?30:0)+(s.missionId===7&&s.units.some(w=>w.kind==='wagon'&&alive(w)&&distance(w,t)<=1)?60:0);
+   if(s.missionId===6){if(t.id==='boss'&&s.missionState.phase===3)score+=60;if(/^k\d/.test(t.id))score+=25;if(/^r\d/.test(t.id))score+=30;}
+   if(s.missionId===4){if(t.burns&&s.turn<missionOf(s).burnTurn&&s.units.some(o=>o.evidence===t.burns&&alive(o)))score+=80;if(t.id==='boss')score+=60;}
+ // v0.8: in M04 and M06 striking the enemy that is the current goal always beats standing beside it (with more ways to spend
+ // MP, the old weights let the party wait next to the boss once Lia's bolts were not the ones finishing him).
+ if((s.missionId===4||s.missionId===6)&&t.team==='enemy'&&missionGoals(s,u).includes(t))score+=150;
+ return score;}
+// v0.8.0 (D-073): the policy also plays the new skills (② and the recruits' ③); promotion actions and purchased tools stay
+// unused as before. Strike skills are scored like an attack plus the worth of the status they leave.
+const STATUS_WORTH={pinningShot:20,venomEdge:25,feint:15,flameBrand:15,breakthrough:5};
+function tacticOptions(s,u,a){const out=[];for(const k of skillsOf(a).filter(k=>k.slot>1&&k.open&&NEW_SKILL_MODES.includes(k.mode)&&a.mp>=k.cost)){const m=k.mode;
+ if(m==='flameBurst'){for(let y=a.y-3;y<=a.y+3;y++)for(let x=a.x-3;x<=a.x+3;x++){const p=`${x},${y}`;if(!validClassTarget(s,a,p,m))continue;let v=0,n=0;for(const t of s.units.filter(t=>alive(t)&&hostile(s,a,t)&&Math.abs(t.x-x)+Math.abs(t.y-y)<=1)){const f=strikePreview(s,a,t,m);v+=strikeScore(s,u,t,{...f,after:Math.max(0,t.hp-f.damage),counter:0},true);n++;}if(n>=2)out.push({mode:m,target:p,score:v-90});}continue;} // −90: worth more than one bolt (MP and the bolt it replaces)
+ if(m==='whirlwind'){if(!validClassTarget(s,a,a.id,m))continue;const foes=s.units.filter(t=>alive(t)&&hostile(s,a,t)&&distance(a,t)===1);if(foes.length<2)continue;let v=0;for(const t of foes){const f=strikePreview(s,a,t,m);v+=strikeScore(s,u,t,{...f,after:Math.max(0,t.hp-f.damage),counter:0},true);}out.push({mode:m,target:a.id,score:v-30});continue;}
+ if(m==='rallyCry'){const n=s.units.filter(t=>t.team==='ally'&&alive(t)&&t.id!==u.id&&!t.acted&&distance(a,t)<=2).length;const foesNear=s.units.some(t=>alive(t)&&hostile(s,a,t)&&distance(a,t)<=5);if(n>=2&&foesNear)out.push({mode:m,target:a.id,score:20+n*10,support:true});continue;}
+ if(m==='pilgrimLantern'){const n=s.units.filter(t=>t.team==='ally'&&alive(t)&&t.status&&distance(a,t)<=1).length;if(n)out.push({mode:m,target:a.id,score:120*n,support:true});continue;}
+ for(const t of s.units.filter(alive)){if(!validClassTarget(s,a,t,m))continue;
+  if(m==='purify'){if(t.status)out.push({mode:m,target:t.id,score:150,support:true});continue;}
+  if(m==='provoke'){const weak=s.units.filter(v=>(v.team==='civilian'||['lia','sain','elina'].includes(v.id))&&alive(v)&&distance(v,t)<=4);const reach=(t.mov||0)+(t.range?.[1]||1);if(weak.some(v=>distance(v,t)<=reach)&&a.hp>a.maxHP*.6&&!s.units.some(e=>alive(e)&&hostile(s,a,e)&&distance(a,e)===1))out.push({mode:m,target:t.id,score:5,support:true});continue;}
+  const f=forecastClass(s,a,t,m),sc=strikeScore(s,u,t,{damage:f.damage,hit:f.hit,after:f.after,counter:f.counter},true);if(sc>-400)out.push({mode:m,target:t.id,score:sc+(f.after>0?STATUS_WORTH[m]||0:0)});}}
+ return out;}
 export function campaignAction(s,u,capture=true){
  let best=null;const exitDistance=new Map();if(s.missionId===3){const q=[];for(let y=0;y<=2;y++)for(let x=0;x<14;x++)if(Number.isFinite(terrainCost(s,u,x,y))){exitDistance.set(`${x},${y}`,0);q.push({x,y,c:0});}while(q.length){q.sort((a,b)=>a.c-b.c);const p=q.shift();for(const [dx,dy]of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,c=p.c+terrainCost(s,u,p.x,p.y),k=`${x},${y}`;if(Number.isFinite(terrainCost(s,u,x,y))&&c<(exitDistance.get(k)??Infinity)){exitDistance.set(k,c);q.push({x,y,c});}}}}const goalDistance=s.missionId>=4?fieldDistance(s,u,missionGoals(s,u)):null;const cells=u.moved?new Map([[`${u.x},${u.y}`,0]]):movement(s,u).costs;
  const civ=s.units.filter(t=>t.team==='civilian'&&alive(t));
@@ -46,22 +79,16 @@ export function campaignAction(s,u,capture=true){
   else if(mode==='rescue')score=1000;
   else if(f.heal!==undefined)score=t.team==='civilian'&&t.hp<=t.maxHP/2?900:f.heal>=10?80+f.heal:0;
   else if(f.guard===true)score=0;
-  else{score=f.damage*f.hit/100*3+(f.after===0?50:0)-f.counter;
-   if(s.missionId===2&&t.id==='boss'){score+=100;if(capture&&f.after===0)score=-500;}
-   if(s.missionId===10&&(s.campaign.choices?.m10_stance||'mediate')==='mediate'&&['boss','boss2'].includes(t.id)&&f.after===0)score=-500; // mediation: never kill a lord
-   if(s.missionId===3){if(civ.length)score+=20;else score+=t.y<u.y?100:10;}
-   if(s.missionId===12&&(s.missionState.alert||0)<2&&(t.watch||t.id==='boss'&&s.units.some(o=>o.evidence==='ledger'&&alive(o)))&&f.after>0)score=-500; // never strike a quiet guard without dropping it (the abbot once the ledger is safe)
-   if(s.missionId===13&&persuadeFirst&&t.id==='boss')score=-500; // persuasion run: never strike Baldrick
-   if(s.missionId>=7)score+=200+(t.id==='boss'?30:0)+(s.missionId===7&&s.units.some(w=>w.kind==='wagon'&&alive(w)&&distance(w,t)<=1)?60:0);
-   if(s.missionId===6){if(t.id==='boss'&&s.missionState.phase===3)score+=60;if(/^k\d/.test(t.id))score+=25;if(/^r\d/.test(t.id))score+=30;}
-   if(s.missionId===4){if(t.burns&&s.turn<missionOf(s).burnTurn&&s.units.some(o=>o.evidence===t.burns&&alive(o)))score+=80;if(t.id==='boss')score+=60;}}
+  else score=strikeScore(s,u,t,f,capture);
   score-=c*.5;if(s.missionId===11&&missionOf(s).map[y][x]==='r'&&s.units.some(p=>p.team==='civilian'&&alive(p)&&p.x===x&&p.y>y))score-=80;if(s.missionId===12&&watchRisk(s,x,y)&&!(mode==='attack'&&f.after===0))score-=900;if(!best||score>best.score)best={id:u.id,x,y,mode,target:t.id,score};}
   let score;
   if(goalDistance)score=200-(goalDistance.get(`${x},${y}`)??100)*12-c*.1-(s.missionId===7&&['r','i'].includes(missionOf(s).map[y][x])&&s.units.some(w=>w.kind==='wagon'&&alive(w)&&Math.abs(w.x-x)<=1&&w.y>y)?60:0)-(s.missionId===11&&missionOf(s).map[y][x]==='r'&&s.units.some(p=>p.team==='civilian'&&alive(p)&&p.x===x&&p.y>y)?80:0)-(s.missionId===12&&watchRisk(s,x,y)?900:0);
   else if(s.missionId===3&&!civ.length)score=200-(exitDistance.get(`${x},${y}`)??100)*15-y*3-c*.1;
   else{const targets=civ.length?civ:s.units.filter(t=>t.id==='boss'&&alive(t));const near=targets.reduce((n,t)=>Math.min(n,distance(a,t)),100);score=80-near*8-c*.1;}
   if(!best||score>best.score)best={id:u.id,x,y,mode:'wait',score};
+  // Strike skills compete with attacks; support skills (rally, provoke, purify, lantern) add to the worth of standing here.
+  if(useTactics)for(const o of tacticOptions(s,u,a)){const sc=o.support?score+o.score:o.score-c*.5;if(!best||sc>best.score)best={id:u.id,x,y,mode:o.mode,target:o.target,score:sc};}
  }
  return best||{id:u.id,x:u.x,y:u.y,mode:'wait'};
 }
-export function playCampaignBattle(s,capture=true){const trace=[];let steps=0;drain(s);while(!s.outcome&&steps++<150){for(const id of ['kai','lia','elina','sain','eric','thea','dario','ines']){const u=findUnit(s,id);if(!canAct(s,u))continue;const a=campaignAction(s,u,capture);if(a.x!==u.x||a.y!==u.y){if(!moveUnit(s,id,a.x,a.y))throw Error('illegal move');trace.push({type:'move',id,x:a.x,y:a.y});}const action=performAction(s,id,a.mode,a.target);if(!action.ok)throw Error(action.error);trace.push({type:'action',id,mode:a.mode,target:a.target});drain(s);if(s.outcome)break;}if(!s.outcome){beginEnemyPhase(s);trace.push({type:'phase'});while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);}}return {outcome:s.outcome,turn:s.turn,trace,saved:s.units.filter(u=>u.team==='civilian'&&u.rescued).length,captured:!!s.campaign.flags.mission_02_prisoner_captured};}
+export function playCampaignBattle(s,capture=true){const trace=[];let steps=0;drain(s);while(!s.outcome&&steps++<150){for(const id of ['kai','lia','elina','sain','eric','thea','dario','ines']){const u=findUnit(s,id);if(!canAct(s,u))continue;const a=campaignAction(s,u,capture);if(a.x!==u.x||a.y!==u.y){if(!moveUnit(s,id,a.x,a.y))throw Error('illegal move');trace.push({type:'move',id,x:a.x,y:a.y});}const action=performAction(s,id,a.mode,a.target);if(!action.ok)throw Error(action.error);USAGE[`M${String(s.missionId).padStart(2,'0')} ${a.mode}`]=(USAGE[`M${String(s.missionId).padStart(2,'0')} ${a.mode}`]||0)+1;trace.push({type:'action',id,mode:a.mode,target:a.target});drain(s);if(s.outcome)break;}if(!s.outcome){beginEnemyPhase(s);trace.push({type:'phase'});while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);}}return {outcome:s.outcome,turn:s.turn,trace,saved:s.units.filter(u=>u.team==='civilian'&&u.rescued).length,captured:!!s.campaign.flags.mission_02_prisoner_captured};}

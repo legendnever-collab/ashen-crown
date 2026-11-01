@@ -1,0 +1,21 @@
+Paint icon sheet C for Ashen Crown: one 1024x1024 PNG, a 4x4 grid of 256x256 cells, transparent background (or flat pure #00FF00), no grid lines, no labels. Follow references/layout_icons_C.png for which icon goes in which cell.
+
+Cell 01: Lancer Mail (기병 사슬갑옷): a chainmail shirt with a dark blue-grey cloth tabard folded over it.
+Cell 02: Steel Gauntlets (강철 건틀릿): a pair of articulated steel gauntlets.
+Cell 03: Runeforged Blade (룬 단조검): a fine longsword whose steel shows a faint wavy forge pattern and a soft cold-blue glow along the edge (no runes or letters drawn).
+Cell 04: Twin Sabers (쌍검): two curved sabers with brass guards crossed, crimson grip wraps.
+Cell 05: Repeating Crossbow (연사 석궁): a compact wooden repeating crossbow with a brass bolt magazine on top.
+Cell 06: Ember Rod (불씨 지팡이): a short dark wooden rod tipped with a glowing ember-orange stone in brass claws.
+Cell 07: Shadow Stiletto (그림자 단검): a slim black-bladed stiletto with a dark leather grip.
+Cell 08: Merchant Coat (상인의 외투): a folded long coat of crimson and dark brown cloth with brass buttons.
+Cell 09: Lucky Coin (행운 동전): a single large old brass coin on a leather cord, plain worn face (no markings).
+Cell 10: Windstep Charm (바람결 부적): a small charm of white feathers and a pale blue bead on a thin cord.
+Cell 11: Duelist Rapier (결투가의 레이피어): an elegant rapier with a swept brass cup hilt and a long slender blade.
+Cell 12: Sacred Flame Staff (성화 지팡이): a white wooden staff topped with a small brass cage holding a gentle flame.
+Cell 13: Pilgrim Mace (순례자의 철퇴): a flanged iron mace with a white-wrapped handle and a crimson tassel.
+Cell 14: Pilgrim Mantle (순례 망토): a folded ivory wool mantle with a crimson border.
+Cell 15: Sanctum Tome (성소의 마도서): a thick leather-bound book with brass corners and a crimson ribbon, closed (blank cover).
+Cell 16: Warden Shield (수호자의 방패): a large round white shield with a plain gold rim (no emblem).
+
+Painted game-item art in the same hand as the attached approved busts and chests: soft painterly rendering with visible but controlled brushwork, warm key light from the upper left, gentle rim light, rich but slightly muted Western medieval frontier colors, a subtle darker outline so the shape reads on dark UI. Objects in three-quarter view, centered, filling about 80% of their cell, every object fully inside its cell with an even margin. Each icon must still be recognisable at 40×40 px: one clear silhouette, strong value contrast, no tiny clutter. No text, letters, numbers, runes, emblems, crests, holy symbols or logos anywhere. No hands or people except the small abstract silhouettes named in a few skill icons.
+Attach: style_aren_neutral.png, approved_chests_act2.png, ref_ui_shop.jpg, layout_icons_C.png.
