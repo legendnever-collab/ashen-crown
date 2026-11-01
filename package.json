@@ -51,7 +51,9 @@
     "test:migration-v070": "node tests/migration-v070.mjs",
     "test:audio-mute": "node tests/audio-mute-e2e.mjs",
     "test:tactics": "node tests/tactics-e2e.mjs",
-    "test:migration-v071": "node tests/migration-v071.mjs"
+    "test:migration-v071": "node tests/migration-v071.mjs",
+    "test:arms": "node tests/arms-e2e.mjs",
+    "test:migration-v080": "node tests/migration-v080.mjs"
   },
   "devDependencies": {
     "playwright": "1.58.2"

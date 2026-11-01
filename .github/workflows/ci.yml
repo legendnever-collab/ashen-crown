@@ -54,7 +54,7 @@ jobs:
           - suite_group: act2
             suites: act2 act2-hubs act2-campaign act2b-campaign hub-doors migration-v050 migration-v060
           - suite_group: act2b
-            suites: act2c-campaign act2d-campaign migration-v061 migration-v070 tactics migration-v071
+            suites: act2c-campaign act2d-campaign migration-v061 migration-v070 tactics migration-v071 arms migration-v080
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
