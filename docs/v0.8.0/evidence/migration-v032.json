@@ -1,0 +1,41 @@
+{
+  "checks": [
+    {
+      "name": "Actual shipped v032 equipped-interior schema5 fixture",
+      "status": "PASS"
+    },
+    {
+      "name": "Actual shipped v032 battle checkpoint generated",
+      "status": "PASS"
+    },
+    {
+      "name": "Actual v032 shop imports schema6 Erik preserving assets and growth",
+      "status": "PASS"
+    },
+    {
+      "name": "Actual v032 exterior return retained",
+      "status": "PASS"
+    },
+    {
+      "name": "Actual v032 battle and departure checkpoint migrate",
+      "status": "PASS"
+    },
+    {
+      "name": "Actual v032 restart preserves departure equipment",
+      "status": "PASS"
+    },
+    {
+      "name": "Blocked War Room legacy position repaired without loss",
+      "status": "PASS"
+    },
+    {
+      "name": "Recovered actual v032 assets can depart through advisor",
+      "status": "PASS"
+    },
+    {
+      "name": "Actual v032 migration has no runtime errors",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}

@@ -4,6 +4,9 @@ import {findUnit,alive,forecast,skillCost,validTarget} from '../core/rules.js';
 import {canAct,canMove} from '../core/game.js';
 import {isClassMode,forecastClass,tileTarget} from '../core/class-actions.js';
 import {CLASS_ACTIONS} from '../data/classes.js';
+import {isTacticMode,isToolMode} from '../core/tactics.js';
+import {skillByMode} from '../data/skills.js';
+import {TOOLS} from '../data/frontier-data.js';
 export function initialMode(){return 'choose';}
 export function contextMessage(s,u,ui){
  if(ui.busy)return ui.pendingMove?'경로를 따라 이동 중 · 도착 후 확정하거나 취소하세요.':'전투 연출 진행 중 · 이동과 공격을 지켜보세요.';
@@ -14,6 +17,8 @@ export function contextMessage(s,u,ui){
  if(u.acted&&canMove(s,u))return '그림자 추적자 · 공격 후에도 이동할 수 있습니다. 이동을 누르세요.';
  if(u.acted)return '행동 완료 · 다른 장수를 누르거나 턴을 종료하세요.';
  if(ui.mode==='move')return `MOV ${effectiveStats(s,u).mov+(u.shadowBonus||0)} · 푸른 칸으로 이동. 같은 위치를 다시 누르면 제자리에서 행동합니다.`;
+ if(isToolMode(ui.mode)){const t=TOOLS[ui.mode.slice(5)];return `${t.name} · ${tileTarget(ui.mode)?'던질 칸을 누르세요.':'대상을 누르세요.'} ${t.description}`;}
+ if(isTacticMode(ui.mode)){const k=skillByMode(ui.mode);return `${k.ko} · ${k.cost} MP · ${tileTarget(ui.mode)?'중심 칸을 누르세요.':'대상을 누르세요.'} ${k.effect}`;}
  if(isClassMode(ui.mode)){const a=CLASS_ACTIONS[ui.mode];return `${a.ko} · ${a.cost} MP · ${tileTarget(ui.mode)?'룬을 깔 칸을 누르세요.':'대상을 누르세요.'} ${a.note}`;}
  if(ui.mode==='skill')return `${u.skill} · ${skillCost(u)} MP · ${u.description}`;
  if(ui.mode==='attack')return `공격 사거리 ${u.range.join('–')} · 붉은 범위의 적을 눌러 피해와 반격을 확인하세요.`;

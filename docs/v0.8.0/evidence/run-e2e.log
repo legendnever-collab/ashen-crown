@@ -1,0 +1,64 @@
+PASS Title screen and Korean UI
+PASS Intro story
+PASS War room and five hero previews
+PASS Lia identity preview (sortie tile)
+PASS Free deployment
+PASS Deployment swap preserves identity
+PASS Recommended deployment starts battle
+PASS Move using legal path
+PASS Undo before action
+PASS file:// refresh restores exact state
+PASS Legal move kai → 9,5 at turn 1
+PASS Forecast before kai skill
+PASS Legal move lia → 6,6 at turn 1
+PASS Forecast before lia skill
+PASS Forecast before elina skill
+PASS Legal move sain → 7,7 at turn 1
+PASS Legal move eric → 5,6 at turn 1
+PASS Legal move kai → 9,4 at turn 2
+PASS Forecast before kai rescue
+PASS Forecast before lia skill
+PASS Legal move elina → 2,6 at turn 2
+PASS Legal move sain → 6,5 at turn 2
+PASS Forecast before sain attack
+PASS Legal move eric → 5,4 at turn 2
+PASS Forecast before eric attack
+PASS Legal move kai → 7,4 at turn 3
+PASS Forecast before kai skill
+PASS Legal move lia → 6,5 at turn 3
+PASS Forecast before lia skill
+PASS Legal move elina → 2,5 at turn 3
+PASS Forecast before eric attack
+PASS Forecast before kai skill
+PASS Legal move lia → 5,5 at turn 4
+PASS Forecast before lia skill
+PASS Legal move elina → 2,4 at turn 4
+PASS Forecast before elina rescue
+PASS Forecast before eric attack
+PASS Legal move kai → 7,5 at turn 5
+PASS Forecast before kai skill
+PASS Attack preview and confirm
+PASS Civilian rescue through actual UI
+PASS Reinforcements appear with player opportunity
+PASS Captain defeated and Mission Clear
+PASS Growth result for five heroes
+PASS Visible level gains
+PASS Win with some heroes incapacitated
+PASS Victory permanently restored
+PASS Replay keeps growth
+PASS Invalid paste rejected safely
+PASS Valid paste restores verified snapshot
+PASS Natural civilian failure leads to defeat
+PASS Defeat retry available
+PASS Corrupt main save recovers last good
+PASS Recovery warning visible
+PASS Mouse wheel zoom
+PASS Pan supports drag
+PASS No page overflow at desktop
+PASS Mobile hero selection immediately updates dock
+PASS Mobile pointer tap moves hero
+PASS Mobile page stays within viewport
+PASS Mobile battle commands require no dialog
+PASS Standalone has zero external network requests
+PASS No JavaScript runtime errors
+63 browser checks PASS

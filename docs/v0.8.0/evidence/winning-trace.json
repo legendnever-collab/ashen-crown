@@ -1,0 +1,373 @@
+{
+  "outcome": "victory",
+  "turn": 5,
+  "trace": [
+    {
+      "type": "move",
+      "id": "kai",
+      "x": 9,
+      "y": 5
+    },
+    {
+      "type": "action",
+      "id": "kai",
+      "mode": "skill",
+      "target": "b2"
+    },
+    {
+      "type": "move",
+      "id": "lia",
+      "x": 6,
+      "y": 6
+    },
+    {
+      "type": "action",
+      "id": "lia",
+      "mode": "skill",
+      "target": "b2"
+    },
+    {
+      "type": "action",
+      "id": "elina",
+      "mode": "skill",
+      "target": "b1"
+    },
+    {
+      "type": "move",
+      "id": "sain",
+      "x": 7,
+      "y": 7
+    },
+    {
+      "type": "action",
+      "id": "sain",
+      "mode": "wait"
+    },
+    {
+      "type": "move",
+      "id": "eric",
+      "x": 5,
+      "y": 6
+    },
+    {
+      "type": "action",
+      "id": "eric",
+      "mode": "wait"
+    },
+    {
+      "type": "phase"
+    },
+    {
+      "type": "move",
+      "id": "kai",
+      "x": 9,
+      "y": 4
+    },
+    {
+      "type": "action",
+      "id": "kai",
+      "mode": "rescue",
+      "target": "c2"
+    },
+    {
+      "type": "action",
+      "id": "lia",
+      "mode": "skill",
+      "target": "b1"
+    },
+    {
+      "type": "move",
+      "id": "elina",
+      "x": 2,
+      "y": 6
+    },
+    {
+      "type": "action",
+      "id": "elina",
+      "mode": "wait"
+    },
+    {
+      "type": "move",
+      "id": "sain",
+      "x": 6,
+      "y": 5
+    },
+    {
+      "type": "action",
+      "id": "sain",
+      "mode": "attack",
+      "target": "boss"
+    },
+    {
+      "type": "move",
+      "id": "eric",
+      "x": 5,
+      "y": 4
+    },
+    {
+      "type": "action",
+      "id": "eric",
+      "mode": "attack",
+      "target": "boss"
+    },
+    {
+      "type": "phase"
+    },
+    {
+      "type": "move",
+      "id": "kai",
+      "x": 7,
+      "y": 4
+    },
+    {
+      "type": "action",
+      "id": "kai",
+      "mode": "skill",
+      "target": "boss"
+    },
+    {
+      "type": "move",
+      "id": "lia",
+      "x": 6,
+      "y": 5
+    },
+    {
+      "type": "action",
+      "id": "lia",
+      "mode": "skill",
+      "target": "a1"
+    },
+    {
+      "type": "move",
+      "id": "elina",
+      "x": 2,
+      "y": 5
+    },
+    {
+      "type": "action",
+      "id": "elina",
+      "mode": "wait"
+    },
+    {
+      "type": "action",
+      "id": "eric",
+      "mode": "attack",
+      "target": "boss"
+    },
+    {
+      "type": "phase"
+    },
+    {
+      "type": "action",
+      "id": "kai",
+      "mode": "skill",
+      "target": "b3"
+    },
+    {
+      "type": "move",
+      "id": "lia",
+      "x": 5,
+      "y": 5
+    },
+    {
+      "type": "action",
+      "id": "lia",
+      "mode": "skill",
+      "target": "boss"
+    },
+    {
+      "type": "move",
+      "id": "elina",
+      "x": 2,
+      "y": 4
+    },
+    {
+      "type": "action",
+      "id": "elina",
+      "mode": "rescue",
+      "target": "c1"
+    },
+    {
+      "type": "action",
+      "id": "eric",
+      "mode": "attack",
+      "target": "boss"
+    },
+    {
+      "type": "phase"
+    },
+    {
+      "type": "move",
+      "id": "kai",
+      "x": 7,
+      "y": 5
+    },
+    {
+      "type": "action",
+      "id": "kai",
+      "mode": "skill",
+      "target": "boss"
+    }
+  ],
+  "states": [
+    {
+      "turn": 1,
+      "hp": [
+        {
+          "id": "eric",
+          "hp": 42
+        },
+        {
+          "id": "elina",
+          "hp": 30
+        },
+        {
+          "id": "lia",
+          "hp": 27
+        },
+        {
+          "id": "sain",
+          "hp": 31
+        },
+        {
+          "id": "kai",
+          "hp": 32
+        }
+      ],
+      "rescued": 0
+    },
+    {
+      "turn": 2,
+      "hp": [
+        {
+          "id": "eric",
+          "hp": 35
+        },
+        {
+          "id": "elina",
+          "hp": 30
+        },
+        {
+          "id": "lia",
+          "hp": 30
+        },
+        {
+          "id": "sain",
+          "hp": 14
+        },
+        {
+          "id": "kai",
+          "hp": 32
+        }
+      ],
+      "rescued": 1
+    },
+    {
+      "turn": 3,
+      "hp": [
+        {
+          "id": "eric",
+          "hp": 26
+        },
+        {
+          "id": "elina",
+          "hp": 30
+        },
+        {
+          "id": "lia",
+          "hp": 30
+        },
+        {
+          "id": "sain",
+          "hp": 0
+        },
+        {
+          "id": "kai",
+          "hp": 21
+        }
+      ],
+      "rescued": 1
+    },
+    {
+      "turn": 4,
+      "hp": [
+        {
+          "id": "eric",
+          "hp": 19
+        },
+        {
+          "id": "elina",
+          "hp": 30
+        },
+        {
+          "id": "lia",
+          "hp": 19
+        },
+        {
+          "id": "sain",
+          "hp": 0
+        },
+        {
+          "id": "kai",
+          "hp": 36
+        }
+      ],
+      "rescued": 2
+    },
+    {
+      "turn": 5,
+      "hp": [
+        {
+          "id": "eric",
+          "hp": 47
+        },
+        {
+          "id": "elina",
+          "hp": 33
+        },
+        {
+          "id": "lia",
+          "hp": 33
+        },
+        {
+          "id": "sain",
+          "hp": 0
+        },
+        {
+          "id": "kai",
+          "hp": 40
+        }
+      ],
+      "rescued": 2
+    }
+  ],
+  "alive": 4,
+  "potential": false,
+  "levels": [
+    {
+      "id": "eric",
+      "level": 2,
+      "earnedXP": 111
+    },
+    {
+      "id": "elina",
+      "level": 3,
+      "earnedXP": 102
+    },
+    {
+      "id": "lia",
+      "level": 3,
+      "earnedXP": 237
+    },
+    {
+      "id": "sain",
+      "level": 2,
+      "earnedXP": 22
+    },
+    {
+      "id": "kai",
+      "level": 3,
+      "earnedXP": 234
+    }
+  ]
+}

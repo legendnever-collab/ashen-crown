@@ -1,3 +1,14 @@
+# v0.8.0 — Tactics · three skills, status effects, tools, matchups (release candidate, 2026-10-28)
+- Design approved 2026-10-28 06:24 KST ("권장안대로 진행해", D-073); details D-074. Not merged before the user plays and approves the release candidate.
+- Skills: three per hero (src/data/skills.js) — ① signature, ② new at Lv 4 (recruits on joining), ③ promotion action (recruits: a third new skill at join level + 3). Eleven new skills: 도발, 속박 사격, 화염진, 정화, 독날, 돌파, 기병의 함성, 회전 베기, 허점 찌르기, 성화 낙인, 순례자의 등불.
+- Status effects (src/core/status.js): poison, confusion, bind, silence; commanders half chance and one phase; chips over units; ACT II enemy weapons inflict them.
+- Tools (src/core/tactics.js): 13 tools; recovery and cures on self or an adjacent ally; throwables 2–3 tiles (Powder Bomb, Smoke Bomb, Weighted Net, Bewildering Powder, Caltrops), three a battle; War Drum; bag 8; stock opens with progress.
+- Class matchups: cavalry → infantry → archers → cavalry (±20%), spears beat cavalry; irregulars neutral. Tile skills and throws preview their cells; the battle guide explains the new rules.
+- Tuning: Flame Burst 50% / 8 MP; one kill bonus per area strike. Enemy stats unchanged. The balance policy plays the new skills.
+- Saves: schema 10 imports 0–9; real v0.7.1 saves verified (shipped HTML and source fixtures).
+- Catalog of 102 items/skills/statuses (docs/v0.8.0/ITEM_CATALOG.md) and art work pack E (seven icon sheets) for the user's ChatGPT work.
+- Tests: tactics and migration-v071 unit suites, tactics and migration-v071 browser suites, a guard against duplicate top-level names in the bundle.
+
 # v0.7.1 — The Three Banners · ACT II complete, Missions 13–14 (merge approved by the user, 2026-10-27)
 - Release: the user played the release candidate and approved the merge with one fix (chat 2026-10-27 18:34 KST, D-072). Started with the v0.7.0 merge approval (2026-10-27 06:16 KST, D-070); details D-071.
 - Fix (D-072): music was still faintly audible with Mute, Music Pause or BGM 0 — the reverb return bypassed the music volume (since v0.4.0). It now follows the BGM level and reaches an exact 0; the default mix is unchanged. Tests: audio-mix unit suite, audio-mute browser suite.

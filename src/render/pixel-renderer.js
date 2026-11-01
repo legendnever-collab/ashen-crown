@@ -1,5 +1,5 @@
 import {deployZoneOf,canMove} from '../core/game.js';
-import {isClassMode,classTargetCells,classActionOf} from '../core/class-actions.js';
+import {isClassMode,classTargetCells,classActionOf,tileTarget,forecastClass} from '../core/class-actions.js';
 import {MapCamera,drawMinimap} from './camera.js';
 import {drawBuilding,drawFire} from './world-art.js';
 import {MAP,WIDTH,HEIGHT} from '../data/game-data.js';
@@ -46,6 +46,8 @@ export class BattleRenderer{
    else if(isClassMode(ui.mode))for(const {x:tx,y:ty} of this.ranges()){this.drawnRanges++;rect(c,ui.mode==='recall'?RANGE_STYLE.support.fill:'rgba(150,104,232,.5)',tx*TILE+1,ty*TILE+1,60,60);}
    else if(['attack','skill','rescue','capture'].includes(ui.mode))for(let ty=0;ty<HEIGHT;ty++)for(let tx=0;tx<WIDTH;tx++){const dummy={x:tx,y:ty,hp:1,team:ui.mode==='skill'&&['sain','eric'].includes(selected.id)?'ally':ui.mode==='rescue'?'civilian':ui.mode==='search'?'object':'enemy',id:ui.mode==='capture'?'boss':'preview'};if(validTarget(s,selected,dummy,ui.mode)){this.drawnRanges++;rect(c,ui.mode==='rescue'||selected.id==='sain'&&ui.mode==='skill'?RANGE_STYLE.support.fill:RANGE_STYLE.attack.fill,tx*TILE+1,ty*TILE+1,60,60);}}
   }
+  // v0.8.0: a tile-targeted skill or throw shows the cells it will cover while its forecast is open.
+  if(s.screen==='battle'&&ui.menu==='forecast'&&typeof ui.preview==='string'&&/^\d+,\d+$/.test(ui.preview)&&selected&&tileTarget(ui.mode)&&ui.mode!=='arcane'){const f=forecastClass(s,selected,ui.preview,ui.mode);for(const cell of f.cells||[]){rect(c,'rgba(240,138,58,.30)',cell.x*TILE+2,cell.y*TILE+2,60,60);c.strokeStyle='rgba(255,200,140,.9)';c.lineWidth=2;c.strokeRect(cell.x*TILE+4,cell.y*TILE+4,56,56);}}
   const lion=rulesOf(s);if(lion?.auraCells&&s.screen==='battle'){for(const p of lion.auraCells(s)){if(p.x<0||p.y<0||p.x>=WIDTH||p.y>=HEIGHT)continue;rect(c,'rgba(201,162,74,.16)',p.x*TILE,p.y*TILE,TILE,TILE);c.strokeStyle='rgba(232,198,110,.55)';c.lineWidth=1;c.setLineDash([4,4]);c.strokeRect(p.x*TILE+2,p.y*TILE+2,TILE-4,TILE-4);c.setLineDash([]);}}
   // v0.7 M12 stealth (D-068): the tiles quiet guards watch (red) and, on each guard, where it turns next (pale chevron).
   if(missionOf(s).stealth&&['battle','deployment'].includes(s.screen)){const alert=s.missionState?.alert||0;for(const k of watchedTiles(s)){const [wx,wy]=k.split(',').map(Number);rect(c,alert?'rgba(236,84,60,.30)':'rgba(220,70,56,.22)',wx*TILE,wy*TILE,TILE,TILE);c.strokeStyle='rgba(255,140,110,.55)';c.lineWidth=1;c.strokeRect(wx*TILE+3,wy*TILE+3,TILE-6,TILE-6);}
