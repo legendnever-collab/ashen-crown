@@ -1,5 +1,5 @@
 # Ashen Crown v0.8.0 — Tactics (전술) / QA Report
-Updated 2026-11-01 KST. Release candidate: the PR must not be merged before the user plays and approves it. Design approved in chat on 2026-10-28 06:24 KST ("권장안대로 진행해", D-073, docs/v0.8.0/GAMEPLAY_DESIGN.md §11); implementation details and tuning D-074.
+Updated 2026-11-01 KST. The user approved the merge in chat on 2026-11-01 23:23 KST ("병합을 해줘", D-075). Hosted CI on PR #16 head 24eb15c: run 41313533757, 7/7 on attempt 1. Design approved in chat on 2026-10-28 06:24 KST ("권장안대로 진행해", D-073, docs/v0.8.0/GAMEPLAY_DESIGN.md §11); implementation details and tuning D-074.
 
 Baseline main 762bc75036b0a9ecc2e24cef6e6af3a34cfb37e3 (v0.7.1, PR #15). Branch feature/v0.8-tactics-and-arms.
 

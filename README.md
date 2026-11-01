@@ -1,7 +1,7 @@
 # Ashen Crown v0.8.0 — Tactics (전술)
 ACT I (Missions 01–06 of the original four-act, 30-mission campaign) with promotions, and all of ACT II 「세 개의 깃발」: Missions 07–14. v0.8.0 raises the tactics before ACT III (D-073, benchmarking 삼국지 조조전): every hero now has three skills (a new one at Lv 4, recruits on joining), four status effects (poison, confusion, bind, silence), tools that heal an adjacent ally or are thrown 2–3 tiles (Powder Bomb, Smoke Bomb, Weighted Net, Bewildering Powder, Caltrops, War Drum; three throws a battle, bag 8), and class matchups (cavalry → infantry → archers → cavalry). Regional gear, revisiting towns, gear growth and treasures follow in v0.8.1.
 
-v0.8.0 is a release candidate on feature/v0.8-tactics-and-arms (D-073/D-074); it is not merged before the user plays and approves it. v0.7.1 (merged 2026-10-27, PR #15 → 762bc75) and earlier features are included and preserved. Next: v0.8.1 「무기」, then ACT III 「왕관의 진실」 on the user's instruction.
+v0.8.0 was approved for merge by the user on 2026-11-01 (D-075, PR #16). v0.7.1 (merged 2026-10-27, PR #15 → 762bc75) and earlier features are included and preserved. Next: v0.8.1 「무기」, then ACT III 「왕관의 진실」 on the user's instruction.
 
 - [Standalone HTML](releases/Ashen_Crown_v0.8.0.html)
 - [Source ZIP](releases/Ashen_Crown_v0.8.0_Source.zip)

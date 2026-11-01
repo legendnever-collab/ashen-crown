@@ -1,5 +1,5 @@
-# v0.8.0 — Tactics · three skills, status effects, tools, matchups (release candidate, 2026-10-28)
-- Design approved 2026-10-28 06:24 KST ("권장안대로 진행해", D-073); details D-074. Not merged before the user plays and approves the release candidate.
+# v0.8.0 — Tactics · three skills, status effects, tools, matchups (merge approved by the user, 2026-11-01)
+- Release: the user approved the merge in chat (2026-11-01 23:23 KST, "병합을 해줘", D-075); PR #16 CI run 41313533757 7/7. Design approved 2026-10-28 06:24 KST (D-073); details D-074.
 - Skills: three per hero (src/data/skills.js) — ① signature, ② new at Lv 4 (recruits on joining), ③ promotion action (recruits: a third new skill at join level + 3). Eleven new skills: 도발, 속박 사격, 화염진, 정화, 독날, 돌파, 기병의 함성, 회전 베기, 허점 찌르기, 성화 낙인, 순례자의 등불.
 - Status effects (src/core/status.js): poison, confusion, bind, silence; commanders half chance and one phase; chips over units; ACT II enemy weapons inflict them.
 - Tools (src/core/tactics.js): 13 tools; recovery and cures on self or an adjacent ally; throwables 2–3 tiles (Powder Bomb, Smoke Bomb, Weighted Net, Bewildering Powder, Caltrops), three a battle; War Drum; bag 8; stock opens with progress.

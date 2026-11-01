@@ -1,5 +1,5 @@
 # Next Tasks
-1. v0.8.0 「전술」 release candidate (feature/v0.8-tactics-and-arms): send the build, open the PR (CI), never merge before the user plays and approves it. After approval record the PR, CI run and merge SHA in docs/v0.8.0/RELEASE_NOTES.md.
+1. v0.8.0 merged (PR #16, D-075): record the merge SHA and the main CI run in docs/v0.8.0/RELEASE_NOTES.md at the start of the next branch. Tags and GitHub Releases only when the user asks.
 2. v0.8.1 「무기」 (D-073 Q5/Q6, §6): regional and elite gear (catalog-v08.js tiers II–III, recruit gear), unlocks by mission and trust, the rare-goods shelf, revisiting towns from the world map, gear growth ★ and 단련, treasures and one hidden objective per mission (practice replays win them once), supply-wagon drops, cut-ins.
 3. Art work pack E (102 icons, seven sheets) when the user returns it: cut with an import script and replace the SVG icons (never label the temporary icons finished).
 4. Art work pack D (28 images) when the user returns it: import and replace the temporary pilgrim village painting and procedural cast (Lucien, Ines, Cassian/Leonora map sheets, flame knight, pilgrim, ash raider, monastery guard, abbot, masked raider).
