@@ -12,6 +12,7 @@ import {STORY_V04,FRONTIER_V04,ADVISOR_V04} from './story-v04.js';
 import {STORY_V05} from './story-v05.js';
 import {STORY_WORLD} from './story-world.js';
 import {LAST_MISSION} from './missions.js';
+import {REVISIT_LINES} from './arms-v081.js';
 Object.assign(FRONTIER_SCENES,FRONTIER_V04);Object.assign(ADVISOR_BRIEFINGS,ADVISOR_V04,ADVISOR_V06,ADVISOR_V061,ADVISOR_V070,ADVISOR_V071);Object.assign(NPC_TALK,NPC_TALK_V061,NPC_TALK_V070,NPC_TALK_V071);Object.assign(ADVISOR_AFTER,ADVISOR_AFTER_V061,ADVISOR_AFTER_V070,ADVISOR_AFTER_V071);
 const line=(speaker,text,expression='neutral')=>({speaker,text,expression});
 export const STORY={
@@ -82,3 +83,5 @@ Object.assign(STORY,STORY_V05);
 Object.assign(STORY,STORY_WORLD);
 // M06 camp: each companion's reason to stay replaces the generic preparation talk (PROPOSED wording).
 for(const [npc,hero]of [['aren','eric'],['elina','elina'],['lia','lia'],['sain','sain'],['kai','kai']])if(STORY[`pre:6:reason:${hero}`])STORY[`npc:6:preparation:${npc}`]=STORY[`pre:6:reason:${hero}`].map(l=>({...l,stage:undefined,inPlace:true,actors:['eric',npc],focus:1}));
+// v0.8.1 revisits (D-073 §6.3): townsfolk say a word on how their town is doing (PROPOSED wording).
+for(const [hub,talks]of Object.entries(REVISIT_LINES))for(const [id,lines]of Object.entries(talks)){const label=HUBS[hub]?.npcs.find(n=>n.id===id)?.name.split(' · ')[0];STORY[`revisit:${hub}:${id}`]=lines.map(text=>({...line(id,text),...(label?{name:label}:{}),inPlace:true,actors:['eric',id],focus:1}));}

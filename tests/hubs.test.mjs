@@ -6,7 +6,7 @@ import {ART_HUBS,hubFor,stageHubFor} from '../src/data/hubs-v05.js';
 import {STORY} from '../src/data/story.js';
 import {newGame} from '../src/core/game.js';
 import {enterHub,walkable,interactions,enterInterior,exitInterior,frontierPath,currentHub} from '../src/core/frontier.js';
-import {serialize,deserialize} from '../src/persistence/save-manager.js';
+import {serialize,deserialize,arms081View} from '../src/persistence/save-manager.js';
 import {drain} from './campaign-policy.mjs';
 
 const at=(hub,x,y)=>({frontier:{hub,x,y}});
@@ -58,7 +58,7 @@ test('staged scenes use the hub of their moment',()=>{
 test('v0.4.0 ACT I complete save (Border Camp) loads into the oath camp, valid and walkable',()=>{
  const f=JSON.parse(fs.readFileSync(new URL('./fixtures/v040/v040-act1-complete.json',import.meta.url),'utf8')),before=JSON.parse(JSON.parse(f.save).data);
  assert.equal(before.frontier.hub,'camp');const s=deserialize(f.save);assert.equal(s.frontier.hub,'oathcamp');assert.ok(walkable(s,s.frontier.x,s.frontier.y));
- assert.deepEqual(s.campaign.economy,before.campaign.economy);{const sq=HUBS.oathcamp.places.find(p=>p.id==='square');assert.ok(frontierPath(s,sq.x,sq.y));}
+ assert.deepEqual(s.campaign.economy,arms081View(before.campaign.economy));{const sq=HUBS.oathcamp.places.find(p=>p.id==='square');assert.ok(frontierPath(s,sq.x,sq.y));}
  const again=deserialize(serialize(s));assert.equal(again.frontier.hub,'oathcamp');
 });
 

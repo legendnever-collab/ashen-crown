@@ -326,3 +326,17 @@
 
 /* v0.7.1 ACT II completion card: the three banners' relations */
 .act2-relations{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}.act2-relations th,.act2-relations td{padding:5px 6px;border-bottom:1px solid rgba(240,196,106,.25);text-align:left}.act2-relations th{color:#f0c46a;font-weight:600}
+/* v0.8.1 「무기」: stars, gear EXP, town shelves, hidden objective, revisit list, cut-in */
+.stars{color:#f0c64a;letter-spacing:.04em;font-size:12px}
+.gear-exp{display:block;height:4px;margin:4px 0;background:#0d1d20;border:1px solid #3b5355;border-radius:2px;overflow:hidden}.gear-exp i{display:block;height:100%;background:#d9bc7d}.gear-exp.max i{background:#f0c64a}
+.gear-card.treasure{border-color:#c9a4f0}.shop-list article.locked{opacity:.55}.shop-list article.rare{border-color:#f0c64a;box-shadow:0 0 0 1px #f0c64a55 inset}
+.lock-note{margin-top:4px}.feat-line{margin-top:8px;padding:6px 10px;border-left:3px solid #c9a4f0;background:#14262a;font-size:13px}.feat-line.done{border-color:#abc48a}.feat-line small{color:var(--dim)}
+.reward-chip.feat{border-color:#c9a4f0;color:#eadcff}
+.town-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}.town-list button{text-align:left}
+.carrier-note{display:flex;align-items:center;gap:8px}
+.cutin{position:fixed;left:0;right:0;top:34%;z-index:60;pointer-events:none;display:flex;justify-content:center;animation:cutin-in 1.4s ease-out both}
+.cutin.still{animation:none}.cutin-band{display:flex;align-items:center;gap:16px;width:min(720px,100%);padding:10px 18px;background:linear-gradient(90deg,#0c1a1dee,#24383cee 60%,#0c1a1d00);border-top:2px solid #d9bc7d;border-bottom:2px solid #d9bc7d}
+.cutin.third .cutin-band{border-color:#c9a4f0}.cutin-face{flex:0 0 auto;width:96px;height:96px;overflow:hidden;border-radius:4px}.cutin-face canvas,.cutin-face img{width:96px;height:96px;object-fit:cover}
+.cutin p{font:600 20px/1.4 'Ashen UI',Georgia,serif;color:#f6ebc9}.cutin p b{display:block;font-size:13px;color:var(--gold);letter-spacing:.08em}
+@keyframes cutin-in{0%{opacity:0;transform:translateX(-12%)}12%{opacity:1;transform:none}82%{opacity:1}100%{opacity:0}}
+@media (max-width:600px){.cutin{top:28%}.cutin-face,.cutin-face canvas,.cutin-face img{width:64px;height:64px}.cutin p{font-size:16px}}

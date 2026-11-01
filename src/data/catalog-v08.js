@@ -43,7 +43,7 @@ export const CATALOG_GEAR=[
  cGear('ironwoodBow','철목 활','Ironwood Bow',2,'weapon',['elina'],'ATK +3',170,'철관성 성하 마을 · M07'),
  cGear('plateCuirass','판금 흉갑','Plate Cuirass',2,'armor',['eric','thea','ines'],'DEF +4 · SPD −1',220,'철관성 성하 마을 · M08'),
  cGear('towerShield','철관 방패','Iron Tower Shield',2,'armor',['eric'],'DEF +2 · 원거리 피해 −2',200,'철관성 성하 마을 · M08'),
- cGear('lancerMail','기병 사슬갑옷','Lancer Mail',2,'armor',['thea'],'DEF +2 · HP +6',180,'철관성 성하 마을 · M08'),
+ cGear('lancerMail','기병 사슬갑옷','Lancer Mail',2,'armor',['thea'],'DEF +2 · RES +2',180,'철관성 성하 마을 · M08'),
  cGear('steelGauntlets','강철 건틀릿','Steel Gauntlets',2,'accessory',cMelee,'ATK +2',160,'철관성 성하 마을 · M08'),
  cGear('runeforgedBlade','룬 단조검','Runeforged Blade',2,'weapon',['eric','dario'],'ATK +6',420,'철관성 성하 마을 · 고급품'),
  // tier II — Velmar market (Free Lords)
@@ -62,7 +62,7 @@ export const CATALOG_GEAR=[
  cGear('sanctumTome','성소의 마도서','Sanctum Tome',2,'weapon',['lia'],'MAG +3 · RES +2',230,'순례자 마을 · M12'),
  cGear('wardenShield','수호자의 방패','Warden Shield',2,'armor',['ines','eric'],'DEF +3',190,'순례자 마을 · M12'),
  cGear('chrismCharm','성유 부적','Chrism Charm',2,'accessory',[...cAll5,'thea','dario','ines'],'독 면역',140,'순례자 마을 · M12'),
- cGear('votiveBand','서약의 팔찌','Votive Band',2,'accessory',[...cAll5,'thea','dario','ines'],'MP +6',200,'순례자 마을 · M12'),
+ cGear('votiveBand','서약의 팔찌','Votive Band',2,'accessory',[...cAll5,'thea','dario','ines'],'MAG +2 · RES +1',200,'순례자 마을 · M12'),
  cGear('cathedralStaff','대성당 지팡이','Cathedral Staff',2,'weapon',['sain'],'MAG +4 · 치유 +5',450,'순례자 마을 · 고급품'),
  // tier III — faction elite (trust ≥ 2)
  cGear('crownGuardLance','왕관 근위 창','Crown Guard Lance',3,'weapon',['thea'],'ATK +5 · DEF +1',520,'철관성 성하 마을 · 철왕관 신뢰 2'),
@@ -70,7 +70,7 @@ export const CATALOG_GEAR=[
  cGear('leagueSaber','연맹 기사의 사브르','League Saber',3,'weapon',['dario','kai'],'ATK +5 · SPD +2',540,'벨마르 · 자유 영주 신뢰 2'),
  cGear('leagueLongbow','연맹 장궁','League Longbow',3,'weapon',['elina'],'ATK +4 · HIT +10',520,'벨마르 · 자유 영주 신뢰 2'),
  cGear('paladinMace','성기사의 전투 철퇴','Paladin Mace',3,'weapon',['ines'],'ATK +5 · RES +2',540,'순례자 마을 · 성화 교단 신뢰 2'),
- cGear('flameVestment','성화 법의','Sacred Flame Vestment',3,'armor',['sain','lia'],'RES +5 · MP +6',560,'순례자 마을 · 성화 교단 신뢰 2')
+ cGear('flameVestment','성화 법의','Sacred Flame Vestment',3,'armor',['sain','lia'],'RES +5 · MAG +2',560,'순례자 마을 · 성화 교단 신뢰 2')
 ];
 const cTreasure=(id,ko,en,effect,where)=>({id,kind:'treasure',ko,en,effect,where});
 export const CATALOG_TREASURES=[

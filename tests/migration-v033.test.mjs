@@ -1,7 +1,7 @@
 // v0.3.3 → v0.4.0 save compatibility, using real schema-6 saves produced by the tagged v0.3.3 source
 // (tests/fixtures/v033/make-v033-fixtures.mjs). Nothing here is hand-written save data.
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-import {serialize,deserialize,saveGame,loadGame,SAVE_KEY} from '../src/persistence/save-manager.js';
+import {serialize,deserialize,saveGame,loadGame,SAVE_KEY,arms081View} from '../src/persistence/save-manager.js';
 import {nextMission,startBattle} from '../src/core/game.js';
 import {enterHub} from '../src/core/frontier.js';
 import {SCHEMA,VERSION} from '../src/data/game-data.js';
@@ -37,7 +37,7 @@ test('M02 mid-battle save: board, HP, turn and stage checkpoint survive; the bat
 test('M03 aftermath save: growth, gear, items, gold and story flags kept; the campaign continues into M04',()=>{
  const before=raw('m03-aftermath'),s=load('m03-aftermath');assert.deepEqual(s.campaign.completed,[1,2,3]);assert.equal(s.frontier.phase,'aftermath');
  assert.equal(s.campaign.economy.gold,before.campaign.economy.gold);assert.deepEqual(s.campaign.economy.items,before.campaign.economy.items);
- assert.deepEqual(s.campaign.economy.equipped,before.campaign.economy.equipped);assert.deepEqual(s.campaign.economy.gear,before.campaign.economy.gear);
+ assert.deepEqual(s.campaign.economy.equipped,arms081View(before.campaign.economy).equipped);assert.deepEqual(s.campaign.economy.gear,arms081View(before.campaign.economy).gear);
  assert.deepEqual(s.campaign.economy.rewards,before.campaign.economy.rewards,'no reward is granted twice by the migration');
  for(const h of before.campaign.heroes){const now=s.campaign.heroes.find(x=>x.id===h.id);for(const k of ['level','xp','maxHP','atk','def','mag','res','spd'])assert.equal(now[k],h[k],`${h.id}.${k}`);}
  for(const [k,v]of Object.entries(before.campaign.flags))assert.equal(s.campaign.flags[k],v,k);

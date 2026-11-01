@@ -10,6 +10,7 @@ import {STORY} from '../data/story.js';
 import {narrativeState} from '../core/narrative.js';
 import {validStatus} from '../core/status.js';
 import {THROW_LIMIT} from '../core/tactics.js';
+import {TOOLS} from '../data/frontier-data.js';
 export const SAVE_KEY='ashen-crown:v1',BACKUP_KEY='ashen-crown:last-good';
 export function checksum(text){let h=2166136261;for(let i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0).toString(16);}
 export function validate(s){
@@ -52,9 +53,16 @@ export function validate(s){
  if(rulesOf(s)&&!rulesOf(s).validState(s.missionState))throw Error('임무 진행 기록이 손상되었습니다.');
  if(s.burning!=null&&(typeof s.burning!=='object'||Array.isArray(s.burning)||Object.entries(s.burning).some(([k,v])=>!/^\d{1,2},\d{1,2}$/.test(k)||!Number.isInteger(v)||v<1||v>2)))throw Error('화염 기록이 손상되었습니다.');
  if(s.units.some(u=>u.team==='ally'&&(![1,2,3].includes(u.appearanceTier)||['classTier','storyTier'].some(k=>u[k]!=null&&![1,2,3].includes(u[k])))))throw Error('외형 Tier가 손상되었습니다.');
+ // v0.8.1: hidden objectives won (mission ids), this battle's flag record, the supply carrier's crate.
+ if(c.feats!=null&&(!Array.isArray(c.feats)||c.feats.length>14||new Set(c.feats).size!==c.feats.length||c.feats.some(id=>!Number.isInteger(id)||id<1||id>14)))throw Error('숨은 전과 기록이 손상되었습니다.');
+ if(s.battleFlags!=null&&(typeof s.battleFlags!=='object'||Array.isArray(s.battleFlags)||Object.keys(s.battleFlags).length>60||Object.values(s.battleFlags).some(v=>!['boolean','number','string'].includes(typeof v)||typeof v==='string'&&v.length>40)))throw Error('전투 기록이 손상되었습니다.');
+ if(s.units.some(u=>u.carrier!=null&&(!['enemy','allied'].includes(u.team)||typeof u.carrier!=='string'||!TOOLS[u.carrier])||u.pouchUsed!=null&&typeof u.pouchUsed!=='boolean'))throw Error('보급 기록이 손상되었습니다.');
  validateEconomy(s.economy);validateEconomy(s.campaign.economy);if(s.frontier)validateFrontier(s.frontier);if(s.campaign.frontier)validateFrontier(s.campaign.frontier);
  return s;
 }
+// Exported for the migration tests: the economy as a schema-10 save's economy reads in schema 11.
+export function arms081View(e){const c=structuredClone(e);arms081(c);return c;}
+function arms081(e){for(const g of e.gear||[]){if('level' in g){g.star=g.level===1?2:1;g.exp=g.level===1?30:0;delete g.level;}}for(const slots of Object.values(e.equipped||{}))if(slots&&!Object.hasOwn(slots,'treasure'))slots.treasure=null;for(const r of e.rewardPending||[])delete r.level;}
 export function migrate(s){
  if(s?.schema===0){s.schema=1;s.feedback=s.feedback||[];}
  if(s?.schema===1){s.schema=2;s.version='0.2.0';s.missionId=1;s.practice=false;s.narrative=narrativeState();const c=s.campaign;c.completed=c.clears>0?[1]:[];c.flags=c.clears>0?{mission_01_completed:true}:{};c.bonds={};c.tacticalMemory={};for(const u of [...s.units,...(c.heroes||[])])if(u.team==='ally'||HEROES.some(h=>h.id===u.id)){u.appearanceTier=u.id==='eric'&&u.level>=5?2:1;const h=HEROES.find(h=>h.id===u.id);u.name=h.name;u.ko=h.ko;}if(s.stageStart)s.stageStart=migrate(s.stageStart);}
@@ -70,6 +78,9 @@ export function migrate(s){
  // v0.8.0 (D-073): new tools join the bag lazily (items hold only the kinds ever owned), statuses and throwables live
  // on the battle state; nothing in a schema-9 save has to change.
  if(s?.schema===9){s.schema=10;s.version='0.8.0';if(s.stageStart)s.stageStart=migrate(s.stageStart);}
+ // v0.8.1 (D-073 Q5): gear grows by stars — the old +1 upgrade becomes ★2 (its EXP filled), plain gear ★1; every hero gains a
+ // treasure slot; the hidden-objective record starts empty (cleared missions can still win theirs in practice).
+ if(s?.schema===10){s.schema=11;s.version='0.8.1';for(const e of [s.economy,s.campaign?.economy])if(e)arms081(e);s.campaign.feats??=[];if(s.screen==='battle'||s.screen==='result')s.battleFlags??={};if(s.skirmish?.campaign?.economy)arms081(s.skirmish.campaign.economy);if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');
  // v0.6.1: a save of the current schema made by an earlier build of it (e.g. v0.6.0) is now this version.
  if(s?.schema===SCHEMA&&s.version!==VERSION){s.version=VERSION;if(s.stageStart?.version)s.stageStart.version=VERSION;}
