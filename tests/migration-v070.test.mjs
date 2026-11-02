@@ -2,7 +2,7 @@
 // (tests/fixtures/v070/make-v070-fixtures.mjs, worktree of the v0.7.0 merge 81f11d3). Schema 9 is unchanged; a save of an
 // earlier build loads as the current version and continues to M13 at the refugee camp.
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-import {serialize,deserialize} from '../src/persistence/save-manager.js';
+import {serialize,deserialize,arms081View} from '../src/persistence/save-manager.js';
 import {SCHEMA,VERSION} from '../src/data/game-data.js';
 import {findUnit} from '../src/core/rules.js';
 import {nextMission,startBattle,deployLimit} from '../src/core/game.js';
@@ -17,7 +17,7 @@ test('fixtures are genuine v0.7.0 schema-9 saves',()=>{for(const n of ['m12-camp
 test('the v0.7.0 end-of-content camp (refugee camp after M12, Ines joined) loads as the current version with every asset kept',()=>{
  const before=raw('m12-camp'),s=load('m12-camp');assert.equal(s.schema,SCHEMA);assert.equal(s.version,VERSION);
  assert.equal(s.frontier.hub,'refuge');assert.equal(s.frontier.phase,'aftermath');assert.deepEqual(s.campaign.roster,['thea','dario','ines']);
- for(const k of ['completed','economy','flags','choices','promotions','factionTrust','trustLog'])assert.deepEqual(s.campaign[k],before.campaign[k],k);
+ for(const k of ['completed','economy','flags','choices','promotions','factionTrust','trustLog'])assert.deepEqual(s.campaign[k],k==='economy'?arms081View(before.campaign[k]):before.campaign[k],k);
  assert.equal(deserialize(serialize(s)).version,VERSION);
 });
 

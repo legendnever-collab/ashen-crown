@@ -1,4 +1,10 @@
 # Next Tasks
+1. v0.8.1 merged (PR #17, D-077): record the merge SHA and the main CI run in docs/v0.8.1/RELEASE_NOTES.md at the start of the next branch. Tags and GitHub Releases only when the user asks.
+2. Art work pack E (102 icons): the user returns it after 2026-11-04 (ChatGPT limit); verify and import with `python3 scripts/import-item-art.py <zip>` (src/assets/items, 128-px WebP; the build embeds them and itemIcon prefers them), check the QA log, rebuild and rerun the browser suites; never label the temporary icons finished.
+3. Play-test watch items for v0.8.1: hidden-objective difficulty (policy rates in test-output/act2-balance.json featRate), treasure power (Twin Daggers, Shield of Silence, Wind Horseshoe), town prices and unlock pacing, how often players revisit.
+4. Next on the user's instruction: ACT III 「왕관의 진실」 design (M15–M22), returning recruits who left after M14, awakening (Tier 3).
+
+Previous (v0.8.0, merged 2026-11-01 PR #16 → 7b8b2e8):
 1. v0.8.0 merged (PR #16, D-075): record the merge SHA and the main CI run in docs/v0.8.0/RELEASE_NOTES.md at the start of the next branch. Tags and GitHub Releases only when the user asks.
 2. v0.8.1 「무기」 (D-073 Q5/Q6, §6): regional and elite gear (catalog-v08.js tiers II–III, recruit gear), unlocks by mission and trust, the rare-goods shelf, revisiting towns from the world map, gear growth ★ and 단련, treasures and one hidden objective per mission (practice replays win them once), supply-wagon drops, cut-ins.
 3. Art work pack E (102 icons, seven sheets) when the user returns it: cut with an import script and replace the SVG icons (never label the temporary icons finished).

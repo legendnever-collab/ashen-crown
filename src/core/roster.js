@@ -11,7 +11,7 @@ export function recruitRecord(id,level=1){
 export function joinRoster(s,id,level=1){
  if(!RECRUIT_HEROES.some(h=>h.id===id))return false;const c=s.campaign;c.roster??=[];if(c.roster.includes(id))return false;
  c.roster.push(id);const rec=recruitRecord(id,level);if(Array.isArray(c.heroes))c.heroes.push(rec);
- for(const e of [c.economy,s.economy])if(e?.equipped&&!e.equipped[id])e.equipped[id]={weapon:null,armor:null,accessory:null};
+ for(const e of [c.economy,s.economy])if(e?.equipped&&!e.equipped[id])e.equipped[id]={weapon:null,armor:null,accessory:null,treasure:null};
  for(const f of [s.frontier,c.frontier])if(f){if(!f.members.includes(id))f.members.push(id);f.affiliation[id]='affiliated';}
  // The current state's board gains the hero in reserve (a free deployment tile), so the save stays whole.
  if(Array.isArray(s.units)&&!s.units.some(u=>u.id===id)){const tile=[...deployZoneOf(s)].map(k=>k.split(',').map(Number)).find(([x,y])=>!at(s,x,y)&&!s.units.some(u=>u.x===x&&u.y===y)&&Number.isFinite(terrainAt(x,y,s)?.cost))||[0,0];

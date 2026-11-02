@@ -3,6 +3,7 @@ import {MAP,TERRAIN,WIDTH,HEIGHT,BALANCE,HEROES,CLASS_MOVEMENT,HERO_CLASS,TERRAI
 import {missionOf} from '../data/missions.js';
 import {remember} from './narrative.js';
 import {proficiencyBonus,classGrowth} from './progression.js';
+import {fx} from './arms.js';
 export const distance=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
 export const key=(x,y)=>`${x},${y}`;
 // benched: a hero left out of the sortie (pre-battle choice) takes no part in the battle
@@ -38,7 +39,10 @@ export function pathTo(s,u,x,y){const {costs,prev}=movement(s,u);let k=key(x,y);
 export function skillCost(u){const h=heroDef(u.id);return (h?.cost||0)+(u.id==='lia'&&u.hp<=u.maxHP/2&&(u.classTier||1)<2?1:0);}
 export function rangeFor(u,mode='attack',s=null){const t2=(u.classTier||1)>=2;if(t2&&mode==='skill'&&u.id==='sain')return [0,3];if(t2&&s&&mode==='skill'&&u.id==='elina'&&['f','v'].includes(missionOf(s).map[u.y]?.[u.x]))return [2,4];const base=mode==='skill'&&u.id==='lia'?[1,3]:mode==='skill'&&u.id==='sain'?[0,2]:mode==='skill'&&u.id==='eric'?[0,0]:u.range;
  // v0.6 rooftop high ground: a bow (range 2+) standing on a roof reaches one tile further. No roofs in ACT I.
- return s&&base[1]>=2&&mode!=='skill'&&TERRAIN[missionOf(s).map[u.y]?.[u.x]]?.high?[base[0],base[1]+1]:base;}
+ const roof=s&&base[1]>=2&&mode!=='skill'&&TERRAIN[missionOf(s).map[u.y]?.[u.x]]?.high?1:0;
+ // v0.8.1 Hawk Feather (treasure): a bow reaches one tile further.
+ const hawk=s&&base[1]>=2&&(mode==='attack'||mode==='skill'&&u.id==='elina')?fx(s,u,'hawk'):0;
+ return roof||hawk?[base[0],base[1]+roof+hawk]:base;}
 export function validTarget(s,u,t,mode='attack'){
  if(!u||!t||!alive(u)||!alive(t))return false;
  const d=distance(u,t);if(t.team==='object')return mode==='search'&&u.team==='ally'&&d===1&&!t.locked&&!t.inert;if(mode==='search')return false;if(mode==='capture')return (s.missionId===2&&t.id==='boss'||[].concat(missionOf(s).capture||[]).includes(t.id))&&t.team==='enemy'&&t.hp<=t.maxHP/2&&d===1;
@@ -54,7 +58,7 @@ export function strikeStats(s,u,t,mode='attack'){
  u=effectiveStats(s,u);t=effectiveStats(s,t);
  const magic=mode==='skill'&&u.id==='lia'||mode==='flameBurst',aim=mode==='skill'&&u.id==='elina',quick=mode==='skill'&&u.id==='kai';
  const ground=terrainAt(t.x,t.y,s),defense=magic?t.res:t.def,burning=!!s.burning?.[key(t.x,t.y)];
- let raw=Math.max(1,(magic?u.mag:u.atk)-defense-(ground.defense||0)+(aim?2:0)+(magic&&u.hp<=u.maxHP/2?4:0)+(quick&&flank(s,u,t)?6:0)+(mode==='skill'&&u.id==='thea'?charge(u):0)+(mode==='skill'&&u.id==='dario'?2:0));
+ let raw=Math.max(1,(magic?u.mag:u.atk)-defense-(ground.defense||0)+(aim?2:0)+(magic&&u.hp<=u.maxHP/2?4:0)+(quick&&flank(s,u,t)?6:0)+(mode==='skill'&&u.id==='thea'?charge(u)+(u.chargeDmg||0):0)+(mode==='skill'&&u.id==='dario'?2:0));
  let dmg=Math.max(1,Math.round(magic?raw*(ground.fire??1):raw*(1-(ground.phys||0))));
  const arms=magic?1:matchup(u,t);if(arms!==1)dmg=Math.max(1,Math.round(dmg*arms));
  if(t.id==='eric'&&t.hp<=t.maxHP*.3)dmg=Math.max(1,Math.floor(dmg*.85));
@@ -69,6 +73,8 @@ export function strikeStats(s,u,t,mode='attack'){
  // Ines's Sanctuary takes 2 (4 after her oath) off the damage a legion unit beside her receives.
  const sneak=surprised(s,u,t);if(sneak)dmg+=5;
  const cut=sanctuaryCut(s,t);if(cut)dmg=Math.max(1,dmg-cut);
+ // v0.8.1 gear: the Iron Tower Shield takes 2 off blows from 2+ tiles; the Mirror Cuirass halves them.
+ const far=distance(u,t)>=2;if(far&&t.rangedCut)dmg=Math.max(1,dmg-t.rangedCut);if(far&&t.mirror)dmg=Math.max(1,Math.round(dmg/2));
  const standing=missionOf(s).map[u.y][u.x];const hawk=u.id==='elina'&&(standing==='f'||standing==='v')?12:0;
  let hit=Math.max(70,Math.min(100,(magic?100:97)+Math.round((u.spd-t.spd)*1.5)-(ground.evade||0)+hawk+(aim?18:0)+(u.hit||0)+(proficiencyBonus(s,u).hit||0)+formHit-(t.dodge||0)));
  // v0.7 night (M11): a legion attacker standing in light aims better; any target outside the light is harder to hit.
@@ -76,7 +82,7 @@ export function strikeStats(s,u,t,mode='attack'){
  if(sneak)hit=Math.min(100,hit+30);
  // v0.8 smoke: a legion unit inside the smoke is harder to hit until the end of that enemy phase.
  if(sideOf(t)==='legion'&&s.smoke?.some(c=>c.x===t.x&&c.y===t.y&&c.until>=s.turn))hit=Math.max(10,hit-30);
- const crit=magic?0:Math.min(12,Math.max(3,Math.round((u.spd-t.spd)/2)+5));
+ const crit=magic?0:Math.min(12,Math.max(3,Math.round((u.spd-t.spd)/2)+5))+(u.crit||0); // v0.8.1 Lucky Coin etc.
  return {damage:dmg,hit,crit,magic,fire:magic,terrainMul:magic?(ground.fire??1):1-(ground.phys||0),flank:quick&&flank(s,u,t),burning,sneak,sanctuary:cut,arms};
 }
 // v0.8 class matchups (D-073 Q7; PROPOSED): cavalry beats infantry, infantry beats archers, archers beat cavalry (±20%);
@@ -120,13 +126,13 @@ export const isolated=(s,t)=>t.team==='ally'&&!s.units.some(a=>a.team==='ally'&&
 // Tier-1 Guard covers melee only; the Guardian Knight (tier 2) also takes the first ranged or magic hit.
 export function guardFor(s,u,t,mode){const melee=!(mode==='skill'&&u.id==='lia')&&distance(u,t)===1;return s.units.find(g=>alive(g)&&g.team===t.team&&g.id!==t.id&&(g.guarding&&!g.guardUsed||g.guardTarget===t.id)&&distance(g,t)===1&&(melee||(g.classTier||1)>=2))||null;}
 export function forecast(s,u,t,mode='attack'){
- if(mode==='skill'&&u.id==='sain'){const amount=12+effectiveStats(s,u).mag+(proficiencyBonus(s,u).heal||0);return {heal:Math.min(t.maxHP-t.hp,amount),hit:100,damage:0,counter:0,after:Math.min(t.maxHP,t.hp+amount)};}
+ if(mode==='skill'&&u.id==='sain'){const v=effectiveStats(s,u),amount=12+v.mag+(v.heal||0)+(proficiencyBonus(s,u).heal||0);return {heal:Math.min(t.maxHP-t.hp,amount),hit:100,damage:0,counter:0,after:Math.min(t.maxHP,t.hp+amount)};}
  if(mode==='skill'&&u.id==='eric')return {guard:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='capture')return {capture:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='rescue')return {rescue:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='search')return {search:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='persuade')return {persuade:true,damage:0,hit:100,counter:0,after:t.hp};
- const guard=guardFor(s,u,t,mode),victim=guard||t,stats=strikeStats(s,u,victim,mode),canCounter=validTarget(s,victim,u,'attack')&&!counterBlocked(s,victim)&&!chargeBreaks(u,mode)&&victim.hp>stats.damage;
+ const guard=guardFor(s,u,t,mode),victim=guard||t,stats=strikeStats(s,u,victim,mode),canCounter=validTarget(s,victim,u,'attack')&&!counterBlocked(s,victim)&&!chargeBreaks(u,mode)&&!fx(s,u,'silence')&&victim.hp>stats.damage;
  const counter=canCounter?strikeStats(s,victim,u).damage+riposteBonus(victim):0;
  return {...stats,counter,counterHit:canCounter?strikeStats(s,victim,u).hit:0,after:Math.max(0,victim.hp-stats.damage),guard:guard?.id,victim:victim.id};
 }
@@ -135,7 +141,7 @@ export function forecast(s,u,t,mode='attack'){
 // no level and keep the v0.3.x flat EXP exactly.
 export function xpScale(s,u){const lv=missionOf(s)?.level;if(!lv)return 1;const over=u.level-(lv+2),under=(lv-2)-u.level;return over>0?Math.max(0.2,1-0.2*over):under>0?Math.min(1.6,1+0.2*under):1;}
 export function awardXP(s,u,amount,reason){
- if(u.team!=='ally'||!amount)return;amount=Math.max(1,Math.round(amount*xpScale(s,u)));
+ if(u.team!=='ally'||!amount)return;amount=Math.max(1,Math.round(amount*xpScale(s,u)*(1+fx(s,u,'sage')/100))); // v0.8.1 Sage Notebook
  u.xp+=amount;u.earnedXP+=amount;u.highlights.push(reason);s.feedback.push({type:'xp',id:u.id,text:`+${amount} EXP`});
  let leveled=false;while(u.xp>=BALANCE.xpLevel){leveled=true;u.xp-=BALANCE.xpLevel;u.level++;const g={...heroDef(u.id).growth};for(const [k,v]of Object.entries(classGrowth(u)))g[k]=(g[k]||0)+v;const changes={...g};for(const [stat,n] of Object.entries(g)){if(stat==='hp'){u.maxHP+=n;u.hp=Math.min(u.maxHP,u.hp+n);}else if(stat==='mp'){u.maxMP+=n;u.mp=Math.min(u.maxMP,u.mp+n);}else u[stat]+=n;}if(u.id==='eric'&&u.level>=5)u.appearanceTier=2;u.growthHistory.push({level:u.level,changes});s.feedback.push({type:'level',id:u.id,text:`LEVEL ${u.level}`,toHP:u.hp});s.log.push(`${u.name} → LV ${u.level}. 성장이 새로운 힘으로 이어집니다.`);}
  if(leveled){u.hp=u.maxHP;u.mp=u.maxMP;s.log.push(`${u.name}: 레벨업으로 HP/MP 전부 회복.`);}

@@ -19,6 +19,8 @@ modules.unshift(`const ASHEN_HUBS=${JSON.stringify(artDir('src/assets/hubs'))};`
 modules.unshift(`const ASHEN_WORLD=${JSON.stringify(artDir('src/assets/world'))};`);
 // Painted chest sheet cells (D-056): src/assets/chests/<style>_<closed|open>.webp.
 modules.unshift(`const ASHEN_CHESTS=${JSON.stringify(artDir('src/assets/chests'))};`);
+// Painted item, skill and status icons (art work pack E, D-073 Q9): src/assets/items/<id>.webp, 128×128 (scripts/import-item-art.py).
+modules.unshift(`const ASHEN_ITEMS=${JSON.stringify(artDir('src/assets/items'))};`);
 // Painted building interiors (D-056): src/assets/rooms/<room id>.webp, 12×8 tiles.
 modules.unshift(`const ASHEN_ROOMS=${JSON.stringify(artDir('src/assets/rooms'))};`);
 const script=modules.join('\n').replace(/<\/script/gi,'<\\/script');const font=fs.readFileSync(path.join(root,'src/assets/AshenUI.woff')).toString('base64');const css=`@font-face{font-family:'Ashen UI';src:url(data:font/woff;base64,${font}) format('woff');font-weight:100 900;font-display:swap;}\n`+fs.readFileSync(path.join(root,'src/ui/style.css'),'utf8').replaceAll('Arial,sans-serif',"Arial,'Ashen UI',sans-serif").replace("'Noto Serif KR',serif","'Ashen UI',serif");

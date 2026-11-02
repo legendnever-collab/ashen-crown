@@ -9,3 +9,9 @@ Product → compatible hero portraits → current equipment and effective-stat d
 
 ## v0.3.2
 Purchase requires explicit compatible hero choice before confirmation. Owner service menu separates buy/sell/upgrade. Sale of equipped gear disabled with owner label; old replaced instances remain available to sell. Existing nonce and save rollback retained.
+
+## v0.8.1 「무기」 (D-073 §6, D-076; PROPOSED numbers)
+- Four slots: weapon, armor, accessory and treasure. Instances are `{id,type,star,exp}`; the v0.3 `level` field is gone (schema 11: +1 → ★2 with 30 EXP).
+- Stars: normal gear ★1–3 (30/80 EXP), treasures ★1–5 (30/80/150/240). Weapon +2 per landed hit or heal, armor +2 per hit taken, accessory/treasure +1 for either. Growth lives on the battle's economy copy and is kept only on a victory; practice never grows gear.
+- One star adds the item's `grow` bonus (tier I: the old +1 upgrade). 단련 at the forge fills the current star (tier I 40/70, II 80/140, III 120/200 Gold, less the EXP already earned). Treasures grow by use only and cannot be sold.
+- Tier II (24, regional) and tier III (6, elite) gear, the 12 treasures and their effects: src/data/arms-v081.js, docs/v0.8.1/RELEASE_NOTES.md.

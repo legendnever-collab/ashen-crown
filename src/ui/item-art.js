@@ -28,6 +28,47 @@ const ART={
  net:R(6,6,20,2,'#b98352')+R(6,12,20,2,'#b98352')+R(6,18,20,2,'#b98352')+R(6,24,20,2,'#b98352')+R(6,6,2,20,'#b98352')+R(12,6,2,20,'#b98352')+R(18,6,2,20,'#b98352')+R(24,6,2,20,'#b98352')+R(5,25,4,4,'#55555e')+R(23,25,4,4,'#55555e'),
  caltrops:R(8,14,4,4,'#7d8790')+R(10,10,2,12,'#aab4bc')+R(6,15,10,2,'#aab4bc')+R(20,18,4,4,'#7d8790')+R(22,14,2,12,'#aab4bc')+R(18,19,10,2,'#aab4bc')+R(14,6,3,3,'#7d8790'),
  elixir:R(13,3,6,4,'#c9a24a')+R(12,7,8,3,'#f3ead0')+R(9,10,14,17,'#f3ead0')+R(10,13,12,13,'#f0c64a')+R(12,14,3,5,'#fff2b8')+R(8,9,2,2,'#fff7d0')+R(23,12,2,2,'#fff7d0'),
- gold:R(6,16,20,8,'#b8862f')+R(8,12,16,6,'#e2b24a')+R(10,9,12,5,'#f3cf6c')+R(12,10,4,2,'#fff2b8')
+ gold:R(6,16,20,8,'#b8862f')+R(8,12,16,6,'#e2b24a')+R(10,9,12,5,'#f3cf6c')+R(12,10,4,2,'#fff2b8'),
+ supplyCrate:R(6,10,20,16,'#8a5a32')+R(6,10,20,3,'#b07a45')+R(6,17,20,2,'#5a3a20')+R(15,10,2,16,'#5a3a20')+R(9,6,14,4,'#c9a24a')
 };
-export function itemIcon(type,size=32){return `<svg class="item-icon" viewBox="0 0 32 32" width="${size}" height="${size}" shape-rendering="crispEdges" aria-hidden="true">${ART[type]||ART.potion}</svg>`;}
+// v0.8.1 temporary icons (D-073): shapes by kind, tinted by the town that makes them (steel for Ironhold, green and brass for
+// Velmar, red and cream for the Sacred Flame, gold for elite pieces). Replaced by art work pack E; never final art.
+const SHAPE={
+ sword:(a,b,c)=>R(14,3,4,18,a)+R(15,3,1,18,'#ffffff')+R(9,20,14,3,c)+R(14,23,4,6,b),
+ great:(a,b,c)=>R(13,2,6,20,a)+R(14,2,1,20,'#ffffff')+R(7,21,18,3,c)+R(14,24,4,6,b),
+ lance:(a,b,c)=>R(15,2,2,26,b)+R(13,2,6,6,a)+R(14,1,4,2,'#ffffff')+R(12,18,8,3,c),
+ bow:(a,b,c)=>R(8,3,3,26,b)+R(10,5,2,22,a)+R(21,3,1,26,'#f3ead0')+R(11,3,10,1,'#f3ead0')+R(11,28,10,1,'#f3ead0')+R(9,14,3,4,c),
+ crossbow:(a,b,c)=>R(6,12,20,3,a)+R(14,8,4,18,b)+R(6,10,2,7,c)+R(24,10,2,7,c)+R(15,26,2,3,c),
+ staff:(a,b,c)=>R(15,9,3,21,b)+R(12,2,9,8,a)+R(14,3,5,6,'#ffffff')+R(11,9,11,2,c),
+ tome:(a,b,c)=>R(8,6,16,20,a)+R(10,8,12,16,b)+R(14,12,4,8,c)+R(8,6,2,20,c),
+ mace:(a,b,c)=>R(15,12,3,18,b)+R(11,3,11,10,a)+R(13,5,7,6,'#ffffff')+R(12,24,9,2,c),
+ dagger:(a,b,c)=>R(15,4,3,15,a)+R(16,4,1,15,'#ffffff')+R(12,18,9,2,c)+R(15,20,3,7,b),
+ twin:(a,b,c)=>R(7,5,3,14,a)+R(5,18,7,2,c)+R(7,20,3,6,b)+R(22,7,3,14,a)+R(20,20,7,2,c)+R(22,22,3,6,b),
+ shield:(a,b,c)=>R(7,4,18,20,a)+R(9,6,14,16,b)+R(9,24,14,3,a)+R(12,27,8,2,a)+R(15,6,2,20,c)+R(9,13,14,2,c),
+ plate:(a,b,c)=>R(8,5,16,20,a)+R(10,7,12,16,b)+R(6,6,4,6,a)+R(22,6,4,6,a)+R(15,7,2,16,c)+R(10,25,12,3,a),
+ cloak:(a,b,c)=>R(9,5,14,4,a)+R(7,9,18,18,a)+R(9,11,14,15,b)+R(15,9,2,18,a)+R(13,6,6,3,c),
+ gauntlet:(a,b,c)=>R(9,8,12,14,a)+R(10,4,3,6,b)+R(13,3,3,7,b)+R(16,4,3,6,b)+R(9,22,12,5,c),
+ charm:(a,b,c)=>R(15,2,2,7,c)+R(10,9,12,12,a)+R(12,11,8,8,b)+R(14,13,3,3,'#ffffff')+R(14,21,4,6,c),
+ coin:(a,b,c)=>R(8,8,16,16,c)+R(10,10,12,12,a)+R(13,12,6,8,b)+R(14,14,2,2,'#ffffff'),
+ band:(a,b,c)=>R(8,12,16,8,a)+R(10,14,12,4,b)+R(14,10,4,12,c),
+ pouch:(a,b,c)=>R(9,12,14,15,a)+R(11,14,10,11,b)+R(12,8,8,5,c)+R(15,4,2,5,'#7fb85a'),
+ feather:(a,b,c)=>R(14,3,4,22,a)+R(11,6,4,16,b)+R(18,8,4,14,b)+R(15,22,2,8,c),
+ book:(a,b,c)=>R(7,7,18,18,a)+R(9,9,14,14,b)+R(9,13,14,1,c)+R(9,17,14,1,c),
+ horseshoe:(a,b,c)=>R(8,6,4,18,a)+R(20,6,4,18,a)+R(8,22,16,4,a)+R(9,8,2,2,c)+R(21,8,2,2,c)+R(11,23,10,2,b),
+ reliquary:(a,b,c)=>R(10,10,12,16,c)+R(12,12,8,12,a)+R(14,4,4,7,b)+R(15,2,2,3,'#fff2b8'),
+ ring:(a,b,c)=>R(8,12,16,12,c)+R(11,15,10,6,'#00000000')+R(12,6,8,7,a)+R(14,8,4,3,b),
+ epaulette:(a,b,c)=>R(6,10,20,8,a)+R(8,12,16,4,b)+R(6,18,2,8,c)+R(11,18,2,8,c)+R(16,18,2,8,c)+R(21,18,2,8,c),
+ seal:(a,b,c)=>R(9,6,14,8,a)+R(13,14,6,6,b)+R(8,20,16,8,c)+R(11,22,10,4,a)
+};
+const TINT={castletown:['#aebdc6','#5f6f7a','#c9a24a'],velmar:['#9cc77a','#5a6b3a','#e2b24a'],pilgrim:['#e2584a','#efe2c4','#e7c35f'],elite:['#f3cf6c','#8a5a32','#ffffff'],treasure:['#c9a4f0','#6fa04a','#e7c35f']};
+const SHAPE_OF={steelGreatsword:'great',knightLance:'lance',ironwoodBow:'bow',plateCuirass:'plate',towerShield:'shield',lancerMail:'plate',steelGauntlets:'gauntlet',runeforgedBlade:'great',
+ twinSabers:'twin',repeatingCrossbow:'crossbow',emberRod:'staff',shadowStiletto:'dagger',merchantCoat:'cloak',luckyCoin:'coin',windCharm:'charm',duelistRapier:'sword',
+ flameStaff:'staff',pilgrimMace:'mace',pilgrimMantle:'cloak',sanctumTome:'tome',wardenShield:'shield',chrismCharm:'charm',votiveBand:'band',cathedralStaff:'staff',
+ crownGuardLance:'lance',crownGuardShield:'shield',leagueSaber:'sword',leagueLongbow:'bow',paladinMace:'mace',flameVestment:'cloak',
+ herbPouch:'pouch',hawkFeather:'feather',sageNotebook:'book',windHorseshoe:'horseshoe',twinDaggers:'twin',silenceShield:'shield',mirrorCuirass:'plate',clearCharm:'charm',flameReliquary:'reliquary',manaRing:'ring',lionEpaulette:'epaulette',allianceSeal:'seal'};
+const ELITE=['crownGuardLance','crownGuardShield','leagueSaber','leagueLongbow','paladinMace','flameVestment'],HOME_OF=id=>['steelGreatsword','knightLance','ironwoodBow','plateCuirass','towerShield','lancerMail','steelGauntlets','runeforgedBlade'].includes(id)?'castletown':['twinSabers','repeatingCrossbow','emberRod','shadowStiletto','merchantCoat','luckyCoin','windCharm','duelistRapier'].includes(id)?'velmar':'pilgrim';
+for(const [id,shape] of Object.entries(SHAPE_OF)){const tint=TINT[ELITE.includes(id)?'elite':SHAPE_OF[id]&&['pouch','feather','book','horseshoe','reliquary','ring','epaulette','seal'].includes(shape)||['twinDaggers','silenceShield','mirrorCuirass','clearCharm'].includes(id)?'treasure':HOME_OF(id)];ART[id]=SHAPE[shape](...tint);}
+// Art work pack E (when imported): a painted 128-px icon replaces the temporary SVG of the same id.
+const PAINTED_ITEMS=typeof ASHEN_ITEMS!=='undefined'?ASHEN_ITEMS:{};
+export const paintedItem=type=>!!PAINTED_ITEMS[type];
+export function itemIcon(type,size=32){if(PAINTED_ITEMS[type])return `<img class="item-icon painted" src="${PAINTED_ITEMS[type]}" width="${size}" height="${size}" alt="" aria-hidden="true" decoding="async">`;return `<svg class="item-icon" viewBox="0 0 32 32" width="${size}" height="${size}" shape-rendering="crispEdges" aria-hidden="true">${ART[type]||ART.potion}</svg>`;}

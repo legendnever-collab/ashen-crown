@@ -5,7 +5,7 @@ import {launchTestBrowser} from './browser-helper.mjs';import {pathToFileURL} fr
 import {serialize} from '../src/persistence/save-manager.js';import {newGame,startBattle} from '../src/core/game.js';import {enterHub} from '../src/core/frontier.js';import {HUBS} from '../src/data/frontier-data.js';
 import {drain,playCampaignBattle} from './campaign-policy.mjs';import {drainStory} from './story-helper.mjs';
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const results=[];const check=(name,ok)=>{assert.ok(ok,name);n++;results.push(name);console.log('PASS',name);};
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.8.0.html').href;fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.8.1.html').href;fs.mkdirSync('test-output',{recursive:true});
 // M03 won, still on the result screen, legion last stood in the Border Camp.
 function m3Won(){const s=newGame(20261020,{heroes:null,results:[],clears:2,completed:[1,2],flags:{mission_01_completed:true},tacticalMemory:{}},3);enterHub(s,{story:false});drain(s);s.screen='deployment';startBattle(s);playCampaignBattle(s,true);return s;}
 function bivouac(near=false){const s=newGame(20261021,{heroes:null,results:[],clears:3,completed:[1,2,3],flags:{mission_01_completed:true},tacticalMemory:{}},4);enterHub(s,{story:false});drain(s);if(near){s.frontier.x=9;s.frontier.y=8;s.campaign.frontier=structuredClone(s.frontier);}return s;}
@@ -40,7 +40,7 @@ try{for(const [w,h,touch] of [[1440,900,false],[390,844,true]]){
  await press('shop-owner');await press('stall-service','weapon|buy');check(`${label} the same merchant sells weapons`,(await p.locator('#modal-root').textContent()).includes('BLACKSMITH'));
  await press('close-modal');check(`${label} no shop interior was entered`,!(await snap()).frontier.interior);
  // 4. Menu world map (read-only).
- await press('menu');await press('world-map');await p.waitForTimeout(600);check(`${label} menu opens the world map`,await p.locator('#world-view').count()===1);await press('close-modal');
+ await press('menu');/* v0.8.1: the hub bar also has a world-map button (revisits); use the one in the menu */await p.locator('#modal-root [data-do="world-map"]').first().click();await p.waitForTimeout(600);check(`${label} menu opens the world map`,await p.locator('#world-view').count()===1);await press('close-modal');
  check(`${label} no horizontal overflow`,await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
  check(`${label} no runtime errors`,errors.length===0);await ctx.close();
 }console.log(`${n} world checks PASS`);

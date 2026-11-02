@@ -1,18 +1,23 @@
 // Original local scenes/NPC details are PROPOSED content within approved chronology.
 import {ART_HUBS} from './hubs-v05.js';
+import {GEAR_V081,TREASURES,GEAR_I_GROW} from './arms-v081.js';
+// v0.3 tier I gear (ids, prices, bonuses unchanged). v0.8.1: Korean names; one star (★2) equals the old +1 upgrade.
 export const GEAR={
- ironBlade:{name:'Tempered Sword',icon:'⚔',slot:'weapon',heroes:['eric'],price:65,bonus:{atk:2},upgrade:{atk:1},description:'에릭의 전열 유지 · ATK +2'},
- huntingBow:{name:'Hunting Bow',icon:'➶',slot:'weapon',heroes:['elina'],price:65,bonus:{hit:8},upgrade:{atk:1},description:'엘리나의 안정적인 사격 · HIT +8'},
- longbow:{name:'Longbow',icon:'➶',slot:'weapon',heroes:['elina'],price:80,bonus:{atk:2},upgrade:{hit:4},description:'사거리는 유지하고 위력을 높임 · ATK +2'},
- crystalStaff:{name:'Crystal Staff',icon:'✦',slot:'weapon',heroes:['lia'],price:70,bonus:{mag:2},upgrade:{mag:1},description:'리아의 Fire Bolt · MAG +2'},
- mercyStaff:{name:'Mercy Staff',icon:'✧',slot:'weapon',heroes:['sain'],price:65,bonus:{mag:2},upgrade:{res:1},description:'세인의 치유 · MAG +2'},
- daggers:{name:'Balanced Daggers',icon:'⚔',slot:'weapon',heroes:['kai'],price:65,bonus:{atk:1,spd:1},upgrade:{atk:1},description:'카이의 우회 공격 · ATK/SPD +1'},
- heavyShield:{name:'Heavy Shield',icon:'▣',slot:'armor',heroes:['eric'],price:70,bonus:{def:2},upgrade:{res:1},description:'전열과 Guard의 생존력 · DEF +2'},
- lightShield:{name:'Light Shield',icon:'◇',slot:'armor',heroes:['eric'],price:75,bonus:{mov:1},upgrade:{def:1},description:'에릭의 기동성 · MOV +1'},
- travelCloak:{name:'Travel Cloak',icon:'♜',slot:'armor',heroes:['elina','lia','sain','kai'],price:55,bonus:{res:2},upgrade:{def:1},description:'가벼운 보호 · RES +2'},
- trailBoots:{name:'Trail Boots',icon:'⌁',slot:'accessory',heroes:['eric','elina','lia','sain','kai'],price:85,bonus:{mov:1},upgrade:{res:1},description:'구조와 우회에 유용 · MOV +1'},
- focusCharm:{name:'Focus Charm',icon:'✦',slot:'accessory',heroes:['eric','elina','lia','sain','kai'],price:45,bonus:{res:1},upgrade:{def:1},description:'신중한 대비 · RES +1'}
+ ironBlade:{name:'단련된 검',en:'Tempered Sword',icon:'⚔',slot:'weapon',heroes:['eric'],price:65,bonus:{atk:2},description:'에릭의 전열 유지 · ATK +2'},
+ huntingBow:{name:'사냥 활',en:'Hunting Bow',icon:'➶',slot:'weapon',heroes:['elina'],price:65,bonus:{hit:8},description:'엘리나의 안정적인 사격 · HIT +8'},
+ longbow:{name:'장궁',en:'Longbow',icon:'➶',slot:'weapon',heroes:['elina'],price:80,bonus:{atk:2},description:'사거리는 유지하고 위력을 높임 · ATK +2'},
+ crystalStaff:{name:'수정 지팡이',en:'Crystal Staff',icon:'✦',slot:'weapon',heroes:['lia'],price:70,bonus:{mag:2},description:'리아의 화염탄 · MAG +2'},
+ mercyStaff:{name:'자비의 지팡이',en:'Mercy Staff',icon:'✧',slot:'weapon',heroes:['sain'],price:65,bonus:{mag:2},description:'세인의 치유 · MAG +2'},
+ daggers:{name:'균형 단검',en:'Balanced Daggers',icon:'⚔',slot:'weapon',heroes:['kai'],price:65,bonus:{atk:1,spd:1},description:'카이의 우회 공격 · ATK/SPD +1'},
+ heavyShield:{name:'중방패',en:'Heavy Shield',icon:'▣',slot:'armor',heroes:['eric'],price:70,bonus:{def:2},description:'전열과 수호의 생존력 · DEF +2'},
+ lightShield:{name:'경방패',en:'Light Shield',icon:'◇',slot:'armor',heroes:['eric'],price:75,bonus:{mov:1},description:'에릭의 기동성 · MOV +1'},
+ travelCloak:{name:'여행 망토',en:'Travel Cloak',icon:'♜',slot:'armor',heroes:['elina','lia','sain','kai'],price:55,bonus:{res:2},description:'가벼운 보호 · RES +2'},
+ trailBoots:{name:'행군 장화',en:'Trail Boots',icon:'⌁',slot:'accessory',heroes:['eric','elina','lia','sain','kai'],price:85,bonus:{mov:1},description:'구조와 우회에 유용 · MOV +1'},
+ focusCharm:{name:'집중의 부적',en:'Focus Charm',icon:'✦',slot:'accessory',heroes:['eric','elina','lia','sain','kai'],price:45,bonus:{res:1},description:'신중한 대비 · RES +1'}
 };
+for(const [id,g] of Object.entries(GEAR))Object.assign(g,{tier:1,grow:GEAR_I_GROW[id],upgrade:GEAR_I_GROW[id]});
+// v0.8.1 (D-073 §6): regional and elite gear (tiers II–III) and the twelve treasures (slot 'treasure', never sold).
+Object.assign(GEAR,GEAR_V081,TREASURES);
 // v0.8.0 (D-073 Q4; PROPOSED): 13 tools. Recovery, cure and buff tools work on the user or an adjacent ally; throwables
 // fly 2–3 tiles (three per battle). `unlock` = the mission whose clear first puts the tool on sale (0: from the start;
 // null: never sold). Specialty tools are first sold in their home town and from then on by every quartermaster.
