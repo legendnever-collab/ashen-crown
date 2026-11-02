@@ -40,7 +40,7 @@ try{for(const [w,h,touch] of [[1440,900,false],[390,844,true]]){
  await press('shop-owner');await press('stall-service','weapon|buy');check(`${label} the same merchant sells weapons`,(await p.locator('#modal-root').textContent()).includes('BLACKSMITH'));
  await press('close-modal');check(`${label} no shop interior was entered`,!(await snap()).frontier.interior);
  // 4. Menu world map (read-only).
- await press('menu');await press('world-map');await p.waitForTimeout(600);check(`${label} menu opens the world map`,await p.locator('#world-view').count()===1);await press('close-modal');
+ await press('menu');/* v0.8.1: the hub bar also has a world-map button (revisits); use the one in the menu */await p.locator('#modal-root [data-do="world-map"]').first().click();await p.waitForTimeout(600);check(`${label} menu opens the world map`,await p.locator('#world-view').count()===1);await press('close-modal');
  check(`${label} no horizontal overflow`,await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
  check(`${label} no runtime errors`,errors.length===0);await ctx.close();
 }console.log(`${n} world checks PASS`);

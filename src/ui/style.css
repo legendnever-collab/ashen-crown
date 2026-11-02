@@ -340,3 +340,4 @@
 .cutin p{font:600 20px/1.4 'Ashen UI',Georgia,serif;color:#f6ebc9}.cutin p b{display:block;font-size:13px;color:var(--gold);letter-spacing:.08em}
 @keyframes cutin-in{0%{opacity:0;transform:translateX(-12%)}12%{opacity:1;transform:none}82%{opacity:1}100%{opacity:0}}
 @media (max-width:600px){.cutin{top:28%}.cutin-face,.cutin-face canvas,.cutin-face img{width:64px;height:64px}.cutin p{font-size:16px}}
+.feat-mark{color:#c9a4f0;font-size:11px;margin-left:6px}

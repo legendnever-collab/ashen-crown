@@ -30,8 +30,8 @@ const ARMS_SALE={
  crownGuardLance:['castletown','trust'],crownGuardShield:['castletown','trust'],leagueSaber:['velmar','trust'],leagueLongbow:['velmar','trust'],paladinMace:['pilgrim','trust'],flameVestment:['pilgrim','trust']
 };
 export const TOWN_HOME=ARMS_HOME;
-const ARMS_STAT_KO={atk:'ATK',def:'DEF',mag:'MAG',res:'RES',spd:'SPD',mov:'MOV',hit:'HIT',crit:'치명',dodge:'회피',heal:'치유',chargeDmg:'돌격 피해',rangedCut:'원거리 피해 감소',resist:'상태이상 확률 감소'};
-export const statText=b=>Object.entries(b).map(([k,v])=>k==='poisonImmune'?'독 면역':`${ARMS_STAT_KO[k]||k.toUpperCase()} ${v<0?'−':'+'}${Math.abs(v)}${k==='resist'?'%':''}`).join(' · ');
+const ARMS_STAT_KO={atk:'ATK',def:'DEF',mag:'MAG',res:'RES',spd:'SPD',mov:'MOV',hit:'HIT',crit:'치명',dodge:'회피',heal:'치유',chargeDmg:'돌격 피해'};
+export const statText=b=>Object.entries(b).map(([k,v])=>k==='poisonImmune'?'독 면역':k==='rangedCut'?`원거리 피해 −${v}`:k==='resist'?`상태이상 확률 −${v}%`:`${ARMS_STAT_KO[k]||k.toUpperCase()} ${v<0?'−':'+'}${Math.abs(v)}`).join(' · ');
 // v0.8.1 gear table entries (merged into frontier-data GEAR).
 export const GEAR_V081=Object.fromEntries(CATALOG_GEAR.filter(c=>c.tier>1).map(c=>{const [bonus,grow]=ARMS_STATS[c.id],[home,rule]=ARMS_SALE[c.id];
  return [c.id,{name:c.ko,en:c.en,icon:c.slot==='weapon'?'⚔':c.slot==='armor'?'▣':'✦',slot:c.slot,heroes:c.heroes,price:c.price,bonus,grow,tier:c.tier,home,after:typeof rule==='number'?rule:null,premium:rule==='premium',trust:rule==='trust'?ARMS_HOME[home].trust:null,description:statText(bonus)}];}));
@@ -58,8 +58,8 @@ export const FEATS={
  4:featDef(4,'sageNotebook','봉인 메모와 이송 명령서를 모두 찾고 TURN 10 안에 이긴다',(s,bf)=>!!bf.mission_04_seal_notes&&!!bf.mission_04_transfer_orders&&s.turn<=10),
  5:featDef(5,'windHorseshoe','사자 대형을 무너뜨리고 보급 마차 2대를 모두 지킨다',(s,bf)=>bf.mission_05_baldrick_withdrew==='broken'&&bf.mission_05_wagons_saved===2),
  6:featDef(6,'twinDaggers','봉화를 부수고 아무도 쓰러지지 않는다',(s,bf,fell)=>!!bf.mission_06_beacon_destroyed&&!fell),
- 7:featDef(7,'silenceShield','마차 3대가 모두 성문에 닿고 아무도 쓰러지지 않는다',(s,bf,fell)=>bf.mission_07_wagons_through===3&&!fell),
- 8:featDef(8,'mirrorCuirass','용병단장을 쓰러뜨리고 주민 3명을 모두 지킨다',(s,bf)=>!!bf.mission_08_captain_defeated&&bf.mission_08_villagers_saved===3),
+ 7:featDef(7,'silenceShield','마차 3대를 모두 지키고 아무도 쓰러지지 않는다',(s,bf,fell)=>bf.mission_07_wagons_intact===3&&!fell),
+ 8:featDef(8,'mirrorCuirass','구출 명령으로 주민 3명을 모두 구하고 용병단장을 쓰러뜨린다',(s,bf)=>!!bf.mission_08_captain_defeated&&bf.mission_08_villagers_saved===3),
  9:featDef(9,'elixir','자객 우두머리를 생포하고 대표 3명을 모두 피신시킨다',(s,bf)=>!!bf.mission_09_assassin_captured&&bf.mission_09_delegates_saved===3),
  10:featDef(10,'clearCharm','TURN 8 안에 전쟁을 끝낸다',(s)=>s.turn<=8),
  11:featDef(11,'flameReliquary','화로 3개를 모두 밝히고 순례자 4명이 모두 성소에 닿는다',(s,bf)=>bf.mission_11_braziers===3&&bf.mission_11_arrived===4),

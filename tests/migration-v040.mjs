@@ -1,6 +1,6 @@
 // Browser migration (v0.5.0 Phase G): saves made by the actually shipped v0.4.0 HTML and by the
 // v0.4.0 source (tests/fixtures/v040) open in v0.5.0 through the visible backup dialog.
-import {launchTestBrowser} from './browser-helper.mjs';import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {pathToFileURL} from 'node:url';import {drainStory} from './story-helper.mjs';
+import {launchTestBrowser} from './browser-helper.mjs';import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {pathToFileURL} from 'node:url';import {drainStory} from './story-helper.mjs';import {arms081View} from '../src/persistence/save-manager.js';
 // v0.6 (D-060): names were rewritten in Hangul; compare saves without the display name.
 const nmStrip=a=>(a||[]).map(({name,...u})=>u);
 const browser=await launchTestBrowser({headless:true,args:['--no-sandbox','--disable-gpu']}),checks=[],errors=[];const check=(name,ok)=>{assert.ok(ok,name);checks.push({name,status:'PASS'});console.log('PASS',name);};
@@ -19,11 +19,11 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  await restore(villageText);let s=await snapshot(p);
  check('v0.4.0 village save opens in the painted village (schema 10, gold kept, legal position)',s.schema===11&&s.screen==='exploration'&&s.frontier.hub==='village'&&s.economy.gold===village.economy.gold&&JSON.stringify(nmStrip(s.campaign.heroes))===JSON.stringify(nmStrip(village.campaign.heroes)));
  check('Imported village save does not replay the world-map intro',!s.narrative.active?.key?.startsWith('world:'));
- await restore(battleText);s=await snapshot(p);check('v0.4.0 battle and its checkpoint migrate unchanged',s.screen==='battle'&&s.stageStart.schema===11&&JSON.stringify(nmStrip(s.units))===JSON.stringify(nmStrip(battle.units))&&JSON.stringify(s.economy)===JSON.stringify(battle.economy));
+ await restore(battleText);s=await snapshot(p);check('v0.4.0 battle and its checkpoint migrate unchanged',s.screen==='battle'&&s.stageStart.schema===11&&JSON.stringify(nmStrip(s.units))===JSON.stringify(nmStrip(battle.units))&&JSON.stringify(s.economy)===JSON.stringify(arms081View(battle.economy)));
  await cmd(p,'menu');await cmd(p,'restart-stage');await cmd(p,'confirm-restart-stage');await p.waitForFunction(()=>!AshenCrown.view().busy);s=await snapshot(p);check('Restart of a migrated v0.4.0 battle works',s.screen==='battle'&&s.turn===1);
  // 3. Source-built fixtures: ACT I complete camp (Border Camp in v0.4.0) and a mid-M05 battle.
  const done=fixture('act1-complete'),before=JSON.parse(JSON.parse(done.save).data);await restore(done.save);s=await snapshot(p);
- check('ACT I complete save moves into the oath camp with every asset kept',s.schema===11&&s.frontier.hub==='oathcamp'&&s.frontier.phase==='aftermath'&&JSON.stringify(s.campaign.economy)===JSON.stringify(before.campaign.economy)&&s.campaign.completed.join()===before.campaign.completed.join());
+ check('ACT I complete save moves into the oath camp with every asset kept',s.schema===11&&s.frontier.hub==='oathcamp'&&s.frontier.phase==='aftermath'&&JSON.stringify(s.campaign.economy)===JSON.stringify(arms081View(before.campaign.economy))&&s.campaign.completed.join()===before.campaign.completed.join());
  // This v0.4.0 save stopped before the Ashen Oath choice: make it, close the ACT I card, then the rite opens.
  if(await p.locator('[data-do="oath-pick"]').count()){await cmd(p,'oath-pick','people');await drainStory(p);}for(let i=0;i<3&&await p.locator('#modal-root .modal').count();i++){await cmd(p,'close-modal');await drainStory(p);}
  check('Aren\'s rite panel is offered in the oath camp',await p.locator('[data-do="legion"]').count()===1);await cmd(p,'legion');check('Rite panel lists five heroes with conditions',await p.locator('.legion-row').count()===5);await cmd(p,'close-modal');

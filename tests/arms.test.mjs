@@ -120,6 +120,14 @@ test('hidden objectives read this battle only: M02 capture without a fall gives 
  const u=newGame(3,camp({completed:[1],flags:{mission_02_prisoner_captured:true}}),2);u.screen='deployment';startBattle(u);drain(u);findUnit(u,'boss').hp=0;checkOutcome(u);assert.ok(!u.campaign.feats?.includes(2),'a flag from an earlier run does not count');
 });
 
+test('every hidden objective reads flags its mission records, and none needs more than the victory allows (M07 ends when 2 wagons pass)',async()=>{
+ const fs=await import('node:fs');const rules=fs.readdirSync('src/core').filter(f=>f.endsWith('.js')).map(f=>fs.readFileSync(`src/core/${f}`,'utf8')).join('\n');
+ for(const f of Object.values(FEATS))for(const [,flag] of String(f.test).matchAll(/bf\.(mission_\w+)/g))assert.ok(rules.includes(`'${flag}'`),`M${f.missionId} reads ${flag}, which no mission rule records`);
+ assert.equal(FEATS[7].test({},{mission_07_wagons_through:2,mission_07_wagons_intact:3},false),true,'all three wagons kept, two through the gate, nobody fell');
+ assert.equal(FEATS[7].test({},{mission_07_wagons_through:2,mission_07_wagons_intact:2},false),false);
+ assert.equal(FEATS[7].test({},{mission_07_wagons_through:2,mission_07_wagons_intact:3},true),false);
+});
+
 test('supply carriers: one per mission, marked on the map; defeating it drops its tool into the bag (none when full)',()=>{
  for(let id=1;id<=14;id++){const [carrier,tool]=SUPPLY[id];assert.ok(MISSIONS[id].enemies.some(e=>e.id===carrier),`M${id} ${carrier}`);assert.ok(TOOLS[tool]);const s=newGame(2,camp({completed:upTo(id-1)}),id);assert.equal(findUnit(s,carrier).carrier,tool);}
  let dropped=0;for(let seed=1;seed<20&&!dropped;seed++){const s=board();s.rng=seed*977>>>0;const eric=findUnit(s,'eric');place(eric,5,6);const c=wake(s,'b3',5,5,{hp:1});const before=s.economy.items.herb||0;performAction(s,'eric','attack','b3');if(!alive(c)){dropped++;assert.equal(s.economy.items.herb,before+1);assert.ok(s.feedback.some(f=>f.type==='drop'));assert.equal(c.carrier,undefined);}}
