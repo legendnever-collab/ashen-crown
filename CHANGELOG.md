@@ -3,9 +3,10 @@
 - Shelves (src/core/arms.js, src/data/arms-v081.js): tier I everywhere; 24 regional tier II pieces sold only in their town and unlocked by its missions (locked ones shown with what opens them); a premium piece per town from the first visit; six elite pieces at faction trust 2; Velmar's rare-goods shelf (another town's specialty, +25%, turned by each clear). Recruits get their first gear.
 - Revisits: the world map lists the towns passed (잿빛 마을, 철관성 성하 마을, 벨마르, 순례자 마을); travel is free; shops, forge and townsfolk only; the story continues in the camp.
 - Gear stars: ★1–3 (treasures ★1–5) from strikes, heals and blows; kept on a victory only; 단련 replaces the +1 upgrade (a +1 is ★2 with the same numbers); four slots with the treasure slot; gear limit 30.
-- Treasures and hidden objectives: one 숨은 전과 per mission (Lia's hint, mission list marks), twelve treasures and two Elixirs; a cleared mission's practice wins it once.
+- Treasures and hidden objectives: one 숨은 전과 per mission (Lia's hint, mission list marks), twelve treasures and two Elixirs; a cleared mission's practice wins it once. M07 asks for all three wagons kept (the mission ends once two pass the gate).
 - Supply carriers (one per battle, 보 chip) drop a tool; cut-ins for heroes' critical hits and ③ skills.
 - Saves: schema 11 imports 0–10; real v0.8.0 saves verified (shipped HTML and source fixtures). Art pack E importer (scripts/import-item-art.py); temporary icons until the art arrives.
+- Forge shelf headings span the whole row of the two-column grid.
 - Tests: arms and migration-v080 unit suites, arms and migration-v080 browser suites; the ACT II balance run records the hidden objectives the policy wins.
 
 # v0.8.0 — Tactics · three skills, status effects, tools, matchups (merge approved by the user, 2026-11-01)
