@@ -1,5 +1,5 @@
 # Next Tasks
-1. v0.8.1 「무기」 release candidate (D-076): the user plays it; merge only on approval. Then record the merge SHA and main CI in docs/v0.8.1/RELEASE_NOTES.md. Tags and GitHub Releases only when the user asks.
+1. v0.8.1 merged (PR #17, D-077): record the merge SHA and the main CI run in docs/v0.8.1/RELEASE_NOTES.md at the start of the next branch. Tags and GitHub Releases only when the user asks.
 2. Art work pack E (102 icons): the user returns it after 2026-11-04 (ChatGPT limit); verify and import with `python3 scripts/import-item-art.py <zip>` (src/assets/items, 128-px WebP; the build embeds them and itemIcon prefers them), check the QA log, rebuild and rerun the browser suites; never label the temporary icons finished.
 3. Play-test watch items for v0.8.1: hidden-objective difficulty (policy rates in test-output/act2-balance.json featRate), treasure power (Twin Daggers, Shield of Silence, Wind Horseshoe), town prices and unlock pacing, how often players revisit.
 4. Next on the user's instruction: ACT III 「왕관의 진실」 design (M15–M22), returning recruits who left after M14, awakening (Tier 3).

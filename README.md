@@ -1,7 +1,7 @@
 # Ashen Crown v0.8.1 — Arms (무기)
 ACT I (Missions 01–06 of the original four-act, 30-mission campaign) with promotions, and all of ACT II 「세 개의 깃발」: Missions 07–14. v0.8 raises the game before ACT III (D-073, benchmarking 삼국지 조조전). v0.8.0 「전술」 gave every hero three skills, four status effects, thrown and shared tools and class matchups. v0.8.1 「무기」 adds the arms: each town sells its own gear (Ironhold's castle town, Velmar, the pilgrim village; locked pieces show what opens them, a premium piece from the first visit, elite gear at faction trust 2, Velmar's rare-goods shelf), the towns passed can be revisited from the world map, gear grows by use (★1–3, treasures ★1–5) and the forge's 단련 fills a star, every mission has a hidden objective (숨은 전과) that wins one of twelve treasures (a fourth equipment slot), one enemy per battle carries supplies, and critical hits and ③ skills show a cut-in.
 
-**v0.8.1 is a release candidate: not merged before the user plays and approves it.** v0.8.0 was merged on 2026-11-01 (D-075, PR #16 → 7b8b2e8). Earlier features are included and preserved. Next: ACT III 「왕관의 진실」 on the user's instruction.
+**v0.8.1 was approved by the user on 2026-11-03 (D-077) and merged via PR #17.** v0.8.0 was merged on 2026-11-01 (D-075, PR #16 → 7b8b2e8). The item art (pack E) is not in yet: new gear and treasures use temporary icons. Earlier features are included and preserved. Next: ACT III 「왕관의 진실」 on the user's instruction.
 
 - [Standalone HTML](releases/Ashen_Crown_v0.8.1.html)
 - [Source ZIP](releases/Ashen_Crown_v0.8.1_Source.zip)

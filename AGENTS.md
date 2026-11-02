@@ -17,8 +17,8 @@
 작업 단계별 커밋. npm test, balance, browser regression, campaign E2E, migration, offline, documentation audit. 실제 검증만 완료 표시. 모든 PR의 documentation checklist: README, CHANGELOG, CURRENT_STATUS, NEXT_TASKS, ROADMAP, Story Bible review, Decision Log review, tests/evidence, artifacts.
 
 
-## Current v0.8.1 entry (release candidate)
-v0.8.1 「무기」 (D-076, within D-073 §6) on feature/v0.8.1-arms: regional and elite gear with town shelves and Velmar's rare-goods shelf, revisiting towns from the world map (frontier.revisit), gear stars and 단련, a treasure slot and twelve treasures, one hidden objective per mission (s.battleFlags, campaign.feats; practice wins it once), supply carriers, cut-ins. Code: src/core/arms.js, src/data/arms-v081.js. Schema 11 imports 0–10 (+1 → ★2). Art work pack E is imported with scripts/import-item-art.py when the user returns it (src/assets/items); until then temporary icons. Never merge before the user plays and approves the release candidate.
+## Current v0.8.1 entry (merged)
+v0.8.1 「무기」 (D-076, within D-073 §6) on feature/v0.8.1-arms: regional and elite gear with town shelves and Velmar's rare-goods shelf, revisiting towns from the world map (frontier.revisit), gear stars and 단련, a treasure slot and twelve treasures, one hidden objective per mission (s.battleFlags, campaign.feats; practice wins it once), supply carriers, cut-ins. Code: src/core/arms.js, src/data/arms-v081.js. Schema 11 imports 0–10 (+1 → ★2). Art work pack E is imported with scripts/import-item-art.py when the user returns it (src/assets/items); until then temporary icons. Approved by the user on 2026-11-03 (D-077) and merged via PR #17 with the temporary icons. Never merge a release candidate before the user plays and approves it. Next: ACT III and awakening only on the user's instruction.
 
 ## Current v0.8 entry (v0.8.0 merged)
 v0.8.0 「전술」 (D-074) was approved on 2026-11-01 (D-075) and merged via PR #16: skills.js / tactics.js / status.js, schema 10 (imports 0–9). v0.8.1 「무기」 next on the user's instruction; never merge a release candidate before the user plays and approves it.

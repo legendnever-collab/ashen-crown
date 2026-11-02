@@ -1,5 +1,5 @@
 # Ashen Crown v0.8.1 — Arms (무기) / QA Report
-Updated 2026-11-03 KST. **Release candidate — not merged before the user plays and approves it.** Started on the user's instruction in chat on 2026-11-02 07:08 KST ("그다음 버전 진행해줘"); design D-073 §6 (Q5/Q6, approved 2026-10-28), implementation details D-076.
+Updated 2026-11-03 KST. The user approved the merge in chat on 2026-11-03 07:56 KST ("병합 진행해 주고", D-077). Hosted CI on PR #17 head 3dfa1f9: run 41470788485, 7/7 on attempt 1. Art pack E has not come back yet; the merge keeps the temporary icons. Started on the user's instruction in chat on 2026-11-02 07:08 KST ("그다음 버전 진행해줘"); design D-073 §6 (Q5/Q6, approved 2026-10-28), implementation details D-076.
 
 Baseline main 7b8b2e80b003140c92b33be91a5a30cdac1c377d (v0.8.0, PR #16). Branch feature/v0.8.1-arms.
 

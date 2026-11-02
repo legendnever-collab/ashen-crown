@@ -1,5 +1,5 @@
-# v0.8.1 — Arms · regional gear, revisits, gear stars, treasures and hidden objectives (release candidate)
-- Release candidate on feature/v0.8.1-arms; not merged before the user plays and approves it. Started on the user's instruction (chat 2026-11-02 07:08 KST); design D-073 §6 (Q5/Q6), details D-076.
+# v0.8.1 — Arms · regional gear, revisits, gear stars, treasures and hidden objectives (merge approved by the user, 2026-11-03)
+- Release: the user approved the merge in chat (2026-11-03 07:56 KST, "병합 진행해 주고", D-077); PR #17 CI run 41470788485 7/7; item art pack E still pending (temporary icons). Started on the user's instruction (chat 2026-11-02 07:08 KST); design D-073 §6 (Q5/Q6), details D-076.
 - Shelves (src/core/arms.js, src/data/arms-v081.js): tier I everywhere; 24 regional tier II pieces sold only in their town and unlocked by its missions (locked ones shown with what opens them); a premium piece per town from the first visit; six elite pieces at faction trust 2; Velmar's rare-goods shelf (another town's specialty, +25%, turned by each clear). Recruits get their first gear.
 - Revisits: the world map lists the towns passed (잿빛 마을, 철관성 성하 마을, 벨마르, 순례자 마을); travel is free; shops, forge and townsfolk only; the story continues in the camp.
 - Gear stars: ★1–3 (treasures ★1–5) from strikes, heals and blows; kept on a victory only; 단련 replaces the +1 upgrade (a +1 is ★2 with the same numbers); four slots with the treasure slot; gear limit 30.
