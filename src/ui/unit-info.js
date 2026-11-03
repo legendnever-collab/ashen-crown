@@ -3,7 +3,7 @@
 import {HEROES,TERRAIN,TERRAIN_COSTS,CLASS_MOVEMENT,HERO_CLASS,PROFILE_KO,heroDef} from '../data/game-data.js';
 import {GEAR,TOOLS} from '../data/frontier-data.js';
 import {effectiveStats} from '../core/economy.js';
-import {rangeFor,skillCost} from '../core/rules.js';
+import {rangeFor,skillCost,fogHidden} from '../core/rules.js';
 import {itemIcon} from './item-art.js';
 import {classOf,nextClassOf,potentialOf,proficiencyOf,promotionStatus,heroRecord} from '../core/progression.js';
 import {CLASS_ACTIONS,PROFICIENCY_EFFECT} from '../data/classes.js';
@@ -29,6 +29,8 @@ const grade=v=>v>=24?'S':v>=19?'A':v>=14?'B':v>=10?'C':v>=6?'D':'E';
 function rangeGrid(min,max){let cells='';for(let y=-3;y<=3;y++)for(let x=-3;x<=3;x++){const d=Math.abs(x)+Math.abs(y),cls=d===0?'self':d>=min&&d<=max?'hit':'';cells+=`<i class="${cls}"></i>`;}return `<div class="range-grid" aria-label="공격 범위 ${min}–${max}">${cells}</div>`;}
 
 export function unitInfoHTML(s,u,tab,esc,portrait){
+ // v0.9 fog (M16): an enemy more than three tiles from every hero shows no numbers.
+ if(fogHidden(s,u))return `<div class="unit-info fogged"><h3>${esc(u.name)}</h3><p>안개 속이라 정체가 보이지 않습니다. 장수가 3칸 안으로 다가가거나 결계석을 조사해 안개를 걷으세요.</p></div>`;
  const hero=heroDef(u.id),v=u.team==='ally'?effectiveStats(s,u):u,profile=u.movementProfile||CLASS_MOVEMENT[HERO_CLASS[u.id]]?.profile||'infantry';
  const tabs=[['ability','능력'],['equipment','장비'],['tactics','기술'],['growth','성장'],['bio','열전'],['class','병종']].filter(([id])=>id!=='growth'||hero).map(([id,label])=>`<button data-do="unit-info" data-id="${u.id}|${id}" class="${tab===id?'active':''}">${label}</button>`).join('');
  const bar=(label,a,b,cls)=>`<div class="info-bar ${cls}"><span>${label}</span><div><i style="width:${Math.round(100*a/Math.max(1,b))}%"></i></div><b>${a}/${b}</b></div>`;

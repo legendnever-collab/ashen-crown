@@ -18,15 +18,18 @@ const ARMS_STATS={
  flameStaff:[{mag:2,heal:3},{heal:1}],pilgrimMace:[{atk:3},{atk:1}],pilgrimMantle:[{res:3,resist:25},{res:1}],sanctumTome:[{mag:3,res:2},{mag:1}],
  wardenShield:[{def:3},{def:1}],chrismCharm:[{poisonImmune:1},{res:1}],votiveBand:[{mag:2,res:1},{mag:1}],cathedralStaff:[{mag:4,heal:5},{heal:1}],
  crownGuardLance:[{atk:5,def:1},{atk:1}],crownGuardShield:[{def:5,res:2},{def:1}],leagueSaber:[{atk:5,spd:2},{atk:1}],leagueLongbow:[{atk:4,hit:10},{atk:1}],
- paladinMace:[{atk:5,res:2},{atk:1}],flameVestment:[{res:5,mag:2},{res:1}]
+ paladinMace:[{atk:5,res:2},{atk:1}],flameVestment:[{res:5,mag:2},{res:1}],
+ // v0.9.0 (D-079, PROPOSED): the capital's lower-city forge
+ royalSaber:[{atk:6,def:1},{atk:1}],archiveBow:[{atk:5,hit:10},{atk:1}],wardRod:[{mag:6},{mag:1}],courtVestment:[{res:4,def:2},{res:1}],greyMantle:[{def:2,spd:2,dodge:5},{def:1}],oathRing:[{def:1,mag:2,res:2},{res:1}]
 };
 // Where each item is sold. home: the town hub; after: the mission whose clear puts it on the shelf; premium: on the shelf
 // from the legion's first visit (expensive, meant to be bought on a later visit); trust: the faction and the stage needed.
-const ARMS_HOME={castletown:{arrive:6,trust:'iron'},velmar:{arrive:8,trust:'free'},pilgrim:{arrive:10,trust:'flame'}};
+const ARMS_HOME={castletown:{arrive:6,trust:'iron'},velmar:{arrive:8,trust:'free'},pilgrim:{arrive:10,trust:'flame'},capital:{arrive:14,trust:null}};
 const ARMS_SALE={
  steelGreatsword:['castletown',7],knightLance:['castletown',7],ironwoodBow:['castletown',7],plateCuirass:['castletown',8],towerShield:['castletown',8],lancerMail:['castletown',8],steelGauntlets:['castletown',8],runeforgedBlade:['castletown','premium'],
  twinSabers:['velmar',9],repeatingCrossbow:['velmar',9],emberRod:['velmar',9],shadowStiletto:['velmar',10],merchantCoat:['velmar',10],luckyCoin:['velmar',10],windCharm:['velmar',10],duelistRapier:['velmar','premium'],
  flameStaff:['pilgrim',11],pilgrimMace:['pilgrim',11],pilgrimMantle:['pilgrim',11],sanctumTome:['pilgrim',12],wardenShield:['pilgrim',12],chrismCharm:['pilgrim',12],votiveBand:['pilgrim',12],cathedralStaff:['pilgrim','premium'],
+ royalSaber:['capital',15],archiveBow:['capital',15],wardRod:['capital',15],courtVestment:['capital',16],greyMantle:['capital',16],oathRing:['capital','premium'],
  crownGuardLance:['castletown','trust'],crownGuardShield:['castletown','trust'],leagueSaber:['velmar','trust'],leagueLongbow:['velmar','trust'],paladinMace:['pilgrim','trust'],flameVestment:['pilgrim','trust']
 };
 export const TOWN_HOME=ARMS_HOME;
@@ -44,9 +47,11 @@ const TREASURE_RULES={
  herbPouch:[{},{res:1},'pouch',[15,15,20,20,25],ARMS_ALL8],hawkFeather:[{},{hit:3},'hawk',[1,1,1,1,1],['elina']],sageNotebook:[{},{res:1},'sage',[20,20,25,25,30],ARMS_ALL8],
  windHorseshoe:[{mov:2},{spd:1},null,null,ARMS_ALL8],twinDaggers:[{},{atk:1},'twin',[50,50,75,75,100],ARMS_ALL8],silenceShield:[{},{def:1},'silence',[1,1,1,1,1],ARMS_ALL8],
  mirrorCuirass:[{},{res:1},'mirror',[1,1,1,1,1],ARMS_ALL8],clearCharm:[{},{res:1},'clear',[1,1,1,1,1],ARMS_ALL8],flameReliquary:[{},{def:1},'reliquary',[5,5,7,7,10],ARMS_ALL8],
- manaRing:[{},{mag:1},'mana',[2,2,3,3,4],ARMS_ALL8],lionEpaulette:[{},{def:1},'lion',[1,1,1,1,2],ARMS_ALL8],allianceSeal:[{},{spd:1},'seal',[1,1,2,2,3],ARMS_ALL8]
+ manaRing:[{},{mag:1},'mana',[2,2,3,3,4],ARMS_ALL8],lionEpaulette:[{},{def:1},'lion',[1,1,1,1,2],ARMS_ALL8],allianceSeal:[{},{spd:1},'seal',[1,1,2,2,3],ARMS_ALL8],
+ // v0.9.0 (D-079): mist — bows and spells keep their reach in the fog
+ archivistLens:[{hit:10,crit:5},{hit:2},null,null,ARMS_ALL8],mistLantern:[{res:2},{res:1},'mist',[1,1,1,1,1],ARMS_ALL8]
 };
-export const TREASURE_FX_KO={pouch:n=>`HP 절반 아래로 떨어지면 1회 HP +${n}`,hawk:()=>'활 사거리 +1',sage:n=>`얻는 경험치 +${n}%`,twin:n=>`반격을 받으면 한 번 더 공격 (${n}%)`,silence:()=>'이 장수가 공격한 적은 반격하지 못함',mirror:()=>'원거리 피해 절반',clear:()=>'상태이상 면역',reliquary:n=>`턴마다 HP +${n}`,mana:n=>`턴마다 MP +${n}`,lion:n=>`인접 아군 DEF +${n}`,seal:n=>`전투 첫 ${n}턴 전군 MOV +1`};
+export const TREASURE_FX_KO={pouch:n=>`HP 절반 아래로 떨어지면 1회 HP +${n}`,hawk:()=>'활 사거리 +1',sage:n=>`얻는 경험치 +${n}%`,twin:n=>`반격을 받으면 한 번 더 공격 (${n}%)`,silence:()=>'이 장수가 공격한 적은 반격하지 못함',mirror:()=>'원거리 피해 절반',clear:()=>'상태이상 면역',reliquary:n=>`턴마다 HP +${n}`,mana:n=>`턴마다 MP +${n}`,lion:n=>`인접 아군 DEF +${n}`,seal:n=>`전투 첫 ${n}턴 전군 MOV +1`,mist:()=>'안개 속에서도 사거리가 줄지 않음'};
 export const TREASURES=Object.fromEntries(CATALOG_TREASURES.map(c=>{const [bonus,grow,fx,power,heroes]=TREASURE_RULES[c.id];return [c.id,{name:c.ko,en:c.en,icon:'✧',slot:'treasure',heroes,price:0,bonus,grow,fx,power,treasure:true,tier:'T',description:c.effect}];}));
 // Hidden objectives (숨은 전과): Lia's hint, the reward and the test, read from this battle's own record (bf: flags set during
 // this battle, also in practice; fell: a deployed hero fell). M02 and M09 give an Elixir; the others a treasure.
@@ -65,11 +70,14 @@ export const FEATS={
  11:featDef(11,'flameReliquary','화로 3개를 모두 밝히고 순례자 4명이 모두 성소에 닿는다',(s,bf)=>bf.mission_11_braziers===3&&bf.mission_11_arrived===4),
  12:featDef(12,'manaRing','종이 울리기 전에 기록을 확보하고 원장을 생포한다',(s,bf)=>!!bf.mission_12_quiet&&!!bf.mission_12_abbot_captured),
  13:featDef(13,'lionEpaulette','발드릭을 말로 멈추고 피난민 4명을 모두 지킨다',(s,bf)=>bf.mission_13_baldrick==='halted'&&bf.mission_13_refugees===4),
- 14:featDef(14,'allianceSeal','지도자와 호위 모두 살아서 TURN 10 안에 빠져나간다',(s,bf)=>(bf.mission_14_escort||0)>=6&&s.turn<=10)
+ 14:featDef(14,'allianceSeal','지도자와 호위 모두 살아서 TURN 10 안에 빠져나간다',(s,bf)=>(bf.mission_14_escort||0)>=6&&s.turn<=10),
+ // v0.9.0 ACT III (D-079, PROPOSED)
+ 15:featDef(15,'archivistLens','기록 상자 셋을 모두 확보하고 왕도 경비대의 경고를 한 번도 받지 않는다',(s,bf)=>bf.mission_15_boxes===3&&bf.mission_15_watch==='calm'),
+ 16:featDef(16,'mistLantern','결계석 셋을 모두 조사하고 아무도 쓰러지지 않는다',(s,bf,fell)=>bf.mission_16_echoes===3&&!fell)
 };
 // Supply carriers (조조전 식량대): one ordinary enemy per mission carries a crate; defeating it drops this tool into the bag
 // (usable at once; kept only if the battle is won, like every battle-time change to the bag).
-export const SUPPLY={1:['b3','herb'],2:['b3','antidote'],3:['b3','medium'],4:['t1','net'],5:['s4','ether'],6:['k4','ward'],7:['d4','drum'],8:['m4','bomb'],9:['m3','clarity'],10:['la7','smoke'],11:['r4','clarity'],12:['g7','antidote'],13:['s4','bomb'],14:['k4','medium']};
+export const SUPPLY={1:['b3','herb'],2:['b3','antidote'],3:['b3','medium'],4:['t1','net'],5:['s4','ether'],6:['k4','ward'],7:['d4','drum'],8:['m4','bomb'],9:['m3','clarity'],10:['la7','smoke'],11:['r4','clarity'],12:['g7','antidote'],13:['s4','bomb'],14:['k4','medium'],15:['g4','clarity'],16:['s3','bomb']};
 // Velmar's rare-goods shelf: one item from another town, changing with every mission cleared (+25%).
 export const RARE_MARKUP=1.25;
 // Towns the legion can revisit from the world map during preparation (§6.3). reached: the story moment from which they
@@ -78,13 +86,15 @@ export const TOWNS=[
  {hub:'village_raid',name:'잿빛 마을',site:'village',reached:m=>m>=2},
  {hub:'castletown',name:'철관성 성하 마을',site:'stronghold',reached:m=>m>=7},
  {hub:'velmar',name:'벨마르 시장',site:'freecity',reached:m=>m>=9},
- {hub:'pilgrim',name:'순례자 마을',site:'pilgrimvillage',reached:m=>m>=11}
+ {hub:'pilgrim',name:'순례자 마을',site:'pilgrimvillage',reached:m=>m>=11},
+ {hub:'capital',name:'왕도 하층가',site:'capital',reached:m=>m>=15}
 ];
 // Townsfolk on a revisit: a short word on how the town is doing (PROPOSED wording; no new facts about the crown or factions).
 export const REVISIT_LINES={
  village_raid:{elder:['에릭 경, 다시 와 줬구먼! 불탄 지붕은 거의 다 새로 얹었네.','대장간도 다시 불을 지폈다네. 필요한 게 있으면 들러 보게.'],refugee:['다리 건너 마을 사람들도 하나둘 돌아오고 있어요.'],guard:['마을 경계는 저희가 맡고 있습니다. 군단은 앞길만 보십시오.']},
  castletown:{elder:['군단이 지나간 뒤로 수송로가 조용해졌소. 성하 사람들도 그걸 알고 있지.','대장간 화로는 밤낮없이 돌아가오. 철관 강철은 여기서만 나오니까.'],refugee:['천막 대신 집을 얻었어요. 아직 좁지만요.'],guard:['성문은 열려 있습니다. 통행증만 보여 주시면 됩니다.']},
  velmar:{elder:['벨마르는 장사꾼의 도시요. 다시 왔으니 진열장부터 보시오. 매번 바뀌거든.','의회도 군단 얘기를 하더군. 좋은 얘기만은 아니지만, 나쁜 얘기도 아니오.'],refugee:['시장이 다시 붐벼요. 그날 일은 다들 기억해요.'],guard:['시장 안에서는 칼을 뽑지 마십시오. 상인들이 놀랍니다.']},
+ capital:{elder:['기록원은 조용해졌소. 그 밤 이후로 아무도 상자 얘기를 하지 않지.','하층가 대장간은 왕실 근위대 물건도 다룬다오. 비싸지만 좋은 물건이오.'],refugee:['게시판 앞에 사람들이 모여요. 다들 뭔가를 기억해 내려고 해요.'],guard:['왕도 안에서는 소란을 피우지 마십시오. 그것만 지키면 됩니다.']},
  pilgrim:{elder:['순례길이 다시 열렸소. 성화가 꺼지지 않은 건 그날 덕이오.','대장간에서 성물도 다룬다오. 성화 교단의 손을 거친 물건이지.'],refugee:['밤에도 화로가 켜져 있어서 이제는 덜 무서워요.'],guard:['대성당 쪽은 아직 출입이 엄합니다. 마을 안은 편히 다니십시오.']}
 };
 // Cut-in lines (§7 B, v0.8.1): a critical hit and the ③ skill show the hero's bust with one line.

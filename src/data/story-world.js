@@ -1,7 +1,7 @@
 // v0.5.0 world-map interludes (D-052, W4): shown once at a new game and whenever the legion's hub
 // changes. Narration uses only APPROVED_DIRECTION facts; region/place names are PROPOSED (renameable).
 const w5=(text,world)=>({speaker:'chronicle',text,expression:'neutral',world});
-const ACT1='ACT I · 불타는 국경',ACT2='ACT II · 세 개의 깃발';
+const ACT1='ACT I · 불타는 국경',ACT2='ACT II · 세 개의 깃발',ACT3='ACT III · 왕관의 진실';
 export const STORY_WORLD={
  'world:intro':[
   w5('에르디아. 이백 년 전, 아우렐리우스가 한 왕관 아래 하나로 묶은 대륙.',{focus:'continent',to:'village'}),
@@ -29,5 +29,9 @@ export const STORY_WORLD={
  'world:refuge':[w5('침묵의 수도원에서 돌아온 밤. 군단은 순례자 마을 아래 언덕에 피난민과 함께 야영을 친다.',{focus:'south',from:'pilgrim',to:'refuge',card:{act:ACT2,region:'성화령',place:'피난민 야영지'}})],
  // v0.7.1 (D-071): toward the capital for the summit of the three banners.
  'world:summit':[w5('세 깃발이 처음으로 한자리에 모인다. 장소는 왕도 외곽, 어느 깃발의 땅도 아닌 폐허 역참.',{focus:'continent',from:'refuge',to:'summit',card:{act:ACT2,region:'왕도령',place:'폐허 역참'}})],
+ // v0.9.0 (D-079): ACT III — into the capital, then west to the forgotten battlefield.
+ 'world:capital':[w5('부서진 회담장을 떠난 재의 군단은 장부의 끈을 따라 대륙의 한가운데로 향한다.',{focus:'continent',from:'summit',to:'capital'}),
+  w5('왕도 아우렐리아. 이백 년 동안 왕관이 결계를 지켜 온 도시. 그 아래 하층가에는 피난민과 소문이 넘친다.',{focus:'center',prev:'continent',from:'summit',to:'capital',card:{act:ACT3,region:'왕도령',place:'왕도 하층가'}})],
+ 'world:fieldcamp':[w5('왕도 서쪽 평원. 3년 전 내전이 휩쓴 들판을, 근처 마을 사람 누구도 기억하지 못한다.',{focus:'center',from:'capital',to:'fieldcamp',card:{act:ACT3,region:'왕도령',place:'잊힌 전장'}})],
  'world:oathcamp':[w5('피난민과 함께 국경 관문을 넘었다. 왕실의 명령은 이제 그들 뒤에 있다.',{focus:'east',from:'fortress',to:'oathcamp',card:{act:ACT1,region:'동부 변경',place:'관문 너머 야영지'}})]
 };

@@ -12,6 +12,8 @@ import {isTacticMode,isToolMode,applyTactic,enemyStatusOnHit,expireTactics,caltr
 import {poisonTick,statusAge,inflict,STATUS_KO} from './status.js';
 import {gainGearExp,fx,checkFeat,markCarrier,dropSupply,cutIn} from './arms.js';
 import {skillByMode} from '../data/skills.js';
+import {duelOpen} from './duel.js';
+import {defaultCommand} from './command.js';
 export function newGame(seed=20261014,campaign=null,missionId=1){
  const mission=MISSIONS[missionId];
  const spots=(mission.deployments||DEPLOYMENTS).recommended;
@@ -20,7 +22,7 @@ export function newGame(seed=20261014,campaign=null,missionId=1){
  });
  units.push(...mission.enemies.map(e=>({...structuredClone(e),team:'enemy',maxHP:e.hp,mp:0,maxMP:0,mag:0,moved:false,acted:false,spawnTurn:0})),...mission.civilians.map(({startHP,...c})=>({...c,team:'civilian',kind:c.kind||'civilian',hp:startHP||c.hp||BALANCE.civilianHP,maxHP:c.hp||BALANCE.civilianHP,mp:0,maxMP:0,atk:0,def:c.def??1,res:c.res??1,mag:0,spd:0,mov:0,range:[0,0],rescued:false})),...(mission.objects||[]).map(objectUnit),...(mission.allies||[]).map(alliedUnit));
  campaign=structuredClone(campaign||{heroes:null,results:[],clears:0});campaign.completed=campaign.completed||[];campaign.flags=campaign.flags||{};campaign.bonds=campaign.bonds||{};campaign.tacticalMemory=campaign.tacticalMemory||{};campaign.choices=campaign.choices||{};campaign.promotions=campaign.promotions||{};campaign.roster=campaign.roster||[];
- const result={missionId,practice:campaign.completed.includes(missionId)&&!mission.skirmish,narrative:{...narrativeState(),seen:campaign.dialogueMemory?.seen||[],history:campaign.dialogueMemory?.history||[]},version:VERSION,schema:SCHEMA,screen:'title',phase:'player',turn:1,rng:seed>>>0,initialSeed:seed>>>0,units,log:[mission.objective,mission.brief],feedback:[],reinforced:false,enemyQueue:[],enemyIndex:0,undo:{},outcome:null,campaign,missionStart:units.filter(u=>u.team==='ally').map(u=>({id:u.id,level:u.level,stats:{maxHP:u.maxHP,atk:u.atk,def:u.def,mag:u.mag}})),potions:2};ensureEconomy(result);placeParty(result);rulesOf(result)?.init(result);markCarrier(result);return result;
+ const result={missionId,practice:campaign.completed.includes(missionId)&&!mission.skirmish,narrative:{...narrativeState(),seen:campaign.dialogueMemory?.seen||[],history:campaign.dialogueMemory?.history||[]},version:VERSION,schema:SCHEMA,screen:'title',phase:'player',turn:1,rng:seed>>>0,initialSeed:seed>>>0,units,log:[mission.objective,mission.brief],feedback:[],reinforced:false,enemyQueue:[],enemyIndex:0,undo:{},outcome:null,campaign,missionStart:units.filter(u=>u.team==='ally').map(u=>({id:u.id,level:u.level,stats:{maxHP:u.maxHP,atk:u.atk,def:u.def,mag:u.mag}})),potions:2};ensureEconomy(result);placeParty(result);rulesOf(result)?.init(result);markCarrier(result);if(!result.practice){const cmd=defaultCommand(result);if(cmd)result.command=cmd;}return result;
 }
 // v0.6 (Phase C): AI-led allied troops (team 'allied', D-055) — they fight beside the legion but take no orders and earn no EXP.
 export const alliedUnit=a=>({...structuredClone(a),team:'allied',maxHP:a.hp,mp:0,maxMP:0,mag:a.mag||0,moved:false,acted:false});
@@ -39,9 +41,9 @@ export function setSortie(s,id,on){const u=findUnit(s,id);if(!u||u.team!=='ally'
  const out=s.units.filter(a=>a.team==='ally'&&!a.benched).length;if(!on&&out<=1||on&&u.benched&&out>=deployLimit(s))return false;if(on&&u.benched){const zone=deployZoneOf(s);if(at(s,u.x,u.y)||!zone.has(`${u.x},${u.y}`)){const free=[...zone].map(k=>k.split(',').map(Number)).find(([x,y])=>!at(s,x,y)&&Number.isFinite(terrainAt(x,y,s)?.cost));if(free)[u.x,u.y]=free;}}
  if(on)delete u.benched;else u.benched=true;return true;}
 export function startBattle(s){if(s.screen!=='deployment'||s.units.filter(a=>a.team==='ally'&&!a.benched).length>deployLimit(s))return false;s.screen='battle';s.battleFlags={};applyTerrainRecovery(s);s.log.push(missionOf(s).brief);const {stageStart,...initial}=s;s.stageStart=structuredClone({...initial,feedback:[]});return true;}
-export function canAct(s,u){return s.screen==='battle'&&s.phase==='player'&&!s.narrative?.active&&u?.team==='ally'&&alive(u)&&!u.acted;}
+export function canAct(s,u){return s.screen==='battle'&&s.phase==='player'&&!s.narrative?.active&&!duelOpen(s)&&u?.team==='ally'&&alive(u)&&!u.acted;}
 // v0.5: a promoted Kai may still move after Quick Strike (strikeMove = this turn); otherwise moving needs an unspent action.
-export function canMove(s,u){return s.screen==='battle'&&s.phase==='player'&&!s.narrative?.active&&u?.team==='ally'&&alive(u)&&!u.moved&&(!u.acted||u.strikeMove===s.turn);}
+export function canMove(s,u){return s.screen==='battle'&&s.phase==='player'&&!s.narrative?.active&&!duelOpen(s)&&u?.team==='ally'&&alive(u)&&!u.moved&&(!u.acted||u.strikeMove===s.turn);}
 export function moveUnit(s,id,x,y){const u=findUnit(s,id);if(!canMove(s,u)||(u.x===x&&u.y===y))return null;const path=pathTo(s,u,x,y);if(!path)return null;if(u.acted){delete u.strikeMove;delete s.undo[id];}else s.undo[id]={x:u.x,y:u.y};u.x=x;u.y=y;u.moved=true;if(u.id==='thea')u.chargeRun=path.length-1;s.feedback.push({type:'move',id,path});return path;}
 export function undoMove(s,id){const u=findUnit(s,id),origin=s.undo[id];if(!canAct(s,u)||!origin||at(s,origin.x,origin.y))return false;u.x=origin.x;u.y=origin.y;u.moved=false;if(u.chargeRun)u.chargeRun=0;delete s.undo[id];return true;}
 function consumeAction(s,u){u.acted=true;delete s.undo[u.id];}
@@ -96,7 +98,7 @@ export function performAction(s,id,mode,targetId){
  checkOutcome(s);afterBattleEvents(s);return {ok:true};
 }
 function sTerrain(s,u){return terrainAt(u.x,u.y,s).name==='Forest'?'f':terrainAt(u.x,u.y,s).name==='Village'?'v':'g';}
-export function beginEnemyPhase(s){if(s.screen!=='battle'||s.phase!=='player'||s.narrative?.active)return false;s.phase='enemy';s.undo={};rulesOf(s)?.beforeEnemyPhase?.(s);burnUnits(s,'enemy');burnUnits(s,'allied');statusAge(s,'legion');poisonTick(s,'enemy');s.enemyQueue=[...s.units.filter(u=>u.team==='allied'&&alive(u)),...s.units.filter(u=>u.team==='enemy'&&alive(u))].map(u=>u.id);s.enemyIndex=0;s.feedback=[];applyTerrainRecovery(s);s.log.push(`TURN ${s.turn} · ENEMY PHASE`);return true;}
+export function beginEnemyPhase(s){if(s.screen!=='battle'||s.phase!=='player'||s.narrative?.active||duelOpen(s))return false;s.phase='enemy';s.undo={};rulesOf(s)?.beforeEnemyPhase?.(s);burnUnits(s,'enemy');burnUnits(s,'allied');statusAge(s,'legion');poisonTick(s,'enemy');s.enemyQueue=[...s.units.filter(u=>u.team==='allied'&&alive(u)),...s.units.filter(u=>u.team==='enemy'&&alive(u))].map(u=>u.id);s.enemyIndex=0;s.feedback=[];applyTerrainRecovery(s);s.log.push(`TURN ${s.turn} · ENEMY PHASE`);return true;}
 export function planEnemy(s,u){
  const reachable=movement(s,u).costs;
  const taunt=provokedPlan(s,u,reachable);if(taunt)return taunt;

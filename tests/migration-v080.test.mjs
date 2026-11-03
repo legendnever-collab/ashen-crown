@@ -16,12 +16,12 @@ const load=name=>deserialize(fixture(name).save);
 test('fixtures are genuine v0.8.0 schema-10 saves with a +1 sword',()=>{for(const n of ['m14-camp','m14-battle']){const f=fixture(n);assert.equal(f.version,'0.8.0');assert.equal(f.schema,10);assert.ok(raw(n).campaign.economy.gear.some(g=>g.type==='ironBlade'&&g.level===1));}});
 
 test('the v0.8.0 summit camp loads as schema 11: +1 → ★2 with the same stats, a treasure slot for all, every other asset kept',()=>{
- const before=raw('m14-camp'),s=load('m14-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,11);assert.equal(s.version,VERSION);assert.equal(s.frontier.hub,'summit');
+ const before=raw('m14-camp'),s=load('m14-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,12);assert.equal(s.version,VERSION);assert.equal(s.frontier.hub,'summit');
  for(const k of ['completed','flags','choices','promotions','factionTrust','trustLog','roster'])assert.deepEqual(s.campaign[k],before.campaign[k],k);
  assert.deepEqual(s.campaign.economy,arms081View(before.campaign.economy));assert.deepEqual(s.campaign.feats,[]);
  const sword=s.campaign.economy.gear.find(g=>g.type==='ironBlade');assert.deepEqual([sword.star,sword.exp],[2,30]);assert.ok(s.campaign.economy.gear.filter(g=>g.type!=='ironBlade').every(g=>g.star===1&&g.exp===0));
  for(const slots of Object.values(s.campaign.economy.equipped))assert.equal(slots.treasure,null);
- assert.equal(deserialize(serialize(s)).schema,11);
+ assert.equal(deserialize(serialize(s)).schema,12);
 });
 
 test('the same Erik hits as hard as in v0.8.0: ★2 = the old +1',()=>{const s=load('m14-camp'),eric=findUnit(s,'eric'),e=s.campaign.economy;const own=e.equipped.eric.weapon&&e.gear.find(g=>g.id===e.equipped.eric.weapon);if(own?.type==='ironBlade')assert.equal(effectiveStats(s,eric).atk,eric.atk+3);});
@@ -31,7 +31,7 @@ test('from the summit camp the legion can revisit the four towns and buy what th
 });
 
 test('the v0.8.0 mid-M14 battle resumes unchanged and is won under v0.8.1 rules',()=>{
- const before=raw('m14-battle'),s=load('m14-battle');assert.equal(s.screen,'battle');assert.equal(s.missionId,14);assert.equal(s.stageStart.schema,11);assert.deepEqual(s.battleFlags,{});
+ const before=raw('m14-battle'),s=load('m14-battle');assert.equal(s.screen,'battle');assert.equal(s.missionId,14);assert.equal(s.stageStart.schema,12);assert.deepEqual(s.battleFlags,{});
  for(const u of before.units){const now=findUnit(s,u.id);assert.deepEqual([now.x,now.y,now.hp,now.team],[u.x,u.y,u.hp,u.team],u.id);}
  assert.deepEqual(s.economy.items,before.economy.items);drain(s);playCampaignBattle(s);assert.equal(s.outcome,'victory');
 });

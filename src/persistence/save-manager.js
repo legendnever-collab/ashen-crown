@@ -1,5 +1,7 @@
 import {legacyRewardCatchup} from '../core/battle-rewards.js';
 import {ensureEconomy,validateEconomy} from '../core/economy.js';
+import {validDuel} from '../core/duel.js';
+import {COMMANDS} from '../core/command.js';
 import {migrateFrontier,frontierState,validateFrontier,alignFrontier} from '../core/frontier.js';
 import {SCHEMA,VERSION,WIDTH,HEIGHT,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,ALL_HEROES,RECRUIT_HEROES,partyIds} from '../data/game-data.js';
 import {validTrust} from '../core/factions.js';
@@ -25,7 +27,7 @@ export function validate(s){
  if(!validTrust(s.campaign))throw Error('세력 신뢰 기록이 손상되었습니다.');
  const known=new Set([...party,...missionUnitIds(mission),...allies.map(a=>a.id)]),ids=new Set(),occupied=new Set();
  for(const u of s.units){if(!known.has(u.id)||ids.has(u.id)||!['ally','allied','enemy','civilian','object'].includes(u.team))throw Error('장수 목록이 손상되었습니다.');ids.add(u.id);
-  const expected=party.includes(u.id)?'ally':allies.some(a=>a.id===u.id)?(u.betrayed&&s.missionState?.betrayer===u.faction?'enemy':'allied'):mission.civilians.some(c=>c.id===u.id)?'civilian':(mission.objects||[]).some(o=>o.id===u.id)?'object':u.faction&&u.faction===s.campaign?.choices?.m10_stance?'allied':'enemy';if(u.team!==expected||typeof u.name!=='string'||u.name.length>120||!Array.isArray(u.range)||u.range.length!==2||u.range.some(n=>!Number.isInteger(n)||n<0||n>12)||u.range[0]>u.range[1])throw Error('유닛 분류 또는 사거리가 손상되었습니다.');
+  const expected=party.includes(u.id)?'ally':allies.some(a=>a.id===u.id)?(u.betrayed&&s.missionState?.betrayer===u.faction?'enemy':'allied'):mission.civilians.some(c=>c.id===u.id)?(u.turned?'enemy':'civilian'):(mission.objects||[]).some(o=>o.id===u.id)?'object':u.faction&&u.faction===s.campaign?.choices?.m10_stance?'allied':'enemy';if(u.team!==expected||typeof u.name!=='string'||u.name.length>120||!Array.isArray(u.range)||u.range.length!==2||u.range.some(n=>!Number.isInteger(n)||n<0||n>12)||u.range[0]>u.range[1])throw Error('유닛 분류 또는 사거리가 손상되었습니다.');
   for(const k of ['hp','maxHP','mp','maxMP','atk','def','mag','res','spd','mov','x','y'])if(!Number.isFinite(u[k])||u[k]<0||!Number.isInteger(u[k]))throw Error('유닛 수치가 올바르지 않습니다.');
   if(u.classMovementModifier!=null&&(!Number.isInteger(u.classMovementModifier)||u.classMovementModifier<0||u.classMovementModifier>5)||u.movementProfile!=null&&!['infantry','rogue','cavalry','ranger'].includes(u.movementProfile))throw Error('병종 이동 정보가 손상되었습니다.');
   if(u.hp>u.maxHP||u.mp>u.maxMP||u.maxHP<1||u.x>=mission.width||u.y>=mission.height||!Number.isFinite(terrainAt(u.x,u.y,s)?.cost))throw Error('유닛 위치 또는 HP가 손상되었습니다.');
@@ -57,6 +59,8 @@ export function validate(s){
  if(c.feats!=null&&(!Array.isArray(c.feats)||c.feats.length>14||new Set(c.feats).size!==c.feats.length||c.feats.some(id=>!Number.isInteger(id)||id<1||id>14)))throw Error('숨은 전과 기록이 손상되었습니다.');
  if(s.battleFlags!=null&&(typeof s.battleFlags!=='object'||Array.isArray(s.battleFlags)||Object.keys(s.battleFlags).length>60||Object.values(s.battleFlags).some(v=>!['boolean','number','string'].includes(typeof v)||typeof v==='string'&&v.length>40)))throw Error('전투 기록이 손상되었습니다.');
  if(s.units.some(u=>u.carrier!=null&&(!['enemy','allied'].includes(u.team)||typeof u.carrier!=='string'||!TOOLS[u.carrier])||u.pouchUsed!=null&&typeof u.pouchUsed!=='boolean'))throw Error('보급 기록이 손상되었습니다.');
+ // v0.9.0 (D-079): the duel of this battle, Aren's command, the weather's cleared tiles and a turned watchman.
+ if(s.duel!=null&&!validDuel(s,s.duel)||s.command!=null&&!COMMANDS[s.command]||s.units.some(u=>u.turned!=null&&(u.turned!==true||u.team!=='enemy')))throw Error('ACT III 전투 기록이 손상되었습니다.');
  validateEconomy(s.economy);validateEconomy(s.campaign.economy);if(s.frontier)validateFrontier(s.frontier);if(s.campaign.frontier)validateFrontier(s.campaign.frontier);
  return s;
 }
@@ -81,6 +85,8 @@ export function migrate(s){
  // v0.8.1 (D-073 Q5): gear grows by stars — the old +1 upgrade becomes ★2 (its EXP filled), plain gear ★1; every hero gains a
  // treasure slot; the hidden-objective record starts empty (cleared missions can still win theirs in practice).
  if(s?.schema===10){s.schema=11;s.version='0.8.1';for(const e of [s.economy,s.campaign?.economy])if(e)arms081(e);s.campaign.feats??=[];if(s.screen==='battle'||s.screen==='result')s.battleFlags??={};if(s.skirmish?.campaign?.economy)arms081(s.skirmish.campaign.economy);if(s.stageStart)s.stageStart=migrate(s.stageStart);}
+ // v0.9.0 (D-079): ACT III adds a duel, Aren's command and new missions on the battle state; a schema-11 save keeps everything.
+ if(s?.schema===11){s.schema=12;s.version='0.9.0';if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');
  // v0.6.1: a save of the current schema made by an earlier build of it (e.g. v0.6.0) is now this version.
  if(s?.schema===SCHEMA&&s.version!==VERSION){s.version=VERSION;if(s.stageStart?.version)s.stageStart.version=VERSION;}

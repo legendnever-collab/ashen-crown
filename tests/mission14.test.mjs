@@ -18,7 +18,7 @@ const finish=(st,o,r)=>{st.outcome=o;st.reason=r;};
 const quiet=s=>{for(const e of s.units.filter(u=>u.team==='enemy'))e.hp=0;};
 
 test('M14 data: 18×14 waystation, level 12, three leaders and six guards as allies, masked raiders, exit row 13, betrayal on TURN 4; ACT II ends here',()=>{
- const m=MISSIONS[14];assert.deepEqual([m.width,m.height],[18,14]);assert.equal(m.level,12);assert.equal(m.exitRow,13);assert.equal(m.betrayTurn,4);assert.equal(LAST_MISSION,14);
+ const m=MISSIONS[14];assert.deepEqual([m.width,m.height],[18,14]);assert.equal(m.level,12);assert.equal(m.exitRow,13);assert.equal(m.betrayTurn,4);assert.ok(LAST_MISSION>=14);
  assert.deepEqual(m.allies.filter(a=>a.leader).map(a=>[a.id,a.faction]),[['cassian','iron'],['leonora','free'],['lucien','flame']]);assert.equal(m.allies.filter(a=>!a.leader).length,6);assert.ok(m.enemies.every(e=>e.masked));
  const zone=m.deployZone();for(const p of Object.values(m.deployments).flat())assert.ok(zone.has(p.join(',')),`preset ${p}`);
  for(const k of ['14:intro','14:turn2','14:raid','14:exit','14:betray:iron','14:betray:free','14:betray:flame','14:arrive','14:fallen:cassian','14:end','pre:14','after:14','world:summit','after:14:recruit:stayed:thea','after:14:recruit:left:ines','npc:14:preparation:advisor','npc:14:aftermath:advisor'])assert.ok(STORY[k]?.length,k);
