@@ -11,7 +11,7 @@ APPROVED_DIRECTION, 2026-10-14 user v0.3 Master Task. Story CANON과 실제 구�
 - v0.7.1 The Three Banners (ACT II complete): M13 검은 사자의 결단 (persuasion and Baldrick's resolve) and M14 부서진 동맹 (the summit, masked raiders, betrayal by the lowest-trust banner, recruits who may leave), the ACT II completion card. Merged after the user's play-test with the music mute fix (D-071, D-072).
 - v0.8.0 Tactics (전술, D-073/D-074): three skills per hero, status effects, targeted and thrown tools, class matchups, schema 10. Merge approved by the user 2026-11-01 (D-075).
 - v0.8.1 Arms (무기, D-073/D-076): regional and elite gear, Velmar's rare-goods shelf, revisiting towns, gear stars and 단련, treasures and hidden objectives, supply carriers, cut-ins, schema 11. Merge approved by the user 2026-11-03 (D-077); item art pack E pending.
-- Next: ACT III 「왕관의 진실」 (M15–M22) and awakening (Tier 3) on the user's instruction.
+- Next: ACT III 「왕관의 진실」 (M15–M22) and awakening (Tier 3). Design proposed 2026-11-03 (D-078, docs/v0.9.0/ACT3_DESIGN.md): four releases v0.9.0–v0.9.3 recommended, awaiting the user's answers.
 - Subsequent: ACT III–IV, relationship branches and three endings. Preserve 4 acts / 30 missions.
 
 

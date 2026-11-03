@@ -17,6 +17,9 @@
 작업 단계별 커밋. npm test, balance, browser regression, campaign E2E, migration, offline, documentation audit. 실제 검증만 완료 표시. 모든 PR의 documentation checklist: README, CHANGELOG, CURRENT_STATUS, NEXT_TASKS, ROADMAP, Story Bible review, Decision Log review, tests/evidence, artifacts.
 
 
+## Current v0.9 entry (ACT III design proposed)
+The user asked for the ACT III design on 2026-11-03 11:02 KST. docs/v0.9.0/ACT3_DESIGN.md (D-078, PROPOSED) on feature/v0.9-act3-crown: M15–M22, reveal scope, awakening (Tier 3), Aren's commands, the recruits' return and Tier 2, duels, weather, chronicle, four releases and art packs F1–F4. Write no ACT III code before the user answers Q1–Q9.
+
 ## Current v0.8.1 entry (merged)
 v0.8.1 「무기」 (D-076, within D-073 §6) on feature/v0.8.1-arms: regional and elite gear with town shelves and Velmar's rare-goods shelf, revisiting towns from the world map (frontier.revisit), gear stars and 단련, a treasure slot and twelve treasures, one hidden objective per mission (s.battleFlags, campaign.feats; practice wins it once), supply carriers, cut-ins. Code: src/core/arms.js, src/data/arms-v081.js. Schema 11 imports 0–10 (+1 → ★2). Art work pack E is imported with scripts/import-item-art.py when the user returns it (src/assets/items); until then temporary icons. Approved by the user on 2026-11-03 (D-077) and merged via PR #17 with the temporary icons. Never merge a release candidate before the user plays and approves it. Next: ACT III and awakening only on the user's instruction.
 
