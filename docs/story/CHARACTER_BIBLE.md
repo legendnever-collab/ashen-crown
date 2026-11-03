@@ -133,3 +133,8 @@ Earlier "Aren 탐색 아바타" staging clause is superseded. Erik is the explor
 
 ## v0.4.0 approved — CANON D-034
 Erik Hidden Past (detail): 발드릭 휘하 시절, 발드릭이 명령을 어기고 에릭만 끌어냈고 남겨진 동료들은 희생됐다. 목숨의 빚 + 자책. 시기·장소·이름 OPEN. Baldrick은 이 일로 에릭을 기억하며, 그 선택을 후회하는지는 OPEN.
+
+## v0.9 ACT III — D-079 (APPROVED_DIRECTION, details PROPOSED)
+- Aren: 잿빛 밤 그날 왕실 전령으로서 봉인 명령서를 관문에 전했다(M15 기록원 명부). 명령서의 서명자와 이유는 OPEN(M28). 국왕이 기억하는 단 한 얼굴(M21).
+- Elina: 고향은 3년 전 내전의 전장 근처, 결계석이 그 기억을 거두어 잊고 있었다(M16, PROPOSED). 복수에서 책임 추적으로.
+- 각성(Tier 3)은 계기 미션 + 각성의 시련으로 열린다(엘리나 M16, 에릭 M17, 세인 M18, 리아 M19, 카이 M20; 아렌은 M21 뒤 군령). 영입 장수 셋은 ACT III에 Tier 2 특성, ④는 ACT IV.

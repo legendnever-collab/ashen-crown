@@ -1,3 +1,14 @@
+# v0.9.0 — The Capital · ACT III part 1: M15 사라진 기록, M16 잊힌 전장 (release candidate)
+- Release candidate on feature/v0.9-act3-crown; not merged before the user plays and approves it. Design D-078 (docs/v0.9.0/ACT3_DESIGN.md), approved with the recommended answers and temporary art (D-079, chat 2026-11-03 18:21 KST); details D-080.
+- M15 (src/core/mission-rules-v090.js): three clerks run to their gates from TURN 1; knocked down, their boxes are secured; all three settled with two boxes wins; grey cloaks hunt the archivist from TURN 3; the royal watch warns once and turns hostile the second time the legion fights within two tiles of it. Camp choice m15_records (archivist / keep / post).
+- M16: fog (rules.js weatherOf/fogClear/foggedFor/fogHidden: bows and spells −1 range, far enemies hidden), ward stones (search clears the fog around them and stops the harvest), memory harvesters (MP −3 near an unsearched stone), the betraying banner's scavengers, the TURN 3 duel, departed recruits (and a missed Ines) returning as allies and rejoining if alive. Camp choice m16_stones (break / leave).
+- 일기토 (src/core/duel.js): strike / guard / finisher, best of three, the loser −30% max HP, refusable; the battle waits while it is open; saved and validated.
+- Aren's commands (src/core/command.js): 「지켜라」 (DEF +2, turns 1–2) on the deployment bar from M15.
+- Sortie 7; capital (Velmar painting under dusk, temporary) and field camp hubs; world sites capital and 잊힌 전장, ACT III card; two original tracks; capital forge with six tier III pieces; two treasures and hidden objectives; gold 380/400; supply carriers.
+- ACT III enemy numbers are set to the party that finishes ACT II (far stronger than ACT II's last enemies).
+- Fixed: chests in hubs from Mission 10 on and in the raided village could not be opened (chest id pattern).
+- Saves: schema 12 imports 0–11; real v0.8.1 saves verified (shipped HTML and source fixtures). Tests: mission15/16, migration-v081 unit suites; act3 and migration-v081 browser suites (CI group act3); the campaign balance run continues into M15–M16 (test-output/act3-balance.json).
+
 # v0.8.1 — Arms · regional gear, revisits, gear stars, treasures and hidden objectives (merge approved by the user, 2026-11-03)
 - Release: the user approved the merge in chat (2026-11-03 07:56 KST, "병합 진행해 주고", D-077); PR #17 CI run 41470788485 7/7; item art pack E still pending (temporary icons). Started on the user's instruction (chat 2026-11-02 07:08 KST); design D-073 §6 (Q5/Q6), details D-076.
 - Shelves (src/core/arms.js, src/data/arms-v081.js): tier I everywhere; 24 regional tier II pieces sold only in their town and unlocked by its missions (locked ones shown with what opens them); a premium piece per town from the first visit; six elite pieces at faction trust 2; Velmar's rare-goods shelf (another town's specialty, +25%, turned by each clear). Recruits get their first gear.

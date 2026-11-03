@@ -1,5 +1,11 @@
 # Next Tasks
-0. ACT III design (D-078, docs/v0.9.0/ACT3_DESIGN.md): wait for the user's answers to Q1–Q9; on approval record APPROVED_DIRECTION, build art pack F1 (19 images) and start v0.9.0 (M15–M16).
+1. v0.9.0 「왕도」 release candidate (D-080): the user plays it; merge only on approval, then record the merge SHA and main CI in docs/v0.9.0/RELEASE_NOTES.md. Tags and Releases only when the user asks.
+2. Play-test watch items: ACT III enemy strength against a human-raised legion (numbers set to the balance party: Lv 9–18), the M15 clerk race (two tiles a turn from TURN 1) and the watch rule, M16 fog readability, harvest MP −3, duel odds, returning recruits.
+3. Next on the user's instruction: v0.9.1 「수호자」 — M17 수호자의 맹세, M18 불타지 않는 숲, awakening (Tier 3 ④ for Erik, Elina, Sain), recruits' Tier 2, rain, guardian statues, guardians' keep and forest village hubs, Aren's 「나아가라」.
+4. Art: packs D (ACT II cast), E (102 icons) and the ACT III art (design §10, F1–F4) are made together when the user's ChatGPT allowance returns; until then temporary art, never labelled finished.
+
+Previous (ACT III design, 2026-11-03):
+0. ACT III design (D-078, docs/v0.9.0/ACT3_DESIGN.md): approved with the recommended answers and temporary art (D-079).
 1. v0.8.1 merged (PR #17, D-077): record the merge SHA and the main CI run in docs/v0.8.1/RELEASE_NOTES.md at the start of the next branch. Tags and GitHub Releases only when the user asks.
 2. Art work pack E (102 icons): the user returns it after 2026-11-04 (ChatGPT limit); verify and import with `python3 scripts/import-item-art.py <zip>` (src/assets/items, 128-px WebP; the build embeds them and itemIcon prefers them), check the QA log, rebuild and rerun the browser suites; never label the temporary icons finished.
 3. Play-test watch items for v0.8.1: hidden-objective difficulty (policy rates in test-output/act2-balance.json featRate), treasure power (Twin Daggers, Shield of Silence, Wind Horseshoe), town prices and unlock pacing, how often players revisit.

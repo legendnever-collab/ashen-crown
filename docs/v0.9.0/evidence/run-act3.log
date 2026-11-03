@@ -1,0 +1,39 @@
+PASS 1440 the v0.8.1 summit camp offers Mission 15
+PASS 1440 the ACT III card plays on the world map before the capital
+PASS 1440 M15 preparation in the capital's lower city (temporary Velmar painting, dusk)
+PASS 1440 the deployment bar carries Aren's command 「지켜라」 (on by default)
+PASS 1440 the command can be dropped
+PASS 1440 and given again
+PASS 1440 M15 battle: seven heroes, three clerks, the watch as civilians, the archivist
+PASS 1440 the objective panel shows boxes, the watch and the archivist
+PASS 1440 after M15 the camp asks what to do with the records (three ways)
+PASS 1440 the records are posted in the lower city and the scene follows
+PASS 1440 M16 TURN 3: the duel is open and Thea, who left, fights beside the legion
+PASS 1440 the duel modal offers strike, guard and finisher (and refusing)
+PASS 1440 the duel is decided and the battle goes on
+PASS 1440 the fog: the map is hazed and a far enemy is hidden
+PASS 1440 after M16 Thea is back in the legion and her scene plays in the field camp
+PASS 1440 the camp asks what to do with the ward stones
+PASS 1440 the stones are broken; the next step is the guardians' keep (M17, a later update)
+PASS 1440 no horizontal overflow
+PASS 1440 no runtime errors
+PASS 390 the v0.8.1 summit camp offers Mission 15
+PASS 390 the ACT III card plays on the world map before the capital
+PASS 390 M15 preparation in the capital's lower city (temporary Velmar painting, dusk)
+PASS 390 the deployment bar carries Aren's command 「지켜라」 (on by default)
+PASS 390 the command can be dropped
+PASS 390 and given again
+PASS 390 M15 battle: seven heroes, three clerks, the watch as civilians, the archivist
+PASS 390 the objective panel shows boxes, the watch and the archivist
+PASS 390 after M15 the camp asks what to do with the records (three ways)
+PASS 390 the records are posted in the lower city and the scene follows
+PASS 390 M16 TURN 3: the duel is open and Thea, who left, fights beside the legion
+PASS 390 the duel modal offers strike, guard and finisher (and refusing)
+PASS 390 the duel is decided and the battle goes on
+PASS 390 the fog: the map is hazed and a far enemy is hidden
+PASS 390 after M16 Thea is back in the legion and her scene plays in the field camp
+PASS 390 the camp asks what to do with the ward stones
+PASS 390 the stones are broken; the next step is the guardians' keep (M17, a later update)
+PASS 390 no horizontal overflow
+PASS 390 no runtime errors
+act3-e2e: 38 checks passed
