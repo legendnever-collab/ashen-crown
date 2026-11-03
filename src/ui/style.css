@@ -343,3 +343,7 @@
 @keyframes cutin-in{0%{opacity:0;transform:translateX(-12%)}12%{opacity:1;transform:none}82%{opacity:1}100%{opacity:0}}
 @media (max-width:600px){.cutin{top:28%}.cutin-face,.cutin-face canvas,.cutin-face img{width:64px;height:64px}.cutin p{font-size:16px}}
 .feat-mark{color:#c9a4f0;font-size:11px;margin-left:6px}
+
+/* v0.9.0 일기토 (D-079): two faces and the score, then the three picks */
+.duel-card .duel-faces{display:flex;align-items:center;justify-content:center;gap:18px;margin:6px 0 10px}.duel-card .duel-faces canvas{width:96px;height:96px;flex:none}.duel-card .duel-faces b{font:600 28px Georgia,'Ashen UI',serif;color:#e8c98b}.duel-card .duel-last{color:#d8ccb0}
+@media(max-width:720px){.duel-card .duel-faces canvas{width:72px;height:72px}}

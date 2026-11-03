@@ -5,6 +5,7 @@ import {validClassTarget,forecastClass} from '../src/core/class-actions.js';
 import {strikePreview} from '../src/core/tactics.js';
 import {moveUnit,performAction,canAct,beginEnemyPhase,advanceEnemy} from '../src/core/game.js';
 import {openStory,advanceStory} from '../src/core/narrative.js';
+import {duelOpen,duelPick} from '../src/core/duel.js';
 // v0.4 missions: path distance (walls respected, units ignored) toward open evidence, then the boss.
 // v0.6 ACT II: M07 escorts the convoy (deserters near a wagon, else the wagons); M08 holds the canyon (northern
 // mercenaries); with the rescue order Sain and Kai head for the rear village from TURN 4.
@@ -19,6 +20,12 @@ let useTactics=true;export const setUseTactics=v=>{useTactics=!!v;};
 export function watchRisk(s,x,y){if(!missionOf(s).stealth||(s.missionState?.alert||0)>=2)return false;const k=`${x},${y}`;
  for(const g of s.units.filter(g=>g.watch&&alive(g)&&!g.awake)){if(watchCells(s,g).has(k))return true;const nx=g.turns?.length?{...g,facing:g.turns[((g.turnIndex||0)+1)%g.turns.length]}:g;if(watchCells(s,nx).has(k))return true;}return false;}
 function act2Goals(s,u){const live=t=>alive(t)&&t.team==='enemy';
+ // v0.9.0 M15: chase the clerks (Sain stays with the archivist once the cloaks hunt him); M16: Elina and Lia search the ward
+ // stones (Elina the middle one first), everyone else goes for the harvesters.
+ if(s.missionId===15){const clerks=s.units.filter(c=>c.clerk&&alive(c)),arch=s.units.find(a=>a.id==='archivist'&&alive(a)),hunters=s.units.filter(e=>live(e)&&!e.clerk&&arch&&distance(e,arch)<=4);
+  if(arch&&u?.id==='sain'&&s.turn>=3)return hunters.length?hunters:[arch];if(clerks.length)return clerks;return hunters.length?hunters:s.units.filter(live);}
+ if(s.missionId===16){const stones=s.units.filter(o=>o.kind==='wardStone'&&!o.inert),harv=s.units.filter(h=>h.kind==='harvester'&&live(h));
+  if(stones.length&&u?.id==='elina')return [stones.find(o=>o.id==='st3')||stones[0]];if(stones.length&&u?.id==='lia')return stones;return harv.length?harv:s.units.filter(live);}
  // v0.7.1 M13: Erik (and Thea once) walk to Baldrick to persuade him; the rest guard the camp. M14: guard the leaders.
  if(s.missionId===13){const boss=s.units.find(t=>t.id==='boss'&&live(t)),camp=s.units.filter(v=>v.team==='civilian'&&alive(v)),near=s.units.filter(e=>live(e)&&camp.some(v=>distance(e,v)<=4));
   if(boss&&(u?.id==='eric'||u?.id==='thea'&&!s.missionState.thea))return [boss];if(near.length)return near;return camp.length?camp:s.units.filter(live);}
@@ -53,7 +60,10 @@ function strikeScore(s,u,t,f,capture){const civ=s.units.filter(v=>v.team==='civi
    if(s.missionId===4){if(t.burns&&s.turn<missionOf(s).burnTurn&&s.units.some(o=>o.evidence===t.burns&&alive(o)))score+=80;if(t.id==='boss')score+=60;}
  // v0.8: in M04 and M06 striking the enemy that is the current goal always beats standing beside it (with more ways to spend
  // MP, the old weights let the party wait next to the boss once Lia's bolts were not the ones finishing him).
- if((s.missionId===4||s.missionId===6)&&t.team==='enemy'&&missionGoals(s,u).includes(t))score+=150;
+ if((s.missionId===4||s.missionId===6||s.missionId===15||s.missionId===16)&&t.team==='enemy'&&missionGoals(s,u).includes(t))score+=150;
+ // v0.9.0 M15: the royal watch is neutral; a strike beside it (attacker or target within two tiles) is avoided unless it
+ // drops a clerk.
+ if(s.missionId===15&&!s.missionState.turned&&!(t.clerk&&f.after===0)&&s.units.some(w=>w.watch&&w.team==='civilian'&&w.hp>0&&distance(w,t)<=3))score-=400;
  return score;}
 // v0.8.0 (D-073): the policy also plays the new skills (② and the recruits' ③); promotion actions and purchased tools stay
 // unused as before. Strike skills are scored like an attack plus the worth of the status they leave.
@@ -91,4 +101,4 @@ export function campaignAction(s,u,capture=true){
  }
  return best||{id:u.id,x:u.x,y:u.y,mode:'wait'};
 }
-export function playCampaignBattle(s,capture=true){const trace=[];let steps=0;drain(s);while(!s.outcome&&steps++<150){for(const id of ['kai','lia','elina','sain','eric','thea','dario','ines']){const u=findUnit(s,id);if(!canAct(s,u))continue;const a=campaignAction(s,u,capture);if(a.x!==u.x||a.y!==u.y){if(!moveUnit(s,id,a.x,a.y))throw Error('illegal move');trace.push({type:'move',id,x:a.x,y:a.y});}const action=performAction(s,id,a.mode,a.target);if(!action.ok)throw Error(action.error);USAGE[`M${String(s.missionId).padStart(2,'0')} ${a.mode}`]=(USAGE[`M${String(s.missionId).padStart(2,'0')} ${a.mode}`]||0)+1;trace.push({type:'action',id,mode:a.mode,target:a.target});drain(s);if(s.outcome)break;}if(!s.outcome){beginEnemyPhase(s);trace.push({type:'phase'});while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);}}return {outcome:s.outcome,turn:s.turn,trace,saved:s.units.filter(u=>u.team==='civilian'&&u.rescued).length,captured:!!s.campaign.flags.mission_02_prisoner_captured};}
+export function playCampaignBattle(s,capture=true){const trace=[];let steps=0;drain(s);while(!s.outcome&&steps++<150){if(duelOpen(s)){let n=0;while(duelOpen(s)&&n++<3)duelPick(s,['strike','guard','finisher'][(s.turn+n)%3]);trace.push({type:'duel',result:s.duel.result});drain(s);}for(const id of ['kai','lia','elina','sain','eric','thea','dario','ines']){const u=findUnit(s,id);if(!canAct(s,u))continue;const a=campaignAction(s,u,capture);if(a.x!==u.x||a.y!==u.y){if(!moveUnit(s,id,a.x,a.y))throw Error('illegal move');trace.push({type:'move',id,x:a.x,y:a.y});}const action=performAction(s,id,a.mode,a.target);if(!action.ok)throw Error(action.error);USAGE[`M${String(s.missionId).padStart(2,'0')} ${a.mode}`]=(USAGE[`M${String(s.missionId).padStart(2,'0')} ${a.mode}`]||0)+1;trace.push({type:'action',id,mode:a.mode,target:a.target});drain(s);if(s.outcome)break;}if(!s.outcome){beginEnemyPhase(s);trace.push({type:'phase'});while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);}}return {outcome:s.outcome,turn:s.turn,trace,saved:s.units.filter(u=>u.team==='civilian'&&u.rescued).length,captured:!!s.campaign.flags.mission_02_prisoner_captured};}

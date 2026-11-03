@@ -31,7 +31,7 @@ function gateField(s,exit){const m=missionOf(s),cost=TERRAIN_COSTS.infantry,dist
 const FIELDS=new Map();
 const fieldFor=(s,exit)=>{const k=`${s.missionId}:${exit}`;if(!FIELDS.has(k))FIELDS.set(k,gateField(s,exit));return FIELDS.get(k);};
 function turnWatch(s){const st=s.missionState;if(st.turned)return;st.turned=true;
- for(const w of watch15(s).filter(w=>w.hp>0)){Object.assign(w,{team:'enemy',turned:true,kind:'bandit',atk:17,spd:6,mov:3,range:[1,1],moved:false,acted:false});s.feedback.push({type:'spawn',id:w.id,text:'HOSTILE'});}
+ for(const w of watch15(s).filter(w=>w.hp>0)){Object.assign(w,{team:'enemy',turned:true,kind:'bandit',atk:36,def:18,res:10,spd:20,mov:3,range:[1,1],moved:false,acted:false});s.feedback.push({type:'spawn',id:w.id,text:'HOSTILE'});}
  s.log.push('왕도 경비대가 군단을 적으로 여깁니다! 경비대가 칼을 뽑았습니다.');enqueueStory(s,'15:watch');}
 export const M15={
  init(s){s.missionState={waves:[],secured:[],escaped:[],warned:0,turned:false,last:null};},
@@ -114,7 +114,9 @@ export const M16={
 };
 // A recruit comes back: the record kept aside after M14 returns to the roster (Ines, who never joined, joins at Lv 13).
 export function rejoinRoster(s,id){const c=s.campaign,rec=c.departed?.[id];if(rec){delete c.departed[id];if(!Object.keys(c.departed).length)delete c.departed;}
- return joinRoster(s,id,13,rec||null);}
+ // the kept record may still carry its last battle's phase marks; the hero comes back rested
+ const clean=rec?(({recoveryPhase,status,statusTurns,moved,acted,hitThisTurn,guarding,guardTarget,benched,x,y,...r})=>({...r,hp:r.maxHP,mp:r.maxMP}))(rec):null;
+ const ok=joinRoster(s,id,13,clean);s.stageStart=null;return ok;}
 export const RECORDS16={break:'결계석을 부순다',leave:'결계석을 남긴다'};
 export function chooseStones16(s,id){const c=s.campaign;if(!RECORDS16[id]||s.practice||c.choices?.m16_stones||!c.completed?.includes(16))return false;c.choices??={};c.choices.m16_stones=id;setStoryFlag(s,'mission_16_stones_choice',id);return true;}
 export const ACT3A_RULES={15:M15,16:M16};

@@ -56,7 +56,7 @@ export function validate(s){
  if(s.burning!=null&&(typeof s.burning!=='object'||Array.isArray(s.burning)||Object.entries(s.burning).some(([k,v])=>!/^\d{1,2},\d{1,2}$/.test(k)||!Number.isInteger(v)||v<1||v>2)))throw Error('화염 기록이 손상되었습니다.');
  if(s.units.some(u=>u.team==='ally'&&(![1,2,3].includes(u.appearanceTier)||['classTier','storyTier'].some(k=>u[k]!=null&&![1,2,3].includes(u[k])))))throw Error('외형 Tier가 손상되었습니다.');
  // v0.8.1: hidden objectives won (mission ids), this battle's flag record, the supply carrier's crate.
- if(c.feats!=null&&(!Array.isArray(c.feats)||c.feats.length>14||new Set(c.feats).size!==c.feats.length||c.feats.some(id=>!Number.isInteger(id)||id<1||id>14)))throw Error('숨은 전과 기록이 손상되었습니다.');
+ if(c.feats!=null&&(!Array.isArray(c.feats)||c.feats.length>16||new Set(c.feats).size!==c.feats.length||c.feats.some(id=>!Number.isInteger(id)||id<1||id>16)))throw Error('숨은 전과 기록이 손상되었습니다.');
  if(s.battleFlags!=null&&(typeof s.battleFlags!=='object'||Array.isArray(s.battleFlags)||Object.keys(s.battleFlags).length>60||Object.values(s.battleFlags).some(v=>!['boolean','number','string'].includes(typeof v)||typeof v==='string'&&v.length>40)))throw Error('전투 기록이 손상되었습니다.');
  if(s.units.some(u=>u.carrier!=null&&(!['enemy','allied'].includes(u.team)||typeof u.carrier!=='string'||!TOOLS[u.carrier])||u.pouchUsed!=null&&typeof u.pouchUsed!=='boolean'))throw Error('보급 기록이 손상되었습니다.');
  // v0.9.0 (D-079): the duel of this battle, Aren's command, the weather's cleared tiles and a turned watchman.
