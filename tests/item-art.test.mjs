@@ -1,0 +1,29 @@
+// v0.9.0 — art work pack E (D-073 Q9, D-081): 102 painted icons cut from seven hash-verified sheets. Every cell id of the
+// work order has its WebP, the import log's hashes match the shipped files, and the ids cover the catalog's tools, gear,
+// treasures, statuses, commands and every hero skill. Gear added after the pack (the capital's tier III) keeps the SVG.
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import crypto from 'node:crypto';
+import {SKILLS} from '../src/data/skills.js';
+import {GEAR,TOOLS} from '../src/data/frontier-data.js';
+
+// The log has no quoted fields; cells.csv quotes only its last column (description), which is not read here.
+const csv=f=>{const [head,...rows]=fs.readFileSync(f,'utf8').trim().split(/\r?\n/);const cols=head.split(',');return rows.map(r=>{const v=r.split(',');return Object.fromEntries(cols.map((c,i)=>[c,v[i]]));});};
+const cells=csv('docs/v0.8.0/art/item-work-pack/cells.csv'),log=csv('src/assets/item-art-import-log.csv');
+
+test('pack E: 102 icons, one per work-order cell, hashes match the import log, 128×128 WebP',()=>{
+ assert.equal(cells.length,102);assert.equal(log.length,102);
+ assert.deepEqual(log.map(r=>r.id).sort(),cells.map(c=>c.id).sort());
+ for(const r of log){const b=fs.readFileSync(`src/assets/items/${r.id}.webp`);assert.equal(crypto.createHash('sha256').update(b).digest('hex'),r.webp_sha256,r.id);
+  assert.equal(b.length,+r.bytes,r.id);assert.equal(b.toString('ascii',8,12),'WEBP');assert.equal(r.qa,'ok',r.id);
+  const c=cells.find(c=>c.id===r.id);assert.equal(`${r.sheet}${r.cell}`,`${c.sheet}${c.cell}`,r.id);}
+ assert.equal(new Set(log.map(r=>r.source_sha256)).size,7,'seven source sheets');
+ assert.equal(fs.readdirSync('src/assets/items').filter(f=>f.endsWith('.webp')).length,102);
+});
+
+test('pack E covers every hero skill, the four statuses, buffs and the battle commands',()=>{
+ const ids=new Set(log.map(r=>r.id));
+ for(const k of SKILLS)assert.ok(ids.has(k.id),`skill ${k.hero} ${k.id}`);
+ for(const id of ['poison','confuse','bind','silence','buff','debuff','attack','wait','persuade','capture','supplyCrate','gold'])assert.ok(ids.has(id),id);
+ for(const id of cells.filter(c=>c.kind==='tool').map(c=>c.id))assert.ok(TOOLS[id]||['herb','medium','ether','elixir'].includes(id),`tool ${id}`);
+ for(const id of cells.filter(c=>['gear','treasure'].includes(c.kind)).map(c=>c.id))assert.ok(GEAR[id],`gear ${id}`);
+ const later=Object.keys(GEAR).filter(id=>!ids.has(id));assert.ok(later.includes('royalSaber')&&later.includes('mistLantern'),'v0.9.0 capital pieces are not in pack E');
+});

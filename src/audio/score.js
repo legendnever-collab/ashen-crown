@@ -43,6 +43,13 @@ export const SCORE={
  oath:{name:'The Ashen Oath',tempo:112,lead:'horn',arp:'ostinato',pad:'strings',drums:'battle',gain:.85,
   chords:chords('Bm G D A Bm G Em F#'),
   melody:melody('B4:2 D5:2 F#5:3 E5:1  D5:2 C#5:2 B4:4  G5:2 F#5:2 E5:2 D5:2  C#5:6 -:2  B4:2 D5:2 F#5:2 B5:2  A5:3 G5:1 F#5:4  E5:2 G5:2 F#5:2 E5:2  F#5:6 -:2')},
+ // v0.9.0 ACT III (original, D-079): the capital's lower city at night (hub, M15) and the forgotten battlefield (M16).
+ lowercity:{name:'Lamps of the Lower City',tempo:88,lead:'flute',arp:'pluck',pad:'lowpad',drums:'battle',gain:.78,
+  chords:chords('Dm Bb C Am Dm Gm A A'),
+  melody:melody('D5:2 F5:2 A5:3 G5:1  F5:2 E5:2 D5:4  Bb4:2 D5:2 F5:2 G5:2  E5:6 -:2  A4:2 D5:2 E5:2 F5:2  G5:3 F5:1 E5:4  F5:2 E5:2 D5:2 C#5:2  D5:6 -:2')},
+ forgotten:{name:'The Field No One Remembers',tempo:66,lead:'horn',arp:'harp',pad:'softpad',drums:null,gain:.74,
+  chords:chords('Em C G D Em Am B B'),
+  melody:melody('B4:4 E5:2 G5:2  F#5:4 E5:2 D5:2  E5:3 D5:1 B4:4  A4:6 -:2  G4:2 B4:2 E5:2 G5:2  F#5:3 E5:1 D5:4  C5:2 B4:2 A4:2 F#4:2  B4:6 -:2')},
  // v0.5 Phase F variations (original, 2026-10-20): hubs, the world map, the promotion rite and trials.
  campfire:{name:'Embers Under Pines',tempo:60,lead:'flute',arp:'pluck',pad:'softpad',drums:null,gain:.72,
   chords:chords('Am F C G Am Dm E Am'),
@@ -88,5 +95,5 @@ export const SCORE={
 };
 export const MOTIF=SCORE.title.melody.map(([n])=>n);
 // Hub ambience (D-052): village / garrison & fortress / night bivouac / oath camp.
-const hubMusic=hub=>!hub||hub.startsWith('village')?'village':hub==='bivouac'||hub==='march'?'campfire':hub==='oathcamp'?'banner':hub==='castletown'?'northmarch':hub==='velmar'?'freecity':hub==='pilgrim'?'procession':hub==='refuge'?'campfire':hub==='summit'?'banner':'camp';
-export const musicScene=s=>s.narrative?.active?(s.narrative.active.key==='raid'?'tension':s.narrative.active.key.startsWith('world:')?'chronicle':s.narrative.active.key.startsWith('promo:')?'rite':s.narrative.active.key.startsWith('pre:')?'story':s.frontier?.hub&&!s.frontier.hub.startsWith('village')?hubMusic(s.frontier.hub):'story'):s.screen==='title'?'title':s.screen==='exploration'?hubMusic(s.frontier?.hub):s.skirmish?.kind==='trial'&&s.screen==='battle'?'trial':['warroom','deployment'].includes(s.screen)?'departure':s.screen!=='battle'?'story':s.missionId===6?(s.phase==='enemy'?'enemy':'oath'):s.missionId===10?(s.phase==='enemy'?'enemy':'threeway'):s.missionId===12&&(s.missionState?.alert||0)<2?'silence':s.missionId===3||s.units.some(u=>u.team==='civilian'&&!u.rescued&&u.hp>0&&u.hp<u.maxHP/2)?'crisis':s.phase==='enemy'?'enemy':s.missionId===4?'fortress':s.missionId===5?'lion':s.missionId===7||s.missionId===8?'northmarch':s.missionId===11?'procession':s.missionId===13||s.missionId===14?'lionresolve':'player';
+const hubMusic=hub=>!hub||hub.startsWith('village')?'village':hub==='bivouac'||hub==='march'?'campfire':hub==='oathcamp'?'banner':hub==='castletown'?'northmarch':hub==='velmar'?'freecity':hub==='pilgrim'?'procession':hub==='refuge'?'campfire':hub==='summit'?'banner':hub==='capital'?'lowercity':hub==='fieldcamp'?'campfire':'camp';
+export const musicScene=s=>s.narrative?.active?(s.narrative.active.key==='raid'?'tension':s.narrative.active.key.startsWith('world:')?'chronicle':s.narrative.active.key.startsWith('promo:')?'rite':s.narrative.active.key.startsWith('pre:')?'story':s.frontier?.hub&&!s.frontier.hub.startsWith('village')?hubMusic(s.frontier.hub):'story'):s.screen==='title'?'title':s.screen==='exploration'?hubMusic(s.frontier?.hub):s.skirmish?.kind==='trial'&&s.screen==='battle'?'trial':['warroom','deployment'].includes(s.screen)?'departure':s.screen!=='battle'?'story':s.missionId===6?(s.phase==='enemy'?'enemy':'oath'):s.missionId===10?(s.phase==='enemy'?'enemy':'threeway'):s.missionId===12&&(s.missionState?.alert||0)<2?'silence':s.missionId===3||s.units.some(u=>u.team==='civilian'&&!u.rescued&&u.hp>0&&u.hp<u.maxHP/2)?'crisis':s.phase==='enemy'?'enemy':s.missionId===4?'fortress':s.missionId===5?'lion':s.missionId===7||s.missionId===8?'northmarch':s.missionId===11?'procession':s.missionId===13||s.missionId===14?'lionresolve':s.missionId===15?'lowercity':s.missionId===16?'forgotten':'player';

@@ -70,7 +70,14 @@ export const CATALOG_GEAR=[
  cGear('leagueSaber','연맹 기사의 사브르','League Saber',3,'weapon',['dario','kai'],'ATK +5 · SPD +2',540,'벨마르 · 자유 영주 신뢰 2'),
  cGear('leagueLongbow','연맹 장궁','League Longbow',3,'weapon',['elina'],'ATK +4 · HIT +10',520,'벨마르 · 자유 영주 신뢰 2'),
  cGear('paladinMace','성기사의 전투 철퇴','Paladin Mace',3,'weapon',['ines'],'ATK +5 · RES +2',540,'순례자 마을 · 성화 교단 신뢰 2'),
- cGear('flameVestment','성화 법의','Sacred Flame Vestment',3,'armor',['sain','lia'],'RES +5 · MAG +2',560,'순례자 마을 · 성화 교단 신뢰 2')
+ cGear('flameVestment','성화 법의','Sacred Flame Vestment',3,'armor',['sain','lia'],'RES +5 · MAG +2',560,'순례자 마을 · 성화 교단 신뢰 2'),
+ // tier III — the capital's lower city (v0.9.0 ACT III, D-079, PROPOSED)
+ cGear('royalSaber','왕도 근위검','Royal Guard Saber',3,'weapon',['eric','dario'],'ATK +6 · DEF +1',480,'왕도 하층가 · M15 클리어'),
+ cGear('archiveBow','기록원 장궁','Archive Longbow',3,'weapon',['elina'],'ATK +5 · HIT +10',470,'왕도 하층가 · M15 클리어'),
+ cGear('wardRod','결계 지팡이','Ward Rod',3,'weapon',['lia'],'MAG +6',480,'왕도 하층가 · M15 클리어'),
+ cGear('courtVestment','궁정 사제복','Court Vestment',3,'armor',['sain','ines'],'RES +4 · DEF +2',460,'왕도 하층가 · M16 클리어'),
+ cGear('greyMantle','회색 외투','Grey Mantle',3,'armor',['kai','dario'],'DEF +2 · SPD +2 · 회피 +5',450,'왕도 하층가 · M16 클리어'),
+ cGear('oathRing','맹세의 반지','Oath Ring',3,'accessory',['eric','elina','lia','sain','kai','thea','dario','ines'],'DEF +1 · MAG +2 · RES +2',440,'왕도 하층가 · 처음부터 (고급품)')
 ];
 const cTreasure=(id,ko,en,effect,where)=>({id,kind:'treasure',ko,en,effect,where});
 export const CATALOG_TREASURES=[
@@ -85,7 +92,10 @@ export const CATALOG_TREASURES=[
  cTreasure('flameReliquary','성화의 성구','Flame Reliquary','턴마다 HP +5','M11 숨은 전과'),
  cTreasure('manaRing','마나의 반지','Mana Ring','턴마다 MP +2','M12 숨은 전과'),
  cTreasure('lionEpaulette','사자의 견장','Lion Epaulette','인접 아군 DEF +1','M13 숨은 전과'),
- cTreasure('allianceSeal','동맹의 인장','Alliance Seal','전투 첫 턴 전군 MOV +1','M14 숨은 전과')
+ cTreasure('allianceSeal','동맹의 인장','Alliance Seal','전투 첫 턴 전군 MOV +1','M14 숨은 전과'),
+ // v0.9.0 ACT III (D-079, PROPOSED)
+ cTreasure('archivistLens','기록관의 확대경','Archivist\'s Lens','HIT +10 · 치명 +5','M15 숨은 전과'),
+ cTreasure('mistLantern','잔영의 등불','Lantern of Echoes','안개 속에서도 사거리가 줄지 않음 · RES +2','M16 숨은 전과')
 ];
 const cSkill=(id,hero,slot,ko,en,cost,effect)=>({id,kind:'skill',hero,slot,ko,en,cost,effect});
 export const CATALOG_SKILLS=[

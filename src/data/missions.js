@@ -235,6 +235,51 @@ MISSIONS[14]=authored({id:14,title:'부서진 동맹',en:'The Broken Alliance',
  threatTurn:99,par:9,turnLimit:12,level:12,deployLimit:6,exitRow:13,betrayTurn:4,
  objective:'세 지도자 중 둘 이상을 남쪽 출구(맨 아랫줄)까지 호위 · 지도자를 지킬 수 없게 되면(남은 지도자 둘 중 하나라도 쓰러짐) 패배 · TURN 12 안에',
  brief:'카시안·레오노라·루시안과 호위병이 동맹군으로 남쪽 출구로 물러납니다. 가면 습격대는 지도자를 노리고 양옆과 남쪽에서 계속 들어옵니다. TURN 4에 군단을 가장 믿지 않는 깃발(신뢰가 가장 낮은 세력)이 군단에 칼을 돌립니다: 그 지도자는 전장을 떠나고 호위병은 적이 됩니다.'});
+// ---------- v0.9.0 ACT III 「왕관의 진실」 part 1 (D-079, docs/v0.9.0/ACT3_DESIGN.md §4; maps and numbers PROPOSED) ----------
+// M15 The Lost Records: the capital's lower city at night. Three chancellery clerks carry the Ashen Night's record boxes out
+// of the royal archive, each to its own gate (TURN 2 on, two tiles a turn); grey cloaks screen them. Knocking a clerk down
+// secures its box. The royal watch stands neutral at three posts: fighting within two tiles of a watchman earns one warning,
+// the second time the watch turns on the legion. The old archivist who guided the legion must live.
+const cloak15=(id,x,y,stats={})=>unit(id,'회색 망토','bandit',x,y,{hp:64,atk:40,def:19,res:14,spd:26,mov:4,movementProfile:'rogue',look:'grayCloak',...stats});
+const clerk15=(id,x,y,exit)=>unit(id,'재상부 서기','clerk',x,y,{hp:46,atk:0,def:14,res:12,spd:20,mov:2,look:'clerk',clerk:true,exit});
+MISSIONS[15]=authored({id:15,title:'사라진 기록',en:'The Lost Records',
+ rows:['xrxxxxxxxxxxxxxxxx','xrllllloxxolllllox','xrrrrrrrrrrrrrrrlx','rrrlxxxkkkkxxxrrrr','xolrxkkkkkkkkxrlox','xolrxkkkkkkkkxrlox','xllrxxxkkkkxxxrllx','xllrrrrrkkrrrrrllx','wwwbwwwwwbbwwwwbww','llvrllloollllrlvll','lollrlllllllrlllol','llllrrrrrrrrrrllll','lvllrllvvllllrllvl','llllrlllrrlllrllll'],
+ enemies:[clerk15('c1',7,4,[1,0]),clerk15('c2',9,5,[0,3]),clerk15('c3',11,4,[17,3]),
+  unit('cap','회색 망토 대장','captain',8,3,{hp:88,atk:44,def:22,res:18,spd:24,mov:4,movementProfile:'rogue',look:'grayCloak'}),
+  cloak15('g1',3,7),cloak15('g2',10,7),cloak15('g3',15,7),cloak15('g4',5,2),cloak15('g5',12,2),
+  cloak15('a1',1,4,{kind:'archer',range:[2,3],hp:52,atk:38,def:14,res:12,spd:24,movementProfile:'infantry'}),cloak15('a2',16,4,{kind:'archer',range:[2,3],hp:52,atk:38,def:14,res:12,spd:24,movementProfile:'infantry'})],
+ civilians:[{id:'archivist',name:'늙은 기록관',look:'archivist',x:8,y:12,hp:30,def:3,res:4},
+  {id:'w1',name:'왕도 경비대',look:'watchman',watch:true,x:2,y:10,hp:34,def:7,res:4},{id:'w2',name:'왕도 경비대',look:'watchman',watch:true,x:9,y:9,hp:34,def:7,res:4},{id:'w3',name:'왕도 경비대',look:'watchman',watch:true,x:15,y:10,hp:34,def:7,res:4}],
+ waves:[{turn:3,story:'15:cloaks',units:[cloak15('g6',0,11),cloak15('g7',17,11)]},{turn:5,units:[cloak15('g8',0,9),cloak15('g9',17,9)]}],
+ deployZone:s=>{const base=[];for(let y=11;y<=13;y++)for(let x=1;x<=16;x++)base.push([x,y]);return zone(base.filter(([x,y])=>Number.isFinite(TERRAIN[MISSIONS[15].map[y][x]].cost)&&!MISSIONS[15].civilians.some(c=>c.x===x&&c.y===y)));},
+ deployments:{recommended:[[8,11],[9,11],[6,11],[11,11],[7,12],[10,12],[5,12],[12,12]],assault:[[8,11],[9,11],[3,11],[14,11],[7,11],[10,11],[4,12],[13,12]],defense:[[7,12],[9,12],[6,12],[10,11],[8,11],[7,11],[5,12],[11,12]]},
+ threatTurn:3,par:9,turnLimit:12,level:13,deployLimit:7,watchRadius:2,clerkStart:1,
+ objective:'서기 세 명의 행방을 모두 정하고 상자 2개 이상 확보 · 기록관 생존 · 상자 2개가 성문 밖으로 나가면 패배 · TURN 12 안에',
+ brief:'재상부 서기 셋이 곧바로 각자 성문(북서·서·동)으로 달아납니다(턴마다 2칸). 서기를 쓰러뜨리면 상자를 확보합니다. 회색 망토가 길을 막고, TURN 3부터 기록관을 노립니다. 왕도 경비대(중립) 곁 2칸 안에서 싸우면 한 번 경고하고, 두 번째에는 경비대가 적이 됩니다.'});
+// M16 The Forgotten Battlefield: a battlefield of the civil war that no one nearby remembers, under fog. Two chancellery
+// memory harvesters draw on the ward stones; while one stands beside an unsearched stone, heroes near it lose MP each turn.
+// Searching a stone shows an echo and clears the fog around it. Scavengers of the banner that betrayed the legion at the
+// summit pick over the field; their captain challenges Erik to a duel on TURN 3. Recruits who left the legion (and Ines, if
+// she never joined) wander in on TURN 2 as allies; alive at the end, they come back.
+const SCAV16={iron:{name:'철왕관',soldier:'ironSpear',kind:'spear',archer:'ironArcher',captain:'ironInfantry'},free:{name:'연맹',soldier:'mercSpear',kind:'spear',archer:'pursuerArcher',captain:'lordA'},flame:{name:'성화',soldier:'flameKnight',kind:'bandit',archer:'fortArcher',captain:'flameKnight'}};
+export const scavengerLook16=(f,role)=>SCAV16[f]?.[role]||SCAV16.iron[role];
+const scav16=(id,x,y,role='soldier',stats={})=>unit(id,'배신한 깃발의 약탈대',role==='archer'?'archer':'spear',x,y,{hp:70,atk:42,def:21,res:12,spd:22,mov:3,scav:role,...(role==='archer'?{range:[2,3],hp:56,atk:40,def:15,spd:24}:{}),...stats});
+const harvester16=(id,x,y,stone)=>unit(id,'기억 수확자','harvester',x,y,{hp:84,atk:40,def:16,res:40,spd:20,mov:2,range:[1,2],look:'harvester',stone});
+const echo16=(id,name,x,y)=>({id,name,kind:'wardStone',x,y});
+const return16=(id,look,x,y)=>ally(id,look==='thea'?'테아':look==='dario'?'다리오':'이네스',look,x,y,{returning:look,benched:true});
+MISSIONS[16]=authored({id:16,title:'잊힌 전장',en:'The Forgotten Battlefield',weather:'fog',
+ rows:['mmffgggggggggggffm','mfgggxggrrggxggggf','fggggxgrrggggxgggf','ggggggrrggfgggggfg','gggfggrggggggfgggg','ggxxgrrgggxxggggxg','gggggrggfggrrggggg','wwwwbwwwwwwbwwwwww','ggggrggfgggrgggfgg','gfggrgggggggrggggg','ggggrrggxxggrrgggf','fggggrrrrrrrrggggf','ggfggggrrrrggggfgg','gggggggrrrrggggggg'],
+ enemies:[harvester16('h1',2,3,'st1'),harvester16('h2',14,3,'st2'),
+  scav16('cap',9,4,'captain',{name:'배신한 깃발의 기사대장',kind:'captain',hp:110,atk:46,def:24,res:16,spd:24}),
+  scav16('s1',6,5),scav16('s2',11,6),scav16('s3',8,2),scav16('s4',4,9),scav16('s5',13,9),scav16('a1',11,1,'archer'),scav16('a2',4,1,'archer')],
+ objects:[echo16('st1','결계석',2,4),echo16('st2','결계석',14,4),echo16('st3','결계석',9,9)],
+ allies:[return16('rthea','thea',0,11),return16('rdario','dario',0,12),return16('rines','ines',1,13)],
+ waves:[{turn:4,story:'16:reinforce',units:[scav16('s6',8,0),scav16('s7',12,0)]},{turn:6,units:[scav16('s8',0,5),scav16('a3',17,5,'archer')]}],
+ deployZone:s=>{const base=[];for(let y=10;y<=13;y++)for(let x=2;x<=15;x++)base.push([x,y]);return zone(base.filter(([x,y])=>Number.isFinite(TERRAIN[MISSIONS[16].map[y][x]].cost)&&!(MISSIONS[16].objects||[]).some(o=>o.x===x&&o.y===y)));},
+ deployments:{recommended:[[8,11],[9,11],[5,11],[12,11],[7,12],[10,12],[4,12],[13,12]],assault:[[7,10],[10,10],[4,10],[12,10],[7,11],[10,11],[5,11],[11,11]],defense:[[8,12],[9,12],[6,12],[11,12],[7,13],[10,13],[5,13],[12,13]]},
+ threatTurn:99,par:10,turnLimit:14,level:14,deployLimit:7,harvestMP:3,harvestRadius:3,clearRadius:2,duelTurn:3,returnTurn:2,
+ objective:'기억 수확자 2명 격파 · TURN 14 안에 (돌아온 동료가 쓰러져도 패배는 아님)',
+ brief:'안개: 활과 마법의 사거리 −1, 3칸 밖의 적은 정체가 보이지 않습니다. 결계석(3)을 조사하면 그 주위 2칸의 안개가 걷힙니다. 수확자가 조사하지 않은 결계석 곁에 있으면 턴마다 그 돌 3칸 안 장수의 MP가 3 줄어듭니다. TURN 3 기사대장이 에릭에게 일기토를 청합니다.'});
 // v0.5.0 Phase E (D-047): promotion trials (101–105) and the repeatable Legion Drill (110). Non-story
 // skirmishes after ACT I: never pushed into campaign.completed, no gold, permanent EXP (mission level 7).
 // goal: survive (turn N ends with `protect` alive) · rout (all enemies down by `limit`) · reach (hero at row ≤ y)

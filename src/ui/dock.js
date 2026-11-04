@@ -1,3 +1,4 @@
+import {commandsFor,COMMANDS} from '../core/command.js';
 import {effectiveStats} from '../core/economy.js';
 import {HEROES,partyHeroes} from '../data/game-data.js';
 import {findUnit,alive,forecast,skillCost,validTarget} from '../core/rules.js';
@@ -29,7 +30,7 @@ export function contextMessage(s,u,ui){
 export function renderDock(s,ui,esc,portrait,bar){
  const u=findUnit(s,ui.selected)||findUnit(s,'eric'),deploy=s.screen==='deployment',active=canAct(s,u)&&!ui.busy;
  const command=(action,label,extra='',disabled=false,id='',klass='')=>`<button data-do="${action}" ${id?`data-id="${id}"`:''} class="${klass} ${action==='mode'&&ui.mode===id?'active':''}" ${disabled?'disabled':''}>${label}${extra?`<small>${extra}</small>`:''}</button>`;
- let commands=deploy?command('warroom','← 회의','',false)+command('preset','✦ 추천','',false,'recommended')+command('start-battle','⚔ 전투 시작','',false,'','primary'):
+ let commands=deploy?command('warroom','← 회의','',false)+command('preset','✦ 추천','',false,'recommended')+(commandsFor(s).length?command('aren-command',s.command?`군령 「${COMMANDS[s.command].ko}」`:'군령 없음',s.command?COMMANDS[s.command].effect:'아렌의 명령을 고릅니다',false,'',s.command?'active':''):'')+command('start-battle','⚔ 전투 시작','',false,'','primary'):
  command('mode','이동',`${effectiveStats(s,u).mov+(u.shadowBonus||0)} MOV`,!active||u.moved,'move')+command('mode','공격',`${u.range.join('–')}칸`,!active,'attack')+command('mode',u.skill,`${skillCost(u)} MP`,!active||u.mp<skillCost(u),'skill')+command('wait','대기','행동 종료',!active)+command('mode','주민 구출','인접 1칸',!active,'rescue')+command('undo','이동 취소','',!active||!s.undo[u.id])+command('item','회복약',`${s.potions}개 · +20 HP`,!active||!s.potions||u.hp===u.maxHP)+command('next','다음 장수','',ui.busy);
  let context=`<div class="dock-hint" role="status">${esc(contextMessage(s,u,ui))}</div>`;
  if(ui.inspected){const t=findUnit(s,ui.inspected);if(t)context=`<div class="dock-hint">${esc(t.name)} · HP ${t.hp}/${t.maxHP} · ${ui.notice||'현재 공격 사거리 밖입니다. 이동 또는 다른 장수의 공격을 선택하세요.'} <button class="small" data-do="unit-info" data-id="${t.id}|ability">정보</button></div>`;}

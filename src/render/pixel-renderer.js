@@ -4,7 +4,7 @@ import {MapCamera,drawMinimap} from './camera.js';
 import {drawBuilding,drawFire} from './world-art.js';
 import {MAP,WIDTH,HEIGHT} from '../data/game-data.js';
 import {missionOf} from '../data/missions.js';
-import {alive,movement,validTarget,litAt,lightSources,watchedTiles,FACING} from '../core/rules.js';
+import {alive,movement,validTarget,litAt,lightSources,watchedTiles,FACING,weatherOf,fogClear,fogHidden} from '../core/rules.js';
 import {TILE,drawTile,drawSprite,pixel,pixelOval} from './art.js';
 import {RANGE_STYLE,moveDuration,motionAt,presentationPlan} from './animation.js';
 import {drawCombatEffect,effectPhase,drawClassEffect} from './combat-effects.js';
@@ -73,7 +73,7 @@ export class BattleRenderer{
    if(threatIds.has(u.id)&&Math.floor(now/400)%2){c.fillStyle='#e8594a';c.beginPath();c.moveTo(ux-9,uy-50);c.lineTo(ux+9,uy-50);c.lineTo(ux,uy-38);c.closePath();c.fill();c.fillStyle='#fff2d0';c.font='bold 12px sans-serif';c.textAlign='center';c.fillText('!',ux,uy-41);c.textAlign='start';}
    if(u.guarding&&!u.guardUsed){rect(c,'#2a3a44',ux+12,uy-44,13,15);rect(c,'#e7c783',ux+13,uy-43,11,13);rect(c,'#3f7fa3',ux+15,uy-41,7,9);}
    statusChips(c,u,s,ux,uy);
-   if(u.team!=='object'&&(u.team!=='civilian'||u.hp<u.maxHP)){rect(c,'#18242a',ux-23,uy+27,46,5);rect(c,u.team==='enemy'?'#e8594a':u.team==='civilian'?'#f0cf6a':'#5fd38a',ux-22,uy+28,Math.max(1,Math.floor(44*this.displayHP(u,now)/u.maxHP)),3);}
+   if(u.team!=='object'&&(u.team!=='civilian'||u.hp<u.maxHP)&&!fogHidden(s,u)){rect(c,'#18242a',ux-23,uy+27,46,5);rect(c,u.team==='enemy'?'#e8594a':u.team==='civilian'?'#f0cf6a':'#5fd38a',ux-22,uy+28,Math.max(1,Math.floor(44*this.displayHP(u,now)/u.maxHP)),3);}
    if(effects.some(e=>['hit','critical'].includes(e.type))&&Math.floor(now/70)%2){rect(c,'rgba(255,224,192,.5)',ux-22,uy-40,44,62);}
    }});
   }
@@ -81,6 +81,10 @@ export class BattleRenderer{
   // v0.7 M11 night (D-068): tiles outside every light are covered in dark blue; lit tiles get a faint warm glow.
   if(missionOf(s).night){const src=lightSources(s);for(let ty=0;ty<HEIGHT;ty++)for(let tx=0;tx<WIDTH;tx++){const d=Math.min(...src.map(p=>Math.abs(p.x-tx)+Math.abs(p.y-ty)-p.r));
    rect(c,d<=0?'rgba(255,186,96,.08)':d===1?'rgba(10,14,34,.44)':'rgba(6,8,26,.64)',tx*TILE,ty*TILE,TILE,TILE);}}
+  // v0.9 M16 fog (D-079): a grey haze over every tile; it is thin within three tiles of a hero and gone where a ward stone
+  // was searched. A hidden enemy shows as a dim shape with no health bar.
+  if(weatherOf(s)==='fog'){const heroes=s.units.filter(h=>h.team==='ally'&&!h.benched&&alive(h));for(let ty=0;ty<HEIGHT;ty++)for(let tx=0;tx<WIDTH;tx++){if(fogClear(s,tx,ty))continue;const d=Math.min(99,...heroes.map(h=>Math.abs(h.x-tx)+Math.abs(h.y-ty)));
+   rect(c,d<=3?'rgba(200,206,214,.16)':'rgba(176,184,194,.46)',tx*TILE,ty*TILE,TILE,TILE);}}
   if(ui.pendingMove){for(const [i,p] of ui.pendingMove.path.entries()){rect(c,i===ui.pendingMove.path.length-1?'#ffe5a0':'#d2ebdf',p.x*TILE+28,p.y*TILE+29,8,5);}c.strokeStyle='#ffe0a2';c.lineWidth=3;c.strokeRect(ui.pendingMove.x*TILE+2,ui.pendingMove.y*TILE+2,60,60);}
   if(ui.hover&&ui.hover.x>=0&&ui.hover.x<WIDTH&&ui.hover.y>=0&&ui.hover.y<HEIGHT){c.strokeStyle='#e4ddbd';c.lineWidth=2;c.strokeRect(ui.hover.x*TILE+1,ui.hover.y*TILE+1,60,60);}
   this.effects=this.effects.filter(e=>now<e.start+e.duration);for(const e of this.effects){const u=s.units.find(u=>u.id===e.id);if(!u||now<e.start||e.type==='move')continue;if(e.type==='attack'){drawCombatEffect(c,e,s.units,now,this.reduced);continue;}if(e.type==='class')drawClassEffect(c,e,s.units,now,this.reduced);const age=(now-e.start)/e.duration;if(e.type==='heal'||e.type==='guard'){const radius=8+age*22;pixelOval(c,e.type==='heal'?'rgba(147,219,164,.35)':'rgba(151,205,237,.35)',u.x*TILE+32,u.y*TILE+32,radius,radius/2);}if(e.type==='death'){drawHDFigure(c,hdCastFor(u,s.missionId),u.x*TILE+32,u.y*TILE+61,{pose:'death',facing:this.facing?.get(u.id)||'down'});}
@@ -89,6 +93,10 @@ export class BattleRenderer{
 }
 // M06 mission objects (original): rune seal stones, the side-gate lever and the side gate itself.
 function drawMissionObject(c,u,x,y,now){const done=u.rescued,glow=.5+.3*Math.sin(now/300+u.x);
+ // v0.9 M16 ward stone (original, temporary): a standing stone carved with runes; it glows violet until searched (inert).
+ if(u.kind==='wardStone'){c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+22,15,5,0,0,Math.PI*2);c.fill();rect(c,'#5a5e66',x-9,y-16,18,38);rect(c,'#767a84',x-9,y-16,18,4);rect(c,'#43464e',x+5,y-12,4,34);
+  const lit=!u.inert;c.fillStyle=lit?`rgba(160,138,255,${.25+glow*.25})`:'rgba(220,230,240,.25)';c.beginPath();c.ellipse(x,y-2,24,30,0,0,Math.PI*2);c.fill();
+  for(const [dx,dy] of [[-3,-8],[2,-2],[-2,4],[3,10]])rect(c,lit?'#c4b6ff':'#9aa0aa',x+dx,y+dy,3,3);return;}
  // v0.7 M11 roadside brazier (original): an iron bowl on a stone post; lit braziers burn and glow.
  if(u.kind==='brazier'){c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+22,14,5,0,0,Math.PI*2);c.fill();rect(c,'#6a645a',x-6,y-2,12,24);rect(c,'#857e72',x-6,y-2,12,3);rect(c,'#3a3632',x-14,y-10,28,9);rect(c,'#58524a',x-14,y-10,28,2);
   if(u.lit){const f=Math.sin(now/90+u.x)*1.5;c.fillStyle=`rgba(255,180,90,${.18+glow*.12})`;c.beginPath();c.ellipse(x,y-14,30,22,0,0,Math.PI*2);c.fill();for(const [w,h,col] of [[10,18+f,'#e2582a'],[7,13+f,'#f39a3a'],[4,8+f,'#ffe08a']]){c.fillStyle=col;c.beginPath();c.moveTo(x-w,y-10);c.quadraticCurveTo(x-w*.6,y-10-h*.6,x,y-10-h);c.quadraticCurveTo(x+w*.6,y-10-h*.6,x+w,y-10);c.closePath();c.fill();}}else{rect(c,'#2a2624',x-10,y-13,20,4);c.fillStyle=`rgba(240,206,120,${glow*.35})`;c.fillRect(x-18,y-24,36,48);}return;}
@@ -116,7 +124,10 @@ function drawEvidence(c,u,x,y,now){const glow=.45+.25*Math.sin(now/320+u.x);c.fi
  const box=u.evidence==='ledger'?'#7a5534':u.evidence==='seal'?'#4f4a78':'#6d4a3b';rect(c,'#2a1d16',x-17,y-2,34,24);rect(c,box,x-16,y-1,32,22);rect(c,'#b98d52',x-16,y+6,32,3);rect(c,'#b98d52',x-3,y-1,6,22);
  rect(c,'#efe2bf',x-11,y-9,22,9);rect(c,'#c9b48a',x-11,y-2,22,2);rect(c,u.evidence==='seal'?'#9fd1e6':'#c8473d',x-3,y-7,6,5);rect(c,'#fff4d0',x-1,y-6,2,2);}
 // v0.8.0 status chips above a unit (poison, confusion, bind, silence, provoked, weakened, strengthened).
+// Art pack E: painted status icons (sheet E), Provoke (F2) and the supply crate (A15) replace the letter chips when present.
+const CHIP_ART=typeof ASHEN_ITEMS!=='undefined'?ASHEN_ITEMS:{},CHIP_ID={crate:'supplyCrate',poison:'poison',confuse:'confuse',bind:'bind',silence:'silence',provoke:'provoke',debuff:'debuff',buff:'buff'},chipImages=new Map();
+function chipImage(k){const src=CHIP_ART[CHIP_ID[k]];if(!src||typeof Image==='undefined')return null;let img=chipImages.get(k);if(!img){img=new Image();img.src=src;chipImages.set(k,img);}return img.complete&&img.naturalWidth?img:null;}
 const CHIP={crate:['보','#9a6a2e'],poison:['독','#3f8f3a'],confuse:['혼','#7d4fb8'],bind:['속','#8a5a32'],silence:['침','#5d6670'],provoke:['!','#c8452f'],debuff:['↓','#43474d'],buff:['↑','#b8862f']};
 function statusChips(c,u,s,ux,uy){if(s.screen!=='battle')return;const on=[...(u.carrier&&u.hp>0?['crate']:[]),...Object.keys(u.status||{})]; // v0.8.1 supply carrierif(u.provokedBy&&u.provokedBy.turn===s.turn)on.push('provoke');if(u.atkDown&&s.turn<=u.atkDown.until||u.defDown&&s.turn<=u.defDown.until)on.push('debuff');if(u.rally!=null&&s.turn<=u.rally||u.drum!=null&&s.turn<=u.drum||u.provokeGuard!=null)on.push('buff');
- on.forEach((k,i)=>{const [t,col]=CHIP[k]||['?','#555'];const x=ux-29+i*15,y=uy-50;c.fillStyle='rgba(18,22,26,.85)';c.fillRect(x-1,y-1,15,15);c.fillStyle=col;c.fillRect(x,y,13,13);c.fillStyle='#fff8e6';c.font='bold 10px sans-serif';c.textAlign='center';c.fillText(t,x+6.5,y+10.5);c.textAlign='start';});}
+ on.forEach((k,i)=>{const [t,col]=CHIP[k]||['?','#555'];const x=ux-29+i*15,y=uy-50,img=chipImage(k);if(img){const px=ux-31+i*20,py=uy-54;c.fillStyle='rgba(18,22,26,.82)';c.beginPath();c.arc(px+9,py+9,10.5,0,Math.PI*2);c.fill();c.strokeStyle='#d8bb7c';c.lineWidth=1.5;c.stroke();const sm=c.imageSmoothingEnabled;c.imageSmoothingEnabled=true;c.drawImage(img,px-1,py-1,20,20);c.imageSmoothingEnabled=sm;return;}c.fillStyle='rgba(18,22,26,.85)';c.fillRect(x-1,y-1,15,15);c.fillStyle=col;c.fillRect(x,y,13,13);c.fillStyle='#fff8e6';c.font='bold 10px sans-serif';c.textAlign='center';c.fillText(t,x+6.5,y+10.5);c.textAlign='start';});}
 

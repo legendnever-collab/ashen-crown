@@ -2,8 +2,8 @@
 // the choices alternated (M07 deserters handover/legion, M08 order hold/rescue — the rescue runs deploy with the
 // 'defense' preset so two heroes start by the rear village); saves round-trip mid-campaign.
 import {newGame,startBattle,nextMission,presetDeployment} from '../src/core/game.js';import {playBattle} from './player-policy.mjs';import {playCampaignBattle,setPersuadeFirst} from './campaign-policy.mjs';
-import {chooseDeserters,chooseOrder} from '../src/core/mission-rules-v06.js';import {chooseStance} from '../src/core/mission-rules-v061.js';import {chooseOath,chooseRecords} from '../src/core/mission-rules-v070.js';import {serialize,deserialize} from '../src/persistence/save-manager.js';import fs from 'node:fs';
-const N=+process.argv[2]||30,start=+process.argv[3]||20261014,out=[];
+import {chooseDeserters,chooseOrder} from '../src/core/mission-rules-v06.js';import {chooseStance} from '../src/core/mission-rules-v061.js';import {chooseOath,chooseRecords} from '../src/core/mission-rules-v070.js';import {serialize,deserialize} from '../src/persistence/save-manager.js';import {chooseRecords15,chooseStones16} from '../src/core/mission-rules-v090.js';import fs from 'node:fs';
+const N=+process.argv[2]||30,start=+process.argv[3]||20261014,out=[],out3=[];
 for(let seed=start;seed<start+N;seed++){let s=newGame(seed);s.screen='deployment';startBattle(s);playBattle(s);
  for(const id of [2,3,4,5,6]){s=nextMission(s);if(id===5)s.campaign.choices.m05_erik_answer=seed%2?'present':'acknowledged';s.screen='deployment';startBattle(s);playCampaignBattle(s,id===2?seed%2===0:true);if(s.outcome!=='victory')break;if(id===4)s.campaign.choices.m04_records_choice=seed%2?'kept':'reported';}
  if(s.outcome!=='victory'){out.push({seed,stop:s.missionId,outcome:s.outcome});continue;}
@@ -36,7 +36,16 @@ for(let seed=start;seed<start+N;seed++){let s=newGame(seed);s.screen='deployment
  if(s.outcome!=='victory'){r.feats=[...(s.campaign.feats||[])];out.push(r);continue;}
  s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
  Object.assign(r,{m14:p.outcome,t14:s.turn,why14:s.reason,betrayer:s.missionState.betrayer,arrived14:s.missionState.arrived.length,recruit14:s.campaign.flags.mission_14_recruit,departed:Object.keys(s.campaign.departed||{}).join('+'),trust14:s.campaign.factionTrust});
- r.feats=[...(s.campaign.feats||[])];out.push(r);}
+ r.feats=[...(s.campaign.feats||[])];out.push(r);
+ // v0.9.0 ACT III part 1 (D-079): the campaigns that finish ACT II go on to M15–M16 (records choice and stones alternated).
+ // Written to test-output/act3-balance.json so act2-balance.json stays comparable with earlier evidence.
+ if(p.outcome!=='victory')continue;const a={seed,lv:s.units.filter(u=>u.team==='ally').map(u=>`${u.id}${u.level}`).join(' '),departed:Object.keys(s.campaign.departed||{}).join('+'),inesIn:!!s.campaign.roster?.includes('ines')};
+ s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+ Object.assign(a,{m15:p.outcome,t15:s.turn,why15:s.reason,boxes:s.missionState.secured?.length,watch:s.missionState.turned?'turned':s.missionState.warned?'warned':'calm'});
+ if(p.outcome==='victory'){chooseRecords15(s,['archivist','keep','post'][seed%3]);s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+  Object.assign(a,{m16:p.outcome,t16:s.turn,why16:s.reason,echoes:s.missionState.searched?.length,duel:s.duel?.result||'none',returning:s.missionState.returning.join('+'),rejoined:s.missionState.returning.filter(id=>s.campaign.roster?.includes(id)).join('+')});
+  if(p.outcome==='victory')chooseStones16(s,seed%2?'break':'leave');}
+ a.feats=[...(s.campaign.feats||[])].filter(id=>id>=15);out3.push(a);}
 // v0.8.1: hidden objectives the policy won along the way (it never aims at them) — for the play-test notes, not a gate.
 for(const o of out)o.feats=o.feats||[];
 for(const o of out)console.log(JSON.stringify(o));
@@ -44,4 +53,9 @@ const w7=out.filter(o=>o.m7==='victory'),w8=out.filter(o=>o.m8==='victory'),w9=o
 const featRate=Object.fromEntries(Array.from({length:14},(_,i)=>[`M${i+1}`,out.filter(o=>o.feats.includes(i+1)).length]));
 const summary={seeds:out.length,featRate,m7Wins:w7.length,m8Wins:w8.length,m7Turns:w7.map(o=>o.t7),m8Turns:w8.map(o=>o.t8),theaJoined:out.filter(o=>o.thea).length,captured:out.filter(o=>o.captured).length,fullConvoy:out.filter(o=>o.through===3).length,rescueSaved:out.filter(o=>o.order==='rescue').map(o=>o.saved),m9Wins:w9.length,m9Turns:w9.map(o=>o.t9),delegatesAll:out.filter(o=>o.delegates===3).length,captured9:out.filter(o=>o.captured9).length,m10Wins:w10.length,m10ByStance:Object.fromEntries(['a','b','mediate'].map(k=>[k,{runs:out.filter(o=>o.stance===k).length,wins:w10.filter(o=>o.stance===k).length,turns:w10.filter(o=>o.stance===k).map(o=>o.t10)}])),mediated:out.filter(o=>o.mediated).length,villagers10All:out.filter(o=>o.villagers10===3).length,darioJoined:out.filter(o=>o.dario).length,m11Wins:w11.length,m11Turns:w11.map(o=>o.t11),pilgrimsAll:out.filter(o=>o.arrived===4).length,braziersAll:out.filter(o=>o.lit===3).length,m12Wins:w12.length,m12Turns:w12.map(o=>o.t12),quietLedger:w12.filter(o=>o.quiet).length,abbotCaptured:w12.filter(o=>o.abbot).length,records12:Object.fromEntries(['return','take','copy'].map(k=>[k,out.filter(o=>o.records12===k).length])),inesJoined:out.filter(o=>o.ines).length,m13Wins:w13.length,m13Turns:w13.map(o=>o.t13),baldrick:Object.fromEntries(['halted','broken','held'].map(k=>[k,w13.filter(o=>o.baldrick===k).length])),refugees13All:w13.filter(o=>o.refugees13===4).length,m14Wins:w14.length,m14Turns:w14.map(o=>o.t14),betrayer:Object.fromEntries(['iron','free','flame'].map(k=>[k,out.filter(o=>o.betrayer===k).length])),recruit14:Object.fromEntries(['stayed','left','none'].map(k=>[k,w14.filter(o=>o.recruit14===k).length]))};
 console.log(JSON.stringify(summary));fs.mkdirSync('test-output',{recursive:true});fs.writeFileSync('test-output/act2-balance.json',JSON.stringify({summary,runs:out},null,1));
+const w15=out3.filter(o=>o.m15==='victory'),w16=out3.filter(o=>o.m16==='victory');
+const summary3={campaigns:out3.length,m15Wins:w15.length,m15Turns:w15.map(o=>o.t15),boxes:Object.fromEntries([2,3].map(n=>[n,w15.filter(o=>o.boxes===n).length])),watch:Object.fromEntries(['calm','warned','turned'].map(k=>[k,out3.filter(o=>o.watch===k).length])),
+ m16Wins:w16.length,m16Turns:w16.map(o=>o.t16),echoesAll:w16.filter(o=>o.echoes===3).length,duel:Object.fromEntries(['hero','foe','skipped','none'].map(k=>[k,out3.filter(o=>o.duel===k).length])),returned:out3.filter(o=>o.returning).length,rejoined:out3.filter(o=>o.rejoined).length,featRate:{M15:out3.filter(o=>o.feats.includes(15)).length,M16:out3.filter(o=>o.feats.includes(16)).length}};
+for(const o of out3)console.log(JSON.stringify(o));console.log(JSON.stringify(summary3));fs.writeFileSync('test-output/act3-balance.json',JSON.stringify({summary:summary3,runs:out3},null,1));
+if(w15.length<out3.length*0.9||w16.length<w15.length*0.9)process.exit(1);
 if(w7.length<out.length*0.9||w8.length<w7.length*0.9||w9.length<w8.length*0.9||w10.length<w9.length*0.9||w11.length<w10.length*0.9||w12.length<w11.length*0.9||w13.length<w12.length*0.9||w14.length<w13.length*0.9)process.exit(1);

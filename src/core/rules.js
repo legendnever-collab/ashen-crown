@@ -42,7 +42,9 @@ export function rangeFor(u,mode='attack',s=null){const t2=(u.classTier||1)>=2;if
  const roof=s&&base[1]>=2&&mode!=='skill'&&TERRAIN[missionOf(s).map[u.y]?.[u.x]]?.high?1:0;
  // v0.8.1 Hawk Feather (treasure): a bow reaches one tile further.
  const hawk=s&&base[1]>=2&&(mode==='attack'||mode==='skill'&&u.id==='elina')?fx(s,u,'hawk'):0;
- return roof||hawk?[base[0],base[1]+roof+hawk]:base;}
+ // v0.9 fog (M16): bows and spells reach one tile less, unless the archer stands where the fog was cleared or carries the Mist Lantern.
+ const fog=s&&base[1]>=2&&foggedFor(s,u)?1:0;
+ return roof||hawk||fog?[base[0],Math.max(base[0],base[1]+roof+hawk-fog)]:base;}
 export function validTarget(s,u,t,mode='attack'){
  if(!u||!t||!alive(u)||!alive(t))return false;
  const d=distance(u,t);if(t.team==='object')return mode==='search'&&u.team==='ally'&&d===1&&!t.locked&&!t.inert;if(mode==='search')return false;if(mode==='capture')return (s.missionId===2&&t.id==='boss'||[].concat(missionOf(s).capture||[]).includes(t.id))&&t.team==='enemy'&&t.hp<=t.maxHP/2&&d===1;
@@ -95,6 +97,13 @@ const LOOK_IRREGULAR=['monasteryGuard'];
 export const armOf=u=>u?.team==='ally'?HERO_ARM[u.id]||null:LOOK_IRREGULAR.includes(u?.look)?null:KIND_ARM[u?.kind]||null;
 const BEATS={cavalry:{infantry:1.2,archer:.8,spear:.8},infantry:{archer:1.2,cavalry:.8},spear:{archer:1.2,cavalry:1.2},archer:{cavalry:1.2,infantry:.8,spear:.8}};
 export function matchup(u,t){const a=armOf(u),b=armOf(t);return a&&b?BEATS[a]?.[b]||1:1;}
+// ---------- v0.9 ACT III weather (D-079, ACT3_DESIGN §7; numbers PROPOSED). M01–M14 have no weather. ----------
+// Fog: bows and spells reach one tile less; an enemy more than three tiles from every deployed hero is hidden (its numbers
+// are not shown). Tiles near a ward stone searched in M16 are clear (missionState.clear: [x, y, radius]).
+export const weatherOf=s=>missionOf(s)?.weather||null;
+export const fogClear=(s,x,y)=>(s?.missionState?.clear||[]).some(([cx,cy,r])=>Math.abs(cx-x)+Math.abs(cy-y)<=r);
+export const foggedFor=(s,u)=>weatherOf(s)==='fog'&&!fogClear(s,u.x,u.y)&&!fx(s,u,'mist');
+export const fogHidden=(s,u)=>weatherOf(s)==='fog'&&u?.team==='enemy'&&!fogClear(s,u.x,u.y)&&!s.units.some(h=>h.team==='ally'&&!h.benched&&alive(h)&&distance(h,u)<=3);
 export const ARM_KO={cavalry:'기병',infantry:'보병',archer:'궁병',spear:'창병'};
 // ---------- v0.7 ACT II part 2 (D-068; rules and numbers PROPOSED). ACT I and M07–M10 never meet these. ----------
 // Night (M11): lit braziers and the sanctuary tiles each light the tiles within `night.radius` (Manhattan).

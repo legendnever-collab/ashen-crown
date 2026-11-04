@@ -21,6 +21,8 @@ export function act2HubFor(missionId,phase='preparation'){const after=phase==='a
  // v0.7 (D-068): the pilgrim village below the Sacred Flame cathedral for M11–M12, the refugee camp after M12.
  if(missionId===11||missionId===12&&!after)return 'pilgrim';if(missionId===12||missionId===13&&!after)return 'refuge';
  // v0.7.1 (D-071): the camp before the summit at the ruined waystation (after M13, M14).
+ // v0.9.0 (D-079): ACT III — the capital's lower city for M15 and before M16, the field camp after M16.
+ if(missionId>=16&&after)return 'fieldcamp';if(missionId>=15)return 'capital';
  if(missionId>=13)return 'summit';return 'velmar';}
 // Story key → hub used as the staged backdrop ('pre:3', 'after:3:loss', '6:oath' …).
 export function stageHubFor(key){
@@ -181,4 +183,12 @@ HV5_SPECS.refuge={...HV5_SPECS.bivouac,name:'Refugee Camp · 피난민 야영지
 HV5_SPECS.summit={...HV5_SPECS.oathcamp,name:'Summit Camp · 폐허 역참 야영지',kind:'summit',
  npcs:[...HV5_SPECS.oathcamp.npcs.map(n=>n[0]==='elder'?['elder','역참 관리인',n[2],n[3]]:n[0]==='refugee'?['refugee','피난민',n[2],n[3]]:n),
   ['thea','테아 · 경계',10,11,{kind:'hero',requires:'thea'}],['dario','다리오 · 길목',10,12,{kind:'hero',requires:'dario'}],['ines','이네스 · 천막 곁',13,11,{kind:'hero',requires:'ines'}]]};
+// v0.9.0 (D-079, PROPOSED): the capital's lower city (M15 – M16 preparation). Until the ACT III art arrives it is drawn
+// with the Velmar market painting under a dusk tint (temporary: Velmar's layout, doors, forge and shop — never labelled
+// finished). After M16 the legion camps on the western plain under the night bivouac painting.
+HV5_SPECS.capital={...HV5_SPECS.velmar,name:'Royal Lower City · 왕도 하층가',kind:'capital',dusk:true,
+ npcs:HV5_SPECS.velmar.npcs.map(n=>n[0]==='elder'?['elder','늙은 기록관',n[2],n[3]]:n[0]==='refugee'?['refugee','하층가 주민',n[2],n[3]]:n[0]==='guard'?['guard','왕도 경비대',n[2],n[3]]:n[0]==='dario'?['dario','다리오 · 골목',n[2],n[3],{kind:'hero',requires:'dario'}]:n[0]==='thea'?['thea','테아 · 운하 길',n[2],n[3],{kind:'hero',requires:'thea'}]:n).concat([['ines','이네스 · 광장',19,9,{kind:'hero',requires:'ines'}]])};
+HV5_SPECS.fieldcamp={...HV5_SPECS.bivouac,name:'Field Camp · 잊힌 전장 야영지',kind:'fieldcamp',
+ npcs:[...HV5_SPECS.bivouac.npcs.map(n=>n[0]==='elder'?['elder','근처 마을 노인',16,5]:n[0]==='refugee'?['refugee','피난민',10,10]:n),
+  ['thea','테아 · 경계',13,4,{kind:'hero',requires:'thea'}],['dario','다리오 · 모닥불',11,9,{kind:'hero',requires:'dario'}],['ines','이네스 · 모닥불',14,6,{kind:'hero',requires:'ines'}]]};
 export const ART_HUBS=Object.fromEntries(Object.entries(HV5_SPECS).map(([id,spec])=>[id,hv5Build(id,spec)]));

@@ -3,8 +3,9 @@
 import {HEROES,TERRAIN,TERRAIN_COSTS,CLASS_MOVEMENT,HERO_CLASS,PROFILE_KO,heroDef} from '../data/game-data.js';
 import {GEAR,TOOLS} from '../data/frontier-data.js';
 import {effectiveStats} from '../core/economy.js';
-import {rangeFor,skillCost} from '../core/rules.js';
-import {itemIcon} from './item-art.js';
+import {rangeFor,skillCost,fogHidden} from '../core/rules.js';
+import {itemIcon,paintedIcon} from './item-art.js';
+import {SKILLS} from '../data/skills.js';
 import {classOf,nextClassOf,potentialOf,proficiencyOf,promotionStatus,heroRecord} from '../core/progression.js';
 import {CLASS_ACTIONS,PROFICIENCY_EFFECT} from '../data/classes.js';
 
@@ -29,6 +30,8 @@ const grade=v=>v>=24?'S':v>=19?'A':v>=14?'B':v>=10?'C':v>=6?'D':'E';
 function rangeGrid(min,max){let cells='';for(let y=-3;y<=3;y++)for(let x=-3;x<=3;x++){const d=Math.abs(x)+Math.abs(y),cls=d===0?'self':d>=min&&d<=max?'hit':'';cells+=`<i class="${cls}"></i>`;}return `<div class="range-grid" aria-label="공격 범위 ${min}–${max}">${cells}</div>`;}
 
 export function unitInfoHTML(s,u,tab,esc,portrait){
+ // v0.9 fog (M16): an enemy more than three tiles from every hero shows no numbers.
+ if(fogHidden(s,u))return `<div class="unit-info fogged"><h3>${esc(u.name)}</h3><p>안개 속이라 정체가 보이지 않습니다. 장수가 3칸 안으로 다가가거나 결계석을 조사해 안개를 걷으세요.</p></div>`;
  const hero=heroDef(u.id),v=u.team==='ally'?effectiveStats(s,u):u,profile=u.movementProfile||CLASS_MOVEMENT[HERO_CLASS[u.id]]?.profile||'infantry';
  const tabs=[['ability','능력'],['equipment','장비'],['tactics','기술'],['growth','성장'],['bio','열전'],['class','병종']].filter(([id])=>id!=='growth'||hero).map(([id,label])=>`<button data-do="unit-info" data-id="${u.id}|${id}" class="${tab===id?'active':''}">${label}</button>`).join('');
  const bar=(label,a,b,cls)=>`<div class="info-bar ${cls}"><span>${label}</span><div><i style="width:${Math.round(100*a/Math.max(1,b))}%"></i></div><b>${a}/${b}</b></div>`;
@@ -36,7 +39,7 @@ export function unitInfoHTML(s,u,tab,esc,portrait){
  let body='';
  if(tab==='ability')body=`<table class="grade-table">${[['ATK','공격력','atk'],['DEF','방어력','def'],['MAG','정신력','mag'],['RES','저항력','res'],['SPD','순발력','spd']].map(([k,ko,f])=>`<tr><th>${ko}</th><td class="grade g-${grade(v[f]||0)}">${grade(v[f]||0)}</td><td>${v[f]||0}${u.team==='ally'&&v[f]!==u[f]?` <small>(기본 ${u[f]})</small>`:''}</td></tr>`).join('')}<tr><th>이동력</th><td class="grade">${v.mov}</td><td>${PROFILE_KO[profile]||'보병'}</td></tr></table>${hero?`<p class="info-note">특성 · <b>${esc(u.talent)}</b> — ${esc(hero.description)}</p><p class="info-note">잠재력 단서 · ${esc(u.clues?.join(', ')||'아직 발견하지 못했다')}</p>`:''}`;
  if(tab==='equipment')body=u.team!=='ally'?`<p class="info-note">장비 정보를 알 수 없다.</p>${u.carrier?`<p class="info-note carrier-note">${itemIcon('supplyCrate',28)} 보급병 · 쓰러뜨리면 ${esc(TOOLS[u.carrier].name)}을(를) 떨어뜨린다.</p>`:''}`:`<div class="info-slots">${['weapon','armor','accessory','treasure'].map(slot=>{const g=s.economy.gear.find(a=>a.id===s.economy.equipped[u.id]?.[slot]);return `<div class="doll-slot ${g?'filled':''}"><span class="doll-name">${{weapon:'무기',armor:'방어구',accessory:'장신구',treasure:'보물'}[slot]}</span>${g?itemIcon(g.type,40):`<span class="doll-empty">${slot==='treasure'?'없음':'기본'}</span>`}<b>${g?`${esc(GEAR[g.type].name)} ★${g.star}`:slot==='treasure'?'보물 없음':'기본 장비'}</b></div>`;}).join('')}</div>`;
- if(tab==='tactics')body=hero?`<div class="tactic-card"><h4>${esc(u.skill)} <small>MP ${skillCost(u)}</small></h4><p>${esc(SKILL_NOTE[u.id]||hero.description)}</p>${(u.classTier||1)>=2&&classOf(u)?.skillNote?`<p class="info-note">✦ ${esc(classOf(u).ko)} · ${esc(classOf(u).skillNote)}</p>`:''}${rangeGrid(...rangeFor(u,'skill',s))}</div>${(u.classTier||1)>=2&&CLASS_ACTIONS[classOf(u)?.action]?`<div class="tactic-card"><h4>✦ ${esc(CLASS_ACTIONS[classOf(u).action].ko)} <small>MP ${CLASS_ACTIONS[classOf(u).action].cost}</small></h4><p>${esc(CLASS_ACTIONS[classOf(u).action].note)}</p></div>`:''}`:'<p class="info-note">기술을 쓰지 않는다.</p>';
+ if(tab==='tactics')body=hero?`<div class="tactic-card"><h4>${paintedIcon(SKILLS.find(k=>k.hero===u.id&&k.slot===1)?.id,32,'skill-icon')}${esc(u.skill)} <small>MP ${skillCost(u)}</small></h4><p>${esc(SKILL_NOTE[u.id]||hero.description)}</p>${(u.classTier||1)>=2&&classOf(u)?.skillNote?`<p class="info-note">✦ ${esc(classOf(u).ko)} · ${esc(classOf(u).skillNote)}</p>`:''}${rangeGrid(...rangeFor(u,'skill',s))}</div>${(u.classTier||1)>=2&&CLASS_ACTIONS[classOf(u)?.action]?`<div class="tactic-card"><h4>${paintedIcon(SKILLS.find(k=>k.hero===u.id&&k.slot===3)?.id,32,'skill-icon')||'✦ '}${esc(CLASS_ACTIONS[classOf(u).action].ko)} <small>MP ${CLASS_ACTIONS[classOf(u).action].cost}</small></h4><p>${esc(CLASS_ACTIONS[classOf(u).action].note)}</p></div>`:''}`:'<p class="info-note">기술을 쓰지 않는다.</p>';
  if(tab==='growth'&&hero)body=growthHTML(s,u,esc);
  if(tab==='bio')body=`<p class="info-bio">${esc(BIO[u.id]||ENEMY_BIO[u.kind]||(u.team==='enemy'?'국경을 어지럽히는 무리의 일원. 자세한 내력은 알려지지 않았다.':'피난길에 오른 국경 마을 주민.'))}</p>`;
  if(tab==='class'){const types=['g','r','f','m','d','s','b','v'];body=`<div class="class-grid"><div><h4>${esc(PROFILE_KO[profile]||'보병')} · 지형 적성</h4><table class="apt-table">${types.map(t=>{const c=TERRAIN_COSTS[profile]?.[t]??TERRAIN[t].cost,T=TERRAIN[t];return `<tr><th>${T.ko}</th><td>${Number.isFinite(c)?`이동 ${c}`:'불가'}</td><td>${T.phys?`피해 ${Math.round(T.phys*100)}%↓ `:''}${T.evade?`회피 ${T.evade>0?'+':''}${T.evade}% `:''}${T.fire&&T.fire!==1?`화공 ×${T.fire}`:''}</td></tr>`;}).join('')}</table></div><div><h4>공격 범위</h4>${rangeGrid(...u.range)}<p class="info-note">${u.range[0]===u.range[1]?`사거리 ${u.range[0]}`:`사거리 ${u.range[0]}–${u.range[1]}`}${u.range[0]>1?' · 인접한 적은 공격할 수 없다':''}</p></div></div>`;}

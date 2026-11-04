@@ -8,9 +8,10 @@ export function recruitRecord(id,level=1){
  for(let lv=2;lv<=level;lv++){const changes={...h.growth};for(const [k,n]of Object.entries(changes)){if(k==='hp')u.maxHP+=n;else if(k==='mp')u.maxMP+=n;else u[k]+=n;}u.level=lv;u.growthHistory.push({level:lv,changes});}
  u.hp=u.maxHP;u.mp=u.maxMP;return u;
 }
-export function joinRoster(s,id,level=1){
+// v0.9.0: `record` brings back a recruit's own record (the one kept aside in campaign.departed) instead of a new one.
+export function joinRoster(s,id,level=1,record=null){
  if(!RECRUIT_HEROES.some(h=>h.id===id))return false;const c=s.campaign;c.roster??=[];if(c.roster.includes(id))return false;
- c.roster.push(id);const rec=recruitRecord(id,level);if(Array.isArray(c.heroes))c.heroes.push(rec);
+ c.roster.push(id);const rec=record?structuredClone(record):recruitRecord(id,level);if(Array.isArray(c.heroes))c.heroes.push(rec);
  for(const e of [c.economy,s.economy])if(e?.equipped&&!e.equipped[id])e.equipped[id]={weapon:null,armor:null,accessory:null,treasure:null};
  for(const f of [s.frontier,c.frontier])if(f){if(!f.members.includes(id))f.members.push(id);f.affiliation[id]='affiliated';}
  // The current state's board gains the hero in reserve (a free deployment tile), so the save stays whole.

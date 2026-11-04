@@ -1,0 +1,20 @@
+PASS 1440 ACT I camp offers the rite panel
+PASS 1440 panel lists five heroes with conditions
+PASS 1440 only Kai (Lv 6, potential 3/3) may start a trial
+PASS 1440 no runtime errors
+PASS 390 Kai trial starts (PROMOTION TRIAL, Kai provisionally Shadowblade, others in reserve)
+PASS 390 Kai reaches the sentinel
+PASS 390 exchange forecast on the sentinel
+PASS 390 Shadow Exchange puts Kai in the gate
+PASS 390 trial won when Kai reaches the top row
+PASS 390 result shows the promotion
+PASS 390 promotion scene plays on return
+PASS 390 rank-up card follows the scene (Shadowblade, Shadow Exchange)
+PASS 390 the rite theme plays under the card
+PASS 390 the card is shown once
+PASS 390 back in the ACT I camp with Kai promoted for good
+PASS 390 panel marks Kai as promoted
+PASS 390 Legion Drill starts with all five heroes
+PASS 390 drill survives reload (skirmish return point kept)
+PASS 390 no runtime errors
+19 legion checks PASS

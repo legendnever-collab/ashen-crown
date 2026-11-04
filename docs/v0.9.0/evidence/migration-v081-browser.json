@@ -1,0 +1,61 @@
+{
+  "checks": [
+    {
+      "name": "Shipped v0.8.1 village save is schema 11",
+      "status": "PASS"
+    },
+    {
+      "name": "Shipped v0.8.1 battle checkpoint generated",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.8.1 village save opens in the painted village (schema 12, gold kept, legal position)",
+      "status": "PASS"
+    },
+    {
+      "name": "Imported village save does not replay the world-map intro",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.8.1 battle and its checkpoint migrate unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "Restart of a migrated v0.8.1 battle works",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.8.1 summit-camp save (ACT II complete) opens with every asset kept (★2 sword) and the roster intact",
+      "status": "PASS"
+    },
+    {
+      "name": "The migrated camp now goes on to ACT III (Mission 15)",
+      "status": "PASS"
+    },
+    {
+      "name": "The equipment sheet of the migrated camp shows four slots and Erik's ★2 sword",
+      "status": "PASS"
+    },
+    {
+      "name": "From the migrated summit camp the four towns can be revisited (the capital opens with M15)",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.8.1 Mission 14 battle resumes with its bag",
+      "status": "PASS"
+    },
+    {
+      "name": "Erik of a v0.8.1 save keeps ② 도발 and his promotion action as ③",
+      "status": "PASS"
+    },
+    {
+      "name": "Migrated save reloads as the current version",
+      "status": "PASS"
+    },
+    {
+      "name": "No runtime errors in either build",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}

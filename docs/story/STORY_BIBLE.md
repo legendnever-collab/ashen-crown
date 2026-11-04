@@ -121,3 +121,10 @@ Erik is the directly controlled exploration and battle protagonist. Aren remains
 
 ## v0.4.0 user-approved ACT I details — CANON D-034–037
 Erik–Baldrick: Baldrick disobeyed orders to pull Erik alone out of a battle; Erik's comrades left behind died. Erik owes Baldrick his life and blames himself (time/place/names OPEN). M06 royal border-closure order repeats the Ashen Night sealing-order form (gate seal, refugee passage ban, record recovery), signed only as the Royal War Office; chancellor involvement remains undisclosed. M04 seal-craft records share only the notation style of Lia's teacher (identity OPEN). The independent force formed at the end of ACT I is the Ashen Legion (재의 군단). Baldrick's recruitment conditions remain OPEN.
+
+## v0.9 ACT III — APPROVED_DIRECTION D-079 (docs/v0.9.0/ACT3_DESIGN.md §3, Q1–Q4 recommended answers)
+- 결계의 원리: 결계는 바쳐진 **기억**으로 선다. 원천은 셋 — 수호자의 자발적 맹세(옛 방식), 결계석 곁 공동체의 기억, 전장의 죽음과 그 기억. 전쟁이 유일한 원천이 아니다. 결계 너머는 "국경 너머의 재"로만 말한다(정체 OPEN).
+- 국왕: 살아 있다. 잿빛 밤 뒤 왕관의 심장에서 기억을 내주며 홀로 결계를 붙들어 왔고, 이름을 잊었으나 아렌을 기억한다(M21). 의식 실패의 이유와 국왕의 선택의 이유는 M28.
+- 벨라드: 장부의 끈의 주인은 재상부이며 "통제된 전쟁" 계획서가 나온다(M20, 직접 등장). M12 소각, M13 해산 명령, M14 배신은 각 세력의 결정이다. 잿빛 밤 당일 벨라드의 역할과 봉인 명령의 서명자는 OPEN(M28), 결전은 M29.
+- 동료의 과거(PROPOSED 세부): 리아의 스승은 재상부 의식의 설계자이자 증인(M19), 카이의 옛 상관은 왕실 정보 조직 "회색 장부"의 우두머리(M20), 엘리나의 고향은 잊힌 전장 근처(M16).
+- 구현 v0.9.0(D-080): M15에서 「기억 헌납 명부」와 봉인 명령 전령 명단(아렌 발터) — 서명 칸은 비어 있음. M16에서 결계석이 전장의 기억을 거두고, 명부 첫 장이 수호자의 맹세임을 확인.

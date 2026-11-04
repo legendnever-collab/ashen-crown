@@ -237,6 +237,12 @@ export const CAST={
  monasteryGuard:{name:'수도원 경비',skin:'fair',hair:'#3a302a',style:'short',hood:'#7a7a74',body:'robe',coat:'#7a7a74',trim:'#a07a3a',legs:'#5a5a54',boots:'#3a3a36',weapon:'staff',orb:'#8a7a5a',eye:'#3a3a40'},
  abbot:{name:'침묵의 원장',skin:'pale',hair:'#b8b4ac',style:'bald',body:'robe',coat:'#2e2c2c',trim:'#7a7a74',cape:'#4a4846',legs:'#3a3836',boots:'#24221f',weapon:'torch',beard:'long',beardColor:'#b8b4ac',eye:'#4a4a50',stoop:true},
  maskedRaider:{name:'가면 습격대',skin:'pale',hair:'#1a1a1c',style:'short',hood:'#2a2a2e',body:'leather',coat:'#2e2e32',trim:'#b8b8b0',legs:'#1e1e22',boots:'#141416',weapon:'sword',off:'shield',shield:'#1e1e22',eye:'#d8d8d0'},
+ // v0.9.0 ACT III (D-079): temporary game-drawn looks until the ACT III art arrives (never labelled finished).
+ grayCloak:{name:'회색 망토',skin:'pale',hair:'#3a3a3e',style:'short',hood:'#6a6c70',body:'leather',coat:'#5a5c60',trim:'#2a2a2e',cape:'#6a6c70',legs:'#3a3a3e',boots:'#222226',weapon:'sword',eye:'#3a3a40'},
+ clerk:{name:'재상부 서기',skin:'fair',hair:'#4a3a2a',style:'short',body:'coat',coat:'#3a3048',trim:'#c9b07a',legs:'#2a2638',boots:'#1f1d2a',weapon:'papers',eye:'#3a2a22'},
+ harvester:{name:'기억 수확자',skin:'pale',hair:'#d8d4cc',style:'long',hood:'#3a3448',body:'robe',coat:'#2e2a3a',trim:'#8a7ac8',cape:'#4a4060',legs:'#2a2638',boots:'#1f1d2a',weapon:'staff',orb:'#a08aff',eye:'#8a7ac8'},
+ watchman:{name:'왕도 경비대',skin:'warm',hair:'#3a2a20',style:'short',helm:'knight',helmMetal:'#a8a080',body:'plate',metal:'#a8a080',coat:'#7a2a2a',tabard:'#c9a24a',trim:'#7a2a2a',legs:'#4a3a2a',boots:'#2e2418',weapon:'spear',off:'shield',shield:'#c9a24a',eye:'#3a2a22'},
+ archivist:{name:'늙은 기록관',skin:'fair',hair:'#d8d4cc',style:'bald',body:'robe',coat:'#4a4a5a',trim:'#c9b07a',legs:'#3a3a48',boots:'#2a2a30',weapon:'papers',beard:'short',beardColor:'#d8d4cc',eye:'#4a4a50',stoop:true},
  aide:{name:'작전 보좌관',skin:'pale',hair:'#2a2430',style:'swept',body:'coat',coat:'#3f3a63',trim:'#c9b07a',legs:'#2a2840',boots:'#1f1d2a',weapon:'papers',eye:'#4a3a5a'}
 };
 // M06 looks that have painted sheets; their pixel fallback borrows an existing look.
