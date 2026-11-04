@@ -22,12 +22,14 @@ export function act2HubFor(missionId,phase='preparation'){const after=phase==='a
  if(missionId===11||missionId===12&&!after)return 'pilgrim';if(missionId===12||missionId===13&&!after)return 'refuge';
  // v0.7.1 (D-071): the camp before the summit at the ruined waystation (after M13, M14).
  // v0.9.0 (D-079): ACT III — the capital's lower city for M15 and before M16, the field camp after M16.
+ // v0.9.1 (D-084): the guardians' keep for M17 (and the camp before it), the unburning forest's village for M18.
+ if(missionId>=18)return 'forest';if(missionId===17)return 'keep';
  if(missionId>=16&&after)return 'fieldcamp';if(missionId>=15)return 'capital';
  if(missionId>=13)return 'summit';return 'velmar';}
 // Story key → hub used as the staged backdrop ('pre:3', 'after:3:loss', '6:oath' …).
 export function stageHubFor(key){
  const m=/^(pre|after):(\d+)/.exec(key);if(m)return hubFor(+m[2],m[1]==='after'?'aftermath':'preparation');
- if(key==='raid')return 'village';if(key.startsWith('6:'))return 'oathcamp';if(key.startsWith('promo:'))return 'oathcamp';return null;
+ if(key==='raid')return 'village';if(key.startsWith('6:'))return 'oathcamp';if(key.startsWith('promo:'))return 'oathcamp';if(key.startsWith('awaken:'))return 'keep';return null;
 }
 
 const hv5Interior={inn:'barracks',warroom:'quarters',depot:'store',residence:'house'};
@@ -41,7 +43,7 @@ function hv5Build(id,spec){
   buildings.push({x,y,w,h,label,type,buildingId:bid,entrance,returnPoint:{tileX:dx,tileY:dy+1},interiorScene:interior,painted:true});
   places.push(shop?{id:bid,name,x:dx,y:dy+1,action:shop,entrance,buildingId:bid}:{id:bid,name,x:dx,y:dy+1,action:'enter',entrance,buildingId:bid,interior,hub:id});}
  const npcs=spec.npcs.map(([nid,name,x,y,extra])=>({id:nid,name,x,y,...(extra||{})}));
- return {name:spec.name,tone:spec.tone||'camp',kind:spec.kind,art:spec.art,width:24,height:16,spawn:spec.spawn,mask,stage:spec.stage,lights:spec.lights||[],paintedTable:!!spec.paintedTable,night:!!spec.night,dusk:!!spec.dusk,buildings,places,npcs};
+ return {name:spec.name,tone:spec.tone||'camp',kind:spec.kind,art:spec.art,width:24,height:16,spawn:spec.spawn,mask,stage:spec.stage,lights:spec.lights||[],paintedTable:!!spec.paintedTable,night:!!spec.night,dusk:!!spec.dusk,grove:!!spec.grove,buildings,places,npcs};
 }
 const hv5Heroes=(pos)=>[['aren','아렌 · 군단장',...pos.aren,{kind:'commander'}],['elina',pos.elinaName,...pos.elina,{kind:'hero'}],['lia','리아 · 군사',...pos.lia,{kind:'hero'}],['sain',pos.sainName,...pos.sain,{kind:'hero'}],['kai',pos.kaiName,...pos.kai,{kind:'hero'}],['advisor','리아의 작전 탁자 · 작전 회의',...pos.advisor,{kind:'advisor'}]];
 
@@ -191,4 +193,13 @@ HV5_SPECS.capital={...HV5_SPECS.velmar,name:'Royal Lower City · 왕도 하층�
 HV5_SPECS.fieldcamp={...HV5_SPECS.bivouac,name:'Field Camp · 잊힌 전장 야영지',kind:'fieldcamp',
  npcs:[...HV5_SPECS.bivouac.npcs.map(n=>n[0]==='elder'?['elder','근처 마을 노인',16,5]:n[0]==='refugee'?['refugee','피난민',10,10]:n),
   ['thea','테아 · 경계',13,4,{kind:'hero',requires:'thea'}],['dario','다리오 · 모닥불',11,9,{kind:'hero',requires:'dario'}],['ines','이네스 · 모닥불',14,6,{kind:'hero',requires:'ines'}]]};
+// v0.9.1 (D-084, PROPOSED): the guardians' keep on the northern plateau (M17) is drawn with the reclaimed-fortress painting
+// and the forest-keepers' village (M18) with the Ashen Village painting under a green rain tint — temporary until art pack
+// F2 (never labelled finished). The keep is where the awakening trials are held.
+HV5_SPECS.keep={...HV5_SPECS.fortress,name:"Guardians' Keep · 수호자 성채",kind:'keep',
+ npcs:[...HV5_SPECS.fortress.npcs.map(n=>n[0]==='elder'?['elder','마지막 수호자',n[2],n[3]]:n[0]==='refugee'?['refugee','성채 순례자',n[2],n[3]]:n[0]==='guard'?['guard','성채 문지기',n[2],n[3]]:n),
+  ['thea','테아 · 성문',10,12,{kind:'hero',requires:'thea'}],['dario','다리오 · 안뜰',16,10,{kind:'hero',requires:'dario'}],['ines','이네스 · 석상 곁',5,9,{kind:'hero',requires:'ines'}]]};
+HV5_SPECS.forest={...HV5_VILLAGE,name:'Forest Village · 숲지기 마을',kind:'forest',art:'hub_village_day',grove:true,
+ npcs:[...HV5_SPECS.village.npcs.map(n=>n[0]==='elder'?['elder','숲지기 장로',n[2],n[3]]:n[0]==='refugee'?['refugee','숲지기',n[2],n[3]]:n[0]==='guard'?['guard','숲 길잡이',n[2],n[3]]:n),
+  ['thea','테아 · 숲 어귀',13,4,{kind:'hero',requires:'thea'}],['dario','다리오 · 우물',20,4,{kind:'hero',requires:'dario'}],['ines','이네스 · 고목 아래',9,4,{kind:'hero',requires:'ines'}]]};
 export const ART_HUBS=Object.fromEntries(Object.entries(HV5_SPECS).map(([id,spec])=>[id,hv5Build(id,spec)]));

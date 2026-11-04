@@ -95,7 +95,10 @@ export const CATALOG_TREASURES=[
  cTreasure('allianceSeal','동맹의 인장','Alliance Seal','전투 첫 턴 전군 MOV +1','M14 숨은 전과'),
  // v0.9.0 ACT III (D-079, PROPOSED)
  cTreasure('archivistLens','기록관의 확대경','Archivist\'s Lens','HIT +10 · 치명 +5','M15 숨은 전과'),
- cTreasure('mistLantern','잔영의 등불','Lantern of Echoes','안개 속에서도 사거리가 줄지 않음 · RES +2','M16 숨은 전과')
+ cTreasure('mistLantern','잔영의 등불','Lantern of Echoes','안개 속에서도 사거리가 줄지 않음 · RES +2','M16 숨은 전과'),
+ // v0.9.1 (D-084, PROPOSED)
+ cTreasure('oathBadge','맹세의 휘장','Badge of the Oath','전투마다 한 번, 쓰러질 피해를 받아도 HP 1로 버틴다 · DEF +1','M17 숨은 전과'),
+ cTreasure('groveLeaf','고목의 잎','Leaf of the Ward Tree','아군 턴마다 HP +4 · RES +2','M18 숨은 전과')
 ];
 const cSkill=(id,hero,slot,ko,en,cost,effect)=>({id,kind:'skill',hero,slot,ko,en,cost,effect});
 export const CATALOG_SKILLS=[
@@ -114,6 +117,10 @@ export const CATALOG_SKILLS=[
  cSkill('quickStrike','kai',1,'빠른 일격','Quick Strike',3,'협공하면 피해 +6'),
  cSkill('venomEdge','kai',2,'독날','Venom Edge',3,'근접 공격 + [독] 3턴'),
  cSkill('exchange','kai',3,'그림자 교환','Shadow Exchange',3,'아군 또는 인접한 적과 위치를 바꾼다'),
+ // v0.9.1 awakening ④ (Tier 3, once a battle; ACT3_DESIGN §6.2, PROPOSED)
+ cSkill('oathWall','eric',4,'맹세의 성벽','Wall of the Oath',6,'전투당 1회 · 다음 아군 턴까지 2칸 안 아군·주민이 받는 피해의 절반을 에릭이 대신 받는다 · 그동안 에릭은 HP 1 아래로 내려가지 않는다'),
+ cSkill('blockade','elina',4,'퇴로 봉쇄','Blockade',6,'전투당 1회 · 5칸 안의 칸을 중심으로 십자 5칸 봉쇄 · 다음 적 턴에 그 안의 적은 나가지 못하고, 움직이면 화살을 맞는다'),
+ cSkill('dawnPrayer','sain',4,'새벽의 기도','Dawn Prayer',8,'전투당 1회 · 이번 전투에서 쓰러진 아군 한 명을 세인 곁에 HP 1/3로 일으킨다'),
  cSkill('charge','thea',1,'돌격','Charge',3,'근접 피해 +4, 3칸 이상 달리면 +7, 반격 없음'),
  cSkill('breakthrough','thea',2,'돌파','Breakthrough',3,'근접 공격 후 1칸 밀어낸다 · 막히면 피해 +3'),
  cSkill('rallyCry','thea',3,'기병의 함성','Rally Cry',5,'주위 2칸 아군 MOV +1, 명중 +10'),

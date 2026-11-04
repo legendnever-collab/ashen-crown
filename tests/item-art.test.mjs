@@ -21,9 +21,11 @@ test('pack E: 102 icons, one per work-order cell, hashes match the import log, 1
 
 test('pack E covers every hero skill, the four statuses, buffs and the battle commands',()=>{
  const ids=new Set(log.map(r=>r.id));
- for(const k of SKILLS)assert.ok(ids.has(k.id),`skill ${k.hero} ${k.id}`);
+ for(const k of SKILLS.filter(k=>k.slot<=3))assert.ok(ids.has(k.id),`skill ${k.hero} ${k.id}`);
+ // the ④ skills (v0.9.1) came after the pack: they show no painted disk until the ACT III art
+ assert.ok(SKILLS.filter(k=>k.slot===4).every(k=>!ids.has(k.id)));
  for(const id of ['poison','confuse','bind','silence','buff','debuff','attack','wait','persuade','capture','supplyCrate','gold'])assert.ok(ids.has(id),id);
  for(const id of cells.filter(c=>c.kind==='tool').map(c=>c.id))assert.ok(TOOLS[id]||['herb','medium','ether','elixir'].includes(id),`tool ${id}`);
  for(const id of cells.filter(c=>['gear','treasure'].includes(c.kind)).map(c=>c.id))assert.ok(GEAR[id],`gear ${id}`);
- const later=Object.keys(GEAR).filter(id=>!ids.has(id));assert.ok(later.includes('royalSaber')&&later.includes('mistLantern'),'v0.9.0 capital pieces are not in pack E');
+ const later=Object.keys(GEAR).filter(id=>!ids.has(id));assert.ok(later.includes('royalSaber')&&later.includes('mistLantern')&&later.includes('oathBadge'),'v0.9.0–v0.9.1 pieces are not in pack E');
 });

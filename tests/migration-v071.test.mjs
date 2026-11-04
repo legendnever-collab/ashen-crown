@@ -17,9 +17,9 @@ const load=name=>deserialize(fixture(name).save);
 test('fixtures are genuine v0.7.1 schema-9 saves',()=>{for(const n of ['m14-camp','m14-battle']){const f=fixture(n);assert.equal(f.version,'0.7.1');assert.equal(f.schema,9);assert.equal(raw(n).version,'0.7.1');}});
 
 test('the v0.7.1 end-of-content camp (summit after M14, ACT II complete) loads as schema 10 with every asset kept',()=>{
- const before=raw('m14-camp'),s=load('m14-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,12);assert.equal(s.version,VERSION);assert.equal(s.frontier.hub,'summit');
+ const before=raw('m14-camp'),s=load('m14-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,13);assert.equal(s.version,VERSION);assert.equal(s.frontier.hub,'summit');
  for(const k of ['completed','economy','flags','choices','promotions','factionTrust','trustLog','roster'])assert.deepEqual(s.campaign[k],k==='economy'?arms081View(before.campaign[k]):before.campaign[k],k);
- assert.ok(s.campaign.flags.act2_completed);assert.equal(deserialize(serialize(s)).schema,12);
+ assert.ok(s.campaign.flags.act2_completed);assert.equal(deserialize(serialize(s)).schema,13);
 });
 
 test('the heroes of that save know their new skills; every tool is on sale; the bag holds eight',()=>{
@@ -30,7 +30,7 @@ test('the heroes of that save know their new skills; every tool is on sale; the 
 });
 
 test('the v0.7.1 mid-M14 battle resumes unchanged and is won under v0.8.0 rules',()=>{
- const before=raw('m14-battle'),s=load('m14-battle');assert.equal(s.screen,'battle');assert.equal(s.missionId,14);assert.equal(s.stageStart.schema,12);
+ const before=raw('m14-battle'),s=load('m14-battle');assert.equal(s.screen,'battle');assert.equal(s.missionId,14);assert.equal(s.stageStart.schema,13);
  for(const u of before.units){const now=findUnit(s,u.id);assert.deepEqual([now.x,now.y,now.hp,now.team],[u.x,u.y,u.hp,u.team],u.id);}
  drain(s);playCampaignBattle(s);assert.equal(s.outcome,'victory');
 });

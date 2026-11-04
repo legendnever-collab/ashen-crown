@@ -1,0 +1,61 @@
+{
+  "checks": [
+    {
+      "name": "Shipped v0.9.0 village save is schema 12",
+      "status": "PASS"
+    },
+    {
+      "name": "Shipped v0.9.0 battle checkpoint generated",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.9.0 village save opens in the painted village (schema 13, gold kept, legal position)",
+      "status": "PASS"
+    },
+    {
+      "name": "Imported village save does not replay the world-map intro",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.9.0 battle and its checkpoint migrate unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "Restart of a migrated v0.9.0 battle works",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.9.0 field-camp save (ACT III part 1 complete) opens with every asset kept and the roster intact",
+      "status": "PASS"
+    },
+    {
+      "name": "The migrated camp now goes on to Mission 17",
+      "status": "PASS"
+    },
+    {
+      "name": "The legion panel lists the recruits and the awakening path",
+      "status": "PASS"
+    },
+    {
+      "name": "From the migrated field camp the towns can be revisited (the capital included)",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.9.0 Mission 16 battle resumes in fog",
+      "status": "PASS"
+    },
+    {
+      "name": "Erik of a v0.9.0 save keeps ② and ③ and shows ④ locked until his awakening",
+      "status": "PASS"
+    },
+    {
+      "name": "Migrated save reloads as the current version",
+      "status": "PASS"
+    },
+    {
+      "name": "No runtime errors in either build",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}

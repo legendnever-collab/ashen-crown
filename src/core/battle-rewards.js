@@ -1,6 +1,6 @@
 import {GEAR,TOOLS} from '../data/frontier-data.js';
 // Supplement existing first-clear Gold, never replace or repeat it.
-export function supplementalRewards(missionId,{rescued=0,captured=false,seal=false,orders=false,broken=false,wagons=0,refugees=0,beacon=false,convoy=0,captured7=false,villagers=0,captain8=false,delegates=0,captured9=false,villagers10=0,mediated=false,pilgrims=0,braziers=0,silent12=false,abbot12=false,halted13=false,refugees13=0,escort14=0,boxes15=0,calm15=false,echoes16=0}={}){
+export function supplementalRewards(missionId,{rescued=0,captured=false,seal=false,orders=false,broken=false,wagons=0,refugees=0,beacon=false,convoy=0,captured7=false,villagers=0,captain8=false,delegates=0,captured9=false,villagers10=0,mediated=false,pilgrims=0,braziers=0,silent12=false,abbot12=false,halted13=false,refugees13=0,escort14=0,boxes15=0,calm15=false,echoes16=0,sworn17=0,trees18=0,keepers18=0}={}){
  const reward=(suffix,kind,type,amount=1,optional=false)=>({id:`v032:m${missionId}:${suffix}`,missionId,kind,type,amount,optional});
  if(missionId===1)return [reward('supply','item','medium'),...(rescued===2?[reward('rescue','item','ward',1,true)]:[])];
  if(missionId===2)return [reward('supply','item','ether'),...(captured?[reward('capture','gold',null,30,true)]:[])];
@@ -29,9 +29,13 @@ export function supplementalRewards(missionId,{rescued=0,captured=false,seal=fal
  const v9=(suffix,kind,type,amount=1,optional=false)=>({...reward(suffix,kind,type,amount,optional),id:`v090:m${missionId}:${suffix}`});
  if(missionId===15)return [v9('supply-hp','item','medium'),v9('supply-mp','item','ether'),...(boxes15===3?[v9('all-boxes','gold',null,90,true)]:[]),...(calm15?[v9('quiet-watch','item','ward',1,true)]:[])];
  if(missionId===16)return [v9('supply-hp','item','medium'),v9('supply-mp','item','ether'),...(echoes16===3?[v9('all-echoes','item','clarity',1,true)]:[])];
+ // v0.9.1 (PROPOSED, D-084): M17 every statue sworn → 100 gold; M18 every tree standing → a ward, every forest-keeper inside → an elixir.
+ const v91=(suffix,kind,type,amount=1,optional=false)=>({...reward(suffix,kind,type,amount,optional),id:`v091:m${missionId}:${suffix}`});
+ if(missionId===17)return [v91('supply-hp','item','medium'),v91('supply-mp','item','ether'),...(sworn17===4?[v91('all-statues','gold',null,100,true)]:[])];
+ if(missionId===18)return [v91('supply-hp','item','medium'),v91('supply-mp','item','ether'),...(trees18===3?[v91('all-trees','item','ward',1,true)]:[]),...(keepers18===6?[v91('all-keepers','item','elixir',1,true)]:[])];
  return [];
 }
-export const knownRewards=()=>[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16].flatMap(id=>supplementalRewards(id,{rescued:2,captured:true,seal:true,orders:true,broken:true,wagons:2,refugees:4,beacon:true,convoy:3,captured7:true,villagers:3,captain8:true,delegates:3,captured9:true,villagers10:3,mediated:true,pilgrims:4,braziers:3,silent12:true,abbot12:true,halted13:true,refugees13:4,escort14:6,boxes15:3,calm15:true,echoes16:3}));
+export const knownRewards=()=>[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18].flatMap(id=>supplementalRewards(id,{sworn17:4,trees18:3,keepers18:6,rescued:2,captured:true,seal:true,orders:true,broken:true,wagons:2,refugees:4,beacon:true,convoy:3,captured7:true,villagers:3,captain8:true,delegates:3,captured9:true,villagers10:3,mediated:true,pilgrims:4,braziers:3,silent12:true,abbot12:true,halted13:true,refugees13:4,escort14:6,boxes15:3,calm15:true,echoes16:3}));
 export function initRewardLedger(e){e.rewardClaims??=[];e.rewardHistory??=[];e.rewardPending??=[];return e;}
 export function deliverRewards(e){let count=0;for(let i=0;i<e.rewardPending.length;){const r=e.rewardPending[i];if(r.kind==='item'&&Object.values(e.items).reduce((a,b)=>a+b,0)<8){e.items[r.type]=(e.items[r.type]||0)+1;}else if(r.kind==='gear'&&e.gear.filter(g=>!GEAR[g.type]?.treasure).length<30){e.gear.push({id:`g${e.next++}`,type:r.type,star:1,exp:0});}else{i++;continue;}e.rewardPending.splice(i,1);count++;}return count;}
 export function grantSupplemental(e,missionId,context={},legacy=false){initRewardLedger(e);const grants=[];for(const r of supplementalRewards(missionId,context)){if(e.rewardClaims.includes(r.id))continue;e.rewardClaims.push(r.id);e.rewardHistory.push({...r,legacy});if(r.kind==='gold')e.gold+=r.amount;else for(let n=0;n<r.amount;n++)e.rewardPending.push({...r});grants.push(r);}deliverRewards(e);return grants;}

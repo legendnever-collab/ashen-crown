@@ -27,7 +27,7 @@ export function validate(s){
  if(!validTrust(s.campaign))throw Error('세력 신뢰 기록이 손상되었습니다.');
  const known=new Set([...party,...missionUnitIds(mission),...allies.map(a=>a.id)]),ids=new Set(),occupied=new Set();
  for(const u of s.units){if(!known.has(u.id)||ids.has(u.id)||!['ally','allied','enemy','civilian','object'].includes(u.team))throw Error('장수 목록이 손상되었습니다.');ids.add(u.id);
-  const expected=party.includes(u.id)?'ally':allies.some(a=>a.id===u.id)?(u.betrayed&&s.missionState?.betrayer===u.faction?'enemy':'allied'):mission.civilians.some(c=>c.id===u.id)?(u.turned?'enemy':'civilian'):(mission.objects||[]).some(o=>o.id===u.id)?'object':u.faction&&u.faction===s.campaign?.choices?.m10_stance?'allied':'enemy';if(u.team!==expected||typeof u.name!=='string'||u.name.length>120||!Array.isArray(u.range)||u.range.length!==2||u.range.some(n=>!Number.isInteger(n)||n<0||n>12)||u.range[0]>u.range[1])throw Error('유닛 분류 또는 사거리가 손상되었습니다.');
+  const expected=party.includes(u.id)?'ally':allies.some(a=>a.id===u.id)?(u.betrayed&&s.missionState?.betrayer===u.faction?'enemy':'allied'):mission.civilians.some(c=>c.id===u.id)?(u.turned?'enemy':'civilian'):(mission.objects||[]).some(o=>o.id===u.id)?(u.woke==='ally'?'allied':u.woke==='enemy'?'enemy':'object'):u.faction&&u.faction===s.campaign?.choices?.m10_stance?'allied':'enemy';if(u.team!==expected||typeof u.name!=='string'||u.name.length>120||!Array.isArray(u.range)||u.range.length!==2||u.range.some(n=>!Number.isInteger(n)||n<0||n>12)||u.range[0]>u.range[1])throw Error('유닛 분류 또는 사거리가 손상되었습니다.');
   for(const k of ['hp','maxHP','mp','maxMP','atk','def','mag','res','spd','mov','x','y'])if(!Number.isFinite(u[k])||u[k]<0||!Number.isInteger(u[k]))throw Error('유닛 수치가 올바르지 않습니다.');
   if(u.classMovementModifier!=null&&(!Number.isInteger(u.classMovementModifier)||u.classMovementModifier<0||u.classMovementModifier>5)||u.movementProfile!=null&&!['infantry','rogue','cavalry','ranger'].includes(u.movementProfile))throw Error('병종 이동 정보가 손상되었습니다.');
   if(u.hp>u.maxHP||u.mp>u.maxMP||u.maxHP<1||u.x>=mission.width||u.y>=mission.height||!Number.isFinite(terrainAt(u.x,u.y,s)?.cost))throw Error('유닛 위치 또는 HP가 손상되었습니다.');
@@ -56,11 +56,13 @@ export function validate(s){
  if(s.burning!=null&&(typeof s.burning!=='object'||Array.isArray(s.burning)||Object.entries(s.burning).some(([k,v])=>!/^\d{1,2},\d{1,2}$/.test(k)||!Number.isInteger(v)||v<1||v>2)))throw Error('화염 기록이 손상되었습니다.');
  if(s.units.some(u=>u.team==='ally'&&(![1,2,3].includes(u.appearanceTier)||['classTier','storyTier'].some(k=>u[k]!=null&&![1,2,3].includes(u[k])))))throw Error('외형 Tier가 손상되었습니다.');
  // v0.8.1: hidden objectives won (mission ids), this battle's flag record, the supply carrier's crate.
- if(c.feats!=null&&(!Array.isArray(c.feats)||c.feats.length>16||new Set(c.feats).size!==c.feats.length||c.feats.some(id=>!Number.isInteger(id)||id<1||id>16)))throw Error('숨은 전과 기록이 손상되었습니다.');
+ if(c.feats!=null&&(!Array.isArray(c.feats)||c.feats.length>18||new Set(c.feats).size!==c.feats.length||c.feats.some(id=>!Number.isInteger(id)||id<1||id>18)))throw Error('숨은 전과 기록이 손상되었습니다.');
  if(s.battleFlags!=null&&(typeof s.battleFlags!=='object'||Array.isArray(s.battleFlags)||Object.keys(s.battleFlags).length>60||Object.values(s.battleFlags).some(v=>!['boolean','number','string'].includes(typeof v)||typeof v==='string'&&v.length>40)))throw Error('전투 기록이 손상되었습니다.');
  if(s.units.some(u=>u.carrier!=null&&(!['enemy','allied'].includes(u.team)||typeof u.carrier!=='string'||!TOOLS[u.carrier])||u.pouchUsed!=null&&typeof u.pouchUsed!=='boolean'))throw Error('보급 기록이 손상되었습니다.');
  // v0.9.0 (D-079): the duel of this battle, Aren's command, the weather's cleared tiles and a turned watchman.
  if(s.duel!=null&&!validDuel(s,s.duel)||s.command!=null&&!COMMANDS[s.command]||s.units.some(u=>u.turned!=null&&(u.turned!==true||u.team!=='enemy')))throw Error('ACT III 전투 기록이 손상되었습니다.');
+ // v0.9.1: the ④ skills used this battle, Elina's blockade, the oath wall, Thea's remaining run, raised heroes, woken statues.
+ if(s.ultimates!=null&&(!Array.isArray(s.ultimates)||new Set(s.ultimates).size!==s.ultimates.length||s.ultimates.some(id=>!['eric','elina','sain'].includes(id)||!party.includes(id)))||s.blockade!=null&&(typeof s.blockade!=='object'||!party.includes(s.blockade.by)||!Number.isInteger(s.blockade.turn)||!Array.isArray(s.blockade.cells)||s.blockade.cells.length>5||s.blockade.cells.some(c=>!Array.isArray(c)||c.length!==2||!c.every(Number.isInteger)))||s.units.some(u=>u.oathWall!=null&&(u.id!=='eric'||!Number.isInteger(u.oathWall))||u.moveLeft!=null&&(!Number.isInteger(u.moveLeft)||u.moveLeft<0||u.moveLeft>12)||['raised','oathUsed'].some(k=>u[k]!=null&&typeof u[k]!=='boolean')||u.woke!=null&&!['ally','enemy'].includes(u.woke)))throw Error('각성 전투 기록이 손상되었습니다.');
  validateEconomy(s.economy);validateEconomy(s.campaign.economy);if(s.frontier)validateFrontier(s.frontier);if(s.campaign.frontier)validateFrontier(s.campaign.frontier);
  return s;
 }
@@ -87,6 +89,8 @@ export function migrate(s){
  if(s?.schema===10){s.schema=11;s.version='0.8.1';for(const e of [s.economy,s.campaign?.economy])if(e)arms081(e);s.campaign.feats??=[];if(s.screen==='battle'||s.screen==='result')s.battleFlags??={};if(s.skirmish?.campaign?.economy)arms081(s.skirmish.campaign.economy);if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  // v0.9.0 (D-079): ACT III adds a duel, Aren's command and new missions on the battle state; a schema-11 save keeps everything.
  if(s?.schema===11){s.schema=12;s.version='0.9.0';if(s.stageStart)s.stageStart=migrate(s.stageStart);}
+ // v0.9.1 (D-084): awakening (tier 3), the recruits' tier 2, the ④ skills and M17–M18 add battle fields; a schema-12 save keeps everything.
+ if(s?.schema===12){s.schema=13;s.version='0.9.1';if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');
  // v0.6.1: a save of the current schema made by an earlier build of it (e.g. v0.6.0) is now this version.
  if(s?.schema===SCHEMA&&s.version!==VERSION){s.version=VERSION;if(s.stageStart?.version)s.stageStart.version=VERSION;}

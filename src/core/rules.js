@@ -20,11 +20,12 @@ export function roll(s){const r=nextRandom(s.rng);s.rng=r.state;return r.value;}
 export function terrainCost(s,u,x,y){const type=missionOf(s).map[y]?.[x];if(!type||missionOf(s).layers.collision[y]?.[x]||!Number.isFinite(TERRAIN[type]?.cost))return Infinity;const profile=u.movementProfile||CLASS_MOVEMENT[HERO_CLASS[u.id]]?.profile||'infantry';return TERRAIN_COSTS[profile]?.[type]??TERRAIN[type].cost;}
 export function movement(s,u,ignore=false){
  const start=key(u.x,u.y), costs=new Map([[start,0]]),prev=new Map(),queue=[{x:u.x,y:u.y,c:0}];
- const allowance=u.status?.bind?0:effectiveStats(s,u).mov+(u.shadowBonus||0),zoc=u.team==='enemy'?bulwarkZone(s):null; // v0.8 bind: cannot move
+ const allowance=u.status?.bind?0:u.moveLeft!=null&&u.strikeMove===s.turn?u.moveLeft:effectiveStats(s,u).mov+(u.shadowBonus||0),zoc=u.team==='enemy'?bulwarkZone(s):null,held=blockadeHolds(s,u); // v0.8 bind: cannot move
  while(queue.length){queue.sort((a,b)=>a.c-b.c);const p=queue.shift();if(p.c!==costs.get(key(p.x,p.y)))continue;
   if(zoc&&zoc.has(key(p.x,p.y)))continue; // v0.5 Bulwark: an enemy in Erik's zone cannot move on (entering stops it, starting there pins it)
   for(const [dx,dy] of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,t=terrainAt(x,y,s);if(!t||!Number.isFinite(t.cost))continue;
    const occupant=at(s,x,y);if(!ignore&&occupant&&occupant.id!==u.id&&sideOf(occupant)!==sideOf(u))continue;
+   if(held&&!s.blockade.cells.some(([bx,by])=>bx===x&&by===y))continue;
    const c=p.c+terrainCost(s,u,x,y),k=key(x,y);
    if(c<=allowance&&c<(costs.get(k)??Infinity)){costs.set(k,c);prev.set(k,key(p.x,p.y));queue.push({x,y,c});}
   }
@@ -62,6 +63,7 @@ export function strikeStats(s,u,t,mode='attack'){
  const ground=terrainAt(t.x,t.y,s),defense=magic?t.res:t.def,burning=!!s.burning?.[key(t.x,t.y)];
  let raw=Math.max(1,(magic?u.mag:u.atk)-defense-(ground.defense||0)+(aim?2:0)+(magic&&u.hp<=u.maxHP/2?4:0)+(quick&&flank(s,u,t)?6:0)+(mode==='skill'&&u.id==='thea'?charge(u)+(u.chargeDmg||0):0)+(mode==='skill'&&u.id==='dario'?2:0));
  let dmg=Math.max(1,Math.round(magic?raw*(ground.fire??1):raw*(1-(ground.phys||0))));
+ if(magic&&weatherOf(s)==='rain')dmg=Math.max(1,Math.round(dmg*.5));if(magic&&inWard(s,t))dmg=0;
  const arms=magic?1:matchup(u,t);if(arms!==1)dmg=Math.max(1,Math.round(dmg*arms));
  if(t.id==='eric'&&t.hp<=t.maxHP*.3)dmg=Math.max(1,Math.floor(dmg*.85));
  // M05 lion formation (mission data only; M01–04 have no formation): living bearers give adjacent
@@ -104,6 +106,11 @@ export const weatherOf=s=>missionOf(s)?.weather||null;
 export const fogClear=(s,x,y)=>(s?.missionState?.clear||[]).some(([cx,cy,r])=>Math.abs(cx-x)+Math.abs(cy-y)<=r);
 export const foggedFor=(s,u)=>weatherOf(s)==='fog'&&!fogClear(s,u.x,u.y)&&!fx(s,u,'mist');
 export const fogHidden=(s,u)=>weatherOf(s)==='fog'&&u?.team==='enemy'&&!fogClear(s,u.x,u.y)&&!s.units.some(h=>h.team==='ally'&&!h.benched&&alive(h)&&distance(h,u)<=3);
+// v0.9.1 rain (M18): fire (Lia's spells, Flame Burst) deals half damage and nothing catches fire. The ward of the
+// unburning forest (mission.ward: [x0, y0, x1, y1]) makes fire harmless to those inside and heals them 50% more.
+export const inWard=(s,p)=>{const w=missionOf(s)?.ward;return !!w&&!!p&&p.x>=w[0]&&p.x<=w[2]&&p.y>=w[1]&&p.y<=w[3];};
+// v0.9.1 Elina's Blockade (④): during that enemy phase an enemy that starts inside the cross cannot leave it.
+export const blockadeHolds=(s,u)=>u?.team==='enemy'&&s.blockade?.turn===s.turn&&s.phase==='enemy'&&s.blockade.cells.some(([x,y])=>x===u.x&&y===u.y);
 export const ARM_KO={cavalry:'기병',infantry:'보병',archer:'궁병',spear:'창병'};
 // ---------- v0.7 ACT II part 2 (D-068; rules and numbers PROPOSED). ACT I and M07–M10 never meet these. ----------
 // Night (M11): lit braziers and the sanctuary tiles each light the tiles within `night.radius` (Manhattan).
@@ -125,6 +132,8 @@ export function canPersuade(s,u,t){const p=missionOf(s)?.persuade,st=s?.missionS
 // Ines (Sanctuary): legion units beside her take 2 less damage (4 after her oath this turn, which also covers her).
 export function sanctuaryCut(s,t){if(!t||sideOf(t)!=='legion')return 0;let cut=t.id==='ines'&&t.sanctuary?2:0;
  for(const a of s.units||[])if((a.id==='ines'||a.sanctuaryAura)&&a.id!==t.id&&alive(a)&&sideOf(a)==='legion'&&distance(a,t)===1)cut=Math.max(cut,a.sanctuary?4:2);
+ // v0.9.1 Sanctum Warden (Ines, tier 2): her sanctuary also reaches two tiles, for 1.
+ for(const a of s.units||[])if(a.id==='ines'&&(a.classTier||1)>=2&&a.id!==t.id&&alive(a)&&sideOf(a)==='legion'&&distance(a,t)===2)cut=Math.max(cut,1);
  return cut;}
 // v0.6 Thea's Charge (PROPOSED): +4 damage; after running 3+ tiles this turn, +3 more and the target cannot strike back.
 export const charge=u=>4+((u.chargeRun||0)>=3?3:0);

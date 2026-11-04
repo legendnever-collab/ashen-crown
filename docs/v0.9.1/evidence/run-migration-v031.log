@@ -1,0 +1,12 @@
+PASS Actual v0.3.1 produces schema4 interior/equipped save
+PASS Actual v0.3.1 battle departure checkpoint generated
+PASS Actual schema4 interior imports through visible text UI
+PASS Old shop position inside the painted forge moves to its entrance
+PASS v0.3.1 Gold gear growth preserved exactly
+PASS v0.3.1 imported shop reload keeps gear and position
+PASS Migrated doorway exit returns to exact exterior
+PASS v0.3.1 battle and nested checkpoint migrate to6
+PASS Imported battle reload preserves complete economy
+PASS Migrated stage restart retains departure gear and Gold
+PASS Actual v0.3.1 migration has no runtime errors
+11 actual v0.3.1 migration checks PASS

@@ -33,6 +33,9 @@ export const SITES=[
  {id:'waystation',name:'폐허 역참',icon:'ruin',x:700,y:560,region:'center',hub:'summit',mission:14,small:true},
  // v0.9.0 ACT III (D-079, PROPOSED): the capital's lower city (M15) and the forgotten battlefield on the western plain (M16).
  {id:'oldfield',name:'잊힌 전장',icon:'camp',x:600,y:455,region:'center',hub:'fieldcamp',mission:16,small:true},
+ // v0.9.1 (D-084, PROPOSED): the guardians' keep on the northern plateau (M17) and the unburning forest to the south-east (M18).
+ {id:'guardkeep',name:'수호자 성채',icon:'fort',x:780,y:330,region:'center',hub:'keep',mission:17,small:true},
+ {id:'unburning',name:'불타지 않는 숲',icon:'camp',x:930,y:560,region:'center',hub:'forest',mission:18,small:true},
  {id:'village',name:'잿빛 마을',icon:'village',x:1150,y:620,region:'east',mission:1,hub:'village'},
  {id:'garrison',name:'국경 수비대 진영',icon:'camp',x:1235,y:585,region:'east',hub:'camp'},
  {id:'forest',name:'숲길',icon:null,x:1292,y:505,region:'east',mission:2},
@@ -43,14 +46,14 @@ export const SITES=[
  {id:'gate',name:'국경 관문',icon:'gate',x:1432,y:333,region:'east',mission:6},
  {id:'oathcamp',name:'관문 너머 야영지',icon:'camp',x:1458,y:295,region:'east',hub:'oathcamp',small:true}
 ];
-export const HUB_SITE={village:'village',village_raid:'village',camp:'garrison',bivouac:'bivouac',fortress:'fortress',oathcamp:'oathcamp',castletown:'stronghold',march:'canyon',velmar:'freecity',pilgrim:'pilgrimvillage',refuge:'refugecamp',summit:'waystation',capital:'capital',fieldcamp:'oldfield'};
+export const HUB_SITE={village:'village',village_raid:'village',camp:'garrison',bivouac:'bivouac',fortress:'fortress',oathcamp:'oathcamp',castletown:'stronghold',march:'canyon',velmar:'freecity',pilgrim:'pilgrimvillage',refuge:'refugecamp',summit:'waystation',capital:'capital',fieldcamp:'oldfield',keep:'guardkeep',forest:'unburning'};
 // ACT I march order (W1): village → garrison → forest → bridge → bivouac → fortress → ridge → gate → oath camp.
 export const ACT1_ROUTE=['village','garrison','forest','bridge','bivouac','fortress','ridge','gate','oathcamp'];
 // ACT II first half (D-055 §6): oath camp → Ironhold's castle town → the grey canyon → Velmar. Drawn from v0.6 Phase F.
 // v0.7 (D-068): → the pilgrim village below the cathedral → the Silent Monastery → the refugee camp.
 export const ACT2_ROUTE=['oathcamp','stronghold','canyon','freecity','pilgrimvillage','monastery','refugecamp','waystation'];
 // v0.9.0 ACT III (D-079): → the capital → the forgotten battlefield.
-export const ACT3_ROUTE=['waystation','capital','oldfield'];
+export const ACT3_ROUTE=['waystation','capital','oldfield','guardkeep','unburning'];
 // The whole march for the world map (ACT II legs are drawn once ACT I is complete).
 export const FULL_ROUTE=[...ACT1_ROUTE,...ACT2_ROUTE.slice(1),...ACT3_ROUTE.slice(1)];
 export const siteById=id=>SITES.find(s=>s.id===id);
