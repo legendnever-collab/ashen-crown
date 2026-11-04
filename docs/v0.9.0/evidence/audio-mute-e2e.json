@@ -20,7 +20,7 @@
   {
    "name": "1440 Mute off: the music returns at its level",
    "ok": true,
-   "detail": "-12 dB"
+   "detail": "-11.9 dB"
   },
   {
    "name": "1440 BGM 0 (SFX 0): the output is silent",
@@ -40,7 +40,7 @@
   {
    "name": "1440 Music Pause off: the music returns",
    "ok": true,
-   "detail": "-12.4 dB"
+   "detail": "-12.3 dB"
   },
   {
    "name": "1440 settings are kept as chosen",
@@ -57,11 +57,11 @@
    "levels": {
     "playing": -12.7,
     "muted": null,
-    "back": -12,
+    "back": -11.9,
     "zero": null,
     "low": -31.4,
     "paused": null,
-    "again": -12.4
+    "again": -12.3
    }
   },
   {

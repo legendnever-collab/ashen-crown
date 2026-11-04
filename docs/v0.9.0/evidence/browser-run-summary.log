@@ -46,4 +46,5 @@ arms exit=0
 migration-v080 exit=0
 act3 exit=0
 migration-v081 exit=0
+item-art exit=0
 DONE

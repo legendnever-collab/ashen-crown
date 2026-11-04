@@ -2,7 +2,7 @@
 1. v0.9.0 「왕도」 release candidate (D-080): the user plays it; merge only on approval, then record the merge SHA and main CI in docs/v0.9.0/RELEASE_NOTES.md. Tags and Releases only when the user asks.
 2. Play-test watch items: ACT III enemy strength against a human-raised legion (numbers set to the balance party: Lv 9–18), the M15 clerk race (two tiles a turn from TURN 1) and the watch rule, M16 fog readability, harvest MP −3, duel odds, returning recruits.
 3. Next on the user's instruction: v0.9.1 「수호자」 — M17 수호자의 맹세, M18 불타지 않는 숲, awakening (Tier 3 ④ for Erik, Elina, Sain), recruits' Tier 2, rain, guardian statues, guardians' keep and forest village hubs, Aren's 「나아가라」.
-4. Art: packs D (ACT II cast), E (102 icons) and the ACT III art (design §10, F1–F4) are made together when the user's ChatGPT allowance returns; until then temporary art, never labelled finished.
+4. Art: pack E (102 icons) arrived on 2026-11-04 and is imported in the v0.9.0 release candidate (D-081; deviations A10, F12, C09 listed for a retouch). Still with the user: pack D (ACT II cast) and the ACT III art (design §10, F1–F4), including icons for the capital's six tier III pieces and the two v0.9.0 treasures; until then temporary art, never labelled finished.
 
 Previous (ACT III design, 2026-11-03):
 0. ACT III design (D-078, docs/v0.9.0/ACT3_DESIGN.md): approved with the recommended answers and temporary art (D-079).

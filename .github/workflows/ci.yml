@@ -56,7 +56,7 @@ jobs:
           - suite_group: act2b
             suites: act2c-campaign act2d-campaign migration-v061 migration-v070 tactics migration-v071 arms migration-v080
           - suite_group: act3
-            suites: act3 migration-v081
+            suites: act3 migration-v081 item-art
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

@@ -6,6 +6,7 @@
 - Aren's commands (src/core/command.js): 「지켜라」 (DEF +2, turns 1–2) on the deployment bar from M15.
 - Sortie 7; capital (Velmar painting under dusk, temporary) and field camp hubs; world sites capital and 잊힌 전장, ACT III card; two original tracks; capital forge with six tier III pieces; two treasures and hidden objectives; gold 380/400; supply carriers.
 - ACT III enemy numbers are set to the party that finishes ACT II (far stronger than ACT II's last enemies).
+- Art work pack E (D-081): 102 painted icons from the user's pack, verified and cut by scripts/import-item-art.py (src/assets/items); tools, gear and treasures everywhere, plus the battle command menu, the skill disks (skills submenu, tactics tab) and the status chips over units; larger icons in shop cards (44 px) and equipment views (40 px). The capital's tier III pieces and the two v0.9.0 treasures keep game-drawn icons until the ACT III art. Tests: tests/item-art.test.mjs, tests/item-art-e2e.mjs (CI group act3).
 - Fixed: chests in hubs from Mission 10 on and in the raided village could not be opened (chest id pattern).
 - Saves: schema 12 imports 0–11; real v0.8.1 saves verified (shipped HTML and source fixtures). Tests: mission15/16, migration-v081 unit suites; act3 and migration-v081 browser suites (CI group act3); the campaign balance run continues into M15–M16 (test-output/act3-balance.json).
 

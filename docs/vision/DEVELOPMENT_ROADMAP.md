@@ -12,7 +12,7 @@ APPROVED_DIRECTION, 2026-10-14 user v0.3 Master Task. Story CANON과 실제 구�
 - v0.8.0 Tactics (전술, D-073/D-074): three skills per hero, status effects, targeted and thrown tools, class matchups, schema 10. Merge approved by the user 2026-11-01 (D-075).
 - v0.8.1 Arms (무기, D-073/D-076): regional and elite gear, Velmar's rare-goods shelf, revisiting towns, gear stars and 단련, treasures and hidden objectives, supply carriers, cut-ins, schema 11. Merge approved by the user 2026-11-03 (D-077); item art pack E pending.
 - ACT III 「왕관의 진실」 (M15–M22), design approved 2026-11-03 (D-078/D-079, docs/v0.9.0/ACT3_DESIGN.md), four releases:
-  - v0.9.0 The Capital (왕도, D-080): M15 사라진 기록, M16 잊힌 전장 — chase and neutral watch, fog, ward stones, the first duel, recruits' return, Aren's command, sortie 7, schema 12. Release candidate (2026-11-03); merge on the user's approval.
+  - v0.9.0 The Capital (왕도, D-080): M15 사라진 기록, M16 잊힌 전장 — chase and neutral watch, fog, ward stones, the first duel, recruits' return, Aren's command, sortie 7, schema 12; art pack E's 102 icons (D-081). Release candidate (2026-11-03, icons 2026-11-04); merge on the user's approval.
   - Next: v0.9.1 수호자 (M17–M18, awakening Tier 3, recruits' Tier 2), v0.9.2 그림자 (M19–M20), v0.9.3 잿빛 선택 (M21–M22, ACT III complete).
 - Subsequent: ACT III–IV, relationship branches and three endings. Preserve 4 acts / 30 missions.
 

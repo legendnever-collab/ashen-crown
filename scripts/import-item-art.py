@@ -79,9 +79,10 @@ def main(argv):
             if green and any(small[i+1] > 180 and small[i+1] - max(small[i], small[i+2]) > 80 and small[i+3] > 0 for i in range(0, len(small), 4)): notes.append('green fringe')
             data, q = webp(cell.resize((128, 128), Image.LANCZOS))
             (out/f"{c['id']}.webp").write_bytes(data); warnings += bool(notes)
-            log.append({'id': c['id'], 'sheet': sheet, 'cell': c['cell'], 'source': src.name, 'source_sha256': sha(src), 'background': 'green' if green else 'alpha', 'coverage': f'{cover:.2f}', 'quality': q, 'bytes': len(data), 'qa': '; '.join(notes) or 'ok'})
+            log.append({'id': c['id'], 'sheet': sheet, 'cell': c['cell'], 'source': src.name, 'source_sha256': sha(src), 'background': 'green' if green else 'alpha', 'coverage': f'{cover:.2f}', 'quality': q, 'bytes': len(data), 'webp_sha256': hashlib.sha256(data).hexdigest(), 'qa': '; '.join(notes) or 'ok'})
     with open(ROOT/'src/assets/item-art-import-log.csv' if out == ROOT/'src/assets/items' else out/'item-art-import-log.csv', 'w', newline='') as f:
         w = csv.DictWriter(f, fieldnames=list(log[0])); w.writeheader(); w.writerows(log)
+    if (pack/'QA_REPORT.md').exists(): (out.parent if out == ROOT/'src/assets/items' else out).joinpath('item-art-pack-qa.md').write_text((pack/'QA_REPORT.md').read_text())
     print(f'{len(log)} icons → {out} · {warnings} with QA notes')
     if strict and warnings: sys.exit(1)
 
