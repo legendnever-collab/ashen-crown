@@ -1,0 +1,15 @@
+Paint a SPRITE SHEET of 4 different treasure chests for the interiors of a classic tactical RPG, in the same painting style and the same high three-quarter top-down view (about 60 degrees, front face toward the viewer) as the attached approved interiors (int_capital_tavern.jpg).
+Canvas 1024x512, a 4-column x 2-row grid of 256x256 cells (see layout_chests_capital.png; paint no grid lines and no text).
+Rows 1 and 3: each chest CLOSED. Rows 2 and 4: the SAME chest OPEN — lid raised, the inside visible, EMPTY (dark wood, no coins, no items, no glow) — at exactly the same position, size and angle as the closed chest directly above it.
+Every chest: centered horizontally in its cell, chest body about 150-190 px wide, the bottom of the chest resting on a baseline 40 px above the cell bottom, a soft contact shadow, the whole chest and open lid inside the cell. Scale: in the interiors one tile is 128 px, and these chests are drawn at half size there.
+Background: fully TRANSPARENT (if impossible, flat pure green #00FF00 and nothing else). No text, letters, numbers, emblems or symbols.
+Cells, left to right:
+Row 1 = chests 1-4 closed, row 2 = chests 1-4 open (empty), each open cell lined up exactly with the closed cell above it.
+  1. canal_chest (canal tavern): a bargeman's chest of dark oak with iron corners, a coil of tarred rope tied around it.
+  2. archive_coffer (old records house): a narrow archive coffer of pale walnut with brass hinges and a plain brass lock plate (no letters), a ribbon of paper sticking out.
+  3. tenement_box (tenement room): a small battered painted wooden box, faded blue with chipped edges and a simple hasp.
+  4. barge_crate (canal warehouse): a sturdy cargo crate of rough planks with rope handles and a plain dark band painted around it (no letters).
+
+Painting style: match the attached approved art (style_aren_neutral.png and the attached exterior hub map) — hand-painted fantasy illustration with confident contours, painterly cel shading with soft gradients, warm rim light, rich but slightly earthy colors, detailed but readable textures. Original world: do not imitate any existing game's rooms, furniture designs, emblems or layout.
+Attach: layout_chests_capital.png, approved_chests_act2.png, int_capital_tavern.jpg (your approved result).
+Output: one PNG with transparency (or pure #00FF00 background), exactly 1024x512 px.

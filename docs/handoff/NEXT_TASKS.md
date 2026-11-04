@@ -1,4 +1,8 @@
 # Next Tasks
+1. Art packs with the user (D-083): pack D (docs/v0.7.0/art/act2b-work-pack, 28 images) and ACT III pack F1 (docs/v0.9.0/art/act3-f1-work-pack, 21 images). When they return: verify SHA256SUMS, import busts/sheets with scripts/import-art.py, places with scripts/import-interior-art.py (new hub walk spec for the pilgrim village; hub_capital keeps Velmar's footprint; a `capital` room family with the port room masks and the four new chest styles), icons with `scripts/import-item-art.py <pack> --cells docs/v0.9.0/art/act3-f1-work-pack/cells.csv` (add a --cells option), then rerun the full matrix.
+2. Next on the user's instruction: v0.9.1 「수호자」 (M17–M18, awakening Tier 3, recruits' Tier 2, rain, 「나아가라」); its art pack F2 is made with it.
+
+Previous (v0.9.0, merged 2026-11-05 PR #18 → 45d5c0a, D-082):
 1. v0.9.0 「왕도」 release candidate (D-080): the user plays it; merge only on approval, then record the merge SHA and main CI in docs/v0.9.0/RELEASE_NOTES.md. Tags and Releases only when the user asks.
 2. Play-test watch items: ACT III enemy strength against a human-raised legion (numbers set to the balance party: Lv 9–18), the M15 clerk race (two tiles a turn from TURN 1) and the watch rule, M16 fog readability, harvest MP −3, duel odds, returning recruits.
 3. Next on the user's instruction: v0.9.1 「수호자」 — M17 수호자의 맹세, M18 불타지 않는 숲, awakening (Tier 3 ④ for Erik, Elina, Sain), recruits' Tier 2, rain, guardian statues, guardians' keep and forest village hubs, Aren's 「나아가라」.

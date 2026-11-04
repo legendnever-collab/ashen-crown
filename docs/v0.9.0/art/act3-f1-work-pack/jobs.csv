@@ -1,0 +1,22 @@
+order,kind,id,expression,file,size,references,prompt_file
+1,bust,bellard,neutral,bust_bellard_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png",prompts/01_bust_bellard_neutral.txt
+2,bust,bellard,concerned,bust_bellard_concerned.png,1024x1280,bust_bellard_neutral.png (your approved result),prompts/02_bust_bellard_concerned.txt
+3,bust,bellard,determined,bust_bellard_determined.png,1024x1280,bust_bellard_neutral.png (your approved result),prompts/03_bust_bellard_determined.txt
+4,bust,bellard,sad,bust_bellard_sad.png,1024x1280,bust_bellard_neutral.png (your approved result),prompts/04_bust_bellard_sad.txt
+5,bust,archivist,neutral,bust_archivist_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png",prompts/05_bust_archivist_neutral.txt
+6,bust,archivist,concerned,bust_archivist_concerned.png,1024x1280,bust_archivist_neutral.png (your approved result),prompts/06_bust_archivist_concerned.txt
+7,sprite,archivist,,sprite_archivist.png,1024x768,"bust_archivist_neutral.png (your approved result), ref_sprite_eric.png",prompts/07_sprite_archivist.txt
+8,sprite,bellard,,sprite_bellard.png,1024x768,"bust_bellard_neutral.png (your approved result), ref_sprite_eric.png",prompts/08_sprite_bellard.txt
+9,sprite,watchman,,sprite_watchman.png,1024x768,"ref_sprite_ironSpear.png, style_aren_neutral.png",prompts/09_sprite_watchman.txt
+10,sprite,grayCloak,,sprite_grayCloak.png,1024x768,"ref_sprite_eric.png, style_aren_neutral.png",prompts/10_sprite_grayCloak.txt
+11,sprite,clerk,,sprite_clerk.png,1024x768,"ref_sprite_eric.png, style_aren_neutral.png",prompts/11_sprite_clerk.txt
+12,sprite,harvester,,sprite_harvester.png,1024x768,"ref_sprite_eric.png, style_aren_neutral.png",prompts/12_sprite_harvester.txt
+13,hub,hub_capital,,hub_capital.jpg,1536x1024,"layout_hub_capital.png, approved_hub_velmar.jpg (same footprint), scale_reference.png, sprite_eric_sheet.png, approved_hub_castletown.jpg",prompts/13_hub_capital.txt
+14,interior,int_capital_tavern,,int_capital_tavern.jpg,1536x1024,"layout_int_capital_tavern.png, scale_reference_interior.png, hub_capital.jpg (your approved result), approved_int_port_tavern.jpg",prompts/14_int_capital_tavern.txt
+15,interior,int_capital_armory,,int_capital_armory.jpg,1536x1024,"layout_int_capital_armory.png, scale_reference_interior.png, hub_capital.jpg (your approved result), int_capital_tavern.jpg (your approved result)",prompts/15_int_capital_armory.txt
+16,interior,int_capital_apothecary,,int_capital_apothecary.jpg,1536x1024,"layout_int_capital_apothecary.png, scale_reference_interior.png, hub_capital.jpg (your approved result), int_capital_tavern.jpg (your approved result)",prompts/16_int_capital_apothecary.txt
+17,interior,int_capital_records,,int_capital_records.jpg,1536x1024,"layout_int_capital_records.png, scale_reference_interior.png, hub_capital.jpg (your approved result), int_capital_tavern.jpg (your approved result)",prompts/17_int_capital_records.txt
+18,interior,int_capital_house,,int_capital_house.jpg,1536x1024,"layout_int_capital_house.png, scale_reference_interior.png, hub_capital.jpg (your approved result), int_capital_tavern.jpg (your approved result)",prompts/18_int_capital_house.txt
+19,interior,int_capital_warehouse,,int_capital_warehouse.jpg,1536x1024,"layout_int_capital_warehouse.png, scale_reference_interior.png, hub_capital.jpg (your approved result), int_capital_tavern.jpg (your approved result)",prompts/19_int_capital_warehouse.txt
+20,chests,chests_capital,,chests_capital.png,1024x512,"layout_chests_capital.png, approved_chests_act2.png, int_capital_tavern.jpg (your approved result)",prompts/20_chests_capital.txt
+21,icons,icons_H,,icons_H.png,1024x1024,"layout_icons_H.png, approved_icons_B.png, approved_icons_D.png, style_aren_neutral.png, ref_ui_shop.jpg",prompts/21_icons_H.txt
