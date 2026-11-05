@@ -19,6 +19,7 @@ SHEETS = {  # sheet id -> styles in reading order (columns per row pair)
  'chests_act1': (6, ['village_chest', 'militia_locker', 'grain_bin', 'elder_coffer', 'field_locker', 'medic_chest',
                      'supply_crate', 'officer_strongbox', 'document_coffer', 'armory_chest', 'fort_locker', 'old_chest']),
  'chests_act2': (4, ['frost_chest', 'fur_trunk', 'sled_crate', 'iron_lockbox', 'sea_chest', 'merchant_coffer', 'cargo_crate', 'council_strongbox']),
+ 'chests_pilgrim': (4, ['pilgrim_trunk', 'relief_chest', 'olive_chest', 'relief_crate']),  # pack D (v0.9.1 import, D-085)
 }
 
 def webp(img, budget, qualities=(82, 78, 74, 70, 66, 62, 58)):

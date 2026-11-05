@@ -5,26 +5,29 @@
 // procedural interior template; until then the template is used and only the chest style changes.
 import {HUBS,INTERIORS} from './frontier-data.js';
 
-export const ROOM_FAMILY={village:'village',garrison:'tent',bivouac:'tent',oathcamp:'tent',fortress:'fort',castletown:'north',velmar:'port',pilgrim:'village',refuge:'tent',summit:'tent',capital:'port',fieldcamp:'tent',keep:'fort',forest:'village'};
+export const ROOM_FAMILY={village:'village',garrison:'tent',bivouac:'tent',oathcamp:'tent',fortress:'fort',castletown:'north',velmar:'port',pilgrim:'pilgrim',refuge:'tent',summit:'tent',capital:'port',fieldcamp:'tent',keep:'fort',forest:'village'};
 const RV6_BY_KIND={
  village:{house:'int_village_house',weapon:'int_village_forge',item:'int_village_shop',barracks:'int_village_barracks',quarters:'int_village_hall',store:'int_village_store'},
  tent:{barracks:'int_tent_soldier',quarters:'int_tent_command',store:'int_tent_supply'},
  fort:{barracks:'int_fort_barracks',quarters:'int_fort_command',store:'int_fort_armory'},
  north:{house:'int_north_house',weapon:'int_north_smithy',item:'int_north_provisioner',barracks:'int_north_inn',quarters:'int_north_office',store:'int_north_store'},
- port:{house:'int_port_house',weapon:'int_port_armory',item:'int_port_apothecary',barracks:'int_port_tavern',quarters:'int_port_council',store:'int_port_warehouse'}
+ port:{house:'int_port_house',weapon:'int_port_armory',item:'int_port_apothecary',barracks:'int_port_tavern',quarters:'int_port_council',store:'int_port_warehouse'},
+ // v0.9.1 (art pack D): the pilgrim village's rooms
+ pilgrim:{house:'int_pilgrim_house',weapon:'int_pilgrim_smithy',item:'int_pilgrim_apothecary',barracks:'int_pilgrim_hostel',quarters:'int_pilgrim_hospice',store:'int_pilgrim_granary'}
 };
 // Buildings whose sign makes them a different room of the same kind.
-const RV6_BY_LABEL={tent:{TRIAGE:'int_tent_triage',OPERATIONS:'int_tent_operations'},fort:{'RECORDS HALL':'int_fort_records'}};
+const RV6_BY_LABEL={tent:{TRIAGE:'int_tent_triage',OPERATIONS:'int_tent_operations'},fort:{'RECORDS HALL':'int_fort_records'},pilgrim:{CHAPEL:'int_pilgrim_chapel',COPYISTS:'int_pilgrim_copyists'}};
 
 export const ROOM_CHESTS={
  int_village_house:{a:'village_chest'},int_village_barracks:{a:'militia_locker',b:'militia_locker'},int_village_hall:{a:'elder_coffer'},int_village_store:{a:'grain_bin',b:'grain_bin'},
  int_tent_soldier:{a:'field_locker',b:'field_locker'},int_tent_triage:{a:'medic_chest',b:'medic_chest'},int_tent_command:{a:'officer_strongbox'},int_tent_operations:{a:'document_coffer'},int_tent_supply:{a:'supply_crate',b:'supply_crate'},
  int_fort_barracks:{a:'fort_locker',b:'fort_locker'},int_fort_armory:{a:'armory_chest',b:'armory_chest'},int_fort_records:{a:'document_coffer'},int_fort_command:{a:'officer_strongbox'},
  int_north_inn:{a:'fur_trunk',b:'fur_trunk'},int_north_office:{a:'iron_lockbox'},int_north_house:{a:'frost_chest'},int_north_store:{a:'sled_crate',b:'sled_crate'},
- int_port_tavern:{a:'sea_chest',b:'sea_chest'},int_port_council:{a:'council_strongbox'},int_port_house:{a:'merchant_coffer'},int_port_warehouse:{a:'cargo_crate',b:'cargo_crate'}
+ int_port_tavern:{a:'sea_chest',b:'sea_chest'},int_port_council:{a:'council_strongbox'},int_port_house:{a:'merchant_coffer'},int_port_warehouse:{a:'cargo_crate',b:'cargo_crate'},
+ int_pilgrim_hostel:{a:'pilgrim_trunk',b:'pilgrim_trunk'},int_pilgrim_hospice:{a:'relief_chest'},int_pilgrim_house:{a:'olive_chest'},int_pilgrim_granary:{a:'relief_crate',b:'relief_crate'},int_pilgrim_chapel:{a:'relief_chest'},int_pilgrim_copyists:{a:'pilgrim_trunk'}
 };
 export const CHEST_STYLES=['village_chest','militia_locker','grain_bin','elder_coffer','field_locker','medic_chest','supply_crate','officer_strongbox','document_coffer','armory_chest','fort_locker','old_chest',
- 'frost_chest','fur_trunk','sled_crate','iron_lockbox','sea_chest','merchant_coffer','cargo_crate','council_strongbox'];
+ 'frost_chest','fur_trunk','sled_crate','iron_lockbox','sea_chest','merchant_coffer','cargo_crate','council_strongbox','pilgrim_trunk','relief_chest','olive_chest','relief_crate'];
 
 // Painted rooms (art pack A, imported 2026-10-25): each painting is 12×8 tiles; the mask ('.' walkable, '#' solid) is
 // authored over the painting, chest tiles are solid and drawn by the game, the doorway is the two bottom-centre tiles.
@@ -58,7 +61,16 @@ export const ROOM_LAYOUTS={
  int_port_apothecary:{name:'약재상',npc:[6,4],mask:['####.....###','###........#','###........#','#...#####..#','#..........#']},
  int_port_council:{name:'의회 대기실',chests:[['a',10,4]],mask:['#########..#','#########..#','#...####..##','#..........#','#..........#']},
  int_port_house:{name:'연립주택',chests:[['a',1,4]],mask:['####.##...##','#....##....#','##.........#','#..........#','#..........#']},
- int_port_warehouse:{name:'항구 창고',chests:[['a',10,4],['b',3,4]],mask:['##..##..####','##.........#','##.#......##','##.........#','#.........##']}
+ int_port_warehouse:{name:'항구 창고',chests:[['a',10,4],['b',3,4]],mask:['##..##..####','##.........#','##.#......##','##.........#','#.........##']},
+ // v0.9.1 (art pack D, imported 2026-11-05): the pilgrim village on the way to the monastery.
+ int_pilgrim_hostel:{name:'순례자 숙소',chests:[['a',1,4],['b',10,2]],mask:['#####.....##','#...####...#','##..####...#','#..........#','#..........#']},
+ int_pilgrim_smithy:{name:'대장간',npc:[6,3],mask:['####.....###','####.....###','#...####..##','#..........#','#..........#']},
+ int_pilgrim_apothecary:{name:'약방',npc:[5,3],mask:['####....####','###......###','##..####...#','#..........#','#..........#']},
+ int_pilgrim_hospice:{name:'구호소',chests:[['a',10,2]],mask:['#########.##','#####......#','#....###.###','#..........#','#..........#']},
+ int_pilgrim_house:{name:'민가',chests:[['a',1,4]],mask:['####...#####','####.##...##','##.........#','#..........#','#..........#']},
+ int_pilgrim_granary:{name:'곡물 창고',chests:[['a',10,4],['b',3,4]],mask:['###.##.##.##','###.......##','#..#......##','#..........#','#..........#']},
+ int_pilgrim_chapel:{name:'예배당',chests:[['a',1,2]],mask:['####.#####.#','#....##....#','#.###..###.#','#..........#','#..........#']},
+ int_pilgrim_copyists:{name:'필사실',chests:[['a',6,4]],mask:['######.#####','#.........##','#####.#..###','#..........#','#..........#']}
 };
 const roomCache=new Map();
 // The painted room for a building, or null (then the procedural interior template is used). Same interior kind,

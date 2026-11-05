@@ -169,15 +169,35 @@ const HV5_SPECS={
 Object.assign(HV5_SPECS,ACT2_HUB_SPECS);
 // After the canyon (M08) the legion camps under the grey canyon: the bivouac painting and layout, with Thea at the fire.
 HV5_SPECS.march={...HV5_SPECS.bivouac,name:'Canyon Bivouac · 협곡 야영지',npcs:[...HV5_SPECS.bivouac.npcs,['thea','테아 · 모닥불',14,6,{kind:'hero'}]]};
-// v0.7 (D-068, PROPOSED): the pilgrim village below the Sacred Flame cathedral (M11–M12). Until art pack D arrives it is
-// drawn with the Ashen Village painting tinted to dusk (temporary: that village's layout, doors and rooms). After M12 the
-// legion camps with the refugees under the night bivouac painting. Recruits stand there only when they joined.
-HV5_SPECS.pilgrim={...HV5_VILLAGE,name:'Pilgrim Village · 순례자 마을',kind:'pilgrim',art:'hub_village_day',dusk:true,
- places:[['square','순례자 광장',12,8],['exit','남쪽 순례길',11,14],['advisor','작전 탁자 · 순례자 회관',19,9]],
- npcs:[...hv5Heroes({aren:[16,8],elina:[12,1],elinaName:'엘리나 · 언덕길',lia:[18,8],sain:[5,8],sainName:'세인 · 구호원 앞',kai:[15,5],kaiName:'카이 · 골목',advisor:[19,8]}),
-  ['elder','순례자 마을 사제',22,9],['refugee','피난민',7,8],['guard','성화 기사',12,14],['ines','이네스 · 순례 수호자',9,4,{kind:'hero'}],
-  ['thea','테아 · 언덕길',13,4,{kind:'hero',requires:'thea'}],['dario','다리오 · 광장',20,4,{kind:'hero',requires:'dario'}]],
- lights:[[190,180,90,'lantern'],[770,560,140,'fire'],[420,300,80,'lantern'],[1120,300,80,'lantern'],[560,620,70,'lantern'],[1010,620,70,'lantern']]};
+// v0.7 (D-068, PROPOSED): the pilgrim village below the Sacred Flame cathedral (M11–M12), painted since art pack D (v0.9.1).
+// After M12 the legion camps with the refugees under the night bivouac painting. Recruits stand there only when they joined.
+HV5_SPECS.pilgrim={name:'Pilgrim Village · 순례자 마을',kind:'pilgrim',tone:'village',art:'hub_pilgrim',spawn:[10,8],paintedTable:true,stage:{x:770,y:620},
+ // v0.9.1 (D-085): art pack D's painting of the village below the cathedral; the mask is authored over it (the pack's QA
+ // lists doors moved off their sketch tiles — each door here is at its painted threshold).
+ mask:[
+  '########################',
+  '########################',
+  '###########..###########',
+  '##########....##########',
+  '#######..........#######',
+  '#........#....#........#',
+  '#######..##.#.#..#######',
+  '#######..#####...#######',
+  '#######.#..####..#######',
+  '###.###.##....#..###.###',
+  '#.....................##',
+  '###########...##########',
+  '############..##########',
+  '#......................#',
+  '###########..###########',
+  '###########..###########'],
+ doors:[['forge','PILGRIM SMITHY','순례자 대장간',1,1,6,4,4,4],['shop','RELIEF APOTHECARY','구호 약재상',17,1,7,4,20,4],['warroom-5','CHAPEL','길가 예배당',7,1,4,3,8,3],['warroom-6','COPYISTS','필사가의 집',14,1,3,3,15,3],
+  ['inn-1','PILGRIMS HOSTEL','순례자 숙소',1,6,6,3,3,8],['warroom-2','HOSPICE','교단 구호원',17,6,7,3,20,8],['residence-3','HOME','민가',1,11,5,2,2,12],['depot-4','GRANARY','구호 곡물 창고',16,11,8,2,20,12]],
+ places:[['square','순례자 광장',12,10],['exit','남쪽 순례길',11,14],['advisor','작전 탁자 · 순례자 광장',10,8]],
+ npcs:[...hv5Heroes({aren:[12,9],elina:[16,4],elinaName:'엘리나 · 언덕길',lia:[11,6],sain:[22,5],sainName:'세인 · 구호원 앞',kai:[1,5],kaiName:'카이 · 골목',advisor:[10,7]}),
+  ['elder','순례자 마을 사제',21,10],['refugee','피난민',1,13],['guard','성화 기사',12,15],['ines','이네스 · 순례 수호자',10,3,{kind:'hero'}],
+  ['thea','테아 · 언덕길',16,8,{kind:'hero',requires:'thea'}],['dario','다리오 · 광장',15,5,{kind:'hero',requires:'dario'}]],
+ lights:[[270,170,110,'fire'],[780,450,140,'fire'],[575,265,70,'lantern'],[950,265,70,'lantern'],[575,480,70,'lantern'],[950,480,70,'lantern'],[690,830,70,'lantern'],[850,830,70,'lantern']]};
 HV5_SPECS.refuge={...HV5_SPECS.bivouac,name:'Refugee Camp · 피난민 야영지',kind:'refuge',
  npcs:[...HV5_SPECS.bivouac.npcs.map(n=>n[0]==='elder'?['elder','순례자 사제',16,5]:n[0]==='refugee'?['refugee','피난민',10,10]:n),
   ['ines','이네스 · 모닥불',14,6,{kind:'hero',requires:'ines'}],['thea','테아 · 경계',13,4,{kind:'hero',requires:'thea'}],['dario','다리오 · 모닥불',11,9,{kind:'hero',requires:'dario'}]]};

@@ -1,4 +1,4 @@
-Test page test-output/act2-preview.html: 28087401 bytes
+Test page test-output/act2-preview.html: 32542497 bytes
 PASS 1440 castletown placed
 PASS 1440 castletown shows the painted town at Lia's table
 PASS 1440 castletown: Erik walks on the painted street
@@ -65,6 +65,49 @@ PASS 1440 velmar depot-4: inside
 PASS 1440 velmar depot-4: the doorway leads back to the town
 PASS 1440 velmar depot-4 room with opened chests
 PASS 1440 velmar depot-4: inside
+PASS 1440 pilgrim placed
+PASS 1440 pilgrim shows the painted town at Lia's table
+PASS 1440 pilgrim: Erik walks on the painted street
+PASS 1440 pilgrim forge room 
+PASS 1440 pilgrim forge: inside
+PASS 1440 pilgrim forge: the doorway leads back to the town
+PASS 1440 pilgrim forge room with opened chests
+PASS 1440 pilgrim forge: inside
+PASS 1440 pilgrim shop room 
+PASS 1440 pilgrim shop: inside
+PASS 1440 pilgrim shop: the doorway leads back to the town
+PASS 1440 pilgrim shop room with opened chests
+PASS 1440 pilgrim shop: inside
+PASS 1440 pilgrim warroom-5 room 
+PASS 1440 pilgrim warroom-5: inside
+PASS 1440 pilgrim warroom-5: the doorway leads back to the town
+PASS 1440 pilgrim warroom-5 room with opened chests
+PASS 1440 pilgrim warroom-5: inside
+PASS 1440 pilgrim warroom-6 room 
+PASS 1440 pilgrim warroom-6: inside
+PASS 1440 pilgrim warroom-6: the doorway leads back to the town
+PASS 1440 pilgrim warroom-6 room with opened chests
+PASS 1440 pilgrim warroom-6: inside
+PASS 1440 pilgrim inn-1 room 
+PASS 1440 pilgrim inn-1: inside
+PASS 1440 pilgrim inn-1: the doorway leads back to the town
+PASS 1440 pilgrim inn-1 room with opened chests
+PASS 1440 pilgrim inn-1: inside
+PASS 1440 pilgrim warroom-2 room 
+PASS 1440 pilgrim warroom-2: inside
+PASS 1440 pilgrim warroom-2: the doorway leads back to the town
+PASS 1440 pilgrim warroom-2 room with opened chests
+PASS 1440 pilgrim warroom-2: inside
+PASS 1440 pilgrim residence-3 room 
+PASS 1440 pilgrim residence-3: inside
+PASS 1440 pilgrim residence-3: the doorway leads back to the town
+PASS 1440 pilgrim residence-3 room with opened chests
+PASS 1440 pilgrim residence-3: inside
+PASS 1440 pilgrim depot-4 room 
+PASS 1440 pilgrim depot-4: inside
+PASS 1440 pilgrim depot-4: the doorway leads back to the town
+PASS 1440 pilgrim depot-4 room with opened chests
+PASS 1440 pilgrim depot-4: inside
 PASS 1440 no runtime errors
 PASS 390 castletown placed
 PASS 390 castletown shows the painted town at Lia's table
@@ -118,5 +161,39 @@ PASS 390 velmar depot-4 room
 PASS 390 velmar depot-4: inside
 PASS 390 velmar depot-4 room with opened chests
 PASS 390 velmar depot-4: inside
+PASS 390 pilgrim placed
+PASS 390 pilgrim shows the painted town at Lia's table
+PASS 390 pilgrim forge room 
+PASS 390 pilgrim forge: inside
+PASS 390 pilgrim forge room with opened chests
+PASS 390 pilgrim forge: inside
+PASS 390 pilgrim shop room 
+PASS 390 pilgrim shop: inside
+PASS 390 pilgrim shop room with opened chests
+PASS 390 pilgrim shop: inside
+PASS 390 pilgrim warroom-5 room 
+PASS 390 pilgrim warroom-5: inside
+PASS 390 pilgrim warroom-5 room with opened chests
+PASS 390 pilgrim warroom-5: inside
+PASS 390 pilgrim warroom-6 room 
+PASS 390 pilgrim warroom-6: inside
+PASS 390 pilgrim warroom-6 room with opened chests
+PASS 390 pilgrim warroom-6: inside
+PASS 390 pilgrim inn-1 room 
+PASS 390 pilgrim inn-1: inside
+PASS 390 pilgrim inn-1 room with opened chests
+PASS 390 pilgrim inn-1: inside
+PASS 390 pilgrim warroom-2 room 
+PASS 390 pilgrim warroom-2: inside
+PASS 390 pilgrim warroom-2 room with opened chests
+PASS 390 pilgrim warroom-2: inside
+PASS 390 pilgrim residence-3 room 
+PASS 390 pilgrim residence-3: inside
+PASS 390 pilgrim residence-3 room with opened chests
+PASS 390 pilgrim residence-3: inside
+PASS 390 pilgrim depot-4 room 
+PASS 390 pilgrim depot-4: inside
+PASS 390 pilgrim depot-4 room with opened chests
+PASS 390 pilgrim depot-4: inside
 PASS 390 no runtime errors
-act2-hubs-e2e: 120 checks passed
+act2-hubs-e2e: 197 checks passed

@@ -1,9 +1,9 @@
 # Ashen Crown v0.9.1 — The Guardians (수호자) · ACT III part 2 / QA Report
-Updated 2026-11-05 KST. **Release candidate — not merged before the user plays and approves it.** User instruction in chat on 2026-11-05 06:40 KST ("그림은 시켜놓을게 개발은 우선 가안으로 진행해줘"), within the approved ACT III design (D-078/D-079, docs/v0.9.0/ACT3_DESIGN.md §4.1, §5.2, §6); implementation details D-084. Temporary art: art packs D and F1 are with the user (D-083).
+Updated 2026-11-05 KST. **Release candidate — not merged before the user plays and approves it.** User instruction in chat on 2026-11-05 06:40 KST ("그림은 시켜놓을게 개발은 우선 가안으로 진행해줘"), within the approved ACT III design (D-078/D-079, docs/v0.9.0/ACT3_DESIGN.md §4.1, §5.2, §6); implementation details D-084. Art pack D (returned by the user on 2026-11-05) is imported (D-085); the ACT III art (F1–F4) is still with the user, so the v0.9.1 places, statues, trees and awakened looks stay temporary.
 
 Baseline main 45d5c0a233ecb1fe38c9b87ac80214592223cfe1 (v0.9.0, PR #18). Branch feature/v0.9.1-guardians (it also carries the art-pack F1 generator, 486cc7e).
 
-HTML SHA256: `7db0501f9dea8446f0c955add2258bb15652351deac89bc4323961964a3588e5` (28,086,275 bytes). The full validation run below used this build; `verify-release.py` rebuilds it from the Source ZIP and compares the bytes.
+HTML SHA256: `8df69a92b3adb80a3b68768b2cb5366a7fa3a2743b3f359ce35983f9378075d9` (32,541,371 bytes, with art pack D). The full validation run below used this build; `verify-release.py` rebuilds it from the Source ZIP and compares the bytes.
 
 ## Outcome
 ACT I–II (Missions 01–14), ACT III part 1 (M15–M16), promotions, skills, tools, gear and every story scene unchanged, plus D-084:
@@ -12,20 +12,21 @@ ACT I–II (Missions 01–14), ACT III part 1 (M15–M16), promotions, skills, t
 - **Awakening (Tier 3)** for Elina, Erik and Sain: Lv 14, tier 2, their mission (M16/M17/M18) and an awakening trial (106–108); small bonuses and a **④ skill once a battle** — 맹세의 성벽, 퇴로 봉쇄, 새벽의 기도; the awakening card. Lia and Kai follow in v0.9.2.
 - **The recruits' tier 2** (trials 111–113): 흑철 창기사 (a killing Charge leaves the rest of the move), 검성 (two counters in Riposte), 성소 수호자 (sanctuary reaches two tiles). The legion panel lists every hero in the legion and the next step (promotion or awakening).
 - **Aren's 「나아가라」** (first turn MOV +1) from M17. Guardians' keep and forest-village hubs (temporary art), two world sites, one original track, two treasures and hidden objectives, rewards, supply carriers, schema 13.
+- **Art pack D (D-085):** the painted pilgrim village (new walk mask, eight doors including the new chapel and copyists' rooms, eight painted rooms, four chest styles) and the ACT II part 2 cast (Lucien and Ines busts, ten map sheets). The village has two more chests per mission visit under the unchanged chest rule; battle rewards and results are unchanged.
 - Fixed while building: a recruit beyond the sortie limit could not take part in its own trial (it stayed benched); trial heroes now take the first deployment spots in trials 106–113 (101–105 unchanged).
 
 ## Executed validation (final build, headless Chromium 141.0.7390.37 / Playwright 1.58.2, offline file URLs + HTTP smoke)
 387 unit tests PASS / 0 FAIL (`npm test` after packaging; docs/v0.9.1/evidence/unit-results.txt). New unit files: tests/mission17.test.mjs (6), tests/mission18.test.mjs (5), tests/awakening.test.mjs (7), tests/migration-v090.test.mjs (4).
 
-1,844 browser assertions passed across 50 suites, plus the performance suite. No runtime errors were recorded. Summary: docs/v0.9.1/evidence/browser-run-summary.log — 51 suites including the balances, all exit 0.
+1,927 browser assertions passed across 50 suites, plus the performance suite. No runtime errors were recorded. Summary: docs/v0.9.1/evidence/browser-run-summary.log — 51 suites including the balances, all exit 0.
 
 | Suite | Checks | Result |
 |---|---:|---|
+| **act2-hubs-e2e (pack D added):** the castle town, Velmar and the painted pilgrim village at 1440 and 390 touch — each town at Lia's table, Erik walking, every room with chests closed and open, leaving each room by its doorway (pilgrim screenshots in docs/v0.9.1/screenshots/pilgrim) | 197 | PASS |
 | journey-e2e | 176 | PASS |
-| hub-doors-e2e (159 doors at three sizes; 12 house clicks) | 171 | PASS |
+| hub-doors-e2e (165 doors at three sizes, the pilgrim village's eight doors among them; 12 house clicks) | 177 | PASS |
 | renaissance-e2e | 141 | PASS |
 | campaign-e2e | 128 | PASS |
-| act2-hubs-e2e | 120 | PASS |
 | act1-e2e | 113 | PASS |
 | frontier-e2e | 104 | PASS |
 | gameplay-quality-e2e | 98 | PASS |
@@ -58,7 +59,7 @@ ACT I–II (Missions 01–14), ACT III part 1 (M15–M16), promotions, skills, t
 | http-smoke | 4 | PASS |
 | performance | 4 samples | PASS |
 
-Older suites were pointed at the v0.9.1 build (URL, schema 13, version 0.9.1); hub tests include the keep and forest hubs; the score has 27 tracks; the gear table has 63 entries; the catalog has 27 skills.
+Older suites were pointed at the v0.9.1 build (URL, schema 13, version 0.9.1); hub tests include the keep, the forest and the painted pilgrim village (35 painted rooms, 48 chest images, 3 painted town hubs); the score has 27 tracks; the gear table has 63 entries; the catalog has 27 skills.
 
 ## Balance (legal player policy, rules API only, no state edits)
 Every ACT I–II balance output of the final build — wins, turns, levels, choices and Gold — is identical to the v0.9.0 evidence (act1-balance.json, act2-balance.json, balance, campaign-balance, economy-balance, class-balance byte for byte), and M15–M16 are the same as in v0.9.0 (27/29 and 27/27, same turns).
@@ -89,4 +90,4 @@ Headless medians on this run: 16.7 ms in town and battle at 1440 and 390. Not a 
 - Long-term browser storage eviction.
 - Real-PC frame times.
 - Human difficulty: the policy wins M17 and M18 by rushing the captains; holding to TURN 10/12, the statue race and the archive rule were not exercised by it. The trials were tuned to the balance party (Lv 10–20 at M16); a human legion at the minimum Lv 14 may find 매의 시련 and 맹세의 시련 harder.
-- The final art: the keep, the forest village, statues, trees, new figures and the awakened looks use temporary art until the user's art packs return.
+- The final art: the keep, the forest village, statues, trees, new figures and the awakened looks use temporary art until the ACT III art packs return. Art pack D's own deviations (D-085) are listed for a later retouch.

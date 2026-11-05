@@ -108,7 +108,7 @@ test('every chest in every hub building has a style that fits its room',()=>{
   for(const b of INTERIORS[p.interior].buildings.filter(b=>b.type==='chest')){const st=chestStyle(room,b.chestId);assert.notEqual(st,'old_chest',`${hub}:${p.buildingId}:${b.chestId}`);assert.ok(CHEST_STYLES.includes(st));n++;}}
  assert.ok(n>=30,`${n} chests checked`);
  for(const styles of Object.values(ROOM_CHESTS))for(const st of Object.values(styles))assert.ok(CHEST_STYLES.includes(st));
- assert.equal(new Set(Object.values(ROOM_CHESTS).flatMap(Object.values)).size,19,'19 room styles + the old_chest fallback');
+ assert.equal(new Set(Object.values(ROOM_CHESTS).flatMap(Object.values)).size,23,'23 room styles (19 + art pack D) + the old_chest fallback');
 });
 
 test('recruit definitions are complete and never part of ACT I',()=>{
