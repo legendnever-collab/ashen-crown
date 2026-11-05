@@ -1,6 +1,6 @@
 PASS 1440 the v0.8.1 summit camp offers Mission 15
 PASS 1440 the ACT III card plays on the world map before the capital
-PASS 1440 M15 preparation in the capital's lower city (temporary Velmar painting, dusk)
+PASS 1440 M15 preparation in the capital's lower city (painted by pack F1 over Velmar's footprint)
 PASS 1440 the deployment bar carries Aren's command 「지켜라」 (on by default)
 PASS 1440 the command can be dropped
 PASS 1440 and given again
@@ -19,7 +19,7 @@ PASS 1440 no horizontal overflow
 PASS 1440 no runtime errors
 PASS 390 the v0.8.1 summit camp offers Mission 15
 PASS 390 the ACT III card plays on the world map before the capital
-PASS 390 M15 preparation in the capital's lower city (temporary Velmar painting, dusk)
+PASS 390 M15 preparation in the capital's lower city (painted by pack F1 over Velmar's footprint)
 PASS 390 the deployment bar carries Aren's command 「지켜라」 (on by default)
 PASS 390 the command can be dropped
 PASS 390 and given again

@@ -1,11 +1,9 @@
 # Ashen Crown v0.9.1 — The Guardians (수호자) · ACT III part 2 / QA Report
-Updated 2026-11-05 KST. **Release candidate — not merged before the user plays and approves it.** User instruction in chat on 2026-11-05 06:40 KST ("그림은 시켜놓을게 개발은 우선 가안으로 진행해줘"), within the approved ACT III design (D-078/D-079, docs/v0.9.0/ACT3_DESIGN.md §4.1, §5.2, §6); implementation details D-084. Art pack D (returned by the user on 2026-11-05) is imported (D-085); the ACT III art (F1–F4) is still with the user, so the v0.9.1 places, statues, trees and awakened looks stay temporary.
+Updated 2026-11-06 KST. **Release candidate — not merged before the user plays and approves it.** User instruction in chat on 2026-11-05 06:40 KST ("그림은 시켜놓을게 개발은 우선 가안으로 진행해줘"), within the approved ACT III design (D-078/D-079, docs/v0.9.0/ACT3_DESIGN.md §4.1, §5.2, §6); implementation details D-084. Art pack D (returned on 2026-11-05, D-085) and ACT III art pack F1 (returned on 2026-11-06, D-086) are imported; the v0.9.1 places, statues, trees and awakened looks stay temporary until ACT III packs F2–F4.
 
 Baseline main 45d5c0a233ecb1fe38c9b87ac80214592223cfe1 (v0.9.0, PR #18). Branch feature/v0.9.1-guardians (it also carries the art-pack F1 generator, 486cc7e).
 
-**Interim (2026-11-06):** ACT III art pack F1 part 2 (the capital hub, six rooms, four chests, eight icons; D-086) is imported into this build (HTML SHA256 `54438a488213a80427bcefcc40925bd3adb76bb259e37c758c2c02b77ca5ea74`, 34,691,990 bytes). On it only these were run: 388 unit tests PASS (new: tests/item-art.test.mjs pack F1), act2-hubs-e2e 256 checks (now also the capital and its six rooms), item-art-e2e 18, arms-e2e 42 — all PASS. The full browser matrix below was run on the previous build (`8df69a92…`, art pack D) and is re-run after F1 part 1 arrives.
-
-HTML SHA256 of the full validation run: `8df69a92b3adb80a3b68768b2cb5366a7fa3a2743b3f359ce35983f9378075d9` (32,541,371 bytes, with art pack D). The full validation run below used that build; `verify-release.py` rebuilds it from the Source ZIP and compares the bytes.
+HTML SHA256: `4283648bec935098510d39a0ec003eca48726e63226358a9e5a1142b4a876a6b` (35,914,352 bytes, with art packs D and F1). The full validation run below used this build; `verify-release.py` rebuilds it from the Source ZIP and compares the bytes.
 
 ## Outcome
 ACT I–II (Missions 01–14), ACT III part 1 (M15–M16), promotions, skills, tools, gear and every story scene unchanged, plus D-084:
@@ -15,16 +13,17 @@ ACT I–II (Missions 01–14), ACT III part 1 (M15–M16), promotions, skills, t
 - **The recruits' tier 2** (trials 111–113): 흑철 창기사 (a killing Charge leaves the rest of the move), 검성 (two counters in Riposte), 성소 수호자 (sanctuary reaches two tiles). The legion panel lists every hero in the legion and the next step (promotion or awakening).
 - **Aren's 「나아가라」** (first turn MOV +1) from M17. Guardians' keep and forest-village hubs (temporary art), two world sites, one original track, two treasures and hidden objectives, rewards, supply carriers, schema 13.
 - **Art pack D (D-085):** the painted pilgrim village (new walk mask, eight doors including the new chapel and copyists' rooms, eight painted rooms, four chest styles) and the ACT II part 2 cast (Lucien and Ines busts, ten map sheets). The village has two more chests per mission visit under the unchanged chest rule; battle rewards and results are unchanged.
+- **ACT III art pack F1 (D-086):** the painted capital (hub_capital over Velmar's footprint with Velmar's mask and doors, the `capital` room family with six rooms, four chest styles), the archivist and Bellard busts, six ACT III map sheets (archivist, Bellard, watchman, grey cloak, clerk, harvester) and sheet H icons (six tier III capital pieces, two treasures). Shopkeepers behind one-row painted counters (pilgrim and capital shops) stand a row back with talk reach 3. Chest count unchanged.
 - Fixed while building: a recruit beyond the sortie limit could not take part in its own trial (it stayed benched); trial heroes now take the first deployment spots in trials 106–113 (101–105 unchanged).
 
 ## Executed validation (final build, headless Chromium 141.0.7390.37 / Playwright 1.58.2, offline file URLs + HTTP smoke)
-387 unit tests PASS / 0 FAIL (`npm test` after packaging; docs/v0.9.1/evidence/unit-results.txt). New unit files: tests/mission17.test.mjs (6), tests/mission18.test.mjs (5), tests/awakening.test.mjs (7), tests/migration-v090.test.mjs (4).
+388 unit tests PASS / 0 FAIL (`npm test` after packaging; docs/v0.9.1/evidence/unit-results.txt). New unit files: tests/mission17.test.mjs (6), tests/mission18.test.mjs (5), tests/awakening.test.mjs (7), tests/migration-v090.test.mjs (4); tests/item-art.test.mjs gained the pack F1 test.
 
-1,927 browser assertions passed across 50 suites, plus the performance suite. No runtime errors were recorded. Summary: docs/v0.9.1/evidence/browser-run-summary.log — 51 suites including the balances, all exit 0.
+1,986 browser assertions passed across 50 suites, plus the performance suite. No runtime errors were recorded. Summary: docs/v0.9.1/evidence/browser-run-summary.log — 51 suites including the balances, all exit 0.
 
 | Suite | Checks | Result |
 |---|---:|---|
-| **act2-hubs-e2e (pack D added):** the castle town, Velmar and the painted pilgrim village at 1440 and 390 touch — each town at Lia's table, Erik walking, every room with chests closed and open, leaving each room by its doorway (pilgrim screenshots in docs/v0.9.1/screenshots/pilgrim) | 197 | PASS |
+| **act2-hubs-e2e (packs D and F1 added):** the castle town, Velmar, the painted pilgrim village and the painted capital at 1440 and 390 touch — each town at Lia's table, Erik walking, every room with chests closed and open, leaving each room by its doorway (screenshots in docs/v0.9.1/screenshots/pilgrim and /capital) | 256 | PASS |
 | journey-e2e | 176 | PASS |
 | hub-doors-e2e (165 doors at three sizes, the pilgrim village's eight doors among them; 12 house clicks) | 177 | PASS |
 | renaissance-e2e | 141 | PASS |
@@ -61,7 +60,7 @@ ACT I–II (Missions 01–14), ACT III part 1 (M15–M16), promotions, skills, t
 | http-smoke | 4 | PASS |
 | performance | 4 samples | PASS |
 
-Older suites were pointed at the v0.9.1 build (URL, schema 13, version 0.9.1); hub tests include the keep, the forest and the painted pilgrim village (35 painted rooms, 48 chest images, 3 painted town hubs); the score has 27 tracks; the gear table has 63 entries; the catalog has 27 skills.
+Older suites were pointed at the v0.9.1 build (URL, schema 13, version 0.9.1); hub tests include the keep, the forest and the painted pilgrim village and capital (41 painted rooms, 56 chest images, 4 painted town hubs); the item-art suite checks the capital shelf's painted 왕도 근위검; ACT III battle screenshots with the pack F1 figures in docs/v0.9.1/screenshots/act3-f1; the score has 27 tracks; the gear table has 63 entries; the catalog has 27 skills.
 
 ## Balance (legal player policy, rules API only, no state edits)
 Every ACT I–II balance output of the final build — wins, turns, levels, choices and Gold — is identical to the v0.9.0 evidence (act1-balance.json, act2-balance.json, balance, campaign-balance, economy-balance, class-balance byte for byte), and M15–M16 are the same as in v0.9.0 (27/29 and 27/27, same turns).
@@ -92,4 +91,4 @@ Headless medians on this run: 16.7 ms in town and battle at 1440 and 390. Not a 
 - Long-term browser storage eviction.
 - Real-PC frame times.
 - Human difficulty: the policy wins M17 and M18 by rushing the captains; holding to TURN 10/12, the statue race and the archive rule were not exercised by it. The trials were tuned to the balance party (Lv 10–20 at M16); a human legion at the minimum Lv 14 may find 매의 시련 and 맹세의 시련 harder.
-- The final art: the keep, the forest village, statues, trees, new figures and the awakened looks use temporary art until the ACT III art packs return. Art pack D's own deviations (D-085) are listed for a later retouch.
+- The final art: the keep, the forest village, statues, trees, new figures and the awakened looks use temporary art until ACT III packs F2–F4. The deviations of packs D and F1 (D-085, D-086) are listed for a later retouch.
