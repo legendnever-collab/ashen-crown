@@ -29,7 +29,7 @@ try{
   check(`${label} the v0.8.1 summit camp offers Mission 15`,(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 15'));
   await press('next-mission');let s=await snap();
   check(`${label} the ACT III card plays on the world map before the capital`,s.narrative.active?.key==='world:capital'||s.narrative.seen.includes('world:capital'));
-  await drainStory(p);s=await snap();check(`${label} M15 preparation in the capital's lower city (temporary Velmar painting, dusk)`,s.missionId===15&&s.frontier.hub==='capital'&&s.narrative.seen.includes('pre:15'));
+  await drainStory(p);s=await snap();check(`${label} M15 preparation in the capital's lower city (painted by pack F1 over Velmar's footprint)`,s.missionId===15&&s.frontier.hub==='capital'&&s.narrative.seen.includes('pre:15'));
   await p.screenshot({path:`${shots}/capital-m15-${label}.png`});
   await enterWarCouncil(p,touch);await press('deploy');await p.waitForTimeout(300);
   check(`${label} the deployment bar carries Aren's command 「지켜라」 (on by default)`,(await p.locator('[data-do="aren-command"]').first().textContent()).includes('지켜라'));

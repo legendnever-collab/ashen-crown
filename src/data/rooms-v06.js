@@ -5,7 +5,7 @@
 // procedural interior template; until then the template is used and only the chest style changes.
 import {HUBS,INTERIORS} from './frontier-data.js';
 
-export const ROOM_FAMILY={village:'village',garrison:'tent',bivouac:'tent',oathcamp:'tent',fortress:'fort',castletown:'north',velmar:'port',pilgrim:'pilgrim',refuge:'tent',summit:'tent',capital:'port',fieldcamp:'tent',keep:'fort',forest:'village'};
+export const ROOM_FAMILY={village:'village',garrison:'tent',bivouac:'tent',oathcamp:'tent',fortress:'fort',castletown:'north',velmar:'port',pilgrim:'pilgrim',refuge:'tent',summit:'tent',capital:'capital',fieldcamp:'tent',keep:'fort',forest:'village'};
 const RV6_BY_KIND={
  village:{house:'int_village_house',weapon:'int_village_forge',item:'int_village_shop',barracks:'int_village_barracks',quarters:'int_village_hall',store:'int_village_store'},
  tent:{barracks:'int_tent_soldier',quarters:'int_tent_command',store:'int_tent_supply'},
@@ -13,7 +13,9 @@ const RV6_BY_KIND={
  north:{house:'int_north_house',weapon:'int_north_smithy',item:'int_north_provisioner',barracks:'int_north_inn',quarters:'int_north_office',store:'int_north_store'},
  port:{house:'int_port_house',weapon:'int_port_armory',item:'int_port_apothecary',barracks:'int_port_tavern',quarters:'int_port_council',store:'int_port_warehouse'},
  // v0.9.1 (art pack D): the pilgrim village's rooms
- pilgrim:{house:'int_pilgrim_house',weapon:'int_pilgrim_smithy',item:'int_pilgrim_apothecary',barracks:'int_pilgrim_hostel',quarters:'int_pilgrim_hospice',store:'int_pilgrim_granary'}
+ pilgrim:{house:'int_pilgrim_house',weapon:'int_pilgrim_smithy',item:'int_pilgrim_apothecary',barracks:'int_pilgrim_hostel',quarters:'int_pilgrim_hospice',store:'int_pilgrim_granary'},
+ // v0.9.1 (ACT III art pack F1): the capital's lower city, Velmar's doors
+ capital:{house:'int_capital_house',weapon:'int_capital_armory',item:'int_capital_apothecary',barracks:'int_capital_tavern',quarters:'int_capital_records',store:'int_capital_warehouse'}
 };
 // Buildings whose sign makes them a different room of the same kind.
 const RV6_BY_LABEL={tent:{TRIAGE:'int_tent_triage',OPERATIONS:'int_tent_operations'},fort:{'RECORDS HALL':'int_fort_records'},pilgrim:{CHAPEL:'int_pilgrim_chapel',COPYISTS:'int_pilgrim_copyists'}};
@@ -24,14 +26,17 @@ export const ROOM_CHESTS={
  int_fort_barracks:{a:'fort_locker',b:'fort_locker'},int_fort_armory:{a:'armory_chest',b:'armory_chest'},int_fort_records:{a:'document_coffer'},int_fort_command:{a:'officer_strongbox'},
  int_north_inn:{a:'fur_trunk',b:'fur_trunk'},int_north_office:{a:'iron_lockbox'},int_north_house:{a:'frost_chest'},int_north_store:{a:'sled_crate',b:'sled_crate'},
  int_port_tavern:{a:'sea_chest',b:'sea_chest'},int_port_council:{a:'council_strongbox'},int_port_house:{a:'merchant_coffer'},int_port_warehouse:{a:'cargo_crate',b:'cargo_crate'},
- int_pilgrim_hostel:{a:'pilgrim_trunk',b:'pilgrim_trunk'},int_pilgrim_hospice:{a:'relief_chest'},int_pilgrim_house:{a:'olive_chest'},int_pilgrim_granary:{a:'relief_crate',b:'relief_crate'},int_pilgrim_chapel:{a:'relief_chest'},int_pilgrim_copyists:{a:'pilgrim_trunk'}
+ int_pilgrim_hostel:{a:'pilgrim_trunk',b:'pilgrim_trunk'},int_pilgrim_hospice:{a:'relief_chest'},int_pilgrim_house:{a:'olive_chest'},int_pilgrim_granary:{a:'relief_crate',b:'relief_crate'},int_pilgrim_chapel:{a:'relief_chest'},int_pilgrim_copyists:{a:'pilgrim_trunk'},
+ int_capital_tavern:{a:'canal_chest',b:'canal_chest'},int_capital_records:{a:'archive_coffer'},int_capital_house:{a:'tenement_box'},int_capital_warehouse:{a:'barge_crate',b:'barge_crate'}
 };
 export const CHEST_STYLES=['village_chest','militia_locker','grain_bin','elder_coffer','field_locker','medic_chest','supply_crate','officer_strongbox','document_coffer','armory_chest','fort_locker','old_chest',
- 'frost_chest','fur_trunk','sled_crate','iron_lockbox','sea_chest','merchant_coffer','cargo_crate','council_strongbox','pilgrim_trunk','relief_chest','olive_chest','relief_crate'];
+ 'frost_chest','fur_trunk','sled_crate','iron_lockbox','sea_chest','merchant_coffer','cargo_crate','council_strongbox','pilgrim_trunk','relief_chest','olive_chest','relief_crate','canal_chest','archive_coffer','tenement_box','barge_crate'];
 
 // Painted rooms (art pack A, imported 2026-10-25): each painting is 12×8 tiles; the mask ('.' walkable, '#' solid) is
 // authored over the painting, chest tiles are solid and drawn by the game, the doorway is the two bottom-centre tiles.
-// npc: [x,y] where the room's shopkeeper stands behind the counter (talk reach 2, across the counter).
+// npc: [x,y] where the room's shopkeeper stands behind the counter (talk reach 2, across the counter); [x,y,3,32] where the
+// painted counter is one row deep: the keeper stands a row further back (reach 3) and is drawn 32 px lower, just behind
+// the counter (v0.9.1 packs D and F1).
 const RV6_DOOR='#####..#####';
 export const ROOM_LAYOUTS={
  int_village_house:{name:'민가',chests:[['a',1,4]],mask:['###.########','#.........##','##.........#','#..........#','#..........#']},
@@ -64,13 +69,20 @@ export const ROOM_LAYOUTS={
  int_port_warehouse:{name:'항구 창고',chests:[['a',10,4],['b',3,4]],mask:['##..##..####','##.........#','##.#......##','##.........#','#.........##']},
  // v0.9.1 (art pack D, imported 2026-11-05): the pilgrim village on the way to the monastery.
  int_pilgrim_hostel:{name:'순례자 숙소',chests:[['a',1,4],['b',10,2]],mask:['#####.....##','#...####...#','##..####...#','#..........#','#..........#']},
- int_pilgrim_smithy:{name:'대장간',npc:[6,3],mask:['####.....###','####.....###','#...####..##','#..........#','#..........#']},
- int_pilgrim_apothecary:{name:'약방',npc:[5,3],mask:['####....####','###......###','##..####...#','#..........#','#..........#']},
+ int_pilgrim_smithy:{name:'대장간',npc:[6,2,3,32],mask:['####.....###','####.....###','#...####..##','#..........#','#..........#']},
+ int_pilgrim_apothecary:{name:'약방',npc:[5,2,3,32],mask:['####....####','###......###','##..####...#','#..........#','#..........#']},
  int_pilgrim_hospice:{name:'구호소',chests:[['a',10,2]],mask:['#########.##','#####......#','#....###.###','#..........#','#..........#']},
  int_pilgrim_house:{name:'민가',chests:[['a',1,4]],mask:['####...#####','####.##...##','##.........#','#..........#','#..........#']},
  int_pilgrim_granary:{name:'곡물 창고',chests:[['a',10,4],['b',3,4]],mask:['###.##.##.##','###.......##','#..#......##','#..........#','#..........#']},
  int_pilgrim_chapel:{name:'예배당',chests:[['a',1,2]],mask:['####.#####.#','#....##....#','#.###..###.#','#..........#','#..........#']},
- int_pilgrim_copyists:{name:'필사실',chests:[['a',6,4]],mask:['######.#####','#.........##','#####.#..###','#..........#','#..........#']}
+ int_pilgrim_copyists:{name:'필사실',chests:[['a',6,4]],mask:['######.#####','#.........##','#####.#..###','#..........#','#..........#']},
+ // v0.9.1 (ACT III art pack F1, imported 2026-11-06): the capital's lower city.
+ int_capital_tavern:{name:'운하 주점',chests:[['a',1,4],['b',10,2]],mask:['#####..##.##','#...##.##..#','##..##.##..#','#..........#','#..........#']},
+ int_capital_armory:{name:'근위 무기점',npc:[6,2,3,32],mask:['####.....###','####.....###','#...####..##','#..........#','#..........#']},
+ int_capital_apothecary:{name:'하층가 약재상',npc:[5,2,3,32],mask:['####.....###','#........###','##..####...#','#..........#','#..........#']},
+ int_capital_records:{name:'옛 기록원',chests:[['a',10,4]],mask:['############','##..#####..#','#...#####.##','#..........#','#..........#']},
+ int_capital_house:{name:'연립 셋방',chests:[['a',1,4]],mask:['####.#....##','####.##...##','##.........#','#..........#','#..........#']},
+ int_capital_warehouse:{name:'운하 창고',chests:[['a',10,4],['b',3,4]],mask:['######.#..##','####......##','#..#......##','#..........#','#..........#']}
 };
 const roomCache=new Map();
 // The painted room for a building, or null (then the procedural interior template is used). Same interior kind,
@@ -81,7 +93,7 @@ export function paintedRoom(hubId,interior,buildingId){
  const mask=['############','############',...L.mask,RV6_DOOR],chests=L.chests||[],exit=[6,6];
  const room={name:`${L.name} · 내부`,tone:'interior',painted:true,art:id,night,width:12,height:8,spawn:exit,generic:base.generic,service:base.service,mask,doors:[[5,7],[6,7]],
   buildings:chests.map(([chestId,x,y])=>({type:'chest',x,y,w:1,h:1,label:'',chestId})),
-  npcs:(base.npcs||[]).map(n=>L.npc?{...n,x:L.npc[0],y:L.npc[1],reach:2}:n),
+  npcs:(base.npcs||[]).map(n=>L.npc?{...n,x:L.npc[0],y:L.npc[1],reach:L.npc[2]||2,...(L.npc[3]?{drop:L.npc[3]}:{})}:n),
   places:[{id:'exit',name:'밖으로 나가기',x:exit[0],y:exit[1],action:'exit'},...chests.map(([chestId,x,y])=>({id:`chest:${chestId}`,name:'보물상자',x,y,action:'chest',chestId}))]};
  roomCache.set(key,room);return room;
 }

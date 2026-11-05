@@ -205,10 +205,10 @@ HV5_SPECS.refuge={...HV5_SPECS.bivouac,name:'Refugee Camp · 피난민 야영지
 HV5_SPECS.summit={...HV5_SPECS.oathcamp,name:'Summit Camp · 폐허 역참 야영지',kind:'summit',
  npcs:[...HV5_SPECS.oathcamp.npcs.map(n=>n[0]==='elder'?['elder','역참 관리인',n[2],n[3]]:n[0]==='refugee'?['refugee','피난민',n[2],n[3]]:n),
   ['thea','테아 · 경계',10,11,{kind:'hero',requires:'thea'}],['dario','다리오 · 길목',10,12,{kind:'hero',requires:'dario'}],['ines','이네스 · 천막 곁',13,11,{kind:'hero',requires:'ines'}]]};
-// v0.9.0 (D-079, PROPOSED): the capital's lower city (M15 – M16 preparation). Until the ACT III art arrives it is drawn
-// with the Velmar market painting under a dusk tint (temporary: Velmar's layout, doors, forge and shop — never labelled
-// finished). After M16 the legion camps on the western plain under the night bivouac painting.
-HV5_SPECS.capital={...HV5_SPECS.velmar,name:'Royal Lower City · 왕도 하층가',kind:'capital',dusk:true,
+// v0.9.0 (D-079, PROPOSED): the capital's lower city (M15 – M16 preparation). ACT III art pack F1 (v0.9.1 import, D-086)
+// painted it over Velmar's footprint, so it keeps Velmar's walk mask, doors, forge and shop; its rooms are the 'capital'
+// family. After M16 the legion camps on the western plain under the night bivouac painting.
+HV5_SPECS.capital={...HV5_SPECS.velmar,name:'Royal Lower City · 왕도 하층가',kind:'capital',art:'hub_capital',
  npcs:HV5_SPECS.velmar.npcs.map(n=>n[0]==='elder'?['elder','늙은 기록관',n[2],n[3]]:n[0]==='refugee'?['refugee','하층가 주민',n[2],n[3]]:n[0]==='guard'?['guard','왕도 경비대',n[2],n[3]]:n[0]==='dario'?['dario','다리오 · 골목',n[2],n[3],{kind:'hero',requires:'dario'}]:n[0]==='thea'?['thea','테아 · 운하 길',n[2],n[3],{kind:'hero',requires:'thea'}]:n).concat([['ines','이네스 · 광장',19,9,{kind:'hero',requires:'ines'}]])};
 HV5_SPECS.fieldcamp={...HV5_SPECS.bivouac,name:'Field Camp · 잊힌 전장 야영지',kind:'fieldcamp',
  npcs:[...HV5_SPECS.bivouac.npcs.map(n=>n[0]==='elder'?['elder','근처 마을 노인',16,5]:n[0]==='refugee'?['refugee','피난민',10,10]:n),

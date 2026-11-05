@@ -10,7 +10,10 @@ pack's own cells.csv (sheet,cell,id,…; cells numbered 1–16 row by row), so t
   - Each cell becomes src/assets/items/<id>.webp at 128x128 (icons are drawn at 20–56 px, twice that on phones).
   - QA per cell: empty cells, icons touching the cell edge (outside the 80 % safe square) and stray green are reported
     in src/assets/item-art-import-log.csv; --strict makes any warning fatal.
-No network access. Usage: python3 scripts/import-item-art.py <pack root or .zip> [--out DIR] [--strict]
+--cells CSV takes another work pack's cell table (ACT III F1: docs/v0.9.0/art/act3-f1-work-pack/cells.csv); the icons it
+names are added to or replaced in the import log, the other rows are kept, and the pack's QA report is not copied over
+pack E's. A pack with manifest_icons.csv (F1_2) uses it for the sheet rows.
+No network access. Usage: python3 scripts/import-item-art.py <pack root or .zip> [--out DIR] [--strict] [--cells CSV]
 """
 import csv, hashlib, io, sys, tempfile, zipfile
 from pathlib import Path
@@ -50,6 +53,7 @@ def main(argv):
     if not argv: sys.exit(__doc__)
     strict = '--strict' in argv; out = ROOT/'src/assets/items'
     if '--out' in argv: out = Path(argv[argv.index('--out') + 1])
+    cells_csv = Path(argv[argv.index('--cells') + 1]) if '--cells' in argv else CELLS
     pack = find_pack(argv[0]); out.mkdir(parents=True, exist_ok=True)
     for line in (pack/'SHA256SUMS.txt').read_text().splitlines():
         if not line.strip(): continue
@@ -58,8 +62,9 @@ def main(argv):
         if not f.exists(): f = pack/Path(name).name
         if not f.exists(): sys.exit(f'missing {name}')
         if sha(f) != digest: sys.exit(f'SHA256 mismatch: {name}')
-    manifest = {r['sheet']: r for r in csv.DictReader(open(pack/'manifest.csv'))} if (pack/'manifest.csv').exists() else {}
-    cells = list(csv.DictReader(open(CELLS))); log, warnings = [], 0
+    mf = pack/'manifest_icons.csv' if (pack/'manifest_icons.csv').exists() else pack/'manifest.csv'
+    manifest = {r['sheet']: r for r in csv.DictReader(open(mf)) if 'sheet' in r} if mf.exists() else {}
+    cells = list(csv.DictReader(open(cells_csv))); log, warnings = [], 0
     for sheet in sorted({c['sheet'] for c in cells}):
         src = next(iter(pack.rglob(f'icons_{sheet}.png')), None)
         if not src: sys.exit(f'icons_{sheet}.png not in the pack')
@@ -80,9 +85,12 @@ def main(argv):
             data, q = webp(cell.resize((128, 128), Image.LANCZOS))
             (out/f"{c['id']}.webp").write_bytes(data); warnings += bool(notes)
             log.append({'id': c['id'], 'sheet': sheet, 'cell': c['cell'], 'source': src.name, 'source_sha256': sha(src), 'background': 'green' if green else 'alpha', 'coverage': f'{cover:.2f}', 'quality': q, 'bytes': len(data), 'webp_sha256': hashlib.sha256(data).hexdigest(), 'qa': '; '.join(notes) or 'ok'})
-    with open(ROOT/'src/assets/item-art-import-log.csv' if out == ROOT/'src/assets/items' else out/'item-art-import-log.csv', 'w', newline='') as f:
+    log_path = ROOT/'src/assets/item-art-import-log.csv' if out == ROOT/'src/assets/items' else out/'item-art-import-log.csv'
+    if cells_csv != CELLS and log_path.exists():
+        new = {r['id'] for r in log}; log = [r for r in csv.DictReader(open(log_path)) if r['id'] not in new] + log
+    with open(log_path, 'w', newline='') as f:
         w = csv.DictWriter(f, fieldnames=list(log[0])); w.writeheader(); w.writerows(log)
-    if (pack/'QA_REPORT.md').exists(): (out.parent if out == ROOT/'src/assets/items' else out).joinpath('item-art-pack-qa.md').write_text((pack/'QA_REPORT.md').read_text())
+    if cells_csv == CELLS and (pack/'QA_REPORT.md').exists(): (out.parent if out == ROOT/'src/assets/items' else out).joinpath('item-art-pack-qa.md').write_text((pack/'QA_REPORT.md').read_text())
     print(f'{len(log)} icons → {out} · {warnings} with QA notes')
     if strict and warnings: sys.exit(1)
 

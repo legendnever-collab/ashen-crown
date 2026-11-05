@@ -3,7 +3,9 @@ Updated 2026-11-05 KST. **Release candidate — not merged before the user plays
 
 Baseline main 45d5c0a233ecb1fe38c9b87ac80214592223cfe1 (v0.9.0, PR #18). Branch feature/v0.9.1-guardians (it also carries the art-pack F1 generator, 486cc7e).
 
-HTML SHA256: `8df69a92b3adb80a3b68768b2cb5366a7fa3a2743b3f359ce35983f9378075d9` (32,541,371 bytes, with art pack D). The full validation run below used this build; `verify-release.py` rebuilds it from the Source ZIP and compares the bytes.
+**Interim (2026-11-06):** ACT III art pack F1 part 2 (the capital hub, six rooms, four chests, eight icons; D-086) is imported into this build (HTML SHA256 `54438a488213a80427bcefcc40925bd3adb76bb259e37c758c2c02b77ca5ea74`, 34,691,990 bytes). On it only these were run: 388 unit tests PASS (new: tests/item-art.test.mjs pack F1), act2-hubs-e2e 256 checks (now also the capital and its six rooms), item-art-e2e 18, arms-e2e 42 — all PASS. The full browser matrix below was run on the previous build (`8df69a92…`, art pack D) and is re-run after F1 part 1 arrives.
+
+HTML SHA256 of the full validation run: `8df69a92b3adb80a3b68768b2cb5366a7fa3a2743b3f359ce35983f9378075d9` (32,541,371 bytes, with art pack D). The full validation run below used that build; `verify-release.py` rebuilds it from the Source ZIP and compares the bytes.
 
 ## Outcome
 ACT I–II (Missions 01–14), ACT III part 1 (M15–M16), promotions, skills, tools, gear and every story scene unchanged, plus D-084:

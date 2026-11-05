@@ -34,9 +34,10 @@ try{
   const tr=forge(8,7);tr.economy.gear.push({id:`g${tr.economy.next++}`,type:'twinDaggers',star:1,exp:0});tr.economy.equipped.eric.treasure=tr.economy.gear.at(-1).id;await restore(tr);
   await press('inventory');await p.waitForTimeout(300);ok=await painted('#modal-root .doll-slot');check(`${label} the equipment sheet paints the Twin Daggers in the treasure slot`,ok.length>=1&&ok.every(Boolean)&&(await p.locator('#modal-root .doll-slot.filled').innerText()).includes('쌍둥이 단검'));
   await p.screenshot({path:`${shots}/equipment-sheet-${label}.png`});await press('close-modal');
-  // 3. The capital forge (after M15): tier III pieces made after the pack keep the game-drawn icon.
+  // 3. The capital forge (after M15): its tier III pieces are painted since ACT III pack F1 (v0.9.1, sheet H).
   const cap=forge(16,15);await restore(cap);await press('npc','smith');await press('shop-service','buy');await p.waitForTimeout(300);
-  check(`${label} the capital shelf shows 왕도 근위검 with its game-drawn icon (not in pack E)`,(await p.locator('#modal-root').innerText()).includes('왕도 근위검')&&await p.locator('#modal-root svg.item-icon').count()>=1);
+  const saberIcon=await p.evaluate(()=>{const leaf=[...document.querySelectorAll('#modal-root *')].filter(e=>e.textContent.includes('왕도 근위검')).pop();let e=leaf;while(e&&!e.querySelector('.item-icon'))e=e.parentElement;return e?.querySelector('.item-icon')?.tagName||null;});
+  check(`${label} the capital shelf shows 왕도 근위검 with its painted icon (pack F1)`,(await p.locator('#modal-root').innerText()).includes('왕도 근위검')&&saberIcon==='IMG');
   await p.screenshot({path:`${shots}/capital-shelf-${label}.png`});await press('close-modal');
   // 4. Battle: the command menu and the skills submenu.
   const s=battle();await restore(s);const eric=findUnit(s,'eric');await select(eric);

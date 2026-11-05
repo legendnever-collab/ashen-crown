@@ -6,7 +6,8 @@ Pack layout (work pack return format): manifest.csv with id,kind,path,width,heig
   hub      1536x1024 (24x16 tiles of 64) -> src/assets/hubs/<id>.webp, same size (ACT II pack C)
   chests   1536x1024 / 1024x1024 sheet of 256-px cells, closed row above open row -> src/assets/chests/<style>_<closed|open>.webp
            at 128x128 each (chest baseline 216/256 of the cell, kept); alpha below 20 is cleared (matting fringe).
-SHA256 of every master is checked against the manifest first. No network access.
+SHA256 of every master is checked against the manifest first. Mixed packs (ACT III F1_2) carry manifest_places.csv
+for the places; it is read instead of manifest.csv when present. No network access.
 Usage: python3 scripts/import-interior-art.py <pack-root>
 """
 import csv, hashlib, io, sys
@@ -20,6 +21,7 @@ SHEETS = {  # sheet id -> styles in reading order (columns per row pair)
                      'supply_crate', 'officer_strongbox', 'document_coffer', 'armory_chest', 'fort_locker', 'old_chest']),
  'chests_act2': (4, ['frost_chest', 'fur_trunk', 'sled_crate', 'iron_lockbox', 'sea_chest', 'merchant_coffer', 'cargo_crate', 'council_strongbox']),
  'chests_pilgrim': (4, ['pilgrim_trunk', 'relief_chest', 'olive_chest', 'relief_crate']),  # pack D (v0.9.1 import, D-085)
+ 'chests_capital': (4, ['canal_chest', 'archive_coffer', 'tenement_box', 'barge_crate']),  # ACT III pack F1 (v0.9.1 import, D-086)
 }
 
 def webp(img, budget, qualities=(82, 78, 74, 70, 66, 62, 58)):
@@ -38,7 +40,7 @@ def cells(sheet, cols, styles):
             yield style, state, cell.resize((128, 128), Image.LANCZOS)
 
 def main(pack):
-    pack = Path(pack); rows = list(csv.DictReader(open(pack/'manifest.csv'))); log = []
+    pack = Path(pack); rows = list(csv.DictReader(open(pack/'manifest_places.csv' if (pack/'manifest_places.csv').exists() else pack/'manifest.csv'))); log = []
     ROOM_DIR.mkdir(parents=True, exist_ok=True); CHEST_DIR.mkdir(parents=True, exist_ok=True)
     for r in rows:
         data = (pack/r['path']).read_bytes()
