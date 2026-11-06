@@ -1,0 +1,15 @@
+Paint a SPRITE SHEET of 4 different treasure chests for the interiors of a classic tactical RPG, in the same painting style and the same high three-quarter top-down view (about 60 degrees, front face toward the viewer) as the attached approved interiors (int_forest_longhouse.jpg).
+Canvas 1024x512, a 4-column x 2-row grid of 256x256 cells (see layout_chests_forest.png; paint no grid lines and no text).
+Rows 1 and 3: each chest CLOSED. Rows 2 and 4: the SAME chest OPEN — lid raised, the inside visible, EMPTY (dark wood, no coins, no items, no glow) — at exactly the same position, size and angle as the closed chest directly above it.
+Every chest: centered horizontally in its cell, chest body about 150-190 px wide, the bottom of the chest resting on a baseline 40 px above the cell bottom, a soft contact shadow, the whole chest and open lid inside the cell. Scale: in the interiors one tile is 128 px, and these chests are drawn at half size there.
+Background: fully TRANSPARENT (if impossible, flat pure green #00FF00 and nothing else). No text, letters, numbers, emblems or symbols.
+Cells, left to right:
+Row 1 = chests 1-4 closed, row 2 = chests 1-4 open (empty), each open cell lined up exactly with the closed cell above it.
+  1. guide_locker (guides' longhouse): a long low chest of dark walnut wood with leather straps and a coiled rope and a bundle of arrows tied on the lid.
+  2. keeper_box (forest-keeper house): a small chest of pale birch wood with rounded corners and a carved leaf border (plain lines, no symbols), a simple wooden latch.
+  3. elder_casket (elder's lodge): a carved casket of old dark oak with a living green moss pad on the lid and smooth river-stone handles.
+  4. seed_bin (seed and root store): a woven wicker bin with a wooden lid, acorns and seeds spilling around its base.
+
+Painting style: match the attached approved art (style_aren_neutral.png and the attached exterior hub map) — hand-painted fantasy illustration with confident contours, painterly cel shading with soft gradients, warm rim light, rich but slightly earthy colors, detailed but readable textures. Original world: do not imitate any existing game's rooms, furniture designs, emblems or layout.
+Attach: layout_chests_forest.png, approved_chests_act2.png, int_forest_longhouse.jpg (your approved result).
+Output: one PNG with transparency (or pure #00FF00 background), exactly 1024x512 px.

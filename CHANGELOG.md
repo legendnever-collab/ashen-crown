@@ -1,3 +1,11 @@
+# v0.9.1 play-test fixes and the ACT III art pack F2 work order (D-087)
+- v0.9.1 played and approved by the user; PR #19 merged to main as 184536a.
+- An empty chest shows the room's own painted chest, open and empty, instead of the game-drawn potion placeholder (src/ui/app.js, src/render/chest-art.js).
+- Narration lines of the chronicle in battle (M16's echoes) show no portrait instead of a game-drawn placeholder face.
+- New browser suite tests/feedback-v091-e2e.mjs (CI group act3).
+- ACT III art pack F2 work order: scripts/make-act3-f2-art-pack.py → docs/v0.9.1/art/act3-f2-work-pack (58 images in four parts: places and things, the awakened looks, the recruits' tier 2 looks, the people of the keep and the forest with the M16 captains).
+- On feature/act3-f2-art-pack; not merged before the user plays and approves it.
+
 # v0.9.1 — The Guardians · ACT III part 2: M17 수호자의 맹세, M18 불타지 않는 숲, the first awakenings (release candidate)
 - Release candidate on feature/v0.9.1-guardians; not merged before the user plays and approves it. D-084 (within D-079 / docs/v0.9.0/ACT3_DESIGN.md); the v0.9.1 places and figures use temporary art (the ACT III packs are with the user).
 - ACT III art pack F1 (D-086): the painted capital (hub_capital over Velmar's footprint, the `capital` room family with six rooms, four chest styles), the archivist and Bellard busts, six ACT III map sheets and sheet H icons (six capital pieces, two treasures; scripts/import-item-art.py --cells). Shopkeepers behind one-row painted counters stand a row back (reach 3).
