@@ -58,6 +58,7 @@
     "test:migration-v081": "node tests/migration-v081.mjs",
     "test:item-art": "node tests/item-art-e2e.mjs",
     "test:act3b": "node tests/act3b-e2e.mjs",
+    "test:feedback-v091": "node tests/feedback-v091-e2e.mjs",
     "test:migration-v090": "node tests/migration-v090.mjs"
   },
   "devDependencies": {

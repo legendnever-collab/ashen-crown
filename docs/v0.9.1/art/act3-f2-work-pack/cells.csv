@@ -1,0 +1,7 @@
+sheet,cell,id,kind,name_en,name_ko,description
+I,1,oathWall,skill,Wall of the Oath,맹세의 성벽,"Wall of the Oath (맹세의 성벽): a tall tower shield standing upright with thin lines of soft blue-gold light running along its rim, a faint wall of light rising behind it."
+I,2,blockade,skill,Blockade,퇴로 봉쇄,"Blockade (퇴로 봉쇄): three arrows with red fletching stuck crosswise in the ground in front of a small plain stake barrier, a hawk feather caught on one."
+I,3,dawnPrayer,skill,Dawn Prayer,새벽의 기도,"Dawn Prayer (새벽의 기도): a pair of hands raised around a small rising sun of soft dawn-pink and pale gold light, a few motes of light rising."
+I,4,oathBadge,treasure,Badge of the Oath,맹세의 휘장,"Badge of the Oath (맹세의 휘장): a small round badge of pale grey stone set in a plain worn silver rim, a faint blue-gold glint in its center."
+I,5,groveLeaf,treasure,Leaf of the Ward Tree,고목의 잎,"Leaf of the Ward Tree (고목의 잎): a single broad green leaf from the ancient ward tree, its veins glowing faintly gold, a drop of dew on it."
+I,6,potion,tool,Basic Potion,기본 회복약,Basic Potion (기본 회복약): a small round glass flask of clear amber-gold healing draught with a cork stopper and a twist of twine at the neck (the basic potion).

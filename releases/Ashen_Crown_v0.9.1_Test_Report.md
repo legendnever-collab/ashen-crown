@@ -1,9 +1,12 @@
 # Ashen Crown v0.9.1 — The Guardians (수호자) · ACT III part 2 / QA Report
-Updated 2026-11-06 KST. **Release candidate — not merged before the user plays and approves it.** User instruction in chat on 2026-11-05 06:40 KST ("그림은 시켜놓을게 개발은 우선 가안으로 진행해줘"), within the approved ACT III design (D-078/D-079, docs/v0.9.0/ACT3_DESIGN.md §4.1, §5.2, §6); implementation details D-084. Art pack D (returned on 2026-11-05, D-085) and ACT III art pack F1 (returned on 2026-11-06, D-086) are imported; the v0.9.1 places, statues, trees and awakened looks stay temporary until ACT III packs F2–F4.
+Updated 2026-11-06 KST. **Merged after the user played and approved it (PR #19 → 184536a); the play-test fixes in the addendum are not merged before the user approves them.** User instruction in chat on 2026-11-05 06:40 KST ("그림은 시켜놓을게 개발은 우선 가안으로 진행해줘"), within the approved ACT III design (D-078/D-079, docs/v0.9.0/ACT3_DESIGN.md §4.1, §5.2, §6); implementation details D-084. Art pack D (returned on 2026-11-05, D-085) and ACT III art pack F1 (returned on 2026-11-06, D-086) are imported; the v0.9.1 places, statues, trees and awakened looks stay temporary until ACT III packs F2–F4.
 
 Baseline main 45d5c0a233ecb1fe38c9b87ac80214592223cfe1 (v0.9.0, PR #18). Branch feature/v0.9.1-guardians (it also carries the art-pack F1 generator, 486cc7e).
 
 HTML SHA256: `4283648bec935098510d39a0ec003eca48726e63226358a9e5a1142b4a876a6b` (35,914,352 bytes, with art packs D and F1). The full validation run below used this build; `verify-release.py` rebuilds it from the Source ZIP and compares the bytes.
+
+## Addendum 2026-11-06 — play-test fixes (D-087)
+v0.9.1 was played and approved by the user and merged (PR #19 → 184536a). Two fixes from play were rebuilt into the same v0.9.1 files on feature/act3-f2-art-pack: an empty chest shows the room's own painted open chest instead of the game-drawn potion placeholder, and narration lines (연대기) in battle show no placeholder portrait. On the rebuilt HTML (SHA256 `4fc4c6df3655ab036006a8efb03baf289b1d96d15cc77eff185631483c0dfcc8`, 35,915,525 bytes) these were run: 388 unit tests PASS, the new tests/feedback-v091-e2e.mjs (3 checks: the empty-chest window shows the painted open chest of the room, a narration line in battle has no portrait, no page errors), journey-e2e 176, act3-e2e 38, act3b-e2e 48 and frontier-e2e 104 — all PASS — and the CI groups listed in the pull request. The full matrix and balance results below are from the merged build `4283648b…`; the fixes touch only the chest window and the dialogue panel, and no rule, reward or save field changed.
 
 ## Outcome
 ACT I–II (Missions 01–14), ACT III part 1 (M15–M16), promotions, skills, tools, gear and every story scene unchanged, plus D-084:

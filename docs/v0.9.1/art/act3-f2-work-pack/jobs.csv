@@ -1,0 +1,59 @@
+order,part,kind,id,expression,file,size,references,prompt_file
+1,A,hub,hub_forest,,hub_forest.jpg,1536x1024,"layout_hub_village.png, approved_hub_village_day.jpg (same footprint), approved_hub_capital.jpg (latest style), scale_reference.png, sprite_eric_sheet.png",prompts/01_hub_forest.txt
+2,A,interior,int_forest_longhouse,,int_forest_longhouse.jpg,1536x1024,"layout_int_forest_longhouse.png, scale_reference_interior.png, hub_forest.jpg (your approved result), approved_int_village_barracks.jpg (same room footprint), approved_int_capital_tavern.jpg",prompts/02_int_forest_longhouse.txt
+3,A,interior,int_forest_bowyer,,int_forest_bowyer.jpg,1536x1024,"layout_int_forest_bowyer.png, scale_reference_interior.png, hub_forest.jpg (your approved result), approved_int_village_forge.jpg (same room footprint), int_forest_longhouse.jpg (your approved result)",prompts/03_int_forest_bowyer.txt
+4,A,interior,int_forest_herbalist,,int_forest_herbalist.jpg,1536x1024,"layout_int_forest_herbalist.png, scale_reference_interior.png, hub_forest.jpg (your approved result), approved_int_village_shop.jpg (same room footprint), int_forest_longhouse.jpg (your approved result)",prompts/04_int_forest_herbalist.txt
+5,A,interior,int_forest_lodge,,int_forest_lodge.jpg,1536x1024,"layout_int_forest_lodge.png, scale_reference_interior.png, hub_forest.jpg (your approved result), approved_int_village_hall.jpg (same room footprint), int_forest_longhouse.jpg (your approved result)",prompts/05_int_forest_lodge.txt
+6,A,interior,int_forest_house,,int_forest_house.jpg,1536x1024,"layout_int_forest_house.png, scale_reference_interior.png, hub_forest.jpg (your approved result), approved_int_village_house.jpg (same room footprint), int_forest_longhouse.jpg (your approved result)",prompts/06_int_forest_house.txt
+7,A,interior,int_forest_store,,int_forest_store.jpg,1536x1024,"layout_int_forest_store.png, scale_reference_interior.png, hub_forest.jpg (your approved result), approved_int_village_store.jpg (same room footprint), int_forest_longhouse.jpg (your approved result)",prompts/07_int_forest_store.txt
+8,A,chests,chests_forest,,chests_forest.png,1024x512,"layout_chests_forest.png, approved_chests_act2.png, int_forest_longhouse.jpg (your approved result)",prompts/08_chests_forest.txt
+9,A,hub,hub_keep,,hub_keep.jpg,1536x1024,"layout_hub_fortress.png, approved_hub_fortress.jpg (same footprint), approved_hub_capital.jpg (latest style), scale_reference.png, sprite_eric_sheet.png",prompts/09_hub_keep.txt
+10,A,props,props_act3b,,props_act3b.png,1024x256,"layout_props_act3b.png, ref_sprite_eric.png, ref_sprite_ironSpear.png, ref_battle_m17.jpg, ref_battle_m18.jpg",prompts/10_props_act3b.txt
+11,A,icons,icons_I,,icons_I.png,1024x1024,"layout_icons_I.png, approved_icons_B.png, approved_icons_D.png, approved_icons_H.png, style_aren_neutral.png, ref_ui_shop.jpg",prompts/11_icons_I.txt
+12,B,bust,eric_t3,neutral,bust_eric_t3_neutral.png,1024x1280,"ref_bust_eric_t2_neutral.png, style_aren_neutral.png",prompts/12_bust_eric_t3_neutral.txt
+13,B,bust,eric_t3,concerned,bust_eric_t3_concerned.png,1024x1280,bust_eric_t3_neutral.png (your approved result),prompts/13_bust_eric_t3_concerned.txt
+14,B,bust,eric_t3,determined,bust_eric_t3_determined.png,1024x1280,bust_eric_t3_neutral.png (your approved result),prompts/14_bust_eric_t3_determined.txt
+15,B,bust,eric_t3,sad,bust_eric_t3_sad.png,1024x1280,bust_eric_t3_neutral.png (your approved result),prompts/15_bust_eric_t3_sad.txt
+16,B,bust,elina_t3,neutral,bust_elina_t3_neutral.png,1024x1280,"ref_bust_elina_t2_neutral.png, style_aren_neutral.png",prompts/16_bust_elina_t3_neutral.txt
+17,B,bust,elina_t3,concerned,bust_elina_t3_concerned.png,1024x1280,bust_elina_t3_neutral.png (your approved result),prompts/17_bust_elina_t3_concerned.txt
+18,B,bust,elina_t3,determined,bust_elina_t3_determined.png,1024x1280,bust_elina_t3_neutral.png (your approved result),prompts/18_bust_elina_t3_determined.txt
+19,B,bust,elina_t3,sad,bust_elina_t3_sad.png,1024x1280,bust_elina_t3_neutral.png (your approved result),prompts/19_bust_elina_t3_sad.txt
+20,B,bust,sain_t3,neutral,bust_sain_t3_neutral.png,1024x1280,"ref_bust_sain_t2_neutral.png, style_aren_neutral.png",prompts/20_bust_sain_t3_neutral.txt
+21,B,bust,sain_t3,concerned,bust_sain_t3_concerned.png,1024x1280,bust_sain_t3_neutral.png (your approved result),prompts/21_bust_sain_t3_concerned.txt
+22,B,bust,sain_t3,determined,bust_sain_t3_determined.png,1024x1280,bust_sain_t3_neutral.png (your approved result),prompts/22_bust_sain_t3_determined.txt
+23,B,bust,sain_t3,sad,bust_sain_t3_sad.png,1024x1280,bust_sain_t3_neutral.png (your approved result),prompts/23_bust_sain_t3_sad.txt
+24,B,sprite,eric_t3,,sprite_eric_t3.png,1024x768,"bust_eric_t3_neutral.png (your approved result), ref_sprite_eric_t2.png, ref_sprite_eric.png",prompts/24_sprite_eric_t3.txt
+25,B,sprite,elina_t3,,sprite_elina_t3.png,1024x768,"bust_elina_t3_neutral.png (your approved result), ref_sprite_elina_t2.png, ref_sprite_eric.png",prompts/25_sprite_elina_t3.txt
+26,B,sprite,sain_t3,,sprite_sain_t3.png,1024x768,"bust_sain_t3_neutral.png (your approved result), ref_sprite_sain_t2.png, ref_sprite_eric.png",prompts/26_sprite_sain_t3.txt
+27,C,bust,thea_t2,neutral,bust_thea_t2_neutral.png,1024x1280,"ref_bust_thea_neutral.png, style_aren_neutral.png",prompts/27_bust_thea_t2_neutral.txt
+28,C,bust,thea_t2,concerned,bust_thea_t2_concerned.png,1024x1280,bust_thea_t2_neutral.png (your approved result),prompts/28_bust_thea_t2_concerned.txt
+29,C,bust,thea_t2,determined,bust_thea_t2_determined.png,1024x1280,bust_thea_t2_neutral.png (your approved result),prompts/29_bust_thea_t2_determined.txt
+30,C,bust,thea_t2,sad,bust_thea_t2_sad.png,1024x1280,bust_thea_t2_neutral.png (your approved result),prompts/30_bust_thea_t2_sad.txt
+31,C,bust,dario_t2,neutral,bust_dario_t2_neutral.png,1024x1280,"ref_bust_dario_neutral.png, style_aren_neutral.png",prompts/31_bust_dario_t2_neutral.txt
+32,C,bust,dario_t2,concerned,bust_dario_t2_concerned.png,1024x1280,bust_dario_t2_neutral.png (your approved result),prompts/32_bust_dario_t2_concerned.txt
+33,C,bust,dario_t2,determined,bust_dario_t2_determined.png,1024x1280,bust_dario_t2_neutral.png (your approved result),prompts/33_bust_dario_t2_determined.txt
+34,C,bust,dario_t2,sad,bust_dario_t2_sad.png,1024x1280,bust_dario_t2_neutral.png (your approved result),prompts/34_bust_dario_t2_sad.txt
+35,C,bust,ines_t2,neutral,bust_ines_t2_neutral.png,1024x1280,"ref_bust_ines_neutral.png, style_aren_neutral.png",prompts/35_bust_ines_t2_neutral.txt
+36,C,bust,ines_t2,concerned,bust_ines_t2_concerned.png,1024x1280,bust_ines_t2_neutral.png (your approved result),prompts/36_bust_ines_t2_concerned.txt
+37,C,bust,ines_t2,determined,bust_ines_t2_determined.png,1024x1280,bust_ines_t2_neutral.png (your approved result),prompts/37_bust_ines_t2_determined.txt
+38,C,bust,ines_t2,sad,bust_ines_t2_sad.png,1024x1280,bust_ines_t2_neutral.png (your approved result),prompts/38_bust_ines_t2_sad.txt
+39,C,sprite,thea_t2,,sprite_thea_t2.png,1024x768,"bust_thea_t2_neutral.png (your approved result), ref_sprite_thea.png, ref_sprite_cavalry.png",prompts/39_sprite_thea_t2.txt
+40,C,sprite,dario_t2,,sprite_dario_t2.png,1024x768,"bust_dario_t2_neutral.png (your approved result), ref_sprite_dario.png, ref_sprite_eric.png",prompts/40_sprite_dario_t2.txt
+41,C,sprite,ines_t2,,sprite_ines_t2.png,1024x768,"bust_ines_t2_neutral.png (your approved result), ref_sprite_ines.png, ref_sprite_eric.png",prompts/41_sprite_ines_t2.txt
+42,D,bust,guardianElder,neutral,bust_guardianElder_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png",prompts/42_bust_guardianElder_neutral.txt
+43,D,bust,guardianElder,concerned,bust_guardianElder_concerned.png,1024x1280,bust_guardianElder_neutral.png (your approved result),prompts/43_bust_guardianElder_concerned.txt
+44,D,bust,guardianElder,sad,bust_guardianElder_sad.png,1024x1280,bust_guardianElder_neutral.png (your approved result),prompts/44_bust_guardianElder_sad.txt
+45,D,bust,forestElder,neutral,bust_forestElder_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png",prompts/45_bust_forestElder_neutral.txt
+46,D,bust,forestElder,concerned,bust_forestElder_concerned.png,1024x1280,bust_forestElder_neutral.png (your approved result),prompts/46_bust_forestElder_concerned.txt
+47,D,bust,forestElder,sad,bust_forestElder_sad.png,1024x1280,bust_forestElder_neutral.png (your approved result),prompts/47_bust_forestElder_sad.txt
+48,D,bust,captain16_iron,determined,bust_captain16_iron_determined.png,1024x1280,"ref_sprite_ironInfantry.png (the map figure this captain must match), style_aren_neutral.png, ref_bust_baldrick_neutral.png",prompts/48_bust_captain16_iron_determined.txt
+49,D,bust,captain16_iron,sad,bust_captain16_iron_sad.png,1024x1280,bust_captain16_iron_determined.png (your approved result),prompts/49_bust_captain16_iron_sad.txt
+50,D,bust,captain16_free,determined,bust_captain16_free_determined.png,1024x1280,"ref_sprite_lordA.png (the map figure this captain must match), style_aren_neutral.png, ref_bust_baldrick_neutral.png",prompts/50_bust_captain16_free_determined.txt
+51,D,bust,captain16_free,sad,bust_captain16_free_sad.png,1024x1280,bust_captain16_free_determined.png (your approved result),prompts/51_bust_captain16_free_sad.txt
+52,D,bust,captain16_flame,determined,bust_captain16_flame_determined.png,1024x1280,"ref_sprite_flameKnight.png (the map figure this captain must match), style_aren_neutral.png, ref_bust_baldrick_neutral.png",prompts/52_bust_captain16_flame_determined.txt
+53,D,bust,captain16_flame,sad,bust_captain16_flame_sad.png,1024x1280,bust_captain16_flame_determined.png (your approved result),prompts/53_bust_captain16_flame_sad.txt
+54,D,sprite,guardianElder,,sprite_guardianElder.png,1024x768,"bust_guardianElder_neutral.png (your approved result), ref_sprite_eric.png",prompts/54_sprite_guardianElder.txt
+55,D,sprite,forestElder,,sprite_forestElder.png,1024x768,"bust_forestElder_neutral.png (your approved result), ref_sprite_eric.png",prompts/55_sprite_forestElder.txt
+56,D,sprite,guardianStatue,,sprite_guardianStatue.png,1024x768,"ref_sprite_ironSpear.png, style_aren_neutral.png",prompts/56_sprite_guardianStatue.txt
+57,D,sprite,forester,,sprite_forester.png,1024x768,"ref_sprite_eric.png, style_aren_neutral.png",prompts/57_sprite_forester.txt
+58,D,sprite,greyCaptain,,sprite_greyCaptain.png,1024x768,"ref_sprite_ironSpear.png, style_aren_neutral.png",prompts/58_sprite_greyCaptain.txt

@@ -1,0 +1,5 @@
+cell,id,title,description
+1,wardTree,ward tree — standing,"one of the three ancient ward trees of the unburning forest: a broad gnarled oak-like tree with a thick mossy trunk, roots gripping the ground, a full green crown with faint gold light between the leaves"
+2,wardTree_hurt,ward tree — wounded,"the SAME tree, same size and position, with deep fresh axe cuts in the trunk, pale wood showing, leaves falling, the gold light dimmer"
+3,wardTree_felled,ward tree — felled,"the SAME tree cut down: a broad stump with a raw pale cut face and roots in place, the fallen trunk lying behind it to the right, no light"
+4,guardianStatue_sleeping,guardian statue — sleeping,"the guardian statue (match your sprite_guardianStatue.png if you have painted it, otherwise a stone knight with a tower shield and a longsword) standing still on a square stone plinth, eyes dark, weathered grey granite with moss, no light"
