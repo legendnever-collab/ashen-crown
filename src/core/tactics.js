@@ -2,10 +2,10 @@
 // They share the promotion actions' plumbing (validClassTarget / classTargetCells / forecastClass / tileTarget), so the
 // screen code treats them like the v0.5 class actions. Damage goes through game.js (strike callback) so guards, criticals,
 // mission hooks and feedback stay the same as a normal attack.
-import {distance,key,alive,at,findUnit,terrainAt,hostile,strikeStats,roll} from './rules.js';
+import {distance,key,alive,at,findUnit,terrainAt,hostile,strikeStats,roll,sideOf,weatherOf} from './rules.js';
 import {missionOf} from '../data/missions.js';
 import {TOOLS} from '../data/frontier-data.js';
-import {skillByMode,knowsMode,NEW_SKILL_MODES} from '../data/skills.js';
+import {skillByMode,knowsMode,NEW_SKILL_MODES,ULTIMATE_MODES} from '../data/skills.js';
 import {statusChance,inflict,cure,STATUS,STATUS_KO,hasStatus} from './status.js';
 import {ensureEconomy} from './economy.js';
 import {remember} from './narrative.js';
@@ -16,8 +16,13 @@ const ADJ8=[[0,-1],[-1,0],[1,0],[0,1]];
 export const TOOL_USE={herb:{on:'ally',hp:15},medium:{on:'ally',hp:30},ether:{on:'ally',mp:8},elixir:{on:'ally',full:true,cure:STATUS},
  antidote:{on:'ally',cure:['poison']},clarity:{on:'ally',cure:['confuse','bind','silence']},ward:{on:'ally',ward:true},drum:{on:'self'},
  bomb:{on:'tile',throw:true},smoke:{on:'tile',throw:true},caltrops:{on:'tile',throw:true},bewilder:{on:'enemy',throw:true},net:{on:'enemy',throw:true}};
-const SKILL_SELF=['rallyCry','whirlwind','pilgrimLantern'];
-export const TACTIC_TILE_MODES=['flameBurst','tool:bomb','tool:smoke','tool:caltrops'];
+const SKILL_SELF=['rallyCry','whirlwind','pilgrimLantern','oathWall','dawnPrayer'];
+export const TACTIC_TILE_MODES=['flameBurst','blockade','tool:bomb','tool:smoke','tool:caltrops'];
+// v0.9.1 ④: who is raised by the Dawn Prayer — the fallen hero of this battle with the highest level (then the most HP).
+export const fallenAllies=s=>s.units.filter(a=>a.team==='ally'&&!a.benched&&a.hp<=0).sort((a,b)=>(b.level||0)-(a.level||0)||b.maxHP-a.maxHP||a.id.localeCompare(b.id));
+export function besideSpot(s,u){for(const [dx,dy] of [[0,1],[1,0],[-1,0],[0,-1],[1,1],[-1,1],[1,-1],[-1,-1]]){const x=u.x+dx,y=u.y+dy;if(open(s,x,y)&&!at(s,x,y)&&!s.units.some(o=>alive(o)&&o.x===x&&o.y===y))return {x,y};}return null;}
+export const ultimateUsed=(s,u)=>(s.ultimates||[]).includes(u.id);
+const blockCells=(s,p)=>cross(s,p).filter(c=>open(s,c.x,c.y));
 export const isToolMode=mode=>typeof mode==='string'&&mode.startsWith('tool:')&&!!TOOL_USE[mode.slice(5)];
 export const isTacticMode=mode=>NEW_SKILL_MODES.includes(mode)||isToolMode(mode);
 export const tacticCost=mode=>isToolMode(mode)?0:skillByMode(mode)?.cost||0;
@@ -44,16 +49,18 @@ export function validTacticTarget(s,u,target,mode){
   if(use.hp)return t.hp<t.maxHP;if(use.mp)return t.mp<t.maxMP;if(use.ward)return !t.ward;
   if(use.full)return t.hp<t.maxHP||!!t.status;return use.cure.some(k=>hasStatus(t,k));}
  if(!knowsMode(u,mode)||silenced(u))return false;
+ if(ULTIMATE_MODES.includes(mode)&&ultimateUsed(s,u))return false;
+ if(mode==='blockade'){const p=tileOf8(target);if(!p||!open(s,p.x,p.y))return false;const d=distance(u,p);return d>=1&&d<=5;}
  if(mode==='flameBurst'){const p=tileOf8(target);if(!p||!open(s,p.x,p.y))return false;const d=distance(u,p);return d>=2&&d<=3&&foesIn(s,u,cross(s,p)).length>0;}
  const t=unitOf(s,target);if(!t||!alive(t))return false;const d=distance(u,t);
- if(SKILL_SELF.includes(mode)){if(t.id!==u.id)return false;if(mode==='whirlwind')return s.units.some(e=>alive(e)&&hostile(s,u,e)&&distance(u,e)===1);return true;}
+ if(SKILL_SELF.includes(mode)){if(t.id!==u.id)return false;if(mode==='whirlwind')return s.units.some(e=>alive(e)&&hostile(s,u,e)&&distance(u,e)===1);if(mode==='dawnPrayer')return fallenAllies(s).length>0&&!!besideSpot(s,u);return true;}
  if(mode==='purify')return t.team==='ally'&&d<=2&&(!!t.status||t.hp<t.maxHP);
  if(mode==='provoke')return hostile(s,u,t)&&t.team==='enemy'&&d>=1&&d<=3&&(t.mov||0)>0&&!['beacon','wagon'].includes(t.kind);
  if(mode==='pinningShot')return hostile(s,u,t)&&d>=2&&d<=3;
  return hostile(s,u,t)&&d===1&&!['beacon'].includes(t.kind);
 }
 export function tacticTargetCells(s,u,mode){const out=[];if(!u)return out;
- if(TACTIC_TILE_MODES.includes(mode)){for(let y=u.y-3;y<=u.y+3;y++)for(let x=u.x-3;x<=u.x+3;x++)if(validTacticTarget(s,u,{x,y},mode))out.push({x,y});return out;}
+ if(TACTIC_TILE_MODES.includes(mode)){const r=mode==='blockade'?5:3;for(let y=u.y-r;y<=u.y+r;y++)for(let x=u.x-r;x<=u.x+r;x++)if(validTacticTarget(s,u,{x,y},mode))out.push({x,y});return out;}
  for(const t of s.units)if(alive(t)&&validTacticTarget(s,u,t,mode))out.push({x:t.x,y:t.y});return out;}
 
 // Damage of a skill strike (the scale and bonus are applied on top of a normal attack's numbers).
@@ -75,6 +82,9 @@ export function forecastTactic(s,u,target,mode){
   if(use.on==='self')return {...base,target:u.id,rows:[row('범위','자신과 인접 아군'),row('효과','다음 아군 턴까지 ATK +3')]};
   const what=use.hp?`HP +${Math.min(use.hp,t.maxHP-t.hp)}`:use.mp?`MP +${Math.min(use.mp,t.maxMP-t.mp)}`:use.ward?'DEF/RES +2':use.full?'HP 전부 · 상태이상 해제':`${use.cure.map(c=>STATUS_KO[c]).join('·')} 해제`;
   return {...base,target:t.id,rows:[row('대상',t.name),row('효과',what)]};}
+ if(mode==='blockade'){const p=tileOf8(target),cells=blockCells(s,p),foes=foesIn(s,u,cells);return {...base,cells,rows:[row('범위',`십자 ${cells.length}칸 · 적 ${foes.length}명`),row('효과','다음 적 턴에 그 안의 적은 나가지 못하고, 움직이면 화살을 맞는다'),row('횟수','전투당 1회')]};}
+ if(mode==='oathWall'){const n=s.units.filter(a=>sideOf(a)!=='enemy'&&a.team!=='object'&&alive(a)&&a.id!==u.id&&distance(a,u)<=2).length;return {...base,target:u.id,rows:[row('범위',`2칸 안 아군·주민 ${n}명`),row('효과','받는 피해의 절반을 에릭이 대신 받음 · 에릭 HP 1 아래로 안 내려감'),row('횟수','전투당 1회')]};}
+ if(mode==='dawnPrayer'){const f=fallenAllies(s)[0];return {...base,target:u.id,rows:[row('일으킬 장수',f?`${f.name} · HP ${Math.ceil(f.maxHP/3)}/${f.maxHP}`:'—'),row('위치','세인 곁'),row('횟수','전투당 1회')]};}
  if(mode==='flameBurst'){const p=tileOf8(target),cells=cross(s,p),foes=foesIn(s,u,cells);return {...base,cells,rows:[row('범위',`십자 ${cells.length}칸 · 적 ${foes.length}명`),row('피해',foes.map(t=>{const f=strikePreview(s,u,t,mode);return `${t.name} ${f.damage}(${f.hit}%)`;}).join(' · ')),row('반격','없음')]};}
  const t=unitOf(s,target);
  if(mode==='rallyCry'){const n=s.units.filter(a=>a.team==='ally'&&alive(a)&&distance(a,u)<=2).length;return {...base,target:u.id,rows:[row('범위',`주위 2칸 아군 ${n}명`),row('효과','다음 아군 턴까지 MOV +1 · 명중 +10')]};}
@@ -108,7 +118,11 @@ export function applyTactic(s,u,target,mode,strike){
   if(use.ward){t.ward=true;s.feedback.push({type:'guard',id:t.id,text:'WARD'});}
   if(use.cure)cure(s,t,use.cure);
   s.log.push(`${u.name}: ${TOOLS[id].name} → ${t.name}.`);return out;}
- u.mp-=tacticCost(mode);remember(s,`${u.id}_tactic`);const k=skillByMode(mode);if(mode!=='flameBurst')s.feedback.push({type:'class',action:mode,id:u.id,text:k.ko});
+ u.mp-=tacticCost(mode);remember(s,`${u.id}_tactic`);const k=skillByMode(mode);if(mode!=='flameBurst'&&mode!=='blockade')s.feedback.push({type:'class',action:mode,id:u.id,text:k.ko});
+ if(ULTIMATE_MODES.includes(mode)){s.ultimates=[...(s.ultimates||[]),u.id];remember(s,`${u.id}_ultimate`);}
+ if(mode==='oathWall'){u.oathWall=s.turn;s.feedback.push({type:'guard',id:u.id,text:'맹세의 성벽'});s.log.push(`${u.name}: 맹세의 성벽. 다음 아군 턴까지 2칸 안 동료가 받는 피해의 절반을 대신 받습니다.`);return out;}
+ if(mode==='blockade'){const p=tileOf8(target),cells=blockCells(s,p);s.blockade={by:u.id,turn:s.turn,cells:cells.map(c=>[c.x,c.y])};s.feedback.push({type:'class',action:mode,id:u.id,text:k.ko,cells});s.log.push(`${u.name}: 퇴로 봉쇄. 다음 적 턴에 십자 ${cells.length}칸 안의 적은 빠져나가지 못합니다.`);return out;}
+ if(mode==='dawnPrayer'){const f=fallenAllies(s)[0],spot=besideSpot(s,u);f.x=spot.x;f.y=spot.y;f.hp=Math.ceil(f.maxHP/3);delete f.status;f.moved=true;f.acted=true;f.raised=true;s.feedback.push({type:'heal',id:f.id,text:`일어섬 +${f.hp}`,toHP:f.hp});s.log.push(`${u.name}: 새벽의 기도. ${f.name}이(가) 다시 일어섭니다 (HP ${f.hp}).`);return out;}
  if(mode==='flameBurst'){const p=tileOf8(target),cells=cross(s,p);s.feedback.push({type:'class',action:mode,id:u.id,text:k.ko,cells});for(const t of foesIn(s,u,cells))hitOn(t,{noCounter:true});for(const c of cells)igniteCell(s,c);s.log.push(`${u.name}: 화염진.`);return out;}
  if(mode==='whirlwind'){for(const e of s.units.filter(e=>alive(e)&&hostile(s,u,e)&&distance(u,e)===1))hitOn(e,{noCounter:true});s.log.push(`${u.name}: 회전 베기.`);return out;}
  if(mode==='rallyCry'){for(const a of s.units.filter(a=>a.team==='ally'&&alive(a)&&distance(a,u)<=2)){a.rally=s.turn+1;s.feedback.push({type:'guard',id:a.id,text:'MOV +1'});}s.log.push(`${u.name}: 기병의 함성. 곁의 아군 MOV +1 · 명중 +10.`);return out;}
@@ -127,7 +141,7 @@ export function applyTactic(s,u,target,mode,strike){
  if(!STRIKE[mode]?.noCounter)out.counter=t;return out;
 }
 const rollChance=(s,c)=>roll(s)*100<c;
-function igniteCell(s,c){const t=terrainAt(c.x,c.y,s);if(!t||(t.fire??1)<1.25)return;s.burning??={};const k=key(c.x,c.y);if(!s.burning[k]){s.burning[k]=2;s.feedback.push({type:'ignite',at:{x:c.x,y:c.y},text:'FIRE'});}}
+function igniteCell(s,c){const t=terrainAt(c.x,c.y,s);if(!t||(t.fire??1)<1.25||weatherOf(s)==='rain')return;s.burning??={};const k=key(c.x,c.y);if(!s.burning[k]){s.burning[k]=2;s.feedback.push({type:'ignite',at:{x:c.x,y:c.y},text:'FIRE'});}}
 
 // Enemy weapons that leave a status on a hit (ACT II; numbers PROPOSED).
 export function enemyStatusOnHit(u){if(u?.team!=='enemy')return null;const look=u.look||u.kind;

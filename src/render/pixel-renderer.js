@@ -69,7 +69,7 @@ export class BattleRenderer{
    if(u.team==='ally'&&u.acted&&s.screen==='battle')c.globalAlpha=.5;
    c.fillStyle=u.team==='ally'?'rgba(80,160,255,.5)':u.team==='enemy'?'rgba(230,70,60,.5)':u.team==='object'?'rgba(233,196,106,.5)':'rgba(240,210,110,.55)';c.beginPath();c.ellipse(ux,uy+23,17,5.5,0,0,Math.PI*2);c.fill();
    if(ui.selected===u.id){c.strokeStyle='#fff0b8';c.lineWidth=2;c.strokeRect(ux-31,uy-36,60,60);rect(c,'#f4d695',ux-4,uy-37,8,4);}
-   if(u.team==='object')(u.evidence?drawEvidence:drawMissionObject)(c,u,ux,uy,now);else{c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(ux,uy+23,13,4,0,0,Math.PI*2);c.fill();drawHDFigure(c,hdCastFor(u,s.missionId),ux,uy+24,{facing,pose,frame:pose==='walk'?1+Math.floor(now/120)%4:(u.team==='ally'&&u.acted)||u.team==='civilian'||s.screen!=='battle'?0:1+Math.floor((now+u.x*97+u.y*53)/280)%4});}c.globalAlpha=1;
+   if(u.team==='object'||u.prop)(u.evidence?drawEvidence:drawMissionObject)(c,u,ux,uy,now);else{c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(ux,uy+23,13,4,0,0,Math.PI*2);c.fill();drawHDFigure(c,hdCastFor(u,s.missionId),ux,uy+24,{facing,pose,frame:pose==='walk'?1+Math.floor(now/120)%4:(u.team==='ally'&&u.acted)||u.team==='civilian'||s.screen!=='battle'?0:1+Math.floor((now+u.x*97+u.y*53)/280)%4});}c.globalAlpha=1;
    if(threatIds.has(u.id)&&Math.floor(now/400)%2){c.fillStyle='#e8594a';c.beginPath();c.moveTo(ux-9,uy-50);c.lineTo(ux+9,uy-50);c.lineTo(ux,uy-38);c.closePath();c.fill();c.fillStyle='#fff2d0';c.font='bold 12px sans-serif';c.textAlign='center';c.fillText('!',ux,uy-41);c.textAlign='start';}
    if(u.guarding&&!u.guardUsed){rect(c,'#2a3a44',ux+12,uy-44,13,15);rect(c,'#e7c783',ux+13,uy-43,11,13);rect(c,'#3f7fa3',ux+15,uy-41,7,9);}
    statusChips(c,u,s,ux,uy);
@@ -85,6 +85,11 @@ export class BattleRenderer{
   // was searched. A hidden enemy shows as a dim shape with no health bar.
   if(weatherOf(s)==='fog'){const heroes=s.units.filter(h=>h.team==='ally'&&!h.benched&&alive(h));for(let ty=0;ty<HEIGHT;ty++)for(let tx=0;tx<WIDTH;tx++){if(fogClear(s,tx,ty))continue;const d=Math.min(99,...heroes.map(h=>Math.abs(h.x-tx)+Math.abs(h.y-ty)));
    rect(c,d<=3?'rgba(200,206,214,.16)':'rgba(176,184,194,.46)',tx*TILE,ty*TILE,TILE,TILE);}}
+  // v0.9.1 M18: the ward at the forest's heart (a soft green ring), rain streaks; M17 archive tiles; Elina's blockade cross.
+  const ward=missionOf(s).ward;if(ward){c.fillStyle='rgba(120,220,150,.12)';c.fillRect(ward[0]*TILE,ward[1]*TILE,(ward[2]-ward[0]+1)*TILE,(ward[3]-ward[1]+1)*TILE);c.strokeStyle='rgba(150,240,170,.55)';c.lineWidth=2;c.setLineDash([8,6]);c.strokeRect(ward[0]*TILE+2,ward[1]*TILE+2,(ward[2]-ward[0]+1)*TILE-4,(ward[3]-ward[1]+1)*TILE-4);c.setLineDash([]);}
+  for(const [ax,ay] of missionOf(s).archive||[]){c.strokeStyle='rgba(240,206,120,.8)';c.lineWidth=3;c.strokeRect(ax*TILE+4,ay*TILE+4,TILE-8,TILE-8);rect(c,'rgba(240,206,120,.18)',ax*TILE,ay*TILE,TILE,TILE);}
+  if(s.blockade&&s.blockade.turn===s.turn)for(const [bx,by] of s.blockade.cells){rect(c,'rgba(120,200,110,.22)',bx*TILE,by*TILE,TILE,TILE);c.strokeStyle='rgba(170,240,140,.7)';c.lineWidth=2;c.strokeRect(bx*TILE+3,by*TILE+3,TILE-6,TILE-6);}
+  if(weatherOf(s)==='rain'&&!this.reduced){c.strokeStyle='rgba(190,210,235,.22)';c.lineWidth=1;const t=now/40;for(let i=0;i<120;i++){const x=(i*97+t*3)%(WIDTH*TILE),y=(i*53+t*9)%(HEIGHT*TILE);c.beginPath();c.moveTo(x,y);c.lineTo(x-4,y+12);c.stroke();}}
   if(ui.pendingMove){for(const [i,p] of ui.pendingMove.path.entries()){rect(c,i===ui.pendingMove.path.length-1?'#ffe5a0':'#d2ebdf',p.x*TILE+28,p.y*TILE+29,8,5);}c.strokeStyle='#ffe0a2';c.lineWidth=3;c.strokeRect(ui.pendingMove.x*TILE+2,ui.pendingMove.y*TILE+2,60,60);}
   if(ui.hover&&ui.hover.x>=0&&ui.hover.x<WIDTH&&ui.hover.y>=0&&ui.hover.y<HEIGHT){c.strokeStyle='#e4ddbd';c.lineWidth=2;c.strokeRect(ui.hover.x*TILE+1,ui.hover.y*TILE+1,60,60);}
   this.effects=this.effects.filter(e=>now<e.start+e.duration);for(const e of this.effects){const u=s.units.find(u=>u.id===e.id);if(!u||now<e.start||e.type==='move')continue;if(e.type==='attack'){drawCombatEffect(c,e,s.units,now,this.reduced);continue;}if(e.type==='class')drawClassEffect(c,e,s.units,now,this.reduced);const age=(now-e.start)/e.duration;if(e.type==='heal'||e.type==='guard'){const radius=8+age*22;pixelOval(c,e.type==='heal'?'rgba(147,219,164,.35)':'rgba(151,205,237,.35)',u.x*TILE+32,u.y*TILE+32,radius,radius/2);}if(e.type==='death'){drawHDFigure(c,hdCastFor(u,s.missionId),u.x*TILE+32,u.y*TILE+61,{pose:'death',facing:this.facing?.get(u.id)||'down'});}
@@ -93,6 +98,14 @@ export class BattleRenderer{
 }
 // M06 mission objects (original): rune seal stones, the side-gate lever and the side gate itself.
 function drawMissionObject(c,u,x,y,now){const done=u.rescued,glow=.5+.3*Math.sin(now/300+u.x);
+ // v0.9.1 M17 guardian statue (original, temporary): a stone knight on a plinth; sleeping grey, sworn blue-gold, claimed red.
+ if(u.kind==='statue'){const side=u.woke;c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+22,17,5,0,0,Math.PI*2);c.fill();rect(c,'#6a6c70',x-14,y+12,28,10);
+  const stone=side==='enemy'?'#8a6a66':side==='ally'?'#9aa6b4':'#868a92',dark=side==='enemy'?'#5a3a36':side==='ally'?'#5a6676':'#5c6068';rect(c,stone,x-8,y-22,16,34);rect(c,dark,x-8,y-22,16,4);rect(c,stone,x-5,y-32,10,10);rect(c,dark,x-12,y-14,4,22);rect(c,stone,x+8,y-28,3,38);
+  if(side){c.fillStyle=side==='enemy'?`rgba(230,90,70,${.2+glow*.2})`:`rgba(240,210,120,${.2+glow*.25})`;c.beginPath();c.ellipse(x,y-8,22,30,0,0,Math.PI*2);c.fill();rect(c,side==='enemy'?'#ff8a70':'#ffe49a',x-3,y-29,2,2);rect(c,side==='enemy'?'#ff8a70':'#ffe49a',x+1,y-29,2,2);}return;}
+ // v0.9.1 M18 ward tree (original, temporary): an ancient trunk with a broad green crown; felled it is a stump.
+ if(u.kind==='wardTree'){c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+22,22,6,0,0,Math.PI*2);c.fill();if(u.hp<=0){rect(c,'#5a4030',x-10,y+6,20,14);rect(c,'#7a5a40',x-10,y+6,20,3);return;}
+  rect(c,'#5a4030',x-6,y-8,12,30);rect(c,'#3e2c20',x+2,y-8,4,30);for(const [dx,dy,r] of [[0,-26,20],[-14,-16,14],[14,-16,14],[0,-38,12]]){c.fillStyle='#2f6a3a';c.beginPath();c.arc(x+dx,y+dy,r,0,Math.PI*2);c.fill();}
+  c.fillStyle=`rgba(150,240,170,${.12+glow*.12})`;c.beginPath();c.arc(x,y-22,30,0,Math.PI*2);c.fill();return;}
  // v0.9 M16 ward stone (original, temporary): a standing stone carved with runes; it glows violet until searched (inert).
  if(u.kind==='wardStone'){c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+22,15,5,0,0,Math.PI*2);c.fill();rect(c,'#5a5e66',x-9,y-16,18,38);rect(c,'#767a84',x-9,y-16,18,4);rect(c,'#43464e',x+5,y-12,4,34);
   const lit=!u.inert;c.fillStyle=lit?`rgba(160,138,255,${.25+glow*.25})`:'rgba(220,230,240,.25)';c.beginPath();c.ellipse(x,y-2,24,30,0,0,Math.PI*2);c.fill();

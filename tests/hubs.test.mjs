@@ -10,7 +10,7 @@ import {serialize,deserialize,arms081View} from '../src/persistence/save-manager
 import {drain} from './campaign-policy.mjs';
 
 const at=(hub,x,y)=>({frontier:{hub,x,y}});
-const ACT2=['castletown','velmar','pilgrim','capital'],PLACED=[...ACT2,'march','refuge','summit','fieldcamp']; // v0.6 art pack C: town hubs with the village's four chest doors plus two shop doors; 'march' is the canyon bivouac (M08 aftermath)
+const ACT2=['castletown','velmar','pilgrim','capital','forest'],PLACED=[...ACT2,'march','refuge','summit','fieldcamp','keep']; // v0.6 art pack C: town hubs with the village's four chest doors plus two shop doors; 'march' is the canyon bivouac (M08 aftermath)
 function reachable(id){const h=HUBS[id],seen=new Set([h.spawn.join()]),q=[h.spawn];while(q.length){const [x,y]=q.shift();for(const [dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const k=`${x+dx},${y+dy}`;if(!seen.has(k)&&walkable(at(id,x+dx,y+dy),x+dx,y+dy)){seen.add(k);q.push([x+dx,y+dy]);}}}return seen;}
 
 test('W3 table: every ACT I story moment has its hub',()=>{
@@ -45,7 +45,7 @@ test('every painted hub sells weapons and items and seats Lia at the war table',
 
 test('chest-bearing doors: same building ids and interior kinds as the v0.4 village / Border Camp',()=>{
  const campDoors={'inn-1':'barracks','warroom-2':'quarters','inn-3':'barracks','warroom-4':'quarters','depot-5':'store'},villageDoors={'inn-1':'barracks','warroom-2':'quarters','residence-3':'house','depot-4':'store'};
- for(const [id,h] of Object.entries(ART_HUBS)){const legacy=id.startsWith('village')||ACT2.includes(id)?villageDoors:campDoors;const doors=Object.fromEntries(h.places.filter(p=>p.action==='enter').map(p=>[p.buildingId,p.interior]));assert.deepEqual(doors,legacy,id);
+ for(const [id,h] of Object.entries(ART_HUBS)){const legacy=id==='pilgrim'?{...villageDoors,'warroom-5':'quarters','warroom-6':'quarters'}:id.startsWith('village')||ACT2.includes(id)?villageDoors:campDoors; // art pack D: the pilgrim village adds the chapel and the copyists' houseconst doors=Object.fromEntries(h.places.filter(p=>p.action==='enter').map(p=>[p.buildingId,p.interior]));assert.deepEqual(doors,legacy,id);
   for(const p of h.places.filter(p=>p.action==='enter')){const s=newGame(3,null,2);enterHub(s,{story:false});drain(s);s.frontier.hub=id;s.frontier.x=p.x;s.frontier.y=p.y;assert.ok(interactions(s).some(n=>n.id===p.id),`${id} ${p.id} at door`);
    assert.ok(enterInterior(s,p.buildingId),`${id} enter ${p.id}`);assert.ok(INTERIORS[s.frontier.interior].generic);[s.frontier.x,s.frontier.y]=currentHub(s).spawn;assert.ok(exitInterior(s));assert.deepEqual([s.frontier.hub,s.frontier.x,s.frontier.y],[id,p.x,p.y]);}}
 });

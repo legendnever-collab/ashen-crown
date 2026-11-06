@@ -1,0 +1,14 @@
+Paint icon sheet H for Ashen Crown: one 1024x1024 PNG, a 4x4 grid of 256x256 cells, transparent background (or flat pure #00FF00), no grid lines, no labels. Follow references/layout_icons_H.png for which icon goes in which cell. Match the finish, light and scale of the attached approved_icons_B.png and approved_icons_D.png exactly (the same painter's hand).
+
+Cell 01: Royal Guard Saber (왕도 근위검): a fine curved sabre of bright steel with a gilded basket guard and a crimson-wrapped grip, the blade catching a gleam (tier III, elite).
+Cell 02: Archive Longbow (기록원 장궁): a tall elegant longbow of dark polished wood with brass tips and slim leather wraps, a pale ribbon bound near the grip (tier III, elite).
+Cell 03: Ward Rod (결계 지팡이): a slender rod of pale silver-grey wood capped with a small clear crystal that holds a faint swirl of lavender mist (tier III, elite).
+Cell 04: Court Vestment (궁정 사제복): a folded court priest vestment of ivory silk with a deep plum stole and fine silver edging, laid neatly (tier III, elite).
+Cell 05: Grey Mantle (회색 외투): a long ash-grey hooded mantle folded over itself, soft wool with a plain dark clasp (tier III, elite).
+Cell 06: Oath Ring (맹세의 반지): a heavy plain gold band with a smooth dark-blue stone set flush, a faint warm glow around it (tier III, elite).
+Cell 07: Archivist's Lens (기록관의 확대경): a round brass reading lens on a short wooden handle lying on a page of blank parchment, the glass catching a bright glint. This is a unique treasure: give it a soft magical glow so it reads as special.
+Cell 08: Lantern of Echoes (잔영의 등불): a small old brass lantern with frosted glass panes, pale silver-lavender mist and a soft steady light curling inside it. This is a unique treasure: give it a soft magical glow so it reads as special.
+Cells 09–16: leave empty.
+
+Painted game-item art in the same hand as the attached approved busts and chests: soft painterly rendering with visible but controlled brushwork, warm key light from the upper left, gentle rim light, rich but slightly muted Western medieval frontier colors, a subtle darker outline so the shape reads on dark UI. Objects in three-quarter view, centered, filling about 80% of their cell, every object fully inside its cell with an even margin. Each icon must still be recognisable at 40×40 px: one clear silhouette, strong value contrast, no tiny clutter. No text, letters, numbers, runes, emblems, crests, holy symbols or logos anywhere. No hands or people except the small abstract silhouettes named in a few skill icons.
+Attach: style_aren_neutral.png, approved_icons_B.png, approved_icons_D.png, ref_ui_shop.jpg, layout_icons_H.png.

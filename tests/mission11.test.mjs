@@ -32,7 +32,7 @@ test('M11 data: 18×14 night valley, six-hero sortie, level 10, four pilgrims on
 test('M10 → M11: the legion goes south to the pilgrim village; recruits stand there only when they joined',()=>{
  assert.equal(hubFor(11,'preparation'),'pilgrim');assert.equal(hubFor(11,'aftermath'),'pilgrim');assert.equal(hubFor(12,'preparation'),'pilgrim');assert.equal(hubFor(12,'aftermath'),'refuge');
  const s=newGame(5,camp({roster:['thea']}),11);enterHub(s,{story:false});const ids=currentHub(s).npcs.map(n=>n.id);assert.ok(ids.includes('ines')&&ids.includes('thea')&&!ids.includes('dario'),ids.join());
- assert.ok(HUBS.pilgrim.dusk,'temporary painting tinted to dusk until art pack D');assert.deepEqual(metFactions(s.campaign).includes('flame'),false);
+ assert.ok(HUBS.pilgrim.art==='hub_pilgrim'&&!HUBS.pilgrim.dusk,'art pack D: the painted pilgrim village');assert.deepEqual(metFactions(s.campaign).includes('flame'),false);
 });
 
 test('light: sanctuary tiles are lit, the road is dark until a brazier burns; a lit brazier lights radius 2',()=>{

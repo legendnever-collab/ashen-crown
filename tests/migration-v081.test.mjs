@@ -1,5 +1,5 @@
 // v0.8.1 → v0.9.0 save compatibility with real schema-11 saves made by the released v0.8.1 source
-// (tests/fixtures/v081/make-v081-fixtures.mjs, worktree of the v0.8.1 merge 534a25d). Schema 11 imports into schema 12 with
+// (tests/fixtures/v081/make-v081-fixtures.mjs, worktree of the v0.8.1 merge 534a25d). Schema 11 imports into schema 13 with
 // nothing changed; the summit camp after M14 (the end of v0.8.1) continues into ACT III — M15 in the capital's lower city,
 // a sortie of seven and Aren's 「지켜라」 — and the mid-M14 battle resumes and is won under v0.9.0 rules.
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
@@ -14,8 +14,8 @@ const load=name=>deserialize(fixture(name).save);
 
 test('fixtures are genuine v0.8.1 schema-11 saves with star gear',()=>{for(const n of ['m14-camp','m14-battle']){const f=fixture(n);assert.equal(f.version,'0.8.1');assert.equal(f.schema,11);assert.ok(raw(n).campaign.economy.gear.some(g=>g.type==='ironBlade'&&g.star===2));}});
 
-test('the v0.8.1 summit camp loads as schema 12 with every asset kept',()=>{
- const before=raw('m14-camp'),s=load('m14-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,12);assert.equal(s.version,VERSION);assert.equal(s.frontier.hub,'summit');
+test('the v0.8.1 summit camp loads as schema 13 with every asset kept',()=>{
+ const before=raw('m14-camp'),s=load('m14-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,13);assert.equal(s.version,VERSION);assert.equal(s.frontier.hub,'summit');
  for(const k of ['completed','flags','choices','promotions','factionTrust','trustLog','roster','feats','departed','economy','heroes','bonds','tacticalMemory'])assert.deepEqual(s.campaign[k],before.campaign[k],k);
  assert.deepEqual(s.economy,before.economy);const back=deserialize(serialize(s));assert.deepEqual(back.campaign.economy,before.campaign.economy);
 });

@@ -1,4 +1,9 @@
 # Next Tasks
+0. v0.9.1 「수호자」 release candidate (D-084): the user plays it; merge only on approval, then record the merge SHA and main CI in docs/v0.9.1/RELEASE_NOTES.md. Play-test watch items: trial difficulty (106–108, 111–113), M17 statue claims and the archive rule, M18 pace (the captain arrives TURN 4), the ④ skills' strength, rain on Lia.
+1. Art: pack D is imported in the v0.9.1 release candidate (D-085; deviations listed there for a retouch). ACT III pack F1 is imported too (D-086: the capital hub, six rooms, chests, the archivist and Bellard busts, six sheets, sheet H icons via `scripts/import-item-art.py <pack> --cells docs/v0.9.0/art/act3-f1-work-pack/cells.csv`). Next art: ACT III packs F2–F4 (the keep, the forest village, statues, trees, awakened looks, the ④ skill and v0.9.1 treasure icons) — work packs still to be written.
+2. Next on the user's instruction: v0.9.2 「그림자」 (M19–M20, Lia's and Kai's awakening, rite circles, the spreading fire, Bellard, duel 2, 「한 사람도 두고 가지 않는다」); art pack F2 (v0.9.1 cast and places) can be made now that M17–M18 exist.
+
+Previous (v0.9.0, merged 2026-11-05 PR #18 → 45d5c0a, D-082):
 1. v0.9.0 「왕도」 release candidate (D-080): the user plays it; merge only on approval, then record the merge SHA and main CI in docs/v0.9.0/RELEASE_NOTES.md. Tags and Releases only when the user asks.
 2. Play-test watch items: ACT III enemy strength against a human-raised legion (numbers set to the balance party: Lv 9–18), the M15 clerk race (two tiles a turn from TURN 1) and the watch rule, M16 fog readability, harvest MP −3, duel odds, returning recruits.
 3. Next on the user's instruction: v0.9.1 「수호자」 — M17 수호자의 맹세, M18 불타지 않는 숲, awakening (Tier 3 ④ for Erik, Elina, Sain), recruits' Tier 2, rain, guardian statues, guardians' keep and forest village hubs, Aren's 「나아가라」.

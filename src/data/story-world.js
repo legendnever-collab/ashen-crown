@@ -33,5 +33,8 @@ export const STORY_WORLD={
  'world:capital':[w5('부서진 회담장을 떠난 재의 군단은 장부의 끈을 따라 대륙의 한가운데로 향한다.',{focus:'continent',from:'summit',to:'capital'}),
   w5('왕도 아우렐리아. 이백 년 동안 왕관이 결계를 지켜 온 도시. 그 아래 하층가에는 피난민과 소문이 넘친다.',{focus:'center',prev:'continent',from:'summit',to:'capital',card:{act:ACT3,region:'왕도령',place:'왕도 하층가'}})],
  'world:fieldcamp':[w5('왕도 서쪽 평원. 3년 전 내전이 휩쓴 들판을, 근처 마을 사람 누구도 기억하지 못한다.',{focus:'center',from:'capital',to:'fieldcamp',card:{act:ACT3,region:'왕도령',place:'잊힌 전장'}})],
+ // v0.9.1 (D-084): north to the guardians' keep, then south-east to the unburning forest.
+ 'world:keep':[w5('명부 첫 장의 이름들을 따라 군단은 왕도 북쪽 고원으로 오른다. 바람만 남은 곳에 수호자 성채가 서 있다.',{focus:'center',from:'oldfield',to:'guardkeep',card:{act:ACT3,region:'북쪽 고원',place:'수호자 성채'}})],
+ 'world:forest':[w5('결계 아래의 오래된 숲. 불이 붙지 않고, 숲지기들은 병도 굶주림도 모른다고 한다.',{focus:'center',from:'guardkeep',to:'unburning',card:{act:ACT3,region:'남동 숲',place:'불타지 않는 숲'}})],
  'world:oathcamp':[w5('피난민과 함께 국경 관문을 넘었다. 왕실의 명령은 이제 그들 뒤에 있다.',{focus:'east',from:'fortress',to:'oathcamp',card:{act:ACT1,region:'동부 변경',place:'관문 너머 야영지'}})]
 };

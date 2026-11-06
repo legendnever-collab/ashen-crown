@@ -26,6 +26,12 @@ function act2Goals(s,u){const live=t=>alive(t)&&t.team==='enemy';
   if(arch&&u?.id==='sain'&&s.turn>=3)return hunters.length?hunters:[arch];if(clerks.length)return clerks;return hunters.length?hunters:s.units.filter(live);}
  if(s.missionId===16){const stones=s.units.filter(o=>o.kind==='wardStone'&&!o.inert),harv=s.units.filter(h=>h.kind==='harvester'&&live(h));
   if(stones.length&&u?.id==='elina')return [stones.find(o=>o.id==='st3')||stones[0]];if(stones.length&&u?.id==='lia')return stones;return harv.length?harv:s.units.filter(live);}
+ // v0.9.1 M17: the quick heroes swear the sleeping statues first; the rest meet whoever nears the archive. M18: Kai and Thea
+ // lead the forest-keepers inside; everyone else stands by the ward trees against the loggers.
+ if(s.missionId===17){const sleeping=s.units.filter(o=>o.kind==='statue'&&o.team==='object'),arch=missionOf(s).archive,near=s.units.filter(e=>live(e)&&Math.min(...arch.map(([x,y])=>Math.abs(e.x-x)+Math.abs(e.y-y)))<=6);
+  if(sleeping.length&&['kai','thea','elina','dario','ines'].includes(u?.id))return [[...sleeping].sort((a,b)=>distance(u,a)-distance(u,b))[0]];return near.length?near:s.units.filter(live);}
+ if(s.missionId===18){const keepers=s.units.filter(c=>c.kind==='forester'&&alive(c)&&!c.rescued),trees=s.units.filter(t=>t.kind==='wardTree'&&alive(t)),near=s.units.filter(e=>live(e)&&trees.some(t=>distance(e,t)<=4));
+  if(keepers.length&&['kai','thea'].includes(u?.id))return [[...keepers].sort((a,b)=>distance(u,a)-distance(u,b))[0]];return near.length?near:s.units.filter(live);}
  // v0.7.1 M13: Erik (and Thea once) walk to Baldrick to persuade him; the rest guard the camp. M14: guard the leaders.
  if(s.missionId===13){const boss=s.units.find(t=>t.id==='boss'&&live(t)),camp=s.units.filter(v=>v.team==='civilian'&&alive(v)),near=s.units.filter(e=>live(e)&&camp.some(v=>distance(e,v)<=4));
   if(boss&&(u?.id==='eric'||u?.id==='thea'&&!s.missionState.thea))return [boss];if(near.length)return near;return camp.length?camp:s.units.filter(live);}
@@ -60,7 +66,7 @@ function strikeScore(s,u,t,f,capture){const civ=s.units.filter(v=>v.team==='civi
    if(s.missionId===4){if(t.burns&&s.turn<missionOf(s).burnTurn&&s.units.some(o=>o.evidence===t.burns&&alive(o)))score+=80;if(t.id==='boss')score+=60;}
  // v0.8: in M04 and M06 striking the enemy that is the current goal always beats standing beside it (with more ways to spend
  // MP, the old weights let the party wait next to the boss once Lia's bolts were not the ones finishing him).
- if((s.missionId===4||s.missionId===6||s.missionId===15||s.missionId===16)&&t.team==='enemy'&&missionGoals(s,u).includes(t))score+=150;
+ if((s.missionId===4||s.missionId===6||s.missionId>=15)&&t.team==='enemy'&&missionGoals(s,u).includes(t))score+=150;
  // v0.9.0 M15: the royal watch is neutral; a strike beside it (attacker or target within two tiles) is avoided unless it
  // drops a clerk.
  if(s.missionId===15&&!s.missionState.turned&&!(t.clerk&&f.after===0)&&s.units.some(w=>w.watch&&w.team==='civilian'&&w.hp>0&&distance(w,t)<=3))score-=400;
@@ -69,6 +75,10 @@ function strikeScore(s,u,t,f,capture){const civ=s.units.filter(v=>v.team==='civi
 // unused as before. Strike skills are scored like an attack plus the worth of the status they leave.
 const STATUS_WORTH={pinningShot:20,venomEdge:25,feint:15,flameBrand:15,breakthrough:5};
 function tacticOptions(s,u,a){const out=[];for(const k of skillsOf(a).filter(k=>k.slot>1&&k.open&&NEW_SKILL_MODES.includes(k.mode)&&a.mp>=k.cost)){const m=k.mode;
+ // v0.9.1 ④ (once a battle): raise the fallen first; the oath wall when two or more stand near Erik under threat; a blockade over two foes.
+ if(m==='dawnPrayer'){if(validClassTarget(s,a,a.id,m))out.push({mode:m,target:a.id,score:900});continue;}
+ if(m==='oathWall'){if(!validClassTarget(s,a,a.id,m))continue;const near=s.units.filter(t=>(t.team==='ally'||t.team==='allied'||t.team==='civilian')&&alive(t)&&t.id!==a.id&&distance(a,t)<=2),threat=s.units.filter(e=>alive(e)&&hostile(s,a,e)&&near.some(t=>distance(e,t)<=4)).length;if(near.length>=2&&threat>=2)out.push({mode:m,target:a.id,score:60+near.length*25+threat*10,support:true});continue;}
+ if(m==='blockade'){let top=null;for(let y=a.y-5;y<=a.y+5;y++)for(let x=a.x-5;x<=a.x+5;x++){const p=`${x},${y}`;if(!validClassTarget(s,a,p,m))continue;const n=s.units.filter(t=>alive(t)&&hostile(s,a,t)&&t.team==='enemy'&&Math.abs(t.x-x)+Math.abs(t.y-y)<=1).length;if(n>=2&&(!top||n>top.n))top={p,n};}if(top)out.push({mode:m,target:top.p,score:70*top.n});continue;}
  if(m==='flameBurst'){for(let y=a.y-3;y<=a.y+3;y++)for(let x=a.x-3;x<=a.x+3;x++){const p=`${x},${y}`;if(!validClassTarget(s,a,p,m))continue;let v=0,n=0;for(const t of s.units.filter(t=>alive(t)&&hostile(s,a,t)&&Math.abs(t.x-x)+Math.abs(t.y-y)<=1)){const f=strikePreview(s,a,t,m);v+=strikeScore(s,u,t,{...f,after:Math.max(0,t.hp-f.damage),counter:0},true);n++;}if(n>=2)out.push({mode:m,target:p,score:v-90});}continue;} // −90: worth more than one bolt (MP and the bolt it replaces)
  if(m==='whirlwind'){if(!validClassTarget(s,a,a.id,m))continue;const foes=s.units.filter(t=>alive(t)&&hostile(s,a,t)&&distance(a,t)===1);if(foes.length<2)continue;let v=0;for(const t of foes){const f=strikePreview(s,a,t,m);v+=strikeScore(s,u,t,{...f,after:Math.max(0,t.hp-f.damage),counter:0},true);}out.push({mode:m,target:a.id,score:v-30});continue;}
  if(m==='rallyCry'){const n=s.units.filter(t=>t.team==='ally'&&alive(t)&&t.id!==u.id&&!t.acted&&distance(a,t)<=2).length;const foesNear=s.units.some(t=>alive(t)&&hostile(s,a,t)&&distance(a,t)<=5);if(n>=2&&foesNear)out.push({mode:m,target:a.id,score:20+n*10,support:true});continue;}

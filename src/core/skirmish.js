@@ -9,23 +9,29 @@ import {findUnit} from './rules.js';
 import {promotionStatus,applyClass,act1Complete,classTierOf} from './progression.js';
 import {enqueueStory} from './narrative.js';
 
-export const TRIAL_MISSION={eric:101,elina:102,lia:103,sain:104,kai:105},DRILL_MISSION=110;
+export const TRIAL_MISSION={eric:101,elina:102,lia:103,sain:104,kai:105,thea:111,dario:112,ines:113},DRILL_MISSION=110;
+// v0.9.1 awakening trials (Tier 3; ACT3_DESIGN §6). Lia and Kai follow in v0.9.2.
+export const AWAKEN_MISSION={elina:106,eric:107,sain:108};
+// The trial a hero faces next: tier 2 (promotion) or tier 3 (awakening).
+export const trialMissionOf=(s,id)=>{const n=promotionStatus(s,id).next;return n?.tier===3?AWAKEN_MISSION[id]:n?.tier===2?TRIAL_MISSION[id]:null;};
 export const skirmishOf=s=>MISSIONS[s?.missionId]?.skirmish||null;
 export function canStartSkirmish(s){return s?.screen==='exploration'&&!s.practice&&!s.narrative?.active&&(s.missionId===6&&s.frontier?.phase==='aftermath'||s.missionId>6&&s.missionId<=LAST_MISSION)&&act1Complete(s)&&!!s.campaign?.choices?.m06_oath&&Array.isArray(s.campaign.heroes);}
-export function trialState(s,id){const st=promotionStatus(s,id);return {...st,available:canStartSkirmish(s)&&st.eligible&&!st.promoted};}
+export function trialState(s,id){const st=promotionStatus(s,id);return {...st,available:canStartSkirmish(s)&&st.eligible&&!!st.next&&!!trialMissionOf(s,id)};}
 
 // Builds the battle. `force` is for tests and balance scripts only (skips the promotion conditions).
 export function startSkirmish(camp,kind,hero=null,{force=false}={}){
  if(!force&&!canStartSkirmish(camp))return null;
- if(kind==='trial'&&(!TRIAL_MISSION[hero]||!force&&!trialState(camp,hero).available))return null;
- const id=kind==='trial'?TRIAL_MISSION[hero]:DRILL_MISSION,m=MISSIONS[id];
+ if(kind==='trial'&&(!trialMissionOf(camp,hero)||!force&&!trialState(camp,hero).available))return null;
+ const id=kind==='trial'?trialMissionOf(camp,hero):DRILL_MISSION,m=MISSIONS[id];
  const tally=camp.campaign.skirmishes||{drills:0,trials:{}},count=(tally.drills||0)+Object.values(tally.trials||{}).reduce((a,b)=>a+b,0)+(camp.campaign.results?.length||0);
  const s=newGame((camp.initialSeed+7919*(count+1)+id)>>>0,structuredClone(camp.campaign),id);
  s.skirmish={kind,hero,returnMission:camp.missionId,returnSeed:camp.initialSeed,returnOutcome:camp.outcome??null,returnReason:camp.reason??null,frontier:structuredClone(camp.frontier)};
  s.economy=structuredClone(camp.campaign.economy||camp.economy);
  const deployed=kind==='drill'?['eric','elina','lia','sain','kai']:[hero,...(m.companions||[])];
- for(const u of s.units.filter(u=>u.team==='ally')){if(!deployed.includes(u.id))u.benched=true;}
- if(kind==='trial'){const u=findUnit(s,hero);applyClass(u,CLASS_TREE[hero].find(c=>c.tier===2));u.hp=u.maxHP;u.mp=u.maxMP;}
+ for(const u of s.units.filter(u=>u.team==='ally')){if(!deployed.includes(u.id))u.benched=true;else delete u.benched;} // v0.9.1: a recruit beyond the sortie limit still takes its own trial
+ // v0.9.1 trials (106–108, 111–113): the trial hero and companions take the first spots, in that order
+ if(id>=106&&id!==DRILL_MISSION)deployed.forEach((pid,i)=>{const u=findUnit(s,pid),p=m.deployments?.recommended?.[i];if(u&&p)[u.x,u.y]=p;});
+ if(kind==='trial'){const u=findUnit(s,hero);applyClass(u,CLASS_TREE[hero].find(c=>c.tier===(m.skirmish.tier||2)));u.hp=u.maxHP;u.mp=u.maxMP;}
  for(const id2 of m.wounded||[]){const u=findUnit(s,id2);u.mov=0;u.hp=Math.max(1,Math.round(u.maxHP*.4));}  // wounded: cannot walk this battle
  s.screen='deployment';startBattle(s);enqueueStory(s,`skirmish:${id}:intro`);return s;
 }
@@ -36,5 +42,5 @@ export function returnToCamp(s){const sk=s.skirmish;if(!sk)return null;
  const c=newGame(sk.returnSeed,campaign,sk.returnMission);c.practice=false;c.outcome=sk.returnOutcome;c.reason=sk.returnReason;c.economy=structuredClone(campaign.economy);c.frontier=structuredClone(sk.frontier);
  c.narrative.seen=[...(s.narrative?.seen||[])];c.narrative.history=structuredClone(s.narrative?.history||[]);
  enterHub(c,{aftermath:sk.frontier?.phase!=='preparation',story:false});
- const promoted=s.outcome==='victory'&&skirmishOf(s)?.kind==='trial'?skirmishOf(s).hero:null;if(promoted&&classTierOf(c.campaign.heroes.find(h=>h.id===promoted))>=2)enqueueStory(c,`promo:${promoted}`);
+ const sk2=skirmishOf(s),promoted=s.outcome==='victory'&&sk2?.kind==='trial'?sk2.hero:null,tier=sk2?.tier||2;if(promoted&&classTierOf(c.campaign.heroes.find(h=>h.id===promoted))>=tier)enqueueStory(c,tier===3?`awaken:${promoted}`:`promo:${promoted}`);
  return c;}

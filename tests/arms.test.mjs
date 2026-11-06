@@ -26,8 +26,8 @@ const wake=(s,id,x,y,more={})=>{const e=findUnit(s,id);Object.assign(e,{hp:e.max
 const place=(u,x,y)=>{u.x=x;u.y=y;u.moved=false;u.acted=false;};
 const own=(s,type,hero)=>{const g={id:`g${s.economy.next++}`,type,star:1,exp:0};s.economy.gear.push(g);if(hero)s.economy.equipped[hero][GEAR[type].slot]=g.id;return g;};
 
-test('the gear table: 11 tier I, 24 tier II, 12 tier III and 14 treasures (v0.9.0 adds six from the capital and two ACT III treasures), named as in the catalog; every new piece has a town',()=>{
- assert.equal(Object.keys(GEAR).length,61);for(const c of [...CATALOG_GEAR,...CATALOG_TREASURES])assert.equal(GEAR[c.id].name,c.ko,c.id);
+test('the gear table: 11 tier I, 24 tier II, 12 tier III and 16 treasures (v0.9.0 adds six from the capital and two ACT III treasures; v0.9.1 two more), named as in the catalog; every new piece has a town',()=>{
+ assert.equal(Object.keys(GEAR).length,63);for(const c of [...CATALOG_GEAR,...CATALOG_TREASURES])assert.equal(GEAR[c.id].name,c.ko,c.id);
  for(const c of CATALOG_GEAR.filter(c=>c.tier>1)){const g=GEAR[c.id];assert.ok(['castletown','velmar','pilgrim','capital'].includes(g.home),c.id);assert.ok(g.after||g.premium||g.trust,c.id);assert.equal(g.price,c.price);}
  for(const c of CATALOG_TREASURES)assert.equal(GEAR[c.id].slot,'treasure');
  const rewards=Object.values(FEATS).map(f=>f.reward);assert.deepEqual(rewards.filter(r=>r!=='elixir').sort(),CATALOG_TREASURES.map(c=>c.id).sort(),'one treasure per hidden objective');assert.equal(rewards.filter(r=>r==='elixir').length,2);
@@ -142,7 +142,7 @@ test('cut-ins: a hero critical hit and a ③ skill carry one line; enemies never
 });
 
 test('schema 11: stars, treasure slot, hidden objectives and battle flags round-trip; damaged records are rejected; treasures are never sold or tempered',()=>{
- assert.equal(SCHEMA,12);const s=hubAt(9,8);assert.ok(tx(s,'buy-gear','twinSabers').ok===false||true);own(s,'herbPouch');s.campaign.feats=[1];
+ assert.equal(SCHEMA,13);const s=hubAt(9,8);assert.ok(tx(s,'buy-gear','twinSabers').ok===false||true);own(s,'herbPouch');s.campaign.feats=[1];
  const blade=s.economy.gear.at(-1);assert.equal(tx(s,'sell-gear',blade.id).ok,false);assert.equal(tx(s,'upgrade',blade.id).ok,false);assert.ok(tx(s,'equip',blade.id,'eric','treasure').ok);
  const again=deserialize(serialize(s));assert.equal(again.economy.equipped.eric.treasure,blade.id);assert.deepEqual(again.campaign.feats,[1]);
  for(const bad of [x=>{x.economy.gear.at(-1).star=3;},x=>{x.economy.gear.push({...x.economy.gear.at(-1),id:`g${x.economy.next++}`});},x=>{x.campaign.feats=[1,1];},x=>{x.economy.gear.at(-1).level=0;},x=>{delete x.economy.equipped.eric.treasure;}]){const c=structuredClone(s);bad(c);assert.throws(()=>serialize(c));}

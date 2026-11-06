@@ -1,7 +1,7 @@
 import {applyTerrainRecovery,recoveryValue} from './terrain-recovery.js';
 import {ensureEconomy,commitEconomyReward,effectiveStats} from './economy.js';
 import {VERSION,SCHEMA,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,DEPLOYMENTS,BALANCE,partyHeroes,partyIds} from '../data/game-data.js';
-import {distance,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,forecast,strikeStats,guardFor,roll,awardXP,discover,terrainAt,counterBlocked,hostile,chargeBreaks,riposteBonus} from './rules.js';
+import {distance,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,forecast,strikeStats,guardFor,roll,awardXP,discover,terrainAt,counterBlocked,hostile,chargeBreaks,riposteBonus,sideOf,weatherOf,inWard,blockadeHolds} from './rules.js';
 import {MISSIONS,missionOf,LAST_MISSION} from '../data/missions.js';
 import {rulesOf,objectUnit,searchEvidence} from './mission-rules.js';
 import {narrativeState,enqueueStory,remember,setStoryFlag,afterBattleEvents} from './narrative.js';
@@ -44,14 +44,19 @@ export function startBattle(s){if(s.screen!=='deployment'||s.units.filter(a=>a.t
 export function canAct(s,u){return s.screen==='battle'&&s.phase==='player'&&!s.narrative?.active&&!duelOpen(s)&&u?.team==='ally'&&alive(u)&&!u.acted;}
 // v0.5: a promoted Kai may still move after Quick Strike (strikeMove = this turn); otherwise moving needs an unspent action.
 export function canMove(s,u){return s.screen==='battle'&&s.phase==='player'&&!s.narrative?.active&&!duelOpen(s)&&u?.team==='ally'&&alive(u)&&!u.moved&&(!u.acted||u.strikeMove===s.turn);}
-export function moveUnit(s,id,x,y){const u=findUnit(s,id);if(!canMove(s,u)||(u.x===x&&u.y===y))return null;const path=pathTo(s,u,x,y);if(!path)return null;if(u.acted){delete u.strikeMove;delete s.undo[id];}else s.undo[id]={x:u.x,y:u.y};u.x=x;u.y=y;u.moved=true;if(u.id==='thea')u.chargeRun=path.length-1;s.feedback.push({type:'move',id,path});return path;}
+export function moveUnit(s,id,x,y){const u=findUnit(s,id);if(!canMove(s,u)||(u.x===x&&u.y===y))return null;const path=pathTo(s,u,x,y);if(!path)return null;if(u.acted){delete u.strikeMove;delete u.moveLeft;delete s.undo[id];}else s.undo[id]={x:u.x,y:u.y};u.x=x;u.y=y;u.moved=true;if(u.id==='thea')u.chargeRun=path.length-1;s.feedback.push({type:'move',id,path});return path;}
 export function undoMove(s,id){const u=findUnit(s,id),origin=s.undo[id];if(!canAct(s,u)||!origin||at(s,origin.x,origin.y))return false;u.x=origin.x;u.y=origin.y;u.moved=false;if(u.chargeRun)u.chargeRun=0;delete s.undo[id];return true;}
 function consumeAction(s,u){u.acted=true;delete s.undo[u.id];}
 function damage(s,u,t,mode,counter=false,opts=null){
  let victim=guardFor(s,u,t,mode)||t;s.feedback.push({type:'attack',id:u.id,target:victim.id,mode,counter});const fromHP=victim.hp;const stats=strikeStats(s,u,victim,mode);if(counter)stats.damage+=riposteBonus(u);
  if(opts){if(opts.scale&&opts.scale!==1)stats.damage=Math.max(1,Math.round(stats.damage*opts.scale));if(opts.bonus)stats.damage+=opts.bonus;}const hit=roll(s)*100<stats.hit,critical=roll(s)*100<stats.crit;
  if(!hit){s.feedback.push({type:'miss',id:victim.id,text:'MISS'});s.log.push(`${u.name} → ${victim.name}: MISS (${stats.hit}%).`);return {hit:false,damage:0,victim};}
- const dealt=stats.damage+(critical?Math.ceil(stats.damage*.5):0);if(critical&&!counter)cutIn(s,u,'crit');victim.hp=Math.max(0,victim.hp-dealt);rulesOf(s)?.afterDamage?.(s,victim);victim.hitThisTurn=true;gainGearExp(s,u,'strike');gainGearExp(s,victim,'hit');s.feedback.push({type:critical?'critical':'hit',id:victim.id,text:`${critical?'CRITICAL ':''}−${dealt}`,fromHP,toHP:victim.hp,damage:dealt});
+ let dealt=stats.damage+(critical?Math.ceil(stats.damage*.5):0);if(critical&&!counter)cutIn(s,u,'crit');
+ // v0.9.1 Wall of the Oath (Erik's ④): until the next player turn he takes half of what the legion and civilians within 2 take.
+ const wall=dealt>1&&sideOf(victim)!=='enemy'&&victim.team!=='object'?s.units.find(w=>w.oathWall===s.turn&&w!==victim&&alive(w)&&distance(w,victim)<=2):null;
+ if(wall){const share=Math.floor(dealt/2);dealt-=share;const wf=wall.hp;wall.hp=Math.max(1,wall.hp-share);s.feedback.push({type:'hit',id:wall.id,text:`맹세 −${wf-wall.hp}`,fromHP:wf,toHP:wall.hp,damage:wf-wall.hp});}
+ const floor=victim.oathWall===s.turn||fx(s,victim,'oath')&&!victim.oathUsed&&victim.hp-dealt<=0?1:0;if(floor&&victim.oathWall!==s.turn&&victim.hp-dealt<=0){victim.oathUsed=true;s.log.push(`${victim.name}: 맹세의 휘장이 마지막 일격을 버텨 냅니다.`);}
+ victim.hp=Math.max(floor,victim.hp-dealt);rulesOf(s)?.afterDamage?.(s,victim);victim.hitThisTurn=true;gainGearExp(s,u,'strike');gainGearExp(s,victim,'hit');s.feedback.push({type:critical?'critical':'hit',id:victim.id,text:`${critical?'CRITICAL ':''}−${dealt}`,fromHP,toHP:victim.hp,damage:dealt});
  s.log.push(`${counter?'반격 · ':''}${u.name} → ${victim.name}: ${dealt} 피해${critical?' / Critical':''}${victim!==t?' / Guard':''}.`);
  if(victim!==t){remember(s,`guard_${victim.id}_${t.id}`);if(s.missionId===3&&t.id==='sain')enqueueStory(s,'3:guard');victim.guardTarget=null;victim.guardUsed=true;awardXP(s,victim,BALANCE.guardXP,'Guard로 동료 보호');discover(s,victim,"Guardian’s Oath");}
  if(mode==='skill'&&u.id==='lia')ignite(s,victim);
@@ -77,6 +82,7 @@ export function performAction(s,id,mode,targetId){
  if(mode==='skill'){u.mp-=skillCost(u);remember(s,`${u.id}_skill`);if(u.id==='dario')u.riposte=true;if(u.id==='ines')u.sanctuary=true;}
  consumeAction(s,u);if(s.missionId===3&&u.id==='kai'&&u.y<=4)remember(s,'kai_bypass');
  if(mode==='skill'&&u.id==='kai'&&(u.classTier||1)>=2&&!u.moved)u.strikeMove=s.turn;
+ const theaRun=mode==='skill'&&u.id==='thea'&&(u.classTier||1)>=2?effectiveStats(s,u).mov-(u.moved?(u.chargeRun||0):0):null;
  if(mode==='search'){const custom=rulesOf(s)?.search?.(s,u,t);if(!custom)searchEvidence(s,u,t);awardXP(s,u,30,`${t.name} ${custom?'작동':'조사'}`);}
  else if(mode==='persuade'){rulesOf(s)?.persuade?.(s,u,t);awardXP(s,u,20,`${t.name} 설득`);}
  else if(mode==='capture'&&s.missionId!==2){rulesOf(s)?.capture?.(s,u,t);awardXP(s,u,50,`${t.name} 생포`);}
@@ -84,12 +90,12 @@ export function performAction(s,id,mode,targetId){
  else if(mode==='rescue'){t.rescued=true;remember(s,`${u.id}_rescue`);awardXP(s,u,BALANCE.rescueXP,`${t.name} 구출`);s.log.push(`${u.name}: ${t.name}을 안전한 피난로로 구출했습니다.`);s.feedback.push({type:'rescue',id:t.id,text:'RESCUED'});if(u.id==='kai')discover(s,u,'Shadow Exchange');}
  else if(mode==='skill'&&u.id==='eric'){u.guarding=true;u.guardUsed=false;u.guardTarget=null;awardXP(s,u,12,'방어 태세');s.log.push('에릭: 방어 태세. 다음 아군 턴까지 DEF +3, 인접 동료가 받는 첫 근접 공격을 대신 받습니다.');s.feedback.push({type:'guard',id:u.id,text:'GUARD'});}
  else if(mode==='skill'&&u.id==='sain'){
-  const sv=effectiveStats(s,u),heal=Math.min(12+sv.mag+(sv.heal||0)+(proficiencyBonus(s,u).heal||0),t.maxHP-t.hp);t.hp+=heal;if(heal)gainGearExp(s,u,'strike');s.feedback.push({type:'heal',id:t.id,text:`+${heal}`,toHP:t.hp});
+  const sv=effectiveStats(s,u),base=12+sv.mag+(sv.heal||0)+(proficiencyBonus(s,u).heal||0),heal=Math.min(inWard(s,t)?Math.round(base*1.5):base,t.maxHP-t.hp);t.hp+=heal;if(heal)gainGearExp(s,u,'strike');s.feedback.push({type:'heal',id:t.id,text:`+${heal}`,toHP:t.hp});
   const extra=s.units.filter(a=>a.team==='ally'&&alive(a)&&a.id!==t.id&&distance(a,t)===1&&a.hp<a.maxHP).sort((a,b)=>a.hp/a.maxHP-b.hp/b.maxHP)[0];let splash=0;if(extra){splash=Math.min(4,extra.maxHP-extra.hp);extra.hp+=splash;s.feedback.push({type:'heal',id:extra.id,text:`+${splash}`,toHP:extra.hp});}
   if(heal||splash)remember(s,'sain_heal');
   if(heal||splash){if(!u.healTargets.includes(t.id))u.healTargets.push(t.id);awardXP(s,u,Math.min(BALANCE.healXP,10+Math.floor((heal+splash)/2)),`${t.name} 치유`);}if(extra&&splash)discover(s,u,'Divine Recall');s.log.push(`세인: ${t.name} +${heal} HP${extra?`, Gentle Hands → ${extra.name} +${splash}`:''}. 치유할 때마다 EXP를 얻습니다.`);
  }else{
-  const r=damage(s,u,t,mode);if(r.hit){awardXP(s,u,BALANCE.attackXP+(!alive(r.victim)?BALANCE.killXP:0),`${r.victim.name} ${alive(r.victim)?'공격':'격파'}`);if(u.id==='elina'&&['f','v'].includes(sTerrain(s,u))){discover(s,u,'Overwatch');remember(s,'elina_forest_shot');}if(u.id==='lia'&&!alive(r.victim)){discover(s,u,'Arcane Territory');remember(s,'lia_kill');}}
+  const r=damage(s,u,t,mode);if(r.hit&&theaRun>0&&!alive(r.victim)){u.moved=false;u.strikeMove=s.turn;u.moveLeft=theaRun;s.log.push(`테아: 흑철 창기사 · 남은 이동 ${theaRun}칸.`);}if(r.hit){awardXP(s,u,BALANCE.attackXP+(!alive(r.victim)?BALANCE.killXP:0),`${r.victim.name} ${alive(r.victim)?'공격':'격파'}`);if(u.id==='elina'&&['f','v'].includes(sTerrain(s,u))){discover(s,u,'Overwatch');remember(s,'elina_forest_shot');}if(u.id==='lia'&&!alive(r.victim)){discover(s,u,'Arcane Territory');remember(s,'lia_kill');}}
   if(alive(r.victim)&&validTarget(s,r.victim,u)&&!counterBlocked(s,r.victim)&&!chargeBreaks(u,mode)&&!fx(s,u,'silence')){const c=damage(s,r.victim,u,'attack',true);
    // v0.8.1 Twin Daggers (treasure): struck back, the hero strikes once more.
    const twin=fx(s,u,'twin');if(twin&&c.hit&&alive(u)&&alive(r.victim))damage(s,u,r.victim,'attack',false,{scale:twin/100});}
@@ -137,10 +143,14 @@ export function advanceEnemy(s){
   if(u.team==='enemy'&&path&&s.traps?.length){const stop=caltropStop(s,u,path);if(stop<path.length-1){path=path.slice(0,stop+1);p.x=path.at(-1).x;p.y=path.at(-1).y;u.caltrop=true;}}
   if(u.team==='enemy'&&path&&path.length>1&&s.units.some(a=>a.team==='ally'&&a.overwatch&&alive(a))){const start={x:u.x,y:u.y},mark=s.feedback.length,stop=overwatchStop(s,u,path,(a,e)=>{s.feedback.push({type:'class',action:'overwatch-fire',id:a.id,target:e.id,text:'경계 사격',at:{x:e.x,y:e.y}});const r=damage(s,a,e,'attack');if(r.hit)awardXP(s,a,BALANCE.attackXP+(!alive(e)?BALANCE.killXP:0),`${e.name} 경계 사격`);return r;});
    shots=s.feedback.splice(mark);u.x=start.x;u.y=start.y;if(stop<path.length-1){stopped=true;path=path.slice(0,stop+1);p.x=path.at(-1).x;p.y=path.at(-1).y;}}
+  const held=blockadeHolds(s,u);
   if(path){u.x=p.x;u.y=p.y;if(path.length>1)s.feedback.push({type:'move',id:u.id,path});}s.feedback.push(...shots);
+  if(held&&path&&path.length>1){const a=findUnit(s,s.blockade.by);if(a&&alive(a)){s.feedback.push({type:'class',action:'overwatch-fire',id:a.id,target:u.id,text:'퇴로 봉쇄',at:{x:u.x,y:u.y}});const r=damage(s,a,u,'attack');if(r.hit)awardXP(s,a,BALANCE.attackXP+(!alive(u)?BALANCE.killXP:0),`${u.name} 퇴로 봉쇄`);if(!alive(u)){checkOutcome(s);afterBattleEvents(s);return true;}if(p.target&&!validTarget(s,u,findUnit(s,p.target)))p.target=null;}}
   if(u.caltrop){delete u.caltrop;const n=Math.min(6,u.hp),fromHP=u.hp;u.hp-=n;s.feedback.push({type:'hit',id:u.id,text:`마름쇠 −${n}`,fromHP,toHP:u.hp,damage:n});s.log.push(`${u.name}: 마름쇠를 밟고 멈췄습니다 (${n} 피해).`);if(!alive(u)){dropSupply(s,u);s.feedback.push({type:'death',id:u.id,text:'FALLEN'});checkOutcome(s);afterBattleEvents(s);return true;}if(p.target&&!validTarget(s,u,findUnit(s,p.target)))p.target=null;}
   if(stopped){s.log.push(`${u.name}: 경계 사격에 발이 묶였습니다.`);if(!alive(u)){checkOutcome(s);afterBattleEvents(s);return true;}if(p.target&&!validTarget(s,u,findUnit(s,p.target)))p.target=null;}
-  s.log.push(`AI · ${u.name}: ${p.reason}.`);if(p.target){const t=findUnit(s,p.target);const r=damage(s,u,t,'attack');if((t.team==='ally'||t.team==='allied'||t.team==='enemy')&&alive(r.victim)&&validTarget(s,r.victim,u)){const counter=damage(s,r.victim,u,'attack',true);if(counter.hit)awardXP(s,r.victim,!alive(u)?BALANCE.attackXP+BALANCE.killXP:10,`${u.name} 반격`);}}
+  s.log.push(`AI · ${u.name}: ${p.reason}.`);if(p.target){const t=findUnit(s,p.target);const r=damage(s,u,t,'attack');if((t.team==='ally'||t.team==='allied'||t.team==='enemy')&&alive(r.victim)&&validTarget(s,r.victim,u)){const counter=damage(s,r.victim,u,'attack',true);if(counter.hit)awardXP(s,r.victim,!alive(u)?BALANCE.attackXP+BALANCE.killXP:10,`${u.name} 반격`);
+   // v0.9.1 Sword Saint (Dario, tier 2): in Riposte he strikes back twice.
+   if(r.victim.id==='dario'&&(r.victim.classTier||1)>=2&&r.victim.riposte&&alive(r.victim)&&alive(u)&&validTarget(s,r.victim,u)){const again=damage(s,r.victim,u,'attack',true);if(again.hit)awardXP(s,r.victim,!alive(u)?BALANCE.attackXP+BALANCE.killXP:10,`${u.name} 두 번째 반격`);}}}
   checkOutcome(s);afterBattleEvents(s);return true;
  }
  s.turn++;s.phase='player';s.enemyQueue=[];s.enemyIndex=0;
@@ -198,7 +208,7 @@ export function nextMission(s){if(s.outcome!=='victory'||s.missionId>=LAST_MISSI
 function escortCivilians(s){for(const c of s.units.filter(u=>u.team==='civilian'&&alive(u))){if(!s.units.some(u=>u.team==='ally'&&alive(u)&&distance(u,c)===1))continue;const options=[[0,-1],[-1,0],[1,0]].map(([dx,dy])=>({x:c.x+dx,y:c.y+dy})).filter(p=>terrainAt(p.x,p.y,s)&&Number.isFinite(terrainAt(p.x,p.y,s).cost)&&!at(s,p.x,p.y));options.sort((a,b)=>a.y-b.y||Math.abs(a.x-5.5)-Math.abs(b.x-5.5));if(options.length){const p=options[0];c.x=p.x;c.y=p.y;s.log.push(`${c.name} 호위 이동.`);if(c.y<=2){c.rescued=true;setStoryFlag(s,'mission_03_escorted');}}}}
 // Fire tactics (v0.4 benchmark pass): Fire Bolt ignites grass/forest/village for two turns.
 // Units standing in fire at the start of their side's phase take 10% max HP (min 3), never lethal.
-function ignite(s,victim){const {x,y}=victim,t=terrainAt(x,y,s);if(!t||(t.fire??1)<1.25)return;s.burning??={};const k=key(x,y),fresh=!s.burning[k];s.burning[k]=2;if(fresh){s.feedback.push({type:'ignite',id:victim.id,text:'FIRE'});s.log.push(`${t.ko||t.name}에 불길이 번졌습니다. 2턴 동안 그 위의 유닛이 화상을 입습니다.`);}}
+function ignite(s,victim){const {x,y}=victim,t=terrainAt(x,y,s);if(!t||(t.fire??1)<1.25||weatherOf(s)==='rain')return;s.burning??={};const k=key(x,y),fresh=!s.burning[k];s.burning[k]=2;if(fresh){s.feedback.push({type:'ignite',id:victim.id,text:'FIRE'});s.log.push(`${t.ko||t.name}에 불길이 번졌습니다. 2턴 동안 그 위의 유닛이 화상을 입습니다.`);}}
 function ageFires(s){if(!s.burning)return;for(const k of Object.keys(s.burning)){s.burning[k]--;if(s.burning[k]<=0)delete s.burning[k];}}
 function burnUnits(s,team){if(!s.burning)return;for(const u of s.units.filter(u=>u.team===team&&alive(u)&&s.burning[key(u.x,u.y)])){const n=Math.min(u.hp-1,Math.max(3,Math.floor(u.maxHP*.1)));if(n<=0)continue;const fromHP=u.hp;u.hp-=n;s.feedback.push({type:'hit',id:u.id,text:`🔥 −${n}`,fromHP,toHP:u.hp,damage:n});s.log.push(`${u.name}: 불길에 ${n} 피해.`);}}
 // ---------- v0.8.0 「전술」 (D-073) ----------

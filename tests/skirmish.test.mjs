@@ -10,9 +10,9 @@ import {newGame,checkOutcome} from '../src/core/game.js';
 
 const ready={kai_rescue:4,kai_bypass:2,m6_kai_lever:1};
 
-test('skirmishes are outside the campaign: LAST_MISSION is the last story mission (16 in v0.9.0), ids 101–105 and 110 are flagged',()=>{
- assert.equal(LAST_MISSION,16);for(const id of [101,102,103,104,105,110])assert.ok(MISSIONS[id].skirmish,id);
- assert.deepEqual(Object.values(TRIAL_MISSION),[101,102,103,104,105]);assert.equal(DRILL_MISSION,110);
+test('skirmishes are outside the campaign: LAST_MISSION is the last story mission (18 in v0.9.1), ids 101–108, 110–113 are flagged',()=>{
+ assert.equal(LAST_MISSION,18);for(const id of [101,102,103,104,105,106,107,108,110,111,112,113])assert.ok(MISSIONS[id].skirmish,id);
+ assert.deepEqual(Object.values(TRIAL_MISSION),[101,102,103,104,105,111,112,113]);assert.equal(DRILL_MISSION,110);
 });
 
 test('the rite opens only in the ACT I camp after the Ashen Oath; trials need the promotion conditions',()=>{

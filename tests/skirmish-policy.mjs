@@ -6,6 +6,7 @@ import {findUnit,alive,movement,validTarget,forecast,distance,terrainCost,awardX
 import {moveUnit,performAction,canAct,canMove,beginEnemyPhase,advanceEnemy} from '../src/core/game.js';
 import {enterHub} from '../src/core/frontier.js';
 import {classActionOf,validClassTarget,classCost} from '../src/core/class-actions.js';
+import {skillsOf} from '../src/data/skills.js';
 import {drain} from './campaign-policy.mjs';
 
 // ACT I camp with every hero at `level` (or per-hero levels), ready for trials and drills.
@@ -34,6 +35,11 @@ export function skirmishAction(s,u,{classActions=true}={}){
     if(ca==='recall')for(const t of s.units.filter(t=>t.team==='ally'&&alive(t)&&t.id!==u.id)){if(!validClassTarget(s,a,t,ca))continue;const threat=foes.filter(e=>distance(e,t)<=4).length,stray=g.type==='gather'&&distance(t,u)>g.radius?120:0;if(threat||stray||t.hp<=t.maxHP*.6)consider({x,y,mode:ca,target:t.id,score:150+threat*20+stray-c*.3});}
     if(ca==='exchange')for(const t of foes){if(!validClassTarget(s,a,t,ca))continue;if(reach&&t.y<a.y)consider({x,y,mode:ca,target:t.id,score:400-c*.3});}
    }}
+  // v0.9.1 ④ (once a battle) in the awakening trials
+  if(!u.acted)for(const k of skillsOf(u).filter(k=>k.slot===4&&k.open&&u.mp>=k.cost)){const m=k.mode;
+   if(m==='dawnPrayer'&&validClassTarget(s,a,a.id,m))consider({x,y,mode:m,target:a.id,score:900-c*.3});
+   if(m==='oathWall'&&validClassTarget(s,a,a.id,m)){const near=s.units.filter(t=>(t.team==='ally'||t.team==='civilian')&&alive(t)&&t.id!==a.id&&distance(a,t)<=2);if(near.length&&foes.some(e=>near.some(t=>distance(e,t)<=5)))consider({x,y,mode:m,target:a.id,score:150+near.length*30-c*.3});}
+   if(m==='blockade')for(let ty=y-5;ty<=y+5;ty++)for(let tx=x-5;tx<=x+5;tx++){const p2=`${tx},${ty}`;if(!validClassTarget(s,a,p2,m))continue;const n=foes.filter(e=>Math.abs(e.x-tx)+Math.abs(e.y-ty)<=1).length;if(n>=2)consider({x,y,mode:m,target:p2,score:60+n*45-c*.3});}}
   // position only
   let score;const onRune=(s.runes||[]).some(r=>r.x===x&&r.y===y)&&u.id==='lia'?40:0;if(onRune&&best&&best.x===x&&best.y===y)best.score+=onRune;
   if(reach)score=300-(reach.get(p)??100)*20-c*.1;

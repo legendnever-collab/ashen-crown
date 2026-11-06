@@ -238,6 +238,10 @@ export const CAST={
  abbot:{name:'침묵의 원장',skin:'pale',hair:'#b8b4ac',style:'bald',body:'robe',coat:'#2e2c2c',trim:'#7a7a74',cape:'#4a4846',legs:'#3a3836',boots:'#24221f',weapon:'torch',beard:'long',beardColor:'#b8b4ac',eye:'#4a4a50',stoop:true},
  maskedRaider:{name:'가면 습격대',skin:'pale',hair:'#1a1a1c',style:'short',hood:'#2a2a2e',body:'leather',coat:'#2e2e32',trim:'#b8b8b0',legs:'#1e1e22',boots:'#141416',weapon:'sword',off:'shield',shield:'#1e1e22',eye:'#d8d8d0'},
  // v0.9.0 ACT III (D-079): temporary game-drawn looks until the ACT III art arrives (never labelled finished).
+ // v0.9.1 (D-084, temporary looks until art pack F2): the chancellery captain, the forest-keepers, the last guardian, the forest elder.
+ greyCaptain:{name:'재상부 대장',skin:'pale',hair:'#2a2a2e',style:'short',hood:'#4a4c52',body:'plate',metal:'#7a7e86',coat:'#3a3c42',trim:'#c9c4b0',cape:'#5a5c62',legs:'#2a2a2e',boots:'#1c1c20',weapon:'sword',eye:'#3a3a40'},
+ forester:{name:'숲지기',skin:'warm',hair:'#5a3a20',style:'long',body:'robe',coat:'#4a6a3a',trim:'#c9b07a',legs:'#3a4a2a',boots:'#3a2a1a',weapon:'staff',orb:'#8ad08a',eye:'#3a2a1a'},
+ guardianElder:{name:'마지막 수호자',skin:'fair',hair:'#e0dcd4',style:'bald',body:'plate',metal:'#8a8e96',coat:'#4a5a6a',trim:'#c9b07a',legs:'#3a3a48',boots:'#2a2a30',weapon:'spear',beard:'long',beardColor:'#e0dcd4',eye:'#4a4a50',stoop:true},
  grayCloak:{name:'회색 망토',skin:'pale',hair:'#3a3a3e',style:'short',hood:'#6a6c70',body:'leather',coat:'#5a5c60',trim:'#2a2a2e',cape:'#6a6c70',legs:'#3a3a3e',boots:'#222226',weapon:'sword',eye:'#3a3a40'},
  clerk:{name:'재상부 서기',skin:'fair',hair:'#4a3a2a',style:'short',body:'coat',coat:'#3a3048',trim:'#c9b07a',legs:'#2a2638',boots:'#1f1d2a',weapon:'papers',eye:'#3a2a22'},
  harvester:{name:'기억 수확자',skin:'pale',hair:'#d8d4cc',style:'long',hood:'#3a3448',body:'robe',coat:'#2e2a3a',trim:'#8a7ac8',cape:'#4a4060',legs:'#2a2638',boots:'#1f1d2a',weapon:'staff',orb:'#a08aff',eye:'#8a7ac8'},

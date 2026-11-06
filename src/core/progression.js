@@ -1,10 +1,13 @@
 // v0.5.0 progression: potential (3 steps), proficiency ★ and promotion state (D-047/D-048).
 // Pure functions over campaign data; nothing here changes M01–M06 rules for tier-1 heroes.
-import {CLASS_TREE,POTENTIAL,PROFICIENCY_STEPS,PROFICIENCY_SOURCE,PROFICIENCY_EFFECT,PROMOTION_LEVEL} from '../data/classes.js';
+import {CLASS_TREE,POTENTIAL,PROFICIENCY_STEPS,PROFICIENCY_SOURCE,PROFICIENCY_EFFECT,PROMOTION_LEVEL,AWAKEN_LEVEL,AWAKEN_TRIGGER,RECRUIT_PROMOTION} from '../data/classes.js';
+import {RECRUIT_JOIN} from '../data/skills.js';
 import {LAST_MISSION,MISSIONS} from '../data/missions.js';
 
 export const classTierOf=u=>Math.max(1,u?.classTier||1);
 export function classOf(u){const tree=CLASS_TREE[u?.id];if(!tree)return null;return tree.find(c=>c.tier===classTierOf(u))||tree[0];}
+// The tier-2 class (its action and its ① trait stay with an awakened hero).
+export function promotedClassOf(u){return classTierOf(u)>=2?CLASS_TREE[u?.id]?.find(c=>c.tier===2)||null:null;}
 export function nextClassOf(u){return CLASS_TREE[u?.id]?.find(c=>c.tier===classTierOf(u)+1)||null;}
 // The campaign record of a hero (growth/clues live there between missions); falls back to the live unit.
 export function heroRecord(s,id){return s.campaign?.heroes?.find(h=>h.id===id)||s.units?.find(u=>u.id===id&&u.team==='ally')||null;}
@@ -21,12 +24,19 @@ export function proficiencyBonus(s,u){if(u?.team!=='ally'||classTierOf(u)<2)retu
 export const ACT1_FINALE=6;
 export const act1Complete=s=>!!s.campaign?.flags?.act1_completed||(s.campaign?.completed||[]).includes(ACT1_FINALE);
 export function promotionStatus(s,id){
- const h=heroRecord(s,id),next=nextClassOf(h);if(!h||!next)return {id,eligible:false,promoted:classTierOf(h)>=2,next:null,checks:[]};
- const pot=potentialOf(s.campaign,h),checks=[
+ const h=heroRecord(s,id),next=nextClassOf(h);if(!h||!next)return {id,eligible:false,promoted:classTierOf(h)>=2,awakened:classTierOf(h)>=3,next:null,checks:[]};
+ const done=s.campaign?.completed||[];let checks,pot=null;
+ if(next.tier===3)checks=[  // v0.9.1 awakening (ACT3_DESIGN §6.1)
+  {key:'level',label:`Lv ${AWAKEN_LEVEL} 이상 (현재 ${h.level})`,ok:h.level>=AWAKEN_LEVEL},
+  {key:'mission',label:`Mission ${String(AWAKEN_TRIGGER[id]).padStart(2,'0')} 클리어`,ok:done.includes(AWAKEN_TRIGGER[id])}];
+ else if(RECRUIT_JOIN[id])checks=[  // v0.9.1 recruits' tier 2 (ACT3_DESIGN §5.2)
+  {key:'act2',label:'ACT II 완료',ok:!!s.campaign?.flags?.act2_completed||done.includes(14)},
+  {key:'level',label:`Lv ${RECRUIT_JOIN[id]+RECRUIT_PROMOTION} 이상 (현재 ${h.level})`,ok:h.level>=RECRUIT_JOIN[id]+RECRUIT_PROMOTION}];
+ else{pot=potentialOf(s.campaign,h);checks=[
   {key:'act1',label:'ACT I 완료',ok:act1Complete(s)},
   {key:'level',label:`Lv ${PROMOTION_LEVEL} 이상 (현재 ${h.level})`,ok:h.level>=PROMOTION_LEVEL},
-  {key:'potential',label:`잠재력 ${pot.step}/${pot.max}`,ok:pot.step>=pot.max}];
- return {id,eligible:checks.every(c=>c.ok),promoted:false,next,potential:pot,checks};
+  {key:'potential',label:`잠재력 ${pot.step}/${pot.max}`,ok:pot.step>=pot.max}];}
+ return {id,eligible:checks.every(c=>c.ok),promoted:classTierOf(h)>=2,awakened:false,next,potential:pot,checks};
 }
 // Applies the class change to one hero object (campaign record or live unit). Idempotent per tier.
 export function applyClass(u,cls){if(!u||!cls||classTierOf(u)>=cls.tier)return false;u.classTier=cls.tier;
@@ -44,6 +54,6 @@ const SKIRMISH_GROWTH=['level','xp','maxHP','maxMP','atk','def','mag','res','spd
 export function commitSkirmish(s){const sk=MISSIONS[s.missionId]?.skirmish;if(!sk||s.practice)return false;const heroes=s.campaign.heroes;if(!Array.isArray(heroes))return false;
  for(const u of s.units.filter(u=>u.team==='ally'&&!u.benched)){const rec=heroes.find(h=>h.id===u.id);if(!rec)continue;for(const k of SKIRMISH_GROWTH)if(u[k]!==undefined)rec[k]=structuredClone(u[k]);}
  s.campaign.skirmishes??={drills:0,trials:{}};
- if(sk.kind==='trial'){const cls=CLASS_TREE[sk.hero]?.find(c=>c.tier===2);s.campaign.promotions??={};if(cls&&!s.campaign.promotions[sk.hero])s.campaign.promotions[sk.hero]={tier:2,key:cls.key,mission:s.missionId,turn:s.turn};s.campaign.skirmishes.trials[sk.hero]=(s.campaign.skirmishes.trials[sk.hero]||0)+1;s.campaign.flags[`promoted_${sk.hero}`]=true;}
+ if(sk.kind==='trial'){const tier=sk.tier||2,cls=CLASS_TREE[sk.hero]?.find(c=>c.tier===tier);s.campaign.promotions??={};if(cls&&(s.campaign.promotions[sk.hero]?.tier||0)<tier)s.campaign.promotions[sk.hero]={tier,key:cls.key,mission:s.missionId,turn:s.turn};s.campaign.skirmishes.trials[sk.hero]=(s.campaign.skirmishes.trials[sk.hero]||0)+1;s.campaign.flags[tier===3?`awakened_${sk.hero}`:`promoted_${sk.hero}`]=true;}
  else s.campaign.skirmishes.drills++;
  return true;}

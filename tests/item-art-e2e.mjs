@@ -5,7 +5,7 @@
 import {launchTestBrowser} from './browser-helper.mjs';import {drainStory} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize} from '../src/persistence/save-manager.js';
 import {newGame,startBattle} from '../src/core/game.js';import {findUnit} from '../src/core/rules.js';import {enterHub,enterInterior,currentHub,walkable,syncFrontier} from '../src/core/frontier.js';import {drain} from './campaign-policy.mjs';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.9.0.html').href,shots='docs/v0.9.0/screenshots/icons';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.9.1.html').href,shots='docs/v0.9.0/screenshots/icons';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const results=[];const check=(name,ok)=>{assert.ok(ok,name);n++;results.push(name);console.log('PASS',name);};
 const camp=(extra={})=>({heroes:null,results:[],clears:0,completed:[],flags:{},choices:{},roster:[],...extra});
 const upTo=k=>Array.from({length:k},(_,i)=>i+1);
@@ -34,9 +34,10 @@ try{
   const tr=forge(8,7);tr.economy.gear.push({id:`g${tr.economy.next++}`,type:'twinDaggers',star:1,exp:0});tr.economy.equipped.eric.treasure=tr.economy.gear.at(-1).id;await restore(tr);
   await press('inventory');await p.waitForTimeout(300);ok=await painted('#modal-root .doll-slot');check(`${label} the equipment sheet paints the Twin Daggers in the treasure slot`,ok.length>=1&&ok.every(Boolean)&&(await p.locator('#modal-root .doll-slot.filled').innerText()).includes('쌍둥이 단검'));
   await p.screenshot({path:`${shots}/equipment-sheet-${label}.png`});await press('close-modal');
-  // 3. The capital forge (after M15): tier III pieces made after the pack keep the game-drawn icon.
+  // 3. The capital forge (after M15): its tier III pieces are painted since ACT III pack F1 (v0.9.1, sheet H).
   const cap=forge(16,15);await restore(cap);await press('npc','smith');await press('shop-service','buy');await p.waitForTimeout(300);
-  check(`${label} the capital shelf shows 왕도 근위검 with its game-drawn icon (not in pack E)`,(await p.locator('#modal-root').innerText()).includes('왕도 근위검')&&await p.locator('#modal-root svg.item-icon').count()>=1);
+  const saberIcon=await p.evaluate(()=>{const leaf=[...document.querySelectorAll('#modal-root *')].filter(e=>e.textContent.includes('왕도 근위검')).pop();let e=leaf;while(e&&!e.querySelector('.item-icon'))e=e.parentElement;return e?.querySelector('.item-icon')?.tagName||null;});
+  check(`${label} the capital shelf shows 왕도 근위검 with its painted icon (pack F1)`,(await p.locator('#modal-root').innerText()).includes('왕도 근위검')&&saberIcon==='IMG');
   await p.screenshot({path:`${shots}/capital-shelf-${label}.png`});await press('close-modal');
   // 4. Battle: the command menu and the skills submenu.
   const s=battle();await restore(s);const eric=findUnit(s,'eric');await select(eric);

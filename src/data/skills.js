@@ -16,9 +16,12 @@ export function learnRule(u,k){
  if(k.slot===1)return {open:true,label:''};
  const recruit=RECRUIT_JOIN[u.id];
  if(k.slot===2)return recruit?{open:true,label:''}:{open:(u.level||1)>=SKILL_LEVEL,label:`Lv ${SKILL_LEVEL}에 습득`};
+ if(k.slot===4)return {open:(u.classTier||1)>=3,label:'각성하면 습득'};
  if(recruit)return {open:(u.level||1)>=recruit+3,label:`Lv ${recruit+3}에 습득`};
  return {open:(u.classTier||1)>=2,label:'전직하면 습득'};
 }
 // The hero's three skills in order, each with its mode, MP and whether it is open.
 export function skillsOf(u){if(u?.team!=='ally')return [];return SKILLS.filter(k=>k.hero===u.id).sort((a,b)=>a.slot-b.slot).map(k=>{const r=learnRule(u,k);return {...k,open:r.open,lock:r.label};});}
 export const knowsMode=(u,mode)=>skillsOf(u).some(k=>k.mode===mode&&k.open);
+// v0.9.1 the ④ skills (awakening): once a battle (state.ultimates lists who has used theirs).
+export const ULTIMATE_MODES=['oathWall','blockade','dawnPrayer'];

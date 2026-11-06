@@ -22,12 +22,14 @@ export function act2HubFor(missionId,phase='preparation'){const after=phase==='a
  if(missionId===11||missionId===12&&!after)return 'pilgrim';if(missionId===12||missionId===13&&!after)return 'refuge';
  // v0.7.1 (D-071): the camp before the summit at the ruined waystation (after M13, M14).
  // v0.9.0 (D-079): ACT III — the capital's lower city for M15 and before M16, the field camp after M16.
+ // v0.9.1 (D-084): the guardians' keep for M17 (and the camp before it), the unburning forest's village for M18.
+ if(missionId>=18)return 'forest';if(missionId===17)return 'keep';
  if(missionId>=16&&after)return 'fieldcamp';if(missionId>=15)return 'capital';
  if(missionId>=13)return 'summit';return 'velmar';}
 // Story key → hub used as the staged backdrop ('pre:3', 'after:3:loss', '6:oath' …).
 export function stageHubFor(key){
  const m=/^(pre|after):(\d+)/.exec(key);if(m)return hubFor(+m[2],m[1]==='after'?'aftermath':'preparation');
- if(key==='raid')return 'village';if(key.startsWith('6:'))return 'oathcamp';if(key.startsWith('promo:'))return 'oathcamp';return null;
+ if(key==='raid')return 'village';if(key.startsWith('6:'))return 'oathcamp';if(key.startsWith('promo:'))return 'oathcamp';if(key.startsWith('awaken:'))return 'keep';return null;
 }
 
 const hv5Interior={inn:'barracks',warroom:'quarters',depot:'store',residence:'house'};
@@ -41,7 +43,7 @@ function hv5Build(id,spec){
   buildings.push({x,y,w,h,label,type,buildingId:bid,entrance,returnPoint:{tileX:dx,tileY:dy+1},interiorScene:interior,painted:true});
   places.push(shop?{id:bid,name,x:dx,y:dy+1,action:shop,entrance,buildingId:bid}:{id:bid,name,x:dx,y:dy+1,action:'enter',entrance,buildingId:bid,interior,hub:id});}
  const npcs=spec.npcs.map(([nid,name,x,y,extra])=>({id:nid,name,x,y,...(extra||{})}));
- return {name:spec.name,tone:spec.tone||'camp',kind:spec.kind,art:spec.art,width:24,height:16,spawn:spec.spawn,mask,stage:spec.stage,lights:spec.lights||[],paintedTable:!!spec.paintedTable,night:!!spec.night,dusk:!!spec.dusk,buildings,places,npcs};
+ return {name:spec.name,tone:spec.tone||'camp',kind:spec.kind,art:spec.art,width:24,height:16,spawn:spec.spawn,mask,stage:spec.stage,lights:spec.lights||[],paintedTable:!!spec.paintedTable,night:!!spec.night,dusk:!!spec.dusk,grove:!!spec.grove,buildings,places,npcs};
 }
 const hv5Heroes=(pos)=>[['aren','아렌 · 군단장',...pos.aren,{kind:'commander'}],['elina',pos.elinaName,...pos.elina,{kind:'hero'}],['lia','리아 · 군사',...pos.lia,{kind:'hero'}],['sain',pos.sainName,...pos.sain,{kind:'hero'}],['kai',pos.kaiName,...pos.kai,{kind:'hero'}],['advisor','리아의 작전 탁자 · 작전 회의',...pos.advisor,{kind:'advisor'}]];
 
@@ -167,15 +169,35 @@ const HV5_SPECS={
 Object.assign(HV5_SPECS,ACT2_HUB_SPECS);
 // After the canyon (M08) the legion camps under the grey canyon: the bivouac painting and layout, with Thea at the fire.
 HV5_SPECS.march={...HV5_SPECS.bivouac,name:'Canyon Bivouac · 협곡 야영지',npcs:[...HV5_SPECS.bivouac.npcs,['thea','테아 · 모닥불',14,6,{kind:'hero'}]]};
-// v0.7 (D-068, PROPOSED): the pilgrim village below the Sacred Flame cathedral (M11–M12). Until art pack D arrives it is
-// drawn with the Ashen Village painting tinted to dusk (temporary: that village's layout, doors and rooms). After M12 the
-// legion camps with the refugees under the night bivouac painting. Recruits stand there only when they joined.
-HV5_SPECS.pilgrim={...HV5_VILLAGE,name:'Pilgrim Village · 순례자 마을',kind:'pilgrim',art:'hub_village_day',dusk:true,
- places:[['square','순례자 광장',12,8],['exit','남쪽 순례길',11,14],['advisor','작전 탁자 · 순례자 회관',19,9]],
- npcs:[...hv5Heroes({aren:[16,8],elina:[12,1],elinaName:'엘리나 · 언덕길',lia:[18,8],sain:[5,8],sainName:'세인 · 구호원 앞',kai:[15,5],kaiName:'카이 · 골목',advisor:[19,8]}),
-  ['elder','순례자 마을 사제',22,9],['refugee','피난민',7,8],['guard','성화 기사',12,14],['ines','이네스 · 순례 수호자',9,4,{kind:'hero'}],
-  ['thea','테아 · 언덕길',13,4,{kind:'hero',requires:'thea'}],['dario','다리오 · 광장',20,4,{kind:'hero',requires:'dario'}]],
- lights:[[190,180,90,'lantern'],[770,560,140,'fire'],[420,300,80,'lantern'],[1120,300,80,'lantern'],[560,620,70,'lantern'],[1010,620,70,'lantern']]};
+// v0.7 (D-068, PROPOSED): the pilgrim village below the Sacred Flame cathedral (M11–M12), painted since art pack D (v0.9.1).
+// After M12 the legion camps with the refugees under the night bivouac painting. Recruits stand there only when they joined.
+HV5_SPECS.pilgrim={name:'Pilgrim Village · 순례자 마을',kind:'pilgrim',tone:'village',art:'hub_pilgrim',spawn:[10,8],paintedTable:true,stage:{x:770,y:620},
+ // v0.9.1 (D-085): art pack D's painting of the village below the cathedral; the mask is authored over it (the pack's QA
+ // lists doors moved off their sketch tiles — each door here is at its painted threshold).
+ mask:[
+  '########################',
+  '########################',
+  '###########..###########',
+  '##########....##########',
+  '#######..........#######',
+  '#........#....#........#',
+  '#######..##.#.#..#######',
+  '#######..#####...#######',
+  '#######.#..####..#######',
+  '###.###.##....#..###.###',
+  '#.....................##',
+  '###########...##########',
+  '############..##########',
+  '#......................#',
+  '###########..###########',
+  '###########..###########'],
+ doors:[['forge','PILGRIM SMITHY','순례자 대장간',1,1,6,4,4,4],['shop','RELIEF APOTHECARY','구호 약재상',17,1,7,4,20,4],['warroom-5','CHAPEL','길가 예배당',7,1,4,3,8,3],['warroom-6','COPYISTS','필사가의 집',14,1,3,3,15,3],
+  ['inn-1','PILGRIMS HOSTEL','순례자 숙소',1,6,6,3,3,8],['warroom-2','HOSPICE','교단 구호원',17,6,7,3,20,8],['residence-3','HOME','민가',1,11,5,2,2,12],['depot-4','GRANARY','구호 곡물 창고',16,11,8,2,20,12]],
+ places:[['square','순례자 광장',12,10],['exit','남쪽 순례길',11,14],['advisor','작전 탁자 · 순례자 광장',10,8]],
+ npcs:[...hv5Heroes({aren:[12,9],elina:[16,4],elinaName:'엘리나 · 언덕길',lia:[11,6],sain:[22,5],sainName:'세인 · 구호원 앞',kai:[1,5],kaiName:'카이 · 골목',advisor:[10,7]}),
+  ['elder','순례자 마을 사제',21,10],['refugee','피난민',1,13],['guard','성화 기사',12,15],['ines','이네스 · 순례 수호자',10,3,{kind:'hero'}],
+  ['thea','테아 · 언덕길',16,8,{kind:'hero',requires:'thea'}],['dario','다리오 · 광장',15,5,{kind:'hero',requires:'dario'}]],
+ lights:[[270,170,110,'fire'],[780,450,140,'fire'],[575,265,70,'lantern'],[950,265,70,'lantern'],[575,480,70,'lantern'],[950,480,70,'lantern'],[690,830,70,'lantern'],[850,830,70,'lantern']]};
 HV5_SPECS.refuge={...HV5_SPECS.bivouac,name:'Refugee Camp · 피난민 야영지',kind:'refuge',
  npcs:[...HV5_SPECS.bivouac.npcs.map(n=>n[0]==='elder'?['elder','순례자 사제',16,5]:n[0]==='refugee'?['refugee','피난민',10,10]:n),
   ['ines','이네스 · 모닥불',14,6,{kind:'hero',requires:'ines'}],['thea','테아 · 경계',13,4,{kind:'hero',requires:'thea'}],['dario','다리오 · 모닥불',11,9,{kind:'hero',requires:'dario'}]]};
@@ -183,12 +205,21 @@ HV5_SPECS.refuge={...HV5_SPECS.bivouac,name:'Refugee Camp · 피난민 야영지
 HV5_SPECS.summit={...HV5_SPECS.oathcamp,name:'Summit Camp · 폐허 역참 야영지',kind:'summit',
  npcs:[...HV5_SPECS.oathcamp.npcs.map(n=>n[0]==='elder'?['elder','역참 관리인',n[2],n[3]]:n[0]==='refugee'?['refugee','피난민',n[2],n[3]]:n),
   ['thea','테아 · 경계',10,11,{kind:'hero',requires:'thea'}],['dario','다리오 · 길목',10,12,{kind:'hero',requires:'dario'}],['ines','이네스 · 천막 곁',13,11,{kind:'hero',requires:'ines'}]]};
-// v0.9.0 (D-079, PROPOSED): the capital's lower city (M15 – M16 preparation). Until the ACT III art arrives it is drawn
-// with the Velmar market painting under a dusk tint (temporary: Velmar's layout, doors, forge and shop — never labelled
-// finished). After M16 the legion camps on the western plain under the night bivouac painting.
-HV5_SPECS.capital={...HV5_SPECS.velmar,name:'Royal Lower City · 왕도 하층가',kind:'capital',dusk:true,
+// v0.9.0 (D-079, PROPOSED): the capital's lower city (M15 – M16 preparation). ACT III art pack F1 (v0.9.1 import, D-086)
+// painted it over Velmar's footprint, so it keeps Velmar's walk mask, doors, forge and shop; its rooms are the 'capital'
+// family. After M16 the legion camps on the western plain under the night bivouac painting.
+HV5_SPECS.capital={...HV5_SPECS.velmar,name:'Royal Lower City · 왕도 하층가',kind:'capital',art:'hub_capital',
  npcs:HV5_SPECS.velmar.npcs.map(n=>n[0]==='elder'?['elder','늙은 기록관',n[2],n[3]]:n[0]==='refugee'?['refugee','하층가 주민',n[2],n[3]]:n[0]==='guard'?['guard','왕도 경비대',n[2],n[3]]:n[0]==='dario'?['dario','다리오 · 골목',n[2],n[3],{kind:'hero',requires:'dario'}]:n[0]==='thea'?['thea','테아 · 운하 길',n[2],n[3],{kind:'hero',requires:'thea'}]:n).concat([['ines','이네스 · 광장',19,9,{kind:'hero',requires:'ines'}]])};
 HV5_SPECS.fieldcamp={...HV5_SPECS.bivouac,name:'Field Camp · 잊힌 전장 야영지',kind:'fieldcamp',
  npcs:[...HV5_SPECS.bivouac.npcs.map(n=>n[0]==='elder'?['elder','근처 마을 노인',16,5]:n[0]==='refugee'?['refugee','피난민',10,10]:n),
   ['thea','테아 · 경계',13,4,{kind:'hero',requires:'thea'}],['dario','다리오 · 모닥불',11,9,{kind:'hero',requires:'dario'}],['ines','이네스 · 모닥불',14,6,{kind:'hero',requires:'ines'}]]};
+// v0.9.1 (D-084, PROPOSED): the guardians' keep on the northern plateau (M17) is drawn with the reclaimed-fortress painting
+// and the forest-keepers' village (M18) with the Ashen Village painting under a green rain tint — temporary until art pack
+// F2 (never labelled finished). The keep is where the awakening trials are held.
+HV5_SPECS.keep={...HV5_SPECS.fortress,name:"Guardians' Keep · 수호자 성채",kind:'keep',
+ npcs:[...HV5_SPECS.fortress.npcs.map(n=>n[0]==='elder'?['elder','마지막 수호자',n[2],n[3]]:n[0]==='refugee'?['refugee','성채 순례자',n[2],n[3]]:n[0]==='guard'?['guard','성채 문지기',n[2],n[3]]:n),
+  ['thea','테아 · 성문',10,12,{kind:'hero',requires:'thea'}],['dario','다리오 · 안뜰',16,10,{kind:'hero',requires:'dario'}],['ines','이네스 · 석상 곁',5,9,{kind:'hero',requires:'ines'}]]};
+HV5_SPECS.forest={...HV5_VILLAGE,name:'Forest Village · 숲지기 마을',kind:'forest',art:'hub_village_day',grove:true,
+ npcs:[...HV5_SPECS.village.npcs.map(n=>n[0]==='elder'?['elder','숲지기 장로',n[2],n[3]]:n[0]==='refugee'?['refugee','숲지기',n[2],n[3]]:n[0]==='guard'?['guard','숲 길잡이',n[2],n[3]]:n),
+  ['thea','테아 · 숲 어귀',13,4,{kind:'hero',requires:'thea'}],['dario','다리오 · 우물',20,4,{kind:'hero',requires:'dario'}],['ines','이네스 · 고목 아래',9,4,{kind:'hero',requires:'ines'}]]};
 export const ART_HUBS=Object.fromEntries(Object.entries(HV5_SPECS).map(([id,spec])=>[id,hv5Build(id,spec)]));

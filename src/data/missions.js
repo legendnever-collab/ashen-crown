@@ -280,11 +280,51 @@ MISSIONS[16]=authored({id:16,title:'잊힌 전장',en:'The Forgotten Battlefield
  threatTurn:99,par:10,turnLimit:14,level:14,deployLimit:7,harvestMP:3,harvestRadius:3,clearRadius:2,duelTurn:3,returnTurn:2,
  objective:'기억 수확자 2명 격파 · TURN 14 안에 (돌아온 동료가 쓰러져도 패배는 아님)',
  brief:'안개: 활과 마법의 사거리 −1, 3칸 밖의 적은 정체가 보이지 않습니다. 결계석(3)을 조사하면 그 주위 2칸의 안개가 걷힙니다. 수확자가 조사하지 않은 결계석 곁에 있으면 턴마다 그 돌 3칸 안 장수의 MP가 3 줄어듭니다. TURN 3 기사대장이 에릭에게 일기토를 청합니다.'});
+// ---------- v0.9.1 ACT III part 2 (D-084, ACT3_DESIGN §4.1; maps, units and numbers PROPOSED) ----------
+// M17 The Guardians' Oath: the guardians' keep on the northern plateau. The chancellery comes for the Book of Oaths kept in
+// the keep's archive (two tiles at its back). Four guardian statues sleep around the keep: a hero beside one swears the
+// oath (the search action) and it fights for the legion; an enemy left beside a sleeping statue at the start of a turn
+// wakes it for the chancellery. Hold the archive until the end of TURN 10 or bring down the chancellery captain; an enemy
+// on the archive at the end of two enemy phases in a row loses it.
+const cloak17=(id,x,y,stats={})=>unit(id,'재상부 회색 망토','bandit',x,y,{hp:66,atk:42,def:19,res:14,spd:24,mov:4,look:'grayCloak',...stats});
+const bolt17=(id,x,y)=>unit(id,'재상부 석궁수','archer',x,y,{hp:54,atk:40,def:14,res:12,spd:24,mov:3,range:[2,3],look:'grayCloak'});
+const statue17=(id,x,y)=>({id,name:'잠든 수호 석상',kind:'statue',x,y,prop:true});
+MISSIONS[17]=authored({id:17,title:'수호자의 맹세',en:"The Guardians' Oath",
+ rows:['mmxxxxxkkkkxxxxxmm','mmxkkkkkkkkkkkkxmm','mmxkkkkkkkkkkkkxmm','mmxkkqkkkkkkqkkxmm','gmxxxxkkkkkkxxxxmg','ggggrrrrrrrrrrgggg','ggnggrggggggrggngg','gggggrggffggrggggg','ffggrrggggggrrgggf','fgggrggnngggggrggf','gggrrggggggggrrggg','ggrrgffggggffggrrg','grrggfggrrggfgggrr','rrgggggrrrrggggggr'],
+ enemies:[cloak17('gcap',9,13,{name:'재상부 대장',kind:'captain',look:'greyCaptain',hp:150,atk:48,def:27,res:20,spd:24,mov:3}),
+  cloak17('g1',5,12),cloak17('g2',12,12),cloak17('g3',8,11),cloak17('g4',3,13),cloak17('g5',14,13),bolt17('c1',7,13),bolt17('c2',11,13)],
+ objects:[statue17('st1',4,6),statue17('st2',13,6),statue17('st3',2,9),statue17('st4',15,9)],
+ waves:[{turn:3,story:'17:reinforce',units:[cloak17('g6',0,8),cloak17('g7',17,8)]},{turn:5,units:[cloak17('g8',0,12),bolt17('c3',17,12)]},{turn:7,units:[cloak17('g9',8,13),cloak17('g10',10,13)]}],
+ archive:[[8,1],[9,1]],statue:{hp:96,atk:40,def:26,res:20,spd:12,mov:2},holdTurn:10,
+ deployZone:s=>{const base=[];for(let y=1;y<=5;y++)for(let x=3;x<=14;x++)base.push([x,y]);return zone(base.filter(([x,y])=>Number.isFinite(TERRAIN[MISSIONS[17].map[y][x]].cost)&&!MISSIONS[17].archive.some(([ax,ay])=>ax===x&&ay===y)));},
+ deployments:{recommended:[[8,5],[9,5],[7,4],[10,4],[6,5],[11,5],[8,3],[9,3]],assault:[[8,5],[9,5],[5,5],[12,5],[7,5],[10,5],[6,5],[11,5]],defense:[[8,3],[9,3],[7,4],[10,4],[8,2],[9,2],[7,2],[10,2]]},
+ threatTurn:99,par:10,turnLimit:10,level:14,deployLimit:7,
+ objective:'TURN 10이 끝날 때까지 서고를 지키거나 재상부 대장 격파 (적이 서고 칸을 두 턴 연속 점거하면 패배)',
+ brief:'잠든 수호 석상(4) 곁에서 「맹세」하면 그 석상이 군단 편에서 싸웁니다. 적이 먼저 석상 곁에 남아 있으면 턴이 시작될 때 석상이 재상부 편으로 깨어납니다. 성채 맨 안쪽 서고 칸(2)에 적이 두 적 턴 연속 서 있으면 「맹세의 서」를 빼앗깁니다.'});
+// M18 The Unburning Forest: an old forest under the ward, in the rain. Rain halves fire damage and nothing catches fire;
+// inside the ward (the forest's heart) fire does nothing and heals are 50% stronger. The betraying banner's loggers come to
+// fell the three ward trees; six forest-keepers out in the woods can be led inside (the rescue action). Keep two trees
+// standing until the end of TURN 12 or bring down the logging captain; two trees felled is a defeat.
+const logger18=(id,x,y,role='soldier',stats={})=>unit(id,'벌목대','spear',x,y,{hp:72,atk:44,def:20,res:12,spd:22,mov:3,scav:role,logger:true,...(role==='archer'?{range:[2,3],hp:56,atk:40,def:14,spd:24,logger:false}:{}),...stats});
+const tree18=(id,x,y)=>ally(id,'결계 고목','wardTree',x,y,{kind:'wardTree',hp:90,atk:0,def:14,res:30,spd:0,mov:0,range:[0,0],prop:true});
+const keeper18=(id,x,y)=>({id,name:'숲지기',kind:'forester',look:'forester',x,y,hp:36,def:8,res:8});
+MISSIONS[18]=authored({id:18,title:'불타지 않는 숲',en:'The Unburning Forest',weather:'rain',
+ rows:['ffgggfffggfffgggff','fvgggffggggffgggvf','fgggfggggggggfgggf','gggffggfffffggffgg','ggfgggggggggggffgg','gfggggffggffggggfg','ggggggfggggfgggggg','gfgggggggggggggfgg','gvggggfggggfggggvg','ggfgggggggggggfggg','gggffggrrrrggffggg','fvgggggrrrrgggggvf','ffgggrrrggrrrgggff','fffgrrggggggrrgfff'],
+ enemies:[logger18('l1',5,12),logger18('l2',12,12),logger18('l3',7,11),logger18('l4',10,11),logger18('a1',3,13,'archer'),logger18('a2',14,13,'archer')],
+ allies:[tree18('tr1',6,5),tree18('tr2',11,5),tree18('tr3',9,9)],
+ civilians:[keeper18('f1',1,1),keeper18('f2',16,1),keeper18('f3',1,8),keeper18('f4',16,8),keeper18('f5',1,11),keeper18('f6',16,11)],
+ waves:[{turn:3,story:'18:reinforce',units:[logger18('l5',0,5),logger18('l6',17,5)]},{turn:4,story:'18:captain',units:[logger18('lcap',9,13,'captain',{name:'벌목대장',kind:'captain',hp:160,atk:48,def:28,res:18,spd:24})]},{turn:5,units:[logger18('l7',0,10),logger18('a3',17,10,'archer')]},{turn:7,units:[logger18('l8',8,13),logger18('l9',10,13)]}],
+ ward:[6,4,11,9],holdTurn:12,
+ deployZone:s=>{const base=[];for(let y=4;y<=9;y++)for(let x=5;x<=12;x++)base.push([x,y]);return zone(base.filter(([x,y])=>Number.isFinite(TERRAIN[MISSIONS[18].map[y][x]].cost)&&!MISSIONS[18].allies.some(a=>a.x===x&&a.y===y)));},
+ deployments:{recommended:[[8,7],[9,7],[7,6],[10,6],[6,8],[11,8],[8,8],[9,8]],assault:[[8,8],[9,8],[7,9],[10,9],[6,8],[11,8],[5,9],[12,9]],defense:[[8,6],[9,6],[7,5],[10,5],[7,7],[10,7],[8,5],[9,5]]},
+ threatTurn:3,par:12,turnLimit:12,level:15,deployLimit:7,
+ objective:'결계 고목 2그루 이상 지키며 TURN 12까지 버티거나 벌목대장 격파 (고목 2그루가 쓰러지면 패배)',
+ brief:'비: 화염 피해 −50%, 불이 번지지 않습니다. 결계 안(숲 한가운데)에서는 화염이 통하지 않고 회복이 50% 강해집니다. 벌목대가 결계 고목(3)을 노립니다. 숲 가장자리의 숲지기(6) 곁에서 「구출」하면 결계 안으로 이끕니다.'});
 // v0.5.0 Phase E (D-047): promotion trials (101–105) and the repeatable Legion Drill (110). Non-story
 // skirmishes after ACT I: never pushed into campaign.completed, no gold, permanent EXP (mission level 7).
 // goal: survive (turn N ends with `protect` alive) · rout (all enemies down by `limit`) · reach (hero at row ≤ y)
 // · gather (turn N ends with every `must` hero within `radius` of the trial hero). companions join the trial hero.
-const skirmish=(id,kind,hero,m)=>{MISSIONS[id]=authored({id,skirmish:{kind,hero},threatTurn:99,level:7,par:m.limit,turnLimit:m.limit,...m});};
+const skirmish=(id,kind,hero,m)=>{MISSIONS[id]=authored({id,skirmish:{kind,hero,...(m.tier?{tier:m.tier}:{})},threatTurn:99,level:7,par:m.limit,turnLimit:m.limit,...m});};
 // (level is overridable per skirmish; the drill uses 9 so heroes below Lv 7 catch up faster)
 skirmish(101,'trial','eric',{title:'수호의 시련',en:'Trial of the Guardian',
  rows:['ggggrrrrgggg','gfggrrrrggfg','ggggrrrrgggg','xxxxxrxrxxxx','xxxxxrxrxxxx','gggggrrrgggg','ggggggggfggg','gggvggggvggg','gggggggggggg','gggggggggggg'],
@@ -325,5 +365,47 @@ skirmish(110,'drill',null,{title:'군단 훈련',en:'Legion Drill',level:9,
  deployZone:s=>{const base=[];for(let y=9;y<=11;y++)for(let x=2;x<12;x++)base.push([x,y]);return zone(base);},
  goal:{type:'rout'},
  objective:'TURN 12까지 모의전 부대 8명 격파 (보급병 구출은 선택)',brief:'반복 가능한 훈련. 전투 경험과 잠재력 기록이 영구히 남습니다. 미션 레벨 7.'});
+// v0.9.1 (D-084, ACT3_DESIGN §5.2, §6; PROPOSED): awakening trials 106–108 (Tier 3, the ④ skill) and the recruits'
+// promotion trials 111–113 (Tier 2, the ① trait). ACT III instructors; mission levels 14 and 13 for EXP.
+const drill3=(id,name,kind,x,y,stats={})=>unit(id,name,kind,x,y,{hp:56,atk:33,def:16,res:12,spd:20,mov:4,...(kind==='archer'?{hp:46,atk:31,def:12,spd:22,range:[2,3]}:{}),...stats});
+const trainee3=(id,x,y)=>({id,name:'훈련병',kind:'trainee',x,y,hp:72,def:18,res:14});
+skirmish(106,'trial','elina',{tier:3,level:14,title:'매의 시련',en:'Trial of the Hawk',
+ rows:['gggggggggggg','ggfggggggfgg','gggggrrggggg','ggggrrrrgggg','gggrrggrrggg','ggrrggggrrgg','gggggffggggg','ggggffffgggg','gggggggggggg','gggggggggggg'],
+ enemies:[drill3('r1','추격 교관','bandit',2,0),drill3('r2','추격 교관','bandit',5,0),drill3('r3','추격 교관','bandit',8,0),drill3('r4','추격 교관','bandit',11,1),drill3('r6','추격 궁수','archer',6,1)],
+ deployments:{recommended:[[5,8],[6,9],[4,9],[7,9],[3,9],[8,9],[2,9],[9,9]]},limit:7,companions:['eric'],
+ goal:{type:'rout'},must:['elina'],
+ objective:'TURN 7까지 추격 교관 5명 격파 (에릭 호위)',brief:'퇴로 봉쇄(④, 전투당 1회): 5칸 안의 칸을 중심으로 십자 5칸을 봉쇄합니다. 다음 적 턴에 그 안의 적은 밖으로 나가지 못하고, 움직이면 화살을 맞습니다.'});
+skirmish(107,'trial','eric',{tier:3,level:14,title:'맹세의 시련',en:'Trial of the Oath',
+ rows:['ggggrrrrgggg','gfggrrrrggfg','ggggrrrrgggg','xxxxxrrxxxxx','xxxxxrrxxxxx','gggrrrrrrggg','ggggrrrrgggg','gggvggggvggg','gggggggggggg','gggggggggggg'],
+ enemies:[drill3('b1','돌파 교관','bandit',4,0),drill3('b2','돌파 교관','bandit',6,0),drill3('b3','돌파 교관','bandit',8,0),drill3('b4','돌파 교관','bandit',5,1),drill3('b6','돌파 궁수','archer',2,1)],
+ civilians:[trainee3('t1',5,7),trainee3('t2',6,7),trainee3('t3',6,8)],
+ deployments:{recommended:[[5,4],[6,4],[1,9],[10,9],[11,9],[2,9],[9,9],[3,9]]},threatTurn:1,escortOnly:true,limit:5,companions:['sain'],
+ goal:{type:'survive',turn:5,protect:['t1','t2','t3'],hold:[5,4]},must:['eric'],
+ objective:'TURN 5가 끝날 때까지 훈련병 3명 보호 (세인 지원)',brief:'맹세의 성벽(④, 전투당 1회): 다음 아군 턴까지 2칸 안 아군과 주민이 받는 피해의 절반을 에릭이 대신 받고, 그동안 에릭은 HP 1 아래로 내려가지 않습니다.'});
+skirmish(108,'trial','sain',{tier:3,level:14,title:'새벽의 시련',en:'Trial of the Dawn',
+ rows:['gggggggggggg','ggfgggggggfg','gggggggggggg','gggggrrggggg','ggggrrrrgggg','gggggrrggggg','gggggggggggg','ggggvttvgggg','gggggttggggg','gggggggggggg'],
+ enemies:[drill3('d1','추격 교관','bandit',2,0,{atk:34}),drill3('d2','추격 교관','bandit',5,0,{atk:34}),drill3('d3','추격 교관','bandit',9,0,{atk:34}),drill3('d5','추격 궁수','archer',7,0,{atk:32})],
+ deployments:{recommended:[[5,8],[5,6],[6,7],[0,9],[1,9],[10,9],[11,9],[2,9]]},limit:5,companions:['eric','kai'],
+ goal:{type:'standing',turn:5,revive:['eric','kai']},must:['sain','eric','kai'],
+ objective:'TURN 5가 끝날 때 세인·에릭·카이가 모두 서 있음 (쓰러진 동료는 다시 일으켜도 됨)',brief:'새벽의 기도(④, 전투당 1회): 이번 전투에서 쓰러진 아군 한 명을 세인 곁에 HP 1/3로 일으킵니다. 쓰러진 동료가 있어도 TURN 5가 끝날 때 서 있으면 됩니다.'});
+skirmish(111,'trial','thea',{level:13,title:'흑철의 시련',en:'Trial of Black Iron',
+ rows:['gggggggggggg','gggggggggggg','ggrrrrrrrrgg','gggggggggggg','gggggggggggg','ggggrrrrgggg','gggggggggggg','gggggggggggg','gggggggggggg','gggggggggggg'],
+ enemies:[drill3('k1','보병 교관','bandit',1,1,{hp:48}),drill3('k2','보병 교관','bandit',4,0,{hp:48}),drill3('k3','보병 교관','bandit',7,0,{hp:48}),drill3('k4','보병 교관','bandit',10,1,{hp:48}),drill3('k5','궁병 교관','archer',3,3,{hp:40}),drill3('k6','궁병 교관','archer',8,3,{hp:40})],
+ deployments:{recommended:[[6,8],[5,9],[7,9],[4,9],[8,9],[3,9],[9,9],[2,9]]},limit:6,companions:['eric'],
+ goal:{type:'rout'},must:['thea'],
+ objective:'TURN 6까지 교관 6명 격파 (에릭 호위)',brief:'흑철 창기사: 돌격으로 적을 쓰러뜨리면 남은 이동을 쓸 수 있습니다. 쓰러뜨리고 다음 표적 쪽으로 빠지세요.'});
+skirmish(112,'trial','dario',{level:13,title:'검성의 시련',en:'Trial of the Sword Saint',
+ rows:['gggggggggggg','gfggggggggfg','gggggggggggg','ggggrrrrgggg','gggrrrrrrggg','gggrrrrrrggg','ggggrrrrgggg','gggggggggggg','gggggggggggg','gggggggggggg'],
+ enemies:[drill3('w1','검술 교관','bandit',2,1,{atk:28}),drill3('w2','검술 교관','bandit',5,0,{atk:28}),drill3('w3','검술 교관','bandit',8,0,{atk:28}),drill3('w4','검술 교관','bandit',10,1,{atk:28}),drill3('w5','검술 교관','bandit',1,4,{atk:28})],
+ deployments:{recommended:[[6,5],[6,9],[5,9],[7,9],[4,9],[8,9],[3,9],[9,9]]},limit:5,companions:['sain'],
+ goal:{type:'survive',turn:5},must:['dario'],
+ objective:'TURN 5가 끝날 때까지 다리오 생존 (세인 지원)',brief:'검성: 받아치기 상태에서는 반격을 두 번 합니다. 광장 한가운데에서 둘러싸이게 두세요.'});
+skirmish(113,'trial','ines',{level:13,title:'성소의 시련',en:'Trial of the Sanctum',
+ rows:['gggggggggggg','ggfggggggfgg','gggggggggggg','xxxxxrrxxxxx','ggggzzzzgggg','ggggzzzzgggg','gggggggggggg','gggggggggggg','gggggggggggg','gggggggggggg'],
+ enemies:[drill3('p1','습격 교관','bandit',1,0),drill3('p2','습격 교관','bandit',4,0),drill3('p3','습격 교관','bandit',7,0),drill3('p4','습격 교관','bandit',10,0),drill3('p5','습격 궁수','archer',3,1)],
+ civilians:[trainee3('t1',4,6),trainee3('t2',7,6),trainee3('t3',5,7)],
+ deployments:{recommended:[[5,3],[6,3],[4,8],[7,8],[3,8],[8,8],[2,8],[9,8]]},threatTurn:1,escortOnly:true,limit:5,companions:['eric'],
+ goal:{type:'survive',turn:5,protect:['t1','t2','t3'],hold:[5,3]},must:['ines'],
+ objective:'TURN 5가 끝날 때까지 훈련병 3명 보호 (에릭 지원)',brief:'성소 수호자: 성역이 2칸까지 닿습니다(2칸 거리는 피해 −1). 훈련병 사이에 서세요.'});
 export const isSkirmish=id=>!!MISSIONS[id]?.skirmish;
 export const LAST_MISSION=Math.max(...Object.keys(MISSIONS).map(Number).filter(id=>!MISSIONS[id].skirmish));
