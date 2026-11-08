@@ -4,6 +4,8 @@
 - Narration lines of the chronicle in battle (M16's echoes) show no portrait instead of a game-drawn placeholder face.
 - New browser suite tests/feedback-v091-e2e.mjs (CI group act3).
 - ACT III art pack F2 work order: scripts/make-act3-f2-art-pack.py → docs/v0.9.1/art/act3-f2-work-pack (58 images in four parts: places and things, the awakened looks, the recruits' tier 2 looks, the people of the keep and the forest with the M16 captains).
+- ACT III art pack F2 imported (D-088): the awakened looks of Erik, Elina and Sain and the recruits' tier 2 looks (busts, sheets, the awakening card); the forest village and the keep painted on their footprints, the `forest` room family with six rooms and four chest styles; the last guardian and the forest elder (portraits, map figures, their names in dialogue); the M16 duel captains; the awakened guardian statue, forest-keepers and grey captain sheets; icon sheet I (three ④ ultimates, two treasures, the basic potion); battle props (ward tree standing / wounded / felled stump, sleeping statue; scripts/import-interior-art.py `props`, src/render/prop-art.js).
+- tests/act3-art.test.mjs; feedback-v091-e2e now 5 checks; act2-hubs-e2e covers the forest village.
 - On feature/act3-f2-art-pack; not merged before the user plays and approves it.
 
 # v0.9.1 — The Guardians · ACT III part 2: M17 수호자의 맹세, M18 불타지 않는 숲, the first awakenings (release candidate)

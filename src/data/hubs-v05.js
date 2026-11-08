@@ -216,10 +216,10 @@ HV5_SPECS.fieldcamp={...HV5_SPECS.bivouac,name:'Field Camp · 잊힌 전장 야�
 // v0.9.1 (D-084, PROPOSED): the guardians' keep on the northern plateau (M17) is drawn with the reclaimed-fortress painting
 // and the forest-keepers' village (M18) with the Ashen Village painting under a green rain tint — temporary until art pack
 // F2 (never labelled finished). The keep is where the awakening trials are held.
-HV5_SPECS.keep={...HV5_SPECS.fortress,name:"Guardians' Keep · 수호자 성채",kind:'keep',
- npcs:[...HV5_SPECS.fortress.npcs.map(n=>n[0]==='elder'?['elder','마지막 수호자',n[2],n[3]]:n[0]==='refugee'?['refugee','성채 순례자',n[2],n[3]]:n[0]==='guard'?['guard','성채 문지기',n[2],n[3]]:n),
+HV5_SPECS.keep={...HV5_SPECS.fortress,name:"Guardians' Keep · 수호자 성채",kind:'keep',art:'hub_keep', // ACT III pack F2 (D-088): painted on the fort's footprint
+ npcs:[...HV5_SPECS.fortress.npcs.map(n=>n[0]==='elder'?['elder','마지막 수호자',n[2],n[3],{look:'guardianElder'}]:n[0]==='refugee'?['refugee','성채 순례자',n[2],n[3]]:n[0]==='guard'?['guard','성채 문지기',n[2],n[3]]:n),
   ['thea','테아 · 성문',10,12,{kind:'hero',requires:'thea'}],['dario','다리오 · 안뜰',16,10,{kind:'hero',requires:'dario'}],['ines','이네스 · 석상 곁',5,9,{kind:'hero',requires:'ines'}]]};
-HV5_SPECS.forest={...HV5_VILLAGE,name:'Forest Village · 숲지기 마을',kind:'forest',art:'hub_village_day',grove:true,
- npcs:[...HV5_SPECS.village.npcs.map(n=>n[0]==='elder'?['elder','숲지기 장로',n[2],n[3]]:n[0]==='refugee'?['refugee','숲지기',n[2],n[3]]:n[0]==='guard'?['guard','숲 길잡이',n[2],n[3]]:n),
+HV5_SPECS.forest={...HV5_VILLAGE,name:'Forest Village · 숲지기 마을',kind:'forest',art:'hub_forest', // ACT III pack F2 (D-088): painted on the village's footprint
+ npcs:[...HV5_SPECS.village.npcs.map(n=>n[0]==='elder'?['elder','숲지기 장로',n[2],n[3],{look:'forestElder'}]:n[0]==='refugee'?['refugee','숲지기',n[2],n[3],{look:'forester'}]:n[0]==='guard'?['guard','숲 길잡이',n[2],n[3]]:n),
   ['thea','테아 · 숲 어귀',13,4,{kind:'hero',requires:'thea'}],['dario','다리오 · 우물',20,4,{kind:'hero',requires:'dario'}],['ines','이네스 · 고목 아래',9,4,{kind:'hero',requires:'ines'}]]};
 export const ART_HUBS=Object.fromEntries(Object.entries(HV5_SPECS).map(([id,spec])=>[id,hv5Build(id,spec)]));

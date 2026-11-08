@@ -48,7 +48,8 @@ const STAGE_LOOK={oswin:'lordA',brennan:'lordB',councilor:'councillor'};
 export function hdCastFor(u,missionId=1){
  if(u.look&&CAST[u.look])return u.look; // v0.6: mission data may name a look (allied escorts, Baldrick, ACT II troops)
  if(STAGE_LOOK[u.id])return STAGE_LOOK[u.id]; // v0.6.1: the M10 lords on the dialogue stage wear their army's look
- if(CAST[u.id]&&u.team!=='enemy'){if((u.classTier||1)>=2&&CAST[`${u.id}_t2`])return `${u.id}_t2`;return u.id==='eric'&&appearanceFor(u)?.tier>=2?'eric_adv':u.id;}
+ if(u.kind==='statue')return 'guardianStatue'; // v0.9.1 (pack F2): an awakened guardian statue (sleeping ones are props)
+ if(CAST[u.id]&&u.team!=='enemy'){if((u.classTier||1)>=3&&CAST[`${u.id}_t3`])return `${u.id}_t3`;if((u.classTier||1)>=2&&CAST[`${u.id}_t2`])return `${u.id}_t2`;return u.id==='eric'&&appearanceFor(u)?.tier>=2?'eric_adv':u.id;}
  if(u.team==='commander'||u.id==='aren')return 'aren';
  if(u.id==='advisor')return 'aide';
  if(u.kind==='wagon')return 'wagon';

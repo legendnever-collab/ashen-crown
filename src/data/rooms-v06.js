@@ -5,7 +5,7 @@
 // procedural interior template; until then the template is used and only the chest style changes.
 import {HUBS,INTERIORS} from './frontier-data.js';
 
-export const ROOM_FAMILY={village:'village',garrison:'tent',bivouac:'tent',oathcamp:'tent',fortress:'fort',castletown:'north',velmar:'port',pilgrim:'pilgrim',refuge:'tent',summit:'tent',capital:'capital',fieldcamp:'tent',keep:'fort',forest:'village'};
+export const ROOM_FAMILY={village:'village',garrison:'tent',bivouac:'tent',oathcamp:'tent',fortress:'fort',castletown:'north',velmar:'port',pilgrim:'pilgrim',refuge:'tent',summit:'tent',capital:'capital',fieldcamp:'tent',keep:'fort',forest:'forest'};
 const RV6_BY_KIND={
  village:{house:'int_village_house',weapon:'int_village_forge',item:'int_village_shop',barracks:'int_village_barracks',quarters:'int_village_hall',store:'int_village_store'},
  tent:{barracks:'int_tent_soldier',quarters:'int_tent_command',store:'int_tent_supply'},
@@ -15,7 +15,9 @@ const RV6_BY_KIND={
  // v0.9.1 (art pack D): the pilgrim village's rooms
  pilgrim:{house:'int_pilgrim_house',weapon:'int_pilgrim_smithy',item:'int_pilgrim_apothecary',barracks:'int_pilgrim_hostel',quarters:'int_pilgrim_hospice',store:'int_pilgrim_granary'},
  // v0.9.1 (ACT III art pack F1): the capital's lower city, Velmar's doors
- capital:{house:'int_capital_house',weapon:'int_capital_armory',item:'int_capital_apothecary',barracks:'int_capital_tavern',quarters:'int_capital_records',store:'int_capital_warehouse'}
+ capital:{house:'int_capital_house',weapon:'int_capital_armory',item:'int_capital_apothecary',barracks:'int_capital_tavern',quarters:'int_capital_records',store:'int_capital_warehouse'},
+ // v0.9.1 (ACT III art pack F2): the forest village, on the Ashen Village's doors
+ forest:{house:'int_forest_house',weapon:'int_forest_bowyer',item:'int_forest_herbalist',barracks:'int_forest_longhouse',quarters:'int_forest_lodge',store:'int_forest_store'}
 };
 // Buildings whose sign makes them a different room of the same kind.
 const RV6_BY_LABEL={tent:{TRIAGE:'int_tent_triage',OPERATIONS:'int_tent_operations'},fort:{'RECORDS HALL':'int_fort_records'},pilgrim:{CHAPEL:'int_pilgrim_chapel',COPYISTS:'int_pilgrim_copyists'}};
@@ -27,10 +29,11 @@ export const ROOM_CHESTS={
  int_north_inn:{a:'fur_trunk',b:'fur_trunk'},int_north_office:{a:'iron_lockbox'},int_north_house:{a:'frost_chest'},int_north_store:{a:'sled_crate',b:'sled_crate'},
  int_port_tavern:{a:'sea_chest',b:'sea_chest'},int_port_council:{a:'council_strongbox'},int_port_house:{a:'merchant_coffer'},int_port_warehouse:{a:'cargo_crate',b:'cargo_crate'},
  int_pilgrim_hostel:{a:'pilgrim_trunk',b:'pilgrim_trunk'},int_pilgrim_hospice:{a:'relief_chest'},int_pilgrim_house:{a:'olive_chest'},int_pilgrim_granary:{a:'relief_crate',b:'relief_crate'},int_pilgrim_chapel:{a:'relief_chest'},int_pilgrim_copyists:{a:'pilgrim_trunk'},
- int_capital_tavern:{a:'canal_chest',b:'canal_chest'},int_capital_records:{a:'archive_coffer'},int_capital_house:{a:'tenement_box'},int_capital_warehouse:{a:'barge_crate',b:'barge_crate'}
+ int_capital_tavern:{a:'canal_chest',b:'canal_chest'},int_capital_records:{a:'archive_coffer'},int_capital_house:{a:'tenement_box'},int_capital_warehouse:{a:'barge_crate',b:'barge_crate'},
+ int_forest_longhouse:{a:'guide_locker',b:'guide_locker'},int_forest_house:{a:'keeper_box'},int_forest_lodge:{a:'elder_casket'},int_forest_store:{a:'seed_bin',b:'seed_bin'}
 };
 export const CHEST_STYLES=['village_chest','militia_locker','grain_bin','elder_coffer','field_locker','medic_chest','supply_crate','officer_strongbox','document_coffer','armory_chest','fort_locker','old_chest',
- 'frost_chest','fur_trunk','sled_crate','iron_lockbox','sea_chest','merchant_coffer','cargo_crate','council_strongbox','pilgrim_trunk','relief_chest','olive_chest','relief_crate','canal_chest','archive_coffer','tenement_box','barge_crate'];
+ 'frost_chest','fur_trunk','sled_crate','iron_lockbox','sea_chest','merchant_coffer','cargo_crate','council_strongbox','pilgrim_trunk','relief_chest','olive_chest','relief_crate','canal_chest','archive_coffer','tenement_box','barge_crate','guide_locker','keeper_box','elder_casket','seed_bin'];
 
 // Painted rooms (art pack A, imported 2026-10-25): each painting is 12×8 tiles; the mask ('.' walkable, '#' solid) is
 // authored over the painting, chest tiles are solid and drawn by the game, the doorway is the two bottom-centre tiles.
@@ -82,7 +85,14 @@ export const ROOM_LAYOUTS={
  int_capital_apothecary:{name:'하층가 약재상',npc:[5,2,3,32],mask:['####.....###','#........###','##..####...#','#..........#','#..........#']},
  int_capital_records:{name:'옛 기록원',chests:[['a',10,4]],mask:['############','##..#####..#','#...#####.##','#..........#','#..........#']},
  int_capital_house:{name:'연립 셋방',chests:[['a',1,4]],mask:['####.#....##','####.##...##','##.........#','#..........#','#..........#']},
- int_capital_warehouse:{name:'운하 창고',chests:[['a',10,4],['b',3,4]],mask:['######.#..##','####......##','#..#......##','#..........#','#..........#']}
+ int_capital_warehouse:{name:'운하 창고',chests:[['a',10,4],['b',3,4]],mask:['######.#..##','####......##','#..#......##','#..........#','#..........#']},
+ // v0.9.1 (ACT III art pack F2, imported 2026-11-06): the forest village (masks authored over each painting).
+ int_forest_longhouse:{name:'길잡이 장옥',chests:[['a',1,4],['b',10,2]],mask:['############','#..####....#','##..###..###','#........###','#..........#']},
+ int_forest_bowyer:{name:'활장이 공방',npc:[6,3],mask:['############','#..........#','#...####...#','#..........#','#..........#']},
+ int_forest_herbalist:{name:'약초상',npc:[5,3],mask:['####.....###','##.......###','#...####...#','#..........#','#..........#']},
+ int_forest_lodge:{name:'장로의 오두막',chests:[['a',10,4]],mask:['##.....#####','##..###....#','#.........##','#..........#','#..........#']},
+ int_forest_house:{name:'숲지기 집',chests:[['a',1,4]],mask:['###.####.###','#..........#','##.........#','#..........#','#..........#']},
+ int_forest_store:{name:'씨앗 창고',chests:[['a',10,4],['b',3,4]],mask:['###.########','#..........#','#..#......##','#..........#','#..........#']}
 };
 const roomCache=new Map();
 // The painted room for a building, or null (then the procedural interior template is used). Same interior kind,

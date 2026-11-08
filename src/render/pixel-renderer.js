@@ -9,7 +9,8 @@ import {TILE,drawTile,drawSprite,pixel,pixelOval} from './art.js';
 import {RANGE_STYLE,moveDuration,motionAt,presentationPlan} from './animation.js';
 import {drawCombatEffect,effectPhase,drawClassEffect} from './combat-effects.js';
 import {rulesOf} from '../core/mission-rules.js';
-import {hdGround,drawHDGround,drawHDObject,hdObjectKey,hdLayerBuildings,hdCovered,hdCastFor,drawHDFigure,hdDirection,HD_K} from './hd-world.js';
+import {drawProp,wardTreeProp} from './prop-art.js';
+import {hdGround,drawHDGround,drawHDObject,hdObjectKey,hdLayerBuildings,hdCovered,hdCastFor,drawHDFigure,hdDirection,HD_K,paintedSheet} from './hd-world.js';
 const rect=pixel;
 export class BattleRenderer{
  constructor(canvas,getState,getUI){this.canvas=canvas;this.ctx=canvas.getContext('2d');this.getState=getState;this.getUI=getUI;this.mapCamera=new MapCamera();this.zoom=1;this.pan={x:0,y:0};this.camera={scale:1,x:0,y:0};this.effects=[];this.motion=new Map();this.frame=0;this.terrainCanvas=document.createElement('canvas');this.terrainCanvas.width=WIDTH*TILE;this.terrainCanvas.height=HEIGHT*TILE;const tc=this.terrainCanvas.getContext('2d');for(let y=0;y<HEIGHT;y++)for(let x=0;x<WIDTH;x++)drawTile(tc,MAP[y][x],x*TILE,y*TILE,y*WIDTH+x);this.resize();this.observer=new ResizeObserver(()=>this.resize());this.observer.observe(canvas);this.tick=this.tick.bind(this);requestAnimationFrame(this.tick);}
@@ -62,6 +63,8 @@ export class BattleRenderer{
   for(const o of this.hd.objects){if(o.kind==='house'&&this.hdCovered.has((o.x/48)+','+(o.y/48-1)))continue;drawables.push({key:hdObjectKey(o),draw:()=>drawHDObject(c,o,now)});}
   for(const o of hdLayerBuildings(missionOf(s).layers.buildings,stateOf))drawables.push({key:hdObjectKey(o),draw:()=>drawHDObject(c,o,now)});
   for(const o of s.units.filter(u=>u.team==='object'&&u.rescued&&!u.evidence)){const ox=o.x*TILE+32,oy=o.y*TILE+37;drawables.push({key:oy+27.5,draw:()=>drawMissionObject(c,o,ox,oy,now)});}
+  // pack F2 (D-088): a felled ward tree stays on the map as its painted stump
+  for(const o of s.units.filter(u=>u.kind==='wardTree'&&!alive(u)&&this.displayHP(u,now)<=0)){const ox=o.x*TILE+32,oy=o.y*TILE+37;drawables.push({key:oy+27.5,draw:()=>drawProp(c,'wardTree_felled',ox,oy+24,1.45)});}
   const actors=s.units.filter(u=>(alive(u)||this.displayHP(u,now)>0)&&!u.rescued&&!u.benched);for(const u of actors){let ux=u.x*TILE+32,uy=u.y*TILE+37,pose='idle';let facing=u.watch&&!u.awake&&u.facing?u.facing:this.facing.get(u.id);if(!facing){const foes=s.units.filter(v=>alive(v)&&(u.team==='enemy'?v.team==='ally':v.team==='enemy'));const t=foes.sort((a,b)=>Math.abs(a.x-u.x)+Math.abs(a.y-u.y)-Math.abs(b.x-u.x)-Math.abs(b.y-u.y))[0];facing=t?hdDirection(t.x-u.x,t.y-u.y,'down'):'down';}const m=this.motion.get(u.id);if(m){const p=motionAt(m.path,now-m.start,m.movement,m.speed),prev=this.lastPos.get(u.id);if(prev)facing=hdDirection(p.x-prev.x,p.y-prev.y,facing);this.lastPos.set(u.id,{x:p.x,y:p.y});ux=p.x*TILE+32;uy=p.y*TILE+37;pose=p.done?'idle':'walk';if(p.done&&!ui.pendingMove){this.motion.delete(u.id);this.lastPos.delete(u.id);}}else if(ui.pendingMove?.id===u.id){ux=ui.pendingMove.x*TILE+32;uy=ui.pendingMove.y*TILE+37;const path=ui.pendingMove.path||[];if(path.length>1){const a=path[path.length-2],b=path[path.length-1];facing=hdDirection(b.x-a.x,b.y-a.y,facing);}}
    const effects=this.effects.filter(e=>e.id===u.id&&now>=e.start&&now-e.start<e.duration),atk=effects.find(e=>e.type==='attack');if(atk){pose='attack';const t=s.units.find(v=>v.id===atk.target);if(t&&t.id!==u.id)facing=hdDirection(t.x-u.x,t.y-u.y,facing);}
    this.facing.set(u.id,facing);
@@ -99,10 +102,15 @@ export class BattleRenderer{
 // M06 mission objects (original): rune seal stones, the side-gate lever and the side gate itself.
 function drawMissionObject(c,u,x,y,now){const done=u.rescued,glow=.5+.3*Math.sin(now/300+u.x);
  // v0.9.1 M17 guardian statue (original, temporary): a stone knight on a plinth; sleeping grey, sworn blue-gold, claimed red.
+ if(u.kind==='statue'&&!u.woke&&drawProp(c,'guardianStatue_sleeping',x,y+24,1.15))return; // pack F2 (D-088)
+ // pack F2: an awakened statue is the painted stone knight, in the light of the side it woke for
+ if(u.kind==='statue'&&u.woke&&paintedSheet('guardianStatue')){c.fillStyle=u.woke==='enemy'?`rgba(230,90,70,${.14+glow*.16})`:`rgba(240,210,120,${.14+glow*.2})`;c.beginPath();c.ellipse(x,y+2,24,32,0,0,Math.PI*2);c.fill();
+  drawHDFigure(c,'guardianStatue',x,y+24,{facing:u.woke==='enemy'?'up':'down',frame:u.acted?0:1+Math.floor((now+u.x*97)/280)%4});return;}
  if(u.kind==='statue'){const side=u.woke;c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+22,17,5,0,0,Math.PI*2);c.fill();rect(c,'#6a6c70',x-14,y+12,28,10);
   const stone=side==='enemy'?'#8a6a66':side==='ally'?'#9aa6b4':'#868a92',dark=side==='enemy'?'#5a3a36':side==='ally'?'#5a6676':'#5c6068';rect(c,stone,x-8,y-22,16,34);rect(c,dark,x-8,y-22,16,4);rect(c,stone,x-5,y-32,10,10);rect(c,dark,x-12,y-14,4,22);rect(c,stone,x+8,y-28,3,38);
   if(side){c.fillStyle=side==='enemy'?`rgba(230,90,70,${.2+glow*.2})`:`rgba(240,210,120,${.2+glow*.25})`;c.beginPath();c.ellipse(x,y-8,22,30,0,0,Math.PI*2);c.fill();rect(c,side==='enemy'?'#ff8a70':'#ffe49a',x-3,y-29,2,2);rect(c,side==='enemy'?'#ff8a70':'#ffe49a',x+1,y-29,2,2);}return;}
  // v0.9.1 M18 ward tree (original, temporary): an ancient trunk with a broad green crown; felled it is a stump.
+ if(u.kind==='wardTree'&&drawProp(c,wardTreeProp(u),x,y+24,1.45))return; // pack F2 (D-088)
  if(u.kind==='wardTree'){c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+22,22,6,0,0,Math.PI*2);c.fill();if(u.hp<=0){rect(c,'#5a4030',x-10,y+6,20,14);rect(c,'#7a5a40',x-10,y+6,20,3);return;}
   rect(c,'#5a4030',x-6,y-8,12,30);rect(c,'#3e2c20',x+2,y-8,4,30);for(const [dx,dy,r] of [[0,-26,20],[-14,-16,14],[14,-16,14],[0,-38,12]]){c.fillStyle='#2f6a3a';c.beginPath();c.arc(x+dx,y+dy,r,0,Math.PI*2);c.fill();}
   c.fillStyle=`rgba(150,240,170,${.12+glow*.12})`;c.beginPath();c.arc(x,y-22,30,0,Math.PI*2);c.fill();return;}

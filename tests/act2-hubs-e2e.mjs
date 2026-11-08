@@ -9,19 +9,22 @@ const url=pathToFileURL(process.cwd()+'/test-output/act2-preview.html').href,sho
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const check=(name,ok)=>{assert.ok(ok,name);n++;console.log('PASS',name);};
 const ROOMS={castletown:['forge','shop','inn-1','warroom-2','residence-3','depot-4'],velmar:['forge','shop','inn-1','warroom-2','residence-3','depot-4'],
  pilgrim:['forge','shop','warroom-5','warroom-6','inn-1','warroom-2','residence-3','depot-4'],
- capital:['forge','shop','inn-1','warroom-2','residence-3','depot-4']}; // v0.9.1: art pack D's pilgrim village and ACT III pack F1's capital, with their rooms
-const shotDir=hub=>['pilgrim','capital'].includes(hub)?`docs/v0.9.1/screenshots/${hub}`:shots;for(const h of ['pilgrim','capital'])fs.mkdirSync(shotDir(h),{recursive:true});
+ capital:['forge','shop','inn-1','warroom-2','residence-3','depot-4'],
+ forest:['forge','shop','inn-1','warroom-2','residence-3','depot-4']}; // v0.9.1: art pack D's pilgrim village, ACT III packs F1 (capital) and F2 (forest village), with their rooms
+const shotDir=hub=>['pilgrim','capital','forest'].includes(hub)?`docs/v0.9.1/screenshots/${hub}`:shots;for(const h of ['pilgrim','capital','forest'])fs.mkdirSync(shotDir(h),{recursive:true});
 try{
  for(const [label,viewport,touch] of [['1440',{width:1440,height:900},false],['390',{width:390,height:844},true]]){
   const ctx=await b.newContext({viewport,hasTouch:touch,isMobile:touch,deviceScaleFactor:touch?2:1});await ctx.setOffline(true);const p=await ctx.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
   const press=async a=>{const el=p.locator(`[data-do="${a}"]`).first();touch?await el.tap():await el.click();await p.waitForTimeout(250);};
   const snap=()=>p.evaluate(()=>AshenCrown.snapshot());
   await p.goto(url);await press('new');await drainStory(p);
-  for(const hub of ['castletown','velmar','pilgrim','capital']){
+  for(const hub of ['castletown','velmar','pilgrim','capital','forest']){
    check(`${label} ${hub} placed`,await p.evaluate(h=>AshenPreview.hub(h),hub));await p.waitForTimeout(700);const s=await snap();
    check(`${label} ${hub} shows the painted town at Lia's table`,s.frontier.hub===hub&&!s.frontier.interior&&s.screen==='exploration'&&s.frontier.x===HUBS[hub].spawn[0]);
    await p.screenshot({path:`${shotDir(hub)}/${hub}-${label}.png`});
-   if(!touch){const before=[s.frontier.x,s.frontier.y];await p.keyboard.press('ArrowDown');await p.waitForTimeout(500);const after=await snap();
+   if(!touch){const before=[s.frontier.x,s.frontier.y];await p.keyboard.press('ArrowDown');await p.waitForTimeout(500);let after=await snap();
+    // the forest village keeps the Ashen Village's spawn, whose south tile is the table: there Erik steps west instead
+    if(hub==='forest'&&after.frontier.y===before[1]){await p.keyboard.press('ArrowLeft');await p.waitForTimeout(500);after=await snap();before[0]-=1;before[1]-=1;}
     check(`${label} ${hub}: Erik walks on the painted street`,after.frontier.x===before[0]&&after.frontier.y===before[1]+1);}
    for(const place of ROOMS[hub])for(const opened of [false,true]){
     check(`${label} ${hub} ${place} room ${opened?'with opened chests':''}`,await p.evaluate(([h,pl,o])=>AshenPreview.room(h,pl,o),[hub,place,opened]));await p.waitForTimeout(500);

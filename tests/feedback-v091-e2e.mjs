@@ -1,5 +1,6 @@
 // v0.9.1 play-test feedback (2026-11-06, D-087): an empty chest shows the room's own painted chest, open and empty (not the
 // game-drawn potion placeholder), and narration lines (연대기) in battle show no speaker portrait (not a placeholder face).
+// Art pack F2 (D-088): the elder at the keep (M17) and in the forest (M18) speaks under the right name.
 import {launchTestBrowser} from './browser-helper.mjs';import {drainStory} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import fs from 'node:fs';
 import {serialize} from '../src/persistence/save-manager.js';import {actOneCamp} from './skirmish-policy.mjs';import {newGame} from '../src/core/game.js';
 import {openStory} from '../src/core/narrative.js';import {startBattle} from '../src/core/game.js';
@@ -26,6 +27,11 @@ try{const ctx=await b.newContext({viewport:{width:1440,height:900}});const p=awa
  const d=await p.evaluate(()=>({narr:!!document.querySelector('.dialogue-panel.narration'),bust:!!document.querySelector('.dialogue-panel canvas.story-bust'),name:document.querySelector('.dialogue-name')?.innerText}));
  check(`narration line in battle shows no portrait (${JSON.stringify(d)})`,d.narr&&!d.bust&&d.name==='연대기');await p.screenshot({path:`${out}/narration-1440.png`});
  await p.setViewportSize({width:390,height:844});await p.waitForTimeout(400);await p.screenshot({path:`${out}/narration-390.png`});
+ await p.setViewportSize({width:1440,height:900});await drainStory(p);
+ for(const [id,who] of [[17,'마지막 수호자'],[18,'숲지기 장로']]){const c=structuredClone(c16);c.completed=[...Array(id-1).keys()].map(i=>i+1);c.clears=id-1;const h=newGame(5,c,id);enterHub(h,{story:false});h.narrative.queue=[`pre:${id}`];openStory(h);
+  await press('menu');await press('backup');await p.fill('#backup-text',serialize(h));await press('restore');await p.waitForTimeout(900);
+  const n=await p.evaluate(()=>({name:document.querySelector('.dialogue-name')?.innerText,bust:!!document.querySelector('.dialogue-panel canvas.story-bust')}));
+  check(`M${id} hub: the elder speaks as ${who} with a portrait (${JSON.stringify(n)})`,n.name===who&&n.bust);await p.screenshot({path:`${out}/elder-${id}-1440.png`});await drainStory(p);}
  check('no page errors',!errs.length);
  await ctx.close();}finally{await b.close();}
 fs.mkdirSync('test-output',{recursive:true});fs.writeFileSync('test-output/feedback-v091-e2e.json',JSON.stringify({passed:ok,failed:bad},null,2));
