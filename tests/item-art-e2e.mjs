@@ -43,7 +43,7 @@ try{
   const s=battle();await restore(s);const eric=findUnit(s,'eric');await select(eric);
   check(`${label} the command menu paints 공격 and 대기`,await p.locator('.menu-list .cmd[data-id="attack"] .cmd-icon img.painted').count()===1&&await p.locator('.menu-list [data-do="wait"] .cmd-icon img.painted').count()===1);
   await p.screenshot({path:`${shots}/command-menu-${label}.png`});
-  await press('submenu','skills');ok=await painted('.unit-popover');check(`${label} the skills submenu shows Erik's three skill disks (수호·도발·방벽)`,ok.length===3&&ok.every(Boolean));
+  await press('submenu','skills');ok=await painted('.unit-popover');check(`${label} the skills submenu shows Erik's skill disks (수호·도발·방벽 and the locked ④ 맹세의 성벽, painted since pack F2)`,ok.length===4&&ok.every(Boolean));
   await p.screenshot({path:`${shots}/skills-menu-${label}.png`});
   // 5. The status chips on the canvas: painted poison and bind over the enemy (sample the chip area for colour, not letters).
   await press('submenu','root');await press('close-unit-menu');await p.waitForTimeout(500);
