@@ -1,0 +1,57 @@
+{
+  "checks": [
+    {
+      "name": "Shipped v0.9.1 village save is schema 13",
+      "status": "PASS"
+    },
+    {
+      "name": "Shipped v0.9.1 battle checkpoint generated",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.9.1 village save opens in the painted village (schema 14, gold kept, legal position)",
+      "status": "PASS"
+    },
+    {
+      "name": "Imported village save does not replay the world-map intro",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.9.1 battle and its checkpoint migrate unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "Restart of a migrated v0.9.1 battle works",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.9.1 forest-village save (ACT III part 2 complete) opens with every asset kept and the roster intact",
+      "status": "PASS"
+    },
+    {
+      "name": "The migrated camp now goes on to Mission 19",
+      "status": "PASS"
+    },
+    {
+      "name": "The legion panel shows Lia and Kai with their next class (promotion, or the v0.9.2 awakening once promoted)",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.9.1 Mission 18 battle resumes in the rain",
+      "status": "PASS"
+    },
+    {
+      "name": "Erik of a v0.9.1 save keeps ② and ③ and shows ④ (locked until his awakening, or open)",
+      "status": "PASS"
+    },
+    {
+      "name": "Migrated save reloads as the current version",
+      "status": "PASS"
+    },
+    {
+      "name": "No runtime errors in either build",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}

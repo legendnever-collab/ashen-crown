@@ -1,0 +1,7 @@
+seed 8 place chest:b
+PASS empty chest modal shows the room's painted open chest ({"img":true,"svg":false,"text":"먼지와 거미줄뿐이다…","loaded":128})
+PASS narration line in battle shows no portrait ({"narr":true,"bust":false,"name":"연대기"})
+PASS M17 hub: the elder speaks as 마지막 수호자 with a portrait ({"name":"마지막 수호자","bust":true})
+PASS M18 hub: the elder speaks as 숲지기 장로 with a portrait ({"name":"숲지기 장로","bust":true})
+PASS no page errors
+feedback-v091-e2e: 5 checks passed

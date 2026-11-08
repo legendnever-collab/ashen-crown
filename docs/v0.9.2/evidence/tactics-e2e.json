@@ -1,0 +1,31 @@
+{
+ "checks": 26,
+ "results": [
+  "1440 Erik's skill menu lists ① 수호 ② 도발 ③ 방벽 (locked before promotion)",
+  "1440 the Provoke forecast names the target and Erik's DEF +2",
+  "1440 Provoke: the enemy is marked for Erik this turn",
+  "1440 the Flame Burst forecast shows the cross and two enemies",
+  "1440 Flame Burst: Lia spends 8 MP and the cross is resolved (2 hit)",
+  "1440 the tool menu shows owned tools and throws 3/3",
+  "1440 the herb forecast heals Elina",
+  "1440 Kai's herb heals Elina beside him (one herb left)",
+  "1440 the bomb forecast lists the damage and the throws left",
+  "1440 Powder Bomb: the enemy in the cross takes damage, throws 1/3 used, the bomb is spent",
+  "1440 a poisoned, bound enemy keeps its statuses after a reload",
+  "1440 the camp merchant sells the Weighted Net after M01, Healing Herb and Antidote; bag 0/8",
+  "1440 no runtime errors",
+  "390 Erik's skill menu lists ① 수호 ② 도발 ③ 방벽 (locked before promotion)",
+  "390 the Provoke forecast names the target and Erik's DEF +2",
+  "390 Provoke: the enemy is marked for Erik this turn",
+  "390 the Flame Burst forecast shows the cross and two enemies",
+  "390 Flame Burst: Lia spends 8 MP and the cross is resolved (2 hit)",
+  "390 the tool menu shows owned tools and throws 3/3",
+  "390 the herb forecast heals Elina",
+  "390 Kai's herb heals Elina beside him (one herb left)",
+  "390 the bomb forecast lists the damage and the throws left",
+  "390 Powder Bomb: the enemy in the cross takes damage, throws 1/3 used, the bomb is spent",
+  "390 a poisoned, bound enemy keeps its statuses after a reload",
+  "390 the camp merchant sells the Weighted Net after M01, Healing Herb and Antidote; bag 0/8",
+  "390 no runtime errors"
+ ]
+}
