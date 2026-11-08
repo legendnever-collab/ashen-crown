@@ -1,4 +1,4 @@
-Test page test-output/act2-preview.html: 35915478 bytes
+Test page test-output/act2-preview.html: 44408110 bytes
 PASS 1440 castletown placed
 PASS 1440 castletown shows the painted town at Lia's table
 PASS 1440 castletown: Erik walks on the painted street
@@ -141,6 +141,39 @@ PASS 1440 capital depot-4: inside
 PASS 1440 capital depot-4: the doorway leads back to the town
 PASS 1440 capital depot-4 room with opened chests
 PASS 1440 capital depot-4: inside
+PASS 1440 forest placed
+PASS 1440 forest shows the painted town at Lia's table
+PASS 1440 forest: Erik walks on the painted street
+PASS 1440 forest forge room 
+PASS 1440 forest forge: inside
+PASS 1440 forest forge: the doorway leads back to the town
+PASS 1440 forest forge room with opened chests
+PASS 1440 forest forge: inside
+PASS 1440 forest shop room 
+PASS 1440 forest shop: inside
+PASS 1440 forest shop: the doorway leads back to the town
+PASS 1440 forest shop room with opened chests
+PASS 1440 forest shop: inside
+PASS 1440 forest inn-1 room 
+PASS 1440 forest inn-1: inside
+PASS 1440 forest inn-1: the doorway leads back to the town
+PASS 1440 forest inn-1 room with opened chests
+PASS 1440 forest inn-1: inside
+PASS 1440 forest warroom-2 room 
+PASS 1440 forest warroom-2: inside
+PASS 1440 forest warroom-2: the doorway leads back to the town
+PASS 1440 forest warroom-2 room with opened chests
+PASS 1440 forest warroom-2: inside
+PASS 1440 forest residence-3 room 
+PASS 1440 forest residence-3: inside
+PASS 1440 forest residence-3: the doorway leads back to the town
+PASS 1440 forest residence-3 room with opened chests
+PASS 1440 forest residence-3: inside
+PASS 1440 forest depot-4 room 
+PASS 1440 forest depot-4: inside
+PASS 1440 forest depot-4: the doorway leads back to the town
+PASS 1440 forest depot-4 room with opened chests
+PASS 1440 forest depot-4: inside
 PASS 1440 no runtime errors
 PASS 390 castletown placed
 PASS 390 castletown shows the painted town at Lia's table
@@ -254,5 +287,31 @@ PASS 390 capital depot-4 room
 PASS 390 capital depot-4: inside
 PASS 390 capital depot-4 room with opened chests
 PASS 390 capital depot-4: inside
+PASS 390 forest placed
+PASS 390 forest shows the painted town at Lia's table
+PASS 390 forest forge room 
+PASS 390 forest forge: inside
+PASS 390 forest forge room with opened chests
+PASS 390 forest forge: inside
+PASS 390 forest shop room 
+PASS 390 forest shop: inside
+PASS 390 forest shop room with opened chests
+PASS 390 forest shop: inside
+PASS 390 forest inn-1 room 
+PASS 390 forest inn-1: inside
+PASS 390 forest inn-1 room with opened chests
+PASS 390 forest inn-1: inside
+PASS 390 forest warroom-2 room 
+PASS 390 forest warroom-2: inside
+PASS 390 forest warroom-2 room with opened chests
+PASS 390 forest warroom-2: inside
+PASS 390 forest residence-3 room 
+PASS 390 forest residence-3: inside
+PASS 390 forest residence-3 room with opened chests
+PASS 390 forest residence-3: inside
+PASS 390 forest depot-4 room 
+PASS 390 forest depot-4: inside
+PASS 390 forest depot-4 room with opened chests
+PASS 390 forest depot-4: inside
 PASS 390 no runtime errors
-act2-hubs-e2e: 256 checks passed
+act2-hubs-e2e: 315 checks passed
