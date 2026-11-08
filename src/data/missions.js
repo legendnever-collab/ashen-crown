@@ -320,6 +320,60 @@ MISSIONS[18]=authored({id:18,title:'불타지 않는 숲',en:'The Unburning Fore
  threatTurn:3,par:12,turnLimit:12,level:15,deployLimit:7,
  objective:'결계 고목 2그루 이상 지키며 TURN 12까지 버티거나 벌목대장 격파 (고목 2그루가 쓰러지면 패배)',
  brief:'비: 화염 피해 −50%, 불이 번지지 않습니다. 결계 안(숲 한가운데)에서는 화염이 통하지 않고 회복이 50% 강해집니다. 벌목대가 결계 고목(3)을 노립니다. 숲 가장자리의 숲지기(6) 곁에서 「구출」하면 결계 안으로 이끕니다.'});
+// ---------- v0.9.2 ACT III part 3 「그림자」 (D-089, ACT3_DESIGN §4.2; maps, units and numbers PROPOSED) ----------
+// M19 The Forbidden Rite: the chancellery's rite hall under the capital. Four ritual circles each hold a captive refugee
+// (memory 3). From TURN 3, at the start of each turn, every lit circle with a ritualist within 3 tiles takes one memory from
+// its captive, unless Lia stands within 2 of the circle or her Arcane Territory runes lie on it. A captive at 0 forgets
+// their name (alive, but lost to themselves). A hero beside a circle breaks its seal (the search action, 「봉인 해제」).
+// All four circles out is the victory; two captives forgotten or TURN 14 is a defeat. Lia's teacher stands on the dais.
+const ritualist19=(id,x,y,circle)=>unit(id,'재상부 의식사','ritualist',x,y,{hp:56,atk:40,def:14,res:24,spd:22,mov:2,range:[1,2],look:'ritualist',circle});
+const knight19=(id,x,y,stats={})=>unit(id,'의식 기사','spear',x,y,{hp:84,atk:46,def:26,res:14,spd:20,mov:3,look:'ritualKnight',...stats});
+const cloak19=(id,x,y)=>unit(id,'재상부 회색 망토','bandit',x,y,{hp:66,atk:42,def:19,res:14,spd:24,mov:4,movementProfile:'rogue',look:'grayCloak'});
+const circle19=(id,x,y,captive)=>({id,name:'의식진',kind:'ritualCircle',x,y,prop:true,captive});
+const captive19=(id,x,y,look='refugee')=>({id,name:'붙잡힌 피난민',kind:'captive',look,x,y,hp:40,def:8,res:8});
+MISSIONS[19]=authored({id:19,title:'금지된 의식',en:'The Forbidden Rite',
+ rows:['xxxxxxxkkkkxxxxxxx','xkkkkkxkzzkxkkkkkx','xkkkkkkkzzkkkkkkkx','xkkkkkkkkkkkkkkkkx','xkkxkkkkxxkkkkxkkx','xkkkkkkkwwkkkkkkkx','kkkkkxkkwwkkxkkkkk','xkkkkkkkkkkkkkkkkx','xkkkkkkkkkkkkkkkkx','xkkxkkkkxxkkkkxkkx','xkkkkkkkkkkkkkkkkx','xkkkkkkkkkkkkkkkkx','xkkkkkkkkkkkkkkkkx','xxxxxxxkkkkxxxxxxx'],
+ enemies:[ritualist19('r1',5,3,'rc1'),ritualist19('r2',12,3,'rc2'),ritualist19('r3',4,7,'rc3'),ritualist19('r4',13,7,'rc4'),
+  knight19('ov',8,2,{name:'의식 감독관',kind:'captain',hp:140,atk:48,def:26,res:22,spd:24}),
+  knight19('k1',7,5),knight19('k2',10,5),cloak19('g1',6,9),cloak19('g2',11,9),cloak19('g3',9,3)],
+ objects:[circle19('rc1',4,3,'p1'),circle19('rc2',13,3,'p2'),circle19('rc3',3,7,'p3'),circle19('rc4',14,7,'p4')],
+ civilians:[captive19('p1',4,2),captive19('p2',13,2,'farmer'),captive19('p3',3,6,'farmer'),captive19('p4',14,6),
+  {id:'teacher',name:'리아의 스승',kind:'teacher',look:'liaTeacher',x:9,y:1,hp:44,def:6,res:14}],
+ waves:[{turn:3,story:'19:reinforce',units:[knight19('k3',7,0),knight19('k4',10,0)]},{turn:5,units:[cloak19('g4',0,6),cloak19('g5',17,6)]}],
+ drainTurn:3,drainRadius:3,liaRadius:2,memory:3,
+ deployZone:s=>{const base=[];for(let y=11;y<=12;y++)for(let x=1;x<=16;x++)base.push([x,y]);return zone(base);},
+ deployments:{recommended:[[8,11],[9,11],[5,11],[12,11],[7,12],[10,12],[4,12],[13,12]],assault:[[8,11],[9,11],[3,11],[14,11],[6,11],[11,11],[2,12],[15,12]],defense:[[8,12],[9,12],[6,12],[11,12],[7,11],[10,11],[5,12],[12,12]]},
+ threatTurn:99,par:11,turnLimit:14,level:16,deployLimit:7,
+ objective:'의식진 4곳을 모두 끄기 · TURN 14 안에 (포로 2명이 이름을 잊으면 패배)',
+ brief:'TURN 3부터 턴이 시작될 때마다, 의식사가 3칸 안에 있는 의식진은 포로의 기억(3)을 하나씩 거둡니다. 리아가 진 2칸 안에 있거나 마력 지형의 룬이 진을 덮으면 그 진은 멈춥니다. 진 곁에서 「봉인 해제」하면 그 진이 꺼집니다.'});
+// M20 The Crown's Shadow: the night the betraying banner strikes the capital's gate. Two ways at once: the chancellery archive
+// to the north (three cabinets hold the pages of the controlled-war plan; searching one secures its pages) and the burning
+// lower city to the south (six residents in their houses; the fire spreads through the houses and leaps on set turns).
+// Clerks set a cabinet alight from TURN 3 when they end the enemy phase beside it; a lit cabinet burns to ash at the end of
+// the next enemy phase unless it is searched first. Grey cloaks hide in the shadows (the first blow misses). TURN 2: Kai's
+// old superior challenges him to a duel. Victory: two cabinets searched and four residents evacuated. Defeat: two cabinets
+// burned, three residents lost, or TURN 13.
+const cloak20=(id,x,y)=>unit(id,'재상부 회색 망토','bandit',x,y,{hp:66,atk:42,def:19,res:14,spd:24,mov:4,movementProfile:'rogue',look:'grayCloak',shade:true});
+const clerk20=(id,x,y,cabinet)=>unit(id,'재상부 서기','clerk',x,y,{hp:46,atk:24,def:14,res:12,spd:20,mov:2,look:'clerk',clerk:true,cabinet});
+const soldier20=(id,x,y,role='soldier')=>unit(id,'배신한 깃발의 병사',role==='archer'?'archer':'spear',x,y,{hp:72,atk:44,def:20,res:12,spd:22,mov:3,scav:role,...(role==='archer'?{range:[2,3],hp:56,atk:40,def:14,spd:24}:{})});
+const cabinet20=(id,x,y)=>({id,name:'문서고 서가',kind:'cabinet',x,y,prop:true});
+const resident20=(id,x,y,look='refugee')=>({id,name:'하층가 주민',kind:'resident',look,x,y,hp:40,def:10,res:8});
+MISSIONS[20]=authored({id:20,title:'왕관의 그림자',en:"The Crown's Shadow",
+ rows:['xxxxxxxxxxxxxxxxxx','xkkkxkkkkkkkkxkkkx','xkkkxkkkkkkkkxkkkx','xkkkkkkkkkkkkkkkkx','xxkxxxxkkkkxxxxkxx','rrrrrrrrrrrrrrrrrr','rrggrrrrggrrrrggrr','wwwbwwwwwbbwwwwbww','lllllllllrllllllll','lvvlvvlvvrlvvlvvll','lvvlvvlvvrlvvlvvll','lllllllllrllllllll','lvvllvvllrlvvllvvl','lvvllvvllrlvvllvvl'],
+ enemies:[unit('sup','회색 장부의 우두머리','captain',9,2,{hp:150,atk:48,def:26,res:20,spd:28,mov:4,movementProfile:'rogue',look:'greyMaster'}),
+  clerk20('ck1',6,2,'cb1'),clerk20('ck2',11,2,'cb2'),clerk20('ck3',11,3,'cb3'),
+  cloak20('g1',7,3),cloak20('g2',10,3),cloak20('g3',3,3),cloak20('g4',14,3),cloak20('g5',4,8),cloak20('g6',13,8)],
+ objects:[cabinet20('cb1',1,1),cabinet20('cb2',8,1),cabinet20('cb3',16,1)],
+ civilians:[resident20('h1',2,9),resident20('h2',5,10,'farmer'),resident20('h3',8,9,'child'),resident20('h4',11,10),resident20('h5',15,9,'farmer'),resident20('h6',6,12)],
+ waves:[{turn:3,story:'20:gate',units:[soldier20('b1',8,13),soldier20('b2',10,13)]},{turn:5,units:[soldier20('b3',8,13),soldier20('a1',10,13,'archer')]},{turn:7,units:[soldier20('b4',8,13),soldier20('b5',10,13)]}],
+ // the fire: where it starts (TURN 1) and where it leaps on later turns; every turn it also spreads to the houses beside it
+ fires:[{turn:1,cells:[[7,10],[12,9]]},{turn:3,cells:[[4,9],[14,10]]},{turn:5,cells:[[1,10],[5,13]]},{turn:7,cells:[[2,12],[11,13],[16,12]]}],
+ fireDamage:10,burnTurn:3,duelTurn:2,plan:2,needed:4,
+ deployZone:s=>{const base=[];for(let y=5;y<=6;y++)for(let x=2;x<=15;x++)base.push([x,y]);return zone(base);},
+ deployments:{recommended:[[8,5],[9,6],[6,5],[11,5],[8,6],[10,6],[5,6],[12,6]],assault:[[7,5],[10,5],[4,5],[13,5],[8,5],[9,5],[3,6],[14,6]],defense:[[8,6],[9,6],[4,6],[13,6],[7,6],[10,6],[3,6],[15,6]]},
+ threatTurn:4,par:10,turnLimit:13,level:16,deployLimit:7,
+ objective:'문서고 서가 2곳 조사(계획서 확보) + 주민 4명 이상 대피 · TURN 13 안에 (서가 2곳이 타거나 주민 3명을 잃으면 패배)',
+ brief:'북쪽 문서고: 재상부 서기가 TURN 3부터 서가 곁에서 불을 붙입니다. 불붙은 서가는 다음 적 턴이 끝나면 재가 되니 그 전에 조사하세요. 남쪽 하층가: 불길이 집에서 집으로 번지고 정해진 턴마다 다른 집으로 옮겨 붙습니다. 주민 곁에서 「구출」하면 대피합니다. 회색 망토는 그림자에 숨어 첫 공격을 피합니다. TURN 2 카이의 옛 상관이 일기토를 청합니다.'});
 // v0.5.0 Phase E (D-047): promotion trials (101–105) and the repeatable Legion Drill (110). Non-story
 // skirmishes after ACT I: never pushed into campaign.completed, no gold, permanent EXP (mission level 7).
 // goal: survive (turn N ends with `protect` alive) · rout (all enemies down by `limit`) · reach (hero at row ≤ y)
@@ -388,6 +442,20 @@ skirmish(108,'trial','sain',{tier:3,level:14,title:'새벽의 시련',en:'Trial 
  deployments:{recommended:[[5,8],[5,6],[6,7],[0,9],[1,9],[10,9],[11,9],[2,9]]},limit:5,companions:['eric','kai'],
  goal:{type:'standing',turn:5,revive:['eric','kai']},must:['sain','eric','kai'],
  objective:'TURN 5가 끝날 때 세인·에릭·카이가 모두 서 있음 (쓰러진 동료는 다시 일으켜도 됨)',brief:'새벽의 기도(④, 전투당 1회): 이번 전투에서 쓰러진 아군 한 명을 세인 곁에 HP 1/3로 일으킵니다. 쓰러진 동료가 있어도 TURN 5가 끝날 때 서 있으면 됩니다.'});
+// v0.9.2 (D-089): the awakening trials of Lia (109, after M19) and Kai (114, after M20).
+skirmish(109,'trial','lia',{tier:3,level:14,title:'결계의 시련',en:'Trial of the Ward',
+ rows:['gggggggggggg','ggfggggggfgg','gggggggggggg','gggggggggggg','gggggggggggg','xxgxxxxxxgxx','gggggggggggg','ggggvttvgggg','gggggttggggg','gggggggggggg'],
+ enemies:[drill3('w1','결계 교관','bandit',1,0),drill3('w2','결계 교관','bandit',4,0),drill3('w3','결계 교관','bandit',7,0),drill3('w4','결계 교관','bandit',10,0),drill3('w5','결계 교관','bandit',6,1),drill3('w6','결계 궁수','archer',3,1)],
+ civilians:[trainee3('t1',5,8),trainee3('t2',6,8),trainee3('t3',6,7)],
+ deployments:{recommended:[[9,6],[2,5],[1,9],[10,9],[11,9],[0,9],[3,9],[8,9]]},threatTurn:1,escortOnly:true,limit:4,companions:['eric'],
+ goal:{type:'survive',turn:4,protect:['t1','t2','t3'],hold:[9,6],posts:{eric:[2,5]}},must:['lia'],
+ objective:'TURN 4가 끝날 때까지 훈련병 3명 보호 (에릭 지원)',brief:'작은 결계(④, 전투당 1회): 4칸 안의 칸을 중심으로 3×3 결계를 2턴 칩니다. 적은 결계 안으로 들어오지 못하고, 안의 아군은 RES +5. 담장의 틈은 둘 — 하나는 에릭이, 하나는 결계가 막으세요.'});
+skirmish(114,'trial','kai',{tier:3,level:14,title:'그림자 군주의 시련',en:'Trial of the Shadow Lord',
+ rows:['gggggggggggg','googgggggoog','googgggggoog','ggggrrrrgggg','gggrrggrrggg','ggrrggggrrgg','gggggffggggg','ggggffffgggg','gggggggggggg','gggggggggggg'],
+ enemies:[drill3('s1','그림자 교관','bandit',4,1),drill3('s2','그림자 교관','bandit',7,1),drill3('s3','그림자 교관','bandit',5,3),drill3('s4','지붕 궁수','archer',1,1),drill3('s5','지붕 궁수','archer',10,1)],
+ deployments:{recommended:[[5,8],[6,9],[4,9],[7,9],[3,9],[8,9],[2,9],[9,9]]},limit:5,companions:['elina'],
+ goal:{type:'rout',targets:['s4','s5']},must:['kai'],
+ objective:'TURN 5까지 지붕 위 궁수 둘 격파 (엘리나 지원)',brief:'그림자 군무(④, 전투당 1회): 카이 4칸 안의 두 유닛 자리를 바꿉니다. 옮겨진 적은 다음 적 턴에 움직이지 못합니다. 지붕 위의 궁수를 아군 곁으로 끌어내리세요.'});
 skirmish(111,'trial','thea',{level:13,title:'흑철의 시련',en:'Trial of Black Iron',
  rows:['gggggggggggg','gggggggggggg','ggrrrrrrrrgg','gggggggggggg','gggggggggggg','ggggrrrrgggg','gggggggggggg','gggggggggggg','gggggggggggg','gggggggggggg'],
  enemies:[drill3('k1','보병 교관','bandit',1,1,{hp:48}),drill3('k2','보병 교관','bandit',4,0,{hp:48}),drill3('k3','보병 교관','bandit',7,0,{hp:48}),drill3('k4','보병 교관','bandit',10,1,{hp:48}),drill3('k5','궁병 교관','archer',3,3,{hp:40}),drill3('k6','궁병 교관','archer',8,3,{hp:40})],

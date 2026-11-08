@@ -4,7 +4,7 @@
 // harness only), plays the music, and uses the game's own 음악 / 효과음 controls at 1440 and at 390 touch.
 import fs from 'node:fs';import {pathToFileURL} from 'node:url';
 import {launchTestBrowser} from './browser-helper.mjs';import {drainStory} from './story-helper.mjs';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.9.1.html').href,b=await launchTestBrowser({headless:true,args:['--no-sandbox','--autoplay-policy=no-user-gesture-required']});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.9.2.html').href,b=await launchTestBrowser({headless:true,args:['--no-sandbox','--autoplay-policy=no-user-gesture-required']});
 let fail=0,n=0;const results=[];const check=(name,ok,detail='')=>{n++;results.push({name,ok,detail});console.log(`${ok?'PASS':'FAIL'} ${name}${detail?` · ${detail}`:''}`);if(!ok)fail++;};
 const dB=p=>p>0?+(20*Math.log10(p)).toFixed(1):-Infinity;
 try{for(const [label,viewport,touch] of [['1440',{width:1440,height:900},false],['390',{width:390,height:844},true]]){

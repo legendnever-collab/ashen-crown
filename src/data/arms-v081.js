@@ -51,7 +51,9 @@ const TREASURE_RULES={
  // v0.9.0 (D-079): mist — bows and spells keep their reach in the fog
  archivistLens:[{hit:10,crit:5},{hit:2},null,null,ARMS_ALL8],mistLantern:[{res:2},{res:1},'mist',[1,1,1,1,1],ARMS_ALL8],
  // v0.9.1 (D-084): oath — once a battle a blow that would fell the wearer leaves 1 HP; the leaf heals like the reliquary
- oathBadge:[{def:1},{def:1},'oath',[1,1,1,1,1],ARMS_ALL8],groveLeaf:[{res:2},{res:1},'reliquary',[4,4,6,6,8],ARMS_ALL8]
+ oathBadge:[{def:1},{def:1},'oath',[1,1,1,1,1],ARMS_ALL8],groveLeaf:[{res:2},{res:1},'reliquary',[4,4,6,6,8],ARMS_ALL8],
+ // v0.9.2 (D-089): the quill restores MP like the mana ring; the ledger silences like the shield of silence
+ teacherQuill:[{mag:2},{mag:1},'mana',[2,2,3,3,4],ARMS_ALL8],greyLedger:[{spd:2},{spd:1},'silence',[1,1,1,1,1],ARMS_ALL8]
 };
 export const TREASURE_FX_KO={oath:()=>'전투마다 한 번, 쓰러질 피해를 받아도 HP 1로 버팀',pouch:n=>`HP 절반 아래로 떨어지면 1회 HP +${n}`,hawk:()=>'활 사거리 +1',sage:n=>`얻는 경험치 +${n}%`,twin:n=>`반격을 받으면 한 번 더 공격 (${n}%)`,silence:()=>'이 장수가 공격한 적은 반격하지 못함',mirror:()=>'원거리 피해 절반',clear:()=>'상태이상 면역',reliquary:n=>`턴마다 HP +${n}`,mana:n=>`턴마다 MP +${n}`,lion:n=>`인접 아군 DEF +${n}`,seal:n=>`전투 첫 ${n}턴 전군 MOV +1`,mist:()=>'안개 속에서도 사거리가 줄지 않음'};
 export const TREASURES=Object.fromEntries(CATALOG_TREASURES.map(c=>{const [bonus,grow,fx,power,heroes]=TREASURE_RULES[c.id];return [c.id,{name:c.ko,en:c.en,icon:'✧',slot:'treasure',heroes,price:0,bonus,grow,fx,power,treasure:true,tier:'T',description:c.effect}];}));
@@ -77,11 +79,14 @@ export const FEATS={
  15:featDef(15,'archivistLens','기록 상자 셋을 모두 확보하고 왕도 경비대의 경고를 한 번도 받지 않는다',(s,bf)=>bf.mission_15_boxes===3&&bf.mission_15_watch==='calm'),
  16:featDef(16,'mistLantern','결계석 셋을 모두 조사하고 아무도 쓰러지지 않는다',(s,bf,fell)=>bf.mission_16_echoes===3&&!fell),
  17:featDef(17,'oathBadge','수호 석상 넷을 모두 맹세로 깨우고 서고를 한 번도 밟히지 않는다',(s,bf)=>bf.mission_17_sworn===4&&bf.mission_17_archive==='clean'),
- 18:featDef(18,'groveLeaf','결계 고목 셋과 숲지기 여섯을 모두 지킨다',(s,bf)=>bf.mission_18_trees===3&&bf.mission_18_keepers===6)
+ 18:featDef(18,'groveLeaf','결계 고목 셋과 숲지기 여섯을 모두 지킨다',(s,bf)=>bf.mission_18_trees===3&&bf.mission_18_keepers===6),
+ // v0.9.2 (D-089, PROPOSED)
+ 19:featDef(19,'teacherQuill','의식진 넷을 모두 끄고 포로 누구도 이름을 잊지 않는다',(s,bf)=>bf.mission_19_unsealed===4&&bf.mission_19_remembered===4),
+ 20:featDef(20,'greyLedger','서가 셋을 모두 조사하고 주민 여섯을 모두 대피시킨다',(s,bf)=>bf.mission_20_cabinets===3&&bf.mission_20_residents===6)
 };
 // Supply carriers (조조전 식량대): one ordinary enemy per mission carries a crate; defeating it drops this tool into the bag
 // (usable at once; kept only if the battle is won, like every battle-time change to the bag).
-export const SUPPLY={1:['b3','herb'],2:['b3','antidote'],3:['b3','medium'],4:['t1','net'],5:['s4','ether'],6:['k4','ward'],7:['d4','drum'],8:['m4','bomb'],9:['m3','clarity'],10:['la7','smoke'],11:['r4','clarity'],12:['g7','antidote'],13:['s4','bomb'],14:['k4','medium'],15:['g4','clarity'],16:['s3','bomb'],17:['g4','ether'],18:['l4','medium']};
+export const SUPPLY={1:['b3','herb'],2:['b3','antidote'],3:['b3','medium'],4:['t1','net'],5:['s4','ether'],6:['k4','ward'],7:['d4','drum'],8:['m4','bomb'],9:['m3','clarity'],10:['la7','smoke'],11:['r4','clarity'],12:['g7','antidote'],13:['s4','bomb'],14:['k4','medium'],15:['g4','clarity'],16:['s3','bomb'],17:['g4','ether'],18:['l4','medium'],19:['g2','ether'],20:['g6','medium']};
 // Velmar's rare-goods shelf: one item from another town, changing with every mission cleared (+25%).
 export const RARE_MARKUP=1.25;
 // Towns the legion can revisit from the world map during preparation (§6.3). reached: the story moment from which they

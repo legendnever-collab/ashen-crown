@@ -10,12 +10,14 @@ export const CLASS_TREE={
   {tier:2,key:'ranger',name:'Ranger',ko:'레인저',action:'overwatch',bonus:{maxHP:3,atk:2},growth:{},profile:'ranger',skillNote:'숲·마을에서 Aimed Shot 사거리 2–4. 숲 이동 비용 1.'},
   {tier:3,key:'hawkArcher',name:'Hawk Archer',ko:'매의 사수',ultimate:'blockade',bonus:{atk:2,spd:1},growth:{}}],
  lia:[{tier:1,key:'mage',name:'Apprentice Mage',ko:'견습 마도사'},
-  {tier:2,key:'arcanist',name:'Arcanist',ko:'비전술사',action:'arcane',bonus:{maxMP:4,mag:2},growth:{},skillNote:'Fire Bolt의 저HP MP 추가 비용이 사라진다.'}],
+  {tier:2,key:'arcanist',name:'Arcanist',ko:'비전술사',action:'arcane',bonus:{maxMP:4,mag:2},growth:{},skillNote:'Fire Bolt의 저HP MP 추가 비용이 사라진다.'},
+  {tier:3,key:'barrierMage',name:'Barrier Mage',ko:'결계술사',ultimate:'smallWard',bonus:{maxMP:4,res:2},growth:{res:1}}],
  sain:[{tier:1,key:'healer',name:'Healer',ko:'치유사'},
   {tier:2,key:'emberCleric',name:'Ember Cleric',ko:'성화 사제',action:'recall',bonus:{maxMP:4,res:2},growth:{res:1},skillNote:'Heal 사거리 1–3.'},
   {tier:3,key:'dawnPriest',name:'Dawn Priest',ko:'새벽 사제',ultimate:'dawnPrayer',bonus:{maxMP:4,mag:2},growth:{res:1}}],
  kai:[{tier:1,key:'rogue',name:'Rogue',ko:'도적'},
-  {tier:2,key:'shadowblade',name:'Shadowblade',ko:'그림자 추적자',action:'exchange',bonus:{maxHP:3,spd:2},growth:{},movBonus:1,skillNote:'Quick Strike 뒤에도 남은 이동을 쓸 수 있다.'}],
+  {tier:2,key:'shadowblade',name:'Shadowblade',ko:'그림자 추적자',action:'exchange',bonus:{maxHP:3,spd:2},growth:{},movBonus:1,skillNote:'Quick Strike 뒤에도 남은 이동을 쓸 수 있다.'},
+  {tier:3,key:'shadowLord',name:'Shadow Lord',ko:'그림자 군주',ultimate:'shadowDance',bonus:{maxHP:3,atk:1,spd:1},growth:{}}],
  // v0.9.1 (D-079 Q6, ACT3_DESIGN §5.2; PROPOSED): the ACT II recruits' tier 2 changes their ① skill (a trait), no new action.
  thea:[{tier:1,key:'lancer',name:'Lancer',ko:'창기병'},
   {tier:2,key:'blackLancer',name:'Black Iron Lancer',ko:'흑철 창기사',bonus:{maxHP:3,atk:2},growth:{},skillNote:'돌격으로 적을 쓰러뜨리면 남은 이동을 쓸 수 있다.'}],
@@ -25,9 +27,9 @@ export const CLASS_TREE={
   {tier:2,key:'sanctumWarden',name:'Sanctum Warden',ko:'성소 수호자',bonus:{maxHP:4,def:1,res:1},growth:{},skillNote:'성역이 2칸까지 닿는다(2칸 거리는 피해 −1).'}]
 };
 // v0.9.1 awakening (Tier 3, D-079 Q5, ACT3_DESIGN §6; PROPOSED): Lv 14, tier 2, the hero's own ACT III mission cleared and
-// a won awakening trial. The ④ skill is used once a battle. Lia and Kai awaken in v0.9.2.
+// a won awakening trial. The ④ skill is used once a battle. v0.9.2 (D-089): Lia after M19, Kai after M20.
 export const AWAKEN_LEVEL=14;
-export const AWAKEN_TRIGGER={elina:16,eric:17,sain:18};
+export const AWAKEN_TRIGGER={elina:16,eric:17,sain:18,lia:19,kai:20};
 // Recruits promote at join level + 5 once ACT II is over (the join levels are skills.js RECRUIT_JOIN).
 export const RECRUIT_PROMOTION=5;
 // New tactical actions (one per promoted hero). `mode` is the performAction mode used from Phase D on.

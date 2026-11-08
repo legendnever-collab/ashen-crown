@@ -5,7 +5,7 @@
 import {launchTestBrowser} from './browser-helper.mjs';import {drainStory} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize} from '../src/persistence/save-manager.js';
 import {newGame,startBattle} from '../src/core/game.js';import {findUnit} from '../src/core/rules.js';import {enterHub,enterInterior,currentHub,walkable,syncFrontier} from '../src/core/frontier.js';import {drain} from './campaign-policy.mjs';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.9.1.html').href,shots='docs/v0.9.0/screenshots/icons';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.9.2.html').href,shots='docs/v0.9.0/screenshots/icons';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const results=[];const check=(name,ok)=>{assert.ok(ok,name);n++;results.push(name);console.log('PASS',name);};
 const camp=(extra={})=>({heroes:null,results:[],clears:0,completed:[],flags:{},choices:{},roster:[],...extra});
 const upTo=k=>Array.from({length:k},(_,i)=>i+1);
@@ -43,7 +43,7 @@ try{
   const s=battle();await restore(s);const eric=findUnit(s,'eric');await select(eric);
   check(`${label} the command menu paints 공격 and 대기`,await p.locator('.menu-list .cmd[data-id="attack"] .cmd-icon img.painted').count()===1&&await p.locator('.menu-list [data-do="wait"] .cmd-icon img.painted').count()===1);
   await p.screenshot({path:`${shots}/command-menu-${label}.png`});
-  await press('submenu','skills');ok=await painted('.unit-popover');check(`${label} the skills submenu shows Erik's three skill disks (수호·도발·방벽)`,ok.length===3&&ok.every(Boolean));
+  await press('submenu','skills');ok=await painted('.unit-popover');check(`${label} the skills submenu shows Erik's skill disks (수호·도발·방벽 and the locked ④ 맹세의 성벽, painted since pack F2)`,ok.length===4&&ok.every(Boolean));
   await p.screenshot({path:`${shots}/skills-menu-${label}.png`});
   // 5. The status chips on the canvas: painted poison and bind over the enemy (sample the chip area for colour, not letters).
   await press('submenu','root');await press('close-unit-menu');await p.waitForTimeout(500);

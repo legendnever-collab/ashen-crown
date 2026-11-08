@@ -34,7 +34,7 @@ export function validClassTarget(s,u,target,mode){
  return false;
 }
 // Cells the renderer highlights while a class mode is chosen.
-export function classTargetCells(s,u,mode){const out=[];if(isTacticMode(mode))return tacticTargetCells(s,u,mode);if(!classActionOf(u))return out;
+export function classTargetCells(s,u,mode,first=null){const out=[];if(isTacticMode(mode))return tacticTargetCells(s,u,mode,first);if(!classActionOf(u))return out;
  if(SELF_MODES.includes(mode))return [{x:u.x,y:u.y}];
  if(mode==='arcane'){for(let y=u.y-3;y<=u.y+3;y++)for(let x=u.x-3;x<=u.x+3;x++)if(validClassTarget(s,u,{x,y},mode))out.push({x,y});return out;}
  for(const t of s.units)if(validClassTarget(s,u,t,mode))out.push({x:t.x,y:t.y});return out;}

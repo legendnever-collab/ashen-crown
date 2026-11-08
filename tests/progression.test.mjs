@@ -12,8 +12,8 @@ import {drain} from './campaign-policy.mjs';
 // The ACT I camp is the won M06 state (not practice): completed 1–5 while M06 is being played, act1 flag set at victory.
 const camp=(memory={},levels={},flags={act1_completed:true})=>{const s=newGame(5,{heroes:null,results:[],clears:5,completed:[1,2,3,4,5],flags,tacticalMemory:memory},6);assert.equal(s.practice,false);s.campaign.heroes=structuredClone(s.units.filter(u=>u.team==='ally'));for(const h of s.campaign.heroes)h.level=levels[h.id]??PROMOTION_LEVEL;return s;};
 
-test('every hero has a tier-1 class matching its current class name and one tier-2 promotion with a new action (v0.9.1: Erik, Elina and Sain also awaken to tier 3)',()=>{
- for(const h of HEROES){const tree=CLASS_TREE[h.id];assert.equal(tree[0].name,h.className);assert.equal(tree.length,['eric','elina','sain'].includes(h.id)?3:2);if(tree[2]){assert.equal(tree[2].tier,3);assert.ok(tree[2].ultimate,h.id);}const t2=tree[1];assert.equal(t2.tier,2);assert.ok(CLASS_ACTIONS[t2.action],h.id);assert.equal(CLASS_ACTIONS[t2.action].hero,h.id);}
+test('every hero has a tier-1 class matching its current class name and one tier-2 promotion with a new action (v0.9.1: Erik, Elina and Sain also awaken to tier 3; v0.9.2: Lia and Kai)',()=>{
+ for(const h of HEROES){const tree=CLASS_TREE[h.id];assert.equal(tree[0].name,h.className);assert.equal(tree.length,3);if(tree[2]){assert.equal(tree[2].tier,3);assert.ok(tree[2].ultimate,h.id);}const t2=tree[1];assert.equal(t2.tier,2);assert.ok(CLASS_ACTIONS[t2.action],h.id);assert.equal(CLASS_ACTIONS[t2.action].hero,h.id);}
  const u={id:'kai',classTier:1};assert.equal(classOf(u).key,'rogue');assert.equal(nextClassOf(u).key,'shadowblade');
 });
 
@@ -69,8 +69,8 @@ test('skill use and Lia kills are remembered (memory only, outside practice)',()
 
 test('schema 7 saves migrate to 8: heroes read as tier 1 and an empty promotion ledger; current saves round-trip',()=>{
  const s=newGame(3);const old=JSON.parse(JSON.stringify(s));old.schema=7;old.version='0.4.0';delete old.campaign.promotions;for(const u of old.units)delete u.classTier;
- const m=migrate(old);assert.equal(m.schema,SCHEMA);assert.equal(SCHEMA,13);assert.deepEqual(m.campaign.promotions,{});assert.ok(m.units.filter(u=>u.team==='ally').every(u=>classOf(u).tier===1),'unset classTier reads as tier 1');
- const again=deserialize(serialize(m));assert.equal(again.schema,13);
+ const m=migrate(old);assert.equal(m.schema,SCHEMA);assert.equal(SCHEMA,14);assert.deepEqual(m.campaign.promotions,{});assert.ok(m.units.filter(u=>u.team==='ally').every(u=>classOf(u).tier===1),'unset classTier reads as tier 1');
+ const again=deserialize(serialize(m));assert.equal(again.schema,14);
 });
 
 test('promoted heroes resolve to the tier-2 painted look; tier 1 keeps the original (incl. Erik Mantle)',async()=>{

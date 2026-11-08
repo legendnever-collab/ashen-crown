@@ -44,7 +44,7 @@ export function drawTownBuilding(c,b,tone,state){const s=townBuildingSprite(b,to
 
 // ---------- figures ----------
 const ENEMY_LOOK={9:{spear:'mercSpear',archer:'archer',assassin:'assassin',captain:'assassin'},7:{bandit:'ironDeserter',archer:'ironArcher',captain:'deserterCaptain'},8:{spear:'mercSpear',archer:'archer',captain:'mercSpear',bandit:'assassin'},6:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},5:{lion:'lion',bearer:'bearer',spear:'ironSpear',archer:'ironArcher',cavalry:'cavalry',captain:'lion'},1:{bandit:'bandit',archer:'archer',captain:'captain'},2:{bandit:'deserter',archer:'archer',captain:'deserterCaptain'},3:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},4:{bandit:'fortGuard',archer:'fortArcher',captain:'quartermaster'}};
-const STAGE_LOOK={oswin:'lordA',brennan:'lordB',councilor:'councillor'};
+const STAGE_LOOK={oswin:'lordA',brennan:'lordB',councilor:'councillor',teacher:'liaTeacher',sup:'greyMaster',bellard:'bellard'}; // v0.9.2: the teacher, the old superior, Bellard
 export function hdCastFor(u,missionId=1){
  if(u.look&&CAST[u.look])return u.look; // v0.6: mission data may name a look (allied escorts, Baldrick, ACT II troops)
  if(STAGE_LOOK[u.id])return STAGE_LOOK[u.id]; // v0.6.1: the M10 lords on the dialogue stage wear their army's look

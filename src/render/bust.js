@@ -52,6 +52,7 @@ export function bustKey(u,missionId=1){
  if((u.classTier||1)>=2&&BUST_SPEC[u.id]&&PAINTED?.[`${u.id}_t2`])return `${u.id}_t2`;
  if(u.id==='eric'&&(appearanceFor(u)?.tier||1)>=2)return 'eric_adv';
  if(u.id==='elder'&&(missionId===17||missionId===18)){const k=missionId===17?'guardianElder':'forestElder';if(PAINTED?.[k])return k;} // pack F2: the keep's and the forest's elders
+ if(u.id==='elder'&&(missionId===19||missionId===20)&&PAINTED?.archivist)return 'archivist'; // v0.9.2: the lower city's old archivist
  if(BUST_SPEC[u.id])return u.id;
  // v0.6 ACT II recruits and leaders (pack B, D-059): painted busts by id; without the art the cast vector bust below.
  if(['thea','dario','ines'].includes(u.id)&&u.team!=='enemy'&&(u.classTier||1)>=2&&PAINTED?.[`${u.id}_t2`])return `${u.id}_t2`; // pack F2: recruits' tier 2

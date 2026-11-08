@@ -8,7 +8,7 @@ import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {startBattle,beginEnemyPhase,advanceEnemy,nextMission} from '../src/core/game.js';import {findUnit} from '../src/core/rules.js';
 import {enterHub} from '../src/core/frontier.js';import {startSkirmish,returnToCamp} from '../src/core/skirmish.js';import {applyClass} from '../src/core/progression.js';import {CLASS_TREE} from '../src/data/classes.js';
 import {chooseOath17} from '../src/core/mission-rules-v091.js';import {drain} from './campaign-policy.mjs';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.9.1.html').href,shots='docs/v0.9.1/screenshots/act3b';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.9.2.html').href,shots='docs/v0.9.1/screenshots/act3b';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const results=[];const check=(name,ok)=>{assert.ok(ok,name);n++;results.push(name);console.log('PASS',name);};
 const camp16=JSON.parse(fs.readFileSync('tests/fixtures/v090/v090-m16-camp.json','utf8')).save;
 const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);};
@@ -77,7 +77,7 @@ try{
   check(`${label} after M18 the camp asks whether Sain tells the elder (two ways)`,await p.locator('[data-do="truth18-pick"]').count()===2);
   await p.screenshot({path:`${shots}/truth18-choice-${label}.png`});
   await press('truth18-pick','tell');await drainStory(p);s=await snap();check(`${label} Sain tells the truth; the next-step scene points to M19`,s.campaign.choices.m18_truth==='tell'&&s.narrative.seen.includes('after:18:tell')&&s.narrative.seen.includes('after:18:next')&&s.frontier.hub==='forest');
-  check(`${label} no next mission after M18 (the end of v0.9.1)`,!(await p.locator('[data-do="next-mission"]').count()));
+  check(`${label} after M18 the camp now goes on to Mission 19 (v0.9.2)`,(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 19'));
   await p.screenshot({path:`${shots}/forest-end-${label}.png`});
   check(`${label} no page errors`,errors.length===0);
   await ctx.close();}

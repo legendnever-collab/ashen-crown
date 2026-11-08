@@ -50,6 +50,8 @@ function consumeAction(s,u){u.acted=true;delete s.undo[u.id];}
 function damage(s,u,t,mode,counter=false,opts=null){
  let victim=guardFor(s,u,t,mode)||t;s.feedback.push({type:'attack',id:u.id,target:victim.id,mode,counter});const fromHP=victim.hp;const stats=strikeStats(s,u,victim,mode);if(counter)stats.damage+=riposteBonus(u);
  if(opts){if(opts.scale&&opts.scale!==1)stats.damage=Math.max(1,Math.round(stats.damage*opts.scale));if(opts.bonus)stats.damage+=opts.bonus;}const hit=roll(s)*100<stats.hit,critical=roll(s)*100<stats.crit;
+ // v0.9.2 M20: a grey cloak in the shadows slips the first blow (strikeStats shows 0%), then stands in the open.
+ if(victim.shade){delete victim.shade;s.feedback.push({type:'miss',id:victim.id,text:'그림자'});s.log.push(`${u.name} → ${victim.name}: 그림자 속으로 피했습니다. 이제 모습이 드러납니다.`);return {hit:false,damage:0,victim};}
  if(!hit){s.feedback.push({type:'miss',id:victim.id,text:'MISS'});s.log.push(`${u.name} → ${victim.name}: MISS (${stats.hit}%).`);return {hit:false,damage:0,victim};}
  let dealt=stats.damage+(critical?Math.ceil(stats.damage*.5):0);if(critical&&!counter)cutIn(s,u,'crit');
  // v0.9.1 Wall of the Oath (Erik's ④): until the next player turn he takes half of what the legion and civilians within 2 take.
@@ -139,7 +141,7 @@ export function planAllied(s,u){
 }
 export function advanceEnemy(s){
  if(s.screen!=='battle'||s.phase!=='enemy'||s.narrative?.active)return false;s.feedback=[];
- if(s.enemyIndex<s.enemyQueue.length){const u=findUnit(s,s.enemyQueue[s.enemyIndex++]);if(!u||!alive(u))return true;if(u.status?.confuse){confusedAct(s,u);checkOutcome(s);afterBattleEvents(s);return true;}const p=u.team==='allied'?planAllied(s,u):planEnemy(s,u);let path=pathTo(s,u,p.x,p.y),shots=[],stopped=false;
+ if(s.enemyIndex<s.enemyQueue.length){const u=findUnit(s,s.enemyQueue[s.enemyIndex++]);if(!u||!alive(u))return true;if(u.team==='enemy'&&u.dazed===s.turn){s.feedback.push({type:'status',id:u.id,status:'debuff',text:'그림자 군무'});s.log.push(`${u.name}: 그림자에 휘말려 이번 턴에 움직이지 못합니다.`);return true;}if(u.status?.confuse){confusedAct(s,u);checkOutcome(s);afterBattleEvents(s);return true;}const p=u.team==='allied'?planAllied(s,u):planEnemy(s,u);let path=pathTo(s,u,p.x,p.y),shots=[],stopped=false;
   if(u.team==='enemy'&&path&&s.traps?.length){const stop=caltropStop(s,u,path);if(stop<path.length-1){path=path.slice(0,stop+1);p.x=path.at(-1).x;p.y=path.at(-1).y;u.caltrop=true;}}
   if(u.team==='enemy'&&path&&path.length>1&&s.units.some(a=>a.team==='ally'&&a.overwatch&&alive(a))){const start={x:u.x,y:u.y},mark=s.feedback.length,stop=overwatchStop(s,u,path,(a,e)=>{s.feedback.push({type:'class',action:'overwatch-fire',id:a.id,target:e.id,text:'경계 사격',at:{x:e.x,y:e.y}});const r=damage(s,a,e,'attack');if(r.hit)awardXP(s,a,BALANCE.attackXP+(!alive(e)?BALANCE.killXP:0),`${e.name} 경계 사격`);return r;});
    shots=s.feedback.splice(mark);u.x=start.x;u.y=start.y;if(stop<path.length-1){stopped=true;path=path.slice(0,stop+1);p.x=path.at(-1).x;p.y=path.at(-1).y;}}
