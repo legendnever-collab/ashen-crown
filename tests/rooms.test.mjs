@@ -53,7 +53,7 @@ test('night hubs dim the same room; a v0.5 save standing on an old template tile
 test('shipped room and chest WebPs equal the hash-verified import log',()=>{
  const root=new URL('../src/assets/',import.meta.url),sha=p=>crypto.createHash('sha256').update(fs.readFileSync(new URL(p,root))).digest('hex');
  const [head,...rows]=fs.readFileSync(new URL('room-art-import-log.csv',root),'utf8').trim().split('\n'),cols=head.split(','),last=new Map();for(const r of rows){const o=Object.fromEntries(cols.map((c,i)=>[c,r.split(',')[i]]));last.set(o.webp,o);}
- const all=[...last.values()];assert.equal(all.filter(r=>r.kind==='room').length,47);assert.equal(all.filter(r=>r.kind==='chest').length,64);assert.equal(all.filter(r=>r.kind==='hub').length,6);assert.equal(all.filter(r=>r.kind==='prop').length,4);
+ const all=[...last.values()];assert.equal(all.filter(r=>r.kind==='room').length,47);assert.equal(all.filter(r=>r.kind==='chest').length,64);assert.equal(all.filter(r=>r.kind==='hub').length,6);assert.equal(all.filter(r=>r.kind==='prop').length,8);
  for(const r of all)assert.equal(sha(`${{room:'rooms',chest:'chests',hub:'hubs',prop:'props'}[r.kind]}/${r.webp}`),r.webp_sha256,r.webp);
  for(const id of Object.keys(ROOM_LAYOUTS))assert.ok(last.has(`${id}.webp`),id);
 });

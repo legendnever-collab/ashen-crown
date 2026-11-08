@@ -1,3 +1,8 @@
+# v0.9.2 + ACT III art pack F3 (release candidate on feature/act3-f3-art-pack, D-091)
+- v0.9.2 and PR #20 merged after the user's approval (D-090).
+- Pack F3 (24 images, parts A–C, hash-verified): awakened Lia and Kai (busts and sheets), Lia's teacher and Kai's old superior (busts and sheets), the rite knight and the ritualist sheets, icon sheet J (작은 결계, 그림자 군무, 스승의 깃펜, 회색 장부), painted ritual circles (lit / sealed) and archive cabinets (whole / burned). Importers read BOM manifests (utf-8-sig); the rite knight scaled 1.06.
+- Fix: the provoke / debuff / buff chips over units on the map are drawn again (hidden since v0.8.1 by a comment that swallowed the rest of a line); an item-art test line lost the same way is restored.
+
 # v0.9.2 — The Shadow · ACT III part 3: M19 금지된 의식, M20 왕관의 그림자, Lia's and Kai's awakening (release candidate)
 - Release candidate on feature/v0.9.2-shadow, built on PR #20; not merged before the user plays and approves it. D-089 (within D-079 / docs/v0.9.0/ACT3_DESIGN.md §4.2); the new people, props and awakened looks use temporary art until ACT III art pack F3.
 - M19 (src/core/mission-rules-v092.js): four ritual circles drain their captives' memory from TURN 3 (a ritualist within 3); Lia within 2 or her runes stall a circle; a ritualist beside its circle keeps the seal shut; 봉인 해제 (search) on all four wins; two captives forgotten lose; camp choice on Lia's teacher (take / leave), Lia's word.

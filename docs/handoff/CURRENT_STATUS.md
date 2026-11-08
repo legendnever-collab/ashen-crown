@@ -109,3 +109,7 @@ E2 (D-052/053): world map of Erdia (new-game chronicle, march map on every hub c
 - M19 금지된 의식 and M20 왕관의 그림자 (src/core/mission-rules-v092.js), Lia's and Kai's awakening (trials 109, 114; ④ 작은 결계 and 그림자 군무), 「한 사람도 두고 가지 않는다」, the capital as the M19–M20 hub, two treasures, schema 14.
 - Validated on HTML SHA256 c0d20507…: 411 unit tests, 54-suite browser matrix (2,113 assertions; e2e and legion passed on a rerun — reasons in the test report), M19 27/27, M20 27/27, ACT I–II balance byte-identical.
 - Art: temporary looks for the new people, props and the awakened Lia and Kai; ACT III art pack F3 work order in docs/v0.9.2/art/act3-f3-work-pack (24 images, parts A–C).
+- 2026-11-08: PR #20 → 5fc1392 and PR #21 (v0.9.2) → 31c31c6 merged after the user's approval (D-090); main CI passed.
+
+### ACT III art pack F3 (2026-11-09, D-091)
+- Branch feature/act3-f3-art-pack from main: all 24 F3 images imported (hash-verified), the props and icons wired, the statusChips comment bug fixed; not merged before the user plays and approves it.

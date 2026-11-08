@@ -25,7 +25,8 @@ SHEETS = {  # sheet id -> styles in reading order (columns per row pair)
  'chests_forest': (4, ['guide_locker', 'keeper_box', 'elder_casket', 'seed_bin']),  # ACT III pack F2 (v0.9.1 import, D-088)
 }
 # Battle-map prop sheets (ACT III pack F2): one row of 256 px cells → src/assets/props/<id>.webp at 128×128 like the map sprites.
-PROPS = {'props_act3b': ['wardTree', 'wardTree_hurt', 'wardTree_felled', 'guardianStatue_sleeping']}
+PROPS = {'props_act3b': ['wardTree', 'wardTree_hurt', 'wardTree_felled', 'guardianStatue_sleeping'],
+         'props_act3c': ['ritualCircle', 'ritualCircle_sealed', 'cabinet', 'cabinet_burned']}  # pack F3 (D-091)
 PROP_DIR = ROOT/'src/assets/props'
 
 def webp(img, budget, qualities=(82, 78, 74, 70, 66, 62, 58)):
@@ -44,7 +45,7 @@ def cells(sheet, cols, styles):
             yield style, state, cell.resize((128, 128), Image.LANCZOS)
 
 def main(pack):
-    pack = Path(pack); rows = list(csv.DictReader(open(pack/'manifest_places.csv' if (pack/'manifest_places.csv').exists() else pack/'manifest.csv'))); log = []
+    pack = Path(pack); rows = list(csv.DictReader(open(pack/'manifest_places.csv' if (pack/'manifest_places.csv').exists() else pack/'manifest.csv', encoding='utf-8-sig'))); log = []
     ROOM_DIR.mkdir(parents=True, exist_ok=True); CHEST_DIR.mkdir(parents=True, exist_ok=True)
     for r in rows:
         data = (pack/r['path']).read_bytes()

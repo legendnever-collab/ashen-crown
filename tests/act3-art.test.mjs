@@ -14,7 +14,7 @@ const props=new Set(fs.readdirSync('src/assets/props').map(f=>f.replace('.webp',
 test('tier 3 heroes and the recruits at tier 2 use their pack F2 busts and sheets; below that the earlier looks',()=>{
  for(const id of ['eric','elina','sain']){assert.equal(bustKey({id,team:'ally',classTier:3},17),`${id}_t3`);assert.equal(hdCastFor({id,team:'ally',classTier:3},17),`${id}_t3`);assert.ok(sprites.has(`${id}_t3`));
   assert.equal(bustKey({id,team:'ally',classTier:2},17),`${id}_t2`);}
- assert.equal(bustKey({id:'lia',team:'ally',classTier:3},17),'lia_t2','Lia and Kai awaken in v0.9.2');
+ for(const id of ['lia','kai']){assert.equal(bustKey({id,team:'ally',classTier:3},19),`${id}_t3`,'pack F3');assert.equal(hdCastFor({id,team:'ally',classTier:3},19),`${id}_t3`);assert.ok(sprites.has(`${id}_t3`));assert.equal(bustKey({id,team:'ally',classTier:2},19),`${id}_t2`);}
  for(const id of ['thea','dario','ines']){assert.equal(bustKey({id,team:'ally',classTier:2},17),`${id}_t2`);assert.equal(hdCastFor({id,team:'ally',classTier:2},17),`${id}_t2`);assert.ok(sprites.has(`${id}_t2`));
   assert.equal(bustKey({id,team:'ally',classTier:1},17),id);assert.equal(hdCastFor({id,team:'ally',classTier:1},17),id);}
 });
@@ -37,4 +37,14 @@ test('an awakened guardian statue is the painted statue figure; sleeping statues
  assert.equal(hdCastFor({id:'s1',kind:'statue',team:'allied',woke:'ally'},17),'guardianStatue');assert.ok(sprites.has('guardianStatue'));
  for(const id of ['wardTree','wardTree_hurt','wardTree_felled','guardianStatue_sleeping'])assert.ok(props.has(id),id);
  assert.equal(wardTreeProp({hp:90,maxHP:90}),'wardTree');assert.equal(wardTreeProp({hp:40,maxHP:90}),'wardTree_hurt');assert.equal(wardTreeProp({hp:0,maxHP:90}),'wardTree_felled');
+});
+
+// v0.9.2 — ACT III art pack F3 (D-091): Lia's teacher and Kai's old superior speak and stand with their own faces and sheets;
+// the rite knights and ritualists of M19 are painted; the ritual circles and the archive cabinets are painted props.
+test('pack F3: the teacher, the old superior, the rite knight and the ritualist; the circles and the cabinets',()=>{
+ for(const id of ['liaTeacher','greyMaster'])assert.deepEqual(Object.keys(P[id]).sort(),['concerned','determined','neutral','sad'],id);
+ assert.equal(bustKey({id:'teacher',team:'civilian',look:'liaTeacher'},19),'liaTeacher');assert.equal(bustKey({id:'sup',team:'enemy',look:'greyMaster'},20),'greyMaster');
+ for(const id of ['liaTeacher','greyMaster','ritualKnight','ritualist'])assert.ok(sprites.has(id)&&CAST[id],id);
+ assert.equal(hdCastFor({id:'teacher',team:'civilian'}),'liaTeacher');assert.equal(hdCastFor({id:'sup',team:'enemy'}),'greyMaster');
+ for(const id of ['ritualCircle','ritualCircle_sealed','cabinet','cabinet_burned'])assert.ok(props.has(id),id);
 });
