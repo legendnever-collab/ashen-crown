@@ -5,6 +5,7 @@ import {pixel,pixelOval} from './art.js';
 const CHEST_ART=typeof ASHEN_CHESTS!=='undefined'?ASHEN_CHESTS:null,chestImages=new Map();
 function chestImage(key){if(!CHEST_ART?.[key])return null;let img=chestImages.get(key);if(!img){img=new Image();img.src=CHEST_ART[key];chestImages.set(key,img);}return img.complete&&img.naturalWidth?img:null;}
 export const paintedChest=style=>!!CHEST_ART?.[`${style}_closed`];
+export const paintedChestSrc=(style,state='closed')=>CHEST_ART?.[`${style}_${state}`]||null;
 
 // shape: box (flat lid), dome, crate (planks), long, low, small. wood/lid/band/metal colours, extra(r,open) props.
 const CHEST_LOOKS={

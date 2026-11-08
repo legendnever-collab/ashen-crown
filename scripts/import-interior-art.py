@@ -22,7 +22,11 @@ SHEETS = {  # sheet id -> styles in reading order (columns per row pair)
  'chests_act2': (4, ['frost_chest', 'fur_trunk', 'sled_crate', 'iron_lockbox', 'sea_chest', 'merchant_coffer', 'cargo_crate', 'council_strongbox']),
  'chests_pilgrim': (4, ['pilgrim_trunk', 'relief_chest', 'olive_chest', 'relief_crate']),  # pack D (v0.9.1 import, D-085)
  'chests_capital': (4, ['canal_chest', 'archive_coffer', 'tenement_box', 'barge_crate']),  # ACT III pack F1 (v0.9.1 import, D-086)
+ 'chests_forest': (4, ['guide_locker', 'keeper_box', 'elder_casket', 'seed_bin']),  # ACT III pack F2 (v0.9.1 import, D-088)
 }
+# Battle-map prop sheets (ACT III pack F2): one row of 256 px cells → src/assets/props/<id>.webp at 128×128 like the map sprites.
+PROPS = {'props_act3b': ['wardTree', 'wardTree_hurt', 'wardTree_felled', 'guardianStatue_sleeping']}
+PROP_DIR = ROOT/'src/assets/props'
 
 def webp(img, budget, qualities=(82, 78, 74, 70, 66, 62, 58)):
     for q in qualities:
@@ -57,11 +61,18 @@ def main(pack):
             for style, state, cell in cells(img, cols, styles):
                 payload, q = webp(cell, 12*1024); dest = CHEST_DIR/f'{style}_{state}.webp'
                 dest.write_bytes(payload); log.append(('chest', f'{style}_{state}', dest.name, len(payload), q, hashlib.sha256(payload).hexdigest(), r['sha256']))
+        elif r['kind'] == 'props':
+            PROP_DIR.mkdir(parents=True, exist_ok=True); sheet = img.convert('RGBA')
+            for i, pid in enumerate(PROPS[r['id']]):
+                cell = sheet.crop((i*256, 0, i*256+256, 256)); a = cell.split()[3].point(lambda v: 0 if v < 20 else v); cell.putalpha(a)
+                payload, q = webp(cell.resize((128, 128), Image.LANCZOS), 14*1024); dest = PROP_DIR/f'{pid}.webp'
+                dest.write_bytes(payload); log.append(('prop', pid, dest.name, len(payload), q, hashlib.sha256(payload).hexdigest(), r['sha256']))
+        elif r['kind'] == 'icons': continue  # icon sheets go through scripts/import-item-art.py --cells
         else: raise SystemExit(f"unknown kind {r['kind']}")
     with open(ROOT/'src/assets/room-art-import-log.csv', 'a', newline='') as f:
         w = csv.writer(f)
         if f.tell() == 0: w.writerow(['kind', 'id', 'webp', 'bytes', 'quality', 'webp_sha256', 'source_sha256'])
         w.writerows(log)
-    print(f"{len(log)} assets: {sum(l[3] for l in log)} bytes ({sum(1 for l in log if l[0]=='hub')} hubs, {sum(1 for l in log if l[0]=='room')} rooms, {sum(1 for l in log if l[0]=='chest')} chest cells)")
+    print(f"{len(log)} assets: {sum(l[3] for l in log)} bytes ({sum(1 for l in log if l[0]=='hub')} hubs, {sum(1 for l in log if l[0]=='room')} rooms, {sum(1 for l in log if l[0]=='chest')} chest cells, {sum(1 for l in log if l[0]=='prop')} props)")
 
 if __name__ == '__main__': main(sys.argv[1])

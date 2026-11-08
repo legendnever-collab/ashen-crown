@@ -46,7 +46,9 @@ arms exit=0
 migration-v080 exit=0
 act3 exit=0
 migration-v081 exit=0
-item-art exit=0
+item-art exit=1
+item-art exit=0 (rerun 2026-11-08 after updating its expectation: pack F2 paints the locked ④ disk, so Erik's skills submenu shows four painted disks)
 act3b exit=0
+feedback-v091 exit=0
 migration-v090 exit=0
 DONE

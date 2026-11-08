@@ -48,11 +48,16 @@ export function bustKey(u,missionId=1){
  if(!u)return 'refugee';
  if(u.kind==='lion'||u.id==='baldrick')return 'baldrick';
  // v0.5 promoted look (tier-2 art pack); without the art the tier-1 painting is used, never a mock-up.
+ if((u.classTier||1)>=3&&PAINTED?.[`${u.id}_t3`])return `${u.id}_t3`; // v0.9.1 (pack F2, D-088): the awakened looks
  if((u.classTier||1)>=2&&BUST_SPEC[u.id]&&PAINTED?.[`${u.id}_t2`])return `${u.id}_t2`;
  if(u.id==='eric'&&(appearanceFor(u)?.tier||1)>=2)return 'eric_adv';
+ if(u.id==='elder'&&(missionId===17||missionId===18)){const k=missionId===17?'guardianElder':'forestElder';if(PAINTED?.[k])return k;} // pack F2: the keep's and the forest's elders
  if(BUST_SPEC[u.id])return u.id;
  // v0.6 ACT II recruits and leaders (pack B, D-059): painted busts by id; without the art the cast vector bust below.
+ if(['thea','dario','ines'].includes(u.id)&&u.team!=='enemy'&&(u.classTier||1)>=2&&PAINTED?.[`${u.id}_t2`])return `${u.id}_t2`; // pack F2: recruits' tier 2
  if(['thea','dario','cassian','leonora','ines','lucien'].includes(u.id)&&u.team!=='enemy')return PAINTED?.[u.id]?u.id:'cast:'+u.id;
+ // pack F2: the elder of the keep (M17) and of the forest (M18) have their own faces; the M16 duel captain wears his banner's.
+ if(missionId===16&&u.id==='cap'){const k=`captain16_${{ironInfantry:'iron',lordA:'free',flameKnight:'flame'}[u.look]}`;if(PAINTED?.[k])return k;}
  // v0.6.1: the two lords of M10 speak with their army's look; mission units that name a look use it.
  if(LORD_LOOK[u.id])return 'cast:'+LORD_LOOK[u.id];
  if(u.look)return PAINTED?.[u.look]?u.look:'cast:'+u.look;
@@ -274,7 +279,7 @@ const paintedImages=new Map();
 export const hasPainted=key=>!!PAINTED?.[paintedId(key)];
 const PAINTED_ALIAS={'cast:captain':'garr','cast:deserterCaptain':'deserterCaptain','cast:pursuerCaptain':'pursuerCaptain','cast:quartermaster':'quartermaster','cast:executor':'executor'};
 export const paintedId=key=>PAINTED_ALIAS[key]||key;
-export function paintedImage(key,expr='neutral'){key=paintedId(key);const set=PAINTED?.[key];if(!set||typeof Image==='undefined')return null;const e=set[expr]?expr:'neutral';if(!set[e])return null;const id=`${key}|${e}`;let img=paintedImages.get(id);if(!img){img=new Image();img.decoding='async';img.src=set[e];paintedImages.set(id,img);}return img.failed?null:img;}
+export function paintedImage(key,expr='neutral'){key=paintedId(key);const set=PAINTED?.[key];if(!set||typeof Image==='undefined')return null;const e=set[expr]?expr:set.neutral?'neutral':['determined','concerned','sad'].find(k=>set[k]);if(!e)return null;/* pack F2: the M16 captains have no neutral face */const id=`${key}|${e}`;let img=paintedImages.get(id);if(!img){img=new Image();img.decoding='async';img.src=set[e];paintedImages.set(id,img);}return img.failed?null:img;}
 function whenPainted(c,img,token,paint,fallback){const canvas=c.canvas;canvas.dataset.painting=token;if(img.complete&&img.naturalWidth){paint();return;}c.clearRect(0,0,canvas.width,canvas.height);
  img.addEventListener('load',()=>{if(canvas.isConnected!==false&&canvas.dataset.painting===token)paint();},{once:true});img.addEventListener('error',()=>{img.failed=true;if(canvas.dataset.painting===token)fallback();},{once:true});}
 function drawVectorBust(c,key,expression){const src=bustCanvas(key,expression,Math.max(1,Math.round(c.canvas.width/BUST_W)));c.clearRect(0,0,c.canvas.width,c.canvas.height);c.imageSmoothingEnabled=true;c.drawImage(src,0,0,c.canvas.width,c.canvas.height);}

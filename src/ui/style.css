@@ -347,3 +347,5 @@
 /* v0.9.0 일기토 (D-079): two faces and the score, then the three picks */
 .duel-card .duel-faces{display:flex;align-items:center;justify-content:center;gap:18px;margin:6px 0 10px}.duel-card .duel-faces canvas{width:96px;height:96px;flex:none}.duel-card .duel-faces b{font:600 28px Georgia,'Ashen UI',serif;color:#e8c98b}.duel-card .duel-last{color:#d8ccb0}
 @media(max-width:720px){.duel-card .duel-faces canvas{width:72px;height:72px}}
+/* v0.9.1 feedback: narration (연대기) lines in battle have no portrait; the empty chest shows its painted chest */
+.dialogue-backdrop .dialogue-panel.narration .dialogue-copy{left:28px}.chest-empty{width:96px;height:96px;object-fit:contain;image-rendering:auto}

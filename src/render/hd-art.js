@@ -252,7 +252,11 @@ export const CAST={
 // M06 looks that have painted sheets; their pixel fallback borrows an existing look.
 CAST.executor={...CAST.pursuerCaptain,name:'봉쇄 집행관',weapon:'spear'};
 // v0.5 tier-2 looks: painted sheets come from the art pack; the pixel fallback reuses the tier-1 figure.
-for(const id of ['eric','elina','lia','sain','kai'])CAST[`${id}_t2`]={...CAST[id==='eric'?'eric_adv':id]};CAST.inspector={...CAST.quartermaster,name:'군령부 감찰관',weapon:'sword'};
+for(const id of ['eric','elina','lia','sain','kai'])CAST[`${id}_t2`]={...CAST[id==='eric'?'eric_adv':id]};
+// v0.9.1 (ACT III art pack F2, D-088): the awakened (tier 3) looks and the recruits' tier 2 looks; the painted sheets carry
+// them, the vector figure falls back to the tier below. The guardian statue awake, and the forest elder.
+for(const id of ['eric','elina','sain'])CAST[`${id}_t3`]={...CAST[`${id}_t2`]};for(const id of ['thea','dario','ines'])CAST[`${id}_t2`]={...CAST[id]};
+CAST.guardianStatue={...CAST.fortGuard,name:'수호 석상',skin:'#9aa0a8',hair:'#80868e',metal:'#a4a8b0',coat:'#7c8088'};CAST.forestElder={...CAST.elder,name:'숲지기 장로',coat:'#4a6a3a',trim:'#c9b07a',style:'long'};CAST.inspector={...CAST.quartermaster,name:'군령부 감찰관',weapon:'sword'};
 export function wagonSprite(){return cached('wagon',()=>{const p=new Pix(48,52),W=ramp('#7a5634'),C=ramp('#e2d6b4');
  p.box(5,30,38,10,W);for(let x=7;x<42;x+=6)p.rect(x,31,1,8,W[1]);
  for(let y=10;y<31;y++){const half=17-Math.round(Math.pow((y-10)/20,0.5)*0)-((y<14)?(14-y):0);for(let x=24-half;x<24+half;x++){let t=x<14?3:x>36?1:2;if((x-6)%8===0)t=1;p.set(x,y,C[t]);}}
