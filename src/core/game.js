@@ -92,10 +92,10 @@ export function performAction(s,id,mode,targetId){
  else if(mode==='rescue'){t.rescued=true;remember(s,`${u.id}_rescue`);awardXP(s,u,BALANCE.rescueXP,`${t.name} 구출`);s.log.push(`${u.name}: ${t.name}을 안전한 피난로로 구출했습니다.`);s.feedback.push({type:'rescue',id:t.id,text:'RESCUED'});if(u.id==='kai')discover(s,u,'Shadow Exchange');}
  else if(mode==='skill'&&u.id==='eric'){u.guarding=true;u.guardUsed=false;u.guardTarget=null;awardXP(s,u,12,'방어 태세');s.log.push('에릭: 방어 태세. 다음 아군 턴까지 DEF +3, 인접 동료가 받는 첫 근접 공격을 대신 받습니다.');s.feedback.push({type:'guard',id:u.id,text:'GUARD'});}
  else if(mode==='skill'&&u.id==='sain'){
-  const sv=effectiveStats(s,u),base=12+sv.mag+(sv.heal||0)+(proficiencyBonus(s,u).heal||0),heal=Math.min(inWard(s,t)?Math.round(base*1.5):base,t.maxHP-t.hp);t.hp+=heal;if(heal)gainGearExp(s,u,'strike');s.feedback.push({type:'heal',id:t.id,text:`+${heal}`,toHP:t.hp});
+  const sv=effectiveStats(s,u),base=12+sv.mag+(sv.heal||0)+(proficiencyBonus(s,u).heal||0),heal=Math.min(inWard(s,t)?Math.round(base*1.5):base,t.maxHP-t.hp);t.hp+=heal;const foe=hostile(s,u,t);if(heal&&!foe)gainGearExp(s,u,'strike');s.feedback.push({type:'heal',id:t.id,text:`+${heal}`,toHP:t.hp});
   const extra=s.units.filter(a=>a.team==='ally'&&alive(a)&&a.id!==t.id&&distance(a,t)===1&&a.hp<a.maxHP).sort((a,b)=>a.hp/a.maxHP-b.hp/b.maxHP)[0];let splash=0;if(extra){splash=Math.min(4,extra.maxHP-extra.hp);extra.hp+=splash;s.feedback.push({type:'heal',id:extra.id,text:`+${splash}`,toHP:extra.hp});}
   if(heal||splash)remember(s,'sain_heal');
-  if(heal||splash){if(!u.healTargets.includes(t.id))u.healTargets.push(t.id);awardXP(s,u,Math.min(BALANCE.healXP,10+Math.floor((heal+splash)/2)),`${t.name} 치유`);}if(extra&&splash)discover(s,u,'Divine Recall');s.log.push(`세인: ${t.name} +${heal} HP${extra?`, Gentle Hands → ${extra.name} +${splash}`:''}. 치유할 때마다 EXP를 얻습니다.`);
+  if((heal||splash)&&!foe){if(!u.healTargets.includes(t.id))u.healTargets.push(t.id);awardXP(s,u,Math.min(BALANCE.healXP,10+Math.floor((heal+splash)/2)),`${t.name} 치유`);}if(extra&&splash)discover(s,u,'Divine Recall');s.log.push(`세인: ${t.name} +${heal} HP${extra?`, Gentle Hands → ${extra.name} +${splash}`:''}. 치유할 때마다 EXP를 얻습니다.`);
  }else{
   const r=damage(s,u,t,mode);if(r.hit&&theaRun>0&&!alive(r.victim)){u.moved=false;u.strikeMove=s.turn;u.moveLeft=theaRun;s.log.push(`테아: 흑철 창기사 · 남은 이동 ${theaRun}칸.`);}if(r.hit){awardXP(s,u,BALANCE.attackXP+(!alive(r.victim)?BALANCE.killXP:0),`${r.victim.name} ${alive(r.victim)?'공격':'격파'}`);if(u.id==='elina'&&['f','v'].includes(sTerrain(s,u))){discover(s,u,'Overwatch');remember(s,'elina_forest_shot');}if(u.id==='lia'&&!alive(r.victim)){discover(s,u,'Arcane Territory');remember(s,'lia_kill');}}
   if(alive(r.victim)&&validTarget(s,r.victim,u)&&!counterBlocked(s,r.victim)&&!chargeBreaks(u,mode)&&!fx(s,u,'silence')){const c=damage(s,r.victim,u,'attack',true);
@@ -220,7 +220,7 @@ function performTactic(s,u,mode,target){
  consumeAction(s,u);const tool=isToolMode(mode),t=findUnit(s,typeof target==='object'?target?.id:target);
  if(r.tried.some(v=>v.id==='boss'))enqueueStory(s,`${s.missionId}:encounter`);
  // One area strike earns what one attack earns (one kill bonus at most), so area skills do not soak up the party's EXP.
- if(r.struck.length&&r.struck.some(v=>v.team!=='ally'))awardXP(s,u,BALANCE.attackXP+(r.kills?BALANCE.killXP:0),`${mode.startsWith('tool:')?'투척':'스킬'} 명중`);else if(!tool)awardXP(s,u,20,'전술 스킬');
+ if(r.struck.length&&r.struck.some(v=>v.team!=='ally'))awardXP(s,u,BALANCE.attackXP+(r.kills?BALANCE.killXP:0),`${mode.startsWith('tool:')?'투척':'스킬'} 명중`);else if(!tool&&!(mode==='purify'&&t&&hostile(s,u,t)))awardXP(s,u,20,'전술 스킬'); /* v0.9.3: purifying a foe earns nothing */
  if(r.counter&&alive(r.counter)&&validTarget(s,r.counter,u)&&!counterBlocked(s,r.counter)&&!fx(s,u,'silence'))damage(s,r.counter,u,'attack',true);
  // Mission hooks: a skill strike or a bomb counts as an attack on each target it was aimed at (hit or miss, like attacks).
  if(r.tried.length)for(const v of r.tried)rulesOf(s)?.onAction?.(s,u,'attack',v);else rulesOf(s)?.onAction?.(s,u,mode,t||null);

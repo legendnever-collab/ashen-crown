@@ -230,6 +230,8 @@ canvas.addEventListener('pointerup',async e=>{touches.delete(e.pointerId);if(pin
  if(canAct(state,u)&&tileTarget(ui.mode)){const k=`${tile.x},${tile.y}`;if(validClassTarget(state,u,{x:tile.x,y:tile.y},ui.mode)){if(ui.menu==='forecast'&&ui.preview===k&&!ui.busy){await execute(ui.mode,k);return;}ui.preview=k;ui.menu='forecast';ui.inspected=null;ui.notice=null;render();return;}}
  if(canAct(state,u)&&isClassMode(ui.mode)&&ui.mode!=='shadowDance'&&!tileTarget(ui.mode)&&t&&validClassTarget(state,u,t,ui.mode)){if(ui.menu==='forecast'&&ui.preview===t.id&&!ui.busy){await execute(ui.mode,t.id);return;}ui.preview=t.id;ui.menu='forecast';ui.inspected=null;ui.notice=null;render();return;}
  if(canAct(state,u)&&['attack','skill','rescue','capture','search','persuade'].includes(ui.mode)&&t&&validTarget(state,u,t,ui.mode)){if(ui.menu==='forecast'&&ui.preview===t.id&&!ui.busy){await execute(ui.mode,ui.preview);return;}ui.preview=t.id;ui.menu='forecast';ui.inspected=null;ui.notice=null;render();return;}
+ /* v0.9.3 (D-092): tapping an empty tile while aiming a skill, an attack or a tool cancels the aim and reopens the menu. */
+ if(!t&&ui.mode&&!['choose','move','deploy'].includes(ui.mode)){ui.mode='choose';ui.menu=canAct(state,u)?'root':null;ui.preview=null;ui.swapFirst=null;ui.inspected=null;ui.notice='선택 취소 · 다른 행동을 고르세요.';render();return;}
  if(t?.team==='ally'){
   if(t.id===ui.selected&&ui.mode==='move'){ui.mode='choose';ui.menu='root';ui.preview=null;ui.notice='제자리에서 행동 · 이동을 사용하지 않았습니다. 공격, 스킬 또는 대기를 선택하세요.';render();return;}
   if(t.id===ui.selected){ui.mode='choose';ui.menu='root';ui.preview=null;ui.notice=null;render();}

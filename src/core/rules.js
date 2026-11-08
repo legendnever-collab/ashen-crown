@@ -22,9 +22,10 @@ export function roll(s){const r=nextRandom(s.rng);s.rng=r.state;return r.value;}
 export function terrainCost(s,u,x,y){const type=missionOf(s).map[y]?.[x];if(!type||missionOf(s).layers.collision[y]?.[x]||!Number.isFinite(TERRAIN[type]?.cost))return Infinity;const profile=u.movementProfile||CLASS_MOVEMENT[HERO_CLASS[u.id]]?.profile||'infantry';return TERRAIN_COSTS[profile]?.[type]??TERRAIN[type].cost;}
 export function movement(s,u,ignore=false){
  const start=key(u.x,u.y), costs=new Map([[start,0]]),prev=new Map(),queue=[{x:u.x,y:u.y,c:0}];
- const allowance=u.status?.bind?0:u.moveLeft!=null&&u.strikeMove===s.turn?u.moveLeft:effectiveStats(s,u).mov+(u.shadowBonus||0),zoc=u.team==='enemy'?bulwarkZone(s):null,held=blockadeHolds(s,u); // v0.8 bind: cannot move
+ const allowance=u.status?.bind?0:u.moveLeft!=null&&u.strikeMove===s.turn?u.moveLeft:effectiveStats(s,u).mov+(u.shadowBonus||0),zoc=u.team==='enemy'?bulwarkZone(s):null,held=blockadeHolds(s,u),hold=controlZone(s,u); // v0.8 bind: cannot move
  while(queue.length){queue.sort((a,b)=>a.c-b.c);const p=queue.shift();if(p.c!==costs.get(key(p.x,p.y)))continue;
   if(zoc&&zoc.has(key(p.x,p.y)))continue; // v0.5 Bulwark: an enemy in Erik's zone cannot move on (entering stops it, starting there pins it)
+  if(hold&&p.c>0&&hold.has(key(p.x,p.y)))continue; // v0.9.3 zone of control: stepping beside a foe ends the move
   for(const [dx,dy] of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,t=terrainAt(x,y,s);if(!t||!Number.isFinite(t.cost))continue;
    const occupant=at(s,x,y);if(!ignore&&occupant&&occupant.id!==u.id&&sideOf(occupant)!==sideOf(u))continue;
    if(held&&!s.blockade.cells.some(([bx,by])=>bx===x&&by===y))continue;
@@ -36,6 +37,14 @@ export function movement(s,u,ignore=false){
  if(!ignore)for(const p of [...costs.keys()]){const [x,y]=p.split(',').map(Number),occupant=at(s,x,y);if(occupant&&occupant.id!==u.id)costs.delete(p);}
  return {costs,prev};
 }
+// v0.9.3 zone of control (D-093, the user's 조조전 feedback): the tiles beside a living foe that can fight. A unit that steps onto
+// one stops there (it may still leave a tile it started the turn on). Rogue movement (Kai, the grey cloaks, the assassins)
+// slips through, and civilians on the move are not held (they are escorted, not fighting). Props, objects, civilians, benched or withdrawing units, and units without a way to fight hold no ground.
+export const ZOC_FREE=new Set(['rogue']);
+const holdsGround=t=>alive(t)&&!t.benched&&!t.withdrawing&&!t.prop&&!t.clerk&&(t.team==='ally'||t.team==='allied'||t.team==='enemy')&&Array.isArray(t.range)&&t.range[1]>0&&(t.atk||0)>0;
+export const supportable=t=>!!t&&alive(t)&&!t.benched&&t.team!=='object'&&!t.prop&&!['wagon','beacon','brazier','cabinet','ritualCircle','wardStone','statue','wardTree'].includes(t.kind);
+export function controlZone(s,u){if(u.team==='civilian'||u.team==='object'||ZOC_FREE.has(u.movementProfile||CLASS_MOVEMENT[HERO_CLASS[u.id]]?.profile))return null;const side=sideOf(u),z=new Set();
+ for(const t of s.units)if(t.id!==u.id&&sideOf(t)!==side&&holdsGround(t)&&(side==='legion'?t.team==='enemy':t.team==='ally'||t.team==='allied'))for(const [dx,dy] of [[0,-1],[-1,0],[1,0],[0,1]])z.add(key(t.x+dx,t.y+dy));return z.size?z:null;}
 // v0.5 Bulwark zone: tiles next to a living ally whose Bulwark is up (null when none, so ACT I paths are untouched).
 export function bulwarkZone(s){const keepers=s.units.filter(a=>a.team==='ally'&&a.bulwark&&alive(a));if(!keepers.length)return null;const z=new Set();for(const a of keepers)for(const [dx,dy]of[[0,-1],[-1,0],[1,0],[0,1]])z.add(key(a.x+dx,a.y+dy));return z;}
 export const counterBlocked=(s,v)=>v.noCounter===s.turn&&s.phase==='player';
@@ -56,7 +65,8 @@ export function validTarget(s,u,t,mode='attack'){
  if(mode==='persuade')return canPersuade(s,u,t)&&d===1;
  if(mode==='rescue')return t.team==='civilian'&&t.kind!=='wagon'&&!t.noRescue&&!missionOf(s).escortOnly&&(!missionOf(s).orderTurn||s.campaign?.choices?.m08_order==='rescue')&&d===1;
  if(mode==='skill'&&u.id==='eric')return t.id===u.id;
- if(mode==='skill'&&u.id==='sain')return (t.team==='ally'||t.team==='civilian'&&missionOf(s).healCivilians&&t.kind!=='wagon')&&d>=rangeFor(u,mode,s)[0]&&d<=rangeFor(u,mode,s)[1];
+ // v0.9.3 (D-093, the user's feedback): Heal reaches anyone in range — heroes, allied units, civilians, even enemies; not wagons, props or objects.
+ if(mode==='skill'&&u.id==='sain')return supportable(t)&&d>=rangeFor(u,mode,s)[0]&&d<=rangeFor(u,mode,s)[1];
  const [min,max]=rangeFor(u,mode,s);return hostile(s,u,t)&&d>=min&&d<=max;
 }
 export function flank(s,u,t){return s.units.some(a=>a.team===u.team&&alive(a)&&a.id!==u.id&&distance(a,t)===1&&((u.x<t.x&&a.x>t.x)||(u.x>t.x&&a.x<t.x)||(u.y<t.y&&a.y>t.y)||(u.y>t.y&&a.y<t.y)));}

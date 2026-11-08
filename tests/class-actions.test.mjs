@@ -1,7 +1,7 @@
 // v0.5.0 Phase D: the five promotion actions, tier-2 skill upgrades and enemy handling (D-048).
 import test from 'node:test';import assert from 'node:assert/strict';
 import {newGame,startBattle,performAction,moveUnit,canMove,canAct,planEnemy,advanceEnemy,beginEnemyPhase} from '../src/core/game.js';
-import {findUnit,movement,forecast,guardFor,skillCost,rangeFor,validTarget,terrainCost,key,alive} from '../src/core/rules.js';
+import {findUnit,movement,forecast,guardFor,skillCost,rangeFor,validTarget,terrainCost,key,alive,bulwarkZone} from '../src/core/rules.js';
 import {effectiveStats} from '../src/core/economy.js';
 import {applyClass} from '../src/core/progression.js';
 import {CLASS_TREE} from '../src/data/classes.js';
@@ -26,11 +26,11 @@ test('only promoted heroes have class actions; tier-1 use is rejected without sp
  const p=arena();assert.deepEqual(['eric','elina','lia','sain','kai'].map(id=>classActionOf(findUnit(p,id))),['bulwark','overwatch','arcane','recall','exchange']);
 });
 
-test('Bulwark: enemies entering a tile next to Erik stop there; it lasts until the next Player Phase',()=>{
- const s=arena(['b1']);park(s,['elina','lia','sain','kai']);const e=place(s,'eric',6,8),b=place(s,'b1',6,4);b.mov=6;
+test('Bulwark: enemies entering a tile next to Erik stop there (v0.9.3: rogues too, who ignore the zone of control); it lasts until the next Player Phase',()=>{
+ const s=arena(['b1']);park(s,['elina','lia','sain','kai']);const e=place(s,'eric',6,8),b=place(s,'b1',6,4);b.mov=6;b.movementProfile='rogue'; /* v0.9.3: a rogue ignores the zone of control, so only Bulwark holds it */
  const free=movement(s,b).costs;assert.ok(free.has(key(6,6))&&[...free.keys()].some(k=>k===key(5,8)||k===key(7,8)),'without Bulwark the bandit can pass beside Erik');
  const r=performAction(s,'eric','bulwark','eric');assert.ok(r.ok,r.error);assert.equal(e.mp,e.maxMP-4);assert.ok(e.acted&&e.bulwark);
- const {costs:held,prev}=movement(s,b),zone=new Set([[0,-1],[-1,0],[1,0],[0,1]].map(([dx,dy])=>key(e.x+dx,e.y+dy))),start=key(b.x,b.y);assert.ok(held.has(key(6,7)),'may enter the zone');
+ const {costs:held,prev}=movement(s,b),zone=new Set([...bulwarkZone(s)]),start=key(b.x,b.y);assert.ok(held.has(key(6,7)),'may enter the zone');
  for(const k of held.keys()){let p=prev.get(k);while(p&&p!==start){assert.ok(!zone.has(p),`path to ${k} passes through zone tile ${p}`);p=prev.get(p);}}assert.ok(held.size<free.size,'Bulwark shrinks the reachable area');
  beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}assert.equal(e.bulwark,undefined,'expires at the next Player Phase');
  assert.equal(movement({...s,units:s.units.map(u=>({...u,bulwark:undefined}))},b).costs.size>0,true);

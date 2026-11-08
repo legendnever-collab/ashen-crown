@@ -1,4 +1,4 @@
-import {findUnit,alive,movement,validTarget,forecast,distance,terrainAt} from '../src/core/rules.js';
+import {findUnit,alive,movement,validTarget,forecast,distance,terrainAt,hostile} from '../src/core/rules.js';
 import {moveUnit,performAction,canAct,beginEnemyPhase,advanceEnemy} from '../src/core/game.js';
 import {HEROES} from '../src/data/game-data.js';
 export function chooseAction(s,u,{guard=false}={}){
@@ -8,7 +8,7 @@ export function chooseAction(s,u,{guard=false}={}){
   for(const t of s.units.filter(alive))for(const mode of ['rescue','skill','attack']){if(!validTarget(s,a,t,mode))continue;if(mode==='skill'&&a.mp<(a.cost+(a.id==='lia'&&a.hp<=a.maxHP/2?1:0)))continue;
    const f=forecast(s,a,t,mode);let score=-1000;
    if(mode==='rescue')score=1000-c;
-   else if(f.heal!==undefined){score=f.heal>=12?90+f.heal:0;}
+   else if(f.heal!==undefined){score=f.heal>=12&&!hostile(s,a,t)?90+f.heal:-1000;}
    else if(f.guard===true){score=guard&&u.id==='eric'&&!u.clues.includes("Guardian’s Oath")&&enemies.some(e=>distance(a,e)<=e.mov+1)?105:0;}
    else{score=f.damage*f.hit/100*3+(f.after===0?90:0)+(t.id==='boss'?35:0)-f.counter*.8+(mode==='skill'&&u.id==='lia'?8:0);}
    score-=c*.5;if(!best||score>best.score)best={id:u.id,x,y,mode,target:t.id,score};

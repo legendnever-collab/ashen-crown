@@ -26,8 +26,8 @@ const wake=(s,id,x,y,more={})=>{const e=findUnit(s,id);Object.assign(e,{hp:e.max
 const place=(u,x,y)=>{u.x=x;u.y=y;u.moved=false;u.acted=false;};
 const own=(s,type,hero)=>{const g={id:`g${s.economy.next++}`,type,star:1,exp:0};s.economy.gear.push(g);if(hero)s.economy.equipped[hero][GEAR[type].slot]=g.id;return g;};
 
-test('the gear table: 11 tier I, 24 tier II, 12 tier III and 18 treasures (v0.9.0 adds six from the capital and two ACT III treasures; v0.9.1 two more; v0.9.2 two more), named as in the catalog; every new piece has a town',()=>{
- assert.equal(Object.keys(GEAR).length,65);for(const c of [...CATALOG_GEAR,...CATALOG_TREASURES])assert.equal(GEAR[c.id].name,c.ko,c.id);
+test('the gear table: 11 tier I, 24 tier II, 14 tier III and 18 treasures (v0.9.0 adds six from the capital and two ACT III treasures; v0.9.1 two more; v0.9.2 two more; v0.9.3 a lance for Thea and a mace for Ines), named as in the catalog; every new piece has a town',()=>{
+ assert.equal(Object.keys(GEAR).length,67);for(const c of [...CATALOG_GEAR,...CATALOG_TREASURES])assert.equal(GEAR[c.id].name,c.ko,c.id);
  for(const c of CATALOG_GEAR.filter(c=>c.tier>1)){const g=GEAR[c.id];assert.ok(['castletown','velmar','pilgrim','capital'].includes(g.home),c.id);assert.ok(g.after||g.premium||g.trust,c.id);assert.equal(g.price,c.price);}
  for(const c of CATALOG_TREASURES)assert.equal(GEAR[c.id].slot,'treasure');
  const rewards=Object.values(FEATS).map(f=>f.reward);assert.deepEqual(rewards.filter(r=>r!=='elixir').sort(),CATALOG_TREASURES.map(c=>c.id).sort(),'one treasure per hidden objective');assert.equal(rewards.filter(r=>r==='elixir').length,2);

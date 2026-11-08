@@ -20,7 +20,9 @@ const ARMS_STATS={
  crownGuardLance:[{atk:5,def:1},{atk:1}],crownGuardShield:[{def:5,res:2},{def:1}],leagueSaber:[{atk:5,spd:2},{atk:1}],leagueLongbow:[{atk:4,hit:10},{atk:1}],
  paladinMace:[{atk:5,res:2},{atk:1}],flameVestment:[{res:5,mag:2},{res:1}],
  // v0.9.0 (D-079, PROPOSED): the capital's lower-city forge
- royalSaber:[{atk:6,def:1},{atk:1}],archiveBow:[{atk:5,hit:10},{atk:1}],wardRod:[{mag:6},{mag:1}],courtVestment:[{res:4,def:2},{res:1}],greyMantle:[{def:2,spd:2,dodge:5},{def:1}],oathRing:[{def:1,mag:2,res:2},{res:1}]
+ royalSaber:[{atk:6,def:1},{atk:1}],archiveBow:[{atk:5,hit:10},{atk:1}],wardRod:[{mag:6},{mag:1}],courtVestment:[{res:4,def:2},{res:1}],greyMantle:[{def:2,spd:2,dodge:5},{def:1}],oathRing:[{def:1,mag:2,res:2},{res:1}],
+ // v0.9.3 (D-092): a capital lance for Thea and a mace for Ines
+ royalLance:[{atk:6,chargeDmg:2},{atk:1}],royalMace:[{atk:6,res:1},{atk:1}]
 };
 // Where each item is sold. home: the town hub; after: the mission whose clear puts it on the shelf; premium: on the shelf
 // from the legion's first visit (expensive, meant to be bought on a later visit); trust: the faction and the stage needed.
@@ -29,7 +31,7 @@ const ARMS_SALE={
  steelGreatsword:['castletown',7],knightLance:['castletown',7],ironwoodBow:['castletown',7],plateCuirass:['castletown',8],towerShield:['castletown',8],lancerMail:['castletown',8],steelGauntlets:['castletown',8],runeforgedBlade:['castletown','premium'],
  twinSabers:['velmar',9],repeatingCrossbow:['velmar',9],emberRod:['velmar',9],shadowStiletto:['velmar',10],merchantCoat:['velmar',10],luckyCoin:['velmar',10],windCharm:['velmar',10],duelistRapier:['velmar','premium'],
  flameStaff:['pilgrim',11],pilgrimMace:['pilgrim',11],pilgrimMantle:['pilgrim',11],sanctumTome:['pilgrim',12],wardenShield:['pilgrim',12],chrismCharm:['pilgrim',12],votiveBand:['pilgrim',12],cathedralStaff:['pilgrim','premium'],
- royalSaber:['capital',15],archiveBow:['capital',15],wardRod:['capital',15],courtVestment:['capital',16],greyMantle:['capital',16],oathRing:['capital','premium'],
+ royalSaber:['capital',15],archiveBow:['capital',15],wardRod:['capital',15],courtVestment:['capital',16],greyMantle:['capital',16],oathRing:['capital','premium'],royalLance:['capital',15],royalMace:['capital',16],
  crownGuardLance:['castletown','trust'],crownGuardShield:['castletown','trust'],leagueSaber:['velmar','trust'],leagueLongbow:['velmar','trust'],paladinMace:['pilgrim','trust'],flameVestment:['pilgrim','trust']
 };
 export const TOWN_HOME=ARMS_HOME;

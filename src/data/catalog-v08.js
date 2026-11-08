@@ -77,6 +77,8 @@ export const CATALOG_GEAR=[
  cGear('wardRod','결계 지팡이','Ward Rod',3,'weapon',['lia'],'MAG +6',480,'왕도 하층가 · M15 클리어'),
  cGear('courtVestment','궁정 사제복','Court Vestment',3,'armor',['sain','ines'],'RES +4 · DEF +2',460,'왕도 하층가 · M16 클리어'),
  cGear('greyMantle','회색 외투','Grey Mantle',3,'armor',['kai','dario'],'DEF +2 · SPD +2 · 회피 +5',450,'왕도 하층가 · M16 클리어'),
+ cGear('royalLance','왕도 기병창','Royal Cavalry Lance',3,'weapon',['thea'],'ATK +6 · 돌격 피해 +2',480,'왕도 하층가 · M15 클리어'), /* v0.9.3 (D-092): Thea's capital lance */
+ cGear('royalMace','왕도 사제 철퇴','Royal Chaplain Mace',3,'weapon',['ines'],'ATK +6 · RES +1',470,'왕도 하층가 · M16 클리어'),
  cGear('oathRing','맹세의 반지','Oath Ring',3,'accessory',['eric','elina','lia','sain','kai','thea','dario','ines'],'DEF +1 · MAG +2 · RES +2',440,'왕도 하층가 · 처음부터 (고급품)')
 ];
 const cTreasure=(id,ko,en,effect,where)=>({id,kind:'treasure',ko,en,effect,where});
@@ -107,7 +109,7 @@ const cSkill=(id,hero,slot,ko,en,cost,effect)=>({id,kind:'skill',hero,slot,ko,en
 export const CATALOG_SKILLS=[
  cSkill('guard','eric',1,'수호','Guard',3,'다음 아군 턴까지 DEF +3, 인접 동료가 받는 첫 근접 공격을 대신 받는다'),
  cSkill('provoke','eric',2,'도발','Provoke',3,'3칸 안의 적 1명 · 다음 적 턴에 그 적은 에릭만 노린다(보스 50%) · 에릭 DEF +2'),
- cSkill('bulwark','eric',3,'방벽','Bulwark',4,'다음 아군 턴까지 인접 칸의 적은 움직일 수 없다'),
+ cSkill('bulwark','eric',3,'방벽','Bulwark',4,'다음 아군 턴까지 인접 칸의 적은 움직일 수 없다 · 그림자 걸음(도적)도 멈춘다'),
  cSkill('aimedShot','elina',1,'조준 사격','Aimed Shot',3,'명중 +18, 피해 +2'),
  cSkill('pinningShot','elina',2,'속박 사격','Pinning Shot',4,'사거리 2–3 · 피해 70% · 맞으면 [속박] 1턴'),
  cSkill('overwatch','elina',3,'경계 사격','Overwatch',4,'적 턴에 사거리에 처음 들어온 적에게 사격'),

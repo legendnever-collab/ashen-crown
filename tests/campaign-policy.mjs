@@ -58,7 +58,9 @@ function act2Goals(s,u){const live=t=>alive(t)&&t.team==='enemy';
  const villagers=s.units.filter(v=>v.team==='civilian'&&alive(v));if(s.campaign.choices?.m08_order==='rescue'&&villagers.length&&['sain','kai'].includes(u?.id))return villagers;
  const devices=s.units.filter(d=>d.kind==='rockfall'&&!d.rescued&&s.units.filter(e=>live(e)&&e.x>=d.zone[0]&&e.x<=d.zone[1]&&e.y>=d.zone[2]&&e.y<=d.zone[3]).length>=1);if(devices.length&&u?.id===(s.campaign.choices?.m08_order==='rescue'?'elina':'kai'))return devices;
  const north=s.units.filter(e=>live(e)&&!/^s\d/.test(e.id)),rear=s.units.filter(e=>live(e)&&/^s\d/.test(e.id));return north.length?north:rear.length?rear:[{x:7,y:5}];}
-function missionGoals(s,u){if(s.missionId>=7)return act2Goals(s,u);if(s.missionId===6){const st=s.missionState,refs=s.units.filter(u=>u.team==='civilian'&&alive(u));
+function missionGoals(s,u){if(s.missionId>=7)return act2Goals(s,u);
+ // v0.9.3 zone of control: in M05 the raiders on the wagons come first (heroes can no longer slip past the lines to them late)
+ if(s.missionId===5){const wagons=s.units.filter(w=>w.kind==='wagon'&&alive(w)),raiders=s.units.filter(e=>e.team==='enemy'&&alive(e)&&wagons.some(w=>distance(e,w)<=3));if(raiders.length)return raiders;}if(s.missionId===6){const st=s.missionState,refs=s.units.filter(u=>u.team==='civilian'&&alive(u));
  if(st.phase===3&&refs.length&&!s.units.some(u=>u.team==='civilian'&&u.rescued))return refs;
  if(st.phase===3){const boss=s.units.find(t=>t.id==='boss'&&alive(t));return boss?[boss]:[{x:7,y:1},{x:8,y:0},{x:9,y:0},{x:10,y:1}];}const stones=s.units.filter(o=>o.kind==='sealstone'&&!o.rescued&&!o.locked);return stones.length?[...stones,...refs]:refs.length?refs:[{x:8,y:1}];}
  const open=s.units.filter(o=>o.team==='object'&&o.kind==='evidence'&&alive(o));return open.length?open:s.units.filter(t=>t.id==='boss'&&alive(t));}
@@ -93,7 +95,7 @@ function tacticOptions(s,u,a){const out=[];for(const k of skillsOf(a).filter(k=>
  if(m==='rallyCry'){const n=s.units.filter(t=>t.team==='ally'&&alive(t)&&t.id!==u.id&&!t.acted&&distance(a,t)<=2).length;const foesNear=s.units.some(t=>alive(t)&&hostile(s,a,t)&&distance(a,t)<=5);if(n>=2&&foesNear)out.push({mode:m,target:a.id,score:20+n*10,support:true});continue;}
  if(m==='pilgrimLantern'){const n=s.units.filter(t=>t.team==='ally'&&alive(t)&&t.status&&distance(a,t)<=1).length;if(n)out.push({mode:m,target:a.id,score:120*n,support:true});continue;}
  for(const t of s.units.filter(alive)){if(!validClassTarget(s,a,t,m))continue;
-  if(m==='purify'){if(t.status)out.push({mode:m,target:t.id,score:150,support:true});continue;}
+  if(m==='purify'){if(t.status&&!hostile(s,a,t))out.push({mode:m,target:t.id,score:150,support:true});continue;}
   if(m==='provoke'){const weak=s.units.filter(v=>(v.team==='civilian'||['lia','sain','elina'].includes(v.id))&&alive(v)&&distance(v,t)<=4);const reach=(t.mov||0)+(t.range?.[1]||1);if(weak.some(v=>distance(v,t)<=reach)&&a.hp>a.maxHP*.6&&!s.units.some(e=>alive(e)&&hostile(s,a,e)&&distance(a,e)===1))out.push({mode:m,target:t.id,score:5,support:true});continue;}
   const f=forecastClass(s,a,t,m),sc=strikeScore(s,u,t,{damage:f.damage,hit:f.hit,after:f.after,counter:f.counter},true);if(sc>-400)out.push({mode:m,target:t.id,score:sc+(f.after>0?STATUS_WORTH[m]||0:0)});}}
  return out;}
@@ -106,7 +108,7 @@ export function campaignAction(s,u,capture=true){
   else if(mode==='capture')score=2000;
   else if(mode==='persuade')score=1800;
   else if(mode==='rescue')score=1000;
-  else if(f.heal!==undefined)score=t.team==='civilian'&&t.hp<=t.maxHP/2?900:f.heal>=10?80+f.heal:0;
+  else if(f.heal!==undefined)score=hostile(s,a,t)?-1000:t.team==='civilian'&&t.hp<=t.maxHP/2?900:f.heal>=10?80+f.heal:0;
   else if(f.guard===true)score=0;
   else score=strikeScore(s,u,t,f,capture);
   score-=c*.5;if(s.missionId===11&&missionOf(s).map[y][x]==='r'&&s.units.some(p=>p.team==='civilian'&&alive(p)&&p.x===x&&p.y>y))score-=80;if(s.missionId===12&&watchRisk(s,x,y)&&!(mode==='attack'&&f.after===0))score-=900;if(!best||score>best.score)best={id:u.id,x,y,mode,target:t.id,score};}

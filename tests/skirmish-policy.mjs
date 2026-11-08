@@ -2,7 +2,7 @@
 // game API as the UI (moveUnit / performAction / enemy phase), including the class actions when allowed.
 import {newGame} from '../src/core/game.js';
 import {missionOf} from '../src/data/missions.js';
-import {findUnit,alive,movement,validTarget,forecast,distance,terrainCost,awardXP} from '../src/core/rules.js';
+import {findUnit,alive,movement,validTarget,forecast,distance,terrainCost,awardXP,hostile} from '../src/core/rules.js';
 import {moveUnit,performAction,canAct,canMove,beginEnemyPhase,advanceEnemy} from '../src/core/game.js';
 import {enterHub} from '../src/core/frontier.js';
 import {classActionOf,validClassTarget,classCost} from '../src/core/class-actions.js';
@@ -26,7 +26,7 @@ export function skirmishAction(s,u,{classActions=true}={}){
  for(const [p,c]of cells){const [x,y]=p.split(',').map(Number),a={...u,x,y};
   if(!u.acted){
    for(const t of s.units.filter(alive))for(const mode of ['rescue','skill','attack']){if(!validTarget(s,a,t,mode))continue;if(mode==='skill'&&a.mp<(a.cost+(a.id==='lia'&&a.hp<=a.maxHP/2&&(a.classTier||1)<2?1:0)))continue;const f=forecast(s,a,t,mode);let score;
-    if(mode==='rescue')score=900;else if(f.heal!==undefined)score=f.heal>=10?80+f.heal:-5;else if(f.guard===true)score=foes.some(e=>distance(e,a)<=4)?30:-5;
+    if(mode==='rescue')score=900;else if(f.heal!==undefined)score=f.heal>=10&&!hostile(s,a,t)?80+f.heal:-1000;else if(f.guard===true)score=foes.some(e=>distance(e,a)<=4)?30:-5;
     else{score=60+f.damage*f.hit/100*3+(f.after===0?60:0)-f.counter*1.2;if(g.targets&&!g.targets.includes(t.id))score-=25;}
     const gather=g.type==='gather'&&u.id!==m.skirmish.hero?distance(a,findUnit(s,m.skirmish.hero))*15:0;consider({x,y,mode,target:t.id,score:score-c*.3-gather});}
    if(ca&&u.mp>=classCost(ca)){
