@@ -28,6 +28,7 @@ import {LAST_MISSION} from '../data/missions.js';
 import {rulesOf} from '../core/mission-rules.js';
 import {chooseRecords15,chooseStones16} from '../core/mission-rules-v090.js';
 import {chooseOath17,chooseTruth18} from '../core/mission-rules-v091.js';
+import {chooseTeacher19,chooseSuperior20,choosePlan20} from '../core/mission-rules-v092.js';
 import {duelOpen,duelPick,DUEL_PICKS} from '../core/duel.js';
 import {setCommand,commandsFor} from '../core/command.js';
 import {chooseDeserters,chooseOrder} from '../core/mission-rules-v06.js';
@@ -147,6 +148,9 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'stones16-choice':showStones16();break;
  case 'oath17-pick':{if(!needsOath17()||!chooseOath17(state,id))break;closeModal();enqueueStory(state,`after:17:${id}`);enqueueStory(state,'after:17:eric');openStory(state);commit();break;}
  case 'truth18-pick':{if(!needsTruth18()||!chooseTruth18(state,id))break;closeModal();enqueueStory(state,`after:18:${id}`);enqueueStory(state,'after:18:next');openStory(state);commit();break;}
+ case 'teacher19-pick':{if(!needsTeacher19()||!chooseTeacher19(state,id))break;closeModal();enqueueStory(state,`after:19:${id}`);enqueueStory(state,'after:19:lia');openStory(state);commit();break;}
+ case 'superior20-pick':{if(!needsSuperior20()||!chooseSuperior20(state,id))break;closeModal();enqueueStory(state,`after:20:${id}`);openStory(state);commit();break;}
+ case 'plan20-pick':{if(!needsPlan20()||!choosePlan20(state,id))break;closeModal();enqueueStory(state,`after:20:${id}`);enqueueStory(state,'after:20:kai');enqueueStory(state,`after:20:baldrick:${state.campaign.flags.mission_13_baldrick==='halted'?'halted':'envoy'}`);enqueueStory(state,'after:20:next');openStory(state);commit();break;}
  case 'stones16-pick':{if(!needsStones16()||!chooseStones16(state,id))break;closeModal();enqueueStory(state,`after:16:${id}`);enqueueStory(state,'after:16:next');openStory(state);commit();break;}
  case 'duel-pick':{const key=state.duel?.key;if(!duelPick(state,id))break;if(state.duel.result){closeModal();if(state.duel.result!=='skipped')enqueueStory(state,`${key}:${state.duel.result}`);openStory(state);}else showDuel();commit();break;}
  case 'aren-command':{const list=commandsFor(state),i=list.indexOf(state.command);if(setCommand(state,i<0?list[0]:i+1<list.length?list[i+1]:null))commit();break;}
@@ -168,7 +172,7 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'cancel-target':ui.menu=null;ui.preview=null;render();break;
  case 'confirm-move':confirmMovement();break;
  case 'cancel-move':await cancelMovement();break;
- case 'mode':if(canAct(state,findUnit(state,ui.selected))||id==='move'&&canMove(state,findUnit(state,ui.selected))||state.screen==='deployment'){if((id==='skill'&&ui.selected==='eric'||['bulwark','overwatch','rallyCry','whirlwind','pilgrimLantern','tool:drum'].includes(id))&&state.screen==='battle'){ui.mode=id;ui.preview=ui.selected;ui.menu='forecast';ui.notice=null;ui.inspected=null;ui.phaseConfirm=false;render();break;}ui.mode=id;ui.menu=null;ui.preview=null;ui.notice=null;ui.inspected=null;ui.phaseConfirm=false;render();}break;
+ case 'mode':ui.swapFirst=null;if(canAct(state,findUnit(state,ui.selected))||id==='move'&&canMove(state,findUnit(state,ui.selected))||state.screen==='deployment'){if((id==='skill'&&ui.selected==='eric'||['bulwark','overwatch','rallyCry','whirlwind','pilgrimLantern','tool:drum'].includes(id))&&state.screen==='battle'){ui.mode=id;ui.preview=ui.selected;ui.menu='forecast';ui.notice=null;ui.inspected=null;ui.phaseConfirm=false;render();break;}ui.mode=id;ui.menu=null;ui.preview=null;ui.notice=null;ui.inspected=null;ui.phaseConfirm=false;render();}break;
  case 'undo':if(undoMove(state,ui.selected)){ui.menu='root';ui.mode='choose';ui.preview=null;commit();}break;
  case 'wait':await execute('wait');break;case 'item':await execute('item');break;
  case 'confirm':if(ui.preview)await execute(ui.mode,ui.preview);break;
@@ -177,7 +181,7 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'end-phase':{ui.menu=null;const n=state.units.filter(u=>canAct(state,u)).length;if(n){ui.turnPrompt='early';ui.preview=null;render();}else await startEnemyPhaseUI();break;}
  case 'dismiss-turn-prompt':ui.turnPrompt=false;syncTurnPrompt();break;
  case 'confirm-phase':ui.turnPrompt=false;ui.menu=null;ui.phaseConfirm=false;await startEnemyPhaseUI();break;
- case 'next-mission':{if(state.missionId===4&&state.frontier.phase==='aftermath'&&!state.practice&&!state.campaign.choices?.m04_records_choice){showRecordsChoice();break;}if(state.missionId===7&&needsDeserters()){showDeserterChoice();break;}if(needsOath11()){showOath11();break;}if(needsRecords12()){showRecords12();break;}if(needsRecords15()){showRecords15();break;}if(needsStones16()){showStones16();break;}if(needsOath17()){showOath17();break;}if(needsTruth18()){showTruth18();break;}if(state.missionId===6&&!state.practice&&!state.campaign.choices?.m06_oath){offerOath();break;}const next=state.frontier.phase==='aftermath'&&state.missionId<LAST_MISSION?newGame(state.initialSeed+1,state.campaign,state.missionId+1):nextMission(state);if(next){state=next;ui.selected='eric';ui.menu=null;ui.preview=null;enterHub(state);renderer.clearPresentation();renderer.reset();commit();}break;}
+ case 'next-mission':{if(state.missionId===4&&state.frontier.phase==='aftermath'&&!state.practice&&!state.campaign.choices?.m04_records_choice){showRecordsChoice();break;}if(state.missionId===7&&needsDeserters()){showDeserterChoice();break;}if(needsOath11()){showOath11();break;}if(needsRecords12()){showRecords12();break;}if(needsRecords15()){showRecords15();break;}if(needsStones16()){showStones16();break;}if(needsOath17()){showOath17();break;}if(needsTruth18()){showTruth18();break;}if(needsTeacher19()){showTeacher19();break;}if(needsSuperior20()){showSuperior20();break;}if(needsPlan20()){showPlan20();break;}if(state.missionId===6&&!state.practice&&!state.campaign.choices?.m06_oath){offerOath();break;}const next=state.frontier.phase==='aftermath'&&state.missionId<LAST_MISSION?newGame(state.initialSeed+1,state.campaign,state.missionId+1):nextMission(state);if(next){state=next;ui.selected='eric';ui.menu=null;ui.preview=null;enterHub(state);renderer.clearPresentation();renderer.reset();commit();}break;}
  case 'replay':case 'fresh-replay':ui.menu=null;ui.pendingMove=null;state=replay(state,action==='fresh-replay');enterHub(state);ui.selected='eric';ui.mode='choose';ui.preview=null;renderer.reset();commit();break;
  case 'save':if(save().ok)toast('전투·성장·RNG 상태를 저장했습니다.');break;
  case 'load':{const r=loadGame(storage);if(r.state){ui.menu=null;ui.pendingMove=null;state=r.state;ui.phaseConfirm=false;ui.notice=null;ui.inspected=null;ui.preview=null;ui.mode='choose';ui.selected='eric';closeModal();render();if(r.warning)toast(r.warning);if(state.phase==='enemy'&&state.screen==='battle')enemyLoop();}else toast(r.warning||'저장이 없습니다.');break;}
@@ -220,8 +224,11 @@ canvas.addEventListener('pointerup',async e=>{touches.delete(e.pointerId);if(pin
  const terrain=terrainAt(tile.x,tile.y,state);if(terrain)$('#terrain-readout').textContent=terrainSummary(state,tile.x,tile.y,findUnit(state,ui.selected));
  if(state.screen!=='battle'||state.phase!=='player')return;if(ui.pendingMove){ui.menu='move-confirm';render();return;}
  if(canAct(state,u)&&t?.team==='object'&&ui.mode!=='search'&&validTarget(state,u,t,'search'))ui.mode='search';if(canAct(state,u)&&t?.team==='civilian'&&ui.mode!=='rescue'&&validTarget(state,u,t,'rescue'))ui.mode='rescue';
+ // v0.9.2 Shadow Dance (Kai's ④): the first tap picks one unit, the second its partner (forecast), the third confirms; tapping the first again lets it go.
+ if(canAct(state,u)&&ui.mode==='shadowDance'&&t){if(!ui.swapFirst||ui.swapFirst===t.id){const again=ui.swapFirst===t.id;ui.swapFirst=null;ui.preview=null;if(ui.menu==='forecast')ui.menu=null;if(!again&&validClassTarget(state,u,t,ui.mode)){ui.swapFirst=t.id;ui.notice=`그림자 군무 · ${t.name}과(와) 자리를 바꿀 유닛을 고르세요.`;}render();return;}
+  const pair=`${ui.swapFirst}|${t.id}`;if(validClassTarget(state,u,pair,ui.mode)){if(ui.menu==='forecast'&&ui.preview===pair&&!ui.busy){ui.swapFirst=null;await execute(ui.mode,pair);return;}ui.preview=pair;ui.menu='forecast';ui.inspected=null;ui.notice=null;render();return;}}
  if(canAct(state,u)&&tileTarget(ui.mode)){const k=`${tile.x},${tile.y}`;if(validClassTarget(state,u,{x:tile.x,y:tile.y},ui.mode)){if(ui.menu==='forecast'&&ui.preview===k&&!ui.busy){await execute(ui.mode,k);return;}ui.preview=k;ui.menu='forecast';ui.inspected=null;ui.notice=null;render();return;}}
- if(canAct(state,u)&&isClassMode(ui.mode)&&!tileTarget(ui.mode)&&t&&validClassTarget(state,u,t,ui.mode)){if(ui.menu==='forecast'&&ui.preview===t.id&&!ui.busy){await execute(ui.mode,t.id);return;}ui.preview=t.id;ui.menu='forecast';ui.inspected=null;ui.notice=null;render();return;}
+ if(canAct(state,u)&&isClassMode(ui.mode)&&ui.mode!=='shadowDance'&&!tileTarget(ui.mode)&&t&&validClassTarget(state,u,t,ui.mode)){if(ui.menu==='forecast'&&ui.preview===t.id&&!ui.busy){await execute(ui.mode,t.id);return;}ui.preview=t.id;ui.menu='forecast';ui.inspected=null;ui.notice=null;render();return;}
  if(canAct(state,u)&&['attack','skill','rescue','capture','search','persuade'].includes(ui.mode)&&t&&validTarget(state,u,t,ui.mode)){if(ui.menu==='forecast'&&ui.preview===t.id&&!ui.busy){await execute(ui.mode,ui.preview);return;}ui.preview=t.id;ui.menu='forecast';ui.inspected=null;ui.notice=null;render();return;}
  if(t?.team==='ally'){
   if(t.id===ui.selected&&ui.mode==='move'){ui.mode='choose';ui.menu='root';ui.preview=null;ui.notice='제자리에서 행동 · 이동을 사용하지 않았습니다. 공격, 스킬 또는 대기를 선택하세요.';render();return;}
@@ -243,7 +250,7 @@ window.AshenCrown=Object.freeze({version:VERSION,audio:()=>audio.diagnostics(),s
 // v0.9.1 feedback (2026-11-06): an empty chest shows the room's own painted chest, open and empty, instead of the
 // game-drawn potion placeholder; the vector chest is the fallback where a room has no painted chest.
 // pack F2 (D-088): the elder who speaks at the keep (M17) and in the forest (M18) is the last guardian and the forest elder.
-const ELDER_NAMES={17:'마지막 수호자',18:'숲지기 장로'};
+const ELDER_NAMES={17:'마지막 수호자',18:'숲지기 장로',19:'늙은 기록관',20:'늙은 기록관'}; // v0.9.2: back in the lower city
 function emptyChestArt(chestId){const style=chestStyle(frontierRoom(state.frontier),chestId),src=paintedChestSrc(style,'open');
  return src?`<img class="chest-empty painted" src="${src}" width="96" height="96" alt="" aria-hidden="true" decoding="async">`:`<canvas class="chest-empty" width="64" height="64" data-chest="${esc(style)}" aria-hidden="true"></canvas>`;}
 // v0.4 feedback: classic SRPG dialogue window — painted bust overlapping a translucent box, name in
@@ -331,7 +338,7 @@ function showOath11(){if(!needsOath11())return;modal('루시안의 제안',`<p>�
  frontierButton('oath11-pick','<b>맹세를 권한다</b> — 피난민이 성소에 든다 (성화 교단 신뢰 +1)','oath',false,'primary')+frontierButton('oath11-pick','<b>군단이 돌본다</b> — 맹세를 강요하지 않는다','legion',false,'primary')+'<button data-do="close-modal">조금 더 생각한다</button>');}
 function showRecords12(){if(!needsRecords12())return;const copy=!!state.campaign.flags.mission_12_copy_ready;modal('금지 기록의 행방',`<p>수도원에서 지켜 낸 기록(장부 기록·봉인술 연구·교단 명부)을 어떻게 할까요? 성화 교단의 신뢰와 이네스의 마음이 달라집니다. 고른 뒤에는 바꿀 수 없습니다.</p>${copy?'':'<p class="promo-note">몰래 베끼기는 리아와 카이가 이번 전투에서 모두 기록을 조사했을 때만 고를 수 있습니다.</p>'}`,
  frontierButton('records12-pick','<b>교단에 돌려준다</b> — 성화 교단 신뢰 +1','return',false,'primary')+frontierButton('records12-pick','<b>군단이 가져간다</b> — 실마리를 지킨다 (신뢰 −1)','take',false,'primary')+frontierButton('records12-pick','<b>리아·카이가 베끼고 돌려준다</b> — 신뢰 변화 없음','copy',!copy,'primary')+'<button data-do="close-modal">조금 더 생각한다</button>');}
-function offerCampChoice(){if(state.screen!=='exploration'||state.narrative.active||$('#modal-root').children.length)return;const k=needsOath11()?'oath11':needsRecords12()?'records12':needsRecords15()?'records15':needsStones16()?'stones16':needsOath17()?'oath17':needsTruth18()?'truth18':null;if(!k||ui.campOffered===`${k}:${state.initialSeed}`)return;ui.campOffered=`${k}:${state.initialSeed}`;if(k==='oath11')showOath11();else if(k==='records12')showRecords12();else if(k==='records15')showRecords15();else if(k==='oath17')showOath17();else if(k==='truth18')showTruth18();else showStones16();}
+function offerCampChoice(){if(state.screen!=='exploration'||state.narrative.active||$('#modal-root').children.length)return;const k=needsOath11()?'oath11':needsRecords12()?'records12':needsRecords15()?'records15':needsStones16()?'stones16':needsOath17()?'oath17':needsTruth18()?'truth18':needsTeacher19()?'teacher19':needsSuperior20()?'superior20':needsPlan20()?'plan20':null;if(!k||ui.campOffered===`${k}:${state.initialSeed}`)return;ui.campOffered=`${k}:${state.initialSeed}`;if(k==='oath11')showOath11();else if(k==='records12')showRecords12();else if(k==='records15')showRecords15();else if(k==='oath17')showOath17();else if(k==='truth18')showTruth18();else if(k==='teacher19')showTeacher19();else if(k==='superior20')showSuperior20();else if(k==='plan20')showPlan20();else showStones16();}
 
 // v0.9.0 (D-079): the M15 records and the M16 ward stones are decided in the camp (fixed once chosen; feed ACT IV, OPEN).
 function needsRecords15(){return state.missionId===15&&!state.practice&&state.frontier?.phase==='aftermath'&&state.campaign.completed.includes(15)&&!state.campaign.choices?.m15_records;}
@@ -343,6 +350,16 @@ function needsOath17(){return state.missionId===17&&!state.practice&&state.front
 function needsTruth18(){return state.missionId===18&&!state.practice&&state.frontier?.phase==='aftermath'&&state.campaign.completed.includes(18)&&!state.campaign.choices?.m18_truth;}
 function showOath17(){if(!needsOath17())return;modal('맹세의 서',`<p>「맹세의 서」에는 처음의 수호자들이 스스로 적은 이름과 맹세가 있습니다. 결계가 처음엔 강요 없는 맹세로 섰다는 증거입니다. 이 책을 어떻게 할까요? 고른 뒤에는 바꿀 수 없습니다.</p>`,
  frontierButton('oath17-pick','<b>수호자에게 남긴다</b> — 다음 수호자를 위해 성채에 둔다','leave',false,'primary')+frontierButton('oath17-pick','<b>군단이 가져간다</b> — 왕도 사람들 앞의 증거로 삼는다','take',false,'primary')+'<button data-do="close-modal">조금 더 생각한다</button>');}
+// v0.9.2 (D-089): Lia's teacher after M19; Kai's old superior and the plan after M20 (fixed once chosen; feed ACT IV, OPEN).
+function needsTeacher19(){return state.missionId===19&&!state.practice&&state.frontier?.phase==='aftermath'&&state.campaign.completed.includes(19)&&!state.campaign.choices?.m19_teacher;}
+function needsSuperior20(){return state.missionId===20&&!state.practice&&state.frontier?.phase==='aftermath'&&state.campaign.completed.includes(20)&&!state.campaign.choices?.m20_superior;}
+function needsPlan20(){return state.missionId===20&&!state.practice&&state.frontier?.phase==='aftermath'&&state.campaign.completed.includes(20)&&!!state.campaign.choices?.m20_superior&&!state.campaign.choices?.m20_plan;}
+function showTeacher19(){if(!needsTeacher19())return;modal('리아의 스승',`<p>리아의 스승은 재상부의 의식을 설계했지만 마지막 장은 쓰지 않았습니다. 이 의식을 누가 시켰는지 말할 수 있는 증인이기도 합니다. 리아가 정합니다. 고른 뒤에는 바꿀 수 없습니다.</p>`,
+ frontierButton('teacher19-pick','<b>데려간다</b> — 증인으로 군단이 지킨다','take',false,'primary')+frontierButton('teacher19-pick','<b>두고 간다</b> — 이름을 잃은 이들을 돌보겠다는 스승의 뜻을 따른다','leave',false,'primary')+'<button data-do="close-modal">조금 더 생각한다</button>');}
+function showSuperior20(){if(!needsSuperior20())return;modal('회색 장부의 우두머리',`<p>카이의 옛 상관이 칼을 거두었습니다. 그를 어떻게 할지는 카이에게 맡깁니다. 고른 뒤에는 바꿀 수 없습니다.</p>`,
+ frontierButton('superior20-pick','<b>놓아준다</b> — 회색 장부의 남은 사람들을 거두게 한다','release',false,'primary')+frontierButton('superior20-pick','<b>재판에 넘긴다</b> — 카이도 증인으로 선다','trial',false,'primary')+'<button data-do="close-modal">조금 더 생각한다</button>');}
+function showPlan20(){if(!needsPlan20())return;modal('통제된 전쟁의 계획서',`<p>재상부가 세 깃발에 물자를 대며 전쟁을 끌어 온 계획서입니다. 사본을 세 깃발에 보낼까요, 군단이 지닐까요? 각 깃발이 무엇을 할지는 각자의 몫입니다. 고른 뒤에는 바꿀 수 없습니다.</p>`,
+ frontierButton('plan20-pick','<b>세 깃발에 사본을 보낸다</b> — 각자 읽고 판단하게 한다','send',false,'primary')+frontierButton('plan20-pick','<b>군단이 지닌다</b> — 광장에서 모두 앞에 읽는다','keep',false,'primary')+'<button data-do="close-modal">조금 더 생각한다</button>');}
 function showTruth18(){if(!needsTruth18())return;modal('숲의 값',`<p>숲지기들은 해마다 겨울이면 한 해를 잊습니다. 그것이 이 숲의 결계를 세우는 값입니다. 세인이 장로에게 그 진실을 말할까요? 고른 뒤에는 바꿀 수 없습니다.</p>`,
  frontierButton('truth18-pick','<b>진실을 말한다</b> — 숲지기들이 스스로 고를 수 있게 한다','tell',false,'primary')+frontierButton('truth18-pick','<b>말하지 않는다</b> — 지금의 평화를 지킨다','keep',false,'primary')+'<button data-do="close-modal">조금 더 생각한다</button>');}
 function showStones16(){if(!needsStones16())return;modal('잊힌 전장의 결계석',`<p>결계석은 이 들판에서 죽은 이들과 그들을 기억하던 사람들의 기억을 품고 있습니다. 돌을 부수면 근처 마을의 기억이 조금씩 돌아오지만 이 땅의 결계가 약해집니다. 남기면 결계는 그대로이고 기억은 돌아오지 않습니다. 고른 뒤에는 바꿀 수 없습니다.</p>`,
@@ -375,7 +392,7 @@ function offerAdvisor(){
  const f=state.frontier;if(state.screen!=='exploration'||!f.advisorPending||state.narrative.active||$('#modal-root').children.length)return;
  if(!interactions(state).some(n=>n.id==='advisor'&&n.npc)){f.advisorPending=false;syncFrontier(state);save();return;}
  const done=f.phase==='aftermath';
- modal('군사 리아',`<div class="strategist-line">${portrait(state.units.find(u=>u.id==='lia'),'card-sprite')}<p>${done?state.missionId===LAST_MISSION?'숲이 지켜졌어요. 다음은 왕도 지하예요. M19 금지된 의식은 다음 업데이트에서 이어져요.':'동료들 먼저 둘러보고, 다음 이야기를 골라요.':'에릭, 작전 회의 시작할까요?'}</p></div>`,
+ modal('군사 리아',`<div class="strategist-line">${portrait(state.units.find(u=>u.id==='lia'),'card-sprite')}<p>${done?state.missionId===LAST_MISSION?'끈의 주인을 찾았어요. 다음은 궁 아래, 왕관의 심장이에요. M21 마지막 국왕은 다음 업데이트에서 이어져요.':'동료들 먼저 둘러보고, 다음 이야기를 골라요.':'에릭, 작전 회의 시작할까요?'}</p></div>`,
  (!done?frontierButton('advisor-operation','다음 작전을 듣는다','',false,'primary'):'')+frontierButton('mission-status','현재 임무를 확인한다')+frontierButton('close-modal','아직 준비가 필요하다'));
 }
 
@@ -402,7 +419,7 @@ async function frontierDispatch(action,id=''){
  if(action==='advisor-locate')await prepareCouncil();
  if(action==='advisor-operation'){if(openCouncil(state)){closeModal();commit();}else offerCouncilRecovery();}
  if(action==='advisor-recover'){if(recoverCouncil(state)){closeModal();commit();}}
- if(action==='mission-status'){const intel=councilInfo(state);modal('현재 임무',`<p>${esc(missionOf(state).title)}</p><p>${f.phase==='aftermath'?state.missionId===LAST_MISSION?'ACT III 2부 완결 · 불타지 않는 숲. 다음 이야기 M19 금지된 의식 — 다음 업데이트.':'전투를 마쳤습니다. 동료를 살핀 뒤 다음 이야기를 선택하세요.':esc(intel.plan)}</p>`,frontierButton('advisor-menu','작전 대화로 돌아가기'));}
+ if(action==='mission-status'){const intel=councilInfo(state);modal('현재 임무',`<p>${esc(missionOf(state).title)}</p><p>${f.phase==='aftermath'?state.missionId===LAST_MISSION?'ACT III 3부 완결 · 왕관의 그림자. 다음 이야기 M21 마지막 국왕 — 다음 업데이트.':'전투를 마쳤습니다. 동료를 살핀 뒤 다음 이야기를 선택하세요.':esc(intel.plan)}</p>`,frontierButton('advisor-menu','작전 대화로 돌아가기'));}
  if(action==='advisor-menu'){closeModal();offerAdvisor();}
  if(action==='enter-building'){closeModal();if(enterInterior(state,id)){hubCamera.reset();commit();}}
  if(action==='walk'){const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[id];if(d)walkAren(...d);}

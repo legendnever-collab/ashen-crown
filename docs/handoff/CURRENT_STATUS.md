@@ -103,3 +103,9 @@ Next: user play-test of the promotion flow; then Phase F (polish: art fallback l
 ### v0.5.0 E2 world map & hubs, Phase F presentation, Phase G release — 2026-10-20 KST
 E2 (D-052/053): world map of Erdia (new-game chronicle, march map on every hub change, menu view, regions revealed when met) and six painted hubs (village day/raid, garrison, night bivouac with a wandering merchant, reclaimed fortress, oath camp) from the user's ChatGPT packs (first upload truncated; Part 2 repackaged by SHA256). Phase F: class-action flourishes, one-time promotion card, five original tracks, art hash test. Phase G: browser migration with real v0.4.0 saves (tests/migration-v040.mjs), build title, packaging, release notes. The user approved the merge in chat on 2026-10-20 20:45 KST.
 - 2026-10-21: v0.5.0 merged (PR #11 → main 33577c4; PR CI 39423448683 and main CI 39424911114 5/5). Tag v0.5.0 and the GitHub Release (https://github.com/legendnever-collab/ashen-crown/releases/tag/v0.5.0) published by the one-time workflow release-v050-once.yml (run 39574780277, removed); asset digests equal the SHA256 manifest. Next: v0.6.0 ACT II design on feature/v0.6-act2-three-banners.
+
+### v0.9.2 「그림자」 release candidate (2026-11-08, D-089)
+- Branch feature/v0.9.2-shadow, built on PR #20; not merged before the user plays and approves it (PR #20 first).
+- M19 금지된 의식 and M20 왕관의 그림자 (src/core/mission-rules-v092.js), Lia's and Kai's awakening (trials 109, 114; ④ 작은 결계 and 그림자 군무), 「한 사람도 두고 가지 않는다」, the capital as the M19–M20 hub, two treasures, schema 14.
+- Validated on HTML SHA256 c0d20507…: 411 unit tests, 54-suite browser matrix (2,113 assertions; e2e and legion passed on a rerun — reasons in the test report), M19 27/27, M20 27/27, ACT I–II balance byte-identical.
+- Art: temporary looks for the new people, props and the awakened Lia and Kai; ACT III art pack F3 work order in docs/v0.9.2/art/act3-f3-work-pack (24 images, parts A–C).

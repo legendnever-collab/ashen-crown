@@ -12,7 +12,7 @@ for(let seed=1;seed<400&&!pick;seed++){const c=structuredClone(actOneCamp(202610
  for(const b of currentHub(s).buildings.filter(b=>b.type==='chest')){if(chestReward(s.initialSeed,chestKey(s,b.chestId)).kind!=='empty')continue;
   for(const [dx,dy] of [[0,1],[1,0],[-1,0],[0,-1]]){const x=b.x+dx,y=b.y+dy;if(walkable(s,x,y)){s.frontier.x=x;s.frontier.y=y;const it=interactions(s).find(n=>n.action==='chest'&&n.chestId===b.chestId);if(it){pick={s,id:it.id,seed};break;}}}if(pick)break;}}
 console.log('seed',pick?.seed,'place',pick?.id);
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.9.1.html').href,b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let ok=0,bad=0;const check=(n,c)=>{console.log((c?'PASS ':'FAIL ')+n);c?ok++:bad++;};
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.9.2.html').href,b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let ok=0,bad=0;const check=(n,c)=>{console.log((c?'PASS ':'FAIL ')+n);c?ok++:bad++;};
 try{const ctx=await b.newContext({viewport:{width:1440,height:900}});const p=await ctx.newPage();const errs=[];p.on('pageerror',e=>errs.push(String(e)));await p.goto(url);
  const press=async(a,id)=>{await p.locator(id?`[data-do="${a}"][data-id="${id}"]`:`[data-do="${a}"]`).first().click();await p.waitForTimeout(250);};
  await press('new');await drainStory(p);await press('menu');await press('backup');await p.fill('#backup-text',serialize(pick.s));await press('restore');await drainStory(p);await p.waitForTimeout(800);

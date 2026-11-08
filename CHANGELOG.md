@@ -1,3 +1,13 @@
+# v0.9.2 — The Shadow · ACT III part 3: M19 금지된 의식, M20 왕관의 그림자, Lia's and Kai's awakening (release candidate)
+- Release candidate on feature/v0.9.2-shadow, built on PR #20; not merged before the user plays and approves it. D-089 (within D-079 / docs/v0.9.0/ACT3_DESIGN.md §4.2); the new people, props and awakened looks use temporary art until ACT III art pack F3.
+- M19 (src/core/mission-rules-v092.js): four ritual circles drain their captives' memory from TURN 3 (a ritualist within 3); Lia within 2 or her runes stall a circle; a ritualist beside its circle keeps the seal shut; 봉인 해제 (search) on all four wins; two captives forgotten lose; camp choice on Lia's teacher (take / leave), Lia's word.
+- M20: the archive (clerks light cabinets from TURN 3; a lit cabinet burns after the next enemy phase unless searched) and the burning lower city (spread and leaps on TURNs 3/5/7, residents hurt in the fire, evacuation by rescue); grey cloaks' shade (first blow misses); Kai's duel at TURN 2; Bellard's first lines; camp choices on the old superior (release / trial) and the plan (send / keep); Kai's word, Baldrick at the gate, the M21 teaser.
+- Awakening of Lia (결계술사, ④ 작은 결계 — src/core/wards.js) and Kai (그림자 군주, ④ 그림자 군무 — two-tap pair targeting); trials 109 and 114.
+- Aren's 「한 사람도 두고 가지 않는다」 (civilians and allied units −30% damage) from M19 (command.js commandShield in strikeStats).
+- The capital as the M19–M20 hub (world:capital:return, two world sites, the archivist's own bust and figure), two treasures and hidden objectives, rewards, supply carriers, music mapping, schema 14 (imports 0–13; real v0.9.1 saves in tests/fixtures/v091).
+- Tests: shadow-v092, mission19, mission20, migration-v091 unit suites; act3c-e2e and migration-v091 browser suites (CI group act3); act3 balance extended through M20 with the ≥ 90% gate; trials record ④ use.
+- ACT III art pack F3 work order: scripts/make-act3-f3-art-pack.py → docs/v0.9.2/art/act3-f3-work-pack (24 images in three parts).
+
 # v0.9.1 play-test fixes and the ACT III art pack F2 work order (D-087)
 - v0.9.1 played and approved by the user; PR #19 merged to main as 184536a.
 - An empty chest shows the room's own painted chest, open and empty, instead of the game-drawn potion placeholder (src/ui/app.js, src/render/chest-art.js).

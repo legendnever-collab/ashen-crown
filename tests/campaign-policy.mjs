@@ -32,6 +32,15 @@ function act2Goals(s,u){const live=t=>alive(t)&&t.team==='enemy';
   if(sleeping.length&&['kai','thea','elina','dario','ines'].includes(u?.id))return [[...sleeping].sort((a,b)=>distance(u,a)-distance(u,b))[0]];return near.length?near:s.units.filter(live);}
  if(s.missionId===18){const keepers=s.units.filter(c=>c.kind==='forester'&&alive(c)&&!c.rescued),trees=s.units.filter(t=>t.kind==='wardTree'&&alive(t)),near=s.units.filter(e=>live(e)&&trees.some(t=>distance(e,t)<=4));
   if(keepers.length&&['kai','thea'].includes(u?.id))return [[...keepers].sort((a,b)=>distance(u,a)-distance(u,b))[0]];return near.length?near:s.units.filter(live);}
+ // v0.9.2 M19: Lia goes for the nearest lit circle (she stalls it); a ritualist beside its circle keeps the seal shut, so the
+ // rest go for those ritualists first and Kai and Elina for circles left open; everyone breaks a seal when beside an open one. M20: Lia, Kai and Erik take the archive (cabinets, then the clerks beside
+ // them); everyone else goes south for the residents, then whoever threatens them.
+ if(s.missionId===19){const lit=s.units.filter(o=>o.kind==='ritualCircle'&&!o.inert),rit=s.units.filter(r=>r.kind==='ritualist'&&live(r)&&lit.some(c=>distance(r,c)<=3));
+  const guard=r=>lit.some(c=>distance(r,c)<=1),open=lit.filter(c=>!rit.some(r=>distance(r,c)<=1));
+  if(lit.length&&u?.id==='lia')return [[...lit].sort((a,b)=>distance(u,a)-distance(u,b))[0]];if(open.length&&['kai','elina'].includes(u?.id))return [[...open].sort((a,b)=>distance(u,a)-distance(u,b))[0]];
+  if(rit.some(guard))return [...rit.filter(guard),...open];if(rit.length)return [...rit,...open];return lit.length?lit:s.units.filter(live);}
+ if(s.missionId===20){const cabs=s.units.filter(o=>o.kind==='cabinet'&&!o.inert),clerks=s.units.filter(c=>c.clerk&&live(c)),folk=s.units.filter(r=>r.kind==='resident'&&alive(r)),near=s.units.filter(e=>live(e)&&folk.some(r=>distance(e,r)<=4));
+  if(cabs.length&&['lia','kai','eric'].includes(u?.id))return [...cabs,...clerks.filter(c=>cabs.some(o=>distance(c,o)<=2))];if(folk.length)return [...folk,...near];return cabs.length?cabs:s.units.filter(live);}
  // v0.7.1 M13: Erik (and Thea once) walk to Baldrick to persuade him; the rest guard the camp. M14: guard the leaders.
  if(s.missionId===13){const boss=s.units.find(t=>t.id==='boss'&&live(t)),camp=s.units.filter(v=>v.team==='civilian'&&alive(v)),near=s.units.filter(e=>live(e)&&camp.some(v=>distance(e,v)<=4));
   if(boss&&(u?.id==='eric'||u?.id==='thea'&&!s.missionState.thea))return [boss];if(near.length)return near;return camp.length?camp:s.units.filter(live);}

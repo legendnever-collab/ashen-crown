@@ -98,7 +98,10 @@ export const CATALOG_TREASURES=[
  cTreasure('mistLantern','잔영의 등불','Lantern of Echoes','안개 속에서도 사거리가 줄지 않음 · RES +2','M16 숨은 전과'),
  // v0.9.1 (D-084, PROPOSED)
  cTreasure('oathBadge','맹세의 휘장','Badge of the Oath','전투마다 한 번, 쓰러질 피해를 받아도 HP 1로 버틴다 · DEF +1','M17 숨은 전과'),
- cTreasure('groveLeaf','고목의 잎','Leaf of the Ward Tree','아군 턴마다 HP +4 · RES +2','M18 숨은 전과')
+ cTreasure('groveLeaf','고목의 잎','Leaf of the Ward Tree','아군 턴마다 HP +4 · RES +2','M18 숨은 전과'),
+ // v0.9.2 (D-089, PROPOSED)
+ cTreasure('teacherQuill','스승의 깃펜','Teacher\'s Quill','아군 턴마다 MP +2 · MAG +2','M19 숨은 전과'),
+ cTreasure('greyLedger','회색 장부','The Grey Ledger','이 장수가 공격한 적은 반격하지 못함 · SPD +2','M20 숨은 전과')
 ];
 const cSkill=(id,hero,slot,ko,en,cost,effect)=>({id,kind:'skill',hero,slot,ko,en,cost,effect});
 export const CATALOG_SKILLS=[
@@ -120,6 +123,9 @@ export const CATALOG_SKILLS=[
  // v0.9.1 awakening ④ (Tier 3, once a battle; ACT3_DESIGN §6.2, PROPOSED)
  cSkill('oathWall','eric',4,'맹세의 성벽','Wall of the Oath',6,'전투당 1회 · 다음 아군 턴까지 2칸 안 아군·주민이 받는 피해의 절반을 에릭이 대신 받는다 · 그동안 에릭은 HP 1 아래로 내려가지 않는다'),
  cSkill('blockade','elina',4,'퇴로 봉쇄','Blockade',6,'전투당 1회 · 5칸 안의 칸을 중심으로 십자 5칸 봉쇄 · 다음 적 턴에 그 안의 적은 나가지 못하고, 움직이면 화살을 맞는다'),
+ // v0.9.2 (D-089, PROPOSED): Lia and Kai
+ cSkill('smallWard','lia',4,'작은 결계','Little Ward',6,'전투당 1회 · 4칸 안의 칸을 중심으로 3×3 결계를 2턴 친다 · 적은 들어오지 못하고, 안의 아군은 RES +5 · 이미 안에 있던 적은 밖으로 밀려난다'),
+ cSkill('shadowDance','kai',4,'그림자 군무','Shadow Dance',6,'전투당 1회 · 카이 4칸 안의 두 유닛(아군·적 아무나)의 자리를 바꾼다 · 옮겨진 적은 다음 적 턴에 행동하지 못한다'),
  cSkill('dawnPrayer','sain',4,'새벽의 기도','Dawn Prayer',8,'전투당 1회 · 이번 전투에서 쓰러진 아군 한 명을 세인 곁에 HP 1/3로 일으킨다'),
  cSkill('charge','thea',1,'돌격','Charge',3,'근접 피해 +4, 3칸 이상 달리면 +7, 반격 없음'),
  cSkill('breakthrough','thea',2,'돌파','Breakthrough',3,'근접 공격 후 1칸 밀어낸다 · 막히면 피해 +3'),

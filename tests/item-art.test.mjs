@@ -31,7 +31,7 @@ test('ACT III pack F1: sheet H gives the capital\'s six tier III pieces and the 
 test('ACT III pack F2: sheet I paints the three ④ ultimates, the two v0.9.1 treasures and the basic potion',()=>{
  assert.equal(cellsF2.length,6);assert.deepEqual(logF2.map(r=>r.id).sort(),cellsF2.map(c=>c.id).sort());
  for(const r of logF2){const b=fs.readFileSync(`src/assets/items/${r.id}.webp`);assert.equal(crypto.createHash('sha256').update(b).digest('hex'),r.webp_sha256,r.id);assert.equal(r.sheet,'I');}
- for(const k of SKILLS.filter(k=>k.slot===4))assert.ok(logF2.some(r=>r.id===k.id),`④ ${k.id}`);for(const id of ['oathBadge','groveLeaf'])assert.ok(GEAR[id]&&logF2.some(r=>r.id===id),id);
+ for(const k of SKILLS.filter(k=>k.slot===4&&['eric','elina','sain'].includes(k.hero)))assert.ok(logF2.some(r=>r.id===k.id),`④ ${k.id}`); // Lia's and Kai's ④ (v0.9.2) wait for pack F3for(const id of ['oathBadge','groveLeaf'])assert.ok(GEAR[id]&&logF2.some(r=>r.id===id),id);
  assert.ok(logF2.some(r=>r.id==='potion'),'the basic potion');
 });
 

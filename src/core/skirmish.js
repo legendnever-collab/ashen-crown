@@ -10,8 +10,8 @@ import {promotionStatus,applyClass,act1Complete,classTierOf} from './progression
 import {enqueueStory} from './narrative.js';
 
 export const TRIAL_MISSION={eric:101,elina:102,lia:103,sain:104,kai:105,thea:111,dario:112,ines:113},DRILL_MISSION=110;
-// v0.9.1 awakening trials (Tier 3; ACT3_DESIGN §6). Lia and Kai follow in v0.9.2.
-export const AWAKEN_MISSION={elina:106,eric:107,sain:108};
+// v0.9.1 awakening trials (Tier 3; ACT3_DESIGN §6); v0.9.2: Lia (109) and Kai (114).
+export const AWAKEN_MISSION={elina:106,eric:107,sain:108,lia:109,kai:114};
 // The trial a hero faces next: tier 2 (promotion) or tier 3 (awakening).
 export const trialMissionOf=(s,id)=>{const n=promotionStatus(s,id).next;return n?.tier===3?AWAKEN_MISSION[id]:n?.tier===2?TRIAL_MISSION[id]:null;};
 export const skirmishOf=s=>MISSIONS[s?.missionId]?.skirmish||null;

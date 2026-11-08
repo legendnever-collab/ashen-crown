@@ -242,6 +242,13 @@ export const CAST={
  greyCaptain:{name:'재상부 대장',skin:'pale',hair:'#2a2a2e',style:'short',hood:'#4a4c52',body:'plate',metal:'#7a7e86',coat:'#3a3c42',trim:'#c9c4b0',cape:'#5a5c62',legs:'#2a2a2e',boots:'#1c1c20',weapon:'sword',eye:'#3a3a40'},
  forester:{name:'숲지기',skin:'warm',hair:'#5a3a20',style:'long',body:'robe',coat:'#4a6a3a',trim:'#c9b07a',legs:'#3a4a2a',boots:'#3a2a1a',weapon:'staff',orb:'#8ad08a',eye:'#3a2a1a'},
  guardianElder:{name:'마지막 수호자',skin:'fair',hair:'#e0dcd4',style:'bald',body:'plate',metal:'#8a8e96',coat:'#4a5a6a',trim:'#c9b07a',legs:'#3a3a48',boots:'#2a2a30',weapon:'spear',beard:'long',beardColor:'#e0dcd4',eye:'#4a4a50',stoop:true},
+ // v0.9.2 (D-089, temporary looks until art pack F3; never labelled finished): Lia's teacher, Kai's old superior, the
+ // chancellery's ritualists and rite knights; Bellard's painted sheet (pack F1) with a vector fallback.
+ liaTeacher:{name:'리아의 스승',skin:'fair',hair:'#9a9488',style:'swept',body:'robe',coat:'#3a4a6a',trim:'#c9b07a',cape:'#2e3a54',legs:'#2a3040',boots:'#1f2230',weapon:'staff',orb:'#9ac8ff',beard:'short',beardColor:'#9a9488',eye:'#3a4a5a',stoop:true},
+ greyMaster:{name:'회색 장부의 우두머리',skin:'pale',hair:'#5a5a5e',style:'short',hood:'#3a3c42',body:'leather',coat:'#2e3036',trim:'#9a9a90',cape:'#4a4c52',legs:'#24262a',boots:'#18191c',weapon:'daggers',beard:'short',beardColor:'#5a5a5e',eye:'#3a3a40'},
+ ritualist:{name:'재상부 의식사',skin:'pale',hair:'#2a2430',style:'long',hood:'#4a2a4a',body:'robe',coat:'#3a2238',trim:'#c9a24a',cape:'#2a1a2a',legs:'#24182a',boots:'#18121c',weapon:'staff',orb:'#e07ad0',eye:'#6a4a6a'},
+ ritualKnight:{name:'의식 기사',skin:'pale',hair:'#2a2a2e',style:'short',helm:'knight',helmMetal:'#5a5260',body:'plate',metal:'#5a5260',coat:'#3a2238',tabard:'#6a3a6a',trim:'#c9a24a',legs:'#2a2230',boots:'#18121c',weapon:'sword',off:'shield',shield:'#3a2238',eye:'#6a4a6a'},
+ bellard:{name:'재상 벨라드',skin:'fair',hair:'#c8c4bc',style:'swept',body:'coat',coat:'#2a2a3a',trim:'#c9a24a',cape:'#3a2a4a',legs:'#24242e',boots:'#18181e',weapon:'papers',beard:'short',beardColor:'#c8c4bc',eye:'#4a4a5a'},
  grayCloak:{name:'회색 망토',skin:'pale',hair:'#3a3a3e',style:'short',hood:'#6a6c70',body:'leather',coat:'#5a5c60',trim:'#2a2a2e',cape:'#6a6c70',legs:'#3a3a3e',boots:'#222226',weapon:'sword',eye:'#3a3a40'},
  clerk:{name:'재상부 서기',skin:'fair',hair:'#4a3a2a',style:'short',body:'coat',coat:'#3a3048',trim:'#c9b07a',legs:'#2a2638',boots:'#1f1d2a',weapon:'papers',eye:'#3a2a22'},
  harvester:{name:'기억 수확자',skin:'pale',hair:'#d8d4cc',style:'long',hood:'#3a3448',body:'robe',coat:'#2e2a3a',trim:'#8a7ac8',cape:'#4a4060',legs:'#2a2638',boots:'#1f1d2a',weapon:'staff',orb:'#a08aff',eye:'#8a7ac8'},

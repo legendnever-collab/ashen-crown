@@ -1,0 +1,25 @@
+order,part,kind,id,expression,file,size,references,prompt_file
+1,A,props,props_act3c,,props_act3c.png,1024x256,"layout_props_act3c.png, ref_sprite_eric.png, ref_sprite_ironSpear.png, ref_battle_m19.jpg, ref_battle_m20.jpg",prompts/01_props_act3c.txt
+2,A,icons,icons_J,,icons_J.png,1024x1024,"layout_icons_J.png, approved_icons_D.png, approved_icons_H.png, style_aren_neutral.png",prompts/02_icons_J.txt
+3,B,bust,lia_t3,neutral,bust_lia_t3_neutral.png,1024x1280,"ref_bust_lia_t2_neutral.png, style_aren_neutral.png",prompts/03_bust_lia_t3_neutral.txt
+4,B,bust,lia_t3,concerned,bust_lia_t3_concerned.png,1024x1280,bust_lia_t3_neutral.png (your approved result),prompts/04_bust_lia_t3_concerned.txt
+5,B,bust,lia_t3,determined,bust_lia_t3_determined.png,1024x1280,bust_lia_t3_neutral.png (your approved result),prompts/05_bust_lia_t3_determined.txt
+6,B,bust,lia_t3,sad,bust_lia_t3_sad.png,1024x1280,bust_lia_t3_neutral.png (your approved result),prompts/06_bust_lia_t3_sad.txt
+7,B,bust,kai_t3,neutral,bust_kai_t3_neutral.png,1024x1280,"ref_bust_kai_t2_neutral.png, style_aren_neutral.png",prompts/07_bust_kai_t3_neutral.txt
+8,B,bust,kai_t3,concerned,bust_kai_t3_concerned.png,1024x1280,bust_kai_t3_neutral.png (your approved result),prompts/08_bust_kai_t3_concerned.txt
+9,B,bust,kai_t3,determined,bust_kai_t3_determined.png,1024x1280,bust_kai_t3_neutral.png (your approved result),prompts/09_bust_kai_t3_determined.txt
+10,B,bust,kai_t3,sad,bust_kai_t3_sad.png,1024x1280,bust_kai_t3_neutral.png (your approved result),prompts/10_bust_kai_t3_sad.txt
+11,B,sprite,lia_t3,,sprite_lia_t3.png,1024x768,"bust_lia_t3_neutral.png (your approved result), ref_sprite_lia_t2.png, ref_sprite_eric.png",prompts/11_sprite_lia_t3.txt
+12,B,sprite,kai_t3,,sprite_kai_t3.png,1024x768,"bust_kai_t3_neutral.png (your approved result), ref_sprite_kai_t2.png, ref_sprite_eric.png",prompts/12_sprite_kai_t3.txt
+13,C,bust,liaTeacher,neutral,bust_liaTeacher_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_lia_neutral.png (the hero they are tied to, for the painting style only)",prompts/13_bust_liaTeacher_neutral.txt
+14,C,bust,liaTeacher,concerned,bust_liaTeacher_concerned.png,1024x1280,bust_liaTeacher_neutral.png (your approved result),prompts/14_bust_liaTeacher_concerned.txt
+15,C,bust,liaTeacher,determined,bust_liaTeacher_determined.png,1024x1280,bust_liaTeacher_neutral.png (your approved result),prompts/15_bust_liaTeacher_determined.txt
+16,C,bust,liaTeacher,sad,bust_liaTeacher_sad.png,1024x1280,bust_liaTeacher_neutral.png (your approved result),prompts/16_bust_liaTeacher_sad.txt
+17,C,bust,greyMaster,neutral,bust_greyMaster_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_kai_neutral.png (the hero they are tied to, for the painting style only)",prompts/17_bust_greyMaster_neutral.txt
+18,C,bust,greyMaster,concerned,bust_greyMaster_concerned.png,1024x1280,bust_greyMaster_neutral.png (your approved result),prompts/18_bust_greyMaster_concerned.txt
+19,C,bust,greyMaster,determined,bust_greyMaster_determined.png,1024x1280,bust_greyMaster_neutral.png (your approved result),prompts/19_bust_greyMaster_determined.txt
+20,C,bust,greyMaster,sad,bust_greyMaster_sad.png,1024x1280,bust_greyMaster_neutral.png (your approved result),prompts/20_bust_greyMaster_sad.txt
+21,C,sprite,liaTeacher,,sprite_liaTeacher.png,1024x768,"bust_liaTeacher_neutral.png (your approved result), ref_sprite_archivist.png",prompts/21_sprite_liaTeacher.txt
+22,C,sprite,greyMaster,,sprite_greyMaster.png,1024x768,"bust_greyMaster_neutral.png (your approved result), ref_sprite_grayCloak.png",prompts/22_sprite_greyMaster.txt
+23,C,sprite,ritualKnight,,sprite_ritualKnight.png,1024x768,"ref_sprite_ironSpear.png, style_aren_neutral.png",prompts/23_sprite_ritualKnight.txt
+24,C,sprite,ritualist,,sprite_ritualist.png,1024x768,"ref_sprite_harvester.png, style_aren_neutral.png",prompts/24_sprite_ritualist.txt

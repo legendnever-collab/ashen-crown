@@ -4,6 +4,8 @@ import {missionOf} from '../data/missions.js';
 import {remember} from './narrative.js';
 import {proficiencyBonus,classGrowth} from './progression.js';
 import {fx} from './arms.js';
+import {inSmallWard} from './wards.js';
+import {commandShield} from './command.js';
 export const distance=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
 export const key=(x,y)=>`${x},${y}`;
 // benched: a hero left out of the sortie (pre-battle choice) takes no part in the battle
@@ -26,6 +28,7 @@ export function movement(s,u,ignore=false){
   for(const [dx,dy] of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,t=terrainAt(x,y,s);if(!t||!Number.isFinite(t.cost))continue;
    const occupant=at(s,x,y);if(!ignore&&occupant&&occupant.id!==u.id&&sideOf(occupant)!==sideOf(u))continue;
    if(held&&!s.blockade.cells.some(([bx,by])=>bx===x&&by===y))continue;
+   if(u.team==='enemy'&&inSmallWard(s,{x,y}))continue; // v0.9.2 Little Ward: enemies cannot step in
    const c=p.c+terrainCost(s,u,x,y),k=key(x,y);
    if(c<=allowance&&c<(costs.get(k)??Infinity)){costs.set(k,c);prev.set(k,key(p.x,p.y));queue.push({x,y,c});}
   }
@@ -48,10 +51,10 @@ export function rangeFor(u,mode='attack',s=null){const t2=(u.classTier||1)>=2;if
  return roof||hawk||fog?[base[0],Math.max(base[0],base[1]+roof+hawk-fog)]:base;}
 export function validTarget(s,u,t,mode='attack'){
  if(!u||!t||!alive(u)||!alive(t))return false;
- const d=distance(u,t);if(t.team==='object')return mode==='search'&&u.team==='ally'&&d===1&&!t.locked&&!t.inert;if(mode==='search')return false;if(mode==='capture')return (s.missionId===2&&t.id==='boss'||[].concat(missionOf(s).capture||[]).includes(t.id))&&t.team==='enemy'&&t.hp<=t.maxHP/2&&d===1;
+ const d=distance(u,t);if(t.team==='object')return mode==='search'&&u.team==='ally'&&d===1&&!t.locked&&!t.inert&&!(t.kind==='ritualCircle'&&s.units.some(r=>r.kind==='ritualist'&&r.team==='enemy'&&alive(r)&&distance(r,t)<=1)); /* v0.9.2 M19: a ritualist beside its circle keeps the seal shut */if(mode==='search')return false;if(mode==='capture')return (s.missionId===2&&t.id==='boss'||[].concat(missionOf(s).capture||[]).includes(t.id))&&t.team==='enemy'&&t.hp<=t.maxHP/2&&d===1;
  // v0.7.1 (D-071): Erik persuades Baldrick from beside him (once a turn); Thea may speak to him once in the battle.
  if(mode==='persuade')return canPersuade(s,u,t)&&d===1;
- if(mode==='rescue')return t.team==='civilian'&&t.kind!=='wagon'&&!missionOf(s).escortOnly&&(!missionOf(s).orderTurn||s.campaign?.choices?.m08_order==='rescue')&&d===1;
+ if(mode==='rescue')return t.team==='civilian'&&t.kind!=='wagon'&&!t.noRescue&&!missionOf(s).escortOnly&&(!missionOf(s).orderTurn||s.campaign?.choices?.m08_order==='rescue')&&d===1;
  if(mode==='skill'&&u.id==='eric')return t.id===u.id;
  if(mode==='skill'&&u.id==='sain')return (t.team==='ally'||t.team==='civilian'&&missionOf(s).healCivilians&&t.kind!=='wagon')&&d>=rangeFor(u,mode,s)[0]&&d<=rangeFor(u,mode,s)[1];
  const [min,max]=rangeFor(u,mode,s);return hostile(s,u,t)&&d>=min&&d<=max;
@@ -65,6 +68,7 @@ export function strikeStats(s,u,t,mode='attack'){
  let dmg=Math.max(1,Math.round(magic?raw*(ground.fire??1):raw*(1-(ground.phys||0))));
  if(magic&&weatherOf(s)==='rain')dmg=Math.max(1,Math.round(dmg*.5));if(magic&&inWard(s,t))dmg=0;
  const arms=magic?1:matchup(u,t);if(arms!==1)dmg=Math.max(1,Math.round(dmg*arms));
+ {const sh=commandShield(s,t);if(sh!==1)dmg=Math.max(1,Math.round(dmg*sh));} // v0.9.2 「한 사람도 두고 가지 않는다」
  if(t.id==='eric'&&t.hp<=t.maxHP*.3)dmg=Math.max(1,Math.floor(dmg*.85));
  // M05 lion formation (mission data only; M01–04 have no formation): living bearers give adjacent
  // allies of theirs DEF and accuracy; Baldrick's charge punishes isolated targets unless Erik guards.
@@ -86,6 +90,8 @@ export function strikeStats(s,u,t,mode='attack'){
  if(sneak)hit=Math.min(100,hit+30);
  // v0.8 smoke: a legion unit inside the smoke is harder to hit until the end of that enemy phase.
  if(sideOf(t)==='legion'&&s.smoke?.some(c=>c.x===t.x&&c.y===t.y&&c.until>=s.turn))hit=Math.max(10,hit-30);
+ // v0.9.2 M20 grey cloaks hide in the shadows: the first blow against one always misses (game.damage clears it).
+ if(t.shade)hit=0;
  const crit=magic?0:Math.min(12,Math.max(3,Math.round((u.spd-t.spd)/2)+5))+(u.crit||0); // v0.8.1 Lucky Coin etc.
  return {damage:dmg,hit,crit,magic,fire:magic,terrainMul:magic?(ground.fire??1):1-(ground.phys||0),flank:quick&&flank(s,u,t),burning,sneak,sanctuary:cut,arms};
 }

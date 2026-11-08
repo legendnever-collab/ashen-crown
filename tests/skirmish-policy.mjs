@@ -15,6 +15,7 @@ export function actOneCamp(seed=20261019,level=6,memory={}){
  for(const u of s.units.filter(u=>u.team==='ally')){const want=typeof level==='object'?level[u.id]??6:level;for(let i=0;u.level<want&&i<200;i++)awardXP(s,u,50,'setup');u.xp=0;u.hp=u.maxHP;u.mp=u.maxMP;u.highlights=[];u.earnedXP=0;}
  s.feedback=[];s.log=[];s.campaign.heroes=structuredClone(s.units.filter(u=>u.team==='ally'));s.outcome='victory';s.screen='exploration';enterHub(s,{aftermath:true,story:false});drain(s);s.screen='exploration';return s;}
 
+const m0=(s,x,y)=>missionOf(s).map[y]?.[x];
 function bfsTo(s,u,goal){const d=new Map(),q=[];for(const g of goal)if(Number.isFinite(terrainCost(s,u,g.x,g.y))){d.set(`${g.x},${g.y}`,0);q.push({...g,c:0});}
  while(q.length){q.sort((a,b)=>a.c-b.c);const p=q.shift();if(p.c!==d.get(`${p.x},${p.y}`))continue;for(const [dx,dy]of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,step=terrainCost(s,u,x,y),k=`${x},${y}`;if(!Number.isFinite(step))continue;const c=p.c+step;if(c<(d.get(k)??Infinity)){d.set(k,c);q.push({x,y,c});}}}return d;}
 
@@ -39,10 +40,17 @@ export function skirmishAction(s,u,{classActions=true}={}){
   if(!u.acted)for(const k of skillsOf(u).filter(k=>k.slot===4&&k.open&&u.mp>=k.cost)){const m=k.mode;
    if(m==='dawnPrayer'&&validClassTarget(s,a,a.id,m))consider({x,y,mode:m,target:a.id,score:900-c*.3});
    if(m==='oathWall'&&validClassTarget(s,a,a.id,m)){const near=s.units.filter(t=>(t.team==='ally'||t.team==='civilian')&&alive(t)&&t.id!==a.id&&distance(a,t)<=2);if(near.length&&foes.some(e=>near.some(t=>distance(e,t)<=5)))consider({x,y,mode:m,target:a.id,score:150+near.length*30-c*.3});}
+   // v0.9.2: Little Ward over whoever must be kept (civilians, then heroes) with foes closing in; Shadow Dance drags a foe
+   // (an archer first) in among the heroes, where it stands held through the enemy phase.
+   if(m==='smallWard')for(let ty=y-4;ty<=y+4;ty++)for(let tx=x-4;tx<=x+4;tx++){const p2=`${tx},${ty}`;if(!validClassTarget(s,a,p2,m))continue;const inside=t=>Math.abs(t.x-tx)<=1&&Math.abs(t.y-ty)<=1,civ=s.units.filter(t=>t.team==='civilian'&&alive(t)&&inside(t)).length,near=foes.filter(e=>Math.abs(e.x-tx)+Math.abs(e.y-ty)<=4).length;
+    const gap=['x'].includes(m0(s,tx-1,ty))&&['x'].includes(m0(s,tx+1,ty))?60:0;if(near)consider({x,y,mode:m,target:p2,score:60+civ*30+near*15+gap-c*.3});}
+   if(m==='shadowDance')for(const e of foes)for(const b of s.units.filter(b=>b.team==='ally'&&alive(b)&&!b.benched&&b.id!==u.id)){const pair=`${e.id}|${b.id}`;if(!validClassTarget(s,a,pair,m))continue;const around=s.units.filter(h=>h.team==='ally'&&alive(h)&&h.id!==b.id&&Math.abs(h.x-b.x)+Math.abs(h.y-b.y)===1).length;
+    const sc=40+around*30+(e.kind==='archer'?50:0)+(m0(s,e.x,e.y)==='o'?40:0)+(g.targets?.includes(e.id)?120:0);if(sc>=90)consider({x,y,mode:m,target:pair,score:sc-c*.3});}
    if(m==='blockade')for(let ty=y-5;ty<=y+5;ty++)for(let tx=x-5;tx<=x+5;tx++){const p2=`${tx},${ty}`;if(!validClassTarget(s,a,p2,m))continue;const n=foes.filter(e=>Math.abs(e.x-tx)+Math.abs(e.y-ty)<=1).length;if(n>=2)consider({x,y,mode:m,target:p2,score:60+n*45-c*.3});}}
   // position only
   let score;const onRune=(s.runes||[]).some(r=>r.x===x&&r.y===y)&&u.id==='lia'?40:0;if(onRune&&best&&best.x===x&&best.y===y)best.score+=onRune;
   if(reach)score=300-(reach.get(p)??100)*20-c*.1;
+  else if(g.posts?.[u.id])score=60-distance(a,{x:g.posts[u.id][0],y:g.posts[u.id][1]})*20; // v0.9.2 trial 109: Erik keeps his gap
   else if(g.hold&&g.type==='survive'&&u.id===m.skirmish.hero)score=60-distance(a,{x:g.hold[0],y:g.hold[1]})*20;
   else if(g.type==='gather'){const anchor=findUnit(s,m.skirmish.hero),far=s.units.filter(t=>t.team==='ally'&&alive(t)&&!t.benched&&t.id!==anchor.id&&distance(t,anchor)>g.radius);score=u.id===anchor.id?60-(far.length?Math.min(...far.map(t=>Math.abs(distance(a,t)-3)))*12:0):60-distance(a,anchor)*10;}
   else if(g.type==='survive'){const anchor=findUnit(s,m.skirmish.hero);score=40-(anchor&&anchor.id!==u.id?distance(a,anchor)*10:0)-foes.reduce((n,e)=>n+(distance(e,a)<=2?6:0),0);}
