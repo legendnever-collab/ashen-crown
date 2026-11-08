@@ -37,7 +37,7 @@ try{
  check('390 the rite theme plays under the card',(await p.evaluate(()=>AshenCrown.audio().scene))==='rite');await p.waitForTimeout(900);await p.screenshot({path:'test-output/legion-promo-card-390.png'});await press('close-modal');
  await p.reload();await p.waitForFunction(()=>!!window.AshenCrown);await p.waitForTimeout(400);check('390 the card is shown once',!await p.locator('.promo-card').count());
  s=await snap();const kai=s.campaign.heroes.find(h=>h.id==='kai');check('390 back in the ACT I camp with Kai promoted for good',s.screen==='exploration'&&s.missionId===6&&!s.practice&&kai.classTier===2&&s.campaign.promotions.kai?.key==='shadowblade');
- await press('legion');check('390 panel marks Kai as promoted',await p.locator('.legion-row.done').count()===1);
+ await press('legion');{const row=(await p.locator('.legion-row',{hasText:'카이'}).first().textContent())||'';check('390 panel shows Kai as 그림자 추적자 with his awakening (그림자 군주, v0.9.2) as the next step',row.includes('그림자 추적자')&&row.includes('그림자 군주'));}
  // Legion Drill: all five deploy; survives a reload mid-battle
  await press('drill-start');await drainStory(p);s=await snap();check('390 Legion Drill starts with all five heroes',s.missionId===110&&s.units.filter(u=>u.team==='ally'&&!u.benched).length===5&&s.units.find(u=>u.id==='kai').classTier===2);
  await p.reload();await p.waitForFunction(()=>!!window.AshenCrown);await p.waitForTimeout(500);s=await snap();check('390 drill survives reload (skirmish return point kept)',s.missionId===110&&s.screen==='battle'&&!!s.skirmish?.frontier);
