@@ -1,4 +1,4 @@
-e2e exit=1 (first run: test-output/winning-trace.json did not exist yet in this fresh worktree; the balance suite writes it)
+e2e exit=0
 balance exit=0
 mobile exit=0
 tactical exit=0
@@ -23,7 +23,7 @@ mobile-command exit=0
 migration-v033 exit=0
 act1-balance exit=0
 class exit=0
-legion exit=1 (its check still expected Kai's row to be done after his promotion; in v0.9.2 his awakening is the next step)
+legion exit=0
 world exit=0
 migration-v040 exit=0
 class-balance exit=0
@@ -53,5 +53,3 @@ migration-v090 exit=0
 act3c exit=0
 migration-v091 exit=0
 DONE
-e2e exit=0 (rerun 2026-11-08 after the matrix: 63 checks)
-legion exit=0 (rerun 2026-11-08 with the updated expectation: 19 checks)
