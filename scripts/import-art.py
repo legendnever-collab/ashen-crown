@@ -27,7 +27,8 @@ def bust(png):
 # v0.6 pack B (D-059): the ACT II sheets were drawn about 15% smaller than the v0.4 cast. Each listed sheet is scaled
 # uniformly around its foot anchor (128,240) so the body height matches the existing heroes and soldiers.
 SHEET_SCALE = {'thea': 1.11, 'dario': 1.17, 'ironInfantry': 1.11, 'ironDeserter': 1.14, 'mercSpear': 1.09,
-               'assassin': 1.17, 'lordA': 1.11, 'lordB': 1.12, 'councillor': 1.18}
+               'assassin': 1.17, 'lordA': 1.11, 'lordB': 1.12, 'councillor': 1.18,
+               'ritualKnight': 1.06}  # pack F3 (D-091): the rite knight came about 6% smaller than the iron spearmen
 
 def fit(cell, k):
     if k == 1: return cell, 0
@@ -51,7 +52,7 @@ def sheet(png, k=1):
     return out
 
 def main(pack):
-    pack = Path(pack); rows = list(csv.DictReader(open(pack/'manifest.csv')))
+    pack = Path(pack); rows = list(csv.DictReader(open(pack/'manifest.csv', encoding='utf-8-sig')))
     BUST_DIR.mkdir(parents=True, exist_ok=True); SPRITE_DIR.mkdir(parents=True, exist_ok=True); log = []
     for r in rows:
         data = (pack/r['file']).read_bytes()

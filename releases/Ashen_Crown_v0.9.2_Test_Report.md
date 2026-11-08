@@ -1,7 +1,17 @@
 # Ashen Crown v0.9.2 「그림자」 — Test Report
-Updated 2026-11-08 KST. **Release candidate on feature/v0.9.2-shadow, built on PR #20 (v0.9.1 play-test fixes and ACT III art pack F2). Not merged before the user plays and approves it — PR #20 first, then v0.9.2.** Decisions: D-089 (implementation details, PROPOSED).
+Updated 2026-11-09 KST. **Merged after the user's approval (PR #20 → 5fc1392, PR #21 → 31c31c6, 2026-11-08, D-090). ACT III art pack F3 in the addendum is on feature/act3-f3-art-pack and is not merged before the user plays and approves it.** Decisions: D-089 (implementation details, PROPOSED), D-091 (F3).
 
 HTML SHA256 of the tested build: `c0d205077dc6ca992991afc88527f26cd21fec093be9c1ff8c4ab9a45a0c61d8` (44,484,985 bytes; `index.html` identical). Headless Chromium 141.0.7390.37 / Playwright 1.58.2, offline file URLs + HTTP smoke.
+
+## Addendum 2026-11-09 — ACT III art pack F3 (D-091), full matrix on this build
+All 24 images of pack F3 (three zips returned 2026-11-09, SHA256 in D-091) are imported on top of the merged v0.9.2: the awakened Lia and Kai (busts and sheets), Lia's teacher and Kai's old superior (busts and sheets), the rite knight (scaled 1.06) and the ritualist sheets, icon sheet J and the prop sheet (ritual circle lit / sealed, archive cabinet whole / burned). Also: the provoke / debuff / buff chips over units on the map are drawn again (hidden since v0.8.1 by a `//` comment that swallowed the rest of a line in statusChips), and an item-art test line lost the same way is restored. No rule, reward or save field changed.
+
+HTML SHA256 of this build: `5a0412da7406cbe6f60c93bf845c062f120b058717d5386dc5799a158eff495f` (47,022,083 bytes; `index.html` identical). On it:
+- 413 unit tests PASS / 0 FAIL (new: the pack F3 test in tests/act3-art.test.mjs and the sheet J test in tests/item-art.test.mjs; counts in portraits, rooms and item-art updated).
+- The full browser matrix, 54 suites, **all passed on their first run** (docs/v0.9.2/evidence/browser-run-summary.log): 2,113 assertions across 53 suites plus the performance suite, every suite with the same number of checks as on the v0.9.2 build below; no runtime errors.
+- Balance outputs (act1, act2, act3, balance, campaign, economy, class) are byte-identical to the v0.9.2 run below. Performance medians 16.7 ms at 1440 and 390.
+
+The rest of this report describes the v0.9.2 release candidate as merged.
 
 ## Summary
 - **411 unit tests PASS / 0 FAIL** (docs/v0.9.2/evidence/unit-results.txt). New: tests/shadow-v092.test.mjs (5), tests/mission19.test.mjs (4), tests/mission20.test.mjs (5), tests/migration-v091.test.mjs (4).
