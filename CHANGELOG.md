@@ -1,3 +1,7 @@
+# v0.9.3 + ACT III art pack F4 (feature/act3-f4-art-pack, not merged before the user approves; D-096)
+- The last king's four busts and map sheet, icon sheet K (Thea's capital lance, Ines' capital mace, 왕의 인장, 전령의 뿔피리) and the anchor stone (whole / broken) — all 7 images hash-verified; v0.9.3 has no temporary art left.
+- scripts/import-interior-art.py reads per-prop manifest rows (pack F4's prop_sheet form).
+
 # v0.9.3 — The Ashen Choice · ACT III part 4: M21 마지막 국왕, M22 잿빛 선택, Aren's awakening, the ACT III choice (release candidate)
 - Release candidate on feature/v0.9.3-crown; not merged before the user plays and approves it. D-093 (within D-079 / docs/v0.9.0/ACT3_DESIGN.md §4.2, §5–§7); the king and the anchor stone use temporary art until ACT III art pack F4.
 - The user's play-test notes (D-092): zone of control for both sides with rogues and civilians exempt (rules.js controlZone); Heal and Purify on anyone, no EXP for a foe (rules.js supportable); tap an empty tile to cancel an aimed action (app.js); Thea's 왕도 기병창 and Ines' 왕도 사제 철퇴 in the lower city. M06 limit 16 → 18 and the policy's M05 wagon guard keep ACT I at its win rates.
