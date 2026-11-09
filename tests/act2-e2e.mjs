@@ -40,7 +40,7 @@ try{
   const press=async(a)=>{await p.locator(`[data-do="${a}"]`).first().click();await p.waitForTimeout(250);};
   const old=actOneCamp(20261021,6);old.schema=8;old.version='0.5.0';delete old.campaign.roster;const data=JSON.stringify({...old,feedback:[]}),text=JSON.stringify({format:'AshenCrown',schema:8,checksum:checksum(data),data});
   await p.goto(url);await press('new');await drainStory(p);await press('menu');await press('backup');await p.fill('#backup-text',text);await press('restore');await drainStory(p);
-  const s=await p.evaluate(()=>AshenCrown.snapshot());check('schema 8 camp save restores as schema 10 in the oath camp with the five heroes',s.schema===14&&s.frontier.hub==='oathcamp'&&s.campaign.roster.length===0&&s.units.filter(u=>u.team==='ally').length===5);
+  const s=await p.evaluate(()=>AshenCrown.snapshot());check('schema 8 camp save restores as schema 10 in the oath camp with the five heroes',s.schema===15&&s.frontier.hub==='oathcamp'&&s.campaign.roster.length===0&&s.units.filter(u=>u.team==='ally').length===5);
   check('schema 8 restore: no runtime errors',errors.length===0);await ctx.close();}
  fs.writeFileSync('test-output/act2-e2e.json',JSON.stringify({checks:n},null,1));console.log(`act2-e2e: ${n} checks passed`);
 }finally{await b.close();}
