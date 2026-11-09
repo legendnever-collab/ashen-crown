@@ -160,6 +160,8 @@ function drawMissionObject(c,u,x,y,now){const done=u.rescued,glow=.5+.3*Math.sin
   if(u.progress){rect(c,'#e9f6ff',x-12,y-2,24,2);}
   if(!u.locked){c.fillStyle=`rgba(240,200,110,${glow*.25})`;c.fillRect(x-20,y-30,40,56);}return;}
  // v0.10.0 M23 council tent (original, vector): a canvas tent in its banner's colour with a pennant; taken, it lies torn and smoking.
+ /* art pack G1 (when imported): the painted tent in its banner's colour, or taken */
+ if(u.kind==='tent'&&drawProp(c,u.inert?'tent_taken':`tent_${u.faction}`,x,y+24,1.3))return;
  if(u.kind==='tent'){const col={iron:['#5f7590','#3e4f66'],free:['#6f9a50','#4a6a34'],flame:['#b8503a','#7a3424']}[u.faction]||['#8a8070','#5a5248'];c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+22,26,6,0,0,Math.PI*2);c.fill();
   if(u.inert){c.fillStyle='#3a3430';c.beginPath();c.moveTo(x-26,y+20);c.lineTo(x-6,y+4);c.lineTo(x+24,y+20);c.closePath();c.fill();c.fillStyle=col[1];c.beginPath();c.moveTo(x-20,y+20);c.lineTo(x-4,y+8);c.lineTo(x+12,y+20);c.closePath();c.fill();rect(c,'#4a3424',x+8,y-6,3,26);
    c.fillStyle=`rgba(150,150,150,${.25+glow*.2})`;c.beginPath();c.arc(x-2,y-6-((now/40)%20),7,0,Math.PI*2);c.fill();return;}

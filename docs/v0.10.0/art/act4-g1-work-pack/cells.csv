@@ -1,0 +1,5 @@
+sheet,cell,id,kind,name_en,name_ko,description
+L,1,sanctumGate,skill,Gate of the Sanctum,성역의 문,"Gate of the Sanctum (성역의 문): a tall arched gateway of soft dawn-gold light standing open over a round white shield laid on the ground, a few motes of rose-gold light drifting through the arch."
+L,2,ironBreak,skill,Iron Break,철의 돌파,"Iron Break (철의 돌파): a black lance with a steel-blue pennant driving straight through a broken line of three small plain shields, a streak of speed lines behind it."
+L,3,allianceBanner,treasure,The Alliance Banner,연합의 깃발,"The Alliance Banner (연합의 깃발): three short plain pennants of slate-blue, moss-green and flame-red cloth tied together on one small staff with a pale-gold cord, a soft warm glow around the knot (no emblems)."
+L,4,lastLantern,treasure,The Last Lantern,마지막 등불,"The Last Lantern (마지막 등불): a small old iron lantern with a warm amber flame inside and a little grey ash on its cap, a soft warm glow around it (the lantern of the last border)."
