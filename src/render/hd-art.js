@@ -254,7 +254,7 @@ export const CAST={
  harvester:{name:'기억 수확자',skin:'pale',hair:'#d8d4cc',style:'long',hood:'#3a3448',body:'robe',coat:'#2e2a3a',trim:'#8a7ac8',cape:'#4a4060',legs:'#2a2638',boots:'#1f1d2a',weapon:'staff',orb:'#a08aff',eye:'#8a7ac8'},
  watchman:{name:'왕도 경비대',skin:'warm',hair:'#3a2a20',style:'short',helm:'knight',helmMetal:'#a8a080',body:'plate',metal:'#a8a080',coat:'#7a2a2a',tabard:'#c9a24a',trim:'#7a2a2a',legs:'#4a3a2a',boots:'#2e2418',weapon:'spear',off:'shield',shield:'#c9a24a',eye:'#3a2a22'},
  archivist:{name:'늙은 기록관',skin:'fair',hair:'#d8d4cc',style:'bald',body:'robe',coat:'#4a4a5a',trim:'#c9b07a',legs:'#3a3a48',boots:'#2a2a30',weapon:'papers',beard:'short',beardColor:'#d8d4cc',eye:'#4a4a50',stoop:true},
- // v0.9.3 (D-093, a temporary look until art pack F4; never labelled finished): the last king. Extras reuse painted looks (D-094).
+ // v0.9.3: the last king — painted busts and map sheet from art pack F4 (D-096); this vector look stays as the palette fallback. Extras reuse painted looks (D-094).
  king:{name:'마지막 국왕',skin:'fair',hair:'#e8e4dc',style:'long',body:'robe',coat:'#5a4a7a',trim:'#d8b860',cape:'#7a2a3a',legs:'#3a3048',boots:'#2a2430',weapon:'staff',orb:'#e8d8a0',beard:'long',beardColor:'#e8e4dc',eye:'#5a5a6a',stoop:true},
  aide:{name:'작전 보좌관',skin:'pale',hair:'#2a2430',style:'swept',body:'coat',coat:'#3f3a63',trim:'#c9b07a',legs:'#2a2840',boots:'#1f1d2a',weapon:'papers',eye:'#4a3a5a'}
 };

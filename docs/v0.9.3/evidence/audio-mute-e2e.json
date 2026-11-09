@@ -30,7 +30,7 @@
   {
    "name": "1440 BGM at its lowest step still plays, quietly",
    "ok": true,
-   "detail": "-32.9 dB"
+   "detail": "-32.3 dB"
   },
   {
    "name": "1440 Music Pause: the music is silent",
@@ -59,7 +59,7 @@
     "muted": null,
     "back": -11.9,
     "zero": null,
-    "low": -32.9,
+    "low": -32.3,
     "paused": null,
     "again": -12.3
    }

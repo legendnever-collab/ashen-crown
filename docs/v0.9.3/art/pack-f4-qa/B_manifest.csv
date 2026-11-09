@@ -1,0 +1,6 @@
+kind,id,expression,file,width,height,bytes,sha256
+bust,king,concerned,png/bust_king_concerned.png,1024,1280,1794792,9a665b02efd3a7acdfa638248bc37d5bcca1c7f05c9da5f59871cc6628e20ebc
+bust,king,determined,png/bust_king_determined.png,1024,1280,1813685,d05358d1b921d90d2de9193889e1921dd9664fd73fb991dd5fd370e6c369e974
+bust,king,neutral,png/bust_king_neutral.png,1024,1280,1958888,bd45eaead88e3c35c0e68ac6f877e75960520f4723ce4b5fb235c09e9e5e3695
+bust,king,sad,png/bust_king_sad.png,1024,1280,1821541,dd5ebb7d7c59b04f1630e2b6386f581d8a366e39f07adc0c763cdd298171607e
+sprite,king,map,png/sprite_king.png,1024,768,563829,5e3dee58055850dc737d62fe3e8349063bb47430e43ac25f724fb71b18163542

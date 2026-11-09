@@ -1,13 +1,12 @@
-# v0.9.3 browser and balance matrix (56 suites), 2026-11-09 14:32 KST, BROWSER_EXECUTABLE=chromium-1194
-# first pass: 54 passed; mobile and campaign failed on test expectations (schema 14 after import; a tap under the phase bar) — fixed in tests (commits 7b2c927, two campaign-e2e commits) and rerun; e2e rerun after the balance suite wrote the new winning trace.
+# v0.9.3 + ACT III art pack F4 (D-096): browser and balance matrix (56 suites), 2026-11-09 21:20 KST, BROWSER_EXECUTABLE=chromium-1194 — all 56 passed on the first run
 e2e exit=0
 balance exit=0
-mobile exit=1
+mobile exit=0
 tactical exit=0
 http exit=0
 post-move exit=0
 restart exit=0
-campaign exit=1
+campaign exit=0
 campaign-balance exit=0
 frontier exit=0
 economy-balance exit=0
@@ -56,7 +55,3 @@ act3c exit=0
 migration-v091 exit=0
 act3d exit=0
 migration-v092 exit=0
-mobile exit=0
-campaign exit=0
-e2e exit=0
-# rerun after D-094 (extras reuse painted art) on the rebuilt HTML: act3d exit=0 (44), act3c exit=0 (50), act3b exit=0 (48), act3 exit=0 (38), migration-v092 exit=0 (13)
