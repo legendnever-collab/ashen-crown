@@ -388,7 +388,7 @@ const cloak21=(id,x,y)=>unit(id,'재상부 회색 망토','bandit',x,y,{hp:68,at
 const anchor21=(id,x,y)=>({id,name:'의식 고정석',kind:'anchorStone',x,y,prop:true});
 MISSIONS[21]=authored({id:21,title:'마지막 국왕',en:'The Last King',
  rows:['xxxxxxxxkkxxxxxxxx','xkkkkkxkkkkxkkkkkx','xkkkkkkkkkkkkkkkkx','xkkxkkkkzzkkkkxkkx','xkkkkkkzzzzkkkkkkx','xkkkkkkzzzzkkkkkkx','xkkxkkkkzzkkkkxkkx','xkkkkkkkkkkkkkkkkx','xkkkkxkkkkkkxkkkkx','xkkkkkkkkkkkkkkkkx','xkkkkkkkkkkkkkkkkx','xxkkkkkkkkkkkkkkxx','xkkkkkkkkkkkkkkkkx','xxxxxxkkkkkkxxxxxx'],
- enemies:[knight21('rc',8,2,{name:'의식 기사단장',kind:'captain',hp:150,atk:47,def:27,res:22,spd:25,look:'riteCommander'}),
+ enemies:[knight21('rc',8,2,{name:'의식 기사단장',kind:'captain',hp:150,atk:47,def:27,res:22,spd:25,look:'ritualKnight'}),
   knight21('k1',3,1),knight21('k2',14,1),knight21('k3',2,6),knight21('k4',15,6),
   ritualist21('r1',6,5),ritualist21('r2',11,5),cloak21('g1',3,5),cloak21('g2',14,5)],
  objects:[anchor21('as1',2,2),anchor21('as2',15,2),anchor21('as3',2,9),anchor21('as4',15,9)],
@@ -406,7 +406,8 @@ MISSIONS[21]=authored({id:21,title:'마지막 국왕',en:'The Last King',
 // the reading (from the north gate); the banner that betrayed the legion at the summit comes by the side roads; a banner at
 // the 「동맹」 stage sends two knights (TURN 2, south gate). Recruits still away after M16 come back on TURN 3 (a last
 // chance: standing at the end, they rejoin). Victory: the three readings. Defeat: two heralds down, or TURN 12.
-const herald22=(id,name,x,y,reads)=>({id,name,kind:'herald',look:'herald',x,y,hp:62,def:14,res:14,reads});
+// D-094: extras reuse existing painted figures — the heralds are people of the lower city (the refugee look); the commanders wear the rite knights'.
+const herald22=(id,name,x,y,reads)=>({id,name,kind:'herald',look:'refugee',x,y,hp:62,def:14,res:14,reads});
 const cloak22=(id,x,y)=>unit(id,'재상부 회색 망토','bandit',x,y,{hp:68,atk:44,def:20,res:15,spd:25,mov:4,movementProfile:'rogue',look:'grayCloak'});
 const knight22=(id,x,y,stats={})=>unit(id,'의식 기사','spear',x,y,{hp:88,atk:48,def:27,res:15,spd:21,mov:3,look:'ritualKnight',...stats});
 const soldier22=(id,x,y,role='soldier')=>unit(id,'배신한 깃발의 병사',role==='archer'?'archer':'spear',x,y,{hp:74,atk:45,def:21,res:12,spd:22,mov:3,scav:role,...(role==='archer'?{range:[2,3],hp:58,atk:41,def:15,spd:24}:{})});
@@ -414,7 +415,7 @@ const banner22=(id,f,x,y)=>ally(id,{iron:'철왕관 기사',free:'연맹 기사'
 const return22=(id,look,x,y)=>ally(id,look==='thea'?'테아':look==='dario'?'다리오':'이네스',look,x,y,{returning:look,benched:true});
 MISSIONS[22]=authored({id:22,title:'잿빛 선택',en:'The Ashen Choice',
  rows:['xxxxxxxxrrxxxxxxxx','xvvlllllrrlllllvvx','xvvllkkkkkkkkllvvx','xlllkkkkkkkkkklllx','rrrlkzkkkkkkzklrrr','xlllkkkkkkkkkklllx','xvvlkkkkkkkkkklvvx','xvvlkkkkzzkkkklvvx','xlllkkkkkkkkkklllx','xllllllllllllllllx','xvvllllrrrrllllvvx','xlllllllrrlllllllx','xllllllrrrrllllllx','xxxxxxxrrrrxxxxxxx'],
- enemies:[knight22('gc',8,1,{name:'재상부 근위대장',kind:'captain',hp:150,atk:50,def:28,res:20,spd:25,look:'riteCommander'}),
+ enemies:[knight22('gc',8,1,{name:'재상부 근위대장',kind:'captain',hp:150,atk:50,def:28,res:20,spd:25,look:'ritualKnight'}),
   knight22('k1',7,1),knight22('k2',10,1),cloak22('g1',3,1),cloak22('g2',14,1),cloak22('g3',9,1)],
  civilians:[herald22('hr','기록 낭독자',5,4,'records'),herald22('hp','계획서 낭독자',12,4,'plan'),herald22('hk','국왕의 말 낭독자',8,7,'king')],
  allies:[banner22('bi1','iron',7,13),banner22('bi2','iron',8,12),banner22('bf1','free',9,13),banner22('bf2','free',10,12),banner22('bl1','flame',7,12),banner22('bl2','flame',10,13),

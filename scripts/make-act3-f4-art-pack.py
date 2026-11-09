@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Build the ChatGPT work pack F4 for ACT III part 4 (v0.9.3, M21–M22; ACT3_DESIGN.md §10, D-093): everything v0.9.3 draws as
-a temporary (game-drawn) placeholder, in three parts that can be ordered one at a time —
+a temporary (game-drawn) placeholder, in two parts that can be ordered one at a time —
   A. things: icon sheet K (Thea's capital lance, Ines' capital mace, the two v0.9.3 treasures) and a battle-prop sheet (the
      anchor stone whole and broken);
   B. the last king — busts and map sheet;
-  C. the people of M21–M22: the rite knight commander (busts and map sheet) and the square's herald (busts and map sheet).
+Extras are not painted anew (D-094, the user's rule 2026-11-09): the rite knight commander and the guard captain wear the
+rite knights' sheet and speak with the executor's bust; the square's heralds are people of the lower city (the refugee look).
 Reuses the pack F2 generator (make-act3-f2-art-pack.py) and its templates, so the returned files import with
 scripts/import-art.py, scripts/import-interior-art.py (props) and scripts/import-item-art.py --cells.
 Usage: python3 scripts/make-act3-f4-art-pack.py [--zip <out.zip>]
@@ -21,7 +22,7 @@ PACK = ROOT/'docs/v0.9.3/art/act3-f4-work-pack'
 NAME = 'Ashen_Crown_v093_ACT3_Art_Pack_F4'
 OLD = f2.OLD; F1REF = f2.F1REF; F2REF = ROOT/'docs/v0.9.1/art/act3-f2-work-pack/references'
 
-# ---------- B and C: the people of M21–M22 (names OPEN; never named in the game) ----------
+# ---------- B: the last king (his name is OPEN; never named in the game) ----------
 PEOPLE = [
  dict(id='king', part='B', name='the last king (마지막 국왕, M21–M22; his name is OPEN until ACT IV)', exprs=['neutral', 'concerned', 'determined', 'sad'], ref='archivist',
   desc=("The last king of the realm, a frail man in his late sixties who has held the kingdom's ward alone since the Ashen Night by giving away his own "
@@ -29,23 +30,10 @@ PEOPLE = [
         "eyes that are still kind; a heavy deep-violet royal robe with faded dull-gold edging and a dark crimson mantle, worn and dusty, no crown on his "
         "head (a thin plain gold circlet at most); faint threads of violet light rising from his shoulders as if something is being drawn out of him. "
         "Dignified, exhausted, gentle — not a villain, not a ghost.")),
- dict(id='riteCommander', part='C', name='the rite knight commander (의식 기사단장, enemy commander M21, duels Erik; the chancellery guard captain in M22)', exprs=['neutral', 'concerned', 'determined', 'sad'], ref='eric',
-  desc=("The commander of the chancellery's rite knights, a hard man in his forties who believes the rite will save the kingdom. Short black hair "
-        "greying at the temples, a strong jaw, a thin moustache, dark violet-grey eyes; heavy dark plum-grey plate armor with dull gold edging (the same "
-        "order as the rite knights but finer), a deep-purple tabard with no symbol, a long dark violet cape, no helm in the bust. Proud, disciplined, "
-        "honorable in his own way.")),
- dict(id='herald', part='C', name="the square's herald (광장의 전령, M22; reads the records, the plan and the king's word)", exprs=['neutral', 'concerned', 'determined', 'sad'], ref='aren',
-  desc=("A royal herald of the lower city in her thirties, chosen to read the truth to the people. Brown hair tied back, a clear steady face, warm "
-        "brown eyes; a long ochre-brown herald's coat with pale cream edging and a short tawny shoulder cape, a leather satchel of papers, ink on the "
-        "fingers. Brave and plain-spoken, not a soldier.")),
 ]
 FIGURES = [
  dict(id='king', part='B', name='the last king — map figure (M21 throne dais; cannot move)', ref='archivist', bust='bust_king_neutral.png (your approved result)',
   desc=PEOPLE[0]['desc'], weapon='a plain old royal staff of dark wood with a pale-gold head; no attack — the attack column is the staff raised as a pulse of violet light rises from him'),
- dict(id='riteCommander', part='C', name='the rite knight commander — map figure', ref='ritualKnight', bust='bust_riteCommander_neutral.png (your approved result)',
-  desc=PEOPLE[1]['desc'], weapon='a long sword and a plain dark shield; attack pose is a heavy forward cut'),
- dict(id='herald', part='C', name="the square's herald — map figure (stands on a dais and reads)", ref='archivist', bust='bust_herald_neutral.png (your approved result)',
-  desc=PEOPLE[2]['desc'], weapon='an unrolled paper held in both hands; no attack — the attack column is the paper raised high as she reads aloud'),
 ]
 
 def char_jobs(part):
@@ -104,17 +92,17 @@ def thing_jobs():
                  prompt=PROP_PROMPT+''.join(f"  {i+1}. {pid} ({title}): {desc}.\n" for i, (pid, title, desc) in enumerate(PROPS)))]
 
 PARTS = {'A': "things — icon sheet K (Thea's lance, Ines' mace, two treasures), battle props (the anchor stone)",
-         'B': 'the last king', 'C': "the rite knight commander and the square's herald"}
+         'B': 'the last king'}
 
 def start_here(PA, IJ, CB, CC):
     L = []; w = L.append; total = len(PA)+1+len(CB)+len(CC)
     w('# Ashen Crown — ACT III Part 4 Art Work Order (pack F4, v0.9.3)')
     w('')
     w('You are producing finished game art for **Ashen Crown**, an original offline tactical RPG (Western medieval frontier fantasy). Read this whole file first, then work through the jobs part by part and return the zips described in section 7.')
-    w(f'The game already plays with temporary game-drawn art for everything in this pack. It has **{total} images in three parts** (A–C). The user may order one part at a time: **do only the parts the user asks for**, in the order B → C → A unless told otherwise, and return each part as its own zip(s).')
+    w(f'The game already plays with temporary game-drawn art for everything in this pack. It has **{total} images in two parts** (A–B). The user may order one part at a time: **do only the parts the user asks for**, in the order B → A unless told otherwise, and return each part as its own zip(s).')
     w('')
     w('| part | what | images |'); w('|---|---|---:|')
-    for k, n in (('A', len(PA)+1), ('B', len(CB)), ('C', len(CC))): w(f'| **{k}** | {PARTS[k]} | {n} |')
+    for k, n in (('A', len(PA)+1), ('B', len(CB))): w(f'| **{k}** | {PARTS[k]} | {n} |')
     w(f'| | total | **{total}** |'); w('')
     def table(title, J, start):
         w(f'## {title}'); w('')
@@ -129,14 +117,13 @@ def start_here(PA, IJ, CB, CC):
     for c in IJ: w(f"| K{c['cell']:02d} | `{c['id']}` | {c['en']} ({c['ko']}) |")
     w(''); n += 1
     table(f'2. Part B — the last king ({len(CB)} images)', CB, n); n += len(CB)
-    table(f'3. Part C — the people of M21–M22 ({len(CC)} images)', CC, n); n += len(CC)
     w('## 4. Global rules'); w('')
     w(f'- Characters: {cp.STYLE}')
     w(f'- Icons: {ip.STYLE}')
     w('- Never write the name of any existing game, character or studio in a prompt, and do not copy any existing artwork.')
     w('- **No text, letters, numbers, emblems, crests, holy symbols or logos** anywhere (clothing, papers, rings, horns, banners, the anchor stone). The stone carries plain bands and light only.')
     w("- **The king is frail but dignified** — never a corpse, ghost or monster; the violet light drawn from him is faint.")
-    w("- The king, the commander and the herald have **no names** in the game yet; never write a name on anything.")
+    w("- The king has **no name** in the game yet; never write a name on anything.")
     w("- Busts: exactly 1024×1280, transparent (or flat pure `#00FF00`), framed like `style_aren_neutral.png`, turned to the viewer's right.")
     w('- Sprite sheets: exactly 1024×768, 4 columns × 3 rows of 256 px cells (row 1 down, row 2 right, row 3 up; columns idle, step A, step B, attack), feet on a baseline 16 px above each cell bottom, transparent (or `#00FF00`). Match the scale of the attached reference sheets.')
     w(f'- Icon sheet K: 4×4 cells of 256 px, cells {len(IJ)+1:02d}–16 empty, every icon inside the 80 % safe square of its cell. Prop sheet: 4 cells of 256 px in one row.')
@@ -144,7 +131,6 @@ def start_here(PA, IJ, CB, CC):
     w('')
     w('## 5. Order of work'); w('')
     w('- **B:** `king`: neutral bust → concerned / determined / sad → map sheet.')
-    w('- **C:** `riteCommander` busts (neutral first) → `herald` busts → the two map sheets.')
     w('- **A:** `props_act3d.png` → `icons_K.png`.')
     w('')
     w("## 6. Self-check (record PASS/FAIL per item in each zip's QA_REPORT.md)"); w('')
@@ -157,10 +143,10 @@ def start_here(PA, IJ, CB, CC):
     w(f'- [ ] Icon sheet: {len(IJ)} icons in cells 01–{len(IJ):02d}, the other cells fully transparent, same finish as the approved icon sheets.')
     w('')
     w('## 7. Return format — one zip per part, **each under 20 MB**'); w('')
-    for k in 'ABC': w(f'- `{NAME}_{k}.zip` — part {k}: {PARTS[k]}')
+    for k in 'AB': w(f'- `{NAME}_{k}.zip` — part {k}: {PARTS[k]}')
     w('')
     w('```')
-    w(f'{NAME}_A/   (and _B, _C the same way)')
+    w(f'{NAME}_A/   (and _B the same way)')
     w('  png/              # PNG masters')
     w('  manifest.csv      # characters: kind,id,expression,file,width,height,bytes,sha256 · props: id,kind,path,width,height,bytes,sha256')
     w('  manifest_icons.csv  # part A only: sheet,file,width,height,background,bytes,sha256')
@@ -178,13 +164,13 @@ def start_here(PA, IJ, CB, CC):
 
 README_KO_T = """# 사용 방법 (사용자용) — 작업 팩 F4 (ACT III 4부 · v0.9.3의 가안 그림 전부, {TOTAL}장)
 
-v0.9.3에서 게임이 그린 가안으로 나오는 그림을 모두 모았습니다. **세 부분(A–C)으로 나뉘어 있어서 한 부분씩 시켜도 됩니다.** GPT용 영문 지시는 `00_START_HERE.md`에 있고, 이 파일은 사용자용 안내입니다.
+v0.9.3에서 게임이 그린 가안으로 나오는 그림을 모두 모았습니다. **두 부분(A–B)으로 나뉘어 있어서 한 부분씩 시켜도 됩니다.** 엑스트라(의식 기사단장, 광장의 전령)는 새로 그리지 않고 기존 그림을 씁니다(D-094). GPT용 영문 지시는 `00_START_HERE.md`에 있고, 이 파일은 사용자용 안내입니다.
 
 | 부분 | 내용 | 장수 |
 |---|---|---:|
 {PARTS}
 
-권장 순서: **B → C → A** (눈에 많이 띄는 순서).
+권장 순서: **B → A** (눈에 많이 띄는 순서).
 
 ## 한 부분씩 시키기 (권장)
 ChatGPT 작업 모드에 이 ZIP을 **통째로** 올리고 붙여 넣으세요. `B` 자리에 원하는 부분을 넣습니다.
@@ -194,7 +180,7 @@ Attached is a work pack. Read 00_START_HERE.md first and follow it exactly. Do p
 
 ## 전부 한 번에
 ```
-Attached is a work pack. Read 00_START_HERE.md first and follow it exactly: produce all parts in the order B, C, A, run the self-check, and return one zip per part as described in section 7. Reopen and test every zip before you hand it over and tell me each zip's exact size in bytes.
+Attached is a work pack. Read 00_START_HERE.md first and follow it exactly: produce both parts in the order B, A, run the self-check, and return one zip per part as described in section 7. Reopen and test every zip before you hand it over and tell me each zip's exact size in bytes.
 ```
 
 ## 받은 뒤
@@ -208,9 +194,9 @@ Attached is a work pack. Read 00_START_HERE.md first and follow it exactly: prod
 ## B. 마지막 국왕 — 반신 4표정 + 맵 그림
 - 60대 후반의 여윈 국왕. 긴 흰 머리와 흰 수염, 낡은 짙은 보라 왕의 옷과 진홍 망토, 왕관 없이 가는 금 테 정도. 어깨에서 옅은 보랏빛 실이 빠져나가는 모습(기억을 내주는 결계). 이름은 ACT IV까지 미정.
 
-## C. 사람과 맵 그림
-- **의식 기사단장**(40대, 의식 기사단과 같은 자두빛 판금에 더 좋은 장식, 투구 없는 반신) — 반신 4표정 + 맵 그림
-- **광장의 전령**(30대 여성 전령, 황토빛 전령 외투와 서류 가방) — 반신 4표정 + 맵 그림
+## 엑스트라는 기존 그림 (D-094)
+- 의식 기사단장·재상부 근위대장: 의식 기사 맵 그림 + 봉쇄 집행관 초상
+- 광장의 전령: 하층가 사람(피난민) 맵 그림과 초상
 """
 
 def main():
@@ -218,10 +204,10 @@ def main():
     for p in list((PACK/'prompts').glob('*.txt')): p.unlink()
     Image.open(OLD/'style_aren_neutral.png').save(refs/'style_aren_neutral.png', optimize=True)
     def ref_png(src, dst): Image.open(src).convert('RGBA').save(dst, optimize=True)
-    for b in ('archivist', 'eric', 'aren'):
+    for b in ('archivist',):
         src = ROOT/f'src/assets/portraits/bust_{b}_neutral.webp'
         if src.exists(): ref_png(src, refs/f'ref_bust_{b}_neutral.png')
-    for s in ('eric', 'ironSpear', 'archivist', 'ritualKnight'):
+    for s in ('eric', 'ironSpear', 'archivist'):
         src = ROOT/f'src/assets/sprites/sprite_{s}.webp'
         if src.exists(): ref_png(src, refs/f'ref_sprite_{s}.png')
     for n in ('approved_icons_D.png',): (refs/n).write_bytes((F1REF/n).read_bytes())
@@ -229,17 +215,17 @@ def main():
     if h.exists(): (refs/'approved_icons_H.png').write_bytes(h.read_bytes())
     elif not (refs/'approved_icons_H.png').exists(): sys.exit(f'missing {h}')
     props_layout().save(refs/'layout_props_act3d.png', optimize=True)
-    for m, shot in (('m21', 'act3d/m21-heart-1440.png'), ('m22', 'act3d/m22-square-1440.png')):
+    for m, shot in (('m21', 'act3d/m21-heart-1440.png'),):
         src = ROOT/'docs/v0.9.3/screenshots'/shot
         if src.exists(): Image.open(src).convert('RGB').save(refs/f'ref_battle_{m}.jpg', quality=85)
         elif not (refs/f'ref_battle_{m}.jpg').exists(): sys.exit(f'missing {src} (run tests/act3d-e2e.mjs first)')
     IK = icon_cells(); ip.grid_sketch(IK, 'K').save(refs/'layout_icons_K.png', optimize=True)
-    PA, CB, CC = thing_jobs(), char_jobs('B'), char_jobs('C')
+    PA, CB, CC = thing_jobs(), char_jobs('B'), []
     seq = PA + [dict(id='icons_K', part='A', kind='icons', file='icons_K.png', size='1024x1024',
                      refs='layout_icons_K.png, approved_icons_D.png, approved_icons_H.png, style_aren_neutral.png', prompt=icon_prompt(IK))] + CB + CC
     (PACK/'00_START_HERE.md').write_text(start_here(PA, IK, CB, CC), encoding='utf-8')
     rows = '\n'.join(f"| **{k}** | {t} | {n} |" for k, t, n in (('A', '물건 — 아이콘 시트 K, 전투 소품(의식 고정석)', len(PA)+1),
-                     ('B', '마지막 국왕', len(CB)), ('C', '의식 기사단장, 광장의 전령', len(CC))))
+                     ('B', '마지막 국왕', len(CB))))
     (PACK/'README_KO.md').write_text(README_KO_T.replace('{NAME}', NAME).replace('{TOTAL}', str(len(seq))).replace('{PARTS}', rows), encoding='utf-8')
     with open(PACK/'jobs.csv', 'w', newline='', encoding='utf-8') as f:
         wr = csv.writer(f); wr.writerow(['order', 'part', 'kind', 'id', 'expression', 'file', 'size', 'references', 'prompt_file'])
@@ -263,7 +249,7 @@ def main():
                 if p.is_file(): z.write(p, 'Ashen_Crown_v093_ACT3_F4_Work_Pack/'+str(p.relative_to(PACK)))
         with zipfile.ZipFile(out) as z: assert z.testzip() is None
         print('zip', out, out.stat().st_size)
-    print('pack', PACK, 'A', len(PA)+1, 'B', len(CB), 'C', len(CC), 'total', len(seq))
+    print('pack', PACK, 'A', len(PA)+1, 'B', len(CB), 'total', len(seq))
 
 if __name__ == '__main__':
     main()

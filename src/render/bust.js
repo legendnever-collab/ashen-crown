@@ -44,6 +44,7 @@ function bustFromCast(id){const k=CAST[id]||CAST.bandit,chief=/captain|Captain|q
  hat:k.helm==='kettle'?'kettle':k.helm==='cap'?'cap':k.bandana?'bandana':k.hood?'hood':null,hatColor:k.helmColor||k.bandana||k.hood,
  beard:k.beard,beardColor:k.beardColor,hoodDown:k.hood&&k.helm?k.hood:null,mail:k.helm==='kettle'};}
 const LORD_LOOK={oswin:'lordA',brennan:'lordB'};
+const BUST_REUSE={ritualKnight:'executor'}; /* the chancellery's rite knights speak with the plum-armored executor's face */
 export function bustKey(u,missionId=1){
  if(!u)return 'refugee';
  if(u.kind==='lion'||u.id==='baldrick')return 'baldrick';
@@ -61,6 +62,8 @@ export function bustKey(u,missionId=1){
  if(missionId===16&&u.id==='cap'){const k=`captain16_${{ironInfantry:'iron',lordA:'free',flameKnight:'flame'}[u.look]}`;if(PAINTED?.[k])return k;}
  // v0.6.1: the two lords of M10 speak with their army's look; mission units that name a look use it.
  if(LORD_LOOK[u.id])return 'cast:'+LORD_LOOK[u.id];
+ // D-094: extras reuse an existing painted face — a look with a painted map sheet but no bust borrows the nearest painted bust.
+ if(u.look&&!PAINTED?.[u.look]&&BUST_REUSE[u.look]&&PAINTED?.[BUST_REUSE[u.look]])return BUST_REUSE[u.look];
  if(u.look)return PAINTED?.[u.look]?u.look:'cast:'+u.look;
  if(u.team==='commander')return 'aren';
  if(u.team==='civilian')return 'refugee';

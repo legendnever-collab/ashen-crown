@@ -6,13 +6,3 @@ order,part,kind,id,expression,file,size,references,prompt_file
 5,B,bust,king,determined,bust_king_determined.png,1024x1280,bust_king_neutral.png (your approved result),prompts/05_bust_king_determined.txt
 6,B,bust,king,sad,bust_king_sad.png,1024x1280,bust_king_neutral.png (your approved result),prompts/06_bust_king_sad.txt
 7,B,sprite,king,,sprite_king.png,1024x768,"bust_king_neutral.png (your approved result), ref_sprite_archivist.png",prompts/07_sprite_king.txt
-8,C,bust,riteCommander,neutral,bust_riteCommander_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_eric_neutral.png (the hero they are tied to, for the painting style only)",prompts/08_bust_riteCommander_neutral.txt
-9,C,bust,riteCommander,concerned,bust_riteCommander_concerned.png,1024x1280,bust_riteCommander_neutral.png (your approved result),prompts/09_bust_riteCommander_concerned.txt
-10,C,bust,riteCommander,determined,bust_riteCommander_determined.png,1024x1280,bust_riteCommander_neutral.png (your approved result),prompts/10_bust_riteCommander_determined.txt
-11,C,bust,riteCommander,sad,bust_riteCommander_sad.png,1024x1280,bust_riteCommander_neutral.png (your approved result),prompts/11_bust_riteCommander_sad.txt
-12,C,bust,herald,neutral,bust_herald_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_aren_neutral.png (the hero they are tied to, for the painting style only)",prompts/12_bust_herald_neutral.txt
-13,C,bust,herald,concerned,bust_herald_concerned.png,1024x1280,bust_herald_neutral.png (your approved result),prompts/13_bust_herald_concerned.txt
-14,C,bust,herald,determined,bust_herald_determined.png,1024x1280,bust_herald_neutral.png (your approved result),prompts/14_bust_herald_determined.txt
-15,C,bust,herald,sad,bust_herald_sad.png,1024x1280,bust_herald_neutral.png (your approved result),prompts/15_bust_herald_sad.txt
-16,C,sprite,riteCommander,,sprite_riteCommander.png,1024x768,"bust_riteCommander_neutral.png (your approved result), ref_sprite_ritualKnight.png",prompts/16_sprite_riteCommander.txt
-17,C,sprite,herald,,sprite_herald.png,1024x768,"bust_herald_neutral.png (your approved result), ref_sprite_archivist.png",prompts/17_sprite_herald.txt

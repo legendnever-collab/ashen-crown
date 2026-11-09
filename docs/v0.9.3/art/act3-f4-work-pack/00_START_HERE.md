@@ -1,14 +1,13 @@
 # Ashen Crown — ACT III Part 4 Art Work Order (pack F4, v0.9.3)
 
 You are producing finished game art for **Ashen Crown**, an original offline tactical RPG (Western medieval frontier fantasy). Read this whole file first, then work through the jobs part by part and return the zips described in section 7.
-The game already plays with temporary game-drawn art for everything in this pack. It has **17 images in three parts** (A–C). The user may order one part at a time: **do only the parts the user asks for**, in the order B → C → A unless told otherwise, and return each part as its own zip(s).
+The game already plays with temporary game-drawn art for everything in this pack. It has **7 images in two parts** (A–B). The user may order one part at a time: **do only the parts the user asks for**, in the order B → A unless told otherwise, and return each part as its own zip(s).
 
 | part | what | images |
 |---|---|---:|
 | **A** | things — icon sheet K (Thea's lance, Ines' mace, two treasures), battle props (the anchor stone) | 2 |
 | **B** | the last king | 5 |
-| **C** | the rite knight commander and the square's herald | 10 |
-| | total | **17** |
+| | total | **7** |
 
 ## 1. Part A — things (2 images)
 
@@ -35,21 +34,6 @@ Plus job 2: `icons_K.png` (1024×1024, attach layout_icons_K.png, approved_icons
 | 6 | `bust_king_sad.png` | the last king (마지막 국왕, M21–M22; his name is OPEN until ACT IV) | 1024×1280 | bust_king_neutral.png (your approved result) | `prompts/06_bust_king_sad.txt` |
 | 7 | `sprite_king.png` | the last king — map figure (M21 throne dais; cannot move) | 1024×768 | bust_king_neutral.png (your approved result), ref_sprite_archivist.png | `prompts/07_sprite_king.txt` |
 
-## 3. Part C — the people of M21–M22 (10 images)
-
-| # | file | what | size (px) | attach | prompt |
-|---|---|---|---|---|---|
-| 8 | `bust_riteCommander_neutral.png` | the rite knight commander (의식 기사단장, enemy commander M21, duels Erik; the chancellery guard captain in M22) | 1024×1280 | style_aren_neutral.png, ref_bust_eric_neutral.png (the hero they are tied to, for the painting style only) | `prompts/08_bust_riteCommander_neutral.txt` |
-| 9 | `bust_riteCommander_concerned.png` | the rite knight commander (의식 기사단장, enemy commander M21, duels Erik; the chancellery guard captain in M22) | 1024×1280 | bust_riteCommander_neutral.png (your approved result) | `prompts/09_bust_riteCommander_concerned.txt` |
-| 10 | `bust_riteCommander_determined.png` | the rite knight commander (의식 기사단장, enemy commander M21, duels Erik; the chancellery guard captain in M22) | 1024×1280 | bust_riteCommander_neutral.png (your approved result) | `prompts/10_bust_riteCommander_determined.txt` |
-| 11 | `bust_riteCommander_sad.png` | the rite knight commander (의식 기사단장, enemy commander M21, duels Erik; the chancellery guard captain in M22) | 1024×1280 | bust_riteCommander_neutral.png (your approved result) | `prompts/11_bust_riteCommander_sad.txt` |
-| 12 | `bust_herald_neutral.png` | the square's herald (광장의 전령, M22; reads the records, the plan and the king's word) | 1024×1280 | style_aren_neutral.png, ref_bust_aren_neutral.png (the hero they are tied to, for the painting style only) | `prompts/12_bust_herald_neutral.txt` |
-| 13 | `bust_herald_concerned.png` | the square's herald (광장의 전령, M22; reads the records, the plan and the king's word) | 1024×1280 | bust_herald_neutral.png (your approved result) | `prompts/13_bust_herald_concerned.txt` |
-| 14 | `bust_herald_determined.png` | the square's herald (광장의 전령, M22; reads the records, the plan and the king's word) | 1024×1280 | bust_herald_neutral.png (your approved result) | `prompts/14_bust_herald_determined.txt` |
-| 15 | `bust_herald_sad.png` | the square's herald (광장의 전령, M22; reads the records, the plan and the king's word) | 1024×1280 | bust_herald_neutral.png (your approved result) | `prompts/15_bust_herald_sad.txt` |
-| 16 | `sprite_riteCommander.png` | the rite knight commander — map figure | 1024×768 | bust_riteCommander_neutral.png (your approved result), ref_sprite_ritualKnight.png | `prompts/16_sprite_riteCommander.txt` |
-| 17 | `sprite_herald.png` | the square's herald — map figure (stands on a dais and reads) | 1024×768 | bust_herald_neutral.png (your approved result), ref_sprite_archivist.png | `prompts/17_sprite_herald.txt` |
-
 ## 4. Global rules
 
 - Characters: Painting style: match the attached approved art (style_aren_neutral.png, ref_bust_baldrick_neutral.png) — semi-realistic painted character art for a classic tactical RPG dialogue portrait: confident inked contour lines, painterly cel shading with soft gradients, strong warm rim light, rich saturated but slightly earthy colors, detailed metal and cloth textures, expressive mature faces (not chibi, not western cartoon, not photo-real). Original characters: do not copy any existing game's character, costume, emblem or logo.
@@ -57,7 +41,7 @@ Plus job 2: `icons_K.png` (1024×1024, attach layout_icons_K.png, approved_icons
 - Never write the name of any existing game, character or studio in a prompt, and do not copy any existing artwork.
 - **No text, letters, numbers, emblems, crests, holy symbols or logos** anywhere (clothing, papers, rings, horns, banners, the anchor stone). The stone carries plain bands and light only.
 - **The king is frail but dignified** — never a corpse, ghost or monster; the violet light drawn from him is faint.
-- The king, the commander and the herald have **no names** in the game yet; never write a name on anything.
+- The king has **no name** in the game yet; never write a name on anything.
 - Busts: exactly 1024×1280, transparent (or flat pure `#00FF00`), framed like `style_aren_neutral.png`, turned to the viewer's right.
 - Sprite sheets: exactly 1024×768, 4 columns × 3 rows of 256 px cells (row 1 down, row 2 right, row 3 up; columns idle, step A, step B, attack), feet on a baseline 16 px above each cell bottom, transparent (or `#00FF00`). Match the scale of the attached reference sheets.
 - Icon sheet K: 4×4 cells of 256 px, cells 05–16 empty, every icon inside the 80 % safe square of its cell. Prop sheet: 4 cells of 256 px in one row.
@@ -66,7 +50,6 @@ Plus job 2: `icons_K.png` (1024×1024, attach layout_icons_K.png, approved_icons
 ## 5. Order of work
 
 - **B:** `king`: neutral bust → concerned / determined / sad → map sheet.
-- **C:** `riteCommander` busts (neutral first) → `herald` busts → the two map sheets.
 - **A:** `props_act3d.png` → `icons_K.png`.
 
 ## 6. Self-check (record PASS/FAIL per item in each zip's QA_REPORT.md)
@@ -83,10 +66,9 @@ Plus job 2: `icons_K.png` (1024×1024, attach layout_icons_K.png, approved_icons
 
 - `Ashen_Crown_v093_ACT3_Art_Pack_F4_A.zip` — part A: things — icon sheet K (Thea's lance, Ines' mace, two treasures), battle props (the anchor stone)
 - `Ashen_Crown_v093_ACT3_Art_Pack_F4_B.zip` — part B: the last king
-- `Ashen_Crown_v093_ACT3_Art_Pack_F4_C.zip` — part C: the rite knight commander and the square's herald
 
 ```
-Ashen_Crown_v093_ACT3_Art_Pack_F4_A/   (and _B, _C the same way)
+Ashen_Crown_v093_ACT3_Art_Pack_F4_A/   (and _B the same way)
   png/              # PNG masters
   manifest.csv      # characters: kind,id,expression,file,width,height,bytes,sha256 · props: id,kind,path,width,height,bytes,sha256
   manifest_icons.csv  # part A only: sheet,file,width,height,background,bytes,sha256

@@ -70,7 +70,7 @@ SPEAKERS.archivist={id:'archivist',name:'늙은 기록관',ko:'기록관',team:'
 // v0.9.2 (D-089): Lia's teacher and Kai's old superior stay unnamed (OPEN); Chancellor Bellard speaks for the first time (M20).
 SPEAKERS.teacher={id:'teacher',name:'리아의 스승',ko:'스승',team:'civilian',look:'liaTeacher'};SPEAKERS.sup={id:'sup',name:'회색 장부의 우두머리',ko:'옛 상관',team:'enemy',look:'greyMaster'};SPEAKERS.bellard={id:'bellard',name:'재상 벨라드',ko:'벨라드',team:'enemy',look:'bellard'};
 // v0.9.3 (D-093): the last king (his name OPEN, ACT IV), the rite knight commander, the square's heralds.
-SPEAKERS.king={id:'king',name:'마지막 국왕',ko:'국왕',team:'civilian',look:'king'};SPEAKERS.rc={id:'rc',name:'의식 기사단장',ko:'기사단장',team:'enemy',look:'riteCommander'};SPEAKERS.herald={id:'herald',name:'전령',ko:'전령',team:'civilian',look:'herald'};
+SPEAKERS.king={id:'king',name:'마지막 국왕',ko:'국왕',team:'civilian',look:'king'};SPEAKERS.rc={id:'rc',name:'의식 기사단장',ko:'기사단장',team:'enemy',look:'ritualKnight'};SPEAKERS.herald={id:'herald',name:'전령',ko:'전령',team:'civilian',look:'refugee'};
 SPEAKERS.priest={id:'priest',name:'순례자 노사제',ko:'노사제',team:'civilian',look:'pilgrim'};SPEAKERS.abbot={id:'abbot',name:'침묵의 원장',ko:'원장',team:'enemy',look:'abbot'};
 for(let mission=1;mission<=LAST_MISSION;mission++)for(const phase of ['preparation','aftermath']){
  const lines=phase==='aftermath'?ADVISOR_AFTER[mission]:ADVISOR_BRIEFINGS[mission];
