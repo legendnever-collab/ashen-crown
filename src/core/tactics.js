@@ -2,7 +2,7 @@
 // They share the promotion actions' plumbing (validClassTarget / classTargetCells / forecastClass / tileTarget), so the
 // screen code treats them like the v0.5 class actions. Damage goes through game.js (strike callback) so guards, criticals,
 // mission hooks and feedback stay the same as a normal attack.
-import {distance,key,alive,at,findUnit,terrainAt,hostile,strikeStats,roll,sideOf,weatherOf} from './rules.js';
+import {distance,key,alive,at,findUnit,terrainAt,hostile,strikeStats,roll,sideOf,weatherOf,supportable} from './rules.js';
 import {missionOf} from '../data/missions.js';
 import {TOOLS} from '../data/frontier-data.js';
 import {skillByMode,knowsMode,NEW_SKILL_MODES,ULTIMATE_MODES} from '../data/skills.js';
@@ -73,7 +73,7 @@ export function validTacticTarget(s,u,target,mode){
  if(mode==='flameBurst'){const p=tileOf8(target);if(!p||!open(s,p.x,p.y))return false;const d=distance(u,p);return d>=2&&d<=3&&foesIn(s,u,cross(s,p)).length>0;}
  const t=unitOf(s,target);if(!t||!alive(t))return false;const d=distance(u,t);
  if(SKILL_SELF.includes(mode)){if(t.id!==u.id)return false;if(mode==='whirlwind')return s.units.some(e=>alive(e)&&hostile(s,u,e)&&distance(u,e)===1);if(mode==='dawnPrayer')return fallenAllies(s).length>0&&!!besideSpot(s,u);return true;}
- if(mode==='purify')return t.team==='ally'&&d<=2&&(!!t.status||t.hp<t.maxHP);
+ if(mode==='purify')return supportable(t)&&d<=2&&(!!t.status||t.hp<t.maxHP); // v0.9.3: anyone, like Heal
  if(mode==='provoke')return hostile(s,u,t)&&t.team==='enemy'&&d>=1&&d<=3&&(t.mov||0)>0&&!['beacon','wagon'].includes(t.kind);
  if(mode==='pinningShot')return hostile(s,u,t)&&d>=2&&d<=3;
  return hostile(s,u,t)&&d===1&&!['beacon'].includes(t.kind);

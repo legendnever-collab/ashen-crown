@@ -5,7 +5,7 @@
 import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterWarCouncil} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {newGame,startBattle,beginEnemyPhase,advanceEnemy} from '../src/core/game.js';import {findUnit} from '../src/core/rules.js';import {chooseStance} from '../src/core/mission-rules-v061.js';import {drain} from './campaign-policy.mjs';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.9.2.html').href,shots='docs/v0.7.1/screenshots/act2d-campaign';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.9.3.html').href,shots='docs/v0.7.1/screenshots/act2d-campaign';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const check=(name,ok)=>{assert.ok(ok,name);n++;console.log('PASS',name);};
 const camp12=JSON.parse(fs.readFileSync('tests/fixtures/v070/v070-m12-camp.json','utf8')).save,base=deserialize(camp12);
 const at=(m,extra={})=>{const c=structuredClone(base.campaign);for(let i=13;i<m;i++)c.completed.push(i);Object.assign(c.flags,extra.flags||{});if(extra.trust)c.factionTrust=extra.trust;const s=newGame(20261027,c,m);s.economy=structuredClone(base.economy);return s;};

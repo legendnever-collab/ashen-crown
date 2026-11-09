@@ -113,3 +113,9 @@ E2 (D-052/053): world map of Erdia (new-game chronicle, march map on every hub c
 
 ### ACT III art pack F3 (2026-11-09, D-091)
 - Branch feature/act3-f3-art-pack from main: all 24 F3 images imported (hash-verified), the props and icons wired, the statusChips comment bug fixed; not merged before the user plays and approves it.
+
+### v0.9.3 「잿빛 선택」 release candidate (2026-11-09, D-093)
+- Branch feature/v0.9.3-crown on main 78f30f0; not merged before the user plays and approves it.
+- The user's play-test notes (D-092): zone of control (rogues exempt), heals on anyone, tap-to-cancel, Thea's capital lance.
+- M21 마지막 국왕 and M22 잿빛 선택 (src/core/mission-rules-v093.js), 「함께 정한다」, the ACT III choice and card, 장수 열전 (src/core/records.js), schema 15.
+- Art: a temporary look for the king and the anchor stone; extras reuse painted art (D-094); ACT III art pack F4 work order in docs/v0.9.3/art/act3-f4-work-pack (7 images, parts A–B).

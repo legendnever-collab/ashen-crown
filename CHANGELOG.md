@@ -1,3 +1,15 @@
+# v0.9.3 — The Ashen Choice · ACT III part 4: M21 마지막 국왕, M22 잿빛 선택, Aren's awakening, the ACT III choice (release candidate)
+- Release candidate on feature/v0.9.3-crown; not merged before the user plays and approves it. D-093 (within D-079 / docs/v0.9.0/ACT3_DESIGN.md §4.2, §5–§7); the king and the anchor stone use temporary art until ACT III art pack F4.
+- The user's play-test notes (D-092): zone of control for both sides with rogues and civilians exempt (rules.js controlZone); Heal and Purify on anyone, no EXP for a foe (rules.js supportable); tap an empty tile to cancel an aimed action (app.js); Thea's 왕도 기병창 and Ines' 왕도 사제 철퇴 in the lower city. M06 limit 16 → 18 and the policy's M05 wagon guard keep ACT I at its win rates.
+- M21 (src/core/mission-rules-v093.js): the king on the throne dais, four anchor stones (고정석 깨기 — one blow for Erik/Thea/Dario/Ines, two for the rest; +10 king HP each), the ward pulse rings (MP −3), Erik's duel with the rite knight commander; victory by the stones or by holding to TURN 12; the king's request (지금은 아님 / 약속함) and Aren's awakening card.
+- 「함께 정한다」: once a battle from M21 on, an acted hero moves and acts again (command.js, game.js useTogether, the unit menu).
+- M22: three heralds read four times each from TURN 2 (a hurt herald loses that turn; a hero on a fallen herald's dais reads instead), the chancellery and the betraying banner, allied banners' knights at the 「동맹」 stage, the recruits' last chance to return; the ACT III choice (국왕에게 / 세 깃발의 회의에 / 모든 사람의 서약에, one banner up and one down each) and the ACT III completion card.
+- 장수 열전 (src/core/records.js): sorties, foes defeated, rescues and HP healed per hero, in the unit sheet's bio tab and on the ACT III card.
+- Two treasures and hidden objectives, rewards, supply carriers, two world sites, the new track 「왕관의 심장」, schema 15 (imports 0–14; real v0.9.2 saves in tests/fixtures/v092).
+- Tests: feedback-v093, mission21, mission22, migration-v092 unit suites; act3d-e2e and migration-v092 browser suites (CI group act3); the act3 balance extended through M22 with the ≥ 90% gate.
+- Extras reuse painted art (D-094): the rite knight commander and the guard captain wear the rite knights' sheet and the executor's bust (bust.js BUST_REUSE); the heralds use the refugee look.
+- ACT III art pack F4 work order: scripts/make-act3-f4-art-pack.py → docs/v0.9.3/art/act3-f4-work-pack (7 images in two parts: icon sheet K and the anchor stone; the last king).
+
 # v0.9.2 + ACT III art pack F3 (release candidate on feature/act3-f3-art-pack, D-091)
 - v0.9.2 and PR #20 merged after the user's approval (D-090).
 - Pack F3 (24 images, parts A–C, hash-verified): awakened Lia and Kai (busts and sheets), Lia's teacher and Kai's old superior (busts and sheets), the rite knight and the ritualist sheets, icon sheet J (작은 결계, 그림자 군무, 스승의 깃펜, 회색 장부), painted ritual circles (lit / sealed) and archive cabinets (whole / burned). Importers read BOM manifests (utf-8-sig); the rite knight scaled 1.06.

@@ -44,6 +44,7 @@ function bustFromCast(id){const k=CAST[id]||CAST.bandit,chief=/captain|Captain|q
  hat:k.helm==='kettle'?'kettle':k.helm==='cap'?'cap':k.bandana?'bandana':k.hood?'hood':null,hatColor:k.helmColor||k.bandana||k.hood,
  beard:k.beard,beardColor:k.beardColor,hoodDown:k.hood&&k.helm?k.hood:null,mail:k.helm==='kettle'};}
 const LORD_LOOK={oswin:'lordA',brennan:'lordB'};
+const BUST_REUSE={ritualKnight:'executor'}; /* the chancellery's rite knights speak with the plum-armored executor's face */
 export function bustKey(u,missionId=1){
  if(!u)return 'refugee';
  if(u.kind==='lion'||u.id==='baldrick')return 'baldrick';
@@ -52,7 +53,7 @@ export function bustKey(u,missionId=1){
  if((u.classTier||1)>=2&&BUST_SPEC[u.id]&&PAINTED?.[`${u.id}_t2`])return `${u.id}_t2`;
  if(u.id==='eric'&&(appearanceFor(u)?.tier||1)>=2)return 'eric_adv';
  if(u.id==='elder'&&(missionId===17||missionId===18)){const k=missionId===17?'guardianElder':'forestElder';if(PAINTED?.[k])return k;} // pack F2: the keep's and the forest's elders
- if(u.id==='elder'&&(missionId===19||missionId===20)&&PAINTED?.archivist)return 'archivist'; // v0.9.2: the lower city's old archivist
+ if(u.id==='elder'&&missionId>=19&&missionId<=22&&PAINTED?.archivist)return 'archivist'; // v0.9.2–v0.9.3: the lower city's old archivist
  if(BUST_SPEC[u.id])return u.id;
  // v0.6 ACT II recruits and leaders (pack B, D-059): painted busts by id; without the art the cast vector bust below.
  if(['thea','dario','ines'].includes(u.id)&&u.team!=='enemy'&&(u.classTier||1)>=2&&PAINTED?.[`${u.id}_t2`])return `${u.id}_t2`; // pack F2: recruits' tier 2
@@ -61,6 +62,8 @@ export function bustKey(u,missionId=1){
  if(missionId===16&&u.id==='cap'){const k=`captain16_${{ironInfantry:'iron',lordA:'free',flameKnight:'flame'}[u.look]}`;if(PAINTED?.[k])return k;}
  // v0.6.1: the two lords of M10 speak with their army's look; mission units that name a look use it.
  if(LORD_LOOK[u.id])return 'cast:'+LORD_LOOK[u.id];
+ // D-094: extras reuse an existing painted face — a look with a painted map sheet but no bust borrows the nearest painted bust.
+ if(u.look&&!PAINTED?.[u.look]&&BUST_REUSE[u.look]&&PAINTED?.[BUST_REUSE[u.look]])return BUST_REUSE[u.look];
  if(u.look)return PAINTED?.[u.look]?u.look:'cast:'+u.look;
  if(u.team==='commander')return 'aren';
  if(u.team==='civilian')return 'refugee';

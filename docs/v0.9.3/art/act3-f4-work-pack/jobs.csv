@@ -1,0 +1,8 @@
+order,part,kind,id,expression,file,size,references,prompt_file
+1,A,props,props_act3d,,props_act3d.png,1024x256,"layout_props_act3d.png, ref_sprite_eric.png, ref_sprite_ironSpear.png, ref_battle_m21.jpg",prompts/01_props_act3d.txt
+2,A,icons,icons_K,,icons_K.png,1024x1024,"layout_icons_K.png, approved_icons_D.png, approved_icons_H.png, style_aren_neutral.png",prompts/02_icons_K.txt
+3,B,bust,king,neutral,bust_king_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_archivist_neutral.png (the hero they are tied to, for the painting style only)",prompts/03_bust_king_neutral.txt
+4,B,bust,king,concerned,bust_king_concerned.png,1024x1280,bust_king_neutral.png (your approved result),prompts/04_bust_king_concerned.txt
+5,B,bust,king,determined,bust_king_determined.png,1024x1280,bust_king_neutral.png (your approved result),prompts/05_bust_king_determined.txt
+6,B,bust,king,sad,bust_king_sad.png,1024x1280,bust_king_neutral.png (your approved result),prompts/06_bust_king_sad.txt
+7,B,sprite,king,,sprite_king.png,1024x768,"bust_king_neutral.png (your approved result), ref_sprite_archivist.png",prompts/07_sprite_king.txt

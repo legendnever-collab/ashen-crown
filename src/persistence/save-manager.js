@@ -1,6 +1,7 @@
 import {legacyRewardCatchup} from '../core/battle-rewards.js';
 import {ensureEconomy,validateEconomy} from '../core/economy.js';
 import {validDuel} from '../core/duel.js';
+import {validTally} from '../core/records.js';
 import {COMMANDS} from '../core/command.js';
 import {migrateFrontier,frontierState,validateFrontier,alignFrontier} from '../core/frontier.js';
 import {SCHEMA,VERSION,WIDTH,HEIGHT,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,ALL_HEROES,RECRUIT_HEROES,partyIds} from '../data/game-data.js';
@@ -56,7 +57,7 @@ export function validate(s){
  if(s.burning!=null&&(typeof s.burning!=='object'||Array.isArray(s.burning)||Object.entries(s.burning).some(([k,v])=>!/^\d{1,2},\d{1,2}$/.test(k)||!Number.isInteger(v)||v<1||v>2)))throw Error('화염 기록이 손상되었습니다.');
  if(s.units.some(u=>u.team==='ally'&&(![1,2,3].includes(u.appearanceTier)||['classTier','storyTier'].some(k=>u[k]!=null&&![1,2,3].includes(u[k])))))throw Error('외형 Tier가 손상되었습니다.');
  // v0.8.1: hidden objectives won (mission ids), this battle's flag record, the supply carrier's crate.
- if(c.feats!=null&&(!Array.isArray(c.feats)||c.feats.length>20||new Set(c.feats).size!==c.feats.length||c.feats.some(id=>!Number.isInteger(id)||id<1||id>20)))throw Error('숨은 전과 기록이 손상되었습니다.');
+ if(c.feats!=null&&(!Array.isArray(c.feats)||c.feats.length>22||new Set(c.feats).size!==c.feats.length||c.feats.some(id=>!Number.isInteger(id)||id<1||id>22)))throw Error('숨은 전과 기록이 손상되었습니다.');
  if(s.battleFlags!=null&&(typeof s.battleFlags!=='object'||Array.isArray(s.battleFlags)||Object.keys(s.battleFlags).length>60||Object.values(s.battleFlags).some(v=>!['boolean','number','string'].includes(typeof v)||typeof v==='string'&&v.length>40)))throw Error('전투 기록이 손상되었습니다.');
  if(s.units.some(u=>u.carrier!=null&&(!['enemy','allied'].includes(u.team)||typeof u.carrier!=='string'||!TOOLS[u.carrier])||u.pouchUsed!=null&&typeof u.pouchUsed!=='boolean'))throw Error('보급 기록이 손상되었습니다.');
  // v0.9.0 (D-079): the duel of this battle, Aren's command, the weather's cleared tiles and a turned watchman.
@@ -65,6 +66,8 @@ export function validate(s){
  if(s.ultimates!=null&&(!Array.isArray(s.ultimates)||new Set(s.ultimates).size!==s.ultimates.length||s.ultimates.some(id=>!['eric','elina','sain','lia','kai'].includes(id)||!party.includes(id)))||s.blockade!=null&&(typeof s.blockade!=='object'||!party.includes(s.blockade.by)||!Number.isInteger(s.blockade.turn)||!Array.isArray(s.blockade.cells)||s.blockade.cells.length>5||s.blockade.cells.some(c=>!Array.isArray(c)||c.length!==2||!c.every(Number.isInteger)))||s.units.some(u=>u.oathWall!=null&&(u.id!=='eric'||!Number.isInteger(u.oathWall))||u.moveLeft!=null&&(!Number.isInteger(u.moveLeft)||u.moveLeft<0||u.moveLeft>12)||['raised','oathUsed'].some(k=>u[k]!=null&&typeof u[k]!=='boolean')||u.woke!=null&&!['ally','enemy'].includes(u.woke)))throw Error('각성 전투 기록이 손상되었습니다.');
  // v0.9.2: Lia's Little Ward, Kai's Shadow Dance (an enemy held this turn), the grey cloaks' shadow, M19 captives and the M20 archive.
  if(s.smallWard!=null&&(typeof s.smallWard!=='object'||s.smallWard.by!=='lia'||!party.includes('lia')||!['x','y','until'].every(k=>Number.isInteger(s.smallWard[k])&&s.smallWard[k]>=0)||s.smallWard.x>=mission.width||s.smallWard.y>=mission.height||s.smallWard.until>s.turn+1)||s.units.some(u=>u.dazed!=null&&(u.team!=='enemy'||!Number.isInteger(u.dazed)||u.dazed>s.turn)||u.shade!=null&&u.shade!==true||['forgotten','freed','noRescue','burned'].some(k=>u[k]!=null&&typeof u[k]!=='boolean')))throw Error('그림자 전투 기록이 손상되었습니다.');
+ // v0.9.3: Aren's 「함께 정한다」 (once a battle), this battle's tally and the campaign's hero records (장수 열전).
+ if(s.together!=null&&(typeof s.together!=='object'||!party.includes(s.together.hero)||!Number.isInteger(s.together.turn)||s.together.turn<1||s.together.turn>s.turn)||!validTally(s.tally,party,false)||!validTally(c.records,null,true))throw Error('열전 기록이 손상되었습니다.');
  validateEconomy(s.economy);validateEconomy(s.campaign.economy);if(s.frontier)validateFrontier(s.frontier);if(s.campaign.frontier)validateFrontier(s.campaign.frontier);
  return s;
 }
@@ -95,6 +98,8 @@ export function migrate(s){
  if(s?.schema===12){s.schema=13;s.version='0.9.1';if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  // v0.9.2 (D-089): Lia's and Kai's awakening, M19–M20 and 「한 사람도 두고 가지 않는다」 add battle fields; a schema-13 save keeps everything.
  if(s?.schema===13){s.schema=14;s.version='0.9.2';if(s.stageStart)s.stageStart=migrate(s.stageStart);}
+ // v0.9.3 (D-093): M21–M22, 「함께 정한다」, the hero records (장수 열전, counted from v0.9.3) and the ACT III choice; a schema-14 save keeps everything.
+ if(s?.schema===14){s.schema=15;s.version='0.9.3';if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');
  // v0.6.1: a save of the current schema made by an earlier build of it (e.g. v0.6.0) is now this version.
  if(s?.schema===SCHEMA&&s.version!==VERSION){s.version=VERSION;if(s.stageStart?.version)s.stageStart.version=VERSION;}

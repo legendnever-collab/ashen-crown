@@ -10,6 +10,8 @@ import {STORY_V091,FRONTIER_V091,ADVISOR_V091,ADVISOR_AFTER_V091} from './story-
 import {NPC_TALK_V091} from './talk-v091.js';
 import {STORY_V092,FRONTIER_V092,ADVISOR_V092,ADVISOR_AFTER_V092} from './story-v092.js';
 import {NPC_TALK_V092} from './talk-v092.js';
+import {STORY_V093,FRONTIER_V093,ADVISOR_V093,ADVISOR_AFTER_V093} from './story-v093.js';
+import {NPC_TALK_V093} from './talk-v093.js';
 import {STORY_V06,FRONTIER_V06,ADVISOR_V06} from './story-v06.js';
 import {STORY_V061,FRONTIER_V061,ADVISOR_V061} from './story-v061.js';
 import {STORY_V070,FRONTIER_V070,ADVISOR_V070} from './story-v070.js';
@@ -19,7 +21,7 @@ import {STORY_V05} from './story-v05.js';
 import {STORY_WORLD} from './story-world.js';
 import {LAST_MISSION} from './missions.js';
 import {REVISIT_LINES} from './arms-v081.js';
-Object.assign(FRONTIER_SCENES,FRONTIER_V04);Object.assign(ADVISOR_BRIEFINGS,ADVISOR_V04,ADVISOR_V06,ADVISOR_V061,ADVISOR_V070,ADVISOR_V071,ADVISOR_V090,ADVISOR_V091,ADVISOR_V092);Object.assign(NPC_TALK,NPC_TALK_V061,NPC_TALK_V070,NPC_TALK_V071,NPC_TALK_V090,NPC_TALK_V091,NPC_TALK_V092);Object.assign(ADVISOR_AFTER,ADVISOR_AFTER_V061,ADVISOR_AFTER_V070,ADVISOR_AFTER_V071,ADVISOR_AFTER_V090,ADVISOR_AFTER_V091,ADVISOR_AFTER_V092);
+Object.assign(FRONTIER_SCENES,FRONTIER_V04);Object.assign(ADVISOR_BRIEFINGS,ADVISOR_V04,ADVISOR_V06,ADVISOR_V061,ADVISOR_V070,ADVISOR_V071,ADVISOR_V090,ADVISOR_V091,ADVISOR_V092,ADVISOR_V093);Object.assign(NPC_TALK,NPC_TALK_V061,NPC_TALK_V070,NPC_TALK_V071,NPC_TALK_V090,NPC_TALK_V091,NPC_TALK_V092,NPC_TALK_V093);Object.assign(ADVISOR_AFTER,ADVISOR_AFTER_V061,ADVISOR_AFTER_V070,ADVISOR_AFTER_V071,ADVISOR_AFTER_V090,ADVISOR_AFTER_V091,ADVISOR_AFTER_V092,ADVISOR_AFTER_V093);
 const line=(speaker,text,expression='neutral')=>({speaker,text,expression});
 export const STORY={
  '1:intro':[line('aren','왕실 명령을 기다릴 여유는 없다. …에릭, 주민부터 지켜라.','determined'),line('eric','알았다. 이번엔 한 사람도 안 놓친다. 엘리나, 적은 어디 있지?'),line('elina','숲에 궁수, 북쪽엔 가르. …뒤쪽에서도 발소리가 나요. 기분 나쁘게.','concerned'),line('lia','뒤쪽까지요? 불이 번지면 사람도 기록도 다 잃어요! 스승님 흔적을 쫓다 머문 마을인데, 여기서 끝나게 둘 순 없어요.'),line('sain','리아 말대로 서둘러야겠네요. 다친 분은 신분이 어떻든 제가 먼저 돕겠습니다.'),line('kai','그럼 세인 갈 길은 내가 터 줄게. …근데 저 상자 봤어? 군용 인장이야. 뭐, 그건 사람부터 꺼내고 보자.')],
@@ -67,6 +69,8 @@ SPEAKERS.lucien={id:'lucien',name:'루시안',ko:'루시안',team:'ally'};SPEAKE
 SPEAKERS.archivist={id:'archivist',name:'늙은 기록관',ko:'기록관',team:'civilian',look:'archivist'};
 // v0.9.2 (D-089): Lia's teacher and Kai's old superior stay unnamed (OPEN); Chancellor Bellard speaks for the first time (M20).
 SPEAKERS.teacher={id:'teacher',name:'리아의 스승',ko:'스승',team:'civilian',look:'liaTeacher'};SPEAKERS.sup={id:'sup',name:'회색 장부의 우두머리',ko:'옛 상관',team:'enemy',look:'greyMaster'};SPEAKERS.bellard={id:'bellard',name:'재상 벨라드',ko:'벨라드',team:'enemy',look:'bellard'};
+// v0.9.3 (D-093): the last king (his name OPEN, ACT IV), the rite knight commander, the square's heralds.
+SPEAKERS.king={id:'king',name:'마지막 국왕',ko:'국왕',team:'civilian',look:'king'};SPEAKERS.rc={id:'rc',name:'의식 기사단장',ko:'기사단장',team:'enemy',look:'ritualKnight'};SPEAKERS.herald={id:'herald',name:'전령',ko:'전령',team:'civilian',look:'refugee'};
 SPEAKERS.priest={id:'priest',name:'순례자 노사제',ko:'노사제',team:'civilian',look:'pilgrim'};SPEAKERS.abbot={id:'abbot',name:'침묵의 원장',ko:'원장',team:'enemy',look:'abbot'};
 for(let mission=1;mission<=LAST_MISSION;mission++)for(const phase of ['preparation','aftermath']){
  const lines=phase==='aftermath'?ADVISOR_AFTER[mission]:ADVISOR_BRIEFINGS[mission];
@@ -80,8 +84,8 @@ for(const [moment,talks]of Object.entries(NPC_TALK)){const [mission,phase]=momen
  for(const [id,lines]of Object.entries(talks)){const label=SPEAKERS[id]?.team==='civilian'?hub?.npcs.find(n=>n.id===id)?.name.split(' · ')[0]:null;
   STORY[`npc:${moment}:${id}`]=lines.map(([speaker,text,expression])=>({...line(speaker,text,expression),...(label&&speaker===id?{name:label}:{}),inPlace:true,actors:['eric',id],focus:speaker==='eric'?0:1}));}}
 Object.assign(STORY,STORY_V04);
-Object.assign(STORY,STORY_V06,STORY_V061,STORY_V070,STORY_V071,STORY_V090,STORY_V091,STORY_V092);
-for(const [key,{actors,lines}]of Object.entries({...FRONTIER_V06,...FRONTIER_V061,...FRONTIER_V070,...FRONTIER_V071,...FRONTIER_V090,...FRONTIER_V091,...FRONTIER_V092}))STORY[key]=lines.map(([speaker,text,expression],i)=>({...line(speaker,text,expression||'neutral'),stage:stageHubFor(key),focus:i%3,actors}));
+Object.assign(STORY,STORY_V06,STORY_V061,STORY_V070,STORY_V071,STORY_V090,STORY_V091,STORY_V092,STORY_V093);
+for(const [key,{actors,lines}]of Object.entries({...FRONTIER_V06,...FRONTIER_V061,...FRONTIER_V070,...FRONTIER_V071,...FRONTIER_V090,...FRONTIER_V091,...FRONTIER_V092,...FRONTIER_V093}))STORY[key]=lines.map(([speaker,text,expression],i)=>({...line(speaker,text,expression||'neutral'),stage:stageHubFor(key),focus:i%3,actors}));
 // Thea after the canyon: she joins (D-055 §5) or stays with the Iron Crown; her camp talk follows that.
 STORY['npc:8:aftermath:thea:joined']=[['thea','에릭, 군단에서는 정찰 보고를 누구한테 하면 되죠?'],['eric','리아의 작전 탁자로. 그리고 다친 데가 있으면 세인한테 먼저.'],['thea','명령 체계가 생각보다 느슨하네요. …아니, 서로를 먼저 보는 체계겠죠.','determined'],['eric','금방 익숙해질 거다. 오늘은 쉬어.']].map(([sp,t,e])=>({...line(sp,t,e),inPlace:true,actors:['eric','thea'],focus:sp==='eric'?0:1}));
 STORY['npc:8:aftermath:thea:parted']=[['thea','에릭, 떠나기 전에 인사하러 왔어요.'],['eric','성하 마을로 돌아가나?'],['thea','네. 수송로는 여전히 제 일이니까요. 그래도 군단이 지나간 길은 기억할게요.','concerned'],['eric','언젠가 그 길에서 다시 보자.']].map(([sp,t,e])=>({...line(sp,t,e),inPlace:true,actors:['eric','thea'],focus:sp==='eric'?0:1}));
