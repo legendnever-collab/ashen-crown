@@ -374,6 +374,58 @@ MISSIONS[20]=authored({id:20,title:'왕관의 그림자',en:"The Crown's Shadow"
  threatTurn:4,par:10,turnLimit:13,level:16,deployLimit:7,
  objective:'문서고 서가 2곳 조사(계획서 확보) + 주민 4명 이상 대피 · TURN 13 안에 (서가 2곳이 타거나 주민 3명을 잃으면 패배)',
  brief:'북쪽 문서고: 재상부 서기가 TURN 3부터 서가 곁에서 불을 붙입니다. 불붙은 서가는 다음 적 턴이 끝나면 재가 되니 그 전에 조사하세요. 남쪽 하층가: 불길이 집에서 집으로 번지고 정해진 턴마다 다른 집으로 옮겨 붙습니다. 주민 곁에서 「구출」하면 대피합니다. 회색 망토는 그림자에 숨어 첫 공격을 피합니다. TURN 2 카이의 옛 상관이 일기토를 청합니다.'});
+// ---------- v0.9.3 ACT III part 4 「잿빛 선택」 (D-093, ACT3_DESIGN §4.2; maps, units and numbers PROPOSED) ----------
+// M21 The Last King: the crown's heart under the palace. Bellard's rite knights try to finish the succession rite with the
+// king's last memories. The king cannot move from the throne dais. Four anchor stones hold the rite to the hall: a hero
+// beside one breaks it (the search action, 「고정석 깨기」) — Erik, Thea, Dario and Ines at one blow, the others in two.
+// The ward pulses every turn, the outer ring (5–6 tiles from the king) on odd turns, the inner ring (2–3) on even turns:
+// a hero who ends the player phase on a pulsing tile loses 3 MP. Each broken stone gives the king back 10 HP.
+// TURN 2: the rite knight commander challenges Erik. Victory: four stones broken, or the king alive at the end of TURN 12.
+// Defeat: the king falls.
+const knight21=(id,x,y,stats={})=>unit(id,'의식 기사','spear',x,y,{hp:88,atk:48,def:27,res:15,spd:21,mov:3,look:'ritualKnight',...stats});
+const ritualist21=(id,x,y)=>unit(id,'재상부 의식사','ritualist',x,y,{hp:58,atk:42,def:15,res:26,spd:22,mov:2,range:[1,2],look:'ritualist'});
+const cloak21=(id,x,y)=>unit(id,'재상부 회색 망토','bandit',x,y,{hp:68,atk:44,def:20,res:15,spd:25,mov:4,movementProfile:'rogue',look:'grayCloak'});
+const anchor21=(id,x,y)=>({id,name:'의식 고정석',kind:'anchorStone',x,y,prop:true});
+MISSIONS[21]=authored({id:21,title:'마지막 국왕',en:'The Last King',
+ rows:['xxxxxxxxkkxxxxxxxx','xkkkkkxkkkkxkkkkkx','xkkkkkkkkkkkkkkkkx','xkkxkkkkzzkkkkxkkx','xkkkkkkzzzzkkkkkkx','xkkkkkkzzzzkkkkkkx','xkkxkkkkzzkkkkxkkx','xkkkkkkkkkkkkkkkkx','xkkkkxkkkkkkxkkkkx','xkkkkkkkkkkkkkkkkx','xkkkkkkkkkkkkkkkkx','xxkkkkkkkkkkkkkkxx','xkkkkkkkkkkkkkkkkx','xxxxxxkkkkkkxxxxxx'],
+ enemies:[knight21('rc',8,2,{name:'의식 기사단장',kind:'captain',hp:150,atk:47,def:27,res:22,spd:25,look:'riteCommander'}),
+  knight21('k1',3,1),knight21('k2',14,1),knight21('k3',2,6),knight21('k4',15,6),
+  ritualist21('r1',6,5),ritualist21('r2',11,5),cloak21('g1',3,5),cloak21('g2',14,5)],
+ objects:[anchor21('as1',2,2),anchor21('as2',15,2),anchor21('as3',2,9),anchor21('as4',15,9)],
+ civilians:[{id:'king',name:'마지막 국왕',kind:'king',look:'king',x:8,y:5,hp:160,def:26,res:30}],
+ waves:[{turn:3,story:'21:reinforce',units:[knight21('k5',8,0),knight21('k6',9,0)]},{turn:5,units:[cloak21('g3',1,7),cloak21('g4',16,7)]},{turn:7,units:[knight21('k7',8,0),ritualist21('r3',9,0)]}],
+ pulseOuter:[5,6],pulseInner:[2,3],pulseMP:3,kingHeal:10,duelTurn:2,
+ deployZone:s=>{const base=[];for(let y=11;y<=12;y++)for(let x=2;x<=15;x++)base.push([x,y]);return zone(base);},
+ deployments:{recommended:[[8,11],[9,11],[5,11],[12,11],[7,12],[10,12],[3,12],[14,12]],assault:[[7,11],[10,11],[3,11],[14,11],[8,11],[9,11],[2,12],[15,12]],defense:[[8,12],[9,12],[6,11],[11,11],[7,11],[10,11],[5,12],[12,12]]},
+ threatTurn:99,par:10,turnLimit:12,level:17,deployLimit:7,
+ objective:'의식 고정석 4개를 모두 깨거나 TURN 12가 끝날 때까지 국왕을 지키기 (국왕이 쓰러지면 패배)',
+ brief:'국왕은 옥좌 단에서 움직이지 못합니다. 의식 기사들이 국왕을 노립니다. 고정석 곁에서 「고정석 깨기」 — 에릭·테아·다리오·이네스는 한 번에, 다른 장수는 두 번. 고정석을 하나 깰 때마다 국왕 HP +10. 결계 맥동: 홀수 턴은 바깥 고리(국왕에게서 5–6칸), 짝수 턴은 안쪽 고리(2–3칸) — 그 칸에서 아군 턴을 마친 장수는 MP −3. TURN 2 의식 기사단장이 에릭에게 일기토를 청합니다.'});
+// M22 The Ashen Choice: the lower city's square. Three heralds read the records, the plan and the king's word to the people,
+// each on a dais, four turns each (from TURN 2, one turn read at the start of every turn); a herald hurt since the last
+// turn's start loses that turn. A fallen herald's dais can be read by a hero standing on it. The chancellery comes to stop
+// the reading (from the north gate); the banner that betrayed the legion at the summit comes by the side roads; a banner at
+// the 「동맹」 stage sends two knights (TURN 2, south gate). Recruits still away after M16 come back on TURN 3 (a last
+// chance: standing at the end, they rejoin). Victory: the three readings. Defeat: two heralds down, or TURN 12.
+const herald22=(id,name,x,y,reads)=>({id,name,kind:'herald',look:'herald',x,y,hp:62,def:14,res:14,reads});
+const cloak22=(id,x,y)=>unit(id,'재상부 회색 망토','bandit',x,y,{hp:68,atk:44,def:20,res:15,spd:25,mov:4,movementProfile:'rogue',look:'grayCloak'});
+const knight22=(id,x,y,stats={})=>unit(id,'의식 기사','spear',x,y,{hp:88,atk:48,def:27,res:15,spd:21,mov:3,look:'ritualKnight',...stats});
+const soldier22=(id,x,y,role='soldier')=>unit(id,'배신한 깃발의 병사',role==='archer'?'archer':'spear',x,y,{hp:74,atk:45,def:21,res:12,spd:22,mov:3,scav:role,...(role==='archer'?{range:[2,3],hp:58,atk:41,def:15,spd:24}:{})});
+const banner22=(id,f,x,y)=>ally(id,{iron:'철왕관 기사',free:'연맹 기사',flame:'성화 기사'}[f],{iron:'ironInfantry',free:'lordA',flame:'flameKnight'}[f],x,y,{kind:'soldier',hp:78,atk:44,def:24,res:14,spd:22,mov:4,banner:f,benched:true});
+const return22=(id,look,x,y)=>ally(id,look==='thea'?'테아':look==='dario'?'다리오':'이네스',look,x,y,{returning:look,benched:true});
+MISSIONS[22]=authored({id:22,title:'잿빛 선택',en:'The Ashen Choice',
+ rows:['xxxxxxxxrrxxxxxxxx','xvvlllllrrlllllvvx','xvvllkkkkkkkkllvvx','xlllkkkkkkkkkklllx','rrrlkzkkkkkkzklrrr','xlllkkkkkkkkkklllx','xvvlkkkkkkkkkklvvx','xvvlkkkkzzkkkklvvx','xlllkkkkkkkkkklllx','xllllllllllllllllx','xvvllllrrrrllllvvx','xlllllllrrlllllllx','xllllllrrrrllllllx','xxxxxxxrrrrxxxxxxx'],
+ enemies:[knight22('gc',8,1,{name:'재상부 근위대장',kind:'captain',hp:150,atk:50,def:28,res:20,spd:25,look:'riteCommander'}),
+  knight22('k1',7,1),knight22('k2',10,1),cloak22('g1',3,1),cloak22('g2',14,1),cloak22('g3',9,1)],
+ civilians:[herald22('hr','기록 낭독자',5,4,'records'),herald22('hp','계획서 낭독자',12,4,'plan'),herald22('hk','국왕의 말 낭독자',8,7,'king')],
+ allies:[banner22('bi1','iron',7,13),banner22('bi2','iron',8,12),banner22('bf1','free',9,13),banner22('bf2','free',10,12),banner22('bl1','flame',7,12),banner22('bl2','flame',10,13),
+  return22('rthea','thea',8,13),return22('rdario','dario',9,12),return22('rines','ines',11,12)],
+ waves:[{turn:2,units:[cloak22('g6',0,4),cloak22('g7',17,4)]},{turn:3,story:'22:betrayer',units:[soldier22('b1',0,4),soldier22('b2',17,4)]},{turn:4,units:[cloak22('g4',8,0),knight22('k3',9,0)]},{turn:5,units:[soldier22('b3',0,4),soldier22('a1',17,4,'archer')]},{turn:7,units:[soldier22('b4',0,4),soldier22('b5',17,4),cloak22('g5',8,0)]}],
+ readTurn:2,reads:4,bannerTurn:2,returnTurn:3,
+ deployZone:s=>{const base=[];for(let y=5;y<=10;y++)for(let x=3;x<=14;x++)if(!(x===8&&y===7))base.push([x,y]);return zone(base);},
+ deployments:{recommended:[[5,5],[12,5],[8,8],[6,5],[11,5],[9,7],[4,5],[13,5]],assault:[[5,5],[12,5],[8,6],[9,6],[4,5],[13,5],[8,8],[7,8]],defense:[[5,5],[12,5],[8,8],[4,5],[13,5],[7,7],[10,7],[9,8]]},
+ threatTurn:1,par:8,turnLimit:12,level:17,deployLimit:7,
+ objective:'세 낭독(기록·계획서·국왕의 말)을 모두 마치기 · TURN 12 안에 (전령 2명이 쓰러지면 패배)',
+ brief:'전령 셋이 단 위에서 TURN 2부터 턴마다 한 번씩, 네 번 읽습니다. TURN 1에는 광장의 사람들이 길을 막아 적이 전령을 노리지 못합니다. 지난 턴 시작 뒤 다친 전령은 그 턴을 읽지 못합니다. 쓰러진 전령의 단에 장수가 서면 대신 읽습니다. 재상부는 북쪽 성문에서, 배신한 깃발은 동서 길에서 옵니다. 신뢰가 「동맹」인 깃발은 TURN 2 남쪽에서 기사 둘을 보냅니다.'});
 // v0.5.0 Phase E (D-047): promotion trials (101–105) and the repeatable Legion Drill (110). Non-story
 // skirmishes after ACT I: never pushed into campaign.completed, no gold, permanent EXP (mission level 7).
 // goal: survive (turn N ends with `protect` alive) · rout (all enemies down by `limit`) · reach (hero at row ≤ y)

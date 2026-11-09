@@ -1,6 +1,7 @@
 import {applyTerrainRecovery,recoveryValue} from './terrain-recovery.js';
 import {ensureEconomy,commitEconomyReward,effectiveStats} from './economy.js';
 import {VERSION,SCHEMA,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,DEPLOYMENTS,BALANCE,partyHeroes,partyIds} from '../data/game-data.js';
+import {tallyKill,tallyRescue,tallyHeal,commitRecords} from './records.js';
 import {distance,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,forecast,strikeStats,guardFor,roll,awardXP,discover,terrainAt,counterBlocked,hostile,chargeBreaks,riposteBonus,sideOf,weatherOf,inWard,blockadeHolds} from './rules.js';
 import {MISSIONS,missionOf,LAST_MISSION} from '../data/missions.js';
 import {rulesOf,objectUnit,searchEvidence} from './mission-rules.js';
@@ -13,7 +14,7 @@ import {poisonTick,statusAge,inflict,STATUS_KO} from './status.js';
 import {gainGearExp,fx,checkFeat,markCarrier,dropSupply,cutIn} from './arms.js';
 import {skillByMode} from '../data/skills.js';
 import {duelOpen} from './duel.js';
-import {defaultCommand} from './command.js';
+import {defaultCommand,togetherOpen} from './command.js';
 export function newGame(seed=20261014,campaign=null,missionId=1){
  const mission=MISSIONS[missionId];
  const spots=(mission.deployments||DEPLOYMENTS).recommended;
@@ -47,6 +48,10 @@ export function canMove(s,u){return s.screen==='battle'&&s.phase==='player'&&!s.
 export function moveUnit(s,id,x,y){const u=findUnit(s,id);if(!canMove(s,u)||(u.x===x&&u.y===y))return null;const path=pathTo(s,u,x,y);if(!path)return null;if(u.acted){delete u.strikeMove;delete u.moveLeft;delete s.undo[id];}else s.undo[id]={x:u.x,y:u.y};u.x=x;u.y=y;u.moved=true;if(u.id==='thea')u.chargeRun=path.length-1;s.feedback.push({type:'move',id,path});return path;}
 export function undoMove(s,id){const u=findUnit(s,id),origin=s.undo[id];if(!canAct(s,u)||!origin||at(s,origin.x,origin.y))return false;u.x=origin.x;u.y=origin.y;u.moved=false;if(u.chargeRun)u.chargeRun=0;delete s.undo[id];return true;}
 function consumeAction(s,u){u.acted=true;delete s.undo[u.id];}
+// v0.9.3 「함께 정한다」: Aren lets one hero who has acted this player phase move and act again (once a battle).
+export const canTogether=(s,u)=>togetherOpen(s)&&s.screen==='battle'&&s.phase==='player'&&!s.narrative?.active&&!duelOpen(s)&&u?.team==='ally'&&alive(u)&&!u.benched&&!!u.acted;
+export function useTogether(s,id){const u=findUnit(s,id);if(!canTogether(s,u))return false;s.together={hero:u.id,turn:s.turn};u.acted=false;u.moved=false;delete u.strikeMove;delete u.moveLeft;delete s.undo[u.id];
+ s.feedback.push({type:'guard',id:u.id,text:'함께 정한다'});s.log.push(`아렌의 군령 「함께 정한다」 · ${u.name}이(가) 다시 움직입니다.`);remember(s,`together_${u.id}`);return true;}
 function damage(s,u,t,mode,counter=false,opts=null){
  let victim=guardFor(s,u,t,mode)||t;s.feedback.push({type:'attack',id:u.id,target:victim.id,mode,counter});const fromHP=victim.hp;const stats=strikeStats(s,u,victim,mode);if(counter)stats.damage+=riposteBonus(u);
  if(opts){if(opts.scale&&opts.scale!==1)stats.damage=Math.max(1,Math.round(stats.damage*opts.scale));if(opts.bonus)stats.damage+=opts.bonus;}const hit=roll(s)*100<stats.hit,critical=roll(s)*100<stats.crit;
@@ -67,6 +72,7 @@ function damage(s,u,t,mode,counter=false,opts=null){
  // v0.8.1 Herb Pouch (treasure): once a battle, a hero knocked below half HP eats a herb from it.
  const pouch=fx(s,victim,'pouch');if(pouch&&victim.hp>0&&victim.hp<victim.maxHP/2&&!victim.pouchUsed){victim.pouchUsed=true;const n=Math.min(pouch,victim.maxHP-victim.hp);victim.hp+=n;s.feedback.push({type:'heal',id:victim.id,text:`약초 주머니 +${n}`,toHP:victim.hp});s.log.push(`${victim.name}: 약초 주머니로 HP +${n}.`);}
  if(!alive(victim))dropSupply(s,victim);
+ if(!alive(victim))tallyKill(s,u,victim); /* v0.9.3 장수 열전 */
  if(!alive(victim)){if(victim.id==='boss'){setStoryFlag(s,`mission_0${s.missionId}_garr_defeated`);enqueueStory(s,`${s.missionId}:boss`);}s.feedback.push({type:'death',id:victim.id,text:'FALLEN'});s.log.push(`${victim.name} 전투불능.`);}
  return {hit:true,damage:dealt,victim};
 }
@@ -89,13 +95,13 @@ export function performAction(s,id,mode,targetId){
  else if(mode==='persuade'){rulesOf(s)?.persuade?.(s,u,t);awardXP(s,u,20,`${t.name} 설득`);}
  else if(mode==='capture'&&s.missionId!==2){rulesOf(s)?.capture?.(s,u,t);awardXP(s,u,50,`${t.name} 생포`);}
  else if(mode==='capture'){t.rescued=true;setStoryFlag(s,'mission_02_prisoner_captured');setStoryFlag(s,'mission_02_supply_route_discovered');remember(s,`${u.id}_capture`);awardXP(s,u,50,'도주 대장 생포');enqueueStory(s,'2:capture');s.log.push('포로 확보 · 보급로 진술을 얻었습니다.');}
- else if(mode==='rescue'){t.rescued=true;remember(s,`${u.id}_rescue`);awardXP(s,u,BALANCE.rescueXP,`${t.name} 구출`);s.log.push(`${u.name}: ${t.name}을 안전한 피난로로 구출했습니다.`);s.feedback.push({type:'rescue',id:t.id,text:'RESCUED'});if(u.id==='kai')discover(s,u,'Shadow Exchange');}
+ else if(mode==='rescue'){t.rescued=true;tallyRescue(s,u);remember(s,`${u.id}_rescue`);awardXP(s,u,BALANCE.rescueXP,`${t.name} 구출`);s.log.push(`${u.name}: ${t.name}을 안전한 피난로로 구출했습니다.`);s.feedback.push({type:'rescue',id:t.id,text:'RESCUED'});if(u.id==='kai')discover(s,u,'Shadow Exchange');}
  else if(mode==='skill'&&u.id==='eric'){u.guarding=true;u.guardUsed=false;u.guardTarget=null;awardXP(s,u,12,'방어 태세');s.log.push('에릭: 방어 태세. 다음 아군 턴까지 DEF +3, 인접 동료가 받는 첫 근접 공격을 대신 받습니다.');s.feedback.push({type:'guard',id:u.id,text:'GUARD'});}
  else if(mode==='skill'&&u.id==='sain'){
   const sv=effectiveStats(s,u),base=12+sv.mag+(sv.heal||0)+(proficiencyBonus(s,u).heal||0),heal=Math.min(inWard(s,t)?Math.round(base*1.5):base,t.maxHP-t.hp);t.hp+=heal;const foe=hostile(s,u,t);if(heal&&!foe)gainGearExp(s,u,'strike');s.feedback.push({type:'heal',id:t.id,text:`+${heal}`,toHP:t.hp});
   const extra=s.units.filter(a=>a.team==='ally'&&alive(a)&&a.id!==t.id&&distance(a,t)===1&&a.hp<a.maxHP).sort((a,b)=>a.hp/a.maxHP-b.hp/b.maxHP)[0];let splash=0;if(extra){splash=Math.min(4,extra.maxHP-extra.hp);extra.hp+=splash;s.feedback.push({type:'heal',id:extra.id,text:`+${splash}`,toHP:extra.hp});}
   if(heal||splash)remember(s,'sain_heal');
-  if((heal||splash)&&!foe){if(!u.healTargets.includes(t.id))u.healTargets.push(t.id);awardXP(s,u,Math.min(BALANCE.healXP,10+Math.floor((heal+splash)/2)),`${t.name} 치유`);}if(extra&&splash)discover(s,u,'Divine Recall');s.log.push(`세인: ${t.name} +${heal} HP${extra?`, Gentle Hands → ${extra.name} +${splash}`:''}. 치유할 때마다 EXP를 얻습니다.`);
+  if((heal||splash)&&!foe){tallyHeal(s,u,heal+splash);if(!u.healTargets.includes(t.id))u.healTargets.push(t.id);awardXP(s,u,Math.min(BALANCE.healXP,10+Math.floor((heal+splash)/2)),`${t.name} 치유`);}if(extra&&splash)discover(s,u,'Divine Recall');s.log.push(`세인: ${t.name} +${heal} HP${extra?`, Gentle Hands → ${extra.name} +${splash}`:''}. 치유할 때마다 EXP를 얻습니다.`);
  }else{
   const r=damage(s,u,t,mode);if(r.hit&&theaRun>0&&!alive(r.victim)){u.moved=false;u.strikeMove=s.turn;u.moveLeft=theaRun;s.log.push(`테아: 흑철 창기사 · 남은 이동 ${theaRun}칸.`);}if(r.hit){awardXP(s,u,BALANCE.attackXP+(!alive(r.victim)?BALANCE.killXP:0),`${r.victim.name} ${alive(r.victim)?'공격':'격파'}`);if(u.id==='elina'&&['f','v'].includes(sTerrain(s,u))){discover(s,u,'Overwatch');remember(s,'elina_forest_shot');}if(u.id==='lia'&&!alive(r.victim)){discover(s,u,'Arcane Territory');remember(s,'lia_kill');}}
   if(alive(r.victim)&&validTarget(s,r.victim,u)&&!counterBlocked(s,r.victim)&&!chargeBreaks(u,mode)&&!fx(s,u,'silence')){const c=damage(s,r.victim,u,'attack',true);
@@ -189,7 +195,7 @@ function finish(s,outcome,reason){
  s.campaign.results.push(result);s.campaign.results=s.campaign.results.slice(-30);
  if(outcome==='victory')rulesOf(s)?.beforeCommit?.(s);
  if(outcome==='victory'&&missionOf(s).skirmish)commitSkirmish(s);
- else if(outcome==='victory'){if(!s.practice){commitEconomyReward(s);s.campaign.clears++;s.campaign.completed.push(s.missionId);s.campaign.heroes=structuredClone(s.units.filter(u=>u.team==='ally'));setStoryFlag(s,`mission_0${s.missionId}_completed`);if(s.missionId===1){setStoryFlag(s,'royal_supply_evidence');setStoryFlag(s,'mission_01_civilians_rescued',2);}}}
+ else if(outcome==='victory'){if(!s.practice){commitEconomyReward(s);commitRecords(s);s.campaign.clears++;s.campaign.completed.push(s.missionId);s.campaign.heroes=structuredClone(s.units.filter(u=>u.team==='ally'));setStoryFlag(s,`mission_0${s.missionId}_completed`);if(s.missionId===1){setStoryFlag(s,'royal_supply_evidence');setStoryFlag(s,'mission_01_civilians_rescued',2);}}}
  if(outcome==='victory'&&s.missionId===3&&!s.practice){const m=s.campaign.tacticalMemory,prior=s.stageStart?.campaign.tacticalMemory||{},did=k=>(m[k]||0)>(prior[k]||0);if(did('guard_eric_sain')&&(did('kai_rescue')||did('kai_bypass'))&&(did('sain_rescue')||did('sain_heal'))){s.campaign.bonds.erik_kai=true;setStoryFlag(s,'bond_erik_kai');enqueueStory(s,'3:bond');}}
  if(outcome==='victory')rulesOf(s)?.afterVictory?.(s);
  // v0.8.1 hidden objective (숨은 전과): tested on this battle's record; a cleared mission's practice can still win it once.

@@ -10,6 +10,7 @@ import {TILE,drawTile,drawSprite,pixel,pixelOval} from './art.js';
 import {RANGE_STYLE,moveDuration,motionAt,presentationPlan} from './animation.js';
 import {drawCombatEffect,effectPhase,drawClassEffect} from './combat-effects.js';
 import {rulesOf} from '../core/mission-rules.js';
+import {pulseCells21,pulseRing21} from '../core/mission-rules-v093.js';
 import {drawProp,wardTreeProp} from './prop-art.js';
 import {hdGround,drawHDGround,drawHDObject,hdObjectKey,hdLayerBuildings,hdCovered,hdCastFor,drawHDFigure,hdDirection,HD_K,paintedSheet} from './hd-world.js';
 const rect=pixel;
@@ -40,6 +41,8 @@ export class BattleRenderer{
   if(deploy&&ui.mode==='deploy'){for(const k of deployZoneOf(s)){const [tx,ty]=k.split(',').map(Number);rect(c,RANGE_STYLE.move.fill,tx*TILE,ty*TILE,TILE,TILE);rect(c,RANGE_STYLE.move.border,tx*TILE,ty*TILE,TILE,2);}}
   this.drawnRanges=0;
   // v0.5 class effects on the map: runes (violet), Bulwark zone (gold frame), Overwatch range (red frame).
+  // v0.9.3 M21: the ward's pulsing ring this turn (violet wash; a hero ending the player phase there loses MP).
+  if(s.screen==='battle'&&s.missionId===21&&s.missionState){const outer=pulseRing21(s)==='outer';for(const p of pulseCells21(s)){rect(c,outer?'rgba(150,104,232,.20)':'rgba(190,120,240,.26)',p.x*TILE+1,p.y*TILE+1,62,62);c.strokeStyle='rgba(206,170,255,.55)';c.lineWidth=1;c.strokeRect(p.x*TILE+6,p.y*TILE+6,52,52);}}
   if(s.screen==='battle'){for(const r of s.runes||[]){rect(c,'rgba(150,104,232,.32)',r.x*TILE+2,r.y*TILE+2,60,60);c.strokeStyle='rgba(206,170,255,.85)';c.lineWidth=2;c.strokeRect(r.x*TILE+8,r.y*TILE+8,48,48);}
    for(const a of s.units)if(a.team==='ally'&&alive(a)&&(a.bulwark||a.overwatch)){c.lineWidth=2;c.setLineDash([5,4]);c.strokeStyle=a.bulwark?'rgba(240,200,90,.9)':'rgba(236,98,82,.75)';
     for(let ty=a.y-a.range[1];ty<=a.y+a.range[1];ty++)for(let tx=a.x-a.range[1];tx<=a.x+a.range[1];tx++){const d=Math.abs(tx-a.x)+Math.abs(ty-a.y);if(a.bulwark?d===1:d>=a.range[0]&&d<=a.range[1])c.strokeRect(tx*TILE+4,ty*TILE+4,56,56);}c.setLineDash([]);}}
@@ -130,6 +133,11 @@ function drawMissionObject(c,u,x,y,now){const done=u.rescued,glow=.5+.3*Math.sin
   for(let i=0;i<8;i++){const a=i/8*Math.PI*2+(lit?now/1400:0);rect(c,lit?'#f0a8e4':'#a8aab4',x+Math.cos(a)*22-1.5,y+8+Math.sin(a)*11.5-1.5,3,3);}if(lit){c.fillStyle=`rgba(224,122,208,${.1+glow*.12})`;c.beginPath();c.ellipse(x,y+8,26,14,0,0,Math.PI*2);c.fill();}return;}
  if(u.kind==='cabinet'){c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+22,18,5,0,0,Math.PI*2);c.fill();const burned=!!u.burned;rect(c,burned?'#2a2624':'#5a4432',x-16,y-22,32,44);rect(c,burned?'#1c1a18':'#3e2e22',x-13,y-19,26,38);
   if(!burned)for(const row of [-16,-6,4,14])for(let i=0;i<5;i++)rect(c,['#d8ccb0','#c8b890','#e4dcc4'][(i+row)&1?0:i%3],x-12+i*5,y+row,4,7);if(u.inert&&!burned)rect(c,'rgba(140,220,150,.5)',x-16,y-22,32,3);return;}
+ // v0.9.3 M21 anchor stone (original, temporary until pack F4): a dark obelisk bound with violet rite chains; cracked after one blow.
+ if(u.kind==='anchorStone'){c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+22,16,5,0,0,Math.PI*2);c.fill();const lit=!u.inert;rect(c,lit?'#3e3848':'#5a5c62',x-10,y-20,20,42);rect(c,lit?'#544c64':'#74767c',x-10,y-20,20,4);rect(c,'#2a2632',x+6,y-16,4,38);
+  if(lit){c.fillStyle=`rgba(224,122,208,${.18+glow*.22})`;c.beginPath();c.ellipse(x,y-2,26,32,0,0,Math.PI*2);c.fill();for(const dy of [-10,2,14]){rect(c,'#c07ad0',x-13,y+dy,26,2);}}
+  if(u.cracked&&lit){c.strokeStyle='#f0e0ff';c.lineWidth=1.5;c.beginPath();c.moveTo(x-4,y-16);c.lineTo(x+2,y-4);c.lineTo(x-3,y+6);c.stroke();}
+  if(!lit){rect(c,'#3a3c42',x-12,y+10,10,6);rect(c,'#3a3c42',x+3,y+12,9,5);}return;}
  if(u.kind==='wardStone'){c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+22,15,5,0,0,Math.PI*2);c.fill();rect(c,'#5a5e66',x-9,y-16,18,38);rect(c,'#767a84',x-9,y-16,18,4);rect(c,'#43464e',x+5,y-12,4,34);
   const lit=!u.inert;c.fillStyle=lit?`rgba(160,138,255,${.25+glow*.25})`:'rgba(220,230,240,.25)';c.beginPath();c.ellipse(x,y-2,24,30,0,0,Math.PI*2);c.fill();
   for(const [dx,dy] of [[-3,-8],[2,-2],[-2,4],[3,10]])rect(c,lit?'#c4b6ff':'#9aa0aa',x+dx,y+dy,3,3);return;}

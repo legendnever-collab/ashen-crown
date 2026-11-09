@@ -112,7 +112,7 @@ test('tool stock opens with progress (net after M01, drum/caltrops after M06, bo
 
 test('schema 10 saves keep statuses, marks and throws; damaged status records are rejected',()=>{
  const s=board(),eric=findUnit(s,'eric');eric.status={poison:2};eric.rally=s.turn+1;s.throws=2;s.smoke=[{x:1,y:1,until:1}];s.traps=[{x:2,y:2}];
- const back=deserialize(serialize(s));assert.equal(back.schema,SCHEMA);assert.equal(SCHEMA,14);assert.deepEqual(findUnit(back,'eric').status,{poison:2});assert.equal(back.throws,2);assert.deepEqual(back.traps,[{x:2,y:2}]);
+ const back=deserialize(serialize(s));assert.equal(back.schema,SCHEMA);assert.equal(SCHEMA,15);assert.deepEqual(findUnit(back,'eric').status,{poison:2});assert.equal(back.throws,2);assert.deepEqual(back.traps,[{x:2,y:2}]);
  for(const bad of [x=>{findUnit(x,'eric').status={sleep:1};},x=>{findUnit(x,'eric').status={poison:9};},x=>{x.throws=7;},x=>{x.traps=[{x:'a'}];}]){const b=structuredClone(s);bad(b);assert.throws(()=>deserialize(serialize(b)));}
 });
 

@@ -12,3 +12,7 @@ export function commandBonus(s,u){if(!s?.command||u.team!=='ally')return null;if
 // v0.9.2 「한 사람도 두고 가지 않는다」 (from M19): civilians and allied units (the legion's side, not its heroes) take 30% less
 // damage (read by rules.strikeStats, so forecasts show it too).
 export const commandShield=(s,t)=>s?.command==='leaveNoOne'&&(t?.team==='civilian'||t?.team==='allied')?.7:1;
+// v0.9.3 (D-093): Aren's awakening after M21 — 「함께 정한다」, a command given during battle: once a battle, one hero who has
+// already acted this player phase acts again (move and action). Open from M21 on once he has awakened; never in practice.
+export const TOGETHER={ko:'함께 정한다',effect:'전투 중 한 번 · 행동을 마친 장수 한 명이 다시 움직이고 행동한다'};
+export const togetherOpen=s=>!!s&&!s.practice&&s.missionId>=21&&s.missionId<100&&!!s.campaign?.flags?.aren_awakened&&!s.together;

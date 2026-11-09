@@ -103,7 +103,9 @@ export const CATALOG_TREASURES=[
  cTreasure('groveLeaf','고목의 잎','Leaf of the Ward Tree','아군 턴마다 HP +4 · RES +2','M18 숨은 전과'),
  // v0.9.2 (D-089, PROPOSED)
  cTreasure('teacherQuill','스승의 깃펜','Teacher\'s Quill','아군 턴마다 MP +2 · MAG +2','M19 숨은 전과'),
- cTreasure('greyLedger','회색 장부','The Grey Ledger','이 장수가 공격한 적은 반격하지 못함 · SPD +2','M20 숨은 전과')
+ cTreasure('greyLedger','회색 장부','The Grey Ledger','이 장수가 공격한 적은 반격하지 못함 · SPD +2','M20 숨은 전과'),
+ cTreasure('kingsSignet','왕의 인장','The King\'s Signet','인접 아군 DEF +1 · DEF +2','M21 숨은 전과'),
+ cTreasure('heraldHorn','전령의 뿔피리','The Herald\'s Horn','전투 첫 턴 전군 MOV +1 · SPD +1','M22 숨은 전과')
 ];
 const cSkill=(id,hero,slot,ko,en,cost,effect)=>({id,kind:'skill',hero,slot,ko,en,cost,effect});
 export const CATALOG_SKILLS=[

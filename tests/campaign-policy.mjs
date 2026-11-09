@@ -41,6 +41,13 @@ function act2Goals(s,u){const live=t=>alive(t)&&t.team==='enemy';
   if(rit.some(guard))return [...rit.filter(guard),...open];if(rit.length)return [...rit,...open];return lit.length?lit:s.units.filter(live);}
  if(s.missionId===20){const cabs=s.units.filter(o=>o.kind==='cabinet'&&!o.inert),clerks=s.units.filter(c=>c.clerk&&live(c)),folk=s.units.filter(r=>r.kind==='resident'&&alive(r)),near=s.units.filter(e=>live(e)&&folk.some(r=>distance(e,r)<=4));
   if(cabs.length&&['lia','kai','eric'].includes(u?.id))return [...cabs,...clerks.filter(c=>cabs.some(o=>distance(c,o)<=2))];if(folk.length)return [...folk,...near];return cabs.length?cabs:s.units.filter(live);}
+ // v0.9.3 M21: the heavy hitters (one blow each) and Elina go for the nearest standing anchor stone; the rest meet whoever
+ // nears the king. M22: everyone meets whoever nears a herald; with none near, they stand by the heralds.
+ if(s.missionId===21){const stones=s.units.filter(o=>o.kind==='anchorStone'&&!o.inert),king=s.units.find(k=>k.id==='king'&&alive(k)),near=s.units.filter(e=>live(e)&&king&&distance(e,king)<=4);
+  if(stones.length&&['eric','thea','dario','ines','elina'].includes(u?.id)&&!(near.length>=3&&u?.id==='eric'))return [[...stones].sort((a,b)=>distance(u,a)-distance(u,b))[0]];return near.length?near:stones.length?stones:s.units.filter(live);}
+ if(s.missionId===22){const m=missionOf(s),orphan=s.units.filter(h=>h.kind==='herald'&&!alive(h)&&(s.missionState.read[h.id]||0)<m.reads);
+  if(orphan.length&&u?.id===['lia','sain','eric'].find(id=>s.units.some(x=>x.id===id&&alive(x)&&!x.benched)))return [{x:orphan[0].x,y:orphan[0].y,name:'빈 단'}];
+  const heralds=s.units.filter(h=>h.kind==='herald'&&alive(h)),near=s.units.filter(e=>live(e)&&heralds.some(h=>distance(e,h)<=4));return near.length?near:heralds.length?heralds:s.units.filter(live);}
  // v0.7.1 M13: Erik (and Thea once) walk to Baldrick to persuade him; the rest guard the camp. M14: guard the leaders.
  if(s.missionId===13){const boss=s.units.find(t=>t.id==='boss'&&live(t)),camp=s.units.filter(v=>v.team==='civilian'&&alive(v)),near=s.units.filter(e=>live(e)&&camp.some(v=>distance(e,v)<=4));
   if(boss&&(u?.id==='eric'||u?.id==='thea'&&!s.missionState.thea))return [boss];if(near.length)return near;return camp.length?camp:s.units.filter(live);}
@@ -100,7 +107,9 @@ function tacticOptions(s,u,a){const out=[];for(const k of skillsOf(a).filter(k=>
   const f=forecastClass(s,a,t,m),sc=strikeScore(s,u,t,{damage:f.damage,hit:f.hit,after:f.after,counter:f.counter},true);if(sc>-400)out.push({mode:m,target:t.id,score:sc+(f.after>0?STATUS_WORTH[m]||0:0)});}}
  return out;}
 export function campaignAction(s,u,capture=true){
- let best=null;const exitDistance=new Map();if(s.missionId===3){const q=[];for(let y=0;y<=2;y++)for(let x=0;x<14;x++)if(Number.isFinite(terrainCost(s,u,x,y))){exitDistance.set(`${x},${y}`,0);q.push({x,y,c:0});}while(q.length){q.sort((a,b)=>a.c-b.c);const p=q.shift();for(const [dx,dy]of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,c=p.c+terrainCost(s,u,p.x,p.y),k=`${x},${y}`;if(Number.isFinite(terrainCost(s,u,x,y))&&c<(exitDistance.get(k)??Infinity)){exitDistance.set(k,c);q.push({x,y,c});}}}}const goalDistance=s.missionId>=4?fieldDistance(s,u,missionGoals(s,u)):null;const cells=u.moved?new Map([[`${u.x},${u.y}`,0]]):movement(s,u).costs;
+ let best=null;const exitDistance=new Map();if(s.missionId===3){const q=[];for(let y=0;y<=2;y++)for(let x=0;x<14;x++)if(Number.isFinite(terrainCost(s,u,x,y))){exitDistance.set(`${x},${y}`,0);q.push({x,y,c:0});}while(q.length){q.sort((a,b)=>a.c-b.c);const p=q.shift();for(const [dx,dy]of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,c=p.c+terrainCost(s,u,p.x,p.y),k=`${x},${y}`;if(Number.isFinite(terrainCost(s,u,x,y))&&c<(exitDistance.get(k)??Infinity)){exitDistance.set(k,c);q.push({x,y,c});}}}}const goalDistance=s.missionId>=4?fieldDistance(s,u,missionGoals(s,u)):null;let cells=u.moved?new Map([[`${u.x},${u.y}`,0]]):movement(s,u).costs;
+ // v0.9.3 M22: the designated reader takes a fallen herald's dais when it can reach it, and acts from there.
+ if(s.missionId===22&&!u.moved){const dais=missionGoals(s,u).find(g=>g.name==='빈 단');if(dais&&cells.has(`${dais.x},${dais.y}`))cells=new Map([[`${dais.x},${dais.y}`,cells.get(`${dais.x},${dais.y}`)]]);}
  const civ=s.units.filter(t=>t.team==='civilian'&&alive(t));
  for(const [p,c]of cells){const [x,y]=p.split(',').map(Number),a={...u,x,y};
   for(const t of s.units.filter(alive))for(const mode of s.missionId>=4?['search','capture','rescue','persuade','skill','attack']:['capture','rescue','skill','attack']){if(!validTarget(s,a,t,mode)||mode==='capture'&&!capture||mode==='skill'&&a.mp<(a.cost+(a.id==='lia'&&a.hp<=a.maxHP/2?1:0)))continue;const f=forecast(s,a,t,mode);let score=-1000;
