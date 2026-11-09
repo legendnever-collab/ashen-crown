@@ -2,7 +2,7 @@ import {missionOf} from '../src/data/missions.js';
 import {findUnit,alive,movement,validTarget,forecast,distance,terrainAt,terrainCost,watchCells,hostile} from '../src/core/rules.js';
 import {skillsOf,NEW_SKILL_MODES} from '../src/data/skills.js';
 import {validClassTarget,forecastClass} from '../src/core/class-actions.js';
-import {strikePreview} from '../src/core/tactics.js';
+import {strikePreview,ironFoes} from '../src/core/tactics.js';
 import {moveUnit,performAction,canAct,beginEnemyPhase,advanceEnemy} from '../src/core/game.js';
 import {openStory,advanceStory} from '../src/core/narrative.js';
 import {duelOpen,duelPick} from '../src/core/duel.js';
@@ -97,6 +97,9 @@ function tacticOptions(s,u,a){const out=[];for(const k of skillsOf(a).filter(k=>
  if(m==='dawnPrayer'){if(validClassTarget(s,a,a.id,m))out.push({mode:m,target:a.id,score:900});continue;}
  if(m==='oathWall'){if(!validClassTarget(s,a,a.id,m))continue;const near=s.units.filter(t=>(t.team==='ally'||t.team==='allied'||t.team==='civilian')&&alive(t)&&t.id!==a.id&&distance(a,t)<=2),threat=s.units.filter(e=>alive(e)&&hostile(s,a,e)&&near.some(t=>distance(e,t)<=4)).length;if(near.length>=2&&threat>=2)out.push({mode:m,target:a.id,score:60+near.length*25+threat*10,support:true});continue;}
  if(m==='blockade'){let top=null;for(let y=a.y-5;y<=a.y+5;y++)for(let x=a.x-5;x<=a.x+5;x++){const p=`${x},${y}`;if(!validClassTarget(s,a,p,m))continue;const n=s.units.filter(t=>alive(t)&&hostile(s,a,t)&&t.team==='enemy'&&Math.abs(t.x-x)+Math.abs(t.y-y)<=1).length;if(n>=2&&(!top||n>top.n))top={p,n};}if(top)out.push({mode:m,target:top.p,score:70*top.n});continue;}
+ // v0.10.0 ④: Ines opens the gate when two or more stand near her under threat; Thea breaks through two foes, or one she fells.
+ if(m==='sanctumGate'){if(!validClassTarget(s,a,a.id,m))continue;const near=s.units.filter(t=>(t.team==='ally'||t.team==='allied'||t.team==='civilian')&&alive(t)&&distance(a,t)<=3),threat=s.units.filter(e=>alive(e)&&hostile(s,a,e)&&near.some(t=>distance(e,t)<=4)).length;if(near.length>=3&&threat>=2)out.push({mode:m,target:a.id,score:60+near.length*20+threat*10,support:true});continue;}
+ if(m==='ironBreak'){for(let y=a.y-4;y<=a.y+4;y++)for(let x=a.x-4;x<=a.x+4;x++){const p=`${x},${y}`;if(!validClassTarget(s,a,p,m))continue;const foes=ironFoes(s,a,{x,y});if(!foes.length)continue;let v=0;for(const t of foes){const f=strikePreview(s,a,t,m);v+=strikeScore(s,u,t,{...f,after:Math.max(0,t.hp-f.damage),counter:0},true);}if(foes.length>=2||v>=150)out.push({mode:m,target:p,score:v-40});}continue;}
  if(m==='flameBurst'){for(let y=a.y-3;y<=a.y+3;y++)for(let x=a.x-3;x<=a.x+3;x++){const p=`${x},${y}`;if(!validClassTarget(s,a,p,m))continue;let v=0,n=0;for(const t of s.units.filter(t=>alive(t)&&hostile(s,a,t)&&Math.abs(t.x-x)+Math.abs(t.y-y)<=1)){const f=strikePreview(s,a,t,m);v+=strikeScore(s,u,t,{...f,after:Math.max(0,t.hp-f.damage),counter:0},true);n++;}if(n>=2)out.push({mode:m,target:p,score:v-90});}continue;} // −90: worth more than one bolt (MP and the bolt it replaces)
  if(m==='whirlwind'){if(!validClassTarget(s,a,a.id,m))continue;const foes=s.units.filter(t=>alive(t)&&hostile(s,a,t)&&distance(a,t)===1);if(foes.length<2)continue;let v=0;for(const t of foes){const f=strikePreview(s,a,t,m);v+=strikeScore(s,u,t,{...f,after:Math.max(0,t.hp-f.damage),counter:0},true);}out.push({mode:m,target:a.id,score:v-30});continue;}
  if(m==='rallyCry'){const n=s.units.filter(t=>t.team==='ally'&&alive(t)&&t.id!==u.id&&!t.acted&&distance(a,t)<=2).length;const foesNear=s.units.some(t=>alive(t)&&hostile(s,a,t)&&distance(a,t)<=5);if(n>=2&&foesNear)out.push({mode:m,target:a.id,score:20+n*10,support:true});continue;}

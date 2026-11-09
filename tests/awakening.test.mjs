@@ -21,11 +21,11 @@ const board=(id=18,done=17)=>{const c=camp(done);const s=newGame(5,c.campaign,id
  // park the heroes on the bottom row so the tests can place them freely
  s.units.filter(u=>u.team==='ally').forEach((u,i)=>{u.x=i;u.y=13;});return s;};
 
-test('awakening conditions: Lv 14, tier 2 and the hero\'s own mission (Elina M16, Erik M17, Sain M18; v0.9.2 Lia M19, Kai M20); trials 106–109, 114',()=>{
+test('awakening conditions: Lv 14, tier 2 and the hero\'s own mission (Elina M16, Erik M17, Sain M18; v0.9.2 Lia M19, Kai M20); trials 106–109, 114 (v0.10.0: Ines M23 · 115, Thea M24 · 116)',()=>{
  const c=camp(16);let st=promotionStatus(c,'elina');assert.equal(st.next.tier,3);assert.ok(st.eligible,JSON.stringify(st.checks));assert.equal(trialMissionOf(c,'elina'),106);
  assert.ok(!promotionStatus(c,'eric').eligible,'Erik waits for M17');assert.ok(promotionStatus(camp(17),'eric').eligible);assert.ok(!promotionStatus(camp(17),'sain').eligible);
  assert.ok(!promotionStatus(camp(16,13),'elina').eligible,'below Lv 14');assert.ok(!promotionStatus(c,'lia').eligible,'Lia waits for M19');assert.ok(promotionStatus(camp(19),'lia').eligible);assert.ok(!promotionStatus(camp(19),'kai').eligible,'Kai waits for M20');assert.ok(promotionStatus(camp(20),'kai').eligible);
- assert.deepEqual(AWAKEN_MISSION,{elina:106,eric:107,sain:108,lia:109,kai:114});for(const id of [106,107,108,109,114])assert.equal(MISSIONS[id].skirmish.tier,3);
+ assert.deepEqual(AWAKEN_MISSION,{elina:106,eric:107,sain:108,lia:109,kai:114,ines:115,thea:116});for(const id of [106,107,108,109,114,115,116])assert.equal(MISSIONS[id].skirmish.tier,3);
  for(const k of ['awaken:elina','awaken:eric','awaken:sain','awaken:lia','awaken:kai','skirmish:106:intro','skirmish:107:intro','skirmish:108:intro','skirmish:109:intro','skirmish:114:intro'])assert.ok(STORY[k]?.length,k);
 });
 

@@ -528,5 +528,19 @@ skirmish(113,'trial','ines',{level:13,title:'성소의 시련',en:'Trial of the 
  deployments:{recommended:[[5,3],[6,3],[4,8],[7,8],[3,8],[8,8],[2,8],[9,8]]},threatTurn:1,escortOnly:true,limit:5,companions:['eric'],
  goal:{type:'survive',turn:5,protect:['t1','t2','t3'],hold:[5,3]},must:['ines'],
  objective:'TURN 5가 끝날 때까지 훈련병 3명 보호 (에릭 지원)',brief:'성소 수호자: 성역이 2칸까지 닿습니다(2칸 거리는 피해 −1). 훈련병 사이에 서세요.'});
+// v0.10.0 (D-099 Q4): the awakening trials of Ines (115, after M23) and Thea (116, after M24). PROPOSED.
+skirmish(115,'trial','ines',{tier:3,level:14,title:'새벽 성기사의 시련',en:'Trial of the Dawn Paladin',
+ rows:['gggggggggggg','ggfggggggfgg','gggggggggggg','gggggggggggg','ggggzzzzgggg','ggggzzzzgggg','gggggggggggg','gggggggggggg','gggggggggggg','gggggggggggg'],
+ enemies:[drill3('q1','돌격 교관','bandit',2,0),drill3('q2','돌격 교관','bandit',5,0),drill3('q3','돌격 교관','bandit',8,0),drill3('q4','돌격 교관','bandit',10,1),drill3('q5','돌격 궁수','archer',3,1),drill3('q6','돌격 궁수','archer',8,1)],
+ civilians:[trainee3('t1',5,5),trainee3('t2',6,5),trainee3('t3',6,6)],
+ deployments:{recommended:[[5,6],[6,7],[4,8],[7,8],[3,8],[8,8],[2,8],[9,8]]},threatTurn:1,escortOnly:true,limit:5,companions:['sain'],
+ goal:{type:'survive',turn:4,protect:['t1','t2','t3'],hold:[5,6]},must:['ines'],
+ objective:'TURN 4가 끝날 때까지 훈련병 3명 보호 (세인 지원)',brief:'성역의 문(④, 전투당 1회): 3칸 안의 아군·주민·동맹군이 다음 아군 턴까지 받는 피해가 절반이 되고 상태이상이 풀립니다. 적이 몰려오는 턴에 여세요.'});
+skirmish(116,'trial','thea',{tier:3,level:14,title:'흑철 기병대장의 시련',en:'Trial of the Black Iron Captain',
+ rows:['gggggggggggg','gggggggggggg','ggrrrrrrrrgg','gggggggggggg','xxxgggggxxxx','gggggggggggg','gggggggggggg','gggggggggggg','gggggggggggg','gggggggggggg'],
+ enemies:[drill3('w1','방진 교관','bandit',4,4,{hp:52}),drill3('w2','방진 교관','bandit',5,4,{hp:52}),drill3('w3','방진 교관','bandit',6,4,{hp:52}),drill3('w4','방진 교관','bandit',7,4,{hp:52}),drill3('c1','지휘 교관','archer',5,1,{hp:44}),drill3('c2','지휘 교관','archer',7,1,{hp:44})],
+ deployments:{recommended:[[5,7],[6,8],[4,8],[7,8],[3,8],[8,8],[2,8],[9,8]]},limit:5,companions:['dario'],
+ goal:{type:'rout',targets:['c1','c2']},must:['thea'],
+ objective:'TURN 5까지 방진 뒤의 지휘 교관 둘 격파 (다리오 지원)',brief:'철의 돌파(④, 전투당 1회): 직선 2–4칸을 꿰뚫고 끝 칸에 섭니다. 길 위의 적은 모두 공격받고(반격 없음), 끝 칸에서 3칸 더 움직일 수 있습니다. 방진을 꿰뚫어 뒤의 지휘 교관에게 닿으세요.'});
 export const isSkirmish=id=>!!MISSIONS[id]?.skirmish;
 export const LAST_MISSION=Math.max(...Object.keys(MISSIONS).map(Number).filter(id=>!MISSIONS[id].skirmish));

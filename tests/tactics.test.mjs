@@ -19,15 +19,15 @@ const foe=(s,id,x,y,more={})=>{const e=s.units.find(u=>u.team==='enemy'&&u.id===
 const place=(u,x,y)=>{u.x=x;u.y=y;u.moved=false;u.acted=false;};
 const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);};
 
-test('catalog: 13 tools match the game tools, 29 skills (three per hero, plus the ④ of the five ACT I heroes), unique ids',()=>{
+test('catalog: 13 tools match the game tools, 31 skills (three per hero, plus the ④ of the five ACT I heroes, and v0.10.0 Ines and Thea), unique ids',()=>{
  assert.deepEqual(CATALOG_TOOLS.map(t=>t.id).sort(),Object.keys(TOOLS).sort());for(const t of CATALOG_TOOLS)assert.equal(TOOLS[t.id].name,t.ko,t.id);
- assert.equal(CATALOG_SKILLS.length,29);for(const h of ['eric','elina','lia','sain','kai','thea','dario','ines'])assert.deepEqual(CATALOG_SKILLS.filter(k=>k.hero===h).map(k=>k.slot),['eric','elina','lia','sain','kai'].includes(h)?[1,2,3,4]:[1,2,3],h);
+ assert.equal(CATALOG_SKILLS.length,31);for(const h of ['eric','elina','lia','sain','kai','thea','dario','ines'])assert.deepEqual(CATALOG_SKILLS.filter(k=>k.hero===h).map(k=>k.slot),['eric','elina','lia','sain','kai','thea','ines'].includes(h)?[1,2,3,4]:[1,2,3],h);
 });
 
 test('skills open by level: ① always, ② at Lv 4 (recruits on joining), ③ on promotion (recruits at join level + 3)',()=>{
  const s=board(1),eric=findUnit(s,'eric');let k=skillsOf(eric);assert.deepEqual(k.map(x=>x.open),[true,false,false,false]);assert.match(k[1].lock,/Lv 4/);assert.match(k[3].lock,/각성/);
  eric.level=4;assert.deepEqual(skillsOf(eric).map(x=>[x.mode,x.open]),[['skill',true],['provoke',true],['bulwark',false],['oathWall',false]]);eric.classTier=2;assert.ok(skillsOf(eric)[2].open);eric.classTier=3;assert.ok(skillsOf(eric)[3].open,'④ on awakening');
- const thea={id:'thea',team:'ally',level:8};assert.deepEqual(skillsOf(thea).map(x=>x.open),[true,true,false]);thea.level=11;assert.ok(skillsOf(thea)[2].open);
+ const thea={id:'thea',team:'ally',level:8};assert.deepEqual(skillsOf(thea).map(x=>x.open),[true,true,false,false]);thea.level=11;assert.ok(skillsOf(thea)[2].open);
  assert.ok(isClassMode('provoke')&&isClassMode('tool:bomb')&&tileTarget('flameBurst')&&tileTarget('tool:bomb')&&!tileTarget('tool:net'));
  eric.level=3;const e=foe(s,'b1',eric.x,eric.y-2);assert.ok(!validClassTarget(s,eric,e,'provoke'),'locked below Lv 4');
 });

@@ -20,7 +20,7 @@ import {canStartSkirmish,trialState,startSkirmish,returnToCamp,skirmishOf} from 
 import {classOf,potentialOf} from '../core/progression.js';
 import {CLASS_TREE,CLASS_ACTIONS,PROMOTION_LEVEL} from '../data/classes.js';
 import {skillByMode} from '../data/skills.js';
-import {newGame,setDeployment,presetDeployment,startBattle,canAct,canMove,moveUnit,undoMove,performAction,beginEnemyPhase,advanceEnemy,replay,restartStage,nextMission,useTogether} from '../core/game.js';
+import {newGame,setDeployment,presetDeployment,startBattle,canAct,canMove,moveUnit,undoMove,performAction,beginEnemyPhase,advanceEnemy,replay,restartStage,nextMission,useTogether,canOrderAlly,setAllyOrder,ALLY_ORDERS} from '../core/game.js';
 import {findUnit,at,alive,terrainAt,terrainCost,movement,pathTo,validTarget,forecast,skillCost,rangeFor,terrainSummary} from '../core/rules.js';
 import {loadGame,saveGame,resetSave,serialize,deserialize} from '../persistence/save-manager.js';
 import {missionOf,MISSIONS} from '../data/missions.js';
@@ -179,6 +179,7 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'cancel-move':await cancelMovement();break;
  case 'mode':ui.swapFirst=null;if(canAct(state,findUnit(state,ui.selected))||id==='move'&&canMove(state,findUnit(state,ui.selected))||state.screen==='deployment'){if((id==='skill'&&ui.selected==='eric'||['bulwark','overwatch','rallyCry','whirlwind','pilgrimLantern','tool:drum'].includes(id))&&state.screen==='battle'){ui.mode=id;ui.preview=ui.selected;ui.menu='forecast';ui.notice=null;ui.inspected=null;ui.phaseConfirm=false;render();break;}ui.mode=id;ui.menu=null;ui.preview=null;ui.notice=null;ui.inspected=null;ui.phaseConfirm=false;render();}break;
  case 'undo':if(undoMove(state,ui.selected)){ui.menu='root';ui.mode='choose';ui.preview=null;commit();}break;
+ case 'ally-order':{const [aid,order]=String(id).split('|');if(setAllyOrder(state,aid,order)){closeModal();ui.notice=`${findUnit(state,aid)?.name||'동맹군'}: 「${ALLY_ORDERS[order]}」`;commit();}break;}
  case 'together':{if(useTogether(state,ui.selected)){ui.mode='choose';ui.menu='root';ui.preview=null;ui.notice='아렌의 군령 「함께 정한다」 · 이 장수가 다시 움직이고 행동합니다 (전투당 1회).';commit();}break;}
  case 'wait':await execute('wait');break;case 'item':await execute('item');break;
  case 'confirm':if(ui.preview)await execute(ui.mode,ui.preview);break;
@@ -238,6 +239,8 @@ canvas.addEventListener('pointerup',async e=>{touches.delete(e.pointerId);if(pin
  if(canAct(state,u)&&['attack','skill','rescue','capture','search','persuade'].includes(ui.mode)&&t&&validTarget(state,u,t,ui.mode)){if(ui.menu==='forecast'&&ui.preview===t.id&&!ui.busy){await execute(ui.mode,ui.preview);return;}ui.preview=t.id;ui.menu='forecast';ui.inspected=null;ui.notice=null;render();return;}
  /* v0.9.3 (D-092): tapping an empty tile while aiming a skill, an attack or a tool cancels the aim and reopens the menu. */
  if(!t&&ui.mode&&!['choose','move','deploy'].includes(ui.mode)){ui.mode='choose';ui.menu=canAct(state,u)?'root':null;ui.preview=null;ui.swapFirst=null;ui.inspected=null;ui.notice='선택 취소 · 다른 행동을 고르세요.';render();return;}
+ /* v0.10.0: tapping an allied unit that takes orders opens 「따르라 · 지켜라 · 자유」 */
+ if(t&&canOrderAlly(state,t)&&(!ui.mode||['choose','move'].includes(ui.mode))){showAllyOrders(t);return;}
  if(t?.team==='ally'){
   if(t.id===ui.selected&&ui.mode==='move'){ui.mode='choose';ui.menu='root';ui.preview=null;ui.notice='제자리에서 행동 · 이동을 사용하지 않았습니다. 공격, 스킬 또는 대기를 선택하세요.';render();return;}
   if(t.id===ui.selected){ui.mode='choose';ui.menu='root';ui.preview=null;ui.notice=null;render();}
@@ -258,7 +261,7 @@ window.AshenCrown=Object.freeze({version:VERSION,audio:()=>audio.diagnostics(),s
 // v0.9.1 feedback (2026-11-06): an empty chest shows the room's own painted chest, open and empty, instead of the
 // game-drawn potion placeholder; the vector chest is the fallback where a room has no painted chest.
 // pack F2 (D-088): the elder who speaks at the keep (M17) and in the forest (M18) is the last guardian and the forest elder.
-const ELDER_NAMES={17:'마지막 수호자',18:'숲지기 장로',19:'늙은 기록관',20:'늙은 기록관'}; // v0.9.2: back in the lower city
+const ELDER_NAMES={17:'마지막 수호자',18:'숲지기 장로',19:'늙은 기록관',20:'늙은 기록관',21:'늙은 기록관',22:'늙은 기록관'}; // v0.9.2: back in the lower city
 function emptyChestArt(chestId){const style=chestStyle(frontierRoom(state.frontier),chestId),src=paintedChestSrc(style,'open');
  return src?`<img class="chest-empty painted" src="${src}" width="96" height="96" alt="" aria-hidden="true" decoding="async">`:`<canvas class="chest-empty" width="64" height="64" data-chest="${esc(style)}" aria-hidden="true"></canvas>`;}
 // v0.4 feedback: classic SRPG dialogue window — painted bust overlapping a translucent box, name in
@@ -377,6 +380,9 @@ function showDuel(){const d=state.duel;if(!duelOpen(state))return;const h=findUn
  modal('일기토',`<div class="duel-card"><div class="duel-faces">${portrait(h,'card-sprite')}<b>${d.wins[0]} : ${d.wins[1]}</b>${portrait(f,'card-sprite')}</div><p><b>${esc(h.name)}</b> 대 <b>${esc(f.name)}</b> · ${d.round+1}합</p>${last?`<p class="duel-last">지난 합: ${esc(h.name)} ${DUEL_PICKS[last[0]]} / ${esc(f.name)} ${DUEL_PICKS[last[1]]} → <b>${last[2]?esc(h.name):esc(f.name)}</b></p>`:''}<p class="promo-note">공격은 필살을, 필살은 수비를, 수비는 공격을 이깁니다. 같은 수면 힘(ATK+SPD)이 정합니다. 두 합을 먼저 이기면 승리하고, 진 쪽은 HP가 30% 깎인 채 싸웁니다.</p></div>`,
  frontierButton('duel-pick','<b>공격</b>','strike',false,'primary')+frontierButton('duel-pick','<b>수비</b>','guard',false,'primary')+frontierButton('duel-pick','<b>필살</b>','finisher',false,'primary')+(d.round===0?frontierButton('duel-pick','거절한다 — 그대로 싸운다','skip'):''));paintPortraits();}
 function offerDuel(){if(state.screen!=='battle'||!duelOpen(state)||state.narrative.active||$('#modal-root').children.length)return;showDuel();}
+// v0.10.0: allied orders for an allied unit that takes them.
+function showAllyOrders(t){const now=t.order||'free';modal(`동맹군 지시 · ${t.name}`,`<p>${esc(t.name)}에게 지시합니다. 지시는 바꿀 때까지 이어집니다. 지금: <b>「${ALLY_ORDERS[now]}」</b></p>`,
+ frontierButton('ally-order','<b>따르라</b> — 가장 가까운 장수 곁 2칸 안에서 싸운다',`${t.id}|follow`,now==='follow','primary')+frontierButton('ally-order','<b>지켜라</b> — 지금 이 칸을 지키며 닿는 적만 친다',`${t.id}|hold`,false,'primary')+frontierButton('ally-order','<b>자유</b> — 스스로 판단해 싸운다',`${t.id}|free`,now==='free','primary')+'<button data-do="close-modal">닫기</button>');}
 // v0.9.3 (D-093): the king's request after M21 and the ACT III choice after M22 (fixed once chosen; feed ACT IV, OPEN).
 function needsKing21(){return state.missionId===21&&!state.practice&&state.frontier?.phase==='aftermath'&&state.campaign.completed.includes(21)&&!state.campaign.choices?.m21_king;}
 function needsAct3(){return state.missionId===22&&!state.practice&&state.frontier?.phase==='aftermath'&&state.campaign.completed.includes(22)&&!state.campaign.choices?.act3_choice;}
