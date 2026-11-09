@@ -24,6 +24,9 @@ export function act2HubFor(missionId,phase='preparation'){const after=phase==='a
  // v0.9.0 (D-079): ACT III — the capital's lower city for M15 and before M16, the field camp after M16.
  // v0.9.1 (D-084): the guardians' keep for M17 (and the camp before it), the unburning forest's village for M18.
  // v0.9.2 (D-089): back to the capital's lower city for M19–M20 (preparation and after).
+ // v0.10.0 (D-100): ACT IV — the alliance camp under the summit camp's painting for M23 (preparation and after), the Ashen
+ // Village by the last border (its after-the-raid painting) for M24.
+ if(missionId>=24)return 'village_raid';if(missionId===23)return 'summit';
  if(missionId>=19)return 'capital';if(missionId===18)return 'forest';if(missionId===17)return 'keep';
  if(missionId>=16&&after)return 'fieldcamp';if(missionId>=15)return 'capital';
  if(missionId>=13)return 'summit';return 'velmar';}
@@ -72,7 +75,8 @@ const HV5_VILLAGE={tone:'village',spawn:[19,9],paintedTable:true,stage:{x:430,y:
   npcs:[...hv5Heroes({aren:[16,8],elina:[12,1],elinaName:'엘리나 · 경계',lia:[18,8],sain:[5,8],sainName:'세인 · 구호',kai:[15,5],kaiName:'카이 · 길목 관찰',advisor:[19,8]}),['elder','마을 촌장',22,9],['refugee','피난민',7,8],['guard','경비병',12,14]]};
 const HV5_SPECS={
  village:{...HV5_VILLAGE,name:'Ashen Village · 잿빛 마을',kind:'village',art:'hub_village_day',lights:[[190,180,90,'fire']]},
- village_raid:{...HV5_VILLAGE,name:'Ashen Village · 습격 후',kind:'village',art:'hub_village_raid',solid:[[10,8],[13,8],[14,7],[15,7]],lights:[[200,720,120,'fire'],[420,740,110,'fire'],[300,800,90,'fire'],[930,500,70,'fire'],[1290,175,60,'fire']]},
+ village_raid:{...HV5_VILLAGE,name:'Ashen Village · 습격 후',kind:'village',art:'hub_village_raid',solid:[[10,8],[13,8],[14,7],[15,7]],
+  npcs:[...HV5_VILLAGE.npcs,['thea','테아 · 마을 어귀',2,9,{kind:'hero',requires:'thea'}],['dario','다리오 · 우물가',9,4,{kind:'hero',requires:'dario'}],['ines','이네스 · 피난민 곁',20,9,{kind:'hero',requires:'ines'}]],lights:[[200,720,120,'fire'],[420,740,110,'fire'],[300,800,90,'fire'],[930,500,70,'fire'],[1290,175,60,'fire']]},
  camp:{name:'Border Camp · 국경 수비대 진영',kind:'garrison',art:'hub_garrison',spawn:[9,7],paintedTable:true,stage:{x:500,y:285},
   mask:[
    '########################',

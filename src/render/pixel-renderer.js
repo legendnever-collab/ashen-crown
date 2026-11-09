@@ -5,12 +5,13 @@ import {MapCamera,drawMinimap} from './camera.js';
 import {drawBuilding,drawFire} from './world-art.js';
 import {MAP,WIDTH,HEIGHT} from '../data/game-data.js';
 import {missionOf} from '../data/missions.js';
-import {alive,movement,validTarget,litAt,lightSources,watchedTiles,FACING,weatherOf,fogClear,fogHidden} from '../core/rules.js';
+import {alive,movement,validTarget,litAt,lightSources,watchedTiles,FACING,weatherOf,fogClear,fogHidden,terrainAt} from '../core/rules.js';
 import {TILE,drawTile,drawSprite,pixel,pixelOval} from './art.js';
 import {RANGE_STYLE,moveDuration,motionAt,presentationPlan} from './animation.js';
 import {drawCombatEffect,effectPhase,drawClassEffect} from './combat-effects.js';
 import {rulesOf} from '../core/mission-rules.js';
 import {pulseCells21,pulseRing21} from '../core/mission-rules-v093.js';
+import {ashRows24,gateClosed24} from '../core/mission-rules-v0100.js';
 import {drawProp,wardTreeProp} from './prop-art.js';
 import {hdGround,drawHDGround,drawHDObject,hdObjectKey,hdLayerBuildings,hdCovered,hdCastFor,drawHDFigure,hdDirection,HD_K,paintedSheet} from './hd-world.js';
 const rect=pixel;
@@ -43,6 +44,12 @@ export class BattleRenderer{
   // v0.5 class effects on the map: runes (violet), Bulwark zone (gold frame), Overwatch range (red frame).
   // v0.9.3 M21: the ward's pulsing ring this turn (violet wash; a hero ending the player phase there loses MP).
   if(s.screen==='battle'&&s.missionId===21&&s.missionState){const outer=pulseRing21(s)==='outer';for(const p of pulseCells21(s)){rect(c,outer?'rgba(150,104,232,.20)':'rgba(190,120,240,.26)',p.x*TILE+1,p.y*TILE+1,62,62);c.strokeStyle='rgba(206,170,255,.55)';c.lineWidth=1;c.strokeRect(p.x*TILE+6,p.y*TILE+6,52,52);}}
+  // v0.10.0 M24: the ash tide over the northern rows (grey wash, drifting flecks) and the gate tiles to keep clear (gold frame);
+  // M23: a red frame on a council tent with an enemy beside it.
+  if(s.screen==='battle'&&s.missionId===24&&s.missionState){const rows=ashRows24(s),w=missionOf(s).width;for(let ty=0;ty<rows;ty++)for(let tx=0;tx<w;tx++){if(!Number.isFinite(terrainAt(tx,ty,s)?.cost))continue;rect(c,'rgba(96,92,90,.42)',tx*TILE,ty*TILE,TILE,TILE);for(let i=0;i<3;i++){const fx=(tx*37+i*23+Math.floor(now/90)*(i+1))%60,fy=(ty*29+i*41+Math.floor(now/70))%60;rect(c,'rgba(210,206,200,.55)',tx*TILE+2+fx,ty*TILE+2+fy,2,2);}}
+   if(rows>0&&rows<missionOf(s).ashRows){c.strokeStyle='rgba(230,140,90,.7)';c.lineWidth=2;c.beginPath();c.moveTo(0,rows*TILE);c.lineTo(w*TILE,rows*TILE);c.stroke();}
+   if(!gateClosed24(s))for(const [gx,gy] of missionOf(s).gate){c.strokeStyle=`rgba(240,206,120,${.45+.25*Math.sin(now/300)})`;c.lineWidth=2;c.strokeRect(gx*TILE+4,gy*TILE+4,56,56);}}
+  if(s.screen==='battle'&&s.missionId===23&&s.missionState)for(const t of s.units.filter(u=>u.kind==='tent'&&!u.inert&&(s.missionState.siege?.[u.id]||0)>0)){c.strokeStyle=`rgba(232,90,74,${.6+.3*Math.sin(now/200)})`;c.lineWidth=3;c.strokeRect(t.x*TILE+2,t.y*TILE+2,60,60);}
   if(s.screen==='battle'){for(const r of s.runes||[]){rect(c,'rgba(150,104,232,.32)',r.x*TILE+2,r.y*TILE+2,60,60);c.strokeStyle='rgba(206,170,255,.85)';c.lineWidth=2;c.strokeRect(r.x*TILE+8,r.y*TILE+8,48,48);}
    for(const a of s.units)if(a.team==='ally'&&alive(a)&&(a.bulwark||a.overwatch)){c.lineWidth=2;c.setLineDash([5,4]);c.strokeStyle=a.bulwark?'rgba(240,200,90,.9)':'rgba(236,98,82,.75)';
     for(let ty=a.y-a.range[1];ty<=a.y+a.range[1];ty++)for(let tx=a.x-a.range[1];tx<=a.x+a.range[1];tx++){const d=Math.abs(tx-a.x)+Math.abs(ty-a.y);if(a.bulwark?d===1:d>=a.range[0]&&d<=a.range[1])c.strokeRect(tx*TILE+4,ty*TILE+4,56,56);}c.setLineDash([]);}}
@@ -152,6 +159,19 @@ function drawMissionObject(c,u,x,y,now){const done=u.rescued,glow=.5+.3*Math.sin
   const rune=u.locked?`rgba(170,120,230,${.35+glow*.4})`:u.progress?`rgba(150,220,255,${.5+glow*.4})`:`rgba(240,200,110,${.45+glow*.4})`;c.fillStyle=rune;for(const [a,b,w,h]of[[-2,-18,4,14],[-7,-12,14,3],[-6,0,12,3],[-2,4,4,10]])c.fillRect(x+a,y+b,w,h);
   if(u.progress){rect(c,'#e9f6ff',x-12,y-2,24,2);}
   if(!u.locked){c.fillStyle=`rgba(240,200,110,${glow*.25})`;c.fillRect(x-20,y-30,40,56);}return;}
+ // v0.10.0 M23 council tent (original, vector): a canvas tent in its banner's colour with a pennant; taken, it lies torn and smoking.
+ if(u.kind==='tent'){const col={iron:['#5f7590','#3e4f66'],free:['#6f9a50','#4a6a34'],flame:['#b8503a','#7a3424']}[u.faction]||['#8a8070','#5a5248'];c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+22,26,6,0,0,Math.PI*2);c.fill();
+  if(u.inert){c.fillStyle='#3a3430';c.beginPath();c.moveTo(x-26,y+20);c.lineTo(x-6,y+4);c.lineTo(x+24,y+20);c.closePath();c.fill();c.fillStyle=col[1];c.beginPath();c.moveTo(x-20,y+20);c.lineTo(x-4,y+8);c.lineTo(x+12,y+20);c.closePath();c.fill();rect(c,'#4a3424',x+8,y-6,3,26);
+   c.fillStyle=`rgba(150,150,150,${.25+glow*.2})`;c.beginPath();c.arc(x-2,y-6-((now/40)%20),7,0,Math.PI*2);c.fill();return;}
+  c.fillStyle=col[0];c.beginPath();c.moveTo(x-26,y+20);c.lineTo(x,y-26);c.lineTo(x+26,y+20);c.closePath();c.fill();c.fillStyle=col[1];c.beginPath();c.moveTo(x,y-26);c.lineTo(x+26,y+20);c.lineTo(x+8,y+20);c.closePath();c.fill();
+  c.fillStyle='#2a2420';c.beginPath();c.moveTo(x-7,y+20);c.lineTo(x,y+2);c.lineTo(x+7,y+20);c.closePath();c.fill();rect(c,'#d8c8a0',x-26,y+18,52,2);rect(c,'#4a3424',x-1,y-40,2,16);c.fillStyle=col[0];c.beginPath();c.moveTo(x+1,y-40);c.lineTo(x+14,y-35);c.lineTo(x+1,y-30);c.closePath();c.fill();
+  c.fillStyle=`rgba(255,214,140,${.10+glow*.10})`;c.beginPath();c.ellipse(x,y+12,10,6,0,0,Math.PI*2);c.fill();return;}
+ // v0.10.0 M24 gate winch (original, vector): the M06 lever on a heavier frame; dim and locked until six refugees are inside.
+ if(u.kind==='gateLever'){c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+20,15,4,0,0,Math.PI*2);c.fill();rect(c,'#4a4c4a',x-14,y+6,28,14);rect(c,'#6c6f6c',x-14,y+6,28,2);rect(c,'#3a281a',x-14,y-8,4,16);rect(c,'#3a281a',x+10,y-8,4,16);
+  c.save();c.translate(x,y+10);c.rotate(u.inert?.8:-.8);rect(c,'#3a281a',-2,-24,4,24);rect(c,u.locked?'#7a7468':'#c9a24a',-4,-28,8,6);c.restore();
+  if(!u.inert&&!u.locked){c.fillStyle=`rgba(240,206,120,${glow*.45})`;c.fillRect(x-18,y-22,36,46);}return;}
+ // v0.10.0 M24 the gate's leaves (shown once it is shut): heavy timber with iron bands.
+ if(u.kind==='gateLeaf'){rect(c,'#3a281a',x-32,y-30,64,56);for(let i=0;i<5;i++)rect(c,i%2?'#6b4a30':'#5a3e28',x-30+i*12,y-28,11,52);rect(c,'#8a8f94',x-32,y-14,64,4);rect(c,'#8a8f94',x-32,y+8,64,4);return;}
  if(u.kind==='lever'){c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+20,13,4,0,0,Math.PI*2);c.fill();rect(c,'#5a5c5a',x-12,y+8,24,12);rect(c,'#7c7f7c',x-12,y+8,24,2);
   c.save();c.translate(x,y+10);c.rotate(done?.8:-.8);rect(c,'#3a281a',-2,-24,4,24);rect(c,'#c9a24a',-4,-28,8,6);c.restore();
   if(!done){c.fillStyle=`rgba(240,206,120,${glow*.4})`;c.fillRect(x-18,y-22,36,46);}return;}

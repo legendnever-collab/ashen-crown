@@ -57,7 +57,9 @@ const TREASURE_RULES={
  // v0.9.2 (D-089): the quill restores MP like the mana ring; the ledger silences like the shield of silence
  teacherQuill:[{mag:2},{mag:1},'mana',[2,2,3,3,4],ARMS_ALL8],greyLedger:[{spd:2},{spd:1},'silence',[1,1,1,1,1],ARMS_ALL8],
  // v0.9.3 (D-093): the king's signet steadies those beside the wearer like the lion epaulette; the herald's horn calls the legion on like the alliance seal
- kingsSignet:[{def:2},{def:1},'lion',[1,1,1,1,2],ARMS_ALL8],heraldHorn:[{spd:1},{spd:1},'seal',[1,1,2,2,3],ARMS_ALL8]
+ kingsSignet:[{def:2},{def:1},'lion',[1,1,1,1,2],ARMS_ALL8],heraldHorn:[{spd:1},{spd:1},'seal',[1,1,2,2,3],ARMS_ALL8],
+ // v0.10.0 (D-100): the alliance banner steadies those beside the bearer like the lion epaulette; the last lantern heals like the reliquary
+ allianceBanner:[{atk:1,def:1},{def:1},'lion',[1,1,1,1,2],ARMS_ALL8],lastLantern:[{res:2},{res:1},'reliquary',[4,4,6,6,8],ARMS_ALL8]
 };
 export const TREASURE_FX_KO={oath:()=>'전투마다 한 번, 쓰러질 피해를 받아도 HP 1로 버팀',pouch:n=>`HP 절반 아래로 떨어지면 1회 HP +${n}`,hawk:()=>'활 사거리 +1',sage:n=>`얻는 경험치 +${n}%`,twin:n=>`반격을 받으면 한 번 더 공격 (${n}%)`,silence:()=>'이 장수가 공격한 적은 반격하지 못함',mirror:()=>'원거리 피해 절반',clear:()=>'상태이상 면역',reliquary:n=>`턴마다 HP +${n}`,mana:n=>`턴마다 MP +${n}`,lion:n=>`인접 아군 DEF +${n}`,seal:n=>`전투 첫 ${n}턴 전군 MOV +1`,mist:()=>'안개 속에서도 사거리가 줄지 않음'};
 export const TREASURES=Object.fromEntries(CATALOG_TREASURES.map(c=>{const [bonus,grow,fx,power,heroes]=TREASURE_RULES[c.id];return [c.id,{name:c.ko,en:c.en,icon:'✧',slot:'treasure',heroes,price:0,bonus,grow,fx,power,treasure:true,tier:'T',description:c.effect}];}));
@@ -89,7 +91,10 @@ export const FEATS={
  20:featDef(20,'greyLedger','서가 셋을 모두 조사하고 주민 여섯을 모두 대피시킨다',(s,bf)=>bf.mission_20_cabinets===3&&bf.mission_20_residents===6),
  // v0.9.3 (D-093, PROPOSED)
  21:featDef(21,'kingsSignet','고정석 넷을 모두 깨고 국왕의 HP를 절반 아래로 떨어뜨리지 않는다',(s,bf)=>bf.mission_21_anchors===4&&bf.mission_21_king_half===true),
- 22:featDef(22,'heraldHorn','전령 셋이 모두 선 채로 TURN 8 안에 세 낭독을 마친다',(s,bf)=>bf.mission_22_heralds===3&&s.turn<=8)
+ 22:featDef(22,'heraldHorn','전령 셋이 모두 선 채로 TURN 8 안에 세 낭독을 마친다',(s,bf)=>bf.mission_22_heralds===3&&s.turn<=8),
+ // v0.10.0 (D-100, PROPOSED)
+ 23:featDef(23,'allianceBanner','세 지도자가 모두 선 채로 천막을 하나도 빼앗기지 않는다',(s,bf)=>bf.mission_23_leaders===3&&bf.mission_23_tents===3),
+ 24:featDef(24,'lastLantern','피난민 여덟 명을 모두 관문 안에 들이고 관문을 닫는다',(s,bf)=>bf.mission_24_inside===8)
 };
 // Supply carriers (조조전 식량대): one ordinary enemy per mission carries a crate; defeating it drops this tool into the bag
 // (usable at once; kept only if the battle is won, like every battle-time change to the bag).
