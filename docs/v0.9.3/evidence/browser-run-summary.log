@@ -59,3 +59,4 @@ migration-v092 exit=0
 mobile exit=0
 campaign exit=0
 e2e exit=0
+# rerun after D-094 (extras reuse painted art) on the rebuilt HTML: act3d exit=0 (44), act3c exit=0 (50), act3b exit=0 (48), act3 exit=0 (38), migration-v092 exit=0 (13)

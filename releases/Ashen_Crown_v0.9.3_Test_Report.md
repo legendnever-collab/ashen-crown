@@ -1,7 +1,13 @@
 # Ashen Crown v0.9.3 「잿빛 선택」 — Test Report
 Updated 2026-11-09 KST. **Release candidate on feature/v0.9.3-crown; not merged before the user plays and approves it.** Decision: D-093 (implementation details, PROPOSED), built on main 78f30f0 (v0.9.2 + art pack F3) with the user's play-test feedback D-092.
 
-HTML SHA256 of the tested build: `4b8984f2445a3c70dc4429ea09a332441184f39dea99cc921aa8c59717e2e4e9` (47,099,176 bytes; `index.html` identical). Headless Chromium (chromium-1194) / Playwright, offline file URLs + HTTP smoke. Only tests and docs changed after this build.
+HTML SHA256 of the release candidate: `7242f58358880336c9c7f1bec5a8ff6c05c35e9ba1bf56e6046b3b628d070e4f` (47,099,204 bytes; `index.html` identical) — see the addendum. The full matrix below ran on the previous build `4b8984f2…` (47,099,176 bytes).
+
+## Addendum 2026-11-09 — extras reuse painted art (D-094)
+On the user's rule (chat 2026-11-09 14:46) the rite knight commander and the chancellery guard captain now wear the rite knights' painted sheet and speak with the executor's painted bust; the three heralds use the painted refugee look; their temporary vector looks were removed (src/data/missions.js, src/data/story.js, src/render/bust.js BUST_REUSE, src/render/hd-art.js). Only looks changed — no rule, number or save field. On the rebuilt HTML `7242f583…`:
+- 438 unit tests PASS / 0 FAIL.
+- Browser suites touching ACT III art and saves rerun and passed: act3d-e2e 44, act3c-e2e 50, act3b-e2e 48, act3-e2e 38, migration-v092 13 (docs/v0.9.3/evidence/browser-run-summary.log). The other suites and the balances were not rerun: they do not draw these units (balance runs never render) and the change touches no rule.
+- Art pack F4 shrinks to 7 images (icon sheet K, the anchor stone; the last king). Headless Chromium (chromium-1194) / Playwright, offline file URLs + HTTP smoke. Only tests and docs changed after this build.
 
 ## Summary
 - **438 unit tests PASS / 0 FAIL** (docs/v0.9.3/evidence/unit-results.txt). New: tests/feedback-v093.test.mjs (6), tests/mission21.test.mjs (8), tests/mission22.test.mjs (7), tests/migration-v092.test.mjs (4); updated expectations for schema 15, the gear table (69 pieces, 20 treasures), 28 music tracks, 22 story missions and the Bulwark test (a rogue bandit, since every unit now stops beside a foe).
