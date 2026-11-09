@@ -1,7 +1,12 @@
 # Ashen Crown v0.9.3 「잿빛 선택」 — Test Report
 Updated 2026-11-09 KST. **Release candidate on feature/v0.9.3-crown; not merged before the user plays and approves it.** Decision: D-093 (implementation details, PROPOSED), built on main 78f30f0 (v0.9.2 + art pack F3) with the user's play-test feedback D-092.
 
-HTML SHA256 of the release candidate: `7242f58358880336c9c7f1bec5a8ff6c05c35e9ba1bf56e6046b3b628d070e4f` (47,099,204 bytes; `index.html` identical) — see the addendum. The full matrix below ran on the previous build `4b8984f2…` (47,099,176 bytes).
+HTML SHA256 of the build under review (v0.9.3 + ACT III art pack F4, D-096): `ffffb56eec442cca077310c10c8dd13071136c496ffd39581961fac6d7fb3697` (47,753,684 bytes; `index.html` identical) — see the second addendum. Merged v0.9.3 (PR #23) was `7242f583…` (47,099,204 bytes); the first full matrix below ran on `4b8984f2…` (47,099,176 bytes).
+
+## Addendum 2 2026-11-09 — ACT III art pack F4 (D-096), feature/act3-f4-art-pack
+The last king's four busts and map sheet, icon sheet K and the anchor stone (whole / broken), all hash-verified. On the F4 HTML `ffffb56e…`:
+- 439 unit tests PASS / 0 FAIL (new: the F4 icon test; the art counts include the king and the two props).
+- **The full browser and balance matrix, 56 suites, all passed on the first run** (docs/v0.9.3/evidence/browser-run-summary.log): 1,967 `PASS` lines; balances unchanged (ACT I–III 30/30 each, M21–M22 30/30). Headless medians 16.7 ms.
 
 ## Addendum 2026-11-09 — extras reuse painted art (D-094)
 On the user's rule (chat 2026-11-09 14:46) the rite knight commander and the chancellery guard captain now wear the rite knights' painted sheet and speak with the executor's painted bust; the three heralds use the painted refugee look; their temporary vector looks were removed (src/data/missions.js, src/data/story.js, src/render/bust.js BUST_REUSE, src/render/hd-art.js). Only looks changed — no rule, number or save field. On the rebuilt HTML `7242f583…`:
