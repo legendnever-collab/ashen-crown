@@ -26,7 +26,8 @@ SHEETS = {  # sheet id -> styles in reading order (columns per row pair)
 }
 # Battle-map prop sheets (ACT III pack F2): one row of 256 px cells → src/assets/props/<id>.webp at 128×128 like the map sprites.
 PROPS = {'props_act3b': ['wardTree', 'wardTree_hurt', 'wardTree_felled', 'guardianStatue_sleeping'],
-         'props_act3c': ['ritualCircle', 'ritualCircle_sealed', 'cabinet', 'cabinet_burned']}  # pack F3 (D-091)
+         'props_act3c': ['ritualCircle', 'ritualCircle_sealed', 'cabinet', 'cabinet_burned'],  # pack F3 (D-091)
+         'props_act3d': ['anchorStone', 'anchorStone_broken']}  # pack F4 (D-096)
 PROP_DIR = ROOT/'src/assets/props'
 
 def webp(img, budget, qualities=(82, 78, 74, 70, 66, 62, 58)):
@@ -68,6 +69,12 @@ def main(pack):
                 cell = sheet.crop((i*256, 0, i*256+256, 256)); a = cell.split()[3].point(lambda v: 0 if v < 20 else v); cell.putalpha(a)
                 payload, q = webp(cell.resize((128, 128), Image.LANCZOS), 14*1024); dest = PROP_DIR/f'{pid}.webp'
                 dest.write_bytes(payload); log.append(('prop', pid, dest.name, len(payload), q, hashlib.sha256(payload).hexdigest(), r['sha256']))
+        elif r['kind'] == 'prop_sheet':  # pack F4 lists one row per prop (id = the prop) on a shared sheet
+            PROP_DIR.mkdir(parents=True, exist_ok=True); sheet = img.convert('RGBA')
+            i = next(ids.index(r['id']) for ids in PROPS.values() if r['id'] in ids)
+            cell = sheet.crop((i*256, 0, i*256+256, 256)); a = cell.split()[3].point(lambda v: 0 if v < 20 else v); cell.putalpha(a)
+            payload, q = webp(cell.resize((128, 128), Image.LANCZOS), 14*1024); dest = PROP_DIR/f"{r['id']}.webp"
+            dest.write_bytes(payload); log.append(('prop', r['id'], dest.name, len(payload), q, hashlib.sha256(payload).hexdigest(), r['sha256']))
         elif r['kind'] == 'icons': continue  # icon sheets go through scripts/import-item-art.py --cells
         else: raise SystemExit(f"unknown kind {r['kind']}")
     with open(ROOT/'src/assets/room-art-import-log.csv', 'a', newline='') as f:
