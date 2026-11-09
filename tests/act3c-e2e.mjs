@@ -83,7 +83,7 @@ try{
   check(`${label} then the plan: send copies to the three banners or keep it (two ways)`,await p.locator('[data-do="plan20-pick"]').count()===2);
   await press('plan20-pick','keep');await drainStory(p);s=await snap();
   check(`${label} Kai's word, Baldrick at the gate and the way to the crown's heart follow`,s.campaign.choices.m20_superior==='trial'&&s.campaign.choices.m20_plan==='keep'&&['after:20:trial','after:20:keep','after:20:kai','after:20:next'].every(k=>s.narrative.seen.includes(k))&&s.narrative.seen.some(k=>k.startsWith('after:20:baldrick:')));
-  check(`${label} no next mission after M20 (the end of v0.9.2)`,!(await p.locator('[data-do="next-mission"]').count()));
+  check(`${label} after M20 the way goes on to Mission 21 (v0.9.3)`,(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 21'));
   await p.screenshot({path:`${shots}/capital-end-${label}.png`});
   // 6. Kai's awakening card
   await restore(kaiAwakened());await drainStory(p);await p.waitForTimeout(400);t=await modal();

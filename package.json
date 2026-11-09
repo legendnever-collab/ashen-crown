@@ -61,7 +61,9 @@
     "test:feedback-v091": "node tests/feedback-v091-e2e.mjs",
     "test:migration-v090": "node tests/migration-v090.mjs",
     "test:act3c": "node tests/act3c-e2e.mjs",
-    "test:migration-v091": "node tests/migration-v091.mjs"
+    "test:migration-v091": "node tests/migration-v091.mjs",
+    "test:act3d": "node tests/act3d-e2e.mjs",
+    "test:migration-v092": "node tests/migration-v092.mjs"
   },
   "devDependencies": {
     "playwright": "1.58.2"
