@@ -1,3 +1,13 @@
+# v0.10.1 — 검은 사자 · ACT IV part 2: M25 세 왕가의 깃발, M26 검은 사자의 마지막 전투, Dario's awakening, Baldrick the ninth hero (release candidate)
+- Release candidate on feature/v0.10.1-banners; not merged before the user plays and approves it. D-102 (within D-099 / docs/v0.10.0/ACT4_DESIGN.md §4.1, §5.1–§5.2, §8–§10); v0.10.0 merged as D-101.
+- M25 (src/core/mission-rules-v0101.js): the M14 betrayer's hardliners in the north camp; the other two banners in the west and east camps — allied and orderable at trust 3, otherwise neutral (they fight only the hardliners; rules.js hostile keeps them and the legion apart); the hardline captain falling with both leaders standing wins; then the betrayed banner forgiven (+2) or lowered (−1, the others +1).
+- M26: Baldrick's duel on TURN 2 (a win is two of resolve), Erik's persuasion (once a turn) and Thea's word; four of resolve and he yields — joins when he halted at M13, otherwise cooperates; broken at half HP with both bearers down from TURN 4 he withdraws alive; Erik falling loses.
+- Baldrick, the ninth hero: Lv 19, tier 3, skills 사자의 일격 / 사자의 포효 / 사자의 깃발 / 검은 사자의 결의 (tactics.js), Thea's lances and armour, every accessory and treasure; his painted bust and sheet.
+- Dario → 칼의 주인 with ④ 백 번의 반격 (every blow answered, any range, +30%) after M25; trial 117.
+- Hubs (alliance camp; the oath camp below the lion's pass, NPCs with fromMission), two world cards and sites, the original track 「검은 사자」, rewards 580/600, treasures 세 왕가의 인장 and 검은 갈기, feats to 26; schema 17 (imports 0–16; real v0.10.0 saves in tests/fixtures/v0100).
+- Tests: mission25, mission26, migration-v0100 unit suites; act4b-e2e and migration-v0100 browser suites; the ACT III–IV balance extended through M26 with the ≥ 90% gate; the policies play ④ 백 번의 반격, guard the leaders in M25 and walk Erik to Baldrick in M26.
+- Art pack G2 work order: scripts/make-act4-g2-art-pack.py → docs/v0.10.1/art/act4-g2-work-pack (6 images: icon sheet M; Dario's tier 3 busts and sheet).
+
 # v0.10.0 — 연합 · ACT IV part 1: M23 전쟁의 끝을 향해, M24 최후의 국경, allied orders, Ines's and Thea's awakening (release candidate)
 - Release candidate on feature/v0.10-act4-design; not merged before the user plays and approves it. D-100 (within D-099 / docs/v0.10.0/ACT4_DESIGN.md §4.1, §5.1, §8–§10).
 - Allied orders: tap an orderable allied unit in the player phase for 「따르라 · 지켜라 · 자유」 (game.js ALLY_ORDERS / setAllyOrder, app.js); the order is saved and validated.

@@ -17,7 +17,11 @@
 작업 단계별 커밋. npm test, balance, browser regression, campaign E2E, migration, offline, documentation audit. 실제 검증만 완료 표시. 모든 PR의 documentation checklist: README, CHANGELOG, CURRENT_STATUS, NEXT_TASKS, ROADMAP, Story Bible review, Decision Log review, tests/evidence, artifacts.
 
 
-## Current v0.10 entry (ACT IV part 1 release candidate)
+## Current v0.10.1 entry (ACT IV part 2 release candidate)
+v0.10.1 「검은 사자」 release candidate on feature/v0.10.1-banners (D-102, on main dd81b3e = v0.10.0 merged, D-101): M25–M26 in src/core/mission-rules-v0101.js (data in missions.js, story-v0101.js, talk-v0101.js), neutral camps (rules.js hostile: `u.neutral` and the legion are never hostile; save-manager keeps missionState.neutral), the betrayed banner choice (chooseBanner25, app.js showBanner25), Baldrick's duel/persuasion/yield (M26, joinRoster at Lv 19 tier 3), Baldrick's kit (catalog-v08 lionStrike/lionRoar/lionBanner/lastCharge, tactics.js, game.js lionGuard), Dario's ④ hundredCounters (game.js enemy counter), trial 117, schema 17 (imports 0–16; tests/fixtures/v0100). Art pack G2 work order: scripts/make-act4-g2-art-pack.py → docs/v0.10.1/art/act4-g2-work-pack (6 images). Never merge before the user plays and approves it.
+
+## v0.10.0 entry (merged, PR #25 → dd81b3e, D-101)
+
 v0.10.0 「연합」 release candidate on feature/v0.10-act4-design (D-100, within D-099 docs/v0.10.0/ACT4_DESIGN.md; on main d7960ae): M23–M24 in src/core/mission-rules-v0100.js (data in missions.js, story-v0100.js, talk-v0100.js), allied orders (game.js ALLY_ORDERS/canOrderAlly/setAllyOrder, app.js showAllyOrders), council tents and their siege (M23), the ash tide, refugees and the gate winch (M24, walkRefugees24), who leads the final campaign (chooseLead23, app.js showLead23), Ines's and Thea's Tier 3 and ④ (classes.js, catalog-v08.js sanctumGate/ironBreak, tactics.js; trials 115/116), schema 16 (imports 0–15; tests/fixtures/v093). Art pack G1 work order: scripts/make-act4-g1-art-pack.py → docs/v0.10.0/art/act4-g1-work-pack (12 images); extras reuse painted art (D-094). Never merge before the user plays and approves it.
 
 ## Current v0.9 entry (ACT III part 1 release candidate)
