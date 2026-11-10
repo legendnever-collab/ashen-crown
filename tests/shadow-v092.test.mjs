@@ -24,7 +24,7 @@ function field(){const c=camp(20);const s=startSkirmish(c,'trial','lia',{force:t
  s.units.filter(u=>u.team==='ally').forEach((u,i)=>{u.x=i;u.y=9;});for(const e of s.units.filter(u=>u.team==='enemy'))e.hp=0;drain(s);return s;}
 
 test('Lia and Kai awaken after their own mission: 결계술사 (Little Ward) after M19, 그림자 군주 (Shadow Dance) after M20; trials 109 and 114',()=>{
- assert.deepEqual(AWAKEN_TRIGGER,{elina:16,eric:17,sain:18,lia:19,kai:20,ines:23,thea:24});
+ assert.deepEqual(AWAKEN_TRIGGER,{elina:16,eric:17,sain:18,lia:19,kai:20,ines:23,thea:24,dario:25});
  assert.deepEqual(CLASS_TREE.lia.map(c=>c.key),['mage','arcanist','barrierMage']);assert.deepEqual(CLASS_TREE.kai.map(c=>c.key),['rogue','shadowblade','shadowLord']);
  assert.equal(CLASS_TREE.lia[2].ultimate,'smallWard');assert.equal(CLASS_TREE.kai[2].ultimate,'shadowDance');assert.ok(ULTIMATE_MODES.includes('smallWard')&&ULTIMATE_MODES.includes('shadowDance'));
  assert.ok(!promotionStatus(camp(18),'lia').eligible);assert.ok(promotionStatus(camp(19),'lia').eligible);assert.equal(trialMissionOf(camp(19),'lia'),109);

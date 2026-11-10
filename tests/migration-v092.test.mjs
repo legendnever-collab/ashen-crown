@@ -17,8 +17,8 @@ const load=name=>deserialize(fixture(name).save);
 test('fixtures are genuine v0.9.2 schema-14 saves after ACT III part 3',()=>{for(const n of ['m20-camp','m20-battle']){const f=fixture(n);assert.equal(f.version,'0.9.2');assert.equal(f.schema,14);}
  const c=raw('m20-camp').campaign;assert.ok(c.completed.includes(20));assert.equal(c.choices.m20_superior,'trial');assert.equal(c.choices.m20_plan,'send');assert.equal(raw('m20-camp').frontier.hub,'capital');assert.equal(c.records,undefined);});
 
-test('the v0.9.2 lower city loads as schema 16 with every asset kept',()=>{
- const before=raw('m20-camp'),s=load('m20-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,16);assert.equal(s.version,VERSION);assert.equal(VERSION,'0.10.0');assert.equal(s.frontier.hub,'capital');
+test('the v0.9.2 lower city loads as schema 17 with every asset kept',()=>{
+ const before=raw('m20-camp'),s=load('m20-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,17);assert.equal(s.version,VERSION);assert.equal(VERSION,'0.10.1');assert.equal(s.frontier.hub,'capital');
  for(const k of ['completed','flags','choices','promotions','factionTrust','trustLog','roster','feats','departed','economy','heroes','bonds','tacticalMemory'])assert.deepEqual(s.campaign[k],before.campaign[k],k);
  assert.deepEqual(s.economy,before.economy);const back=deserialize(serialize(s));assert.deepEqual(back.campaign.economy,before.campaign.economy);
 });

@@ -7,7 +7,7 @@ import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterW
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {startBattle,beginEnemyPhase,advanceEnemy,nextMission} from '../src/core/game.js';
 import {enterHub} from '../src/core/frontier.js';import {chooseLead23} from '../src/core/mission-rules-v0100.js';import {drain} from './campaign-policy.mjs';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.10.0.html').href,shots='docs/v0.10.0/screenshots/act4a';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.10.1.html').href,shots='docs/v0.10.0/screenshots/act4a';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const results=[];const check=(name,ok)=>{assert.ok(ok,name);n++;results.push(name);console.log('PASS',name);};
 const camp22=JSON.parse(fs.readFileSync('tests/fixtures/v093/v093-m22-camp.json','utf8')).save;
 const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);};
@@ -31,7 +31,7 @@ try{
   await p.goto(url);await press('new');await drainStory(p);
   // 1. the real v0.9.3 lower city offers Mission 23; the ACT IV card; the alliance camp
   await restore(camp22);await drainStory(p);await closeModals();let s=await snap();
-  check(`${label} the v0.9.3 lower city (ACT III complete) offers Mission 23`,s.schema===16&&s.frontier.hub==='capital'&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 23'));
+  check(`${label} the v0.9.3 lower city (ACT III complete) offers Mission 23`,s.schema===17&&s.frontier.hub==='capital'&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 23'));
   await press('next-mission');await p.waitForTimeout(400);let cardSeen=false;for(let i=0;i<40;i++){const t=await body();if(t.includes('ACT IV · 잿빛 왕관')){cardSeen=true;await p.screenshot({path:`${shots}/act4-card-${label}.png`});break;}if(!(await snap()).narrative.active)break;await p.keyboard.press('Enter').catch(()=>{});await p.waitForTimeout(150);}
   await drainStory(p);await closeModals();s=await snap();
   check(`${label} ACT IV opens with its world card and the alliance camp`,(cardSeen||s.narrative.seen.includes('world:alliance'))&&s.frontier.hub==='summit'&&s.missionId===23);

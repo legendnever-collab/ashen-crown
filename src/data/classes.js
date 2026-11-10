@@ -23,15 +23,19 @@ export const CLASS_TREE={
   {tier:2,key:'blackLancer',name:'Black Iron Lancer',ko:'흑철 창기사',bonus:{maxHP:3,atk:2},growth:{},skillNote:'돌격으로 적을 쓰러뜨리면 남은 이동을 쓸 수 있다.'},
   {tier:3,key:'ironCaptain',name:'Black Iron Captain',ko:'흑철 기병대장',ultimate:'ironBreak',bonus:{maxHP:3,atk:2},growth:{}}],
  dario:[{tier:1,key:'swordsman',name:'Swordsman',ko:'검사'},
-  {tier:2,key:'swordSaint',name:'Sword Saint',ko:'검성',bonus:{maxHP:3,atk:1,spd:1},growth:{},skillNote:'받아치기 상태에서는 반격을 두 번 한다.'}],
+  {tier:2,key:'swordSaint',name:'Sword Saint',ko:'검성',bonus:{maxHP:3,atk:1,spd:1},growth:{},skillNote:'받아치기 상태에서는 반격을 두 번 한다.'},
+  {tier:3,key:'bladeMaster',name:'Master of the Blade',ko:'칼의 주인',ultimate:'hundredCounters',bonus:{maxHP:3,atk:2,spd:1},growth:{}}],
  ines:[{tier:1,key:'warden',name:'Pilgrim Warden',ko:'순례 수호자'},
   {tier:2,key:'sanctumWarden',name:'Sanctum Warden',ko:'성소 수호자',bonus:{maxHP:4,def:1,res:1},growth:{},skillNote:'성역이 2칸까지 닿는다(2칸 거리는 피해 −1).'},
-  {tier:3,key:'dawnPaladin',name:'Dawn Paladin',ko:'새벽 성기사',ultimate:'sanctumGate',bonus:{maxHP:4,def:1,res:1},growth:{}}]
+  {tier:3,key:'dawnPaladin',name:'Dawn Paladin',ko:'새벽 성기사',ultimate:'sanctumGate',bonus:{maxHP:4,def:1,res:1},growth:{}}],
+ // v0.10.1 (D-102): Baldrick joins already awakened; his tree is for the unit sheet (no trial, no promotion).
+ baldrick:[{tier:1,key:'ironKnight',name:'Black Iron Knight',ko:'흑철 기사'},{tier:2,key:'lionCaptain',name:'Lion Captain',ko:'사자 기병대장',bonus:{},growth:{}},
+  {tier:3,key:'blackLion',name:'The Black Lion',ko:'검은 사자',ultimate:'lastCharge',bonus:{},growth:{}}]
 };
 // v0.9.1 awakening (Tier 3, D-079 Q5, ACT3_DESIGN §6; PROPOSED): Lv 14, tier 2, the hero's own ACT III mission cleared and
 // a won awakening trial. The ④ skill is used once a battle. v0.9.2 (D-089): Lia after M19, Kai after M20.
 export const AWAKEN_LEVEL=14;
-export const AWAKEN_TRIGGER={elina:16,eric:17,sain:18,lia:19,kai:20,ines:23,thea:24}; /* v0.10.0 (D-099 Q4): the recruits awaken in ACT IV — Ines M23, Thea M24 (Dario M25 in v0.10.1) */
+export const AWAKEN_TRIGGER={elina:16,eric:17,sain:18,lia:19,kai:20,ines:23,thea:24,dario:25}; /* v0.10.0 (D-099 Q4): the recruits awaken in ACT IV — Ines M23, Thea M24 (Dario M25 in v0.10.1) */
 // Recruits promote at join level + 5 once ACT II is over (the join levels are skills.js RECRUIT_JOIN).
 export const RECRUIT_PROMOTION=5;
 // New tactical actions (one per promoted hero). `mode` is the performAction mode used from Phase D on.

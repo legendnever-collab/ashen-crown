@@ -45,7 +45,7 @@ test('ACT III pack F3: sheet J paints Lia\'s and Kai\'s ④ and the two v0.9.2 t
 
 test('pack E covers every hero skill, the four statuses, buffs and the battle commands',()=>{
  const ids=new Set(log.map(r=>r.id));
- for(const k of SKILLS.filter(k=>k.slot<=3))assert.ok(ids.has(k.id),`skill ${k.hero} ${k.id}`);
+ for(const k of SKILLS.filter(k=>k.slot<=3&&k.hero!=='baldrick'))assert.ok(ids.has(k.id),`skill ${k.hero} ${k.id}`); /* v0.10.1: Baldrick's icons come with pack G2 */
  // the ④ skills (v0.9.1) came after the pack: they show no painted disk until the ACT III art
  assert.ok(SKILLS.filter(k=>k.slot===4).every(k=>!ids.has(k.id)));
  for(const id of ['poison','confuse','bind','silence','buff','debuff','attack','wait','persuade','capture','supplyCrate','gold'])assert.ok(ids.has(id),id);

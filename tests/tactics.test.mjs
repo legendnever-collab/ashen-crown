@@ -21,7 +21,7 @@ const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){adv
 
 test('catalog: 13 tools match the game tools, 31 skills (three per hero, plus the ④ of the five ACT I heroes, and v0.10.0 Ines and Thea), unique ids',()=>{
  assert.deepEqual(CATALOG_TOOLS.map(t=>t.id).sort(),Object.keys(TOOLS).sort());for(const t of CATALOG_TOOLS)assert.equal(TOOLS[t.id].name,t.ko,t.id);
- assert.equal(CATALOG_SKILLS.length,31);for(const h of ['eric','elina','lia','sain','kai','thea','dario','ines'])assert.deepEqual(CATALOG_SKILLS.filter(k=>k.hero===h).map(k=>k.slot),['eric','elina','lia','sain','kai','thea','ines'].includes(h)?[1,2,3,4]:[1,2,3],h);
+ assert.equal(CATALOG_SKILLS.length,36);for(const h of ['eric','elina','lia','sain','kai','thea','dario','ines','baldrick'])assert.deepEqual(CATALOG_SKILLS.filter(k=>k.hero===h).map(k=>k.slot),[1,2,3,4],h); /* v0.10.1: Dario's ④ and Baldrick's four */
 });
 
 test('skills open by level: ① always, ② at Lv 4 (recruits on joining), ③ on promotion (recruits at join level + 3)',()=>{
@@ -112,7 +112,7 @@ test('tool stock opens with progress (net after M01, drum/caltrops after M06, bo
 
 test('schema 10 saves keep statuses, marks and throws; damaged status records are rejected',()=>{
  const s=board(),eric=findUnit(s,'eric');eric.status={poison:2};eric.rally=s.turn+1;s.throws=2;s.smoke=[{x:1,y:1,until:1}];s.traps=[{x:2,y:2}];
- const back=deserialize(serialize(s));assert.equal(back.schema,SCHEMA);assert.equal(SCHEMA,16);assert.deepEqual(findUnit(back,'eric').status,{poison:2});assert.equal(back.throws,2);assert.deepEqual(back.traps,[{x:2,y:2}]);
+ const back=deserialize(serialize(s));assert.equal(back.schema,SCHEMA);assert.equal(SCHEMA,17);assert.deepEqual(findUnit(back,'eric').status,{poison:2});assert.equal(back.throws,2);assert.deepEqual(back.traps,[{x:2,y:2}]);
  for(const bad of [x=>{findUnit(x,'eric').status={sleep:1};},x=>{findUnit(x,'eric').status={poison:9};},x=>{x.throws=7;},x=>{x.traps=[{x:'a'}];}]){const b=structuredClone(s);bad(b);assert.throws(()=>deserialize(serialize(b)));}
 });
 
