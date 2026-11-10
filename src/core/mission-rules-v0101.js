@@ -98,7 +98,7 @@ export const M26={
   if(u.id==='boss'){if(s.turn<missionOf(s).duelTurn)return strike101(s,u,within101(reachable,(x,y)=>y<=3),foes,null);return strike101(s,u,reachable,foes,goalOf101(e&&alive(e)&&!e.benched?e:nearest101(u,foes)),t=>t.id==='eric'?8:0);}
   if(u.kind==='bearer'&&b&&alive(b)){const keep=within101(reachable,(x,y)=>Math.abs(x-b.x)+Math.abs(y-b.y)<=2);return strike101(s,u,keep.size?keep:reachable,foes,goalOf101(b));}
   return null;},
- persuade(s,u,t){const st=s.missionState;if(u.id==='eric'){st.persuadedTurn=s.turn;remember(s,'m26_persuade');addResolve26(s,'eric');}else if(u.id==='thea'){st.thea=true;remember(s,'m26_thea');enqueueStory(s,'26:thea');addResolve26(s,'thea');}s.feedback.push({type:'guard',id:u.id,text:'설득'});},
+ persuade(s,u,t){const st=s.missionState;countDuel26(s);if(st.halted)return;if(u.id==='eric'){st.persuadedTurn=s.turn;remember(s,'m26_persuade');addResolve26(s,'eric');}else if(u.id==='thea'){st.thea=true;remember(s,'m26_thea');enqueueStory(s,'26:thea');addResolve26(s,'thea');}s.feedback.push({type:'guard',id:u.id,text:'설득'});},
  // Baldrick never falls below half his HP here; with both bearers down from TURN 4, at that floor he withdraws alive (broken).
  afterDamage(s,v){if(v.id==='boss'&&v.hp<floor26(v)){v.hp=floor26(v);s.log.push('발드릭은 쓰러지지 않습니다. 사자는 무릎을 꿇지 않습니다.');}},
  checkOutcome(s,finish){const m=missionOf(s),st=s.missionState,e=findUnit(s,'eric');countDuel26(s);
@@ -117,6 +117,6 @@ export const M26={
 function addResolve26(s,why){const st=s.missionState,m=missionOf(s);if(st.halted)return;const n=why==='duel'?2:1;st.resolve+=n;st.sources.push(why);
  s.feedback.push({type:'rescue',id:'boss',text:`결단 ${st.resolve}/${m.persuade.threshold}`});s.log.push(`발드릭의 결단 +${n} (${RESOLVE26[why]}) · ${st.resolve}/${m.persuade.threshold}`);
  if(st.resolve>=m.persuade.threshold){st.halted=true;for(const u of s.units.filter(u=>u.team==='enemy'&&alive(u))){u.benched=true;u.withdrawn=true;}enqueueStory(s,yieldOutcome26(s.campaign)==='join'?'26:yield:join':'26:yield:cooperate');}
- else enqueueStory(s,why==='duel'?'26:duel:won':'26:waver');}
+ else if(why!=='duel')enqueueStory(s,'26:waver');}
 function countDuel26(s){const st=s.missionState;if(st&&!st.duelCounted&&s.duel?.result){st.duelCounted=true;if(s.duel.result==='hero'&&s.duel.key==='26:duel')addResolve26(s,'duel');}}
 export const ACT4B_RULES={25:M25,26:M26};
