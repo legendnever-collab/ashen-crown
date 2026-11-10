@@ -27,7 +27,8 @@ SHEETS = {  # sheet id -> styles in reading order (columns per row pair)
 # Battle-map prop sheets (ACT III pack F2): one row of 256 px cells → src/assets/props/<id>.webp at 128×128 like the map sprites.
 PROPS = {'props_act3b': ['wardTree', 'wardTree_hurt', 'wardTree_felled', 'guardianStatue_sleeping'],
          'props_act3c': ['ritualCircle', 'ritualCircle_sealed', 'cabinet', 'cabinet_burned'],  # pack F3 (D-091)
-         'props_act3d': ['anchorStone', 'anchorStone_broken']}  # pack F4 (D-096)
+         'props_act3d': ['anchorStone', 'anchorStone_broken'],  # pack F4 (D-096)
+         'props_act4a': ['tent_iron', 'tent_free', 'tent_flame', 'tent_taken']}  # pack G1 (D-103)
 PROP_DIR = ROOT/'src/assets/props'
 
 def webp(img, budget, qualities=(82, 78, 74, 70, 66, 62, 58)):
@@ -49,6 +50,7 @@ def main(pack):
     pack = Path(pack); rows = list(csv.DictReader(open(pack/'manifest_places.csv' if (pack/'manifest_places.csv').exists() else pack/'manifest.csv', encoding='utf-8-sig'))); log = []
     ROOM_DIR.mkdir(parents=True, exist_ok=True); CHEST_DIR.mkdir(parents=True, exist_ok=True)
     for r in rows:
+        if 'path' not in r: r['path'] = r['file']  # pack G1 manifests name the column 'file'
         data = (pack/r['path']).read_bytes()
         if hashlib.sha256(data).hexdigest() != r['sha256']: raise SystemExit(f"SHA256 mismatch: {r['path']}")
         img = Image.open(io.BytesIO(data)); assert img.size == (int(r['width']), int(r['height'])), r['path']
