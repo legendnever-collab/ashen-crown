@@ -7,6 +7,7 @@
 - Hubs (alliance camp; the oath camp below the lion's pass, NPCs with fromMission), two world cards and sites, the original track 「검은 사자」, rewards 580/600, treasures 세 왕가의 인장 and 검은 갈기, feats to 26; schema 17 (imports 0–16; real v0.10.0 saves in tests/fixtures/v0100).
 - Tests: mission25, mission26, migration-v0100 unit suites; act4b-e2e and migration-v0100 browser suites; the ACT III–IV balance extended through M26 with the ≥ 90% gate; the policies play ④ 백 번의 반격, guard the leaders in M25 and walk Erik to Baldrick in M26.
 - Art pack G2 work order: scripts/make-act4-g2-art-pack.py → docs/v0.10.1/art/act4-g2-work-pack (6 images: icon sheet M; Dario's tier 3 busts and sheet).
+- ACT IV art pack G1 imported (D-103): Ines's and Thea's tier 3 busts and map sheets, icon sheet L (성역의 문, 철의 돌파, 연합의 깃발, 마지막 등불) and the four council tents (iron / free / flame / taken) — 12 images hash-verified; the M23 tents now draw the painted art.
 
 # v0.10.0 — 연합 · ACT IV part 1: M23 전쟁의 끝을 향해, M24 최후의 국경, allied orders, Ines's and Thea's awakening (release candidate)
 - Release candidate on feature/v0.10-act4-design; not merged before the user plays and approves it. D-100 (within D-099 / docs/v0.10.0/ACT4_DESIGN.md §4.1, §5.1, §8–§10).
