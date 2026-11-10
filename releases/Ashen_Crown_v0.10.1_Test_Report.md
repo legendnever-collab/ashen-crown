@@ -1,12 +1,17 @@
 # Ashen Crown v0.10.1 「검은 사자」 — Test Report
 Updated 2026-11-10 KST. **Release candidate on feature/v0.10.1-banners; not merged before the user plays and approves it.** Decision: D-102 (implementation details, PROPOSED) within D-099 (docs/v0.10.0/ACT4_DESIGN.md), built on main dd81b3e (v0.10.0), with ACT IV art pack G1 imported (D-103).
 
-HTML SHA256 of the build under review: `18fe2bb71fc50998b4a6e588a9d7bba913923ed4d8a28af58277d74244c6982c` (49,185,008 bytes; `index.html` identical; also in `releases/Ashen_Crown_v0.10.1_SHA256SUMS`). The full matrix ran on this HTML; a rebuild after the run produced the same hash, and only docs changed after it.
+HTML SHA256 of the build under review: `313df1ba2fe2bb92f7cb42a7499a8f3892bcbc06ac21d9a5eaff7bb5c8688e6a` (49,185,404 bytes; `index.html` identical; also in `releases/Ashen_Crown_v0.10.1_SHA256SUMS`). This build adds the play-test minor feedback (D-104: the unit menu's one-line title; the move confirmation as 이동 확정 / 취소 only) to the build `18fe2bb71fc50998b4a6e588a9d7bba913923ed4d8a28af58277d74244c6982c` (49,185,008 bytes) on which the full 60-suite matrix ran. D-104 changes only src/ui/action-menu.js and src/ui/style.css; on the new build the unit tests and the 11 browser suites that open the unit menu or confirm a move were rerun (see below).
 
 ## Summary
-- **472 unit tests PASS / 0 FAIL** (docs/v0.10.1/evidence/unit-results.txt). New: tests/mission25.test.mjs (4), tests/mission26.test.mjs (5), tests/migration-v0100.test.mjs, and the art pack G1 checks in tests/item-art.test.mjs and tests/portraits.test.mjs. Updated expectations: schema 17, version 0.10.1, nine heroes, 31 tracks, 36 tactics skills, 73 gear and 24 treasures.
+- **474 unit tests PASS / 0 FAIL** on the build under review (472 on the matrix build; +2 in tests/unit-menu.test.mjs) (docs/v0.10.1/evidence/unit-results.txt). New: tests/mission25.test.mjs (4), tests/mission26.test.mjs (5), tests/migration-v0100.test.mjs, and the art pack G1 checks in tests/item-art.test.mjs and tests/portraits.test.mjs. Updated expectations: schema 17, version 0.10.1, nine heroes, 31 tracks, 36 tactics skills, 73 gear and 24 treasures.
 - **Full browser and balance matrix, 60 suites, all passed on the first run** (docs/v0.10.1/evidence/browser-run-summary.log): 2,086 `PASS` lines (2,010 on v0.10.0). No runtime errors.
 - Balances: ACT I 30/30; ACT II M07–M14 30/30 each; ACT III M15–M22 30/30 each; ACT IV M23 30/30, M24 30/30, **M25 30/30, M26 30/30** (gate ≥ 90% of the previous mission passed).
+
+## Rerun after D-104 (on the build under review)
+- Unit tests: see docs/v0.10.1/evidence/unit-results.txt (adds tests/unit-menu.test.mjs: two buttons, no coordinates; the title rule).
+- Browser suites, all exit 0 (docs/v0.10.1/evidence/rerun-d104-*.log; `PASS` lines): mobile-command 25, mobile 80, post-move 1, tactical 28, restart 23, e2e 60, http 1, campaign 121, renaissance 142, legion 20, migration-v02 17.
+- Screenshots at 412 px (docs/v0.10.1/screenshots/d104): the unit menu with its one-line title; the move confirmation with only 이동 확정 / 취소. The title stays one line (18 px tall at 15 px type) and also with the menu zoomed 135%.
 
 ## Browser suites (new or changed)
 | Suite | Checks | Result |

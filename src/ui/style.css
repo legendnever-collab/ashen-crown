@@ -349,3 +349,10 @@
 @media(max-width:720px){.duel-card .duel-faces canvas{width:72px;height:72px}}
 /* v0.9.1 feedback: narration (연대기) lines in battle have no portrait; the empty chest shows its painted chest */
 .dialogue-backdrop .dialogue-panel.narration .dialogue-copy{left:28px}.chest-empty{width:96px;height:96px;object-fit:contain;image-rendering:auto}
+
+/* 2026-11-10 play-test (v0.10.1): the menu title stays on one line, smaller; the move confirmation is just two buttons. */
+.unit-popover header{gap:6px;padding:3px 4px 3px 9px}
+.unit-popover header strong{font:bold 15px/1.2 Georgia,'Ashen UI',serif;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.unit-popover header span{flex:none;white-space:nowrap}
+.unit-popover header .menu-close{flex:none;width:36px;height:36px;font-size:20px}
+.unit-popover .move-confirm .menu-confirm{margin-top:0}
