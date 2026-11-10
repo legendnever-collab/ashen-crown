@@ -1,0 +1,43 @@
+PASS 1440 Ironhold's forge lists its specialty: 강철 대검 locked until M07, 룬 단조검 (premium) on sale, basics below
+PASS 1440 a locked piece has no buy button
+PASS 1440 after M07 the weapons are on sale, the armor waits for M08
+PASS 1440 the purchase compares Erik's ATK before and after
+PASS 1440 bought and equipped once: 180 Gold, ★1
+PASS 1440 the forge offers 단련 ★1 → ★2 for 80 Gold
+PASS 1440 the 단련 preview names the stars and the gain
+PASS 1440 tempered: ★2, 80 Gold
+PASS 1440 the sheet shows four slots (무기·방어구·장신구·보물) and stars
+PASS 1440 the Twin Daggers go into Erik's treasure slot
+PASS 1440 the camp shows 「마을 다시 찾기」
+PASS 1440 the world map lists the towns passed: 잿빛 마을, 철관성 성하 마을 (not Velmar itself)
+PASS 1440 travelled: Ironhold with the camp remembered; no council button there; the way back is shown
+PASS 1440 a reload keeps the visit
+PASS 1440 back in the Velmar camp
+PASS 1440 Velmar's forge shows the rare-goods shelf with one other town's piece
+PASS 1440 the war council carries Lia's hint: 숨은 전과 · TURN 6 안에 마을을 구한다 (보상 약초 주머니)
+PASS 1440 the supply carrier (b3) is marked in the save
+PASS 1440 Bulwark (Erik's ③) shows the cut-in with his line
+PASS 1440 M01 won at TURN 3: the Herb Pouch is the campaign's and the result shows 숨은 전과
+PASS 1440 no runtime errors
+PASS 390 Ironhold's forge lists its specialty: 강철 대검 locked until M07, 룬 단조검 (premium) on sale, basics below
+PASS 390 a locked piece has no buy button
+PASS 390 after M07 the weapons are on sale, the armor waits for M08
+PASS 390 the purchase compares Erik's ATK before and after
+PASS 390 bought and equipped once: 180 Gold, ★1
+PASS 390 the forge offers 단련 ★1 → ★2 for 80 Gold
+PASS 390 the 단련 preview names the stars and the gain
+PASS 390 tempered: ★2, 80 Gold
+PASS 390 the sheet shows four slots (무기·방어구·장신구·보물) and stars
+PASS 390 the Twin Daggers go into Erik's treasure slot
+PASS 390 the camp shows 「마을 다시 찾기」
+PASS 390 the world map lists the towns passed: 잿빛 마을, 철관성 성하 마을 (not Velmar itself)
+PASS 390 travelled: Ironhold with the camp remembered; no council button there; the way back is shown
+PASS 390 a reload keeps the visit
+PASS 390 back in the Velmar camp
+PASS 390 Velmar's forge shows the rare-goods shelf with one other town's piece
+PASS 390 the war council carries Lia's hint: 숨은 전과 · TURN 6 안에 마을을 구한다 (보상 약초 주머니)
+PASS 390 the supply carrier (b3) is marked in the save
+PASS 390 Bulwark (Erik's ③) shows the cut-in with his line
+PASS 390 M01 won at TURN 3: the Herb Pouch is the campaign's and the result shows 숨은 전과
+PASS 390 no runtime errors
+arms-e2e: 42 checks passed
