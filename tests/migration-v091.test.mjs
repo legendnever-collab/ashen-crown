@@ -18,7 +18,7 @@ test('fixtures are genuine v0.9.1 schema-13 saves after ACT III part 2',()=>{for
  assert.ok(raw('m18-camp').campaign.completed.includes(18));assert.equal(raw('m18-camp').campaign.choices.m18_truth,'tell');assert.equal(raw('m18-camp').frontier.hub,'forest');});
 
 test('the v0.9.1 forest village loads as schema 14 with every asset kept',()=>{
- const before=raw('m18-camp'),s=load('m18-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,15);assert.equal(s.version,VERSION);assert.equal(VERSION,'0.9.3');assert.equal(s.frontier.hub,'forest');
+ const before=raw('m18-camp'),s=load('m18-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,16);assert.equal(s.version,VERSION);assert.equal(VERSION,'0.10.0');assert.equal(s.frontier.hub,'forest');
  for(const k of ['completed','flags','choices','promotions','factionTrust','trustLog','roster','feats','departed','economy','heroes','bonds','tacticalMemory'])assert.deepEqual(s.campaign[k],before.campaign[k],k);
  assert.deepEqual(s.economy,before.economy);const back=deserialize(serialize(s));assert.deepEqual(back.campaign.economy,before.campaign.economy);
 });

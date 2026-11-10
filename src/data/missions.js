@@ -427,6 +427,51 @@ MISSIONS[22]=authored({id:22,title:'잿빛 선택',en:'The Ashen Choice',
  threatTurn:1,par:8,turnLimit:12,level:17,deployLimit:7,
  objective:'세 낭독(기록·계획서·국왕의 말)을 모두 마치기 · TURN 12 안에 (전령 2명이 쓰러지면 패배)',
  brief:'전령 셋이 단 위에서 TURN 2부터 턴마다 한 번씩, 네 번 읽습니다. TURN 1에는 광장의 사람들이 길을 막아 적이 전령을 노리지 못합니다. 지난 턴 시작 뒤 다친 전령은 그 턴을 읽지 못합니다. 쓰러진 전령의 단에 장수가 서면 대신 읽습니다. 재상부는 북쪽 성문에서, 배신한 깃발은 동서 길에서 옵니다. 신뢰가 「동맹」인 깃발은 TURN 2 남쪽에서 기사 둘을 보냅니다.'});
+// ---------- v0.10.0 ACT IV 「잿빛 왕관」 part 1 「연합」 (D-099/D-100, docs/v0.10.0/ACT4_DESIGN.md §4.1; maps and numbers PROPOSED) ----------
+// M23 Toward the End of the War: the alliance camp at night. The three leaders and their guards fight beside the legion as allied
+// units that take orders (따르라 / 지켜라 / 자유). Three council tents: an enemy that ends two enemy phases in a row beside a
+// tent takes it. Victory: the raid captain falls, or TURN 10 ends. Defeat: two tents taken. A leader who falls costs their
+// banner's trust (−1), never the battle. D-094: the raid captain wears the rite knights' painted sheet.
+const knight23=(id,x,y,stats={})=>unit(id,'의식 기사','spear',x,y,{hp:90,atk:49,def:27,res:15,spd:21,mov:3,look:'ritualKnight',...stats});
+const cloak23=(id,x,y)=>unit(id,'재상부 회색 망토','bandit',x,y,{hp:70,atk:45,def:20,res:15,spd:25,mov:4,movementProfile:'rogue',look:'grayCloak'});
+const bolt23=(id,x,y)=>unit(id,'재상부 석궁수','archer',x,y,{hp:58,atk:42,def:15,res:13,spd:24,mov:3,range:[2,3],look:'grayCloak'});
+const leader23=(id,name,look,x,y,faction)=>ally(id,name,look,x,y,{faction,kind:'leader',leader:true,orderable:true,hp:110,atk:44,def:24,res:18,spd:22,mov:4});
+const guard23=(id,name,look,x,y,faction)=>ally(id,name,look,x,y,{faction,orderable:true,hp:84,atk:44,def:24,res:14,spd:21,mov:4});
+const tent23=(id,faction,x,y)=>({id,name:{iron:'철왕관 천막',free:'연맹 천막',flame:'성화 천막'}[faction],kind:'tent',faction,x,y,prop:true,locked:true});
+MISSIONS[23]=authored({id:23,title:'전쟁의 끝을 향해',en:'Toward the End of the War',
+ rows:['ffggggggrrggggggff','fgggggggrrgggggggf','ggggggggrrgggggggg','ggrrrrrrrrrrrrrrgg','ggrgggggrrgggggrgg','ggrgggggrrgggggrgg','fgrgggggrrgggggrgf','ggrrrrrrrrrrrrrrgg','ggggggggrrgggggggg','gggggggrrrrggggggg','fggggggrggrggggggf','ggggggggrrgggggggg','fgggggggrrgggggggf','ffggggggrrggggggff'],
+ enemies:[knight23('k1',6,0),knight23('k2',11,0),cloak23('g1',1,2),cloak23('g2',16,2),bolt23('a1',9,0)],
+ objects:[tent23('ti','iron',5,5),tent23('tf','free',12,5),tent23('tl','flame',8,10)],
+ allies:[leader23('cassian','카시안 · 철왕관 통령','cassian',5,6,'iron'),leader23('leonora','레오노라 · 연맹 의장','leonora',12,6,'free'),leader23('lucien','루시안 · 성화 대사제','lucien',9,10,'flame'),
+  guard23('ig1','철왕관 근위병','ironInfantry',4,5,'iron'),guard23('fg1','연맹 경비병','guard',13,5,'free'),guard23('lg1','성화 기사','flameKnight',8,11,'flame')],
+ waves:[{turn:2,story:'23:flank',units:[cloak23('g3',0,8),cloak23('g4',17,8)]},{turn:3,story:'23:south',units:[knight23('k3',8,13),knight23('k4',9,13),cloak23('g7',0,13)]},
+  {turn:4,story:'23:captain',units:[knight23('rk',8,0,{name:'재상부 습격대장',kind:'captain',hp:230,atk:52,def:30,res:24,spd:25}),knight23('k8',7,0),knight23('k9',10,0)]},
+  {turn:5,units:[cloak23('g5',0,11),cloak23('g6',17,11),knight23('k5',8,13)]},{turn:7,units:[knight23('k6',0,4),knight23('k7',17,4),bolt23('a2',9,13)]}],
+ siegeTurns:2,
+ deployZone:s=>{const base=[];for(let y=6;y<=9;y++)for(let x=3;x<=14;x++)base.push([x,y]);return zone(base.filter(([x,y])=>!MISSIONS[23].objects.some(o=>o.x===x&&o.y===y)&&!MISSIONS[23].allies.some(a=>a.x===x&&a.y===y)));},
+ deployments:{recommended:[[8,7],[9,7],[6,7],[11,7],[7,8],[10,8],[4,7],[13,7]],assault:[[8,6],[9,6],[7,6],[10,6],[6,7],[11,7],[8,7],[9,7]],defense:[[6,6],[11,6],[7,9],[10,9],[5,7],[12,7],[8,8],[9,8]]},
+ threatTurn:1,par:8,turnLimit:10,level:18,deployLimit:7,
+ objective:'재상부 습격대장 격파 또는 TURN 10까지 회의 천막 지키기 (천막 2곳을 빼앗기면 패배)',
+ brief:'세 지도자와 호위가 동맹군으로 함께 싸웁니다. 동맹 유닛을 누르면 「따르라 · 지켜라 · 자유」를 지시할 수 있습니다. 적이 천막 곁에서 적 턴을 두 번 연달아 마치면 천막을 빼앗깁니다. 지도자가 쓰러지면 그 깃발의 신뢰 −1 (패배는 아님). 습격대장은 TURN 4에 북쪽에서 나타납니다.'});
+// M24 The Last Border: the ward breaks from the border. North of the wall the ash tide comes in a row a turn from TURN 2; anyone
+// who ends the player phase on ash loses 10% of their max HP (the ash beasts are at home in it). Eight refugees walk two tiles
+// a turn toward the gate (inside: row 9 and below). The player closes the gate at the lever (beside it, once six are in) —
+// the Ashen Night's mirror: whoever is still outside stays outside. Victory: the gate closed with six or more inside (it
+// closes by itself at the end of TURN 10). Defeat: three refugees fall, or fewer than six inside when it closes.
+const beast24=(id,x,y,stats={})=>unit(id,'재의 짐승','bandit',x,y,{hp:72,atk:45,def:19,res:11,spd:24,mov:4,look:'ashRaider',ashBorn:true,...stats});
+const refugee24=(id,x,y,look='refugee')=>({id,name:'국경 피난민',kind:'civilian',look,refugee:true,x,y,hp:44,def:12,res:10});
+MISSIONS[24]=authored({id:24,title:'최후의 국경',en:'The Last Border',
+ rows:['fffgggggrrgggggfff','ffggggggrrggggggff','fgggfgggrrgggfgggf','gggggggrrrrggggggg','ggfggggrggrggggfgg','gggggggrggrggggggg','ggggfggrrrrggfgggg','ggggggggrrgggggggg','xxxxxxxxkkxxxxxxxx','vvggggggrrggggggvv','vgggrrrrrrrrrrgggv','ggvgggggrrgggggvgg','gvvgggggrrgggggvvg','ggggggggrrgggggggg'],
+ enemies:[beast24('b1',0,5),beast24('b2',17,5),beast24('b3',12,0)],
+ civilians:[refugee24('p1',6,3),refugee24('p2',11,3),refugee24('p3',4,4,'pilgrim'),refugee24('p4',13,4),refugee24('p5',5,5,'child'),refugee24('p6',12,5),refugee24('p7',1,0,'pilgrim'),refugee24('p8',16,0)],
+ objects:[{id:'lever',name:'관문 권양기',kind:'gateLever',x:11,y:9,prop:true,locked:true},{id:'gl1',name:'관문',kind:'gateLeaf',x:8,y:8,prop:true,locked:true,benched:true},{id:'gl2',name:'관문',kind:'gateLeaf',x:9,y:8,prop:true,locked:true,benched:true}],
+ waves:[{turn:2,story:'24:beasts',units:[beast24('b4',0,2),beast24('b5',17,2)]},{turn:4,units:[beast24('b6',4,0),beast24('b7',13,0)]},{turn:6,units:[beast24('b8',0,6),beast24('b9',17,6),beast24('b10',8,0)]},{turn:8,units:[beast24('b11',5,0),beast24('b12',12,0)]}],
+ ashTurn:2,ashRows:8,ashCut:10,gateRow:8,gate:[[8,8],[9,8]],insideRow:9,refugeeSteps:2,needInside:6,lostLimit:3,
+ deployZone:s=>{const base=[];for(let y=5;y<=7;y++)for(let x=3;x<=14;x++)base.push([x,y]);for(let x=6;x<=12;x++)base.push([x,9]);return zone(base.filter(([x,y])=>Number.isFinite(TERRAIN[MISSIONS[24].map[y][x]].cost)&&!MISSIONS[24].civilians.some(c=>c.x===x&&c.y===y)&&!(x===11&&y===9)));},
+ deployments:{recommended:[[6,6],[11,6],[4,5],[13,5],[6,7],[11,7],[10,9],[7,9]],assault:[[6,5],[11,5],[4,5],[13,5],[5,6],[12,6],[3,6],[14,6]],defense:[[6,7],[11,7],[5,7],[12,7],[10,9],[7,9],[4,6],[13,6]]},
+ threatTurn:1,par:8,turnLimit:10,level:18,deployLimit:7,
+ objective:'피난민 6명 이상을 관문 안에 들이고 관문 닫기 · TURN 10이 끝나면 저절로 닫힘 (피난민 3명이 쓰러지면 패배)',
+ brief:'TURN 2부터 북쪽에서 한 줄씩 재의 조수가 밀려옵니다 — 재 칸에서 아군 턴을 마친 사람은 최대 HP의 10%를 잃습니다(재의 짐승은 멀쩡). 피난민 8명이 턴마다 2칸씩 관문으로 걷습니다(관문 칸을 비워 두세요). 6명이 들어오면 관문 권양기 곁에서 관문을 닫을 수 있습니다 — 언제 닫을지는 에릭이 정합니다. 밖에 남은 사람은 밖에 남습니다.'});
 // v0.5.0 Phase E (D-047): promotion trials (101–105) and the repeatable Legion Drill (110). Non-story
 // skirmishes after ACT I: never pushed into campaign.completed, no gold, permanent EXP (mission level 7).
 // goal: survive (turn N ends with `protect` alive) · rout (all enemies down by `limit`) · reach (hero at row ≤ y)
@@ -528,5 +573,19 @@ skirmish(113,'trial','ines',{level:13,title:'성소의 시련',en:'Trial of the 
  deployments:{recommended:[[5,3],[6,3],[4,8],[7,8],[3,8],[8,8],[2,8],[9,8]]},threatTurn:1,escortOnly:true,limit:5,companions:['eric'],
  goal:{type:'survive',turn:5,protect:['t1','t2','t3'],hold:[5,3]},must:['ines'],
  objective:'TURN 5가 끝날 때까지 훈련병 3명 보호 (에릭 지원)',brief:'성소 수호자: 성역이 2칸까지 닿습니다(2칸 거리는 피해 −1). 훈련병 사이에 서세요.'});
+// v0.10.0 (D-099 Q4): the awakening trials of Ines (115, after M23) and Thea (116, after M24). PROPOSED.
+skirmish(115,'trial','ines',{tier:3,level:14,title:'새벽 성기사의 시련',en:'Trial of the Dawn Paladin',
+ rows:['gggggggggggg','ggfggggggfgg','gggggggggggg','gggggggggggg','ggggzzzzgggg','ggggzzzzgggg','gggggggggggg','gggggggggggg','gggggggggggg','gggggggggggg'],
+ enemies:[drill3('q1','돌격 교관','bandit',2,0),drill3('q2','돌격 교관','bandit',5,0),drill3('q3','돌격 교관','bandit',8,0),drill3('q4','돌격 교관','bandit',10,1),drill3('q5','돌격 궁수','archer',3,1)],
+ civilians:[trainee3('t1',5,4),trainee3('t2',6,4),trainee3('t3',6,5)],
+ deployments:{recommended:[[5,5],[5,6],[4,8],[7,8],[3,8],[8,8],[2,8],[9,8]]},threatTurn:1,escortOnly:true,limit:5,companions:['sain'],
+ goal:{type:'survive',turn:4,protect:['t1','t2','t3'],hold:[5,5]},must:['ines'],
+ objective:'TURN 4가 끝날 때까지 훈련병 3명 보호 (세인 지원)',brief:'성역의 문(④, 전투당 1회): 3칸 안의 아군·주민·동맹군이 다음 아군 턴까지 받는 피해가 절반이 되고 상태이상이 풀립니다. 적이 몰려오는 턴에 여세요.'});
+skirmish(116,'trial','thea',{tier:3,level:14,title:'흑철 기병대장의 시련',en:'Trial of the Black Iron Captain',
+ rows:['gggggggggggg','gggggggggggg','ggrrrrrrrrgg','gggggggggggg','xxxgggggxxxx','gggggggggggg','gggggggggggg','gggggggggggg','gggggggggggg','gggggggggggg'],
+ enemies:[drill3('w1','방진 교관','bandit',4,4,{hp:52}),drill3('w2','방진 교관','bandit',5,4,{hp:52}),drill3('w3','방진 교관','bandit',6,4,{hp:52}),drill3('w4','방진 교관','bandit',7,4,{hp:52}),drill3('c1','지휘 교관','archer',5,1,{hp:44}),drill3('c2','지휘 교관','archer',7,1,{hp:44})],
+ deployments:{recommended:[[5,7],[6,8],[4,8],[7,8],[3,8],[8,8],[2,8],[9,8]]},limit:5,companions:['dario'],
+ goal:{type:'rout',targets:['c1','c2']},must:['thea'],
+ objective:'TURN 5까지 방진 뒤의 지휘 교관 둘 격파 (다리오 지원)',brief:'철의 돌파(④, 전투당 1회): 직선 2–4칸을 꿰뚫고 끝 칸에 섭니다. 길 위의 적은 모두 공격받고(반격 없음), 끝 칸에서 3칸 더 움직일 수 있습니다. 방진을 꿰뚫어 뒤의 지휘 교관에게 닿으세요.'});
 export const isSkirmish=id=>!!MISSIONS[id]?.skirmish;
 export const LAST_MISSION=Math.max(...Object.keys(MISSIONS).map(Number).filter(id=>!MISSIONS[id].skirmish));

@@ -1,0 +1,14 @@
+PASS Shipped v0.9.2 village save is schema 14
+PASS Shipped v0.9.2 battle checkpoint generated
+PASS v0.9.2 village save opens in the painted village (schema 16, gold kept, legal position)
+PASS Imported village save does not replay the world-map intro
+PASS v0.9.2 battle and its checkpoint migrate unchanged
+PASS Restart of a migrated v0.9.2 battle works
+PASS v0.9.2 lower-city save (ACT III part 3 complete) opens with every asset kept and the roster intact
+PASS The migrated camp now goes on to Mission 21
+PASS The legion panel opens with every hero of the v0.9.2 roster
+PASS v0.9.2 Mission 20 battle resumes in the archive
+PASS Erik of a v0.9.2 save keeps ② and ③ and shows ④ (locked until his awakening, or open)
+PASS Migrated save reloads as the current version
+PASS No runtime errors in either build
+13 v0.9.2 browser migration checks PASS

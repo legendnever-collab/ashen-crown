@@ -59,6 +59,8 @@ function damage(s,u,t,mode,counter=false,opts=null){
  if(victim.shade){delete victim.shade;s.feedback.push({type:'miss',id:victim.id,text:'그림자'});s.log.push(`${u.name} → ${victim.name}: 그림자 속으로 피했습니다. 이제 모습이 드러납니다.`);return {hit:false,damage:0,victim};}
  if(!hit){s.feedback.push({type:'miss',id:victim.id,text:'MISS'});s.log.push(`${u.name} → ${victim.name}: MISS (${stats.hit}%).`);return {hit:false,damage:0,victim};}
  let dealt=stats.damage+(critical?Math.ceil(stats.damage*.5):0);if(critical&&!counter)cutIn(s,u,'crit');
+ // v0.10.0 Gate of the Sanctum (Ines' ④): until the next player turn the legion, civilians and allies she covered take half.
+ if(victim.gateGuard===s.turn&&sideOf(victim)!=='enemy'&&dealt>1)dealt=Math.ceil(dealt/2);
  // v0.9.1 Wall of the Oath (Erik's ④): until the next player turn he takes half of what the legion and civilians within 2 take.
  const wall=dealt>1&&sideOf(victim)!=='enemy'&&victim.team!=='object'?s.units.find(w=>w.oathWall===s.turn&&w!==victim&&alive(w)&&distance(w,victim)<=2):null;
  if(wall){const share=Math.floor(dealt/2);dealt-=share;const wf=wall.hp;wall.hp=Math.max(1,wall.hp-share);s.feedback.push({type:'hit',id:wall.id,text:`맹세 −${wf-wall.hp}`,fromHP:wf,toHP:wall.hp,damage:wf-wall.hp});}
@@ -135,8 +137,21 @@ const targets=s.units.filter(t=>alive(t)&&(hostile(s,u,t)||t.team==='civilian'&&
 }
 // v0.6 allied AI (D-055 M07–M08): allied troops keep their post (u.post, within u.leash tiles) and strike the best
 // hostile target in reach; with no post they advance on the nearest foe. Missions may override (rules.planAllied).
+// v0.10.0 allied orders (D-099, ACT4_DESIGN §7): allied troops marked `orderable` take an order from the legion —
+// 「따르라」 keep within 2 tiles of the nearest hero and strike from there, 「지켜라」 hold the tile where the order was given and
+// strike only from it, 「자유」 the mission's own plan (or the default advance). Orders last until changed.
+export const ALLY_ORDERS={follow:'따르라',hold:'지켜라',free:'자유'};
+export const canOrderAlly=(s,u)=>s?.screen==='battle'&&s.phase==='player'&&!s.narrative?.active&&!duelOpen(s)&&u?.team==='allied'&&!!u.orderable&&alive(u)&&!u.benched;
+export function setAllyOrder(s,id,order){const u=findUnit(s,id);if(!canOrderAlly(s,u)||!ALLY_ORDERS[order])return false;u.order=order;if(order==='hold')u.orderPost={x:u.x,y:u.y};else delete u.orderPost;
+ s.feedback.push({type:'guard',id:u.id,text:ALLY_ORDERS[order]});s.log.push(`${u.name}: 「${ALLY_ORDERS[order]}」 지시를 받았습니다.`);return true;}
+function orderedPlan(s,u,reachable){if(u.order==='free')return null;const foes=s.units.filter(t=>alive(t)&&hostile(s,u,t)),heroes=s.units.filter(h=>h.team==='ally'&&alive(h)&&!h.benched);
+ const lead=u.order==='follow'?heroes.sort((a,b)=>distance(u,a)-distance(u,b))[0]:null,post=u.order==='hold'?(u.orderPost||{x:u.x,y:u.y}):null;
+ const ok=(x,y)=>post?x===post.x&&y===post.y:!lead||Math.abs(x-lead.x)+Math.abs(y-lead.y)<=2;let best=null;
+ for(const [pos,cost] of reachable){const [x,y]=pos.split(',').map(Number);if(!ok(x,y))continue;const actor={...u,x,y};for(const t of foes){const d=distance(actor,t);if(d<u.range[0]||d>u.range[1])continue;const f=strikeStats(s,actor,t),score=f.damage+(t.hp<=f.damage?30:0)-cost*.3;if(!best||score>best.score)best={x,y,target:t.id,score,reason:`「${ALLY_ORDERS[u.order]}」 · ${t.name} 공격`};}}
+ if(best)return best;const goal=post||lead;if(!goal)return null;let dest={x:u.x,y:u.y,score:Infinity};
+ for(const [p,c] of reachable){const [x,y]=p.split(',').map(Number),d=Math.abs(x-goal.x)+Math.abs(y-goal.y),score=(lead&&d===0?9:d)+c*.01;if(score<dest.score)dest={x,y,score};}return {...dest,target:null,reason:`「${ALLY_ORDERS[u.order]}」`};}
 export function planAllied(s,u){
- const reachable=movement(s,u).costs;const custom=rulesOf(s)?.planAllied?.(s,u,reachable);if(custom)return custom;
+ const reachable=movement(s,u).costs;if(u.orderable&&u.order){const o=orderedPlan(s,u,reachable);if(o)return o;}const custom=rulesOf(s)?.planAllied?.(s,u,reachable);if(custom)return custom;
  const post=u.post,leash=u.leash??0,ok=(x,y)=>!post||Math.abs(x-post.x)+Math.abs(y-post.y)<=leash;
  const foes=s.units.filter(t=>alive(t)&&hostile(s,u,t));let best=null;
  for(const [pos,cost] of reachable){const [x,y]=pos.split(',').map(Number);if(!ok(x,y))continue;const actor={...u,x,y};for(const t of foes){const d=distance(actor,t);if(d<u.range[0]||d>u.range[1])continue;const f=strikeStats(s,actor,t);const score=f.damage+(t.hp<=f.damage?30:0)-cost*.3;if(!best||score>best.score)best={x,y,target:t.id,score,reason:`대열 유지 · ${t.name} 공격`};}}

@@ -7,7 +7,7 @@ import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterW
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {startBattle,beginEnemyPhase,advanceEnemy,nextMission} from '../src/core/game.js';
 import {enterHub} from '../src/core/frontier.js';import {chooseKing21} from '../src/core/mission-rules-v093.js';import {drain} from './campaign-policy.mjs';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.9.3.html').href,shots='docs/v0.9.3/screenshots/act3d';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.10.0.html').href,shots='docs/v0.9.3/screenshots/act3d';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const results=[];const check=(name,ok)=>{assert.ok(ok,name);n++;results.push(name);console.log('PASS',name);};
 const camp20=JSON.parse(fs.readFileSync('tests/fixtures/v092/v092-m20-camp.json','utf8')).save;
 const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);if(s.duel&&!s.duel.result)s.duel.result='skipped';};
@@ -76,9 +76,9 @@ try{
   await p.screenshot({path:`${shots}/act3-choice-${label}.png`});
   await press('act3-pick','council');await drainStory(p);await p.waitForTimeout(400);t=await modal();s=await snap();
   check(`${label} the choice is kept; its scene and the close follow`,s.campaign.choices.act3_choice==='council'&&s.narrative.seen.includes('after:22:council')&&s.narrative.seen.includes('after:22:end'));
-  check(`${label} the ACT III card: 왕관의 진실, each hero's deed, the choices of ACT III`,t.includes('ACT III')&&t.includes('왕관의 진실')&&t.includes('대표 전과')&&t.includes('세 깃발의 회의에'));
+  check(`${label} the ACT III card: 왕관의 진실, each hero's deed, the choices of ACT III, on to ACT IV`,t.includes('ACT III')&&t.includes('왕관의 진실')&&t.includes('대표 전과')&&t.includes('세 깃발의 회의에')&&t.includes('ACT IV · 잿빛 왕관'));
   await p.screenshot({path:`${shots}/act3-card-${label}.png`,fullPage:true});await closeModals();
-  check(`${label} no next mission after M22 (the end of v0.9.3 and of ACT III)`,!(await p.locator('[data-do="next-mission"]').count()));
+  check(`${label} after M22 the way goes on to Mission 23 (v0.10.0, ACT IV)`,(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 23'));
   await p.screenshot({path:`${shots}/capital-end-${label}.png`});
   check(`${label} no page errors`,errors.length===0);
   await ctx.close();}

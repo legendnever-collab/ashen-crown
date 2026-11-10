@@ -24,4 +24,4 @@ export function learnRule(u,k){
 export function skillsOf(u){if(u?.team!=='ally')return [];return SKILLS.filter(k=>k.hero===u.id).sort((a,b)=>a.slot-b.slot).map(k=>{const r=learnRule(u,k);return {...k,open:r.open,lock:r.label};});}
 export const knowsMode=(u,mode)=>skillsOf(u).some(k=>k.mode===mode&&k.open);
 // v0.9.1 the ④ skills (awakening): once a battle (state.ultimates lists who has used theirs).
-export const ULTIMATE_MODES=['oathWall','blockade','dawnPrayer','smallWard','shadowDance'];
+export const ULTIMATE_MODES=['oathWall','blockade','dawnPrayer','smallWard','shadowDance','sanctumGate','ironBreak'];

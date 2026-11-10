@@ -42,6 +42,9 @@ export const SITES=[
  // v0.9.3 (D-093, PROPOSED): the crown's heart under the palace (M21) and the lower city's square (M22).
  {id:'crownheart',name:'왕관의 심장',icon:'ruin',x:800,y:410,region:'center',mission:21,small:true},
  {id:'ashsquare',name:'하층가 광장',icon:'village',x:835,y:470,region:'center',mission:22,small:true},
+ // v0.10.0 ACT IV (D-100, PROPOSED): the alliance camp on the road below the capital (M23) and the last border by the Ashen Village (M24).
+ {id:'alliancecamp',name:'연합 진영',icon:'camp',x:735,y:505,region:'center',mission:23,small:true},
+ {id:'lastborder',name:'최후의 국경',icon:'gate',x:1185,y:655,region:'east',mission:24,small:true},
  {id:'village',name:'잿빛 마을',icon:'village',x:1150,y:620,region:'east',mission:1,hub:'village'},
  {id:'garrison',name:'국경 수비대 진영',icon:'camp',x:1235,y:585,region:'east',hub:'camp'},
  {id:'forest',name:'숲길',icon:null,x:1292,y:505,region:'east',mission:2},
@@ -61,8 +64,10 @@ export const ACT2_ROUTE=['oathcamp','stronghold','canyon','freecity','pilgrimvil
 // v0.9.0 ACT III (D-079): → the capital → the forgotten battlefield.
 export const ACT3_ROUTE=['waystation','capital','oldfield','guardkeep','unburning','undercroft','chancellery','crownheart','ashsquare'];
 // The whole march for the world map (ACT II legs are drawn once ACT I is complete).
-export const FULL_ROUTE=[...ACT1_ROUTE,...ACT2_ROUTE.slice(1),...ACT3_ROUTE.slice(1)];
+// v0.10.0 ACT IV (D-100): → the alliance camp → the last border.
+export const ACT4_ROUTE=['ashsquare','alliancecamp','lastborder'];
+export const FULL_ROUTE=[...ACT1_ROUTE,...ACT2_ROUTE.slice(1),...ACT3_ROUTE.slice(1),...ACT4_ROUTE.slice(1)];
 export const siteById=id=>SITES.find(s=>s.id===id);
 // How far along the march the legion has come, from completed missions.
-export function routeReached(campaign,hub){const c2=campaign?.completed||[];if(HUB_SITE[hub]&&(ACT2_ROUTE.includes(HUB_SITE[hub])||ACT3_ROUTE.includes(HUB_SITE[hub]))&&HUB_SITE[hub]!=='oathcamp'||c2.includes(7)){let j=FULL_ROUTE.indexOf(HUB_SITE[hub]);if(c2.includes(7))j=Math.max(j,FULL_ROUTE.indexOf('stronghold'));if(c2.includes(8))j=Math.max(j,FULL_ROUTE.indexOf('canyon'));if(c2.includes(12))j=Math.max(j,FULL_ROUTE.indexOf('monastery'));if(c2.includes(13))j=Math.max(j,FULL_ROUTE.indexOf('refugecamp'));if(c2.includes(14))j=Math.max(j,FULL_ROUTE.indexOf('waystation'));if(c2.includes(15))j=Math.max(j,FULL_ROUTE.indexOf('capital'));if(c2.includes(16))j=Math.max(j,FULL_ROUTE.indexOf('oldfield'));for(const [m,site] of [[17,'guardkeep'],[18,'unburning'],[19,'undercroft'],[20,'chancellery'],[21,'crownheart'],[22,'ashsquare']])if(c2.includes(m))j=Math.max(j,FULL_ROUTE.indexOf(site));return Math.max(ACT1_ROUTE.length-1,j);}const c=campaign?.completed||[];let i=ACT1_ROUTE.indexOf(HUB_SITE[hub]||'village');for(const [m,site] of [[1,'village'],[2,'forest'],[3,'bridge'],[4,'fortress'],[5,'ridge']])if(c.includes(m))i=Math.max(i,ACT1_ROUTE.indexOf(site));if(c.includes(5)&&hub==='oathcamp')i=ACT1_ROUTE.length-1;return Math.max(0,i);}
+export function routeReached(campaign,hub){const c2=campaign?.completed||[];if(HUB_SITE[hub]&&(ACT2_ROUTE.includes(HUB_SITE[hub])||ACT3_ROUTE.includes(HUB_SITE[hub]))&&HUB_SITE[hub]!=='oathcamp'||c2.includes(7)){let j=FULL_ROUTE.indexOf(HUB_SITE[hub]);if(c2.includes(7))j=Math.max(j,FULL_ROUTE.indexOf('stronghold'));if(c2.includes(8))j=Math.max(j,FULL_ROUTE.indexOf('canyon'));if(c2.includes(12))j=Math.max(j,FULL_ROUTE.indexOf('monastery'));if(c2.includes(13))j=Math.max(j,FULL_ROUTE.indexOf('refugecamp'));if(c2.includes(14))j=Math.max(j,FULL_ROUTE.indexOf('waystation'));if(c2.includes(15))j=Math.max(j,FULL_ROUTE.indexOf('capital'));if(c2.includes(16))j=Math.max(j,FULL_ROUTE.indexOf('oldfield'));for(const [m,site] of [[17,'guardkeep'],[18,'unburning'],[19,'undercroft'],[20,'chancellery'],[21,'crownheart'],[22,'ashsquare'],[23,'alliancecamp'],[24,'lastborder']])if(c2.includes(m))j=Math.max(j,FULL_ROUTE.indexOf(site));return Math.max(ACT1_ROUTE.length-1,j);}const c=campaign?.completed||[];let i=ACT1_ROUTE.indexOf(HUB_SITE[hub]||'village');for(const [m,site] of [[1,'village'],[2,'forest'],[3,'bridge'],[4,'fortress'],[5,'ridge']])if(c.includes(m))i=Math.max(i,ACT1_ROUTE.indexOf(site));if(c.includes(5)&&hub==='oathcamp')i=ACT1_ROUTE.length-1;return Math.max(0,i);}
 export const siteKnown=(site,campaign)=>site.region==='east'||REGIONS.find(r=>r.id===site.region)?.shown(campaign||{completed:[]});

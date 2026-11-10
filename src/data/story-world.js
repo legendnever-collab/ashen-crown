@@ -1,7 +1,7 @@
 // v0.5.0 world-map interludes (D-052, W4): shown once at a new game and whenever the legion's hub
 // changes. Narration uses only APPROVED_DIRECTION facts; region/place names are PROPOSED (renameable).
 const w5=(text,world)=>({speaker:'chronicle',text,expression:'neutral',world});
-const ACT1='ACT I · 불타는 국경',ACT2='ACT II · 세 개의 깃발',ACT3='ACT III · 왕관의 진실';
+const ACT1='ACT I · 불타는 국경',ACT2='ACT II · 세 개의 깃발',ACT3='ACT III · 왕관의 진실',ACT4='ACT IV · 잿빛 왕관';
 export const STORY_WORLD={
  'world:intro':[
   w5('에르디아. 이백 년 전, 아우렐리우스가 한 왕관 아래 하나로 묶은 대륙.',{focus:'continent',to:'village'}),
@@ -38,5 +38,9 @@ export const STORY_WORLD={
  'world:forest':[w5('결계 아래의 오래된 숲. 불이 붙지 않고, 숲지기들은 병도 굶주림도 모른다고 한다.',{focus:'center',from:'guardkeep',to:'unburning',card:{act:ACT3,region:'남동 숲',place:'불타지 않는 숲'}})],
  // v0.9.2 (D-089): back to the capital, down to the rite hall under the archive.
  'world:capital:return':[w5('숲을 떠난 군단은 다시 왕도로 돌아온다. 하층가에서는 피난민들이 하나둘 사라지고 있었다.',{focus:'center',from:'unburning',to:'undercroft',card:{act:ACT3,region:'왕도령',place:'왕도 지하 의식장'}})],
+ // v0.10.0 (D-100): ACT IV — the alliance camp on the road below the capital, then east to the last border.
+ 'world:alliance':[w5('광장의 낭독 뒤, 세 깃발은 더는 서로를 상대로 싸울 이유를 잃었다.',{focus:'continent',from:'ashsquare',to:'alliancecamp'}),
+  w5('왕도 아래 길목, 폐허 역참 자리에 연합 진영이 선다. 마지막 전쟁을 끝내기 위한 회의가 열린다.',{focus:'center',prev:'continent',from:'ashsquare',to:'alliancecamp',card:{act:ACT4,region:'왕도령',place:'연합 진영'}})],
+ 'world:border':[w5('결계가 국경부터 무너지기 시작했다. 대륙 동쪽 끝, 이야기가 시작된 그 국경으로.',{focus:'east',prev:'continent',from:'alliancecamp',to:'lastborder',card:{act:ACT4,region:'동부 변경',place:'최후의 국경 · 잿빛 마을'}})],
  'world:oathcamp':[w5('피난민과 함께 국경 관문을 넘었다. 왕실의 명령은 이제 그들 뒤에 있다.',{focus:'east',from:'fortress',to:'oathcamp',card:{act:ACT1,region:'동부 변경',place:'관문 너머 야영지'}})]
 };

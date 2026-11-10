@@ -7,7 +7,7 @@ import {moveUnit,performAction,canAct,canMove,beginEnemyPhase,advanceEnemy} from
 import {enterHub} from '../src/core/frontier.js';
 import {classActionOf,validClassTarget,classCost} from '../src/core/class-actions.js';
 import {skillsOf} from '../src/data/skills.js';
-import {drain} from './campaign-policy.mjs';
+import {drain} from './campaign-policy.mjs';import {ironFoes} from '../src/core/tactics.js';
 
 // ACT I camp with every hero at `level` (or per-hero levels), ready for trials and drills.
 export function actOneCamp(seed=20261019,level=6,memory={}){
@@ -46,7 +46,11 @@ export function skirmishAction(s,u,{classActions=true}={}){
     const gap=['x'].includes(m0(s,tx-1,ty))&&['x'].includes(m0(s,tx+1,ty))?60:0;if(near)consider({x,y,mode:m,target:p2,score:60+civ*30+near*15+gap-c*.3});}
    if(m==='shadowDance')for(const e of foes)for(const b of s.units.filter(b=>b.team==='ally'&&alive(b)&&!b.benched&&b.id!==u.id)){const pair=`${e.id}|${b.id}`;if(!validClassTarget(s,a,pair,m))continue;const around=s.units.filter(h=>h.team==='ally'&&alive(h)&&h.id!==b.id&&Math.abs(h.x-b.x)+Math.abs(h.y-b.y)===1).length;
     const sc=40+around*30+(e.kind==='archer'?50:0)+(m0(s,e.x,e.y)==='o'?40:0)+(g.targets?.includes(e.id)?120:0);if(sc>=90)consider({x,y,mode:m,target:pair,score:sc-c*.3});}
-   if(m==='blockade')for(let ty=y-5;ty<=y+5;ty++)for(let tx=x-5;tx<=x+5;tx++){const p2=`${tx},${ty}`;if(!validClassTarget(s,a,p2,m))continue;const n=foes.filter(e=>Math.abs(e.x-tx)+Math.abs(e.y-ty)<=1).length;if(n>=2)consider({x,y,mode:m,target:p2,score:60+n*45-c*.3});}}
+   if(m==='blockade')for(let ty=y-5;ty<=y+5;ty++)for(let tx=x-5;tx<=x+5;tx++){const p2=`${tx},${ty}`;if(!validClassTarget(s,a,p2,m))continue;const n=foes.filter(e=>Math.abs(e.x-tx)+Math.abs(e.y-ty)<=1).length;if(n>=2)consider({x,y,mode:m,target:p2,score:60+n*45-c*.3});}
+   // v0.10.0: Ines opens the Gate of the Sanctum over the trainees with foes closing in; Thea breaks through the line (two foes,
+   // or a target behind it).
+   if(m==='sanctumGate'&&validClassTarget(s,a,a.id,m)){const kept=s.units.filter(t=>(t.team==='ally'||t.team==='civilian')&&alive(t)&&distance(a,t)<=3),threat=foes.filter(e=>kept.some(t=>distance(e,t)<=4)).length;if(kept.length>=2&&threat>=2)consider({x,y,mode:m,target:a.id,score:200+kept.length*25+threat*20-c*.3});}
+   if(m==='ironBreak')for(let ty=y-4;ty<=y+4;ty++)for(let tx=x-4;tx<=x+4;tx++){const p2=`${tx},${ty}`;if(!validClassTarget(s,a,p2,m))continue;const hit=ironFoes(s,a,{x:tx,y:ty});if(!hit.length)continue;const sc=60+hit.length*60+(g.targets?Math.max(0,4-Math.min(...g.targets.map(id=>findUnit(s,id)).filter(t=>t&&alive(t)).map(t=>Math.abs(t.x-tx)+Math.abs(t.y-ty)),4))*30:0);if(hit.length>=2||sc>=150)consider({x,y,mode:m,target:p2,score:sc-c*.3});}}
   // position only
   let score;const onRune=(s.runes||[]).some(r=>r.x===x&&r.y===y)&&u.id==='lia'?40:0;if(onRune&&best&&best.x===x&&best.y===y)best.score+=onRune;
   if(reach)score=300-(reach.get(p)??100)*20-c*.1;
@@ -61,7 +65,7 @@ export function skirmishAction(s,u,{classActions=true}={}){
 
 export function playSkirmish(s,opts={}){let steps=0;drain(s);
  while(!s.outcome&&steps++<60){
-  for(const id of [s.skirmish?.hero,'kai','lia','elina','sain','eric'].filter((v,i,a)=>v&&a.indexOf(v)===i)){const u=findUnit(s,id);if(!u||u.benched||!(canAct(s,u)||canMove(s,u)))continue;
+  for(const id of [s.skirmish?.hero,'kai','lia','elina','sain','eric','thea','dario','ines'].filter((v,i,a)=>v&&a.indexOf(v)===i)){const u=findUnit(s,id);if(!u||u.benched||!(canAct(s,u)||canMove(s,u)))continue;
    for(let pass=0;pass<2&&!s.outcome&&(canAct(s,u)||canMove(s,u));pass++){const a=skirmishAction(s,u,opts);if(!a)break;
     if((a.x!==u.x||a.y!==u.y)&&canMove(s,u)){if(!moveUnit(s,id,a.x,a.y))throw Error(`illegal move ${id}`);}
     if(!canAct(s,u))break;const r=performAction(s,id,a.mode,a.target);if(!r.ok)throw Error(`${id} ${a.mode}: ${r.error}`);drain(s);}

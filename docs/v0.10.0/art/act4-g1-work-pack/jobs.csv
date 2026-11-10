@@ -1,0 +1,13 @@
+order,part,kind,id,expression,file,size,references,prompt_file
+1,A,props,props_act4a,,props_act4a.png,1024x256,"layout_props_act4a.png, ref_sprite_eric.png, ref_sprite_ironSpear.png, ref_battle_m23.jpg",prompts/01_props_act4a.txt
+2,A,icons,icons_L,,icons_L.png,1024x1024,"layout_icons_L.png, approved_icons_D.png, approved_icons_H.png, style_aren_neutral.png",prompts/02_icons_L.txt
+3,B,bust,ines_t3,neutral,bust_ines_t3_neutral.png,1024x1280,"ref_bust_ines_t2_neutral.png, style_aren_neutral.png",prompts/03_bust_ines_t3_neutral.txt
+4,B,bust,ines_t3,concerned,bust_ines_t3_concerned.png,1024x1280,bust_ines_t3_neutral.png (your approved result),prompts/04_bust_ines_t3_concerned.txt
+5,B,bust,ines_t3,determined,bust_ines_t3_determined.png,1024x1280,bust_ines_t3_neutral.png (your approved result),prompts/05_bust_ines_t3_determined.txt
+6,B,bust,ines_t3,sad,bust_ines_t3_sad.png,1024x1280,bust_ines_t3_neutral.png (your approved result),prompts/06_bust_ines_t3_sad.txt
+7,B,bust,thea_t3,neutral,bust_thea_t3_neutral.png,1024x1280,"ref_bust_thea_t2_neutral.png, style_aren_neutral.png",prompts/07_bust_thea_t3_neutral.txt
+8,B,bust,thea_t3,concerned,bust_thea_t3_concerned.png,1024x1280,bust_thea_t3_neutral.png (your approved result),prompts/08_bust_thea_t3_concerned.txt
+9,B,bust,thea_t3,determined,bust_thea_t3_determined.png,1024x1280,bust_thea_t3_neutral.png (your approved result),prompts/09_bust_thea_t3_determined.txt
+10,B,bust,thea_t3,sad,bust_thea_t3_sad.png,1024x1280,bust_thea_t3_neutral.png (your approved result),prompts/10_bust_thea_t3_sad.txt
+11,B,sprite,ines_t3,,sprite_ines_t3.png,1024x768,"bust_ines_t3_neutral.png (your approved result), ref_sprite_ines_t2.png, ref_sprite_eric.png",prompts/11_sprite_ines_t3.txt
+12,B,sprite,thea_t3,,sprite_thea_t3.png,1024x768,"bust_thea_t3_neutral.png (your approved result), ref_sprite_thea_t2.png, ref_sprite_cavalry.png",prompts/12_sprite_thea_t3.txt
