@@ -65,7 +65,7 @@ try{
   for(const u of [bu,du]){if(!u)continue;u.benched=false;u.classTier=3;u.mp=u.maxMP;u.moved=u.acted=false;}
   const out=t.units.filter(u=>u.team==='ally'&&!u.benched&&!['eric','baldrick','dario'].includes(u.id));for(const u of out.slice(0,Math.max(0,t.units.filter(u=>u.team==='ally'&&!u.benched).length-7)))u.benched=true;
   await restore(deserialize(serialize(t)));await drainStory(p);await select(bu);await press('submenu','skills');let menu=await p.locator('#unit-popover').textContent();
-  check(`${label} Baldrick's skills ①–④: 사자의 일격, 사자의 포효, 사자의 깃발, 검은 사자의 결의`,['사자의 일격','사자의 포효','사자의 깃발','검은 사자의 결의'].every(k=>menu.includes(k)));await p.screenshot({path:`${shots}/baldrick-skills-${label}.png`});
+  check(`${label} Baldrick's skills ①–④: Lion Strike, 사자의 포효, 사자의 깃발, 검은 사자의 결의`,['① Lion Strike','② 사자의 포효','③ 사자의 깃발','④ 검은 사자의 결의'].every(k=>menu.includes(k))); /* D-106: the menu shows names only; ① keeps its English name like every hero's ① */await p.screenshot({path:`${shots}/baldrick-skills-${label}.png`});
   if(du){await press('close-unit-menu');await select(du);await press('submenu','skills');menu=await p.locator('#unit-popover').textContent();check(`${label} Dario awakened shows ④ 백 번의 반격`,menu.includes('④')&&menu.includes('백 번의 반격'));}
   check(`${label} no page errors`,errors.length===0);
   await ctx.close();}
