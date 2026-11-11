@@ -409,3 +409,26 @@
 .frontier-screen.fs .hub-fold .hub-dpad-toggle{font-size:12px;color:#c9d6cf}
 .frontier-screen.fs .frontier-actions .hub-menu-btn{width:46px;height:46px;padding:0;justify-content:center;font-size:21px;line-height:1}
 @media(pointer:fine){.frontier-screen.fs .hub-fold .hub-dpad-toggle{display:none}}
+/* 2026-11-11 play-test (D-108): the hero sheet — roster, ◀ ▶ between heroes, the story tab and the growth goals. */
+.hero-roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:8px}
+.hero-roster-card{display:flex;align-items:center;gap:8px;padding:6px 8px;text-align:left;min-height:64px}
+.hero-roster-card canvas{width:48px;height:48px;flex:none}
+.hero-roster-card span{display:flex;flex-direction:column;min-width:0;line-height:1.3}
+.hero-roster-card b{font-size:15px}.hero-roster-card small{font-size:11px;color:#a7c0b4}.hero-roster-card em{font-style:normal;font-size:11px;color:#e2c27c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hero-nav{display:flex;align-items:center;justify-content:center;gap:12px;margin:0 0 6px;font:12px Arial,sans-serif;color:#a7c0b4}
+.hero-nav button{min-width:44px;min-height:32px;padding:2px 10px}
+.link-btn{background:none;border:0;padding:0 2px;min-height:0;color:#e2c27c;text-decoration:underline;font:inherit;cursor:pointer}
+.lore-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:2px 0 6px}
+.lore-title{font:600 16px Georgia,'Ashen UI',serif;color:#f1d58c}
+.lore-traits{display:flex;gap:4px;flex-wrap:wrap}.lore-traits i{font-style:normal;font-size:11px;padding:2px 8px;border:1px solid #597064;border-radius:10px;color:#cfe0d6;background:#17323a}
+.lore-quote{margin:4px 0 8px;padding:6px 10px;border-left:3px solid #d8bb7c;background:#10262b;color:#f3e6c4;font:italic 13px/1.5 Georgia,'Ashen UI',serif}
+.lore-likes{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin:6px 0;font-size:12px}.lore-likes dt{color:#a7c0b4}.lore-likes dd{margin:0;color:#e6dcc0}
+.lore-chapters{list-style:none;margin:4px 0;padding:0;display:flex;flex-direction:column;gap:5px}
+.lore-chapters li{display:grid;grid-template-columns:38px 1fr;gap:6px;font-size:12.5px;line-height:1.5;color:#dfe7df}
+.lore-chapters li span{font:600 11px Arial,sans-serif;color:#14262a;background:#d8bb7c;border-radius:4px;text-align:center;height:18px;line-height:18px;margin-top:1px}
+.lore-next{color:#8fa79c}
+.lore-bonds{list-style:none;margin:4px 0 8px;padding:0;display:flex;flex-direction:column;gap:4px;font-size:12.5px}.lore-bonds b{color:#f1d58c;margin-right:6px}
+.growth-goal{margin:0 0 8px;padding:7px 10px;background:#2c4140;border:1px solid #d8bb7c;border-radius:6px}
+.growth-goal span{font:600 11px Arial,sans-serif;color:#e2c27c;letter-spacing:.04em}.growth-goal p{margin:2px 0 0;font-size:13px;line-height:1.5;color:#f3ead0}
+.potential-steps li.next{color:#f1d58c}.step-prog{margin-left:4px;font:600 11px Arial,sans-serif;color:#9ed09a}
+.growth-h small{font-weight:normal;color:#a7c0b4;font-size:11px}

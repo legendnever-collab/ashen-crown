@@ -11,6 +11,7 @@ import {itemIcon} from './item-art.js';
 import {paintedChestSrc,drawChest} from '../render/chest-art.js';
 import {frontierRoom,chestStyle} from '../data/rooms-v06.js';
 import {unitInfoHTML} from './unit-info.js';
+import {HERO_LORE} from '../data/hero-lore.js';
 import {hubCamera,drawHub} from '../render/frontier-renderer.js';
 import {VERSION,HEROES,BALANCE,TERRAIN,partyHeroes,heroDef} from '../data/game-data.js';
 import {factionRows,FACTIONS} from '../core/factions.js';
@@ -142,6 +143,7 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'records-choice':showRecordsChoice();break;
  case 'parley-pick':{if(!needsParley()||state.screen!=='deployment'||!['acknowledged','present'].includes(id))break;state.campaign.choices??={};state.campaign.choices.m05_erik_answer=id;closeModal();enqueueStory(state,`5:parley:${id}`);openStory(state);commit();break;}
  case 'item-detail':showItems(id);break;
+ case 'hero-roster':{const mates=state.units.filter(u=>u.team==='ally'&&heroDef(u.id));modal('장수 정보',`<p class="info-note">장수를 누르면 능력 · 장비 · 기술 · 성장 · 열전을 볼 수 있다.</p><div class="hero-roster">${mates.map(u=>{const L=HERO_LORE[u.id],c=classOf(u);return `<button class="hero-roster-card" data-do="unit-info" data-id="${u.id}|bio">${portrait(u,'card-sprite')}<span><b>${esc(u.name)}</b><small>${esc(c?.ko||'')} · LV ${u.level}${(u.classTier||1)>=3?' · 각성':''}</small>${L?`<em>「${esc(L.title)}」</em>`:''}</span></button>`;}).join('')}</div>`,'');paintPortraits();break;} /* D-108 */
  case 'unit-info':{const [uid,tab='ability']=String(id).split('|');const u=findUnit(state,uid);if(u&&(u.team!=='object')){modal('장수 정보',unitInfoHTML(state,u,tab,esc,portrait),'');paintPortraits();}break;}
  case 'oath-pick':{if(!needsOath()||!oathFocus()[id])break;state.campaign.choices.m06_oath=id;setStoryFlag(state,'ashen_oath_focus',id);closeModal();enqueueStory(state,`6:oath:${id}`);for(const bond of ['erik_kai','lia_kai','elina_sain'])if(state.campaign.bonds?.[bond])enqueueStory(state,`6:oath:bond:${bond}`);enqueueStory(state,'act1:complete');enqueueStory(state,'after:6');openStory(state);commit();break;}
  case 'deserters-pick':{if(!needsDeserters()||!chooseDeserters(state,id))break;closeModal();enqueueStory(state,`after:7:${id}`);openStory(state);commit();break;}
