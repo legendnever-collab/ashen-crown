@@ -17,7 +17,7 @@ const ADJ8=[[0,-1],[-1,0],[1,0],[0,1]];
 export const TOOL_USE={herb:{on:'ally',hp:15},medium:{on:'ally',hp:30},ether:{on:'ally',mp:8},elixir:{on:'ally',full:true,cure:STATUS},
  antidote:{on:'ally',cure:['poison']},clarity:{on:'ally',cure:['confuse','bind','silence']},ward:{on:'ally',ward:true},drum:{on:'self'},
  bomb:{on:'tile',throw:true},smoke:{on:'tile',throw:true},caltrops:{on:'tile',throw:true},bewilder:{on:'enemy',throw:true},net:{on:'enemy',throw:true}};
-const SKILL_SELF=['rallyCry','whirlwind','pilgrimLantern','oathWall','dawnPrayer','sanctumGate'];
+const SKILL_SELF=['rallyCry','whirlwind','pilgrimLantern','oathWall','dawnPrayer','sanctumGate','hundredCounters','lionRoar','lionBanner','lastCharge'];
 export const TACTIC_TILE_MODES=['flameBurst','blockade','smallWard','ironBreak','tool:bomb','tool:smoke','tool:caltrops'];
 // v0.10.0 Thea's Iron Break: a straight dash of 2–4 tiles to an open, empty tile; the tiles between may hold foes (each is
 // struck, no counter) but no one else, and must be passable. Returns the tiles between, or null.
@@ -78,7 +78,7 @@ export function validTacticTarget(s,u,target,mode){
  if(mode==='shadowDance'){const pair=pairOf(s,target);if(pair)return danceOK(s,u,pair[0],pair[1]);const t=unitOf(s,target);return !!t&&danceFirsts(s,u).some(a=>a.id===t.id);}
  if(mode==='flameBurst'){const p=tileOf8(target);if(!p||!open(s,p.x,p.y))return false;const d=distance(u,p);return d>=2&&d<=3&&foesIn(s,u,cross(s,p)).length>0;}
  const t=unitOf(s,target);if(!t||!alive(t))return false;const d=distance(u,t);
- if(SKILL_SELF.includes(mode)){if(t.id!==u.id)return false;if(mode==='whirlwind')return s.units.some(e=>alive(e)&&hostile(s,u,e)&&distance(u,e)===1);if(mode==='dawnPrayer')return fallenAllies(s).length>0&&!!besideSpot(s,u);return true;}
+ if(SKILL_SELF.includes(mode)){if(t.id!==u.id)return false;if(mode==='whirlwind'||mode==='lastCharge')return s.units.some(e=>alive(e)&&hostile(s,u,e)&&distance(u,e)===1);if(mode==='lionRoar')return s.units.some(e=>alive(e)&&hostile(s,u,e)&&distance(u,e)<=2);if(mode==='dawnPrayer')return fallenAllies(s).length>0&&!!besideSpot(s,u);return true;}
  if(mode==='purify')return supportable(t)&&d<=2&&(!!t.status||t.hp<t.maxHP); // v0.9.3: anyone, like Heal
  if(mode==='provoke')return hostile(s,u,t)&&t.team==='enemy'&&d>=1&&d<=3&&(t.mov||0)>0&&!['beacon','wagon'].includes(t.kind);
  if(mode==='pinningShot')return hostile(s,u,t)&&d>=2&&d<=3;
@@ -90,7 +90,7 @@ export function tacticTargetCells(s,u,mode,first=null){const out=[];if(!u)return
  for(const t of s.units)if(alive(t)&&validTacticTarget(s,u,t,mode))out.push({x:t.x,y:t.y});return out;}
 
 // Damage of a skill strike (the scale and bonus are applied on top of a normal attack's numbers).
-export const STRIKE={pinningShot:{scale:.7},flameBurst:{scale:.5,noCounter:true},venomEdge:{},breakthrough:{},whirlwind:{scale:.7,noCounter:true},feint:{noCounter:true},flameBrand:{}};
+export const STRIKE={pinningShot:{scale:.7},flameBurst:{scale:.5,noCounter:true},venomEdge:{},breakthrough:{},whirlwind:{scale:.7,noCounter:true},lastCharge:{noCounter:true},feint:{noCounter:true},flameBrand:{}};
 export function strikePreview(s,u,t,mode,extra=0){const st=strikeStats(s,u,t,mode),sc=STRIKE[mode]?.scale||1;return {...st,damage:Math.max(1,Math.round(st.damage*sc))+extra};}
 const bombDamage=t=>Math.max(1,16-Math.floor((t.def||0)/2));
 const row=(k,v)=>[k,v];
@@ -113,6 +113,10 @@ export function forecastTactic(s,u,target,mode){
  if(mode==='shadowDance'){const pair=pairOf(s,target);if(!pair)return {...base,rows:[row('첫 번째','선택됨 · 자리를 바꿀 두 번째 유닛을 고르세요')]};const [a,b]=pair,held=[a,b].filter(t=>t.team==='enemy');return {...base,target:b.id,rows:[row('교대',`${a.name} ↔ ${b.name}`),row('효과',held.length?`${held.map(t=>t.name).join(' · ')} 다음 적 턴 행동 불가`:'자리만 바꿈'),row('횟수','전투당 1회')]};}
  if(mode==='oathWall'){const n=s.units.filter(a=>sideOf(a)!=='enemy'&&a.team!=='object'&&alive(a)&&a.id!==u.id&&distance(a,u)<=2).length;return {...base,target:u.id,rows:[row('범위',`2칸 안 아군·주민 ${n}명`),row('효과','받는 피해의 절반을 에릭이 대신 받음 · 에릭 HP 1 아래로 안 내려감'),row('횟수','전투당 1회')]};}
  if(mode==='sanctumGate'){const n=s.units.filter(a=>sideOf(a)!=='enemy'&&a.team!=='object'&&alive(a)&&distance(a,u)<=3).length;return {...base,target:u.id,rows:[row('범위',`3칸 안 아군·주민·동맹군 ${n}명 (이네스 포함)`),row('효과','다음 아군 턴까지 받는 피해 −50% · 상태이상 해제'),row('횟수','전투당 1회')]};}
+ if(mode==='lionRoar'){const foes=s.units.filter(e=>alive(e)&&hostile(s,u,e)&&distance(u,e)<=2);return {...base,target:u.id,rows:[row('대상',`2칸 안 적 ${foes.length}명`),row('속박',foes.map(e=>`${e.name} ${statusChance(s,e,'bind',60)}%`).join(' · '))]};}
+ if(mode==='lionBanner'){const n=s.units.filter(a=>sideOf(a)==='legion'&&alive(a)&&distance(a,u)<=2).length;return {...base,target:u.id,rows:[row('범위',`주위 2칸 아군 ${n}명 (발드릭 포함)`),row('효과','다음 아군 턴까지 받는 피해 −4')]};}
+ if(mode==='lastCharge'){const foes=s.units.filter(e=>alive(e)&&hostile(s,u,e)&&distance(u,e)===1);return {...base,target:u.id,rows:[row('피해',foes.map(e=>{const f=strikePreview(s,u,e,mode);return `${e.name} ${f.damage}(${f.hit}%)`;}).join(' · ')),row('반격','없음'),row('그다음','다음 아군 턴까지 받는 피해 절반'),row('횟수','전투당 1회')]};}
+ if(mode==='hundredCounters')return {...base,target:u.id,rows:[row('효과','다음 적 턴 동안 받는 모든 공격에 반격 (사거리 무관)'),row('반격 피해','+30%'),row('횟수','전투당 1회')]};
  if(mode==='ironBreak'){const p=tileOf8(target),path=ironPath(s,u,p)||[],foes=ironFoes(s,u,p);return {...base,cells:[...path,p],rows:[row('돌파',`${distance(u,p)}칸 · 끝 칸 (${p.x},${p.y})`),row('피해',foes.map(t=>{const f=strikePreview(s,u,t,mode);return `${t.name} ${f.damage}(${f.hit}%)`;}).join(' · ')||'길 위의 적 없음'),row('반격','없음'),row('그다음','3칸 더 이동 가능'),row('횟수','전투당 1회')]};}
  if(mode==='dawnPrayer'){const f=fallenAllies(s)[0];return {...base,target:u.id,rows:[row('일으킬 장수',f?`${f.name} · HP ${Math.ceil(f.maxHP/3)}/${f.maxHP}`:'—'),row('위치','세인 곁'),row('횟수','전투당 1회')]};}
  if(mode==='flameBurst'){const p=tileOf8(target),cells=cross(s,p),foes=foesIn(s,u,cells);return {...base,cells,rows:[row('범위',`십자 ${cells.length}칸 · 적 ${foes.length}명`),row('피해',foes.map(t=>{const f=strikePreview(s,u,t,mode);return `${t.name} ${f.damage}(${f.hit}%)`;}).join(' · ')),row('반격','없음')]};}
@@ -159,6 +163,10 @@ export function applyTactic(s,u,target,mode,strike){
   for(const t of [a,b].filter(t=>t.team==='enemy')){t.dazed=s.turn;s.feedback.push({type:'status',id:t.id,status:'debuff',text:'행동 불가'});out.struck.push(t);}
   s.log.push(`${u.name}: 그림자 군무. ${a.name}과(와) ${b.name}의 자리가 바뀌었습니다.${out.struck.length?' 옮겨진 적은 다음 적 턴에 움직이지 못합니다.':''}`);return out;}
  if(mode==='sanctumGate'){const kept=s.units.filter(a=>sideOf(a)!=='enemy'&&a.team!=='object'&&alive(a)&&distance(a,u)<=3);for(const a of kept){a.gateGuard=s.turn;cure(s,a);s.feedback.push({type:'guard',id:a.id,text:'성역 −50%'});}s.log.push(`${u.name}: 성역의 문. 다음 아군 턴까지 3칸 안 ${kept.length}명이 받는 피해가 절반이 됩니다.`);return out;}
+ if(mode==='lionRoar'){const foes=s.units.filter(e=>alive(e)&&hostile(s,u,e)&&distance(u,e)<=2);let n=0;for(const e of foes)if(inflict(s,e,'bind',60))n++;s.log.push(`${u.name}: 사자의 포효. 2칸 안 적 ${foes.length}명 중 ${n}명이 발이 묶였습니다.`);return out;}
+ if(mode==='lionBanner'){const kept=s.units.filter(a=>sideOf(a)==='legion'&&alive(a)&&distance(a,u)<=2);for(const a of kept){a.lionGuard=s.turn;s.feedback.push({type:'guard',id:a.id,text:'피해 −4'});}s.log.push(`${u.name}: 사자의 깃발. 다음 아군 턴까지 곁의 ${kept.length}명이 받는 피해가 4 줄어듭니다.`);return out;}
+ if(mode==='lastCharge'){for(const e of s.units.filter(e=>alive(e)&&hostile(s,u,e)&&distance(u,e)===1))hitOn(e,{noCounter:true});u.gateGuard=s.turn;s.log.push(`${u.name}: 검은 사자의 결의. 곁의 적을 모두 치고, 다음 아군 턴까지 받는 피해가 절반이 됩니다.`);return out;}
+ if(mode==='hundredCounters'){u.hundred=s.turn;s.feedback.push({type:'guard',id:u.id,text:'백 번의 반격'});s.log.push(`${u.name}: 백 번의 반격. 다음 적 턴 동안 받는 모든 공격에 반격합니다 (반격 피해 +30%).`);return out;}
  if(mode==='ironBreak'){const p=tileOf8(target),path=ironPath(s,u,p),foes=ironFoes(s,u,p),from={x:u.x,y:u.y};s.feedback.push({type:'class',action:mode,id:u.id,text:k.ko,cells:[...path,p]});for(const t of foes)hitOn(t,{noCounter:true});
   u.x=p.x;u.y=p.y;s.feedback.push({type:'move',id:u.id,path:[from,...path,p]});u.moved=false;u.strikeMove=s.turn;u.moveLeft=3;s.log.push(`${u.name}: 철의 돌파. ${distance(from,p)}칸을 꿰뚫고 적 ${foes.length}명을 쳤습니다. 3칸 더 움직일 수 있습니다.`);return out;}
  if(mode==='dawnPrayer'){const f=fallenAllies(s)[0],spot=besideSpot(s,u);f.x=spot.x;f.y=spot.y;f.hp=Math.ceil(f.maxHP/3);delete f.status;f.moved=true;f.acted=true;f.raised=true;s.feedback.push({type:'heal',id:f.id,text:`일어섬 +${f.hp}`,toHP:f.hp});s.log.push(`${u.name}: 새벽의 기도. ${f.name}이(가) 다시 일어섭니다 (HP ${f.hp}).`);return out;}

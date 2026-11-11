@@ -25,7 +25,7 @@ test('awakening conditions: Lv 14, tier 2 and the hero\'s own mission (Elina M16
  const c=camp(16);let st=promotionStatus(c,'elina');assert.equal(st.next.tier,3);assert.ok(st.eligible,JSON.stringify(st.checks));assert.equal(trialMissionOf(c,'elina'),106);
  assert.ok(!promotionStatus(c,'eric').eligible,'Erik waits for M17');assert.ok(promotionStatus(camp(17),'eric').eligible);assert.ok(!promotionStatus(camp(17),'sain').eligible);
  assert.ok(!promotionStatus(camp(16,13),'elina').eligible,'below Lv 14');assert.ok(!promotionStatus(c,'lia').eligible,'Lia waits for M19');assert.ok(promotionStatus(camp(19),'lia').eligible);assert.ok(!promotionStatus(camp(19),'kai').eligible,'Kai waits for M20');assert.ok(promotionStatus(camp(20),'kai').eligible);
- assert.deepEqual(AWAKEN_MISSION,{elina:106,eric:107,sain:108,lia:109,kai:114,ines:115,thea:116});for(const id of [106,107,108,109,114,115,116])assert.equal(MISSIONS[id].skirmish.tier,3);
+ assert.deepEqual(AWAKEN_MISSION,{elina:106,eric:107,sain:108,lia:109,kai:114,ines:115,thea:116,dario:117});for(const id of [106,107,108,109,114,115,116,117])assert.equal(MISSIONS[id].skirmish.tier,3);
  for(const k of ['awaken:elina','awaken:eric','awaken:sain','awaken:lia','awaken:kai','skirmish:106:intro','skirmish:107:intro','skirmish:108:intro','skirmish:109:intro','skirmish:114:intro'])assert.ok(STORY[k]?.length,k);
 });
 

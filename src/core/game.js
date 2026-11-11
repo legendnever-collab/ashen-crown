@@ -61,6 +61,8 @@ function damage(s,u,t,mode,counter=false,opts=null){
  let dealt=stats.damage+(critical?Math.ceil(stats.damage*.5):0);if(critical&&!counter)cutIn(s,u,'crit');
  // v0.10.0 Gate of the Sanctum (Ines' ④): until the next player turn the legion, civilians and allies she covered take half.
  if(victim.gateGuard===s.turn&&sideOf(victim)!=='enemy'&&dealt>1)dealt=Math.ceil(dealt/2);
+ // v0.10.1 Lion Banner (Baldrick's ③): until the next player turn those beside him take 4 less.
+ if(victim.lionGuard===s.turn&&sideOf(victim)!=='enemy'&&dealt>1)dealt=Math.max(1,dealt-4);
  // v0.9.1 Wall of the Oath (Erik's ④): until the next player turn he takes half of what the legion and civilians within 2 take.
  const wall=dealt>1&&sideOf(victim)!=='enemy'&&victim.team!=='object'?s.units.find(w=>w.oathWall===s.turn&&w!==victim&&alive(w)&&distance(w,victim)<=2):null;
  if(wall){const share=Math.floor(dealt/2);dealt-=share;const wf=wall.hp;wall.hp=Math.max(1,wall.hp-share);s.feedback.push({type:'hit',id:wall.id,text:`맹세 −${wf-wall.hp}`,fromHP:wf,toHP:wall.hp,damage:wf-wall.hp});}
@@ -171,9 +173,10 @@ export function advanceEnemy(s){
   if(held&&path&&path.length>1){const a=findUnit(s,s.blockade.by);if(a&&alive(a)){s.feedback.push({type:'class',action:'overwatch-fire',id:a.id,target:u.id,text:'퇴로 봉쇄',at:{x:u.x,y:u.y}});const r=damage(s,a,u,'attack');if(r.hit)awardXP(s,a,BALANCE.attackXP+(!alive(u)?BALANCE.killXP:0),`${u.name} 퇴로 봉쇄`);if(!alive(u)){checkOutcome(s);afterBattleEvents(s);return true;}if(p.target&&!validTarget(s,u,findUnit(s,p.target)))p.target=null;}}
   if(u.caltrop){delete u.caltrop;const n=Math.min(6,u.hp),fromHP=u.hp;u.hp-=n;s.feedback.push({type:'hit',id:u.id,text:`마름쇠 −${n}`,fromHP,toHP:u.hp,damage:n});s.log.push(`${u.name}: 마름쇠를 밟고 멈췄습니다 (${n} 피해).`);if(!alive(u)){dropSupply(s,u);s.feedback.push({type:'death',id:u.id,text:'FALLEN'});checkOutcome(s);afterBattleEvents(s);return true;}if(p.target&&!validTarget(s,u,findUnit(s,p.target)))p.target=null;}
   if(stopped){s.log.push(`${u.name}: 경계 사격에 발이 묶였습니다.`);if(!alive(u)){checkOutcome(s);afterBattleEvents(s);return true;}if(p.target&&!validTarget(s,u,findUnit(s,p.target)))p.target=null;}
-  s.log.push(`AI · ${u.name}: ${p.reason}.`);if(p.target){const t=findUnit(s,p.target);const r=damage(s,u,t,'attack');if((t.team==='ally'||t.team==='allied'||t.team==='enemy')&&alive(r.victim)&&validTarget(s,r.victim,u)){const counter=damage(s,r.victim,u,'attack',true);if(counter.hit)awardXP(s,r.victim,!alive(u)?BALANCE.attackXP+BALANCE.killXP:10,`${u.name} 반격`);
+  s.log.push(`AI · ${u.name}: ${p.reason}.`);if(p.target){const t=findUnit(s,p.target);const r=damage(s,u,t,'attack');const hundred=r.victim.hundred===s.turn&&hostile(s,r.victim,u); /* v0.10.1 A Hundred Counters (Dario's ④): every blow answered, at any range, +30% */
+   if((t.team==='ally'||t.team==='allied'||t.team==='enemy')&&alive(r.victim)&&(validTarget(s,r.victim,u)||hundred)){const counter=damage(s,r.victim,u,'attack',true,hundred?{scale:1.3}:null);if(counter.hit)awardXP(s,r.victim,!alive(u)?BALANCE.attackXP+BALANCE.killXP:10,`${u.name} 반격`);
    // v0.9.1 Sword Saint (Dario, tier 2): in Riposte he strikes back twice.
-   if(r.victim.id==='dario'&&(r.victim.classTier||1)>=2&&r.victim.riposte&&alive(r.victim)&&alive(u)&&validTarget(s,r.victim,u)){const again=damage(s,r.victim,u,'attack',true);if(again.hit)awardXP(s,r.victim,!alive(u)?BALANCE.attackXP+BALANCE.killXP:10,`${u.name} 두 번째 반격`);}}}
+   if(r.victim.id==='dario'&&(r.victim.classTier||1)>=2&&r.victim.riposte&&alive(r.victim)&&alive(u)&&(validTarget(s,r.victim,u)||hundred)){const again=damage(s,r.victim,u,'attack',true,hundred?{scale:1.3}:null);if(again.hit)awardXP(s,r.victim,!alive(u)?BALANCE.attackXP+BALANCE.killXP:10,`${u.name} 두 번째 반격`);}}}
   checkOutcome(s);afterBattleEvents(s);return true;
  }
  s.turn++;s.phase='player';s.enemyQueue=[];s.enemyIndex=0;

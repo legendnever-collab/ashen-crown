@@ -349,3 +349,86 @@
 @media(max-width:720px){.duel-card .duel-faces canvas{width:72px;height:72px}}
 /* v0.9.1 feedback: narration (연대기) lines in battle have no portrait; the empty chest shows its painted chest */
 .dialogue-backdrop .dialogue-panel.narration .dialogue-copy{left:28px}.chest-empty{width:96px;height:96px;object-fit:contain;image-rendering:auto}
+
+/* 2026-11-10 play-test (v0.10.1): the menu title stays on one line, smaller; the move confirmation is just two buttons. */
+.unit-popover header{gap:6px;padding:3px 4px 3px 9px}
+.unit-popover header strong{font:bold 15px/1.2 Georgia,'Ashen UI',serif;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.unit-popover header span{flex:none;white-space:nowrap}
+.unit-popover header .menu-close{flex:none;width:36px;height:36px;font-size:20px}
+.unit-popover .move-confirm .menu-confirm{margin-top:0}
+/* 2026-11-11 play-test (D-106): compact panels — the skills menu is one line per skill (notes in 상태 → 기술), the forecast is
+   tighter, and the unit sheet's tabs sit on one row. */
+.unit-popover .skill-menu{padding:7px 8px}
+.unit-popover .skill-menu .menu-label{font-size:12px;line-height:1.3;margin:0 0 5px}
+.unit-popover .sk-row{display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box;margin:0 0 4px;padding:3px 7px;min-height:38px;font-size:13px;line-height:1.2;text-align:left}
+.unit-popover .sk-row .skill-icon{flex:none;width:22px;height:22px;margin:0}
+.unit-popover .sk-row .sk-name{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.unit-popover .sk-row small{float:none;flex:none;margin-left:auto;font-size:10.5px;white-space:nowrap}
+.unit-popover .skill-locked.sk-row{min-height:30px;opacity:.6;border:1px dashed #4f6461;border-radius:4px;color:#a9b8b2}
+.unit-popover .skill-locked.sk-row small{max-width:46%;overflow:hidden;text-overflow:ellipsis}
+.unit-popover .sk-foot{margin-top:5px}
+.unit-popover .sk-foot button{min-height:36px;font-size:13px}
+.unit-popover .menu-body.forecast{padding:7px 10px}
+.unit-popover .forecast .menu-label{font-size:13px;line-height:1.3}
+.unit-popover .forecast dl{margin:5px 0;gap:3px 10px}
+.unit-popover .forecast .menu-confirm{margin-top:5px}
+.unit-popover .forecast .menu-confirm button{min-height:40px;font-size:14px}
+.info-tabs{flex-wrap:nowrap;margin:2px 0 8px}
+.info-tabs button{flex:1 1 0;min-width:0;padding:6px 2px;font-size:12px;white-space:nowrap}
+.skill-notes .tactic-card{display:block;padding:7px 9px;margin:0 0 6px;background:#10262b;border:1px solid #3f6266;border-radius:6px}
+.skill-notes .tactic-card h4{display:flex;align-items:center;gap:6px;margin:0 0 3px;font-size:14px}
+.skill-notes .tactic-card h4 .skill-icon{margin:0}
+.skill-notes .tactic-card h4 small{margin-left:auto;font-size:11px;color:#d8c99c;font-weight:normal}
+.skill-notes .tactic-card p{margin:0;font-size:12px;line-height:1.5}
+.skill-notes .tactic-card.locked{opacity:.65}
+.skill-notes .skill-range{display:flex;align-items:center;gap:8px;font-size:11px;color:#a7c0b4}
+.skill-notes .skill-range .range-grid{grid-template-columns:repeat(7,9px);padding:4px}
+.skill-notes .skill-range .range-grid i{width:9px;height:9px}
+.unit-popover:has(.skill-menu){width:240px;max-width:calc(100% - 12px)}
+.info-head{grid-template-columns:64px 1fr;gap:10px;padding:6px 8px}
+.info-head canvas{width:64px;height:64px}
+.info-head h3{font-size:17px}
+.info-head p{margin:1px 0 4px}
+.info-bar{margin:2px 0}
+.info-body .grade-table th,.info-body .grade-table td{padding:3px 8px}
+.info-body .info-note{margin:6px 0;line-height:1.5}
+/* 2026-11-11 play-test (D-107): the town map stays clear — no floating place names (the bar above the map names the town),
+   gold alone at the top left (no longer under the quest button), no 에릭 찾기, the menu folded behind ☰ with only the next
+   story step beside it, and the D-pad off unless turned on from the menu (tap the map to walk). */
+.frontier-screen.fs .location-tag,.frontier-screen.fs .hub-map-controls{display:none!important}
+.frontier-screen.fs .hub-top{top:10px;left:12px;right:auto}
+.frontier-screen.fs .hub-top .gold{font-size:13px;padding:4px 9px}
+.frontier-screen.fs:not(.dpad-on) .dpad{display:none}
+.frontier-screen.fs .frontier-actions,.frontier-screen.fs .frontier-actions.open{position:absolute;right:10px;bottom:10px;z-index:6;display:flex;flex-direction:column;align-items:flex-end;flex-wrap:nowrap;gap:6px;max-width:calc(100% - 20px)}
+.frontier-screen.fs .hub-keep{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:6px}
+.frontier-screen.fs .hub-fold{display:flex;flex-direction:column;align-items:stretch;gap:4px;min-width:176px;padding:6px;background:#10262bf5;border:1px solid #d8bb7c99;border-radius:8px;box-shadow:0 6px 18px #000a}
+.frontier-screen.fs .hub-fold[hidden]{display:none}
+.frontier-screen.fs .hub-fold button{width:100%;justify-content:flex-start;min-height:40px}
+.frontier-screen.fs .hub-fold .hub-fold-zoom{display:flex;gap:4px}
+.frontier-screen.fs .hub-fold .hub-fold-zoom button{flex:1;justify-content:center;font-size:18px}
+.frontier-screen.fs .hub-fold .hub-dpad-toggle{font-size:12px;color:#c9d6cf}
+.frontier-screen.fs .frontier-actions .hub-menu-btn{width:46px;height:46px;padding:0;justify-content:center;font-size:21px;line-height:1}
+@media(pointer:fine){.frontier-screen.fs .hub-fold .hub-dpad-toggle{display:none}}
+/* 2026-11-11 play-test (D-108): the hero sheet — roster, ◀ ▶ between heroes, the story tab and the growth goals. */
+.hero-roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:8px}
+.hero-roster-card{display:flex;align-items:center;gap:8px;padding:6px 8px;text-align:left;min-height:64px}
+.hero-roster-card canvas{width:48px;height:48px;flex:none}
+.hero-roster-card span{display:flex;flex-direction:column;min-width:0;line-height:1.3}
+.hero-roster-card b{font-size:15px}.hero-roster-card small{font-size:11px;color:#a7c0b4}.hero-roster-card em{font-style:normal;font-size:11px;color:#e2c27c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hero-nav{display:flex;align-items:center;justify-content:center;gap:12px;margin:0 0 6px;font:12px Arial,sans-serif;color:#a7c0b4}
+.hero-nav button{min-width:44px;min-height:32px;padding:2px 10px}
+.link-btn{background:none;border:0;padding:0 2px;min-height:0;color:#e2c27c;text-decoration:underline;font:inherit;cursor:pointer}
+.lore-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:2px 0 6px}
+.lore-title{font:600 16px Georgia,'Ashen UI',serif;color:#f1d58c}
+.lore-traits{display:flex;gap:4px;flex-wrap:wrap}.lore-traits i{font-style:normal;font-size:11px;padding:2px 8px;border:1px solid #597064;border-radius:10px;color:#cfe0d6;background:#17323a}
+.lore-quote{margin:4px 0 8px;padding:6px 10px;border-left:3px solid #d8bb7c;background:#10262b;color:#f3e6c4;font:italic 13px/1.5 Georgia,'Ashen UI',serif}
+.lore-likes{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin:6px 0;font-size:12px}.lore-likes dt{color:#a7c0b4}.lore-likes dd{margin:0;color:#e6dcc0}
+.lore-chapters{list-style:none;margin:4px 0;padding:0;display:flex;flex-direction:column;gap:5px}
+.lore-chapters li{display:grid;grid-template-columns:38px 1fr;gap:6px;font-size:12.5px;line-height:1.5;color:#dfe7df}
+.lore-chapters li span{font:600 11px Arial,sans-serif;color:#14262a;background:#d8bb7c;border-radius:4px;text-align:center;height:18px;line-height:18px;margin-top:1px}
+.lore-next{color:#8fa79c}
+.lore-bonds{list-style:none;margin:4px 0 8px;padding:0;display:flex;flex-direction:column;gap:4px;font-size:12.5px}.lore-bonds b{color:#f1d58c;margin-right:6px}
+.growth-goal{margin:0 0 8px;padding:7px 10px;background:#2c4140;border:1px solid #d8bb7c;border-radius:6px}
+.growth-goal span{font:600 11px Arial,sans-serif;color:#e2c27c;letter-spacing:.04em}.growth-goal p{margin:2px 0 0;font-size:13px;line-height:1.5;color:#f3ead0}
+.potential-steps li.next{color:#f1d58c}.step-prog{margin-left:4px;font:600 11px Arial,sans-serif;color:#9ed09a}
+.growth-h small{font-weight:normal;color:#a7c0b4;font-size:11px}

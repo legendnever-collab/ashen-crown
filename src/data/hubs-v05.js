@@ -26,7 +26,8 @@ export function act2HubFor(missionId,phase='preparation'){const after=phase==='a
  // v0.9.2 (D-089): back to the capital's lower city for M19–M20 (preparation and after).
  // v0.10.0 (D-100): ACT IV — the alliance camp under the summit camp's painting for M23 (preparation and after), the Ashen
  // Village by the last border (its after-the-raid painting) for M24.
- if(missionId>=24)return 'village_raid';if(missionId===23)return 'summit';
+ // v0.10.1 (D-102): M25 back at the alliance camp (the summit painting), M26 at the camp below the lion's pass (the oath camp).
+ if(missionId>=26)return 'oathcamp';if(missionId===25)return 'summit';if(missionId===24)return 'village_raid';if(missionId===23)return 'summit';
  if(missionId>=19)return 'capital';if(missionId===18)return 'forest';if(missionId===17)return 'keep';
  if(missionId>=16&&after)return 'fieldcamp';if(missionId>=15)return 'capital';
  if(missionId>=13)return 'summit';return 'velmar';}
@@ -210,6 +211,9 @@ HV5_SPECS.refuge={...HV5_SPECS.bivouac,name:'Refugee Camp · 피난민 야영지
 HV5_SPECS.summit={...HV5_SPECS.oathcamp,name:'Summit Camp · 폐허 역참 야영지',kind:'summit',
  npcs:[...HV5_SPECS.oathcamp.npcs.map(n=>n[0]==='elder'?['elder','역참 관리인',n[2],n[3]]:n[0]==='refugee'?['refugee','피난민',n[2],n[3]]:n),
   ['thea','테아 · 경계',10,11,{kind:'hero',requires:'thea'}],['dario','다리오 · 길목',10,12,{kind:'hero',requires:'dario'}],['ines','이네스 · 천막 곁',13,11,{kind:'hero',requires:'ines'}]]};
+// v0.10.1 (D-102): the camp below the lion's pass (M26) — the oath camp again, now with the recruits and, once he joins, Baldrick.
+HV5_SPECS.oathcamp.npcs=[...HV5_SPECS.oathcamp.npcs,['thea','테아 · 경계',10,11,{kind:'hero',requires:'thea',fromMission:26}],['dario','다리오 · 길목',10,12,{kind:'hero',requires:'dario',fromMission:26}],
+ ['ines','이네스 · 천막 곁',13,11,{kind:'hero',requires:'ines',fromMission:26}],['baldrick','발드릭 · 사자의 깃발',17,10,{kind:'hero',requires:'baldrick',fromMission:26}]];
 // v0.9.0 (D-079, PROPOSED): the capital's lower city (M15 – M16 preparation). ACT III art pack F1 (v0.9.1 import, D-086)
 // painted it over Velmar's footprint, so it keeps Velmar's walk mask, doors, forge and shop; its rooms are the 'capital'
 // family. After M16 the legion camps on the western plain under the night bivouac painting.
