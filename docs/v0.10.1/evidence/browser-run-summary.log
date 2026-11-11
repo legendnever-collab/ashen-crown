@@ -1,5 +1,5 @@
-v0.10.1 「검은 사자」 + art packs G1/G2 + play-test fixes D-104/D-106 — full browser and balance matrix, 60 suites, run 2026-11-11 on the HTML below; act4b failed once on a stale test expectation (the ① name in the skills menu) and passed on rerun after the test fix (dd39c14)
-b400d9cf9106e1cae25af7f70eb4593c2a89982c262da1f9ef558aadda563b1a  releases/Ashen_Crown_v0.10.1.html
+v0.10.1 「검은 사자」 + art packs G1/G2 + play-test fixes D-104, D-106, D-107, D-108 — full browser and balance matrix, 60 suites, run 2026-11-11 on the HTML below; quality failed once (its touch D-pad hold check ran with the D-pad off — D-107 hides it on touch screens) and passed on rerun after the check turns the D-pad on from ☰ first
+ae945e11db9caef83f201d5bf1009454120c61e8b2fa79c44923445b842b7e48  releases/Ashen_Crown_v0.10.1.html
 e2e exit=0
 balance exit=0
 mobile exit=0
@@ -14,7 +14,7 @@ economy-balance exit=0
 migration-v02 exit=0
 renaissance exit=0
 performance exit=0
-quality exit=0
+quality exit=1
 migration-v031 exit=0
 journey exit=0
 migration-v032 exit=0
@@ -58,7 +58,7 @@ act3d exit=0
 migration-v092 exit=0
 act4a exit=0
 migration-v093 exit=0
-act4b exit=1
+act4b exit=0
 migration-v0100 exit=0
 DONE
-act4b rerun exit=0 (32 PASS)
+quality rerun exit=0 (99 PASS)

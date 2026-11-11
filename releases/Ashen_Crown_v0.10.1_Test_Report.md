@@ -1,17 +1,20 @@
 # Ashen Crown v0.10.1 「검은 사자」 — Test Report
 Updated 2026-11-11 KST. **Release candidate on feature/v0.10.1-banners; not merged before the user plays and approves it.** Decision: D-102 (implementation details, PROPOSED) within D-099 (docs/v0.10.0/ACT4_DESIGN.md), built on main dd81b3e (v0.10.0), with ACT IV art packs G1 (D-103) and G2 (D-105) imported and the play-test minor feedback D-104.
 
-HTML SHA256 of the build under review: `b400d9cf9106e1cae25af7f70eb4593c2a89982c262da1f9ef558aadda563b1a` (49,835,830 bytes; `index.html` identical; also in `releases/Ashen_Crown_v0.10.1_SHA256SUMS`). **The full 60-suite matrix ran on this HTML** (2026-11-11), after art packs G1/G2 and the play-test fixes D-104 and D-106; only docs and one test expectation changed after it.
+HTML SHA256 of the build under review: `ae945e11db9caef83f201d5bf1009454120c61e8b2fa79c44923445b842b7e48` (49,862,744 bytes; `index.html` identical; also in `releases/Ashen_Crown_v0.10.1_SHA256SUMS`). **The full 60-suite matrix ran on this HTML** (2026-11-11), after art packs G1/G2 and the play-test changes D-104, D-106, D-107 and D-108; only docs and one test changed after it.
 
 ## Summary
-- **476 unit tests PASS / 0 FAIL** (docs/v0.10.1/evidence/unit-results.txt). New: tests/mission25.test.mjs (4), tests/mission26.test.mjs (5), tests/migration-v0100.test.mjs (4), tests/unit-menu.test.mjs (3: the move confirmation, the one-line title, the compact skills menu and the 기술 tab), and the art pack G1/G2 checks in tests/item-art.test.mjs and tests/portraits.test.mjs. Updated expectations: schema 17, version 0.10.1, nine heroes, 31 tracks, 36 tactics skills, 73 gear and 24 treasures.
-- **Full browser and balance matrix, 60 suites** (docs/v0.10.1/evidence/browser-run-summary.log): 59 passed on the first run; **act4b failed once** because its check looked for 「사자의 일격」 in the skills menu, which had come from the note D-106 removed (① shows its English name, Lion Strike, like every hero's ①). The check was corrected (dd39c14) and act4b passed on rerun (32 checks). 2,086 `PASS` lines in all. No runtime errors.
+- **481 unit tests PASS / 0 FAIL** (docs/v0.10.1/evidence/unit-results.txt). New: tests/mission25.test.mjs (4), tests/mission26.test.mjs (5), tests/migration-v0100.test.mjs (4), tests/unit-menu.test.mjs (3), tests/hub-menu.test.mjs (2), tests/hero-lore.test.mjs (3), and the art pack G1/G2 checks in tests/item-art.test.mjs and tests/portraits.test.mjs.
+- **Full browser and balance matrix, 60 suites** (docs/v0.10.1/evidence/browser-run-summary.log): 59 passed on the first run; **quality failed once** — its check that holding a D-pad arrow on a touch screen keeps Erik walking found the D-pad hidden, as D-107 now hides it on touch screens. The check now turns the D-pad on the player's way (☰ → 방향패드 켜기) first, and quality passed on rerun (99 checks). 2,086 `PASS` lines in all. No runtime errors.
 - Balances: ACT I 30/30; ACT II M07–M14 30/30 each; ACT III M15–M22 30/30 each; ACT IV M23 30/30, M24 30/30, **M25 30/30, M26 30/30** (gate ≥ 90% of the previous mission passed).
-- An earlier full run on the D-106 build stopped at act3c: the smaller forecast covered the second pick of Kai's ④ (Shadow Dance), so the confirming tap hit the panel. Fixed in app.js positionPopover (a two-pick forecast anchors at the last pick and keeps both picks and the hero uncovered); the matrix above ran after the fix.
+- Earlier full runs on intermediate builds of this RC, and what they caught: on the D-106 build, act3c (the smaller forecast covered the second pick of Kai's ④; fixed in positionPopover) and act4b (a stale check for 「사자의 일격」 in the skills menu; check corrected). A run on the D-107 build was stopped when D-108 changed the build.
+- Browser tests open a folded town button the way a player does (☰ first) and press a hidden D-pad button like a key (tests/browser-helper.mjs, D-107).
 
-## Play-test fixes in this build (D-104, D-106)
+## Play-test changes in this build (D-104, D-106, D-107, D-108)
 - D-104: the unit menu's title is one line (15 px, ellipsis); the move confirmation is just 이동 확정 / 취소. Screenshots at 412 px: docs/v0.10.1/screenshots/d104.
 - D-106: on a 412 px phone the battle skills menu went from 628 to 296 px tall (one line per skill, no notes, 설명 → 상태 → 기술) and the forecast from 280 to 213 px; the unit sheet's tabs sit on one row and 기술 explains all four skills. Before/after: docs/v0.10.1/screenshots/d106.
+- D-107: the town map is clear — the menu folded behind ☰ with only the next story step beside it, no floating place names, gold apart from the quest button, no 에릭 찾기, the D-pad off on touch screens. Before/after at 412 px: docs/v0.10.1/screenshots/d107.
+- D-108: the hero sheet — ☰ → 장수 정보 (roster), ◀ ▶ between heroes, 열전 (title, personality, a line, past, chapters opened mission by mission, bonds, records) and 성장 led by the next goal with how to raise each potential step and live progress. Screenshots at 412 px: docs/v0.10.1/screenshots/d108.
 - Art packs G1 and G2 load in game: docs/v0.10.1/screenshots/g2 (awakened Dario in M26, Baldrick's painted icons).
 
 ## Browser suites (new or changed)

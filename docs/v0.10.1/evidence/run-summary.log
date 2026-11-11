@@ -12,7 +12,7 @@ economy-balance exit=0
 migration-v02 exit=0
 renaissance exit=0
 performance exit=0
-quality exit=0
+quality exit=1
 migration-v031 exit=0
 journey exit=0
 migration-v032 exit=0
@@ -56,6 +56,6 @@ act3d exit=0
 migration-v092 exit=0
 act4a exit=0
 migration-v093 exit=0
-act4b exit=1
+act4b exit=0
 migration-v0100 exit=0
 DONE
