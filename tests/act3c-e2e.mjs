@@ -59,7 +59,7 @@ try{
   await p.screenshot({path:`${shots}/legion-panel-${label}.png`});
   await press('trial-start','lia');await drainStory(p);s=await snap();check(`${label} the trial opens as 결계의 시련 with Lia awakened for it`,s.missionId===109&&s.units.find(u=>u.id==='lia').classTier===3);
   const lia=s.units.find(u=>u.id==='lia');await select(lia);await press('submenu','skills');t=await p.locator('#unit-popover').textContent();
-  check(`${label} Lia's skills menu shows ④ 작은 결계 · once a battle`,t.includes('④')&&t.includes('작은 결계')&&t.includes('전투당 1회'));
+  check(`${label} Lia's skills menu shows ④ 작은 결계 · once a battle`,t.includes('④')&&t.includes('작은 결계')&&t.includes('1회'));
   await p.screenshot({path:`${shots}/ultimate-menu-${label}.png`});
   await press('mode','smallWard');await tile(9,5);await p.waitForTimeout(300);check(`${label} the ward's forecast shows the 3×3 for two turns`,(await p.locator('#unit-popover').textContent()).includes('3×3'));
   await tile(9,5);await p.waitForTimeout(700);await drainStory(p);s=await snap();check(`${label} the ward stands over the east gap`,s.smallWard?.x===9&&s.smallWard?.y===5&&s.ultimates?.includes('lia'));

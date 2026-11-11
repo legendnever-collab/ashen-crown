@@ -39,7 +39,7 @@ try{
   await p.screenshot({path:`${shots}/legion-panel-${label}.png`});
   await press('trial-start','elina');await drainStory(p);s=await snap();check(`${label} the awakening trial opens as 매의 시련 with Elina awakened for it`,s.missionId===106&&s.units.find(u=>u.id==='elina').classTier===3);
   const el=s.units.find(u=>u.id==='elina');await select(el);await press('submenu','skills');t=await p.locator('#unit-popover').textContent();
-  check(`${label} Elina's skills menu shows ④ 퇴로 봉쇄 · once a battle`,t.includes('④')&&t.includes('퇴로 봉쇄')&&t.includes('전투당 1회'));
+  check(`${label} Elina's skills menu shows ④ 퇴로 봉쇄 · once a battle`,t.includes('④')&&t.includes('퇴로 봉쇄')&&t.includes('1회'));
   await p.screenshot({path:`${shots}/ultimate-menu-${label}.png`});await press('close-unit-menu');
   // 2. the trial won: the awakening card
   await restore(awakened());await drainStory(p);await p.waitForTimeout(400);t=await modal();

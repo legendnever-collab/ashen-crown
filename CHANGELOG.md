@@ -9,6 +9,7 @@
 - Art pack G2 work order: scripts/make-act4-g2-art-pack.py → docs/v0.10.1/art/act4-g2-work-pack (6 images: icon sheet M; Dario's tier 3 busts and sheet).
 - ACT IV art pack G1 imported (D-103): Ines's and Thea's tier 3 busts and map sheets, icon sheet L (성역의 문, 철의 돌파, 연합의 깃발, 마지막 등불) and the four council tents (iron / free / flame / taken) — 12 images hash-verified; the M23 tents now draw the painted art.
 - ACT IV art pack G2 imported (D-105): Dario's tier 3 busts and map sheet, icon sheet M (백 번의 반격, Baldrick's four skills, 세 왕가의 인장, 검은 갈기) — 6 images hash-verified; v0.10.1 has no temporary art left.
+- Play-test: compact panels (D-106): the battle skills menu is one line per skill (no notes; 설명 opens 상태 → 기술, which now explains all four skills); the forecast is tighter without the long note; the unit sheet's tabs on one row.
 - Play-test minor feedback (D-104): the unit menu's title is one compact line (15px, no wrapping, ellipsis); the move confirmation is just 이동 확정 / 취소, with no coordinates.
 
 # v0.10.0 — 연합 · ACT IV part 1: M23 전쟁의 끝을 향해, M24 최후의 국경, allied orders, Ines's and Thea's awakening (release candidate)
