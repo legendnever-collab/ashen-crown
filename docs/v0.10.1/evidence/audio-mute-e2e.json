@@ -20,7 +20,7 @@
   {
    "name": "1440 Mute off: the music returns at its level",
    "ok": true,
-   "detail": "-11.9 dB"
+   "detail": "-12 dB"
   },
   {
    "name": "1440 BGM 0 (SFX 0): the output is silent",
@@ -30,7 +30,7 @@
   {
    "name": "1440 BGM at its lowest step still plays, quietly",
    "ok": true,
-   "detail": "-31.4 dB"
+   "detail": "-32.2 dB"
   },
   {
    "name": "1440 Music Pause: the music is silent",
@@ -40,7 +40,7 @@
   {
    "name": "1440 Music Pause off: the music returns",
    "ok": true,
-   "detail": "-12.3 dB"
+   "detail": "-12.4 dB"
   },
   {
    "name": "1440 settings are kept as chosen",
@@ -57,11 +57,11 @@
    "levels": {
     "playing": -12.7,
     "muted": null,
-    "back": -11.9,
+    "back": -12,
     "zero": null,
-    "low": -31.4,
+    "low": -32.2,
     "paused": null,
-    "again": -12.3
+    "again": -12.4
    }
   },
   {
@@ -82,7 +82,7 @@
   {
    "name": "390 Mute off: the music returns at its level",
    "ok": true,
-   "detail": "-11.9 dB"
+   "detail": "-12 dB"
   },
   {
    "name": "390 BGM 0 (SFX 0): the output is silent",
@@ -119,7 +119,7 @@
    "levels": {
     "playing": -12.7,
     "muted": null,
-    "back": -11.9,
+    "back": -12,
     "zero": null,
     "low": -31.4,
     "paused": null,

@@ -1,5 +1,5 @@
-v0.10.1 「검은 사자」 + art pack G1 — full browser and balance matrix, 60 suites, run 2026-11-10 on the HTML below
-18fe2bb71fc50998b4a6e588a9d7bba913923ed4d8a28af58277d74244c6982c  releases/Ashen_Crown_v0.10.1.html
+v0.10.1 「검은 사자」 + art packs G1/G2 + play-test fixes D-104/D-106 — full browser and balance matrix, 60 suites, run 2026-11-11 on the HTML below; act4b failed once on a stale test expectation (the ① name in the skills menu) and passed on rerun after the test fix (dd39c14)
+b400d9cf9106e1cae25af7f70eb4593c2a89982c262da1f9ef558aadda563b1a  releases/Ashen_Crown_v0.10.1.html
 e2e exit=0
 balance exit=0
 mobile exit=0
@@ -58,6 +58,7 @@ act3d exit=0
 migration-v092 exit=0
 act4a exit=0
 migration-v093 exit=0
-act4b exit=0
+act4b exit=1
 migration-v0100 exit=0
 DONE
+act4b rerun exit=0 (32 PASS)

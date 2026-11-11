@@ -4,7 +4,7 @@ PASS 1440 the equipment sheet paints the Twin Daggers in the treasure slot
 PASS 1440 the capital shelf shows 왕도 근위검 with its painted icon (pack F1)
 PASS 1440 the command menu paints 공격 and 대기
 PASS 1440 the skills submenu shows Erik's skill disks (수호·도발·방벽 and the locked ④ 맹세의 성벽, painted since pack F2)
-PASS 1440 the poisoned, bound enemy carries painted status chips, not the flat letter squares (0 flat pixels, 830 colours)
+PASS 1440 the poisoned, bound enemy carries painted status chips, not the flat letter squares (0 flat pixels, 810 colours)
 PASS 1440 the tactics tab paints Erik's skill and his class action
 PASS 1440 no page errors
 PASS 390 the forge shelf draws pack E icons, all decoded (21)
@@ -13,7 +13,7 @@ PASS 390 the equipment sheet paints the Twin Daggers in the treasure slot
 PASS 390 the capital shelf shows 왕도 근위검 with its painted icon (pack F1)
 PASS 390 the command menu paints 공격 and 대기
 PASS 390 the skills submenu shows Erik's skill disks (수호·도발·방벽 and the locked ④ 맹세의 성벽, painted since pack F2)
-PASS 390 the poisoned, bound enemy carries painted status chips, not the flat letter squares (0 flat pixels, 281 colours)
+PASS 390 the poisoned, bound enemy carries painted status chips, not the flat letter squares (0 flat pixels, 303 colours)
 PASS 390 the tactics tab paints Erik's skill and his class action
 PASS 390 no page errors
 item-art-e2e: 18 checks passed

@@ -1,21 +1,18 @@
 # Ashen Crown v0.10.1 「검은 사자」 — Test Report
 Updated 2026-11-11 KST. **Release candidate on feature/v0.10.1-banners; not merged before the user plays and approves it.** Decision: D-102 (implementation details, PROPOSED) within D-099 (docs/v0.10.0/ACT4_DESIGN.md), built on main dd81b3e (v0.10.0), with ACT IV art packs G1 (D-103) and G2 (D-105) imported and the play-test minor feedback D-104.
 
-HTML SHA256 of the build under review: `7e575ebab846f487917a02090d529364e1835f04dd66e2cfae3e7643a6fca58d` (49,831,486 bytes; `index.html` identical; also in `releases/Ashen_Crown_v0.10.1_SHA256SUMS`). The full 60-suite matrix ran on the earlier build `18fe2bb71fc50998b4a6e588a9d7bba913923ed4d8a28af58277d74244c6982c` (49,185,008 bytes). Since then: D-104 (src/ui/action-menu.js and src/ui/style.css only; build `313df1ba…`, 11 menu suites rerun) and art pack G2 (D-105: 12 new WebP assets and one alias line in src/render/hd-art.js; 8 suites rerun). The reruns are listed below; the rest of the matrix was not rerun.
+HTML SHA256 of the build under review: `b400d9cf9106e1cae25af7f70eb4593c2a89982c262da1f9ef558aadda563b1a` (49,835,830 bytes; `index.html` identical; also in `releases/Ashen_Crown_v0.10.1_SHA256SUMS`). **The full 60-suite matrix ran on this HTML** (2026-11-11), after art packs G1/G2 and the play-test fixes D-104 and D-106; only docs and one test expectation changed after it.
 
 ## Summary
-- **475 unit tests PASS / 0 FAIL** on the build under review (472 on the matrix build; +2 in tests/unit-menu.test.mjs, +1 pack G2 check in tests/item-art.test.mjs) (docs/v0.10.1/evidence/unit-results.txt). New: tests/mission25.test.mjs (4), tests/mission26.test.mjs (5), tests/migration-v0100.test.mjs, and the art pack G1 checks in tests/item-art.test.mjs and tests/portraits.test.mjs. Updated expectations: schema 17, version 0.10.1, nine heroes, 31 tracks, 36 tactics skills, 73 gear and 24 treasures.
-- **Full browser and balance matrix, 60 suites, all passed on the first run** (docs/v0.10.1/evidence/browser-run-summary.log): 2,086 `PASS` lines (2,010 on v0.10.0). No runtime errors.
+- **476 unit tests PASS / 0 FAIL** (docs/v0.10.1/evidence/unit-results.txt). New: tests/mission25.test.mjs (4), tests/mission26.test.mjs (5), tests/migration-v0100.test.mjs (4), tests/unit-menu.test.mjs (3: the move confirmation, the one-line title, the compact skills menu and the 기술 tab), and the art pack G1/G2 checks in tests/item-art.test.mjs and tests/portraits.test.mjs. Updated expectations: schema 17, version 0.10.1, nine heroes, 31 tracks, 36 tactics skills, 73 gear and 24 treasures.
+- **Full browser and balance matrix, 60 suites** (docs/v0.10.1/evidence/browser-run-summary.log): 59 passed on the first run; **act4b failed once** because its check looked for 「사자의 일격」 in the skills menu, which had come from the note D-106 removed (① shows its English name, Lion Strike, like every hero's ①). The check was corrected (dd39c14) and act4b passed on rerun (32 checks). 2,086 `PASS` lines in all. No runtime errors.
 - Balances: ACT I 30/30; ACT II M07–M14 30/30 each; ACT III M15–M22 30/30 each; ACT IV M23 30/30, M24 30/30, **M25 30/30, M26 30/30** (gate ≥ 90% of the previous mission passed).
+- An earlier full run on the D-106 build stopped at act3c: the smaller forecast covered the second pick of Kai's ④ (Shadow Dance), so the confirming tap hit the panel. Fixed in app.js positionPopover (a two-pick forecast anchors at the last pick and keeps both picks and the hero uncovered); the matrix above ran after the fix.
 
-## Rerun after D-104 (on build 313df1ba…)
-- Unit tests: see docs/v0.10.1/evidence/unit-results.txt (adds tests/unit-menu.test.mjs: two buttons, no coordinates; the title rule).
-- Browser suites, all exit 0 (docs/v0.10.1/evidence/rerun-d104-*.log; `PASS` lines): mobile-command 25, mobile 80, post-move 1, tactical 28, restart 23, e2e 60, http 1, campaign 121, renaissance 142, legion 20, migration-v02 17.
-- Screenshots at 412 px (docs/v0.10.1/screenshots/d104): the unit menu with its one-line title; the move confirmation with only 이동 확정 / 취소. The title stays one line (18 px tall at 15 px type) and also with the menu zoomed 135%.
-
-## Rerun after art pack G2 (on the build under review)
-- Browser suites, all exit 0 (docs/v0.10.1/evidence/rerun-g2-*.log; `PASS` lines): act4b 32, item-art 18, act4a 30, migration-v0100 14, legion 20, mobile-command 25, http 1, performance (frame medians 16.7 ms at 1440 and 390, as before).
-- Seen on screen (docs/v0.10.1/screenshots/g2): awakened Dario's painted bust and map sheet in M26 with his four skills and the painted ④ 백 번의 반격; Baldrick's four painted skill icons.
+## Play-test fixes in this build (D-104, D-106)
+- D-104: the unit menu's title is one line (15 px, ellipsis); the move confirmation is just 이동 확정 / 취소. Screenshots at 412 px: docs/v0.10.1/screenshots/d104.
+- D-106: on a 412 px phone the battle skills menu went from 628 to 296 px tall (one line per skill, no notes, 설명 → 상태 → 기술) and the forecast from 280 to 213 px; the unit sheet's tabs sit on one row and 기술 explains all four skills. Before/after: docs/v0.10.1/screenshots/d106.
+- Art packs G1 and G2 load in game: docs/v0.10.1/screenshots/g2 (awakened Dario in M26, Baldrick's painted icons).
 
 ## Browser suites (new or changed)
 | Suite | Checks | Result |
@@ -23,7 +20,7 @@ HTML SHA256 of the build under review: `7e575ebab846f487917a02090d529364e1835f04
 | **act4b-e2e (new):** a real v0.10.0 Ashen Village save (after M24) offers Mission 25 → the 「세 깃발의 땅」 world card and the alliance camp → M25 (the M14 betrayer's hardliners in the north camp; one camp allied and orderable, one neutral and not) → the objective panel names the camps and counts the leaders → after the win, forgive or lower the betrayed banner; the choice is kept and Mission 26 follows → M26 TURN 2 duel (strike, guard, finisher, refuse) decided → 설득 beside Baldrick → resolve 4: Baldrick yields and joins (ninth hero, Lv 19, tier 3) → the camp below the lion's pass with Baldrick in it → Baldrick's ①–④ → Dario awakened shows ④ 백 번의 반격; no page errors. 1440 and 390 | 32 | PASS |
 | **migration-v0100 (new):** shipped v0.10.0 HTML saves (village, battle checkpoint) and v0.10.0-source fixtures (the Ashen Village after M24, a mid-M24 battle) → schema 17 with every asset kept and the roster intact; the camp goes on to Mission 25; the M24 battle resumes at the border; restart works; Erik keeps ② ③ and shows ④; no runtime errors | 13 | PASS |
 | act4a-e2e: after M24 the way goes on to Mission 25; the M23 council tents now draw the painted G1 tents | 30 | PASS |
-| item-art, portraits, rooms (browser): Ines's and Thea's tier 3 busts and sheets, icon sheet L and the four tents from pack G1 load; icon sheet M from pack G2 (rerun) | as before | PASS |
+| item-art, portraits, rooms (browser): Ines's and Thea's tier 3 busts and sheets, icon sheet L and the four tents from pack G1 load; icon sheet M from pack G2 | as before | PASS |
 | migration-v02…v093 browser suites: schema 17 after import | as before | PASS |
 
 Screenshots: docs/v0.10.1/screenshots/act4b (M25 field, the banner choice, the world card, the M26 duel and yield, the lion's-pass camp, Baldrick's skills; 1440 and 390).
