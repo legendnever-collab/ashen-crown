@@ -392,3 +392,20 @@
 .info-bar{margin:2px 0}
 .info-body .grade-table th,.info-body .grade-table td{padding:3px 8px}
 .info-body .info-note{margin:6px 0;line-height:1.5}
+/* 2026-11-11 play-test (D-107): the town map stays clear — no floating place names (the bar above the map names the town),
+   gold alone at the top left (no longer under the quest button), no 에릭 찾기, the menu folded behind ☰ with only the next
+   story step beside it, and the D-pad off unless turned on from the menu (tap the map to walk). */
+.frontier-screen.fs .location-tag,.frontier-screen.fs .hub-map-controls{display:none!important}
+.frontier-screen.fs .hub-top{top:10px;left:12px;right:auto}
+.frontier-screen.fs .hub-top .gold{font-size:13px;padding:4px 9px}
+.frontier-screen.fs:not(.dpad-on) .dpad{display:none}
+.frontier-screen.fs .frontier-actions,.frontier-screen.fs .frontier-actions.open{position:absolute;right:10px;bottom:10px;z-index:6;display:flex;flex-direction:column;align-items:flex-end;flex-wrap:nowrap;gap:6px;max-width:calc(100% - 20px)}
+.frontier-screen.fs .hub-keep{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:6px}
+.frontier-screen.fs .hub-fold{display:flex;flex-direction:column;align-items:stretch;gap:4px;min-width:176px;padding:6px;background:#10262bf5;border:1px solid #d8bb7c99;border-radius:8px;box-shadow:0 6px 18px #000a}
+.frontier-screen.fs .hub-fold[hidden]{display:none}
+.frontier-screen.fs .hub-fold button{width:100%;justify-content:flex-start;min-height:40px}
+.frontier-screen.fs .hub-fold .hub-fold-zoom{display:flex;gap:4px}
+.frontier-screen.fs .hub-fold .hub-fold-zoom button{flex:1;justify-content:center;font-size:18px}
+.frontier-screen.fs .hub-fold .hub-dpad-toggle{font-size:12px;color:#c9d6cf}
+.frontier-screen.fs .frontier-actions .hub-menu-btn{width:46px;height:46px;padding:0;justify-content:center;font-size:21px;line-height:1}
+@media(pointer:fine){.frontier-screen.fs .hub-fold .hub-dpad-toggle{display:none}}
