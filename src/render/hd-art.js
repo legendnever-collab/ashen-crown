@@ -264,7 +264,7 @@ CAST.executor={...CAST.pursuerCaptain,name:'봉쇄 집행관',weapon:'spear'};
 for(const id of ['eric','elina','lia','sain','kai'])CAST[`${id}_t2`]={...CAST[id==='eric'?'eric_adv':id]};
 // v0.9.1 (ACT III art pack F2, D-088): the awakened (tier 3) looks and the recruits' tier 2 looks; the painted sheets carry
 // them, the vector figure falls back to the tier below. The guardian statue awake, and the forest elder.
-for(const id of ['eric','elina','sain','lia','kai'])CAST[`${id}_t3`]={...CAST[`${id}_t2`]}; /* pack F3 (D-091): Lia and Kai awakened */for(const id of ['thea','dario','ines'])CAST[`${id}_t2`]={...CAST[id]};for(const id of ['ines','thea'])CAST[`${id}_t3`]={...CAST[`${id}_t2`]}; /* pack G1 (D-103): Ines and Thea awakened */
+for(const id of ['eric','elina','sain','lia','kai'])CAST[`${id}_t3`]={...CAST[`${id}_t2`]}; /* pack F3 (D-091): Lia and Kai awakened */for(const id of ['thea','dario','ines'])CAST[`${id}_t2`]={...CAST[id]};for(const id of ['ines','thea','dario'])CAST[`${id}_t3`]={...CAST[`${id}_t2`]}; /* pack G1 (D-103): Ines and Thea awakened; pack G2 (D-105): Dario */
 CAST.guardianStatue={...CAST.fortGuard,name:'수호 석상',skin:'#9aa0a8',hair:'#80868e',metal:'#a4a8b0',coat:'#7c8088'};CAST.forestElder={...CAST.elder,name:'숲지기 장로',coat:'#4a6a3a',trim:'#c9b07a',style:'long'};CAST.inspector={...CAST.quartermaster,name:'군령부 감찰관',weapon:'sword'};
 export function wagonSprite(){return cached('wagon',()=>{const p=new Pix(48,52),W=ramp('#7a5634'),C=ramp('#e2d6b4');
  p.box(5,30,38,10,W);for(let x=7;x<42;x+=6)p.rect(x,31,1,8,W[1]);
