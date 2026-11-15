@@ -539,7 +539,7 @@ MISSIONS[27]=authored({id:27,title:'왕도의 성문',en:'The Royal Gate',
   {turn:7,units:[wall27('s5',1,0),wall27('s6',15,0),bow27('a5',11,0)]},{turn:9,units:[knight27('k5',8,0),cloak27('g3',0,13),cloak27('g4',17,13)]}],
  gate27:[[8,3],[9,3]],gateBlows:3,ramRow:4,ramSteps:2,sections:[[2,2],[5,2],[14,2]],ladders:[[2,3],[5,3],[14,3]],needSections:2,squadTrust:2,
  deployZone:s=>{const base=[];for(let y=9;y<=12;y++)for(let x=1;x<=16;x++)base.push([x,y]);return zone(base.filter(([x,y])=>Number.isFinite(TERRAIN[MISSIONS[27].map[y][x]].cost)&&!(x===8&&y===11)&&!MISSIONS[27].allies.some(a=>a.x===x&&a.y===y)));},
- deployments:{recommended:[[8,10],[9,11],[7,11],[2,10],[3,10],[5,10],[13,10],[14,10]],assault:[[2,9],[3,9],[5,9],[6,9],[13,9],[14,9],[8,10],[9,10]],defense:[[7,10],[9,10],[7,11],[9,11],[8,10],[4,10],[13,10],[10,12]]},
+ deployments:{recommended:[[7,11],[10,11],[7,10],[2,10],[3,10],[5,10],[13,10],[14,10]],assault:[[2,9],[3,9],[5,9],[6,9],[13,9],[14,9],[7,10],[10,10]],defense:[[7,10],[10,10],[7,11],[10,11],[6,11],[4,10],[13,10],[11,12]]},
  threatTurn:1,par:10,turnLimit:14,level:20,deployLimit:8,
  objective:'성문 부수기 + 성벽 2곳 장악 · 공성추가 부서지거나 TURN 14를 넘기면 패배',
  brief:'두 전선입니다. 공성추는 장수가 곁에 있으면 아군 턴마다 길을 따라 2칸 전진합니다(적이 곁에 있으면 1칸). 성문 앞에 닿으면 턴마다 한 번 성문을 칩니다 — 세 번이면 성문이 부서집니다. 사다리는 세 곳입니다. 사다리 위 성벽 칸에서 장수가 아군 턴을 마치면 그 구간을 장악합니다. 신뢰 2 이상인 깃발은 부대를 보내고(지시 가능), M26에서 발드릭이 「협력」했다면 철왕관 기병을 이끌고 함께합니다.'});

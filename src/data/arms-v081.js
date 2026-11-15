@@ -103,7 +103,7 @@ export const FEATS={
  25:featDef(25,'threeSeals','두 지도자가 HP 절반 이상으로 선 채 TURN 8 안에 강경파 대장을 쓰러뜨린다',(s,bf)=>bf.mission_25_leaders_half===true&&s.turn<=8),
  26:featDef(26,'blackMane','발드릭이 칼을 내린다 (합류 또는 협력)',(s,bf)=>bf.mission_26_baldrick==='join'||bf.mission_26_baldrick==='cooperate'),
  27:featDef(27,'ramHead','성벽 세 곳을 모두 장악하고 성문을 부순다',(s,bf)=>bf.mission_27_sections===3),
- 28:featDef(28,'nightLocket','젊은 아렌이 끝까지 선 채 TURN 10 안에 그 밤의 끝에 닿는다',(s,bf)=>bf.mission_28_aren_stood===true&&s.turn<=10)
+ 28:featDef(28,'nightLocket','젊은 아렌이 끝까지 선 채 TURN 8 안에 그 밤의 끝에 닿는다',(s,bf)=>bf.mission_28_aren_stood===true&&s.turn<=8)
 };
 // Supply carriers (조조전 식량대): one ordinary enemy per mission carries a crate; defeating it drops this tool into the bag
 // (usable at once; kept only if the battle is won, like every battle-time change to the bag).

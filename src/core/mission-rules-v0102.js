@@ -35,11 +35,12 @@ function moveRam27(s){const m=missionOf(s),st=s.missionState,r=ramOf27(s);if(!r|
   if(st.gate>=m.gateBlows){st.broken=true;st.brokenTurn=s.turn;for(const id of ['gl1','gl2']){const g=findUnit(s,id);if(g)g.benched=true;}s.feedback.push({type:'rescue',id:'ram',text:'성문 돌파'});enqueueStory(s,'27:gate');}else if(st.gate===1)enqueueStory(s,'27:blow');return;}
  const escorted=heroesOf102(s).some(h=>distance(h,r)===1);if(!escorted){s.log.push('공성추: 곁에 장수가 없어 멈춰 있습니다.');return;}
  const pressed=s.units.some(e=>e.team==='enemy'&&alive(e)&&distance(e,r)===1),from={x:r.x,y:r.y},path=[];
- for(let i=0;i<(pressed?1:m.ramSteps)&&r.y>m.ramRow;i++){const y=r.y-1;if(at(s,r.x,y)||!Number.isFinite(terrainAt(r.x,y,s)?.cost))break;r.y=y;path.push({x:r.x,y});}
+ const road=(x,y)=>missionOf(s).map[y]?.[x]==='r'&&!at(s,x,y);let side=false;
+ for(let i=0;i<(pressed?1:m.ramSteps)&&r.y>m.ramRow;i++){let moved=false;for(const [dx,dy] of [[0,-1],...(side?[]:[[1,0],[-1,0]])]){const x=r.x+dx,y=r.y+dy;if(!road(x,y))continue;if(dx)side=true;r.x=x;r.y=y;path.push({x,y});moved=true;break;}if(!moved)break;} /* it may step across to the other road lane once, like the M07 wagons */
  if(path.length){s.feedback.push({type:'move',id:'ram',path:[from,...path]});s.log.push(`공성추가 ${path.length}칸 전진합니다${pressed?' (습격을 받으며)':''}.`);}else s.log.push('공성추: 길이 막혀 기다립니다.');}
 export const M27={
  init(s){const c=s.campaign,send=squads27(c),lion=lion27(c);
-  s.units=s.units.filter(u=>!(u.banner27&&!send.includes(u.banner27))&&!(u.lion27&&!lion));
+  for(const u of s.units.filter(u=>u.banner27&&!send.includes(u.banner27)||u.lion27&&!lion)){u.benched=true;u.absent=true;} /* a squad that did not come stays off the field (kept in the save, never drawn) */
   for(const u of s.units.filter(u=>u.wall))u.post={x:u.x,y:u.y};
   s.missionState={waves:[],gate:0,broken:false,brokenTurn:null,sections:[false,false,false],ramLost:false,squads:send,lion};
   if(send.length)enqueueStory(s,'27:squads');if(lion)enqueueStory(s,'27:lion');},
