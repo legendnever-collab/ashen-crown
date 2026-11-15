@@ -67,6 +67,7 @@
     "test:act4a": "node tests/act4a-e2e.mjs",
     "test:migration-v093": "node tests/migration-v093.mjs",
     "test:act4b": "node tests/act4b-e2e.mjs",
+    "test:act4c": "node tests/act4c-e2e.mjs",
     "test:migration-v0100": "node tests/migration-v0100.mjs",
     "test:migration-v0101": "node tests/migration-v0101.mjs"
   },
