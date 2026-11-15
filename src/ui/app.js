@@ -21,7 +21,7 @@ import {canStartSkirmish,trialState,startSkirmish,returnToCamp,skirmishOf} from 
 import {classOf,potentialOf} from '../core/progression.js';
 import {CLASS_TREE,CLASS_ACTIONS,PROMOTION_LEVEL} from '../data/classes.js';
 import {skillByMode} from '../data/skills.js';
-import {newGame,setDeployment,presetDeployment,startBattle,canAct,canMove,moveUnit,undoMove,performAction,beginEnemyPhase,advanceEnemy,replay,restartStage,nextMission,useTogether,canOrderAlly,setAllyOrder,ALLY_ORDERS} from '../core/game.js';
+import {newGame,setDeployment,presetDeployment,startBattle,canAct,canMove,moveUnit,undoMove,performAction,beginEnemyPhase,advanceEnemy,replay,restartStage,nextMission,useTogether,useLastOrder,canOrderAlly,setAllyOrder,ALLY_ORDERS} from '../core/game.js';
 import {findUnit,at,alive,terrainAt,terrainCost,movement,pathTo,validTarget,forecast,skillCost,rangeFor,terrainSummary} from '../core/rules.js';
 import {loadGame,saveGame,resetSave,serialize,deserialize} from '../persistence/save-manager.js';
 import {missionOf,MISSIONS} from '../data/missions.js';
@@ -33,6 +33,7 @@ import {chooseTeacher19,chooseSuperior20,choosePlan20} from '../core/mission-rul
 import {chooseKing21,chooseAct3,ACT3_TRUST} from '../core/mission-rules-v093.js';
 import {chooseLead23} from '../core/mission-rules-v0100.js';
 import {chooseBanner25,camps25} from '../core/mission-rules-v0101.js';
+import {chooseConfession28} from '../core/mission-rules-v0102.js';
 import {recordOf,signatureDeed,RECORD_KO} from '../core/records.js';
 import {TOGETHER} from '../core/command.js';
 import {duelOpen,duelPick,DUEL_PICKS} from '../core/duel.js';
@@ -161,6 +162,7 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'king21-pick':{if(!needsKing21()||!chooseKing21(state,id))break;closeModal();enqueueStory(state,`after:21:${id}`);enqueueStory(state,'after:21:aren');openStory(state);commit();break;}
  case 'act3-pick':{if(!needsAct3()||!chooseAct3(state,id))break;closeModal();enqueueStory(state,`after:22:${id}`);enqueueStory(state,'after:22:end');openStory(state);commit();break;}
  case 'lead23-pick':{if(!needsLead23()||!chooseLead23(state,id))break;closeModal();enqueueStory(state,`after:23:${id}`);openStory(state);commit();break;}
+ case 'confession28-pick':{if(!needsConfession28()||!chooseConfession28(state,id))break;closeModal();enqueueStory(state,`after:28:${id}`);openStory(state);commit();break;} /* v0.10.2 (D-110) */
  case 'banner25-pick':{if(!needsBanner25()||!chooseBanner25(state,id))break;closeModal();enqueueStory(state,`after:25:${id}`);openStory(state);commit();break;}
  case 'plan20-pick':{if(!needsPlan20()||!choosePlan20(state,id))break;closeModal();enqueueStory(state,`after:20:${id}`);enqueueStory(state,'after:20:kai');enqueueStory(state,`after:20:baldrick:${state.campaign.flags.mission_13_baldrick==='halted'?'halted':'envoy'}`);enqueueStory(state,'after:20:next');openStory(state);commit();break;}
  case 'stones16-pick':{if(!needsStones16()||!chooseStones16(state,id))break;closeModal();enqueueStory(state,`after:16:${id}`);enqueueStory(state,'after:16:next');openStory(state);commit();break;}
@@ -187,6 +189,7 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'mode':ui.swapFirst=null;if(canAct(state,findUnit(state,ui.selected))||id==='move'&&canMove(state,findUnit(state,ui.selected))||state.screen==='deployment'){if((id==='skill'&&ui.selected==='eric'||['bulwark','overwatch','rallyCry','whirlwind','pilgrimLantern','tool:drum'].includes(id))&&state.screen==='battle'){ui.mode=id;ui.preview=ui.selected;ui.menu='forecast';ui.notice=null;ui.inspected=null;ui.phaseConfirm=false;render();break;}ui.mode=id;ui.menu=null;ui.preview=null;ui.notice=null;ui.inspected=null;ui.phaseConfirm=false;render();}break;
  case 'undo':if(undoMove(state,ui.selected)){ui.menu='root';ui.mode='choose';ui.preview=null;commit();}break;
  case 'ally-order':{const [aid,order]=String(id).split('|');if(setAllyOrder(state,aid,order)){closeModal();ui.notice=`${findUnit(state,aid)?.name||'동맹군'}: 「${ALLY_ORDERS[order]}」`;commit();}break;}
+ case 'last-order':{if(useLastOrder(state,ui.selected)){ui.menu='root';ui.notice=`아렌의 군령 「끝까지 함께」 · 다음 아군 턴에 ${findUnit(state,state.lastOrder.hero)?.name||''}이(가) HP 1로 일어납니다 (전투당 1회).`;commit();}break;} /* v0.10.2 (D-110) */
  case 'together':{if(useTogether(state,ui.selected)){ui.mode='choose';ui.menu='root';ui.preview=null;ui.notice='아렌의 군령 「함께 정한다」 · 이 장수가 다시 움직이고 행동합니다 (전투당 1회).';commit();}break;}
  case 'wait':await execute('wait');break;case 'item':await execute('item');break;
  case 'confirm':if(ui.preview)await execute(ui.mode,ui.preview);break;
@@ -356,7 +359,7 @@ function showOath11(){if(!needsOath11())return;modal('루시안의 제안',`<p>�
  frontierButton('oath11-pick','<b>맹세를 권한다</b> — 피난민이 성소에 든다 (성화 교단 신뢰 +1)','oath',false,'primary')+frontierButton('oath11-pick','<b>군단이 돌본다</b> — 맹세를 강요하지 않는다','legion',false,'primary')+'<button data-do="close-modal">조금 더 생각한다</button>');}
 function showRecords12(){if(!needsRecords12())return;const copy=!!state.campaign.flags.mission_12_copy_ready;modal('금지 기록의 행방',`<p>수도원에서 지켜 낸 기록(장부 기록·봉인술 연구·교단 명부)을 어떻게 할까요? 성화 교단의 신뢰와 이네스의 마음이 달라집니다. 고른 뒤에는 바꿀 수 없습니다.</p>${copy?'':'<p class="promo-note">몰래 베끼기는 리아와 카이가 이번 전투에서 모두 기록을 조사했을 때만 고를 수 있습니다.</p>'}`,
  frontierButton('records12-pick','<b>교단에 돌려준다</b> — 성화 교단 신뢰 +1','return',false,'primary')+frontierButton('records12-pick','<b>군단이 가져간다</b> — 실마리를 지킨다 (신뢰 −1)','take',false,'primary')+frontierButton('records12-pick','<b>리아·카이가 베끼고 돌려준다</b> — 신뢰 변화 없음','copy',!copy,'primary')+'<button data-do="close-modal">조금 더 생각한다</button>');}
-function offerCampChoice(){if(state.screen!=='exploration'||state.narrative.active||$('#modal-root').children.length)return;const k=needsOath11()?'oath11':needsRecords12()?'records12':needsRecords15()?'records15':needsStones16()?'stones16':needsOath17()?'oath17':needsTruth18()?'truth18':needsTeacher19()?'teacher19':needsSuperior20()?'superior20':needsPlan20()?'plan20':needsKing21()?'king21':needsAct3()?'act3':needsLead23()?'lead23':needsBanner25()?'banner25':null;if(!k||ui.campOffered===`${k}:${state.initialSeed}`)return;ui.campOffered=`${k}:${state.initialSeed}`;if(k==='oath11')showOath11();else if(k==='records12')showRecords12();else if(k==='records15')showRecords15();else if(k==='oath17')showOath17();else if(k==='truth18')showTruth18();else if(k==='teacher19')showTeacher19();else if(k==='superior20')showSuperior20();else if(k==='plan20')showPlan20();else if(k==='king21')showKing21();else if(k==='act3')showAct3();else if(k==='lead23')showLead23();else if(k==='banner25')showBanner25();else showStones16();}
+function offerCampChoice(){if(state.screen!=='exploration'||state.narrative.active||$('#modal-root').children.length)return;const k=needsOath11()?'oath11':needsRecords12()?'records12':needsRecords15()?'records15':needsStones16()?'stones16':needsOath17()?'oath17':needsTruth18()?'truth18':needsTeacher19()?'teacher19':needsSuperior20()?'superior20':needsPlan20()?'plan20':needsKing21()?'king21':needsAct3()?'act3':needsLead23()?'lead23':needsBanner25()?'banner25':needsConfession28()?'confession28':null;if(!k||ui.campOffered===`${k}:${state.initialSeed}`)return;ui.campOffered=`${k}:${state.initialSeed}`;if(k==='oath11')showOath11();else if(k==='records12')showRecords12();else if(k==='records15')showRecords15();else if(k==='oath17')showOath17();else if(k==='truth18')showTruth18();else if(k==='teacher19')showTeacher19();else if(k==='superior20')showSuperior20();else if(k==='plan20')showPlan20();else if(k==='king21')showKing21();else if(k==='act3')showAct3();else if(k==='lead23')showLead23();else if(k==='banner25')showBanner25();else if(k==='confession28')showConfession28();else showStones16();}
 
 // v0.9.0 (D-079): the M15 records and the M16 ward stones are decided in the camp (fixed once chosen; feed ACT IV, OPEN).
 function needsRecords15(){return state.missionId===15&&!state.practice&&state.frontier?.phase==='aftermath'&&state.campaign.completed.includes(15)&&!state.campaign.choices?.m15_records;}
@@ -397,6 +400,11 @@ function needsBanner25(){return state.missionId===25&&!state.practice&&state.fro
 function showBanner25(){if(!needsBanner25())return;const b=state.campaign.flags?.mission_25_betrayer||camps25(state.campaign).north,name=FACTIONS[b]?.name||'';
  modal('등을 돌린 깃발',`<p>강경파의 깃발이 내려갔습니다. M14에서 등을 돌렸던 <b>${esc(name)}</b>의 지도자가 처분을 군단에게 맡깁니다. 어느 쪽도 정답은 아니며 신뢰와 ACT IV의 결말로 이어집니다. 고른 뒤에는 바꿀 수 없습니다.</p>`,
  frontierButton('banner25-pick',`<b>용서하고 받아들인다</b> — ${esc(name)} 신뢰 +2. 다른 두 깃발은 지켜본다`,'forgive',false,'primary')+frontierButton('banner25-pick',`<b>깃발을 내리게 한다</b> — ${esc(name)} 신뢰 −1, 다른 두 깃발 신뢰 +1`,'lower',false,'primary')+'<button data-do="close-modal">조금 더 생각한다</button>');}
+// v0.10.2 (D-110): Aren's confession after M28 — to the whole legion, or to Erik alone (kept for the endings).
+function needsConfession28(){return state.missionId===28&&!state.practice&&state.frontier?.phase==='aftermath'&&state.campaign.completed.includes(28)&&!state.campaign.choices?.m28_confession;}
+function showConfession28(){if(!needsConfession28())return;
+ modal('아렌의 고백',`<p>잿빛 밤, 아렌은 관문 밖에 사람들이 남는 것을 알고 봉인 명령서를 전했습니다. 그 사실을 누구에게 털어놓을지 아렌이 에릭에게 묻습니다. 어느 쪽도 정답은 아니며 ACT IV의 결말로 이어집니다. 고른 뒤에는 바꿀 수 없습니다.</p>`,
+ frontierButton('confession28-pick','<b>군단 모두에게 말한다</b> — 모두가 그 밤의 무게를 함께 안다','all',false,'primary')+frontierButton('confession28-pick','<b>에릭에게만 말한다</b> — 아렌이 스스로 말할 때를 기다린다','eric',false,'primary')+'<button data-do="close-modal">조금 더 생각한다</button>');}
 function needsLead23(){return state.missionId===23&&!state.practice&&state.frontier?.phase==='aftermath'&&state.campaign.completed.includes(23)&&!state.campaign.choices?.m23_lead;}
 function needsAct3(){return state.missionId===22&&!state.practice&&state.frontier?.phase==='aftermath'&&state.campaign.completed.includes(22)&&!state.campaign.choices?.act3_choice;}
 function showKing21(){if(!needsKing21())return;modal('국왕의 부탁',`<p>이름을 잊은 국왕이 아렌에게 부탁했습니다. "나를 쉬게 해다오." 국왕이 결계를 놓으면, 결계를 대신할 길이 없는 한 왕국의 결계가 무너집니다. 아렌이 답합니다. 고른 뒤에는 바꿀 수 없습니다.</p>`,

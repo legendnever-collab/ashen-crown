@@ -42,7 +42,7 @@ export function movement(s,u,ignore=false){
 // slips through, and civilians on the move are not held (they are escorted, not fighting). Props, objects, civilians, benched or withdrawing units, and units without a way to fight hold no ground.
 export const ZOC_FREE=new Set(['rogue']);
 const holdsGround=t=>alive(t)&&!t.benched&&!t.withdrawing&&!t.prop&&!t.clerk&&(t.team==='ally'||t.team==='allied'||t.team==='enemy')&&Array.isArray(t.range)&&t.range[1]>0&&(t.atk||0)>0;
-export const supportable=t=>!!t&&alive(t)&&!t.benched&&t.team!=='object'&&!t.prop&&!['wagon','beacon','brazier','cabinet','ritualCircle','wardStone','statue','wardTree'].includes(t.kind);
+export const supportable=t=>!!t&&alive(t)&&!t.benched&&t.team!=='object'&&!t.prop&&!['wagon','beacon','brazier','cabinet','ritualCircle','wardStone','statue','wardTree','ram'].includes(t.kind); /* v0.10.2 M27: the battering ram is timber, not a patient */
 export function controlZone(s,u){if(u.team==='civilian'||u.team==='object'||ZOC_FREE.has(u.movementProfile||CLASS_MOVEMENT[HERO_CLASS[u.id]]?.profile))return null;const side=sideOf(u),z=new Set();
  for(const t of s.units)if(t.id!==u.id&&sideOf(t)!==side&&holdsGround(t)&&(side==='legion'?t.team==='enemy':t.team==='ally'||t.team==='allied'))for(const [dx,dy] of [[0,-1],[-1,0],[1,0],[0,1]])z.add(key(t.x+dx,t.y+dy));return z.size?z:null;}
 // v0.5 Bulwark zone: tiles next to a living ally whose Bulwark is up (null when none, so ACT I paths are untouched).

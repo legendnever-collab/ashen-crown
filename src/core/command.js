@@ -15,4 +15,8 @@ export const commandShield=(s,t)=>s?.command==='leaveNoOne'&&(t?.team==='civilia
 // v0.9.3 (D-093): Aren's awakening after M21 — 「함께 정한다」, a command given during battle: once a battle, one hero who has
 // already acted this player phase acts again (move and action). Open from M21 on once he has awakened; never in practice.
 export const TOGETHER={ko:'함께 정한다',effect:'전투 중 한 번 · 행동을 마친 장수 한 명이 다시 움직이고 행동한다'};
+// v0.10.2 (D-110, ACT4_DESIGN §7): Aren's last order 「끝까지 함께」 — once a battle from M28, one fallen hero (the same choice as
+// the Dawn Prayer: the highest level first) stands again with 1 HP at the start of the next player phase. Never in practice.
+export const LAST_ORDER={ko:'끝까지 함께',effect:'전투 중 한 번 · 쓰러진 장수 한 명이 다음 아군 턴에 HP 1로 일어난다'};
+export const lastOrderOpen=s=>!!s&&!s.practice&&s.missionId>=28&&s.missionId<100&&!s.lastOrder;
 export const togetherOpen=s=>!!s&&!s.practice&&s.missionId>=21&&s.missionId<100&&!!s.campaign?.flags?.aren_awakened&&!s.together;

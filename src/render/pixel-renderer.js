@@ -49,6 +49,12 @@ export class BattleRenderer{
   if(s.screen==='battle'&&s.missionId===24&&s.missionState){const rows=ashRows24(s),w=missionOf(s).width;for(let ty=0;ty<rows;ty++)for(let tx=0;tx<w;tx++){if(!Number.isFinite(terrainAt(tx,ty,s)?.cost))continue;rect(c,'rgba(96,92,90,.42)',tx*TILE,ty*TILE,TILE,TILE);for(let i=0;i<3;i++){const fx=(tx*37+i*23+Math.floor(now/90)*(i+1))%60,fy=(ty*29+i*41+Math.floor(now/70))%60;rect(c,'rgba(210,206,200,.55)',tx*TILE+2+fx,ty*TILE+2+fy,2,2);}}
    if(rows>0&&rows<missionOf(s).ashRows){c.strokeStyle='rgba(230,140,90,.7)';c.lineWidth=2;c.beginPath();c.moveTo(0,rows*TILE);c.lineTo(w*TILE,rows*TILE);c.stroke();}
    if(!gateClosed24(s))for(const [gx,gy] of missionOf(s).gate){c.strokeStyle=`rgba(240,206,120,${.45+.25*Math.sin(now/300)})`;c.lineWidth=2;c.strokeRect(gx*TILE+4,gy*TILE+4,56,56);}}
+  /* v0.10.2 M27: the three ladders up the wall (pack G3's painted ladder when imported) and the sections above them — gold while open, green once taken */
+  if(s.missionId===27&&s.screen==='battle'&&s.missionState){const m=missionOf(s);m.ladders.forEach(([lx,ly],i)=>{const x=lx*TILE,y=ly*TILE;if(!drawProp(c,'ladder',x+32,y+60,1.1)){rect(c,'#5a3e28',x+14,y-8,6,70);rect(c,'#5a3e28',x+44,y-8,6,70);for(let k=0;k<6;k++)rect(c,'#7a5634',x+14,y-2+k*11,36,4);}
+   const [sx,sy]=m.sections[i],took=s.missionState.sections[i];c.strokeStyle=took?'rgba(120,210,130,.85)':`rgba(240,206,120,${.45+.25*Math.sin(now/300+i)})`;c.lineWidth=2;c.strokeRect(sx*TILE+4,sy*TILE+4,56,56);});
+   if(!s.missionState.broken){for(const [gx,gy] of m.gate27){c.strokeStyle=`rgba(232,120,90,${.45+.25*Math.sin(now/260)})`;c.lineWidth=2;c.strokeRect(gx*TILE+4,gy*TILE+4,56,56);}}}
+  /* v0.10.2 M28: the Ashen Night's memory — a cold grey haze over the palace */
+  if(s.missionId===28&&s.screen==='battle'){c.fillStyle='rgba(170,176,190,.10)';c.fillRect(0,0,missionOf(s).width*TILE,missionOf(s).height*TILE);}
   if(s.screen==='battle'&&s.missionId===23&&s.missionState)for(const t of s.units.filter(u=>u.kind==='tent'&&!u.inert&&(s.missionState.siege?.[u.id]||0)>0)){c.strokeStyle=`rgba(232,90,74,${.6+.3*Math.sin(now/200)})`;c.lineWidth=3;c.strokeRect(t.x*TILE+2,t.y*TILE+2,60,60);}
   if(s.screen==='battle'){for(const r of s.runes||[]){rect(c,'rgba(150,104,232,.32)',r.x*TILE+2,r.y*TILE+2,60,60);c.strokeStyle='rgba(206,170,255,.85)';c.lineWidth=2;c.strokeRect(r.x*TILE+8,r.y*TILE+8,48,48);}
    for(const a of s.units)if(a.team==='ally'&&alive(a)&&(a.bulwark||a.overwatch)){c.lineWidth=2;c.setLineDash([5,4]);c.strokeStyle=a.bulwark?'rgba(240,200,90,.9)':'rgba(236,98,82,.75)';
@@ -83,7 +89,7 @@ export class BattleRenderer{
    if(u.team==='ally'&&u.acted&&s.screen==='battle')c.globalAlpha=.5;
    c.fillStyle=u.team==='ally'?'rgba(80,160,255,.5)':u.team==='enemy'?'rgba(230,70,60,.5)':u.team==='object'?'rgba(233,196,106,.5)':'rgba(240,210,110,.55)';c.beginPath();c.ellipse(ux,uy+23,17,5.5,0,0,Math.PI*2);c.fill();
    if(ui.selected===u.id){c.strokeStyle='#fff0b8';c.lineWidth=2;c.strokeRect(ux-31,uy-36,60,60);rect(c,'#f4d695',ux-4,uy-37,8,4);}
-   if(u.team==='object'||u.prop)(u.evidence?drawEvidence:drawMissionObject)(c,u,ux,uy,now);else{c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(ux,uy+23,13,4,0,0,Math.PI*2);c.fill();drawHDFigure(c,hdCastFor(u,s.missionId),ux,uy+24,{facing,pose,frame:pose==='walk'?1+Math.floor(now/120)%4:(u.team==='ally'&&u.acted)||u.team==='civilian'||s.screen!=='battle'?0:1+Math.floor((now+u.x*97+u.y*53)/280)%4});}c.globalAlpha=1;
+   if(u.team==='object'||u.prop)(u.evidence?drawEvidence:drawMissionObject)(c,u,ux,uy,now);else if(u.kind==='ram')drawRam(c,u,ux,uy,now);else{c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(ux,uy+23,13,4,0,0,Math.PI*2);c.fill();const tint=u.remnant?'grayscale(1) brightness(1.25) contrast(.85)':u.memory28?'sepia(.45) saturate(1.2) brightness(1.06)':null;if(tint){c.save();c.filter=tint;if(u.remnant)c.globalAlpha*=.82;}drawHDFigure(c,hdCastFor(u,s.missionId),ux,uy+24,{facing,pose,frame:pose==='walk'?1+Math.floor(now/120)%4:(u.team==='ally'&&u.acted)||u.team==='civilian'||s.screen!=='battle'?0:1+Math.floor((now+u.x*97+u.y*53)/280)%4});if(tint)c.restore();}c.globalAlpha=1;
    if(threatIds.has(u.id)&&Math.floor(now/400)%2){c.fillStyle='#e8594a';c.beginPath();c.moveTo(ux-9,uy-50);c.lineTo(ux+9,uy-50);c.lineTo(ux,uy-38);c.closePath();c.fill();c.fillStyle='#fff2d0';c.font='bold 12px sans-serif';c.textAlign='center';c.fillText('!',ux,uy-41);c.textAlign='start';}
    if(u.guarding&&!u.guardUsed){rect(c,'#2a3a44',ux+12,uy-44,13,15);rect(c,'#e7c783',ux+13,uy-43,11,13);rect(c,'#3f7fa3',ux+15,uy-41,7,9);}
    statusChips(c,u,s,ux,uy);
@@ -116,7 +122,17 @@ export class BattleRenderer{
  }
 }
 // M06 mission objects (original): rune seal stones, the side-gate lever and the side gate itself.
+// v0.10.2 M27 battering ram (game-drawn until pack G3): a capped log on four wheels under a hide roof.
+function drawRam(c,u,x,y,now){c.fillStyle='rgba(20,24,30,.35)';c.beginPath();c.ellipse(x,y+22,28,6,0,0,Math.PI*2);c.fill();if(drawProp(c,'ram',x,y+24,1.2))return;
+ rect(c,'#3a281a',x-24,y+10,48,8);for(const wx of [-20,12])for(const dy of [0]){c.fillStyle='#2a1e14';c.beginPath();c.arc(x+wx+4,y+20+dy,6,0,Math.PI*2);c.fill();c.fillStyle='#6b4a30';c.beginPath();c.arc(x+wx+4,y+20+dy,3,0,Math.PI*2);c.fill();}
+ rect(c,'#6b4a30',x-8,y-26,16,40);rect(c,'#8a6440',x-8,y-26,4,40);rect(c,'#5a5f66',x-10,y-34,20,10);rect(c,'#8a8f94',x-10,y-34,20,3);
+ c.fillStyle='#7a6a52';c.beginPath();c.moveTo(x-26,y+10);c.lineTo(x,y-14);c.lineTo(x+26,y+10);c.closePath();c.fill();c.fillStyle='#5a4c3a';c.beginPath();c.moveTo(x,y-14);c.lineTo(x+26,y+10);c.lineTo(x+14,y+10);c.closePath();c.fill();}
 function drawMissionObject(c,u,x,y,now){const done=u.rescued,glow=.5+.3*Math.sin(now/300+u.x);
+ // v0.10.2 M28 memory fragment (game-drawn until pack G3): a floating ash-grey shard that glows until it is read.
+ if(u.kind==='memory'){const read=!!u.inert,f=Math.sin(now/420+u.x)*3;if(drawProp(c,read?'memory_read':'memory',x,y+24+(read?0:f),1))return;c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(x,y+20,14,4,0,0,Math.PI*2);c.fill();
+  if(!read){c.fillStyle=`rgba(230,220,255,${.16+glow*.2})`;c.beginPath();c.ellipse(x,y-6+f,24,30,0,0,Math.PI*2);c.fill();}
+  c.fillStyle=read?'#6c6e76':'#c9c6dc';c.beginPath();c.moveTo(x,y-28+f);c.lineTo(x+11,y-6+f);c.lineTo(x+3,y+12+f);c.lineTo(x-9,y-4+f);c.closePath();c.fill();c.fillStyle=read?'#4c4e56':'#9a96b8';c.beginPath();c.moveTo(x,y-28+f);c.lineTo(x+3,y+12+f);c.lineTo(x-9,y-4+f);c.closePath();c.fill();
+  if(!read){rect(c,'#fff6e0',x-1,y-18+f,3,3);rect(c,'#fff6e0',x+4,y-8+f,2,2);}return;}
  // v0.9.1 M17 guardian statue (original, temporary): a stone knight on a plinth; sleeping grey, sworn blue-gold, claimed red.
  if(u.kind==='statue'&&!u.woke&&drawProp(c,'guardianStatue_sleeping',x,y+24,1.15))return; // pack F2 (D-088)
  // pack F2: an awakened statue is the painted stone knight, in the light of the side it woke for

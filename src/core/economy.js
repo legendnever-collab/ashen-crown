@@ -6,7 +6,7 @@ import {HEROES,ALL_HEROES} from '../data/game-data.js';
 import {gearBonus,maxStar,starFor,expCap,temperCost,temper,gearOnSale,rareShelf,fx} from './arms.js';
 export const TREASURE_COUNT=Object.values(GEAR).filter(g=>g.treasure).length; // v0.9.2: every treasure can be held besides the 30 bought pieces
 export const CARRY_CAPACITY=8,GEAR_CAPACITY=30,SLOTS=['weapon','armor','accessory','treasure']; // v0.8.0: bag 6 → 8 (D-073 Q4); v0.8.1: gear 24 → 30 bought pieces (+ the 12 treasures), a treasure slot
-export const rewardFor=id=>({1:100,2:120,3:140,4:160,5:180,6:200,7:220,8:240,9:260,10:280,11:300,12:320,13:340,14:360,15:380,16:400,17:420,18:440,19:460,20:480,21:500,22:520,23:540,24:560,25:580,26:600}[id]||0);
+export const rewardFor=id=>({1:100,2:120,3:140,4:160,5:180,6:200,7:220,8:240,9:260,10:280,11:300,12:320,13:340,14:360,15:380,16:400,17:420,18:440,19:460,20:480,21:500,22:520,23:540,24:560,25:580,26:600,27:620,28:640}[id]||0);
 export function initialEconomy(completed=[]){return {gold:180+[...new Set(completed)].reduce((a,id)=>a+rewardFor(id),0),items:{medium:0,ether:0,ward:0},gear:[],equipped:Object.fromEntries(HEROES.map(h=>[h.id,{weapon:null,armor:null,accessory:null,treasure:null}])),next:1,nonce:0,transactions:[],rewards:[...new Set(completed)],rewardClaims:[],rewardHistory:[],rewardPending:[]};}
 export function ensureEconomy(s){if(!s.campaign.economy)s.campaign.economy=initialEconomy(s.campaign.completed);if(!s.economy)s.economy=structuredClone(s.campaign.economy);return s.economy;}
 export const itemCount=e=>Object.values(e.items).reduce((a,b)=>a+b,0);

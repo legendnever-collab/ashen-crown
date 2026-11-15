@@ -27,7 +27,8 @@ export function act2HubFor(missionId,phase='preparation'){const after=phase==='a
  // v0.10.0 (D-100): ACT IV — the alliance camp under the summit camp's painting for M23 (preparation and after), the Ashen
  // Village by the last border (its after-the-raid painting) for M24.
  // v0.10.1 (D-102): M25 back at the alliance camp (the summit painting), M26 at the camp below the lion's pass (the oath camp).
- if(missionId>=26)return 'oathcamp';if(missionId===25)return 'summit';if(missionId===24)return 'village_raid';if(missionId===23)return 'summit';
+ // v0.10.2 (D-110): the capital's lower city again for M27–M28 (ACT4_DESIGN §9).
+ if(missionId>=27)return 'capital';if(missionId===26)return 'oathcamp';if(missionId===25)return 'summit';if(missionId===24)return 'village_raid';if(missionId===23)return 'summit';
  if(missionId>=19)return 'capital';if(missionId===18)return 'forest';if(missionId===17)return 'keep';
  if(missionId>=16&&after)return 'fieldcamp';if(missionId>=15)return 'capital';
  if(missionId>=13)return 'summit';return 'velmar';}
@@ -218,7 +219,7 @@ HV5_SPECS.oathcamp.npcs=[...HV5_SPECS.oathcamp.npcs,['thea','테아 · 경계',1
 // painted it over Velmar's footprint, so it keeps Velmar's walk mask, doors, forge and shop; its rooms are the 'capital'
 // family. After M16 the legion camps on the western plain under the night bivouac painting.
 HV5_SPECS.capital={...HV5_SPECS.velmar,name:'Royal Lower City · 왕도 하층가',kind:'capital',art:'hub_capital',
- npcs:HV5_SPECS.velmar.npcs.map(n=>n[0]==='elder'?['elder','늙은 기록관',n[2],n[3],{look:'archivist'}]:n[0]==='refugee'?['refugee','하층가 주민',n[2],n[3]]:n[0]==='guard'?['guard','왕도 경비대',n[2],n[3]]:n[0]==='dario'?['dario','다리오 · 골목',n[2],n[3],{kind:'hero',requires:'dario'}]:n[0]==='thea'?['thea','테아 · 운하 길',n[2],n[3],{kind:'hero',requires:'thea'}]:n).concat([['ines','이네스 · 광장',19,9,{kind:'hero',requires:'ines'}]])};
+ npcs:HV5_SPECS.velmar.npcs.map(n=>n[0]==='elder'?['elder','늙은 기록관',n[2],n[3],{look:'archivist'}]:n[0]==='refugee'?['refugee','하층가 주민',n[2],n[3]]:n[0]==='guard'?['guard','왕도 경비대',n[2],n[3]]:n[0]==='dario'?['dario','다리오 · 골목',n[2],n[3],{kind:'hero',requires:'dario'}]:n[0]==='thea'?['thea','테아 · 운하 길',n[2],n[3],{kind:'hero',requires:'thea'}]:n).concat([['ines','이네스 · 광장',19,9,{kind:'hero',requires:'ines'}],['baldrick','발드릭 · 성문 쪽',6,9,{kind:'hero',requires:'baldrick',fromMission:27}]])};
 HV5_SPECS.fieldcamp={...HV5_SPECS.bivouac,name:'Field Camp · 잊힌 전장 야영지',kind:'fieldcamp',
  npcs:[...HV5_SPECS.bivouac.npcs.map(n=>n[0]==='elder'?['elder','근처 마을 노인',16,5]:n[0]==='refugee'?['refugee','피난민',10,10]:n),
   ['thea','테아 · 경계',13,4,{kind:'hero',requires:'thea'}],['dario','다리오 · 모닥불',11,9,{kind:'hero',requires:'dario'}],['ines','이네스 · 모닥불',14,6,{kind:'hero',requires:'ines'}]]};
