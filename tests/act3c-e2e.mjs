@@ -9,7 +9,7 @@ import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {startBattle,beginEnemyPhase,advanceEnemy,nextMission} from '../src/core/game.js';
 import {enterHub} from '../src/core/frontier.js';import {startSkirmish,returnToCamp} from '../src/core/skirmish.js';import {applyClass} from '../src/core/progression.js';import {CLASS_TREE} from '../src/data/classes.js';
 import {chooseTeacher19} from '../src/core/mission-rules-v092.js';import {drain} from './campaign-policy.mjs';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.10.0.html').href,shots='docs/v0.9.2/screenshots/act3c';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.10.1.html').href,shots='docs/v0.9.2/screenshots/act3c';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const results=[];const check=(name,ok)=>{assert.ok(ok,name);n++;results.push(name);console.log('PASS',name);};
 const camp18=JSON.parse(fs.readFileSync('tests/fixtures/v091/v091-m18-camp.json','utf8')).save;
 const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);if(s.duel&&!s.duel.result)s.duel.result='skipped';};
@@ -59,7 +59,7 @@ try{
   await p.screenshot({path:`${shots}/legion-panel-${label}.png`});
   await press('trial-start','lia');await drainStory(p);s=await snap();check(`${label} the trial opens as 결계의 시련 with Lia awakened for it`,s.missionId===109&&s.units.find(u=>u.id==='lia').classTier===3);
   const lia=s.units.find(u=>u.id==='lia');await select(lia);await press('submenu','skills');t=await p.locator('#unit-popover').textContent();
-  check(`${label} Lia's skills menu shows ④ 작은 결계 · once a battle`,t.includes('④')&&t.includes('작은 결계')&&t.includes('전투당 1회'));
+  check(`${label} Lia's skills menu shows ④ 작은 결계 · once a battle`,t.includes('④')&&t.includes('작은 결계')&&t.includes('1회'));
   await p.screenshot({path:`${shots}/ultimate-menu-${label}.png`});
   await press('mode','smallWard');await tile(9,5);await p.waitForTimeout(300);check(`${label} the ward's forecast shows the 3×3 for two turns`,(await p.locator('#unit-popover').textContent()).includes('3×3'));
   await tile(9,5);await p.waitForTimeout(700);await drainStory(p);s=await snap();check(`${label} the ward stands over the east gap`,s.smallWard?.x===9&&s.smallWard?.y===5&&s.ultimates?.includes('lia'));

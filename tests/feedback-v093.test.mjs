@@ -46,6 +46,6 @@ test('Purify reaches anyone too; purifying a foe clears it but earns nothing',()
  assert.ok(performAction(s2,'sain','purify','kai').ok);assert.ok(sn.earnedXP>e2,'purifying a hero still teaches');
 });
 test('Thea has a capital lance (and Ines a capital mace) on the lower-city shelf',()=>{
- const l=GEAR.royalLance,m=GEAR.royalMace;assert.deepEqual(l.heroes,['thea']);assert.equal(l.home,'capital');assert.equal(l.after,15);assert.equal(l.bonus.atk,6);assert.equal(l.bonus.chargeDmg,2);
+ const l=GEAR.royalLance,m=GEAR.royalMace;assert.deepEqual(l.heroes,['thea','baldrick']); /* v0.10.1: and Baldrick */assert.equal(l.home,'capital');assert.equal(l.after,15);assert.equal(l.bonus.atk,6);assert.equal(l.bonus.chargeDmg,2);
  assert.ok(l.bonus.atk>GEAR.crownGuardLance.bonus.atk,'better than the guard lance');assert.deepEqual(m.heroes,['ines']);assert.equal(m.after,16);
 });

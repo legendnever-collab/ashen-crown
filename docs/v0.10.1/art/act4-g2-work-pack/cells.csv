@@ -1,0 +1,8 @@
+sheet,cell,id,kind,name_en,name_ko,description
+M,1,hundredCounters,skill,A Hundred Counters,백 번의 반격,"A Hundred Counters (백 번의 반격): a long sword and a short parrying blade crossed, a ring of many small silver arcs around them like blows turned aside."
+M,2,lionStrike,skill,Lion Strike,사자의 일격,Lion Strike (사자의 일격): a heavy black-iron lance head striking down with a lion-shaped plume of dark smoke behind it (no emblem).
+M,3,lionRoar,skill,Lion's Roar,사자의 포효,"Lion's Roar (사자의 포효): a dark lion-shaped wave of sound rolling outward in rings over a small plain shield, binding chains of light at its edge."
+M,4,lionBanner,skill,Lion Banner,사자의 깃발,"Lion Banner (사자의 깃발): a black banner with a plain gold border on a lance, its cloth spread like a shelter over two small plain shields."
+M,5,lastCharge,skill,The Black Lion's Resolve,검은 사자의 결의,"The Black Lion's Resolve (검은 사자의 결의): a black-armoured rider's lance thrust in a full circle, a ring of broken arrows and a dark gold glow around it."
+M,6,threeSeals,treasure,The Seal of the Three Houses,세 왕가의 인장,"The Seal of the Three Houses (세 왕가의 인장): three small wax seals in slate-blue, moss-green and flame-red pressed side by side on one pale ribbon (no symbols on the seals)."
+M,7,blackMane,treasure,The Black Mane,검은 갈기,"The Black Mane (검은 갈기): a braided lock of thick black horse mane bound with a plain gold ring, a faint warm glow."

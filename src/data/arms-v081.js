@@ -44,7 +44,7 @@ export const GEAR_V081=Object.fromEntries(CATALOG_GEAR.filter(c=>c.tier>1).map(c
 // fx keys read by the rules: pouch (HP healed once below half), hawk (bow range +1), sage (EXP +%), twin (second strike %),
 // silence (no counter), mirror (ranged damage halved), clear (status immunity), reliquary (HP per turn), mana (MP per turn),
 // lion (adjacent allies DEF +), seal (opening turns with MOV +1 for the legion).
-const ARMS_ALL8=['eric','elina','lia','sain','kai','thea','dario','ines'];
+const ARMS_ALL8=['eric','elina','lia','sain','kai','thea','dario','ines','baldrick']; /* v0.10.1: and Baldrick */
 const TREASURE_RULES={
  herbPouch:[{},{res:1},'pouch',[15,15,20,20,25],ARMS_ALL8],hawkFeather:[{},{hit:3},'hawk',[1,1,1,1,1],['elina']],sageNotebook:[{},{res:1},'sage',[20,20,25,25,30],ARMS_ALL8],
  windHorseshoe:[{mov:2},{spd:1},null,null,ARMS_ALL8],twinDaggers:[{},{atk:1},'twin',[50,50,75,75,100],ARMS_ALL8],silenceShield:[{},{def:1},'silence',[1,1,1,1,1],ARMS_ALL8],
@@ -59,7 +59,9 @@ const TREASURE_RULES={
  // v0.9.3 (D-093): the king's signet steadies those beside the wearer like the lion epaulette; the herald's horn calls the legion on like the alliance seal
  kingsSignet:[{def:2},{def:1},'lion',[1,1,1,1,2],ARMS_ALL8],heraldHorn:[{spd:1},{spd:1},'seal',[1,1,2,2,3],ARMS_ALL8],
  // v0.10.0 (D-100): the alliance banner steadies those beside the bearer like the lion epaulette; the last lantern heals like the reliquary
- allianceBanner:[{atk:1,def:1},{def:1},'lion',[1,1,1,1,2],ARMS_ALL8],lastLantern:[{res:2},{res:1},'reliquary',[4,4,6,6,8],ARMS_ALL8]
+ allianceBanner:[{atk:1,def:1},{def:1},'lion',[1,1,1,1,2],ARMS_ALL8],lastLantern:[{res:2},{res:1},'reliquary',[4,4,6,6,8],ARMS_ALL8],
+ // v0.10.1 (D-102): the seal of the three houses moves the army on the first turn like the alliance seal; the black mane steadies like the lion epaulette
+ threeSeals:[{res:1},{res:1},'seal',[1,1,2,2,3],ARMS_ALL8],blackMane:[{atk:2},{atk:1},'lion',[1,1,1,1,2],ARMS_ALL8]
 };
 export const TREASURE_FX_KO={oath:()=>'전투마다 한 번, 쓰러질 피해를 받아도 HP 1로 버팀',pouch:n=>`HP 절반 아래로 떨어지면 1회 HP +${n}`,hawk:()=>'활 사거리 +1',sage:n=>`얻는 경험치 +${n}%`,twin:n=>`반격을 받으면 한 번 더 공격 (${n}%)`,silence:()=>'이 장수가 공격한 적은 반격하지 못함',mirror:()=>'원거리 피해 절반',clear:()=>'상태이상 면역',reliquary:n=>`턴마다 HP +${n}`,mana:n=>`턴마다 MP +${n}`,lion:n=>`인접 아군 DEF +${n}`,seal:n=>`전투 첫 ${n}턴 전군 MOV +1`,mist:()=>'안개 속에서도 사거리가 줄지 않음'};
 export const TREASURES=Object.fromEntries(CATALOG_TREASURES.map(c=>{const [bonus,grow,fx,power,heroes]=TREASURE_RULES[c.id];return [c.id,{name:c.ko,en:c.en,icon:'✧',slot:'treasure',heroes,price:0,bonus,grow,fx,power,treasure:true,tier:'T',description:c.effect}];}));
@@ -94,7 +96,10 @@ export const FEATS={
  22:featDef(22,'heraldHorn','전령 셋이 모두 선 채로 TURN 8 안에 세 낭독을 마친다',(s,bf)=>bf.mission_22_heralds===3&&s.turn<=8),
  // v0.10.0 (D-100, PROPOSED)
  23:featDef(23,'allianceBanner','세 지도자가 모두 선 채로 천막을 하나도 빼앗기지 않는다',(s,bf)=>bf.mission_23_leaders===3&&bf.mission_23_tents===3),
- 24:featDef(24,'lastLantern','피난민 여덟 명을 모두 관문 안에 들이고 관문을 닫는다',(s,bf)=>bf.mission_24_inside===8)
+ 24:featDef(24,'lastLantern','피난민 여덟 명을 모두 관문 안에 들이고 관문을 닫는다',(s,bf)=>bf.mission_24_inside===8),
+ // v0.10.1 (D-102, PROPOSED)
+ 25:featDef(25,'threeSeals','두 지도자가 HP 절반 이상으로 선 채 TURN 8 안에 강경파 대장을 쓰러뜨린다',(s,bf)=>bf.mission_25_leaders_half===true&&s.turn<=8),
+ 26:featDef(26,'blackMane','발드릭이 칼을 내린다 (합류 또는 협력)',(s,bf)=>bf.mission_26_baldrick==='join'||bf.mission_26_baldrick==='cooperate')
 };
 // Supply carriers (조조전 식량대): one ordinary enemy per mission carries a crate; defeating it drops this tool into the bag
 // (usable at once; kept only if the battle is won, like every battle-time change to the bag).

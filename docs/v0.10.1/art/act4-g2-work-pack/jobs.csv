@@ -1,0 +1,7 @@
+order,part,kind,id,expression,file,size,references,prompt_file
+1,A,icons,icons_M,,icons_M.png,1024x1024,"layout_icons_M.png, approved_icons_D.png, approved_icons_H.png, style_aren_neutral.png",prompts/01_icons_M.txt
+2,B,bust,dario_t3,neutral,bust_dario_t3_neutral.png,1024x1280,"ref_bust_dario_t2_neutral.png, style_aren_neutral.png",prompts/02_bust_dario_t3_neutral.txt
+3,B,bust,dario_t3,concerned,bust_dario_t3_concerned.png,1024x1280,bust_dario_t3_neutral.png (your approved result),prompts/03_bust_dario_t3_concerned.txt
+4,B,bust,dario_t3,determined,bust_dario_t3_determined.png,1024x1280,bust_dario_t3_neutral.png (your approved result),prompts/04_bust_dario_t3_determined.txt
+5,B,bust,dario_t3,sad,bust_dario_t3_sad.png,1024x1280,bust_dario_t3_neutral.png (your approved result),prompts/05_bust_dario_t3_sad.txt
+6,B,sprite,dario_t3,,sprite_dario_t3.png,1024x768,"bust_dario_t3_neutral.png (your approved result), ref_sprite_dario_t2.png, ref_sprite_eric.png",prompts/06_sprite_dario_t3.txt

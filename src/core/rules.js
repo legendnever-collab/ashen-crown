@@ -16,7 +16,7 @@ export const at=(s,x,y)=>s.units.find(u=>alive(u)&&u.x===x&&u.y===y);
 // v0.6 sides (Phase C): the player's heroes ('ally') and AI-led allied troops ('allied') share the legion side;
 // enemies may belong to rival factions that fight each other (M10). With ACT I teams this is exactly 'teams differ'.
 export const sideOf=u=>u.team==='ally'||u.team==='allied'?'legion':u.team;
-export function hostile(s,a,b){if(!a||!b||a.team==='civilian'||b.team==='civilian'||a.team==='object'||b.team==='object')return false;const sa=sideOf(a),sb=sideOf(b);if(sa!==sb)return true;return sa==='enemy'&&!!a.faction&&!!b.faction&&a.faction!==b.faction&&!s?.truce;}
+export function hostile(s,a,b){if(!a||!b||a.team==='civilian'||b.team==='civilian'||a.team==='object'||b.team==='object')return false;if(a.neutral&&sideOf(b)==='legion'||b.neutral&&sideOf(a)==='legion')return false; /* v0.10.1 M25: a neutral banner fights only the hardliners */const sa=sideOf(a),sb=sideOf(b);if(sa!==sb)return true;return sa==='enemy'&&!!a.faction&&!!b.faction&&a.faction!==b.faction&&!s?.truce;}
 export function nextRandom(state){const next=(Math.imul(state>>>0,1664525)+1013904223)>>>0;return {state:next,value:next/4294967296};}
 export function roll(s){const r=nextRandom(s.rng);s.rng=r.state;return r.value;}
 export function terrainCost(s,u,x,y){const type=missionOf(s).map[y]?.[x];if(!type||missionOf(s).layers.collision[y]?.[x]||!Number.isFinite(TERRAIN[type]?.cost))return Infinity;const profile=u.movementProfile||CLASS_MOVEMENT[HERO_CLASS[u.id]]?.profile||'infantry';return TERRAIN_COSTS[profile]?.[type]??TERRAIN[type].cost;}
@@ -74,7 +74,7 @@ export function strikeStats(s,u,t,mode='attack'){
  u=effectiveStats(s,u);t=effectiveStats(s,t);
  const magic=mode==='skill'&&u.id==='lia'||mode==='flameBurst',aim=mode==='skill'&&u.id==='elina',quick=mode==='skill'&&u.id==='kai';
  const ground=terrainAt(t.x,t.y,s),defense=magic?t.res:t.def,burning=!!s.burning?.[key(t.x,t.y)];
- let raw=Math.max(1,(magic?u.mag:u.atk)-defense-(ground.defense||0)+(aim?2:0)+(magic&&u.hp<=u.maxHP/2?4:0)+(quick&&flank(s,u,t)?6:0)+(mode==='skill'&&u.id==='thea'?charge(u)+(u.chargeDmg||0):0)+(mode==='skill'&&u.id==='dario'?2:0));
+ let raw=Math.max(1,(magic?u.mag:u.atk)-defense-(ground.defense||0)+(aim?2:0)+(magic&&u.hp<=u.maxHP/2?4:0)+(quick&&flank(s,u,t)?6:0)+(mode==='skill'&&u.id==='thea'?charge(u)+(u.chargeDmg||0):0)+(mode==='skill'&&u.id==='dario'?2:0)+(mode==='skill'&&u.id==='baldrick'?6:0));
  let dmg=Math.max(1,Math.round(magic?raw*(ground.fire??1):raw*(1-(ground.phys||0))));
  if(magic&&weatherOf(s)==='rain')dmg=Math.max(1,Math.round(dmg*.5));if(magic&&inWard(s,t))dmg=0;
  const arms=magic?1:matchup(u,t);if(arms!==1)dmg=Math.max(1,Math.round(dmg*arms));
@@ -153,7 +153,7 @@ export function sanctuaryCut(s,t){if(!t||sideOf(t)!=='legion')return 0;let cut=t
  return cut;}
 // v0.6 Thea's Charge (PROPOSED): +4 damage; after running 3+ tiles this turn, +3 more and the target cannot strike back.
 export const charge=u=>4+((u.chargeRun||0)>=3?3:0);
-export const chargeBreaks=(u,mode)=>mode==='skill'&&u?.id==='thea'&&(u.chargeRun||0)>=3;
+export const chargeBreaks=(u,mode)=>mode==='skill'&&(u?.id==='thea'&&(u.chargeRun||0)>=3||u?.id==='baldrick'); /* v0.10.1 Lion Strike: no counter */
 // v0.6.1 Dario (PROPOSED): his counterattacks deal +4; after Riposte (skill: +2 damage) +8 until the next player phase.
 export const riposteBonus=u=>u?.id==='dario'?(u.riposte?8:4):0;
 export const isolated=(s,t)=>t.team==='ally'&&!s.units.some(a=>a.team==='ally'&&alive(a)&&a.id!==t.id&&distance(a,t)===1);

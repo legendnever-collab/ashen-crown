@@ -1,0 +1,6 @@
+kind,id,expression,file,width,height,bytes,sha256
+bust,dario_t3,concerned,png/bust_dario_t3_concerned.png,1024,1280,1597170,976a93f36f16acd64181616365d5ea0349d4cc10d4b16d74468fdf8b8dfbf013
+bust,dario_t3,determined,png/bust_dario_t3_determined.png,1024,1280,1618308,3de9796a3b51b65c688e700e5a509ec7ae2d4fd45eef5e848612da1c09068d54
+bust,dario_t3,neutral,png/bust_dario_t3_neutral.png,1024,1280,1663746,401a4f9d2d87abe6e0067742f7ec86ce1d5c37eca1f8a30fa5b56f7b40a63ffc
+bust,dario_t3,sad,png/bust_dario_t3_sad.png,1024,1280,1689592,17ddd0b1e981b9c456320c596b7b5c1751877837cc8e93eb4dcb8bd1aee1ceba
+sprite,dario_t3,,png/sprite_dario_t3.png,1024,768,750310,df0dae58310cbffece79aab7473338766ccbb71416d17530d86162ad66d2c264

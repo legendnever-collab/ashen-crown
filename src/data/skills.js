@@ -4,7 +4,7 @@
 import {CATALOG_SKILLS} from './catalog-v08.js';
 export const SKILL_LEVEL=4;
 // Join levels of the ACT II recruits (mission-rules joinRoster calls); ③ opens three levels later.
-export const RECRUIT_JOIN={thea:8,dario:9,ines:10};
+export const RECRUIT_JOIN={thea:8,dario:9,ines:10,baldrick:16}; /* v0.10.1: Baldrick (Lv 19) knows ①–③ on joining */
 // The promotion actions keep their v0.5 modes.
 const CLASS_MODE={bulwark:'bulwark',overwatch:'overwatch',arcane:'arcane',recall:'recall',exchange:'exchange'};
 export const SKILLS=CATALOG_SKILLS.map(c=>({...c,mode:c.slot===1?'skill':CLASS_MODE[c.id]||c.id}));
@@ -24,4 +24,4 @@ export function learnRule(u,k){
 export function skillsOf(u){if(u?.team!=='ally')return [];return SKILLS.filter(k=>k.hero===u.id).sort((a,b)=>a.slot-b.slot).map(k=>{const r=learnRule(u,k);return {...k,open:r.open,lock:r.label};});}
 export const knowsMode=(u,mode)=>skillsOf(u).some(k=>k.mode===mode&&k.open);
 // v0.9.1 the ④ skills (awakening): once a battle (state.ultimates lists who has used theirs).
-export const ULTIMATE_MODES=['oathWall','blockade','dawnPrayer','smallWard','shadowDance','sanctumGate','ironBreak'];
+export const ULTIMATE_MODES=['oathWall','blockade','dawnPrayer','smallWard','shadowDance','sanctumGate','ironBreak','hundredCounters','lastCharge'];

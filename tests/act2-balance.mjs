@@ -1,7 +1,7 @@
 // v0.6 Phase D / v0.6.1 / v0.7.0: M01→M14 legal-policy campaign simulation (30 seeds). M07–M14 must stay winnable (≥ 90%) with
 // the choices alternated (M07 deserters handover/legion, M08 order hold/rescue — the rescue runs deploy with the
 // 'defense' preset so two heroes start by the rear village); saves round-trip mid-campaign.
-import {newGame,startBattle,nextMission,presetDeployment} from '../src/core/game.js';import {playBattle} from './player-policy.mjs';import {playCampaignBattle,setPersuadeFirst} from './campaign-policy.mjs';import {chooseLead23} from '../src/core/mission-rules-v0100.js';
+import {newGame,startBattle,nextMission,presetDeployment} from '../src/core/game.js';import {playBattle} from './player-policy.mjs';import {playCampaignBattle,setPersuadeFirst} from './campaign-policy.mjs';import {chooseLead23} from '../src/core/mission-rules-v0100.js';import {chooseBanner25} from '../src/core/mission-rules-v0101.js';
 import {chooseDeserters,chooseOrder} from '../src/core/mission-rules-v06.js';import {chooseStance} from '../src/core/mission-rules-v061.js';import {chooseOath,chooseRecords} from '../src/core/mission-rules-v070.js';import {serialize,deserialize} from '../src/persistence/save-manager.js';import {chooseRecords15,chooseStones16} from '../src/core/mission-rules-v090.js';import {chooseOath17,chooseTruth18} from '../src/core/mission-rules-v091.js';import {chooseTeacher19,chooseSuperior20,choosePlan20} from '../src/core/mission-rules-v092.js';import {chooseKing21,chooseAct3} from '../src/core/mission-rules-v093.js';import {enterHub} from '../src/core/frontier.js';import {startSkirmish,AWAKEN_MISSION} from '../src/core/skirmish.js';import {applyClass} from '../src/core/progression.js';import {CLASS_TREE,AWAKEN_TRIGGER} from '../src/data/classes.js';import {playSkirmish} from './skirmish-policy.mjs';import {drain} from './campaign-policy.mjs';import fs from 'node:fs';
 const N=+process.argv[2]||30,start=+process.argv[3]||20261014,out=[],out3=[],trials=[];
 // v0.9.1: a side copy of the camp tries a trial with the policy (forced: the balance party is not promoted along the way);
@@ -72,7 +72,12 @@ for(let seed=start;seed<start+N;seed++){let s=newGame(seed);s.screen='deployment
          Object.assign(a,{m23:p.outcome,t23:s.turn,why23:s.reason,tents23:3-(s.missionState.fallenTents?.length||0),leaders23:3-(s.missionState.fallenLeaders?.length||0),captain23:!!s.missionState.captain});
          if(p.outcome==='victory'){chooseLead23(s,seed%2?'legion':'banners');tryTrial(s,'ines',seed);s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
           Object.assign(a,{m24:p.outcome,t24:s.turn,why24:s.reason,inside24:s.missionState.inside?.length,lost24:s.missionState.lost?.length,gate24:s.missionState.closedTurn});
-          if(p.outcome==='victory')tryTrial(s,'thea',seed);}}}}}}}}}
+          if(p.outcome==='victory'){tryTrial(s,'thea',seed);
+           // v0.10.1 ACT IV part 2 (D-102): M25 then M26 (the betrayed banner forgiven or lowered, alternated); Dario's trial after M25.
+           s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+           Object.assign(a,{m25:p.outcome,t25:s.turn,why25:s.reason,betrayer25:s.missionState.camps?.north,neutral25:s.missionState.neutral?.length});
+           if(p.outcome==='victory'){chooseBanner25(s,seed%2?'forgive':'lower');tryTrial(s,'dario',seed);s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+            Object.assign(a,{m26:p.outcome,t26:s.turn,why26:s.reason,baldrick26:s.missionState.outcome,resolve26:s.missionState.resolve,duel26:s.duel?.result||'none',joined26:!!s.campaign.roster?.includes('baldrick')});}}}}}}}}}}}
  a.feats=[...(s.campaign.feats||[])].filter(id=>id>=15);out3.push(a);}
 // v0.8.1: hidden objectives the policy won along the way (it never aims at them) — for the play-test notes, not a gate.
 for(const o of out)o.feats=o.feats||[];
@@ -96,7 +101,11 @@ const w23=out3.filter(o=>o.m23==='victory'),w24=out3.filter(o=>o.m24==='victory'
 const summary4={campaigns:out3.length,m23Wins:w23.length,m23Turns:w23.map(o=>o.t23),tentsAll:w23.filter(o=>o.tents23===3).length,leadersAll:w23.filter(o=>o.leaders23===3).length,captain23:w23.filter(o=>o.captain23).length,m23Losses:out3.filter(o=>o.m23&&o.m23!=='victory').map(o=>o.why23),
  m24Wins:w24.length,m24Turns:w24.map(o=>o.t24),inside24:Object.fromEntries([6,7,8].map(n=>[n,w24.filter(o=>o.inside24===n).length])),gate24:w24.map(o=>o.gate24),lost24:w24.map(o=>o.lost24),m24Losses:out3.filter(o=>o.m24&&o.m24!=='victory').map(o=>o.why24),
  featRate:{M23:out3.filter(o=>o.feats.includes(23)).length,M24:out3.filter(o=>o.feats.includes(24)).length},trials:summary3.trials};
-console.log(JSON.stringify(summary4));fs.writeFileSync('test-output/act4-balance.json',JSON.stringify({summary:summary4,runs:out3.map(o=>({seed:o.seed,m23:o.m23,t23:o.t23,tents23:o.tents23,leaders23:o.leaders23,captain23:o.captain23,m24:o.m24,t24:o.t24,inside24:o.inside24,lost24:o.lost24,gate24:o.gate24}))},null,1));
-if(w23.length<w22.length*0.9||w24.length<w23.length*0.9)process.exit(1);
+const w25=out3.filter(o=>o.m25==='victory'),w26=out3.filter(o=>o.m26==='victory');
+Object.assign(summary4,{m25Wins:w25.length,m25Turns:w25.map(o=>o.t25),m25Neutral:w25.map(o=>o.neutral25),m25Losses:out3.filter(o=>o.m25&&o.m25!=='victory').map(o=>o.why25),
+ m26Wins:w26.length,m26Turns:w26.map(o=>o.t26),baldrick26:Object.fromEntries(['join','cooperate','withdraw'].map(k=>[k,w26.filter(o=>o.baldrick26===k).length])),duel26:Object.fromEntries(['hero','foe','skipped','none'].map(k=>[k,w26.filter(o=>o.duel26===k).length])),m26Losses:out3.filter(o=>o.m26&&o.m26!=='victory').map(o=>o.why26)});
+summary4.featRate.M25=out3.filter(o=>o.feats.includes(25)).length;summary4.featRate.M26=out3.filter(o=>o.feats.includes(26)).length;
+console.log(JSON.stringify(summary4));fs.writeFileSync('test-output/act4-balance.json',JSON.stringify({summary:summary4,runs:out3.map(o=>({seed:o.seed,m23:o.m23,t23:o.t23,tents23:o.tents23,leaders23:o.leaders23,captain23:o.captain23,m24:o.m24,t24:o.t24,inside24:o.inside24,lost24:o.lost24,gate24:o.gate24,m25:o.m25,t25:o.t25,betrayer25:o.betrayer25,neutral25:o.neutral25,m26:o.m26,t26:o.t26,baldrick26:o.baldrick26,duel26:o.duel26}))},null,1));
+if(w23.length<w22.length*0.9||w24.length<w23.length*0.9||w25.length<w24.length*0.9||w26.length<w25.length*0.9)process.exit(1);
 if(w15.length<out3.length*0.9||w16.length<w15.length*0.9||w17.length<w16.length*0.9||w18.length<w17.length*0.9||w19.length<w18.length*0.9||w20.length<w19.length*0.9||w21.length<w20.length*0.9||w22.length<w21.length*0.9)process.exit(1);
 if(w7.length<out.length*0.9||w8.length<w7.length*0.9||w9.length<w8.length*0.9||w10.length<w9.length*0.9||w11.length<w10.length*0.9||w12.length<w11.length*0.9||w13.length<w12.length*0.9||w14.length<w13.length*0.9)process.exit(1);

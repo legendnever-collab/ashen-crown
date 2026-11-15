@@ -472,6 +472,46 @@ MISSIONS[24]=authored({id:24,title:'최후의 국경',en:'The Last Border',
  threatTurn:1,par:8,turnLimit:10,level:18,deployLimit:7,
  objective:'피난민 6명 이상을 관문 안에 들이고 관문 닫기 · TURN 10이 끝나면 저절로 닫힘 (피난민 3명이 쓰러지면 패배)',
  brief:'TURN 2부터 북쪽에서 한 줄씩 재의 조수가 밀려옵니다 — 재 칸에서 아군 턴을 마친 사람은 최대 HP의 10%를 잃습니다(재의 짐승은 멀쩡). 피난민 8명이 턴마다 2칸씩 관문으로 걷습니다(관문 칸을 비워 두세요). 6명이 들어오면 관문 권양기 곁에서 관문을 닫을 수 있습니다 — 언제 닫을지는 에릭이 정합니다. 밖에 남은 사람은 밖에 남습니다.'});
+// ---------- v0.10.1 ACT IV part 2 「검은 사자」 (D-099/D-102, docs/v0.10.0/ACT4_DESIGN.md §4.1, §5.2; maps and numbers PROPOSED) ----------
+// M25 The Banners of the Three Houses: the old summit field. The banner that betrayed at M14 (flag mission_14_betrayer) holds
+// the north camp under its hardline captain; the other two hold the west and east camps under their leaders. A banner the
+// legion has made an ally (trust 3, 「동맹」) fights beside it as orderable allied units; otherwise it stands neutral — it
+// fights only the betrayers, unless the legion strikes it (then it strikes back, and its trust drops on a win). Victory:
+// the hardline captain falls with both leaders standing. Defeat: a leader falls, or TURN 12 ends. Camp units take their
+// banner's name and look at the start (rules init; the unit ids are fixed).
+const hard25=(id,kind,x,y,stats={})=>unit(id,'강경파 병사',kind,x,y,{hp:90,atk:50,def:27,res:16,spd:21,mov:3,camp:'north',...stats});
+const camp25=(id,camp,x,y,stats={})=>ally(id,'진영 병사','guard',x,y,{camp,hp:88,atk:46,def:25,res:16,spd:21,mov:3,...stats});
+MISSIONS[25]=authored({id:25,title:'세 왕가의 깃발',en:'The Banners of the Three Houses',
+ rows:['ffggggggrrggggggff','fgggvvvvrrvvvvgggf','ggggvvvvrrvvvvgggg','ggggggggrrgggggggg','ggrrrrrrrrrrrrrrgg','ggrgggggrrgggggrgg','vvrgggggrrgggggrvv','vvrggfggrrggfggrvv','vvrgggggrrgggggrvv','vvrrrrrrrrrrrrrrvv','ggggggggrrgggggggg','gggfggggrrggggfggg','ffggggggrrggggggff','fffgggggrrgggggfff'],
+ enemies:[hard25('hc','captain',9,1,{name:'강경파 대장',hp:240,atk:52,def:31,res:24,spd:24}),hard25('n1','spear',7,2),hard25('n2','spear',11,2),hard25('n11','spear',8,2),hard25('n12','spear',10,2),hard25('n3','archer',5,1,{hp:64,atk:46,def:16,range:[2,3]}),hard25('n4','archer',13,1,{hp:64,atk:46,def:16,range:[2,3]})],
+ allies:[camp25('lw','west',1,7,{kind:'leader',leader:true,hp:150,atk:46,def:28,res:22,spd:22,mov:4}),camp25('w1','west',0,6),camp25('w2','west',1,9),camp25('w3','west',0,8,{kind:'archer',range:[2,3],hp:64,def:16}),
+  camp25('le','east',16,7,{kind:'leader',leader:true,hp:150,atk:46,def:28,res:22,spd:22,mov:4}),camp25('e1','east',17,6),camp25('e2','east',16,9),camp25('e3','east',17,8,{kind:'archer',range:[2,3],hp:64,def:16})],
+ waves:[{turn:2,story:'25:flank',units:[hard25('n5','spear',3,0),hard25('n6','spear',14,0)]},{turn:4,units:[hard25('n7','spear',8,0),hard25('n8','archer',10,0,{hp:64,atk:46,def:16,range:[2,3]})]},
+  {turn:6,story:'25:riders',units:[hard25('n9','cavalry',4,13,{hp:78,mov:5,movementProfile:'cavalry'}),hard25('n10','cavalry',13,13,{hp:78,mov:5,movementProfile:'cavalry'})]}],
+ deployZone:s=>{const base=[];for(let y=10;y<=12;y++)for(let x=4;x<=13;x++)base.push([x,y]);return zone(base.filter(([x,y])=>Number.isFinite(TERRAIN[MISSIONS[25].map[y][x]].cost)));},
+ deployments:{recommended:[[8,10],[9,10],[6,10],[11,10],[7,11],[10,11],[5,11],[12,11]],assault:[[8,10],[9,10],[7,10],[10,10],[6,10],[11,10],[8,11],[9,11]],defense:[[5,10],[12,10],[4,11],[13,11],[8,11],[9,11],[6,12],[11,12]]},
+ threatTurn:1,par:9,turnLimit:12,level:19,deployLimit:7,
+ objective:'강경파 대장 격파 · 다른 두 깃발의 지도자 생존 (지도자가 쓰러지거나 TURN 12를 넘기면 패배)',
+ brief:'M14에서 등을 돌린 깃발의 강경파가 북쪽 진영을 지킵니다. 다른 두 깃발은 서쪽·동쪽 진영에 있습니다 — 「동맹」(신뢰 3)인 깃발은 아군으로 싸우고(지시 가능), 아니면 중립으로 강경파와만 싸웁니다. 중립 진영을 공격하면 그 깃발이 군단에게도 칼을 들고, 이기더라도 신뢰가 1 떨어집니다.'});
+// M26 The Black Lion's Last Battle: the lion's pass. Baldrick and the last of his Iron Crown riders bar the road to the capital.
+// TURN 2 he calls Erik to a duel; Erik (once a turn, from beside him) and Thea (once) can persuade him — three of resolve and
+// he yields (a won duel counts two). Yielding: he joins the legion if he halted his army at M13, otherwise he leads his
+// riders beside it in the last campaign. Broken (his HP at its floor) or TURN 12 ending: he withdraws alive. Defeat: Erik falls.
+const lion26=(id,name,kind,x,y,look,stats={})=>unit(id,name,kind,x,y,{look,...stats});
+MISSIONS[26]=authored({id:26,title:'검은 사자의 마지막 전투',en:"The Black Lion's Last Battle",
+ rows:['mmmmmmffrrffmmmmmm','mmmmmffgrrgffmmmmm','mmmmffggrrggffmmmm','mmmfggggrrggggfmmm','mmfgggggrrgggggfmm','mmggggggrrggggggmm','mfggggggrrggggggfm','mgggxxggrrggxxgggm','mgggxxggrrggxxgggm','mfggggggrrggggggfm','mmggggggrrggggggmm','mmfgggggrrgggggfmm','mmmfggggrrggggfmmm','mmmmffggrrggffmmmm'],
+ enemies:[lion26('boss','발드릭 로엔 · 검은 사자','lion',9,2,'lion',{hp:240,atk:52,def:30,res:20,spd:26,mov:4}),
+  lion26('f1','사자 기수','bearer',7,3,'bearer',{hp:86,atk:47,def:28,res:16,spd:20,mov:3}),lion26('f2','사자 기수','bearer',11,3,'bearer',{hp:86,atk:47,def:28,res:16,spd:20,mov:3}),
+  lion26('c1','철왕관 기병','cavalry',5,4,'cavalry',{hp:80,atk:49,def:24,res:14,spd:25,mov:5,movementProfile:'cavalry'}),lion26('c2','철왕관 기병','cavalry',13,4,'cavalry',{hp:80,atk:49,def:24,res:14,spd:25,mov:5,movementProfile:'cavalry'}),
+  lion26('a1','철왕관 궁수','archer',8,1,'ironArcher',{hp:62,atk:45,def:16,res:14,spd:23}),lion26('a2','철왕관 궁수','archer',10,1,'ironArcher',{hp:62,atk:45,def:16,res:14,spd:23})],
+ waves:[{turn:3,story:'26:riders',units:[lion26('c3','철왕관 기병','cavalry',2,5,'cavalry',{hp:80,atk:49,def:24,res:14,spd:25,mov:5,movementProfile:'cavalry'}),lion26('c4','철왕관 기병','cavalry',15,5,'cavalry',{hp:80,atk:49,def:24,res:14,spd:25,mov:5,movementProfile:'cavalry'})]},
+  {turn:5,units:[lion26('s1','철왕관 창병','spear',8,0,'ironSpear',{hp:88,atk:48,def:27,res:15,spd:20}),lion26('s2','철왕관 창병','spear',10,0,'ironSpear',{hp:88,atk:48,def:27,res:15,spd:20})]}],
+ formation:{bearers:['f1','f2'],def:2,hit:10,charge:4,leash:2},persuade:{target:'boss',threshold:4},duelTurn:2,lionHold:4,
+ deployZone:s=>{const base=[];for(let y=9;y<=12;y++)for(let x=3;x<=14;x++)base.push([x,y]);return zone(base.filter(([x,y])=>Number.isFinite(TERRAIN[MISSIONS[26].map[y][x]].cost)));},
+ deployments:{recommended:[[8,9],[9,9],[6,10],[11,10],[7,10],[10,10],[5,11],[12,11]],assault:[[8,9],[9,9],[7,9],[10,9],[6,9],[11,9],[8,10],[9,10]],defense:[[8,11],[9,11],[6,11],[11,11],[7,12],[10,12],[5,10],[12,10]]},
+ threatTurn:1,par:8,turnLimit:12,level:19,deployLimit:7,
+ objective:'발드릭 설득(결단 4) 또는 격파(사자 기수 둘을 쓰러뜨리고 HP 절반까지) · 에릭이 쓰러지면 패배 (TURN 12가 끝나면 발드릭이 물러남)',
+ brief:'TURN 2 발드릭이 에릭에게 일기토를 청합니다(이기면 결단 +2). 에릭은 턴마다 한 번, 발드릭 곁에서 「설득」할 수 있습니다(결단 +1, 테아는 전투당 한 번). 결단 4면 발드릭이 칼을 내립니다 — M13에서 군을 멈췄다면 군단에 합류하고, 아니면 마지막 작전에 철왕관 기병을 이끌고 함께합니다. 발드릭은 HP 절반 아래로 떨어지지 않습니다 — 곁의 사자 기수 둘이 쓰러진 뒤 TURN 4부터 HP 절반까지 몰아붙이면 살아서 물러납니다.'});
 // v0.5.0 Phase E (D-047): promotion trials (101–105) and the repeatable Legion Drill (110). Non-story
 // skirmishes after ACT I: never pushed into campaign.completed, no gold, permanent EXP (mission level 7).
 // goal: survive (turn N ends with `protect` alive) · rout (all enemies down by `limit`) · reach (hero at row ≤ y)
@@ -587,5 +627,13 @@ skirmish(116,'trial','thea',{tier:3,level:14,title:'흑철 기병대장의 시�
  deployments:{recommended:[[5,7],[6,8],[4,8],[7,8],[3,8],[8,8],[2,8],[9,8]]},limit:5,companions:['dario'],
  goal:{type:'rout',targets:['c1','c2']},must:['thea'],
  objective:'TURN 5까지 방진 뒤의 지휘 교관 둘 격파 (다리오 지원)',brief:'철의 돌파(④, 전투당 1회): 직선 2–4칸을 꿰뚫고 끝 칸에 섭니다. 길 위의 적은 모두 공격받고(반격 없음), 끝 칸에서 3칸 더 움직일 수 있습니다. 방진을 꿰뚫어 뒤의 지휘 교관에게 닿으세요.'});
+// v0.10.1 (D-102): Dario's awakening trial — the ring of blades. Every foe closes on him at once; A Hundred Counters answers
+// them all. Rout them by the end of TURN 4 (Elina in support).
+skirmish(117,'trial','dario',{tier:3,level:14,title:'칼의 주인의 시련',en:'Trial of the Master of the Blade',
+ rows:['gggggggggggg','gggggggggggg','ggggffffgggg','gggggggggggg','gggggggggggg','ggggrrrrgggg','gggggggggggg','gggggggggggg','ggggffffgggg','gggggggggggg'],
+ enemies:[drill3('r1','검진 교관','bandit',3,3,{hp:54}),drill3('r2','검진 교관','bandit',8,3,{hp:54}),drill3('r3','검진 교관','bandit',3,7,{hp:54}),drill3('r4','검진 교관','bandit',8,7,{hp:54}),drill3('r5','검진 궁수','archer',5,1,{hp:44}),drill3('r6','검진 궁수','archer',6,9,{hp:44})],
+ deployments:{recommended:[[5,5],[1,5],[10,5],[0,0],[11,0],[0,9],[11,9],[2,2]]},limit:4,companions:['elina'],
+ goal:{type:'rout',targets:['r1','r2','r3','r4','r5','r6']},must:['dario'],
+ objective:'TURN 4까지 검진 교관 6명 격파 (엘리나 지원)',brief:'백 번의 반격(④, 전투당 1회): 다음 적 턴 동안 받는 모든 공격에 반격합니다 — 활에도, 사거리와 관계없이 — 반격 피해 +30%. 검진 한가운데에 서서 쓰세요.'});
 export const isSkirmish=id=>!!MISSIONS[id]?.skirmish;
 export const LAST_MISSION=Math.max(...Object.keys(MISSIONS).map(Number).filter(id=>!MISSIONS[id].skirmish));

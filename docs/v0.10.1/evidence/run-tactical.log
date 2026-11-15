@@ -1,0 +1,28 @@
+PASS New Korean option glyphs are bundled
+PASS Tap opens compact command list beside the unit, no cells yet
+PASS Skill category opens real ability and MP cost
+PASS Info sheet shows talent, grades and potential clues
+PASS Info sheet class tab shows terrain aptitude and attack range grid
+PASS Tools show shared potion count and disabled use at full HP
+PASS Movement range is vivid blue
+PASS Invalid destination is rejected without changing state
+PASS Walking renders intermediate positions instead of teleport
+PASS Arrival asks for explicit move confirmation
+PASS Before confirmation state, RNG, move and save remain unchanged
+PASS Pending move blocks phase and keeps confirmation
+PASS Cancel walks back and consumes no movement or RNG
+PASS Reload before confirmation restores original position and movement
+PASS Instant movement still requires confirmation
+PASS Confirm consumes movement exactly once
+PASS Walk and weak-effect preferences persist
+PASS Fire Bolt shows cast, travelling fireball and explosion
+PASS Impact feedback follows projectile arrival
+PASS Fire Bolt spends actual MP and finishes action
+PASS Attack range uses vivid red
+PASS Archer arrow flies then impacts
+PASS Enemy phase contains actual axe swings
+PASS Enemy phase returns control to player
+PASS Potion requires submenu confirmation
+PASS Potion uses actual HP cap, inventory and action
+PASS Tactical menu and VFX have no runtime errors
+27 tactical UI checks PASS

@@ -50,6 +50,7 @@ export function skirmishAction(s,u,{classActions=true}={}){
    // v0.10.0: Ines opens the Gate of the Sanctum over the trainees with foes closing in; Thea breaks through the line (two foes,
    // or a target behind it).
    if(m==='sanctumGate'&&validClassTarget(s,a,a.id,m)){const kept=s.units.filter(t=>(t.team==='ally'||t.team==='civilian')&&alive(t)&&distance(a,t)<=3),threat=foes.filter(e=>kept.some(t=>distance(e,t)<=4)).length;if(kept.length>=2&&threat>=2)consider({x,y,mode:m,target:a.id,score:200+kept.length*25+threat*20-c*.3});}
+   if(m==='hundredCounters'&&validClassTarget(s,a,a.id,m)){const near=foes.filter(e=>Math.abs(e.x-x)+Math.abs(e.y-y)<=5).length;if(near>=3)consider({x,y,mode:m,target:a.id,score:150+near*30-c*.3});}
    if(m==='ironBreak')for(let ty=y-4;ty<=y+4;ty++)for(let tx=x-4;tx<=x+4;tx++){const p2=`${tx},${ty}`;if(!validClassTarget(s,a,p2,m))continue;const hit=ironFoes(s,a,{x:tx,y:ty});if(!hit.length)continue;const sc=60+hit.length*60+(g.targets?Math.max(0,4-Math.min(...g.targets.map(id=>findUnit(s,id)).filter(t=>t&&alive(t)).map(t=>Math.abs(t.x-tx)+Math.abs(t.y-ty)),4))*30:0);if(hit.length>=2||sc>=150)consider({x,y,mode:m,target:p2,score:sc-c*.3});}}
   // position only
   let score;const onRune=(s.runes||[]).some(r=>r.x===x&&r.y===y)&&u.id==='lia'?40:0;if(onRune&&best&&best.x===x&&best.y===y)best.score+=onRune;

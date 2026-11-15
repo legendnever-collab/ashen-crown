@@ -23,7 +23,7 @@ export const CATALOG_MISC=[
  {id:'supplyCrate',kind:'misc',ko:'보급 상자',en:'Supply Crate',effect:'적 짐마차·보급병이 떨어뜨리는 도구 (v0.8.1)'}
 ];
 const cGear=(id,ko,en,tier,slot,heroes,effect,price,where)=>({id,kind:'gear',ko,en,tier,slot,heroes,effect,price,where});
-const cAll5=['eric','elina','lia','sain','kai'],cLight=['elina','lia','sain','kai','dario'],cMelee=['eric','kai','thea','dario','ines'];
+const cAll5=['eric','elina','lia','sain','kai'],cLight=['elina','lia','sain','kai','dario'],cMelee=['eric','kai','thea','dario','ines','baldrick'];
 export const CATALOG_GEAR=[
  // tier I (v0.3, unchanged; new paintings only)
  cGear('ironBlade','단련된 검','Tempered Sword',1,'weapon',['eric'],'ATK +2',65,'ACT I'),
@@ -39,11 +39,11 @@ export const CATALOG_GEAR=[
  cGear('focusCharm','집중의 부적','Focus Charm',1,'accessory',cAll5,'RES +1',45,'ACT I'),
  // tier II — castle town below Ironhold (Iron Crown)
  cGear('steelGreatsword','강철 대검','Steel Greatsword',2,'weapon',['eric'],'ATK +4',180,'철관성 성하 마을 · M07'),
- cGear('knightLance','기사 창','Knight Lance',2,'weapon',['thea'],'ATK +3 · 돌격 피해 +2',160,'철관성 성하 마을 · M07'),
+ cGear('knightLance','기사 창','Knight Lance',2,'weapon',['thea','baldrick'],'ATK +3 · 돌격 피해 +2',160,'철관성 성하 마을 · M07'),
  cGear('ironwoodBow','철목 활','Ironwood Bow',2,'weapon',['elina'],'ATK +3',170,'철관성 성하 마을 · M07'),
- cGear('plateCuirass','판금 흉갑','Plate Cuirass',2,'armor',['eric','thea','ines'],'DEF +4 · SPD −1',220,'철관성 성하 마을 · M08'),
+ cGear('plateCuirass','판금 흉갑','Plate Cuirass',2,'armor',['eric','thea','ines','baldrick'],'DEF +4 · SPD −1',220,'철관성 성하 마을 · M08'),
  cGear('towerShield','철관 방패','Iron Tower Shield',2,'armor',['eric'],'DEF +2 · 원거리 피해 −2',200,'철관성 성하 마을 · M08'),
- cGear('lancerMail','기병 사슬갑옷','Lancer Mail',2,'armor',['thea'],'DEF +2 · RES +2',180,'철관성 성하 마을 · M08'),
+ cGear('lancerMail','기병 사슬갑옷','Lancer Mail',2,'armor',['thea','baldrick'],'DEF +2 · RES +2',180,'철관성 성하 마을 · M08'),
  cGear('steelGauntlets','강철 건틀릿','Steel Gauntlets',2,'accessory',cMelee,'ATK +2',160,'철관성 성하 마을 · M08'),
  cGear('runeforgedBlade','룬 단조검','Runeforged Blade',2,'weapon',['eric','dario'],'ATK +6',420,'철관성 성하 마을 · 고급품'),
  // tier II — Velmar market (Free Lords)
@@ -52,8 +52,8 @@ export const CATALOG_GEAR=[
  cGear('emberRod','불씨 지팡이','Ember Rod',2,'weapon',['lia'],'MAG +4',190,'벨마르 · M09'),
  cGear('shadowStiletto','그림자 단검','Shadow Stiletto',2,'weapon',['kai'],'ATK +3 · SPD +1',170,'벨마르 · M10'),
  cGear('merchantCoat','상인의 외투','Merchant Coat',2,'armor',cLight,'DEF +1 · RES +2 · SPD +1',160,'벨마르 · M10'),
- cGear('luckyCoin','행운 동전','Lucky Coin',2,'accessory',[...cAll5,'thea','dario','ines'],'치명 +5',150,'벨마르 · M10'),
- cGear('windCharm','바람결 부적','Windstep Charm',2,'accessory',[...cAll5,'thea','dario','ines'],'회피 +10',180,'벨마르 · M10'),
+ cGear('luckyCoin','행운 동전','Lucky Coin',2,'accessory',[...cAll5,'thea','dario','ines','baldrick'],'치명 +5',150,'벨마르 · M10'),
+ cGear('windCharm','바람결 부적','Windstep Charm',2,'accessory',[...cAll5,'thea','dario','ines','baldrick'],'회피 +10',180,'벨마르 · M10'),
  cGear('duelistRapier','결투가의 레이피어','Duelist Rapier',2,'weapon',['dario'],'ATK +5 · 치명 +5',400,'벨마르 · 고급품'),
  // tier II — pilgrim village (Order of the Sacred Flame)
  cGear('flameStaff','성화 지팡이','Sacred Flame Staff',2,'weapon',['sain'],'MAG +2 · 치유 +3',180,'순례자 마을 · M11'),
@@ -61,11 +61,11 @@ export const CATALOG_GEAR=[
  cGear('pilgrimMantle','순례 망토','Pilgrim Mantle',2,'armor',[...cLight,'ines'],'RES +3 · 상태이상 확률 −25%',170,'순례자 마을 · M11'),
  cGear('sanctumTome','성소의 마도서','Sanctum Tome',2,'weapon',['lia'],'MAG +3 · RES +2',230,'순례자 마을 · M12'),
  cGear('wardenShield','수호자의 방패','Warden Shield',2,'armor',['ines','eric'],'DEF +3',190,'순례자 마을 · M12'),
- cGear('chrismCharm','성유 부적','Chrism Charm',2,'accessory',[...cAll5,'thea','dario','ines'],'독 면역',140,'순례자 마을 · M12'),
- cGear('votiveBand','서약의 팔찌','Votive Band',2,'accessory',[...cAll5,'thea','dario','ines'],'MAG +2 · RES +1',200,'순례자 마을 · M12'),
+ cGear('chrismCharm','성유 부적','Chrism Charm',2,'accessory',[...cAll5,'thea','dario','ines','baldrick'],'독 면역',140,'순례자 마을 · M12'),
+ cGear('votiveBand','서약의 팔찌','Votive Band',2,'accessory',[...cAll5,'thea','dario','ines','baldrick'],'MAG +2 · RES +1',200,'순례자 마을 · M12'),
  cGear('cathedralStaff','대성당 지팡이','Cathedral Staff',2,'weapon',['sain'],'MAG +4 · 치유 +5',450,'순례자 마을 · 고급품'),
  // tier III — faction elite (trust ≥ 2)
- cGear('crownGuardLance','왕관 근위 창','Crown Guard Lance',3,'weapon',['thea'],'ATK +5 · DEF +1',520,'철관성 성하 마을 · 철왕관 신뢰 2'),
+ cGear('crownGuardLance','왕관 근위 창','Crown Guard Lance',3,'weapon',['thea','baldrick'],'ATK +5 · DEF +1',520,'철관성 성하 마을 · 철왕관 신뢰 2'),
  cGear('crownGuardShield','근위 대방패','Crown Guard Shield',3,'armor',['eric'],'DEF +5 · RES +2',560,'철관성 성하 마을 · 철왕관 신뢰 2'),
  cGear('leagueSaber','연맹 기사의 사브르','League Saber',3,'weapon',['dario','kai'],'ATK +5 · SPD +2',540,'벨마르 · 자유 영주 신뢰 2'),
  cGear('leagueLongbow','연맹 장궁','League Longbow',3,'weapon',['elina'],'ATK +4 · HIT +10',520,'벨마르 · 자유 영주 신뢰 2'),
@@ -77,9 +77,9 @@ export const CATALOG_GEAR=[
  cGear('wardRod','결계 지팡이','Ward Rod',3,'weapon',['lia'],'MAG +6',480,'왕도 하층가 · M15 클리어'),
  cGear('courtVestment','궁정 사제복','Court Vestment',3,'armor',['sain','ines'],'RES +4 · DEF +2',460,'왕도 하층가 · M16 클리어'),
  cGear('greyMantle','회색 외투','Grey Mantle',3,'armor',['kai','dario'],'DEF +2 · SPD +2 · 회피 +5',450,'왕도 하층가 · M16 클리어'),
- cGear('royalLance','왕도 기병창','Royal Cavalry Lance',3,'weapon',['thea'],'ATK +6 · 돌격 피해 +2',480,'왕도 하층가 · M15 클리어'), /* v0.9.3 (D-092): Thea's capital lance */
+ cGear('royalLance','왕도 기병창','Royal Cavalry Lance',3,'weapon',['thea','baldrick'],'ATK +6 · 돌격 피해 +2',480,'왕도 하층가 · M15 클리어'), /* v0.9.3 (D-092): Thea's capital lance */
  cGear('royalMace','왕도 사제 철퇴','Royal Chaplain Mace',3,'weapon',['ines'],'ATK +6 · RES +1',470,'왕도 하층가 · M16 클리어'),
- cGear('oathRing','맹세의 반지','Oath Ring',3,'accessory',['eric','elina','lia','sain','kai','thea','dario','ines'],'DEF +1 · MAG +2 · RES +2',440,'왕도 하층가 · 처음부터 (고급품)')
+ cGear('oathRing','맹세의 반지','Oath Ring',3,'accessory',['eric','elina','lia','sain','kai','thea','dario','ines','baldrick'],'DEF +1 · MAG +2 · RES +2',440,'왕도 하층가 · 처음부터 (고급품)')
 ];
 const cTreasure=(id,ko,en,effect,where)=>({id,kind:'treasure',ko,en,effect,where});
 export const CATALOG_TREASURES=[
@@ -107,7 +107,9 @@ export const CATALOG_TREASURES=[
  cTreasure('kingsSignet','왕의 인장','The King\'s Signet','인접 아군 DEF +1 · DEF +2','M21 숨은 전과'),
  cTreasure('heraldHorn','전령의 뿔피리','The Herald\'s Horn','전투 첫 턴 전군 MOV +1 · SPD +1','M22 숨은 전과'),
  cTreasure('allianceBanner','연합의 깃발','The Alliance Banner','인접 아군 DEF +1 · ATK +1 · DEF +1','M23 숨은 전과'),
- cTreasure('lastLantern','마지막 등불','The Last Lantern','아군 턴마다 HP +4 · RES +2','M24 숨은 전과')
+ cTreasure('lastLantern','마지막 등불','The Last Lantern','아군 턴마다 HP +4 · RES +2','M24 숨은 전과'),
+ cTreasure('threeSeals','세 왕가의 인장','The Seal of the Three Houses','전투 첫 턴 전군 MOV +1 · RES +1','M25 숨은 전과'),
+ cTreasure('blackMane','검은 갈기','The Black Mane','인접 아군 DEF +1 · ATK +2','M26 숨은 전과')
 ];
 const cSkill=(id,hero,slot,ko,en,cost,effect)=>({id,kind:'skill',hero,slot,ko,en,cost,effect});
 export const CATALOG_SKILLS=[
@@ -144,7 +146,13 @@ export const CATALOG_SKILLS=[
  cSkill('pilgrimLantern','ines',3,'순례자의 등불','Pilgrim Lantern',5,'주위 1칸 아군 상태이상 해제 · 다음 적 턴까지 면역'),
  // v0.10.0 (D-099 Q4, ACT4_DESIGN §5.1; PROPOSED): the recruits' ④ once they awaken.
  cSkill('sanctumGate','ines',4,'성역의 문','Gate of the Sanctum',6,'전투당 1회 · 3칸 안 아군·주민·동맹군 모두 다음 아군 턴까지 받는 피해 −50% · 상태이상 해제'),
- cSkill('ironBreak','thea',4,'철의 돌파','Iron Break',5,'전투당 1회 · 직선 2–4칸을 돌파해 끝 칸에 선다 · 길 위의 적 모두 공격(반격 없음) · 끝 칸에서 3칸 더 이동할 수 있다')
+ cSkill('ironBreak','thea',4,'철의 돌파','Iron Break',5,'전투당 1회 · 직선 2–4칸을 돌파해 끝 칸에 선다 · 길 위의 적 모두 공격(반격 없음) · 끝 칸에서 3칸 더 이동할 수 있다'),
+ cSkill('hundredCounters','dario',4,'백 번의 반격','A Hundred Counters',5,'전투당 1회 · 다음 적 턴 동안 받는 모든 공격에 반격(사거리와 관계없이) · 반격 피해 +30%'),
+ // v0.10.1 (D-102): Baldrick's own four
+ cSkill('lionStrike','baldrick',1,'사자의 일격','Lion Strike',4,'근접 피해 +6 · 반격 없음'),
+ cSkill('lionRoar','baldrick',2,'사자의 포효','Lion\'s Roar',4,'주위 2칸 적 모두 속박 60% (지휘관 절반)'),
+ cSkill('lionBanner','baldrick',3,'사자의 깃발','Lion Banner',5,'주위 2칸 아군 · 다음 아군 턴까지 받는 피해 −4'),
+ cSkill('lastCharge','baldrick',4,'검은 사자의 결의','The Black Lion\'s Resolve',6,'전투당 1회 · 곁의 적 모두 공격(반격 없음) · 다음 아군 턴까지 받는 피해 절반')
 ];
 export const CATALOG_STATUS=[
  {id:'poison',kind:'status',ko:'독',en:'Poison',effect:'턴 시작마다 최대 HP 10%(3–8) · 3턴'},

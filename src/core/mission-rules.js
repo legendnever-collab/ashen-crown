@@ -11,6 +11,7 @@ import {ACT3B_RULES} from './mission-rules-v091.js';
 import {ACT3C_RULES} from './mission-rules-v092.js';
 import {ACT3D_RULES} from './mission-rules-v093.js';
 import {ACT4A_RULES} from './mission-rules-v0100.js';
+import {ACT4B_RULES} from './mission-rules-v0101.js';
 
 export const objectUnit=o=>({...structuredClone(o),team:'object',hp:1,maxHP:1,mp:0,maxMP:0,atk:0,def:0,mag:0,res:0,spd:0,mov:0,range:[0,0],rescued:false});
 export const enemyUnit=(e,spawnTurn=0)=>({...structuredClone(e),team:'enemy',maxHP:e.hp,mp:0,maxMP:0,mag:0,moved:false,acted:false,spawnTurn});
@@ -214,7 +215,7 @@ const SK={
   if(s.turn>m.turnLimit)return finish(s,'defeat',`TURN ${m.turnLimit} 안에 목표를 달성하지 못했습니다.`);
  }
 };
-export const MISSION_RULES={4:M4,5:M5,6:M6,...ACT2_RULES,...ACT2B_RULES,...ACT2C_RULES,...ACT2D_RULES,...ACT3A_RULES,...ACT3B_RULES,...ACT3C_RULES,...ACT3D_RULES,...ACT4A_RULES,101:SK,102:SK,103:SK,104:SK,105:SK,106:SK,107:SK,108:SK,109:SK,110:SK,111:SK,112:SK,113:SK,114:SK,115:SK,116:SK};
+export const MISSION_RULES={4:M4,5:M5,6:M6,...ACT2_RULES,...ACT2B_RULES,...ACT2C_RULES,...ACT2D_RULES,...ACT3A_RULES,...ACT3B_RULES,...ACT3C_RULES,...ACT3D_RULES,...ACT4A_RULES,...ACT4B_RULES,101:SK,102:SK,103:SK,104:SK,105:SK,106:SK,107:SK,108:SK,109:SK,110:SK,111:SK,112:SK,113:SK,114:SK,115:SK,116:SK,117:SK};
 export const rulesOf=s=>MISSION_RULES[s?.missionId]||null;
 
 export function searchEvidence(s,u,t){
