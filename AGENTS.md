@@ -17,7 +17,10 @@
 작업 단계별 커밋. npm test, balance, browser regression, campaign E2E, migration, offline, documentation audit. 실제 검증만 완료 표시. 모든 PR의 documentation checklist: README, CHANGELOG, CURRENT_STATUS, NEXT_TASKS, ROADMAP, Story Bible review, Decision Log review, tests/evidence, artifacts.
 
 
-## Current v0.10.1 entry (ACT IV part 2 release candidate)
+## Current v0.10.2 entry (ACT IV part 3 release candidate)
+v0.10.2 「잿빛 밤」 release candidate on feature/v0.10.2-ashen-night (D-110, on main 6adba79 = v0.10.1 merged, D-109): M27–M28 in src/core/mission-rules-v0102.js (data in missions.js, story-v0102.js, talk-v0102.js), the escorted ram (kind 'ram': not supportable, ANCHORED), wall sections, squads by trust and Baldrick's lion (benched with `absent` when missing), the memory fragments and reforming remnants (`reformAt`), young Aren as an orderable ally (memory28), Aren's confession (chooseConfession28) and last order 「끝까지 함께」 (command.js LAST_ORDER, game.js useLastOrder/riseLastOrder, s.lastOrder), schema 18 (imports 0–17; tests/fixtures/v0101). Art pack G3 work order: scripts/make-act4-g3-art-pack.py → docs/v0.10.2/art/act4-g3-work-pack (2 images). Never merge before the user plays and approves it.
+
+## v0.10.1 entry (merged, PR #26 → 6adba79, D-109)
 v0.10.1 「검은 사자」 release candidate on feature/v0.10.1-banners (D-102, on main dd81b3e = v0.10.0 merged, D-101): M25–M26 in src/core/mission-rules-v0101.js (data in missions.js, story-v0101.js, talk-v0101.js), neutral camps (rules.js hostile: `u.neutral` and the legion are never hostile; save-manager keeps missionState.neutral), the betrayed banner choice (chooseBanner25, app.js showBanner25), Baldrick's duel/persuasion/yield (M26, joinRoster at Lv 19 tier 3), Baldrick's kit (catalog-v08 lionStrike/lionRoar/lionBanner/lastCharge, tactics.js, game.js lionGuard), Dario's ④ hundredCounters (game.js enemy counter), trial 117, schema 17 (imports 0–16; tests/fixtures/v0100). Art pack G2 work order: scripts/make-act4-g2-art-pack.py → docs/v0.10.1/art/act4-g2-work-pack (6 images); packs G1 (D-103) and G2 (D-105) are imported in this RC; play-test minor feedback D-104. Never merge before the user plays and approves it.
 
 ## v0.10.0 entry (merged, PR #25 → dd81b3e, D-101)
