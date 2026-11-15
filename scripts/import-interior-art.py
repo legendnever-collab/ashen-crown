@@ -28,7 +28,8 @@ SHEETS = {  # sheet id -> styles in reading order (columns per row pair)
 PROPS = {'props_act3b': ['wardTree', 'wardTree_hurt', 'wardTree_felled', 'guardianStatue_sleeping'],
          'props_act3c': ['ritualCircle', 'ritualCircle_sealed', 'cabinet', 'cabinet_burned'],  # pack F3 (D-091)
          'props_act3d': ['anchorStone', 'anchorStone_broken'],  # pack F4 (D-096)
-         'props_act4a': ['tent_iron', 'tent_free', 'tent_flame', 'tent_taken']}  # pack G1 (D-103)
+         'props_act4a': ['tent_iron', 'tent_free', 'tent_flame', 'tent_taken'],  # pack G1 (D-103)
+         'props_act4c': ['ram', 'ladder', 'memory', 'memory_read']}  # pack G3 (D-110)
 PROP_DIR = ROOT/'src/assets/props'
 
 def webp(img, budget, qualities=(82, 78, 74, 70, 66, 62, 58)):

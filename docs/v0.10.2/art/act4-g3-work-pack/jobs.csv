@@ -1,0 +1,3 @@
+order,part,kind,id,expression,file,size,references,prompt_file
+1,A,props,props_act4c,,props_act4c.png,1024x256,"layout_props_act4c.png, ref_sprite_eric.png, ref_sprite_ironSpear.png, ref_battle_m27.jpg, ref_battle_m28.jpg",prompts/01_props_act4c.txt
+2,A,icons,icons_N,,icons_N.png,1024x1024,"layout_icons_N.png, approved_icons_D.png, approved_icons_H.png, style_aren_neutral.png",prompts/02_icons_N.txt
