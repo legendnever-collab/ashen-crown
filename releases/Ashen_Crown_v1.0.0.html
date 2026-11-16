@@ -8996,7 +8996,15 @@ function walkSheet(img){let out=walkSheets.get(img);if(out)return out;const cell
     g.drawImage(img,0,oy+cut,cx,legH,ox,oy+cut,cx,Math.min(left,cell-cut-1));g.drawImage(img,cx,oy+cut,cell-cx,legH,ox+cx,oy+cut,cell-cx,Math.min(right,cell-cut-1));}}}
  catch(e){out=img;}
  walkSheets.set(img,out);return out;}
-function drawPaintedFigure(c,img,x,footY,{facing,frame,pose,alpha}){const sheet=walkSheet(img),cell=img.naturalWidth/4,{row,col,mirror}=paintedFrame(facing,frame,pose),D=PAINTED_CELL,lean=pose==='attack'?{left:[-4,0],right:[4,0],up:[0,-4],down:[0,3]}[facing]:[0,0];
+// v2.0.0 (REFORM_DESIGN §4.2): the side's colour. A class sheet of pack H1 marks the cloth to recolour in pure magenta
+// (it is replaced by the colour); a temporary sheet is washed with the colour (blend 'color', the shading kept).
+const tintCache=new WeakMap();
+function tintSheet(sheet,color,mask=false){let byColor=tintCache.get(sheet);if(!byColor){byColor=new Map();tintCache.set(sheet,byColor);}let out=byColor.get(color);if(out)return out;
+ try{out=document.createElement('canvas');out.width=sheet.width||sheet.naturalWidth;out.height=sheet.height||sheet.naturalHeight;const g=out.getContext('2d',{willReadFrequently:mask});g.drawImage(sheet,0,0);
+  if(mask){const d=g.getImageData(0,0,out.width,out.height),p=d.data,[cr,cg,cb]=[1,3,5].map(i=>parseInt(color.slice(i,i+2),16));for(let i=0;i<p.length;i+=4){const r=p[i],gg=p[i+1],b=p[i+2];if(p[i+3]>20&&r>120&&b>120&&gg<Math.min(r,b)*.55){const k=(r+b)/2/255;p[i]=cr*k;p[i+1]=cg*k;p[i+2]=cb*k;}}g.putImageData(d,0,0);}
+  else{g.globalCompositeOperation='color';g.globalAlpha=.5;g.fillStyle=color;g.fillRect(0,0,out.width,out.height);g.globalAlpha=1;g.globalCompositeOperation='destination-in';g.drawImage(sheet,0,0);}}
+ catch(e){out=sheet;}byColor.set(color,out);return out;}
+function drawPaintedFigure(c,img,x,footY,{facing,frame,pose,alpha,tint,mask}){const sheet=tint?tintSheet(walkSheet(img),tint,mask):walkSheet(img),cell=img.naturalWidth/4,{row,col,mirror}=paintedFrame(facing,frame,pose),D=PAINTED_CELL,lean=pose==='attack'?{left:[-4,0],right:[4,0],up:[0,-4],down:[0,3]}[facing]:[0,0];
  c.save();c.globalAlpha*=alpha;c.imageSmoothingEnabled=true;c.imageSmoothingQuality='low';c.translate(x+lean[0],footY+lean[1]);
  if(pose==='death'){c.globalAlpha*=.45;c.translate(0,-8);c.rotate(-Math.PI/2);}if(mirror)c.scale(-1,1);
  c.drawImage(sheet,col*cell,row*cell,cell,cell,-D/2,-D*120/128,D,D);c.restore();}
@@ -9006,10 +9014,10 @@ function drawPaintedFigure(c,img,x,footY,{facing,frame,pose,alpha}){const sheet=
 // sheet is drawn larger around its foot point: rank and file to about hero height (104), captains a little taller (110).
 const FIGURE_FIT={executor:1.3,baldrick:1.24,garr:1.22,guard:1.16,ironSpear:1.16,fortGuard:1.14,ironInfantry:1.13,lordA:1.13,lordB:1.13,
  archer:1.12,mercSpear:1.12,fortArcher:1.11,smith:1.11,pursuerCaptain:1.16,bearer:1.08,assassin:1.07,pursuer:1.07,cavalry:1.06,pursuerArcher:1.06,ironDeserter:1.05,deserterCaptain:1.08};
-function drawHDFigure(c,castId,x,footY,{facing='down',frame=0,pose='idle',alpha=1,scale=1,fitted=false}={}){
+function drawHDFigure(c,castId,x,footY,{facing='down',frame=0,pose='idle',alpha=1,scale=1,fitted=false,tint=null,mask=false}={}){
  const fit=!fitted&&FIGURE_FIT[spriteIdFor(castId)];if(fit&&paintedSheet(castId))scale*=fit;
- if(scale!==1){c.save();c.translate(x,footY);c.scale(scale,scale);c.translate(-x,-footY);drawHDFigure(c,castId,x,footY,{facing,frame,pose,alpha,fitted:true});c.restore();return;}
- const sheet=paintedSheet(castId);if(sheet){drawPaintedFigure(c,sheet,x,footY,{facing,frame,pose,alpha});return;}
+ if(scale!==1){c.save();c.translate(x,footY);c.scale(scale,scale);c.translate(-x,-footY);drawHDFigure(c,castId,x,footY,{facing,frame,pose,alpha,fitted:true,tint,mask});c.restore();return;}
+ const sheet=paintedSheet(castId);if(sheet){drawPaintedFigure(c,sheet,x,footY,{facing,frame,pose,alpha,tint,mask});return;}
  if(castId==='beacon'){drawBeacon(c,x,footY,pose==='death',alpha);return;}
  if(castId==='wagon'){const w=wagonSprite();c.save();c.globalAlpha*=pose==='death'?.4:alpha;hdBlit(c,w,x-24*HD_K,footY-50*HD_K);c.restore();return;}
  const s=figureSprite(castId,{facing,frame}),K=HD_K,lean=pose==='attack'?{left:[-6,0],right:[6,0],up:[0,-6],down:[0,5]}[facing]:[0,0];
@@ -9784,6 +9792,29 @@ class AudioEngine{
  diagnostics(){return {status:this.status,scene:this.scene,track:SCORE[this.scene].name,context:this.ctx?.state||'uninitialized',notes:this.notes,transitions:this.transitions,prefs:{...this.prefs},levels:this.levels(),original:true};}
 }
 
+// src/render/class-figure.js
+// v2.0.0 (REFORM_DESIGN §4.2, D-115): on the battlefield the same class wears the same figure; the side is its colour
+// (legion blue, enemy red, allied banners in their own colours, neutral brown) and the heroes and officers carry a
+// pennant in their own colour. Hubs, rooms and story scenes keep the personal figures. Pack H1 delivers one sheet per
+// class and tier (ASHEN_CLASS_SPRITES, cloth marked magenta for the colour); until then a close painted sheet stands in.
+const SIDE_COLOR={ally:'#3a78d8',allied:'#d8b03a',enemy:'#d8443a',neutral:'#8a6a48'};
+const FACTION_COLOR={iron:'#8c96a6',free:'#4fa86a',flame:'#e8d8a0'};
+const LOOK_FACTION={ironInfantry:'iron',ironArcher:'iron',ironSpear:'iron',cavalry:'iron',lion:'iron',flameKnight:'flame',lordA:'free',lordB:'free',guard:'free'};
+const TEMP_CLASS_SHEETS={infantry:['ironInfantry','guard','flameKnight'],spear:['ironSpear','mercSpear','ritualKnight'],archer:['archer','ironArcher','fortArcher'],
+ cavalry:['cavalry','thea_t2','thea_t3'],mage:['ritualist','lia_t2','lia_t3'],healer:['pilgrim','sain_t2','sain_t3'],rogue:['grayCloak','kai_t2','kai_t3'],shield:['bearer','ines_t2','ines_t3']};
+// Major figures keep their own painting (story weight, not rank and file): the king, Bellard, Aren, the three leaders, specials.
+const OWN_FIGURE=new Set(['bellard','king','aren','cassian','leonora','lucien','harvester','guardianStatue','clerk','child','advisor']);
+const H1=typeof ASHEN_CLASS_SPRITES!=='undefined'?ASHEN_CLASS_SPRITES:null;
+const unitTier=u=>u?.team==='ally'?Math.max(1,Math.min(3,u.classTier||1)):(u?.level||1)>=16?3:(u?.level||1)>=8?2:1;
+function battleFigure(u,missionId){const cls=classKeyOf(u),own=hdCastFor(u,missionId);
+ if(!cls||OWN_FIGURE.has(own)||OWN_FIGURE.has(u.look)||u.team==='civilian'||u.team==='object'||u.team==='commander'||u.remnant||u.memory28)return {cast:own,tint:null,mask:false};
+ const t=unitTier(u),h1=H1?.[`class_${cls}_${t}`];const side=u.neutral?'neutral':u.team==='allied'?'allied':u.team==='enemy'?'enemy':'ally';
+ const color=side==='allied'&&LOOK_FACTION[u.look]?FACTION_COLOR[LOOK_FACTION[u.look]]:SIDE_COLOR[side];
+ return {cast:h1?`class_${cls}_${t}`:TEMP_CLASS_SHEETS[cls][t-1],tint:color,mask:!!h1};}
+// The pennant over a hero's or officer's head (their own colour, the first letter of their name).
+function drawPennant(c,u,x,y,color){if(!color)return;c.save();c.fillStyle='rgba(20,18,16,.55)';c.fillRect(x+8,y-62,2,20);c.fillStyle=color;c.beginPath();c.moveTo(x+10,y-62);c.lineTo(x+26,y-57);c.lineTo(x+10,y-51);c.closePath();c.fill();c.strokeStyle='rgba(255,246,220,.85)';c.lineWidth=1;c.stroke();
+ c.fillStyle='#fff8e6';c.font='bold 8px sans-serif';c.textAlign='center';c.fillText(String(u.name||'').slice(0,1),x+15,y-54);c.restore();}
+
 // src/render/animation.js
 const RANGE_STYLE={move:{fill:'rgba(43,161,232,.62)',border:'#a9e8ff'},attack:{fill:'rgba(228,78,64,.62)',border:'#ffbf89'},support:{fill:'rgba(70,190,117,.60)',border:'#cbf5a6'}};
 function moveDuration(path,mode='step',speed=1){return mode==='instant'||path.length<2?0:(path.length-1)*(mode==='step'?320:210)/speed;}
@@ -9953,7 +9984,7 @@ class BattleRenderer{
    if(u.team==='ally'&&u.acted&&s.screen==='battle')c.globalAlpha=.5;
    c.fillStyle=u.team==='ally'?'rgba(80,160,255,.5)':u.team==='enemy'?'rgba(230,70,60,.5)':u.team==='object'?'rgba(233,196,106,.5)':'rgba(240,210,110,.55)';c.beginPath();c.ellipse(ux,uy+23,17,5.5,0,0,Math.PI*2);c.fill();
    if(ui.selected===u.id){c.strokeStyle='#fff0b8';c.lineWidth=2;c.strokeRect(ux-31,uy-36,60,60);rect(c,'#f4d695',ux-4,uy-37,8,4);}
-   if(u.team==='object'||u.prop||u.kind==='anchorStone')(u.evidence?drawEvidence:drawMissionObject)(c,u,ux,uy,now);else if(u.kind==='ram')drawRam(c,u,ux,uy,now);else if(u.kind==='rite')drawRite(c,u,ux,uy,now);else{if(u.crowned){const g=.5+.5*Math.sin(now/260);c.fillStyle=`rgba(240,200,96,${.26+g*.18})`;c.beginPath();c.ellipse(ux,uy-4,28,38,0,0,Math.PI*2);c.fill();c.strokeStyle=`rgba(255,226,140,${.6+g*.3})`;c.lineWidth=2;c.beginPath();c.ellipse(ux,uy+20,22,7,0,0,Math.PI*2);c.stroke();} /* v1.0.0 M29: Bellard with the crown's power */c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(ux,uy+23,13,4,0,0,Math.PI*2);c.fill();const tint=u.remnant?'grayscale(1) brightness(1.25) contrast(.85)':u.memory28?'sepia(.45) saturate(1.2) brightness(1.06)':null;if(tint){c.save();c.filter=tint;if(u.remnant)c.globalAlpha*=.82;}drawHDFigure(c,hdCastFor(u,s.missionId),ux,uy+24,{facing,pose,frame:pose==='walk'?1+Math.floor(now/120)%4:(u.team==='ally'&&u.acted)||u.team==='civilian'||s.screen!=='battle'?0:1+Math.floor((now+u.x*97+u.y*53)/280)%4});if(tint)c.restore();}c.globalAlpha=1;
+   if(u.team==='object'||u.prop||u.kind==='anchorStone')(u.evidence?drawEvidence:drawMissionObject)(c,u,ux,uy,now);else if(u.kind==='ram')drawRam(c,u,ux,uy,now);else if(u.kind==='rite')drawRite(c,u,ux,uy,now);else{if(u.crowned){const g=.5+.5*Math.sin(now/260);c.fillStyle=`rgba(240,200,96,${.26+g*.18})`;c.beginPath();c.ellipse(ux,uy-4,28,38,0,0,Math.PI*2);c.fill();c.strokeStyle=`rgba(255,226,140,${.6+g*.3})`;c.lineWidth=2;c.beginPath();c.ellipse(ux,uy+20,22,7,0,0,Math.PI*2);c.stroke();} /* v1.0.0 M29: Bellard with the crown's power */c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(ux,uy+23,13,4,0,0,Math.PI*2);c.fill();const tint=u.remnant?'grayscale(1) brightness(1.25) contrast(.85)':u.memory28?'sepia(.45) saturate(1.2) brightness(1.06)':null;if(tint){c.save();c.filter=tint;if(u.remnant)c.globalAlpha*=.82;}{const bf=battleFigure(u,s.missionId);drawHDFigure(c,bf.cast,ux,uy+24,{facing,pose,tint:bf.tint,mask:bf.mask,frame:pose==='walk'?1+Math.floor(now/120)%4:(u.team==='ally'&&u.acted)||u.team==='civilian'||s.screen!=='battle'?0:1+Math.floor((now+u.x*97+u.y*53)/280)%4});if(tint)c.restore();if(u.team==='ally'&&bf.tint&&pose!=='death')drawPennant(c,u,ux,uy+24,heroDef(u.id)?.color);}}c.globalAlpha=1;
    if(threatIds.has(u.id)&&Math.floor(now/400)%2){c.fillStyle='#e8594a';c.beginPath();c.moveTo(ux-9,uy-50);c.lineTo(ux+9,uy-50);c.lineTo(ux,uy-38);c.closePath();c.fill();c.fillStyle='#fff2d0';c.font='bold 12px sans-serif';c.textAlign='center';c.fillText('!',ux,uy-41);c.textAlign='start';}
    if(u.guarding&&!u.guardUsed){rect(c,'#2a3a44',ux+12,uy-44,13,15);rect(c,'#e7c783',ux+13,uy-43,11,13);rect(c,'#3f7fa3',ux+15,uy-41,7,9);}
    statusChips(c,u,s,ux,uy);
