@@ -5,6 +5,7 @@
 - Aren's confession after M28 (to all / to Erik alone, chooseConfession28, app.js showConfession28). Aren's last order 「끝까지 함께」 (command.js LAST_ORDER, game.js useLastOrder): from M28, once a battle, a fallen hero stands with 1 HP at the next player phase.
 - Lower city hub again (Baldrick present after joining), the world card 「왕도의 성문」, sites royalgate/ashenpalace, the variation 「잿빛 밤」 (32 tracks), rewards 620/640, treasures 성문 파쇄추의 쇠머리 and 잿빛 밤의 목걸이, feats to 28, 장수 열전 chapters 27/28; schema 18 (imports 0–17; real v0.10.1 saves in tests/fixtures/v0101).
 - Tests: mission27, mission28, migration-v0101 unit suites; act4c-e2e and migration-v0101 browser suites; the ACT III–IV balance extended through M28 with the ≥ 90% gate.
+- Art pack G3 returned and imported (D-111): the ram, ladder, memory/memory_read props and icon sheet N (the 「끝까지 함께」 button shows its painted icon).
 - Art pack G3 work order (Q8 minimal): scripts/make-act4-g3-art-pack.py → docs/v0.10.2/art/act4-g3-work-pack (2 images: prop sheet props_act4c — ram, ladder, memory, memory_read; icon sheet N — lastOrder, ramHead, nightLocket).
 
 # v0.10.1 — 검은 사자 · ACT IV part 2: M25 세 왕가의 깃발, M26 검은 사자의 마지막 전투, Dario's awakening, Baldrick the ninth hero (release candidate)
