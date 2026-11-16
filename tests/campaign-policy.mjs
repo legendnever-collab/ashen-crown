@@ -95,7 +95,7 @@ function missionGoals(s,u){if(s.missionId>=7)return act2Goals(s,u);
  // v0.9.3 zone of control: in M05 the raiders on the wagons come first (heroes can no longer slip past the lines to them late)
  if(s.missionId===5){const wagons=s.units.filter(w=>w.kind==='wagon'&&alive(w)),raiders=s.units.filter(e=>e.team==='enemy'&&alive(e)&&wagons.some(w=>distance(e,w)<=3));if(raiders.length)return raiders;}if(s.missionId===6){const st=s.missionState,refs=s.units.filter(u=>u.team==='civilian'&&alive(u));
  if(st.phase===3&&refs.length&&!s.units.some(u=>u.team==='civilian'&&u.rescued))return refs;
- if(st.phase===3){const boss=s.units.find(t=>t.id==='boss'&&alive(t));return boss?[boss]:[{x:7,y:1},{x:8,y:0},{x:9,y:0},{x:10,y:1}];}const stones=s.units.filter(o=>o.kind==='sealstone'&&!o.rescued&&!o.locked);return stones.length?[...stones,...refs]:refs.length?refs:[{x:8,y:1}];}
+ if(st.phase===3){const boss=s.units.find(t=>t.id==='boss'&&alive(t)),r=missionOf(s).safe;return boss?[boss]:r?[{x:r[0]+1,y:r[1]+1},{x:r[0]+3,y:r[1]+1},{x:r[0]+2,y:r[1]+2},{x:r[0]+4,y:r[1]+2}]:[{x:7,y:1},{x:8,y:0},{x:9,y:0},{x:10,y:1}];}const stones=s.units.filter(o=>o.kind==='sealstone'&&!o.rescued&&!o.locked);return stones.length?[...stones,...refs]:refs.length?refs:[missionOf(s).gateGoal||{x:8,y:1}];}
  const open=s.units.filter(o=>o.team==='object'&&o.kind==='evidence'&&alive(o));return open.length?open:s.units.filter(t=>t.id==='boss'&&alive(t));}
 function fieldDistance(s,u,goals){const d=new Map(),q=[];for(const g of goals)for(const [dx,dy]of [[0,-1],[-1,0],[1,0],[0,1]]){const x=g.x+dx,y=g.y+dy;if(Number.isFinite(terrainCost(s,u,x,y))){d.set(`${x},${y}`,0);q.push({x,y,c:0});}}while(q.length){q.sort((a,b)=>a.c-b.c);const p=q.shift();if(p.c!==d.get(`${p.x},${p.y}`))continue;for(const [dx,dy]of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,step=terrainCost(s,u,x,y),k=`${x},${y}`;if(!Number.isFinite(step))continue;const c=p.c+step;if(c<(d.get(k)??Infinity)){d.set(k,c);q.push({x,y,c});}}}return d;}
 // v0.10.2 M27: keep the road ahead of the ram clear (it rolls only along the road); ending on an open wall section is worth a lot
@@ -107,7 +107,7 @@ export function drain(s){openStory(s);for(let i=0;s.narrative.active&&i<100;i++)
 function strikeScore(s,u,t,f,capture){const civ=s.units.filter(v=>v.team==='civilian'&&alive(v));let score=f.damage*f.hit/100*3+(f.after===0?50:0)-f.counter;
    if(s.missionId===2&&t.id==='boss'){score+=100;if(capture&&f.after===0)score=-500;}
    if(s.missionId===10&&(s.campaign.choices?.m10_stance||'mediate')==='mediate'&&['boss','boss2'].includes(t.id)&&f.after===0)score=-500; // mediation: never kill a lord
-   if(s.missionId===3){if(civ.length)score+=20;else score+=t.y<u.y?100:10;}
+   if(s.missionId===3){if(civ.length)score+=20;else score+=missionOf(s).safe?40:t.y<u.y?100:10;}
    if(s.missionId===12&&(s.missionState.alert||0)<2&&(t.watch||t.id==='boss'&&s.units.some(o=>o.evidence==='ledger'&&alive(o)))&&f.after>0)score=-500; // never strike a quiet guard without dropping it (the abbot once the ledger is safe)
    if(s.missionId===13&&persuadeFirst&&t.id==='boss')score=-500; // persuasion run: never strike Baldrick
    if(s.missionId>=7)score+=200+(t.id==='boss'?30:0)+(s.missionId===7&&s.units.some(w=>w.kind==='wagon'&&alive(w)&&distance(w,t)<=1)?60:0);
@@ -143,7 +143,7 @@ function tacticOptions(s,u,a){const out=[];for(const k of skillsOf(a).filter(k=>
   const f=forecastClass(s,a,t,m),sc=strikeScore(s,u,t,{damage:f.damage,hit:f.hit,after:f.after,counter:f.counter},true);if(sc>-400)out.push({mode:m,target:t.id,score:sc+(f.after>0?STATUS_WORTH[m]||0:0)});}}
  return out;}
 export function campaignAction(s,u,capture=true){
- let best=null;const exitDistance=new Map();if(s.missionId===3){const q=[];for(let y=0;y<=2;y++)for(let x=0;x<14;x++)if(Number.isFinite(terrainCost(s,u,x,y))){exitDistance.set(`${x},${y}`,0);q.push({x,y,c:0});}while(q.length){q.sort((a,b)=>a.c-b.c);const p=q.shift();for(const [dx,dy]of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,c=p.c+terrainCost(s,u,p.x,p.y),k=`${x},${y}`;if(Number.isFinite(terrainCost(s,u,x,y))&&c<(exitDistance.get(k)??Infinity)){exitDistance.set(k,c);q.push({x,y,c});}}}}const goalDistance=s.missionId>=4?fieldDistance(s,u,missionGoals(s,u)):null;let cells=u.moved?new Map([[`${u.x},${u.y}`,0]]):movement(s,u).costs;
+ let best=null;const exitDistance=new Map();if(s.missionId===3){const q=[],r=missionOf(s).safe||[0,0,13,2];for(let y=r[1];y<=r[3];y++)for(let x=r[0];x<=r[2];x++)if(Number.isFinite(terrainCost(s,u,x,y))){exitDistance.set(`${x},${y}`,0);q.push({x,y,c:0});}while(q.length){q.sort((a,b)=>a.c-b.c);const p=q.shift();for(const [dx,dy]of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,c=p.c+terrainCost(s,u,p.x,p.y),k=`${x},${y}`;if(Number.isFinite(terrainCost(s,u,x,y))&&c<(exitDistance.get(k)??Infinity)){exitDistance.set(k,c);q.push({x,y,c});}}}}const goalDistance=s.missionId>=4?fieldDistance(s,u,missionGoals(s,u)):null;let cells=u.moved?new Map([[`${u.x},${u.y}`,0]]):movement(s,u).costs;
  // v0.9.3 M22: the designated reader takes a fallen herald's dais when it can reach it, and acts from there.
  if(s.missionId===22&&!u.moved){const dais=missionGoals(s,u).find(g=>g.name==='빈 단');if(dais&&cells.has(`${dais.x},${dais.y}`))cells=new Map([[`${dais.x},${dais.y}`,cells.get(`${dais.x},${dais.y}`)]]);}
  const civ=s.units.filter(t=>t.team==='civilian'&&alive(t));
@@ -153,13 +153,13 @@ export function campaignAction(s,u,capture=true){
   else if(mode==='capture')score=2000;
   else if(mode==='persuade')score=1800;
   else if(mode==='rescue')score=1000;
-  else if(f.heal!==undefined)score=hostile(s,a,t)?-1000:t.team==='civilian'&&t.hp<=t.maxHP/2?900:f.heal>=10?80+f.heal:0;
-  else if(f.guard===true)score=0;
+  else if(f.heal!==undefined)score=hostile(s,a,t)?-1000:s.missionId===3&&missionOf(s).safe&&!civ.length&&t.hp>t.maxHP*.45?-1000:t.team==='civilian'&&t.hp<=t.maxHP/2?900:f.heal>=10?80+f.heal:0; // v2.0.0 M03: the long walk out comes first
+  else if(f.guard===true)score=s.missionId===3&&missionOf(s).safe?-1000:0;
   else score=strikeScore(s,u,t,f,capture);
   score-=c*.5;if(s.missionId===24)score-=block24(s,x,y);if(s.missionId===27)score-=block27(s,x,y);if(s.missionId===11&&missionOf(s).map[y][x]==='r'&&s.units.some(p=>p.team==='civilian'&&alive(p)&&p.x===x&&p.y>y))score-=80;if(s.missionId===12&&watchRisk(s,x,y)&&!(mode==='attack'&&f.after===0))score-=900;if(!best||score>best.score)best={id:u.id,x,y,mode,target:t.id,score};}
   let score;
   if(goalDistance)score=200-(goalDistance.get(`${x},${y}`)??100)*12-c*.1-(s.missionId===7&&['r','i'].includes(missionOf(s).map[y][x])&&s.units.some(w=>w.kind==='wagon'&&alive(w)&&Math.abs(w.x-x)<=1&&w.y>y)?60:0)-(s.missionId===11&&missionOf(s).map[y][x]==='r'&&s.units.some(p=>p.team==='civilian'&&alive(p)&&p.x===x&&p.y>y)?80:0)-(s.missionId===12&&watchRisk(s,x,y)?900:0);
-  else if(s.missionId===3&&!civ.length)score=200-(exitDistance.get(`${x},${y}`)??100)*15-y*3-c*.1;
+  else if(s.missionId===3&&(!civ.length||civ.every(v=>!v.rescued&&s.units.some(h=>h.team==='ally'&&alive(h)&&distance(h,v)===1)&&missionOf(s).safe)))score=200-(exitDistance.get(`${x},${y}`)??100)*15-(missionOf(s).safe?0:y*3)-c*.1;
   else{const targets=civ.length?civ:s.units.filter(t=>t.id==='boss'&&alive(t));const near=targets.reduce((n,t)=>Math.min(n,distance(a,t)),100);score=80-near*8-c*.1;}
   if(s.missionId===24)score-=block24(s,x,y);if(s.missionId===27)score-=block27(s,x,y);
   if(!best||score>best.score)best={id:u.id,x,y,mode:'wait',score};

@@ -239,7 +239,7 @@ export function advanceEnemy(s){
  for(const u of s.units.filter(u=>u.team==='ally'&&alive(u)&&u.status?.confuse)){confusedAct(s,u);u.moved=true;u.acted=true;}
  if(s.missionId===1&&s.turn===4)s.log.push('가르: “피난민을 잡아라!” 다음 TURN 5부터 산적이 주민을 직접 공격합니다.');
  applyTerrainRecovery(s);
- if(s.missionId===3)escortCivilians(s);
+ if(s.missionId===3&&!missionOf(s).v200)escortCivilians(s);
  checkOutcome(s);afterBattleEvents(s);
  s.log.push(`TURN ${s.turn} · PLAYER PHASE${s.turn>=5?' · 주민이 직접 공격받습니다!':''}`);return true;
 }

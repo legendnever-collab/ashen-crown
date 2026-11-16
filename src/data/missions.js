@@ -740,3 +740,7 @@ skirmish(117,'trial','dario',{tier:3,level:14,title:'칼의 주인의 시련',en
  objective:'TURN 4까지 검진 교관 6명 격파 (엘리나 지원)',brief:'백 번의 반격(④, 전투당 1회): 다음 적 턴 동안 받는 모든 공격에 반격합니다 — 활에도, 사거리와 관계없이 — 반격 피해 +30%. 검진 한가운데에 서서 쓰세요.'});
 export const isSkirmish=id=>!!MISSIONS[id]?.skirmish;
 export const LAST_MISSION=Math.max(...Object.keys(MISSIONS).map(Number).filter(id=>!MISSIONS[id].skirmish));
+
+// v2.0.0 전장 개편 (D-115): ACT I M01–M06 on big maps with new directions (missions-v200.js).
+import {applyV200} from './missions-v200.js';
+applyV200(MISSIONS);
