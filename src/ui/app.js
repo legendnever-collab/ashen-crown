@@ -36,7 +36,7 @@ import {chooseBanner25,camps25} from '../core/mission-rules-v0101.js';
 import {chooseConfession28} from '../core/mission-rules-v0102.js';
 import {chooseFate29,FATE29,fateOpen29} from '../core/mission-rules-v100.js';
 import {ENDINGS,ENDING_IDS,openEndings,endingReady,chooseEnding,epilogue,campaignTotals} from '../core/ending.js';
-import {endingArt} from './ending-art.js';
+import {endingArt,ENDING_ART} from './ending-art.js';
 import {paintedURL} from '../render/bust.js';
 import {recordOf,signatureDeed,RECORD_KO} from '../core/records.js';
 import {TOGETHER} from '../core/command.js';
@@ -436,7 +436,7 @@ function showEndingCard(){const c=state.campaign,id=c.ending?.id,e=ENDINGS[id];i
  const CH=[['ACT III 선택',{king:'국왕에게',council:'세 깃발의 회의에',oath:'모든 사람의 서약에'}[c.choices?.act3_choice]],['M23 최후 작전의 지휘',{legion:'군단이 맡음',banners:'세 깃발이 나눠 맡음'}[c.choices?.m23_lead]],['M24 관문을 닫은 턴',c.flags?.mission_24_gate_turn?`TURN ${c.flags.mission_24_gate_turn}`:null],['M25 등을 돌린 깃발',{forgive:'용서하고 받아들임',lower:'깃발을 내리게 함'}[c.choices?.m25_banner]],['M26 발드릭',{join:'합류',cooperate:'협력',withdraw:'물러남'}[c.flags?.mission_26_baldrick]],['M28 아렌의 고백',{all:'군단 모두에게',eric:'에릭에게만'}[c.choices?.m28_confession]],['M29 벨라드',{trial:'재판',exile:'추방',offer:'스스로 기억을 바침'}[c.choices?.m29_bellard]],['엔딩',`${id} · ${e.ko}`]].filter(([,v])=>v);
  const heroes=partyHeroes(c).map(h=>{const r=recordOf(c,h.id),deed=signatureDeed(r),rec=(c.heroes||[]).find(u=>u.id===h.id);return `<tr><th>${esc(h.name)}</th><td>${rec?`LV ${rec.level}${(rec.classTier||1)>=3?' · 각성':''}`:'—'}</td><td><b>${esc(deed||'기록 없음')}</b></td></tr>`;}).join('');
  const rows=factionRows(c).map(f=>`<tr><th>${esc(f.name)}</th><td><b>${esc(f.stage.ko)}</b></td></tr>`).join('');
- modal('엔딩 카드',`<div class="act1-card ending-card"><div class="eyebrow">ACT IV · THE ASHEN CROWN · ENDING ${esc(id)}</div><h2>${esc(e.ko)}</h2><p class="act1-en">${esc(e.en)}</p><p>${esc(e.holds)}</p>
+ modal('엔딩 카드',`<div class="act1-card ending-card">${ENDING_ART.epilogue?`<img class="ending-card-art" src="${ENDING_ART.epilogue}" alt="" aria-hidden="true">`:''}<div class="eyebrow">ACT IV · THE ASHEN CROWN · ENDING ${esc(id)}</div><h2>${esc(e.ko)}</h2><p class="act1-en">${esc(e.en)}</p><p>${esc(e.holds)}</p>
   <h4>ACT IV의 선택</h4><table class="act2-relations">${CH.map(([k,v])=>`<tr><th>${esc(k)}</th><td><b>${esc(v)}</b></td></tr>`).join('')}</table><table class="act2-relations">${rows}</table>
   <h4>장수 열전 · 대표 전과</h4><table class="act2-relations act3-heroes">${heroes}</table>
   <p class="act1-oath">완료한 미션 <b>${t.missions}</b> · 기록된 전투 <b>${t.battles}</b> · 승리한 전투의 턴 <b>${t.turns}</b> <small>(저장에는 최근 30전투가 남습니다)</small></p>

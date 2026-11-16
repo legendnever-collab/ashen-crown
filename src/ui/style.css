@@ -453,3 +453,4 @@
 .epi-initial{display:grid;place-items:center;font:bold 22px Georgia,'Ashen UI',serif;color:#f0c46a}
 .epi-open{margin:0;text-align:center;font-style:italic;color:#b9ad92;font-size:13px}
 @media (max-width:520px){.epi-ledger{grid-template-columns:1fr}.epi-title h2{font-size:22px}.epi-card{grid-template-columns:44px 1fr}.epi-face{width:44px;height:44px}}
+.ending-card-art{display:block;width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin-bottom:8px}
