@@ -1,0 +1,57 @@
+{
+  "checks": [
+    {
+      "name": "Shipped v0.10.2 village save is schema 18",
+      "status": "PASS"
+    },
+    {
+      "name": "Shipped v0.10.2 battle checkpoint generated",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.10.2 village save opens in the painted village (schema 19, gold kept, legal position)",
+      "status": "PASS"
+    },
+    {
+      "name": "Imported village save does not replay the world-map intro",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.10.2 battle and its checkpoint migrate unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "Restart of a migrated v0.10.2 battle works",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.10.2 lower city save (after M28, Baldrick in the legion) opens with every asset kept and the roster intact",
+      "status": "PASS"
+    },
+    {
+      "name": "The migrated camp now goes on to Mission 29",
+      "status": "PASS"
+    },
+    {
+      "name": "The legion panel opens with every hero of the v0.10.2 roster, Baldrick included",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.10.2 Mission 28 battle resumes in the Ashen Night's palace",
+      "status": "PASS"
+    },
+    {
+      "name": "Erik of a v0.10.2 save keeps ② and ③ and shows ④",
+      "status": "PASS"
+    },
+    {
+      "name": "Migrated save reloads as the current version",
+      "status": "PASS"
+    },
+    {
+      "name": "No runtime errors in either build",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}
