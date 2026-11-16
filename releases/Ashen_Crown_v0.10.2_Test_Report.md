@@ -1,10 +1,26 @@
 # Ashen Crown v0.10.2 「잿빛 밤」 — Test Report
 Updated 2026-11-16 KST. **Release candidate on feature/v0.10.2-ashen-night; not merged before the user plays and approves it.** Decision: D-110 (implementation details, PROPOSED) within D-099 (docs/v0.10.0/ACT4_DESIGN.md §3, §4.2, §7, §10), built on main 6adba79 (v0.10.1 merged, D-109).
 
-HTML SHA256 of the build under review: `e916f6cd57d145340fd49472e53ad7ffba135df242126f9e5327b4581a164874` (`index.html` identical; also in `releases/Ashen_Crown_v0.10.2_SHA256SUMS`). **The full 62-suite matrix ran on this HTML** (2026-11-16); a rebuild after it gave the same hash. Only docs changed after the run.
+HTML SHA256 of the build under review: `04b4e3628ff75201ce1f4f60f8f2850fbbe9752facb89f94c9c928af971a7fc0` (`index.html` identical; also in `releases/Ashen_Crown_v0.10.2_SHA256SUMS`). It includes **art pack G3** (D-111). A rebuild gave the same hash.
+- The full 62-suite matrix ran on the build before G3 (`e916f6cd…4874`, 2026-11-16). That build differs only in the four props, the three icons and the icon on the 「끝까지 함께」 button.
+- After the G3 import, the suites that draw or count the new art were **rerun on this HTML** (docs/v0.10.2/evidence/rerun-g3-*.log). All pass:
+
+| Suite | Result |
+|---|---|
+| act4c | 34 checks (2 new: the painted icon on the order button, and its screenshot) |
+| act4b | 32 checks |
+| e2e | 59 checks |
+| item-art | 18 checks |
+| legion | 19 checks |
+| mobile-command | 24 checks |
+| migration-v0101 | 13 checks |
+| http | 4 checks |
+| performance | median frame 16.7 ms |
+
+- Unit tests were rerun after G3: 496 pass, 0 fail.
 
 ## Summary
-- **495 unit tests PASS / 0 FAIL** (docs/v0.10.2/evidence/unit-results.txt). New: tests/mission27.test.mjs (5), tests/mission28.test.mjs (5), tests/migration-v0101.test.mjs (4).
+- **496 unit tests PASS / 0 FAIL** after G3 (docs/v0.10.2/evidence/unit-results.txt; 495 before G3, plus the sheet N check). New: tests/mission27.test.mjs (5), tests/mission28.test.mjs (5), tests/migration-v0101.test.mjs (4).
 - **Full browser and balance matrix, 62 suites** (docs/v0.10.2/evidence/browser-run-summary.log): 61 passed on the first run. **e2e failed once** — it reads test-output/winning-trace.json, which the balance suite (run right after it) writes, and this container was new, so the file did not exist yet. With the file written, e2e passed on rerun (59 checks). 2,100 `PASS` lines in all. No runtime errors.
 - Balances: ACT I 30/30; ACT II M07–M14 30/30 each; ACT III M15–M22 30/30 each; ACT IV M23–M26 30/30 each, **M27 30/30, M28 30/30** (gate ≥ 90% of the previous mission passed).
 - During development, act4c's "gate's third blow" check stopped at the end-phase confirmation prompt; the test now presses 확인 after 턴 종료, as a player does.
@@ -36,7 +52,10 @@ Screenshots: docs/v0.10.2/screenshots/act4c (the royal-gate card, the lower city
 - Browser (tests/migration-v0101.mjs): see the table. All older migration suites still pass.
 
 ## Art
-- New things drawn by the game for now: the ram, the ladders, the memory fragments (glowing / read), and the icons for 「끝까지 함께」 and the two treasures. Young Aren (sepia) and the remnants (grey) recolour existing art (Q8, D-094).
+- **Art pack G3 imported (D-111).**
+  - The user returned Ashen_Crown_v0102_ACT4_Art_Pack_G3_A.zip (SHA256 e12a9a82…a37bcd). Both masters match SHA256SUMS.txt and the manifests; the pack's QA is in docs/v0.10.2/art/pack-g3-qa.
+  - The prop sheet painted the ram, the ladder, the memory fragment and the read fragment. Icon sheet N painted 「끝까지 함께」, 성문 파쇄추의 쇠머리 and 잿빛 밤의 목걸이, with 0 QA notes.
+  - Checked by eye on the new screenshots: the painted ram on the road, the three painted ladders, the fragments glowing and read, and the icon on the order button (m28-lastorder). Young Aren (sepia) and the remnants (grey) recolour existing art (Q8, D-094).
 - Art pack G3 work order (2 images): scripts/make-act4-g3-art-pack.py → docs/v0.10.2/art/act4-g3-work-pack; import paths are ready (scripts/import-interior-art.py PROPS['props_act4c'], scripts/import-item-art.py --cells).
 
 ## Packaging
