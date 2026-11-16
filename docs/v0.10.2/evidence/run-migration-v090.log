@@ -1,0 +1,15 @@
+PASS Shipped v0.9.0 village save is schema 12
+PASS Shipped v0.9.0 battle checkpoint generated
+PASS v0.9.0 village save opens in the painted village (schema 13, gold kept, legal position)
+PASS Imported village save does not replay the world-map intro
+PASS v0.9.0 battle and its checkpoint migrate unchanged
+PASS Restart of a migrated v0.9.0 battle works
+PASS v0.9.0 field-camp save (ACT III part 1 complete) opens with every asset kept and the roster intact
+PASS The migrated camp now goes on to Mission 17
+PASS The legion panel lists the recruits and the awakening path
+PASS From the migrated field camp the towns can be revisited (the capital included)
+PASS v0.9.0 Mission 16 battle resumes in fog
+PASS Erik of a v0.9.0 save keeps ② and ③ and shows ④ locked until his awakening
+PASS Migrated save reloads as the current version
+PASS No runtime errors in either build
+14 v0.9.0 browser migration checks PASS

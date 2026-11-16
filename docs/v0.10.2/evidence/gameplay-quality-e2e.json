@@ -1,0 +1,398 @@
+{
+  "checks": [
+    {
+      "name": "1440x1000 advisor collision blocks occupied tile",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 single press one step",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 release remains stopped",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 short D-pad tap is exactly one step",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 single presses reach the north road",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 hold repeats independently of browser key repeat",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 release no extra steps",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 direction changes",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 focus loss clears input",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 arriving in front of a door does not prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 stepping into the doorway requests confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 cancel does not loop while key remains down",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 fresh doorway input retries confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 confirmation enters independent interior",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 owner greets with buy sell upgrade choices",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 purchase needs explicit hero selection",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 eligible portrait comparison uses actual delta",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 buy auto-equips selected hero",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 replacement keeps old gear",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 equipped sale protected",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 failed save rolls sale back",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 failed sale reload retains assets",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 explicit exit restores exact door",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 arrow key hold repeats",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 key up stops immediately",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 pointercancel clears hold",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 both faction starts apply terrain recovery",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 reload does not repeat phase recovery",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 deferred reward is visible",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 capacity delivery grants once",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 deferred delivery persists without a second grant",
+      "status": "PASS"
+    },
+    {
+      "name": "1440x1000 schema5 and viewport fit",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 advisor collision blocks occupied tile",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 single press one step",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 release remains stopped",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 short D-pad tap is exactly one step",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 single presses reach the north road",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 hold repeats independently of browser key repeat",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 release no extra steps",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 direction changes",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 focus loss clears input",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 arriving in front of a door does not prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 stepping into the doorway requests confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 cancel does not loop while key remains down",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 fresh doorway input retries confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 confirmation enters independent interior",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 owner greets with buy sell upgrade choices",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 purchase needs explicit hero selection",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 eligible portrait comparison uses actual delta",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 buy auto-equips selected hero",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 replacement keeps old gear",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 equipped sale protected",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 failed save rolls sale back",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 failed sale reload retains assets",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 explicit exit restores exact door",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 D-pad pointer hold repeats",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 pointer up stops immediately",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 pointercancel clears hold",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 both faction starts apply terrain recovery",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 reload does not repeat phase recovery",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 deferred reward is visible",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 capacity delivery grants once",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 deferred delivery persists without a second grant",
+      "status": "PASS"
+    },
+    {
+      "name": "390x844 schema5 and viewport fit",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 advisor collision blocks occupied tile",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 single press one step",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 release remains stopped",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 short D-pad tap is exactly one step",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 single presses reach the north road",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 hold repeats independently of browser key repeat",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 release no extra steps",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 direction changes",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 focus loss clears input",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 arriving in front of a door does not prompt",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 stepping into the doorway requests confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 cancel does not loop while key remains down",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 fresh doorway input retries confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 confirmation enters independent interior",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 owner greets with buy sell upgrade choices",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 purchase needs explicit hero selection",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 eligible portrait comparison uses actual delta",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 buy auto-equips selected hero",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 replacement keeps old gear",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 equipped sale protected",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 failed save rolls sale back",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 failed sale reload retains assets",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 explicit exit restores exact door",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 D-pad pointer hold repeats",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 pointer up stops immediately",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 pointercancel clears hold",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 both faction starts apply terrain recovery",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 reload does not repeat phase recovery",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 deferred reward is visible",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 capacity delivery grants once",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 deferred delivery persists without a second grant",
+      "status": "PASS"
+    },
+    {
+      "name": "844x390 schema5 and viewport fit",
+      "status": "PASS"
+    },
+    {
+      "name": "quality flows have no runtime errors",
+      "status": "PASS"
+    },
+    {
+      "name": "quality standalone has zero external requests",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "external": 0
+}

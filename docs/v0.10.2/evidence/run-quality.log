@@ -1,0 +1,99 @@
+PASS 1440x1000 advisor collision blocks occupied tile
+PASS 1440x1000 single press one step
+PASS 1440x1000 release remains stopped
+PASS 1440x1000 short D-pad tap is exactly one step
+PASS 1440x1000 single presses reach the north road
+PASS 1440x1000 hold repeats independently of browser key repeat
+PASS 1440x1000 release no extra steps
+PASS 1440x1000 direction changes
+PASS 1440x1000 focus loss clears input
+PASS 1440x1000 arriving in front of a door does not prompt
+PASS 1440x1000 stepping into the doorway requests confirmation
+PASS 1440x1000 cancel does not loop while key remains down
+PASS 1440x1000 fresh doorway input retries confirmation
+PASS 1440x1000 confirmation enters independent interior
+PASS 1440x1000 owner greets with buy sell upgrade choices
+PASS 1440x1000 purchase needs explicit hero selection
+PASS 1440x1000 eligible portrait comparison uses actual delta
+PASS 1440x1000 buy auto-equips selected hero
+PASS 1440x1000 replacement keeps old gear
+PASS 1440x1000 equipped sale protected
+PASS 1440x1000 failed save rolls sale back
+PASS 1440x1000 failed sale reload retains assets
+PASS 1440x1000 explicit exit restores exact door
+PASS 1440x1000 arrow key hold repeats
+PASS 1440x1000 key up stops immediately
+PASS 1440x1000 pointercancel clears hold
+PASS 1440x1000 both faction starts apply terrain recovery
+PASS 1440x1000 reload does not repeat phase recovery
+PASS 1440x1000 deferred reward is visible
+PASS 1440x1000 capacity delivery grants once
+PASS 1440x1000 deferred delivery persists without a second grant
+PASS 1440x1000 schema5 and viewport fit
+PASS 390x844 advisor collision blocks occupied tile
+PASS 390x844 single press one step
+PASS 390x844 release remains stopped
+PASS 390x844 short D-pad tap is exactly one step
+PASS 390x844 single presses reach the north road
+PASS 390x844 hold repeats independently of browser key repeat
+PASS 390x844 release no extra steps
+PASS 390x844 direction changes
+PASS 390x844 focus loss clears input
+PASS 390x844 arriving in front of a door does not prompt
+PASS 390x844 stepping into the doorway requests confirmation
+PASS 390x844 cancel does not loop while key remains down
+PASS 390x844 fresh doorway input retries confirmation
+PASS 390x844 confirmation enters independent interior
+PASS 390x844 owner greets with buy sell upgrade choices
+PASS 390x844 purchase needs explicit hero selection
+PASS 390x844 eligible portrait comparison uses actual delta
+PASS 390x844 buy auto-equips selected hero
+PASS 390x844 replacement keeps old gear
+PASS 390x844 equipped sale protected
+PASS 390x844 failed save rolls sale back
+PASS 390x844 failed sale reload retains assets
+PASS 390x844 explicit exit restores exact door
+PASS 390x844 D-pad pointer hold repeats
+PASS 390x844 pointer up stops immediately
+PASS 390x844 pointercancel clears hold
+PASS 390x844 both faction starts apply terrain recovery
+PASS 390x844 reload does not repeat phase recovery
+PASS 390x844 deferred reward is visible
+PASS 390x844 capacity delivery grants once
+PASS 390x844 deferred delivery persists without a second grant
+PASS 390x844 schema5 and viewport fit
+PASS 844x390 advisor collision blocks occupied tile
+PASS 844x390 single press one step
+PASS 844x390 release remains stopped
+PASS 844x390 short D-pad tap is exactly one step
+PASS 844x390 single presses reach the north road
+PASS 844x390 hold repeats independently of browser key repeat
+PASS 844x390 release no extra steps
+PASS 844x390 direction changes
+PASS 844x390 focus loss clears input
+PASS 844x390 arriving in front of a door does not prompt
+PASS 844x390 stepping into the doorway requests confirmation
+PASS 844x390 cancel does not loop while key remains down
+PASS 844x390 fresh doorway input retries confirmation
+PASS 844x390 confirmation enters independent interior
+PASS 844x390 owner greets with buy sell upgrade choices
+PASS 844x390 purchase needs explicit hero selection
+PASS 844x390 eligible portrait comparison uses actual delta
+PASS 844x390 buy auto-equips selected hero
+PASS 844x390 replacement keeps old gear
+PASS 844x390 equipped sale protected
+PASS 844x390 failed save rolls sale back
+PASS 844x390 failed sale reload retains assets
+PASS 844x390 explicit exit restores exact door
+PASS 844x390 D-pad pointer hold repeats
+PASS 844x390 pointer up stops immediately
+PASS 844x390 pointercancel clears hold
+PASS 844x390 both faction starts apply terrain recovery
+PASS 844x390 reload does not repeat phase recovery
+PASS 844x390 deferred reward is visible
+PASS 844x390 capacity delivery grants once
+PASS 844x390 deferred delivery persists without a second grant
+PASS 844x390 schema5 and viewport fit
+PASS quality flows have no runtime errors
+PASS quality standalone has zero external requests
+98 gameplay quality checks PASS
