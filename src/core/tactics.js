@@ -145,7 +145,7 @@ export function applyTactic(s,u,target,mode,strike){
    else{const cells=caltropSpots(s,p);s.traps=[...(s.traps||[]),...cells.map(c=>({x:c.x,y:c.y}))];s.feedback.push({type:'class',action:'caltrops',id:u.id,text:TOOLS[id].name,cells});s.log.push(`${u.name}: 마름쇠 ${cells.length}칸 설치.`);}
    return out;}
   const t=unitOf(s,target);
-  if(use.on==='enemy'){s.feedback.push({type:'class',action:id,id:u.id,target:t.id,text:TOOLS[id].name});if(inflict(s,t,id==='net'?'bind':'confuse',id==='net'?100:75))out.struck.push(t);return out;}
+  if(use.on==='enemy'){s.feedback.push({type:'class',action:id,id:u.id,target:t.id,text:TOOLS[id].name});if(inflict(s,t,id==='net'?'bind':'confuse',id==='net'?100:75,undefined,u))out.struck.push(t);return out;}
   if(use.on==='self'){for(const a of s.units.filter(a=>a.team==='ally'&&alive(a)&&distance(a,u)<=1)){a.drum=s.turn+1;s.feedback.push({type:'guard',id:a.id,text:'ATK +3'});}s.log.push(`${u.name}: 전고. 곁의 아군 ATK +3.`);return out;}
   if(use.hp||use.full){const n=Math.min(use.full?t.maxHP:use.hp,t.maxHP-t.hp);t.hp+=n;if(n)s.feedback.push({type:'heal',id:t.id,text:`+${n}`,toHP:t.hp});}
   if(use.mp){const n=Math.min(use.mp,t.maxMP-t.mp);t.mp+=n;s.feedback.push({type:'heal',id:t.id,text:`+${n} MP`});}
@@ -163,7 +163,7 @@ export function applyTactic(s,u,target,mode,strike){
   for(const t of [a,b].filter(t=>t.team==='enemy')){t.dazed=s.turn;s.feedback.push({type:'status',id:t.id,status:'debuff',text:'행동 불가'});out.struck.push(t);}
   s.log.push(`${u.name}: 그림자 군무. ${a.name}과(와) ${b.name}의 자리가 바뀌었습니다.${out.struck.length?' 옮겨진 적은 다음 적 턴에 움직이지 못합니다.':''}`);return out;}
  if(mode==='sanctumGate'){const kept=s.units.filter(a=>sideOf(a)!=='enemy'&&a.team!=='object'&&alive(a)&&distance(a,u)<=3);for(const a of kept){a.gateGuard=s.turn;cure(s,a);s.feedback.push({type:'guard',id:a.id,text:'성역 −50%'});}s.log.push(`${u.name}: 성역의 문. 다음 아군 턴까지 3칸 안 ${kept.length}명이 받는 피해가 절반이 됩니다.`);return out;}
- if(mode==='lionRoar'){const foes=s.units.filter(e=>alive(e)&&hostile(s,u,e)&&distance(u,e)<=2);let n=0;for(const e of foes)if(inflict(s,e,'bind',60))n++;s.log.push(`${u.name}: 사자의 포효. 2칸 안 적 ${foes.length}명 중 ${n}명이 발이 묶였습니다.`);return out;}
+ if(mode==='lionRoar'){const foes=s.units.filter(e=>alive(e)&&hostile(s,u,e)&&distance(u,e)<=2);let n=0;for(const e of foes)if(inflict(s,e,'bind',60,undefined,u))n++;s.log.push(`${u.name}: 사자의 포효. 2칸 안 적 ${foes.length}명 중 ${n}명이 발이 묶였습니다.`);return out;}
  if(mode==='lionBanner'){const kept=s.units.filter(a=>sideOf(a)==='legion'&&alive(a)&&distance(a,u)<=2);for(const a of kept){a.lionGuard=s.turn;s.feedback.push({type:'guard',id:a.id,text:'피해 −4'});}s.log.push(`${u.name}: 사자의 깃발. 다음 아군 턴까지 곁의 ${kept.length}명이 받는 피해가 4 줄어듭니다.`);return out;}
  if(mode==='lastCharge'){for(const e of s.units.filter(e=>alive(e)&&hostile(s,u,e)&&distance(u,e)===1))hitOn(e,{noCounter:true});u.gateGuard=s.turn;s.log.push(`${u.name}: 검은 사자의 결의. 곁의 적을 모두 치고, 다음 아군 턴까지 받는 피해가 절반이 됩니다.`);return out;}
  if(mode==='hundredCounters'){u.hundred=s.turn;s.feedback.push({type:'guard',id:u.id,text:'백 번의 반격'});s.log.push(`${u.name}: 백 번의 반격. 다음 적 턴 동안 받는 모든 공격에 반격합니다 (반격 피해 +30%).`);return out;}
@@ -180,8 +180,8 @@ export function applyTactic(s,u,target,mode,strike){
  const blocked=mode==='breakthrough'&&!pushSpot(s,u,t);
  const r=hitOn(t,{bonus:blocked?3:0,noCounter:!!STRIKE[mode]?.noCounter});
  if(r.hit&&alive(r.victim)){const v=r.victim;
-  if(mode==='pinningShot')inflict(s,v,'bind',100);
-  else if(mode==='venomEdge')inflict(s,v,'poison',100);
+  if(mode==='pinningShot')inflict(s,v,'bind',100,undefined,u);
+  else if(mode==='venomEdge')inflict(s,v,'poison',100,undefined,u);
   else if(mode==='feint'){v.atkDown={n:4,until:s.turn};s.feedback.push({type:'status',id:v.id,status:'debuff',text:'ATK −4'});}
   else if(mode==='flameBrand'){v.defDown={n:3,until:s.turn+1};s.feedback.push({type:'status',id:v.id,status:'debuff',text:'DEF −3'});}
   else if(mode==='breakthrough'&&!blocked){const p=pushSpot(s,u,v);if(p){const from={x:v.x,y:v.y};v.x=p.x;v.y=p.y;s.feedback.push({type:'move',id:v.id,path:[from,p]});s.log.push(`${u.name}: 돌파 · ${v.name}을(를) 밀어냈습니다.`);}}}

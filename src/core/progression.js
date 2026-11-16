@@ -3,6 +3,7 @@
 import {CLASS_TREE,POTENTIAL,PROFICIENCY_STEPS,PROFICIENCY_SOURCE,PROFICIENCY_EFFECT,PROMOTION_LEVEL,AWAKEN_LEVEL,AWAKEN_TRIGGER,RECRUIT_PROMOTION} from '../data/classes.js';
 import {RECRUIT_JOIN} from '../data/skills.js';
 import {LAST_MISSION,MISSIONS} from '../data/missions.js';
+import {promoteStats} from './stats8.js';
 
 export const classTierOf=u=>Math.max(1,u?.classTier||1);
 export function classOf(u){const tree=CLASS_TREE[u?.id];if(!tree)return null;return tree.find(c=>c.tier===classTierOf(u))||tree[0];}
@@ -40,7 +41,8 @@ export function promotionStatus(s,id){
 }
 // Applies the class change to one hero object (campaign record or live unit). Idempotent per tier.
 export function applyClass(u,cls){if(!u||!cls||classTierOf(u)>=cls.tier)return false;u.classTier=cls.tier;
- for(const [k,v]of Object.entries(cls.bonus||{})){u[k]=(u[k]||0)+v;if(k==='maxHP'&&'hp'in u)u.hp=Math.min(u.maxHP,(u.hp||0)+v);if(k==='maxMP'&&'mp'in u)u.mp=Math.min(u.maxMP,(u.mp||0)+v);}
+ // v2.0.0 (§3.5): a promotion raises the class's main stats; only the MP bonus is still added directly.
+ if(u.stats){promoteStats(u,cls.tier);if(cls.bonus?.maxMP){u.maxMP=(u.maxMP||0)+cls.bonus.maxMP;if('mp'in u)u.mp=Math.min(u.maxMP,(u.mp||0)+cls.bonus.maxMP);}}else for(const [k,v]of Object.entries(cls.bonus||{})){u[k]=(u[k]||0)+v;if(k==='maxHP'&&'hp'in u)u.hp=Math.min(u.maxHP,(u.hp||0)+v);if(k==='maxMP'&&'mp'in u)u.mp=Math.min(u.maxMP,(u.mp||0)+v);}
  if(cls.movBonus)u.classMovementModifier=(u.classMovementModifier||0)+cls.movBonus;if(cls.profile)u.movementProfile=cls.profile;return true;}
 // Confirms a promotion in the campaign (called after a won trial, Phase E). Returns false when not eligible.
 export function promote(s,id,{force=false}={}){const st=promotionStatus(s,id);if(!st.next||(!st.eligible&&!force)||s.practice)return false;
@@ -50,7 +52,7 @@ export function classGrowth(u){return classOf(u)?.growth||{};}
 
 // v0.5 Phase E: a won trial or drill keeps the growth earned in it. Only deployed heroes change; temporary
 // battle conditions (wounded MOV, HP) are never copied. A won trial makes the provisional tier-2 class permanent.
-const SKIRMISH_GROWTH=['level','xp','maxHP','maxMP','atk','def','mag','res','spd','growthHistory','clues','classTier','classMovementModifier','movementProfile','appearanceTier'];
+const SKIRMISH_GROWTH=['level','xp','maxHP','maxMP','atk','def','mag','res','spd','stats','cls','growthHistory','clues','classTier','classMovementModifier','movementProfile','appearanceTier'];
 export function commitSkirmish(s){const sk=MISSIONS[s.missionId]?.skirmish;if(!sk||s.practice)return false;const heroes=s.campaign.heroes;if(!Array.isArray(heroes))return false;
  for(const u of s.units.filter(u=>u.team==='ally'&&!u.benched)){const rec=heroes.find(h=>h.id===u.id);if(!rec)continue;for(const k of SKIRMISH_GROWTH)if(u[k]!==undefined)rec[k]=structuredClone(u[k]);}
  s.campaign.skirmishes??={drills:0,trials:{}};

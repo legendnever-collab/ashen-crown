@@ -6,6 +6,8 @@ import {proficiencyBonus,classGrowth} from './progression.js';
 import {fx} from './arms.js';
 import {inSmallWard} from './wards.js';
 import {commandShield} from './command.js';
+import {skillOf,classKeyOf,matchup8,ratioDamage,levelUpStats} from './stats8.js';
+import {SKILL_MUL} from '../data/classes8.js';
 export const distance=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
 export const key=(x,y)=>`${x},${y}`;
 // benched: a hero left out of the sortie (pre-battle choice) takes no part in the battle
@@ -49,12 +51,12 @@ export function controlZone(s,u){if(u.team==='civilian'||u.team==='object'||ZOC_
 export function bulwarkZone(s){const keepers=s.units.filter(a=>a.team==='ally'&&a.bulwark&&alive(a));if(!keepers.length)return null;const z=new Set();for(const a of keepers)for(const [dx,dy]of[[0,-1],[-1,0],[1,0],[0,1]])z.add(key(a.x+dx,a.y+dy));return z;}
 export const counterBlocked=(s,v)=>v.noCounter===s.turn&&s.phase==='player';
 export function pathTo(s,u,x,y){const {costs,prev}=movement(s,u);let k=key(x,y);if(!costs.has(k))return null;const path=[];while(k){const [px,py]=k.split(',').map(Number);path.unshift({x:px,y:py});k=prev.get(k);}return path;}
-export function skillCost(u){const h=heroDef(u.id);return (h?.cost||0)+(u.id==='lia'&&u.hp<=u.maxHP/2&&(u.classTier||1)<2?1:0);}
-export function rangeFor(u,mode='attack',s=null){const t2=(u.classTier||1)>=2;if(t2&&mode==='skill'&&u.id==='sain')return [0,3];if(t2&&s&&mode==='skill'&&u.id==='elina'&&['f','v'].includes(missionOf(s).map[u.y]?.[u.x]))return [2,4];const base=mode==='skill'&&u.id==='lia'?[1,3]:mode==='skill'&&u.id==='sain'?[0,2]:mode==='skill'&&u.id==='eric'?[0,0]:u.range;
+export function skillCost(u){const h=heroDef(u.id);return (h?.cost||0)+(skillOf(u)==='fireBolt'&&u.hp<=u.maxHP/2&&(u.classTier||1)<2?1:0);}
+export function rangeFor(u,mode='attack',s=null){const t2=(u.classTier||1)>=2,sk=mode==='skill'?skillOf(u):null;if(t2&&sk==='heal')return [0,3];if(t2&&s&&sk==='aimed'&&['f','v'].includes(missionOf(s).map[u.y]?.[u.x]))return [2,4];const base=sk==='fireBolt'?[1,3]:sk==='heal'?[0,2]:sk==='guard'?[0,0]:u.range;
  // v0.6 rooftop high ground: a bow (range 2+) standing on a roof reaches one tile further. No roofs in ACT I.
  const roof=s&&base[1]>=2&&mode!=='skill'&&TERRAIN[missionOf(s).map[u.y]?.[u.x]]?.high?1:0;
  // v0.8.1 Hawk Feather (treasure): a bow reaches one tile further.
- const hawk=s&&base[1]>=2&&(mode==='attack'||mode==='skill'&&u.id==='elina')?fx(s,u,'hawk'):0;
+ const hawk=s&&base[1]>=2&&(mode==='attack'||sk==='aimed')?fx(s,u,'hawk'):0;
  // v0.9 fog (M16): bows and spells reach one tile less, unless the archer stands where the fog was cleared or carries the Mist Lantern.
  const fog=s&&base[1]>=2&&foggedFor(s,u)?1:0;
  return roof||hawk||fog?[base[0],Math.max(base[0],base[1]+roof+hawk-fog)]:base;}
@@ -64,35 +66,39 @@ export function validTarget(s,u,t,mode='attack'){
  // v0.7.1 (D-071): Erik persuades Baldrick from beside him (once a turn); Thea may speak to him once in the battle.
  if(mode==='persuade')return canPersuade(s,u,t)&&d===1;
  if(mode==='rescue')return t.team==='civilian'&&t.kind!=='wagon'&&!t.noRescue&&!missionOf(s).escortOnly&&(!missionOf(s).orderTurn||s.campaign?.choices?.m08_order==='rescue')&&d===1;
- if(mode==='skill'&&u.id==='eric')return t.id===u.id;
+ if(mode==='skill'&&skillOf(u)==='guard')return t.id===u.id;
  // v0.9.3 (D-093, the user's feedback): Heal reaches anyone in range — heroes, allied units, civilians, even enemies; not wagons, props or objects.
- if(mode==='skill'&&u.id==='sain')return supportable(t)&&d>=rangeFor(u,mode,s)[0]&&d<=rangeFor(u,mode,s)[1];
+ if(mode==='skill'&&skillOf(u)==='heal')return supportable(t)&&d>=rangeFor(u,mode,s)[0]&&d<=rangeFor(u,mode,s)[1];
  const [min,max]=rangeFor(u,mode,s);return hostile(s,u,t)&&d>=min&&d<=max;
 }
 export function flank(s,u,t){return s.units.some(a=>a.team===u.team&&alive(a)&&a.id!==u.id&&distance(a,t)===1&&((u.x<t.x&&a.x>t.x)||(u.x>t.x&&a.x<t.x)||(u.y<t.y&&a.y>t.y)||(u.y>t.y&&a.y<t.y)));}
 export function strikeStats(s,u,t,mode='attack'){
  u=effectiveStats(s,u);t=effectiveStats(s,t);
- const magic=mode==='skill'&&u.id==='lia'||mode==='flameBurst',aim=mode==='skill'&&u.id==='elina',quick=mode==='skill'&&u.id==='kai';
- const ground=terrainAt(t.x,t.y,s),defense=magic?t.res:t.def,burning=!!s.burning?.[key(t.x,t.y)];
- let raw=Math.max(1,(magic?u.mag:u.atk)-defense-(ground.defense||0)+(aim?2:0)+(magic&&u.hp<=u.maxHP/2?4:0)+(quick&&flank(s,u,t)?6:0)+(mode==='skill'&&u.id==='thea'?charge(u)+(u.chargeDmg||0):0)+(mode==='skill'&&u.id==='dario'?2:0)+(mode==='skill'&&u.id==='baldrick'?6:0));
+ // v2.0.0 (D-115, IMPLEMENTATION_PLAN): damage = P·P/(P+D) × skill × matchup × terrain; the ① skills are multipliers by skill, not by hero.
+ const sk=mode==='skill'?skillOf(u):null,magic=sk==='fireBolt'||mode==='flameBurst',aim=sk==='aimed',quick=sk==='quick';
+ const ground=terrainAt(t.x,t.y,s),defense=(magic?t.res:t.def)+(ground.defense||0),burning=!!s.burning?.[key(t.x,t.y)];
+ let mul=1;if(aim)mul*=SKILL_MUL.aimed;if(magic&&u.hp<=u.maxHP/2)mul*=SKILL_MUL.lowHPFire;if(quick&&flank(s,u,t))mul*=SKILL_MUL.quickFlank;
+ if(sk==='charge')mul*=(u.chargeRun||0)>=3?SKILL_MUL.chargeRun:SKILL_MUL.charge;if(sk==='riposte')mul*=SKILL_MUL.riposte;if(sk==='lion')mul*=SKILL_MUL.lion;if(sk==='brace')mul*=SKILL_MUL.brace;
+ let raw=Math.max(1,ratioDamage(magic?u.mag:u.atk,defense)*mul+(sk==='charge'?(u.chargeDmg||0):0));
  let dmg=Math.max(1,Math.round(magic?raw*(ground.fire??1):raw*(1-(ground.phys||0))));
  if(magic&&weatherOf(s)==='rain')dmg=Math.max(1,Math.round(dmg*.5));if(magic&&inWard(s,t))dmg=0;
- const arms=magic?1:matchup(u,t);if(arms!==1)dmg=Math.max(1,Math.round(dmg*arms));
+ const arms=matchup(u,t);if(arms!==1&&dmg>0)dmg=Math.max(1,Math.round(dmg*arms));
  {const sh=commandShield(s,t);if(sh!==1)dmg=Math.max(1,Math.round(dmg*sh));} // v0.9.2 「한 사람도 두고 가지 않는다」
  if(t.id==='eric'&&t.hp<=t.maxHP*.3)dmg=Math.max(1,Math.floor(dmg*.85));
- // M05 lion formation (mission data only; M01–04 have no formation): living bearers give adjacent
- // allies of theirs DEF and accuracy; Baldrick's charge punishes isolated targets unless Erik guards.
+ // M05 lion formation: living bearers give adjacent allies of theirs a guard (×0.85) and accuracy; Baldrick's charge punishes isolated targets unless Erik guards (×1.3).
  const form=missionOf(s).formation;let formHit=0;
  if(form){const near=v=>v.team==='enemy'&&!form.bearers.includes(v.id)&&s.units.some(b=>form.bearers.includes(b.id)&&alive(b)&&distance(b,v)===1);
-  if(near(t)&&!magic)dmg=Math.max(1,dmg-form.def);else if(near(t)&&magic)dmg=Math.max(1,dmg-form.def);
+  if(near(t))dmg=Math.max(1,Math.round(dmg*.85));
   if(near(u))formHit=form.hit;
-  if(u.id==='boss'&&isolated(s,t)&&!(t.guarding&&!t.guardUsed))dmg+=form.charge;}
- // v0.7 (D-068, PROPOSED): a quiet monastery guard struck from outside its watch is caught unaware (+5 damage, +30 hit);
- // Ines's Sanctuary takes 2 (4 after her oath) off the damage a legion unit beside her receives.
- const sneak=surprised(s,u,t);if(sneak)dmg+=5;
- const cut=sanctuaryCut(s,t);if(cut)dmg=Math.max(1,dmg-cut);
- // v0.8.1 gear: the Iron Tower Shield takes 2 off blows from 2+ tiles; the Mirror Cuirass halves them.
- const far=distance(u,t)>=2;if(far&&t.rangedCut)dmg=Math.max(1,dmg-t.rangedCut);if(far&&t.mirror)dmg=Math.max(1,Math.round(dmg/2));
+  if(u.id==='boss'&&isolated(s,t)&&!(t.guarding&&!t.guardUsed))dmg=Math.round(dmg*1.3);}
+ // v0.7 (D-068): a quiet monastery guard struck from outside its watch is caught unaware (×1.3, +30 hit); the Sanctuary skill guards those beside its holder.
+ const sneak=surprised(s,u,t);if(sneak)dmg=Math.round(dmg*1.3);
+ const cut=sanctuaryCut(s,t);if(cut)dmg=Math.max(1,Math.round(dmg*(cut>=4?.7:cut>=2?.85:.92)));
+ // v0.8.1 gear: the Iron Tower Shield cuts blows from 2+ tiles; the Mirror Cuirass halves them.
+ const far=distance(u,t)>=2;if(far&&t.rangedCut)dmg=Math.max(1,Math.round(dmg*(1-.08*t.rangedCut)));if(far&&t.mirror)dmg=Math.max(1,Math.round(dmg/2));
+ // v2.0.0 §3.5: a Wardkeeper's ward wall halves blows from 2+ tiles on itself and those beside it; a Gatewarden's phalanx turns riders (×0.8).
+ if(far&&s.units?.some(w=>w.wardWall===s.turn&&alive(w)&&sideOf(w)===sideOf(t)&&distance(w,t)<=1))dmg=Math.max(1,Math.round(dmg/2));
+ if(classKeyOf(u)==='cavalry'&&s.units?.some(w=>w.phalanx===s.turn&&alive(w)&&sideOf(w)===sideOf(t)&&distance(w,t)<=1))dmg=Math.max(1,Math.round(dmg*.8));
  const standing=missionOf(s).map[u.y][u.x];const hawk=u.id==='elina'&&(standing==='f'||standing==='v')?12:0;
  let hit=Math.max(70,Math.min(100,(magic?100:97)+Math.round((u.spd-t.spd)*1.5)-(ground.evade||0)+hawk+(aim?18:0)+(u.hit||0)+(proficiencyBonus(s,u).hit||0)+formHit-(t.dodge||0)));
  // v0.7 night (M11): a legion attacker standing in light aims better; any target outside the light is harder to hit.
@@ -102,19 +108,13 @@ export function strikeStats(s,u,t,mode='attack'){
  if(sideOf(t)==='legion'&&s.smoke?.some(c=>c.x===t.x&&c.y===t.y&&c.until>=s.turn))hit=Math.max(10,hit-30);
  // v0.9.2 M20 grey cloaks hide in the shadows: the first blow against one always misses (game.damage clears it).
  if(t.shade)hit=0;
- const crit=magic?0:Math.min(12,Math.max(3,Math.round((u.spd-t.spd)/2)+5))+(u.crit||0); // v0.8.1 Lucky Coin etc.
+ // v2.0.0: critical from 운 (luck); the target's luck turns some away. Gear crit (Lucky Coin etc.) adds.
+ const crit=magic?0:Math.min(30,Math.max(2,3+(u.critBase??Math.floor((u.stats?.luk||6)/2))-Math.floor((t.stats?.luk||0)/5)))+(u.crit||0);
  return {damage:dmg,hit,crit,magic,fire:magic,terrainMul:magic?(ground.fire??1):1-(ground.phys||0),flank:quick&&flank(s,u,t),burning,sneak,sanctuary:cut,arms};
 }
-// v0.8 class matchups (D-073 Q7; PROPOSED): cavalry beats infantry, infantry beats archers, archers beat cavalry (±20%);
-// spears fight as infantry and also beat cavalry. Mages, healers and units without a troop type are neutral.
-// As in 조조전, irregulars stand outside the triangle: bandits, assassins, rogues (Kai) and commanders are neutral.
-const HERO_ARM={eric:'infantry',elina:'archer',thea:'cavalry',dario:'infantry',ines:'infantry'};
-const KIND_ARM={cavalry:'cavalry',archer:'archer',spear:'spear',bearer:'infantry',soldier:'infantry',swordsman:'infantry',warden:'infantry',leader:'infantry'};
-// The Silent Monastery's guards fight with iron-shod quarterstaffs (monks, not spearmen): irregulars too.
-const LOOK_IRREGULAR=['monasteryGuard'];
-export const armOf=u=>u?.team==='ally'?HERO_ARM[u.id]||null:LOOK_IRREGULAR.includes(u?.look)?null:KIND_ARM[u?.kind]||null;
-const BEATS={cavalry:{infantry:1.2,archer:.8,spear:.8},infantry:{archer:1.2,cavalry:.8},spear:{archer:1.2,cavalry:1.2},archer:{cavalry:1.2,infantry:.8,spear:.8}};
-export function matchup(u,t){const a=armOf(u),b=armOf(t);return a&&b?BEATS[a]?.[b]||1:1;}
+// v2.0.0 the matchup triangle (REFORM_DESIGN §3.3, D-115): ±25% by class; specials stand outside it.
+export const armOf=u=>classKeyOf(u);
+export function matchup(u,t){return matchup8(u,t);}
 // ---------- v0.9 ACT III weather (D-079, ACT3_DESIGN §7; numbers PROPOSED). M01–M14 have no weather. ----------
 // Fog: bows and spells reach one tile less; an enemy more than three tiles from every deployed hero is hidden (its numbers
 // are not shown). Tiles near a ward stone searched in M16 are clear (missionState.clear: [x, y, radius]).
@@ -127,7 +127,7 @@ export const fogHidden=(s,u)=>weatherOf(s)==='fog'&&u?.team==='enemy'&&!fogClear
 export const inWard=(s,p)=>{const w=missionOf(s)?.ward;return !!w&&!!p&&p.x>=w[0]&&p.x<=w[2]&&p.y>=w[1]&&p.y<=w[3];};
 // v0.9.1 Elina's Blockade (④): during that enemy phase an enemy that starts inside the cross cannot leave it.
 export const blockadeHolds=(s,u)=>u?.team==='enemy'&&s.blockade?.turn===s.turn&&s.phase==='enemy'&&s.blockade.cells.some(([x,y])=>x===u.x&&y===u.y);
-export const ARM_KO={cavalry:'기병',infantry:'보병',archer:'궁병',spear:'창병'};
+export const ARM_KO={cavalry:'기병',infantry:'보병',archer:'궁병',spear:'창병',mage:'마도사',healer:'치유사',rogue:'도적',shield:'방패병'};
 // ---------- v0.7 ACT II part 2 (D-068; rules and numbers PROPOSED). ACT I and M07–M10 never meet these. ----------
 // Night (M11): lit braziers and the sanctuary tiles each light the tiles within `night.radius` (Manhattan).
 export function lightSources(s){const m=missionOf(s);if(!m?.night)return null;const r=m.night.radius,out=(m.night.fixed||[]).map(([x,y])=>({x,y,r}));
@@ -146,38 +146,40 @@ export const surprised=(s,u,t)=>!!missionOf(s)?.stealth&&!!t?.watch&&!t.awake&&s
 export function canPersuade(s,u,t){const p=missionOf(s)?.persuade,st=s?.missionState;if(!p||!u||!t||t.id!==p.target||u.team!=='ally'||!alive(t)||!st||st.halted)return false;
  if(u.id==='eric')return st.persuadedTurn!==s.turn;if(u.id==='thea')return !st.thea;return false;}
 // Ines (Sanctuary): legion units beside her take 2 less damage (4 after her oath this turn, which also covers her).
-export function sanctuaryCut(s,t){if(!t||sideOf(t)!=='legion')return 0;let cut=t.id==='ines'&&t.sanctuary?2:0;
- for(const a of s.units||[])if((a.id==='ines'||a.sanctuaryAura)&&a.id!==t.id&&alive(a)&&sideOf(a)==='legion'&&distance(a,t)===1)cut=Math.max(cut,a.sanctuary?4:2);
+export function sanctuaryCut(s,t){if(!t||sideOf(t)!=='legion')return 0;let cut=skillOf(t)==='sanctuary'&&t.sanctuary?2:0;
+ for(const a of s.units||[])if((skillOf(a)==='sanctuary'||a.sanctuaryAura)&&a.id!==t.id&&alive(a)&&sideOf(a)==='legion'&&distance(a,t)===1)cut=Math.max(cut,a.sanctuary?4:2);
  // v0.9.1 Sanctum Warden (Ines, tier 2): her sanctuary also reaches two tiles, for 1.
- for(const a of s.units||[])if(a.id==='ines'&&(a.classTier||1)>=2&&a.id!==t.id&&alive(a)&&sideOf(a)==='legion'&&distance(a,t)===2)cut=Math.max(cut,1);
+ for(const a of s.units||[])if(skillOf(a)==='sanctuary'&&(a.classTier||1)>=2&&a.id!==t.id&&alive(a)&&sideOf(a)==='legion'&&distance(a,t)===2)cut=Math.max(cut,1);
  return cut;}
 // v0.6 Thea's Charge (PROPOSED): +4 damage; after running 3+ tiles this turn, +3 more and the target cannot strike back.
 export const charge=u=>4+((u.chargeRun||0)>=3?3:0);
-export const chargeBreaks=(u,mode)=>mode==='skill'&&(u?.id==='thea'&&(u.chargeRun||0)>=3||u?.id==='baldrick'); /* v0.10.1 Lion Strike: no counter */
+export const chargeBreaks=(u,mode)=>mode==='skill'&&(skillOf(u)==='charge'&&(u.chargeRun||0)>=3||skillOf(u)==='lion'); /* v0.10.1 Lion Strike: no counter */
 // v0.6.1 Dario (PROPOSED): his counterattacks deal +4; after Riposte (skill: +2 damage) +8 until the next player phase.
-export const riposteBonus=u=>u?.id==='dario'?(u.riposte?8:4):0;
+// v2.0.0: counters as multipliers — the Riposte holder ×1.25 (×1.5 after Riposte), a braced spear ×1.5.
+export const riposteBonus=u=>skillOf(u)==='riposte'?(u.riposte?1.5:1.25):u?.brace?1.5:1;
+export const healAmount=(s,v)=>Math.round((v.healPow??(12+(v.mag||0)))+(v.heal||0)+(proficiencyBonus(s,v).heal||0));
 export const isolated=(s,t)=>t.team==='ally'&&!s.units.some(a=>a.team==='ally'&&alive(a)&&a.id!==t.id&&distance(a,t)===1);
 // Tier-1 Guard covers melee only; the Guardian Knight (tier 2) also takes the first ranged or magic hit.
-export function guardFor(s,u,t,mode){const melee=!(mode==='skill'&&u.id==='lia')&&distance(u,t)===1;return s.units.find(g=>alive(g)&&g.team===t.team&&g.id!==t.id&&(g.guarding&&!g.guardUsed||g.guardTarget===t.id)&&distance(g,t)===1&&(melee||(g.classTier||1)>=2))||null;}
+export function guardFor(s,u,t,mode){const melee=!(mode==='skill'&&skillOf(u)==='fireBolt')&&distance(u,t)===1;return s.units.find(g=>alive(g)&&g.team===t.team&&g.id!==t.id&&(g.guarding&&!g.guardUsed||g.guardTarget===t.id)&&distance(g,t)===1&&(melee||(g.classTier||1)>=2))||null;}
 export function forecast(s,u,t,mode='attack'){
- if(mode==='skill'&&u.id==='sain'){const v=effectiveStats(s,u),amount=12+v.mag+(v.heal||0)+(proficiencyBonus(s,u).heal||0);return {heal:Math.min(t.maxHP-t.hp,amount),hit:100,damage:0,counter:0,after:Math.min(t.maxHP,t.hp+amount)};}
- if(mode==='skill'&&u.id==='eric')return {guard:true,damage:0,hit:100,counter:0,after:t.hp};
+ if(mode==='skill'&&skillOf(u)==='heal'){const v=effectiveStats(s,u),amount=healAmount(s,v);return {heal:Math.min(t.maxHP-t.hp,amount),hit:100,damage:0,counter:0,after:Math.min(t.maxHP,t.hp+amount)};}
+ if(mode==='skill'&&skillOf(u)==='guard')return {guard:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='capture')return {capture:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='rescue')return {rescue:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='search')return {search:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='persuade')return {persuade:true,damage:0,hit:100,counter:0,after:t.hp};
  const guard=guardFor(s,u,t,mode),victim=guard||t,stats=strikeStats(s,u,victim,mode),canCounter=validTarget(s,victim,u,'attack')&&!counterBlocked(s,victim)&&!chargeBreaks(u,mode)&&!fx(s,u,'silence')&&victim.hp>stats.damage;
- const counter=canCounter?strikeStats(s,victim,u).damage+riposteBonus(victim):0;
+ const counter=canCounter?Math.max(1,Math.round(strikeStats(s,victim,u).damage*riposteBonus(victim))):0;
  return {...stats,counter,counterHit:canCounter?strikeStats(s,victim,u).hit:0,after:Math.max(0,victim.hp-stats.damage),guard:guard?.id,victim:victim.id};
 }
 // Phase F (D-045): from M04 a mission carries a level. A hero more than two levels above it learns less
 // (−20% per level, floor 20%); one more than two below learns faster (+20% per level, cap 160%). M01–M03 have
 // no level and keep the v0.3.x flat EXP exactly.
-export function xpScale(s,u){const lv=missionOf(s)?.level;if(!lv)return 1;const over=u.level-(lv+2),under=(lv-2)-u.level;return over>0?Math.max(0.2,1-0.2*over):under>0?Math.min(1.6,1+0.2*under):1;}
+export function xpScale(s,u){const lv=s?.levelPlan?.avg!=null?Math.round(s.levelPlan.avg):missionOf(s)?.level;if(!lv)return 1;const over=u.level-(lv+2),under=(lv-2)-u.level;return over>0?Math.max(0.2,1-0.2*over):under>0?Math.min(1.6,1+0.2*under):1;}
 export function awardXP(s,u,amount,reason){
  if(u.team!=='ally'||!amount)return;amount=Math.max(1,Math.round(amount*xpScale(s,u)*(1+fx(s,u,'sage')/100))); // v0.8.1 Sage Notebook
  u.xp+=amount;u.earnedXP+=amount;u.highlights.push(reason);s.feedback.push({type:'xp',id:u.id,text:`+${amount} EXP`});
- let leveled=false;while(u.xp>=BALANCE.xpLevel){leveled=true;u.xp-=BALANCE.xpLevel;u.level++;const g={...heroDef(u.id).growth};for(const [k,v]of Object.entries(classGrowth(u)))g[k]=(g[k]||0)+v;const changes={...g};for(const [stat,n] of Object.entries(g)){if(stat==='hp'){u.maxHP+=n;u.hp=Math.min(u.maxHP,u.hp+n);}else if(stat==='mp'){u.maxMP+=n;u.mp=Math.min(u.maxMP,u.mp+n);}else u[stat]+=n;}if(u.id==='eric'&&u.level>=5)u.appearanceTier=2;u.growthHistory.push({level:u.level,changes});s.feedback.push({type:'level',id:u.id,text:`LEVEL ${u.level}`,toHP:u.hp});s.log.push(`${u.name} → LV ${u.level}. 성장이 새로운 힘으로 이어집니다.`);}
+ let leveled=false;while(u.xp>=BALANCE.xpLevel){leveled=true;u.xp-=BALANCE.xpLevel;u.level++;let changes;if(u.stats){changes=levelUpStats(u)||{};const mp=(heroDef(u.id)?.growth?.mp||0)+(classGrowth(u).mp||0);if(mp){u.maxMP+=mp;u.mp=Math.min(u.maxMP,u.mp+mp);changes.mp=mp;}}else{const g={...heroDef(u.id).growth};for(const [k,v]of Object.entries(classGrowth(u)))g[k]=(g[k]||0)+v;changes={...g};for(const [stat,n] of Object.entries(g)){if(stat==='hp'){u.maxHP+=n;u.hp=Math.min(u.maxHP,u.hp+n);}else if(stat==='mp'){u.maxMP+=n;u.mp=Math.min(u.maxMP,u.mp+n);}else u[stat]+=n;}}if(u.id==='eric'&&u.level>=5)u.appearanceTier=2;u.growthHistory.push({level:u.level,changes});s.feedback.push({type:'level',id:u.id,text:`LEVEL ${u.level}`,toHP:u.hp});s.log.push(`${u.name} → LV ${u.level}. 성장이 새로운 힘으로 이어집니다.`);}
  if(leveled){u.hp=u.maxHP;u.mp=u.maxMP;s.log.push(`${u.name}: 레벨업으로 HP/MP 전부 회복.`);}
 }
 export function discover(s,u,clue){if(!u.clues.includes(clue)){u.clues.push(clue);s.feedback.push({type:'potential',id:u.id,text:'POTENTIAL DISCOVERED'});s.log.push(`Potential Clue Discovered — ${clue} (1/3). 각성은 아직 해금되지 않았습니다.`);}}

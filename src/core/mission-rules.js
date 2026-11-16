@@ -19,10 +19,11 @@ export const objectUnit=o=>({...structuredClone(o),team:'object',hp:1,maxHP:1,mp
 export const enemyUnit=(e,spawnTurn=0)=>({...structuredClone(e),team:'enemy',maxHP:e.hp,mp:0,maxMP:0,mag:0,moved:false,acted:false,spawnTurn});
 const searched=(s,type)=>s.units.some(u=>u.team==='object'&&u.evidence===type&&u.rescued);
 
+import {scaleTroop} from './stats8.js';
 export function spawnWave(s,list){
  const m=missionOf(s);
  for(const e of list){let pos={x:e.x,y:e.y};if(at(s,pos.x,pos.y)){const free=[];for(let y=0;y<m.height;y++)for(let x=0;x<m.width;x++)if(!at(s,x,y)&&Number.isFinite(terrainAt(x,y,s)?.cost))free.push({x,y});free.sort((a,b)=>distance(a,e)-distance(b,e)||a.y-b.y||a.x-b.x);pos=free[0];}
-  s.units.push({...enemyUnit(e,s.turn),...pos});s.feedback.push({type:'spawn',id:e.id,text:'REINFORCEMENT'});}
+  const nu={...enemyUnit(e,s.turn),...pos};s.units.push(nu);scaleTroop(s,nu,m);s.feedback.push({type:'spawn',id:e.id,text:'REINFORCEMENT'});}
 }
 
 const M4={

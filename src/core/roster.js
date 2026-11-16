@@ -3,10 +3,11 @@
 import {RECRUIT_HEROES,heroDef} from '../data/game-data.js';
 import {deployZoneOf} from './game.js';
 import {at,terrainAt} from './rules.js';
+import {ensureStats} from './stats8.js';
 export function recruitRecord(id,level=1){
  const h=heroDef(id),u={...structuredClone(h),team:'ally',maxHP:h.hp,maxMP:h.mp,xp:0,earnedXP:0,growthHistory:[],clues:[],highlights:[],healTargets:[],appearanceTier:1,classTier:1};
  for(let lv=2;lv<=level;lv++){const changes={...h.growth};for(const [k,n]of Object.entries(changes)){if(k==='hp')u.maxHP+=n;else if(k==='mp')u.maxMP+=n;else u[k]+=n;}u.level=lv;u.growthHistory.push({level:lv,changes});}
- u.hp=u.maxHP;u.mp=u.maxMP;return u;
+ delete u.hp;ensureStats(u);u.hp=u.maxHP;u.mp=u.maxMP;return u; // v2.0.0: stats at the join level (stats8.statsAt)
 }
 // v0.9.0: `record` brings back a recruit's own record (the one kept aside in campaign.departed) instead of a new one.
 export function joinRoster(s,id,level=1,record=null){
