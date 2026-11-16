@@ -6,9 +6,10 @@ import {skillOf,ensureStats,deriveUnit,planLevels,scaleTroop,DIFFICULTY,difficul
 import {TIER_ATTACK} from '../data/classes8.js';
 import {terrainCost as terrainCostOf,distance,healAmount,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,forecast,strikeStats,guardFor,roll,awardXP,discover,terrainAt,counterBlocked,hostile,chargeBreaks,riposteBonus,sideOf,weatherOf,inWard,blockadeHolds} from './rules.js';
 import {MISSIONS,missionOf,LAST_MISSION} from '../data/missions.js';
+import {ensureOfficers} from './roster.js';
 import {rulesOf,objectUnit,searchEvidence} from './mission-rules.js';
 import {narrativeState,enqueueStory,remember,setStoryFlag,afterBattleEvents} from './narrative.js';
-import {proficiencyBonus,commitSkirmish} from './progression.js';
+import {proficiencyBonus,commitSkirmish,autoPromoteOfficers} from './progression.js';
 import {isClassMode,applyClassAction,overwatchStop,hazardAt,expireClassEffects} from './class-actions.js';
 import {CLASS_ACTIONS} from '../data/classes.js';
 import {isTacticMode,isToolMode,applyTactic,enemyStatusOnHit,expireTactics,caltropStop,fallenAllies,besideSpot} from './tactics.js';
@@ -19,6 +20,7 @@ import {duelOpen} from './duel.js';
 import {defaultCommand,togetherOpen,lastOrderOpen} from './command.js';
 export function newGame(seed=20261014,campaign=null,missionId=1){
  const mission=MISSIONS[missionId];
+ if(campaign){campaign=structuredClone(campaign);ensureOfficers(campaign,missionId);}else{campaign={heroes:null,results:[],clears:0,completed:[],roster:[]};ensureOfficers(campaign,missionId);} /* v2.0.0 부장 */
  const spots=(mission.deployments||DEPLOYMENTS).recommended;
  const units=partyHeroes(campaign).map((h,i)=>{const old=campaign?.heroes?.find(a=>a.id===h.id);const u={...structuredClone(h),team:'ally',maxHP:h.hp,maxMP:h.mp,x:spots[i]?.[0]??-1,y:spots[i]?.[1]??-1,xp:0,earnedXP:0,growthHistory:[],clues:[],highlights:[],healTargets:[],moved:false,acted:false,hitThisTurn:false,shadowBonus:0,guardTarget:null};
   if(old){for(const k of ['level','xp','maxHP','maxMP','atk','def','mag','res','spd','growthHistory','clues','appearanceTier','classTier','storyTier','classMovementModifier','movementProfile','stats','cls'])if(old[k]!==undefined)u[k]=structuredClone(old[k]);}if(u.stats)deriveUnit(u);else{delete u.hp;ensureStats(u);}u.hp=u.maxHP;u.mp=u.maxMP;u.name=h.name;u.ko=h.ko;u.appearanceTier=u.appearanceTier|| (u.id==='eric'&&u.level>=5?2:1);return u;
@@ -259,7 +261,7 @@ function finish(s,outcome,reason){
  s.campaign.results.push(result);s.campaign.results=s.campaign.results.slice(-30);
  if(outcome==='victory')rulesOf(s)?.beforeCommit?.(s);
  if(outcome==='victory'&&missionOf(s).skirmish)commitSkirmish(s);
- else if(outcome==='victory'){if(!s.practice){commitEconomyReward(s);commitRecords(s);s.campaign.clears++;s.campaign.completed.push(s.missionId);s.campaign.heroes=structuredClone(s.units.filter(u=>u.team==='ally'));setStoryFlag(s,`mission_0${s.missionId}_completed`);if(s.missionId===1){setStoryFlag(s,'royal_supply_evidence');setStoryFlag(s,'mission_01_civilians_rescued',2);}}}
+ else if(outcome==='victory'){if(!s.practice){commitEconomyReward(s);commitRecords(s);s.campaign.clears++;s.campaign.completed.push(s.missionId);s.campaign.heroes=structuredClone(s.units.filter(u=>u.team==='ally'));s.officerPromotions=autoPromoteOfficers(s);setStoryFlag(s,`mission_0${s.missionId}_completed`);if(s.missionId===1){setStoryFlag(s,'royal_supply_evidence');setStoryFlag(s,'mission_01_civilians_rescued',2);}}}
  if(outcome==='victory'&&s.missionId===3&&!s.practice){const m=s.campaign.tacticalMemory,prior=s.stageStart?.campaign.tacticalMemory||{},did=k=>(m[k]||0)>(prior[k]||0);if(did('guard_eric_sain')&&(did('kai_rescue')||did('kai_bypass'))&&(did('sain_rescue')||did('sain_heal'))){s.campaign.bonds.erik_kai=true;setStoryFlag(s,'bond_erik_kai');enqueueStory(s,'3:bond');}}
  if(outcome==='victory')rulesOf(s)?.afterVictory?.(s);
  // v0.8.1 hidden objective (숨은 전과): tested on this battle's record; a cleared mission's practice can still win it once.

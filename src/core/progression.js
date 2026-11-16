@@ -29,7 +29,7 @@ export function promotionStatus(s,id){
  const done=s.campaign?.completed||[];let checks,pot=null;
  if(next.tier===3)checks=[  // v0.9.1 awakening (ACT3_DESIGN §6.1)
   {key:'level',label:`Lv ${AWAKEN_LEVEL} 이상 (현재 ${h.level})`,ok:h.level>=AWAKEN_LEVEL},
-  {key:'mission',label:`Mission ${String(AWAKEN_TRIGGER[id]).padStart(2,'0')} 클리어`,ok:done.includes(AWAKEN_TRIGGER[id])}];
+  AWAKEN_TRIGGER[id]?{key:'mission',label:`Mission ${String(AWAKEN_TRIGGER[id]).padStart(2,'0')} 클리어`,ok:done.includes(AWAKEN_TRIGGER[id])}:{key:'act2',label:'ACT II 완료',ok:!!s.campaign?.flags?.act2_completed||done.includes(14)}];
  else if(RECRUIT_JOIN[id])checks=[  // v0.9.1 recruits' tier 2 (ACT3_DESIGN §5.2)
   {key:'act2',label:'ACT II 완료',ok:!!s.campaign?.flags?.act2_completed||done.includes(14)},
   {key:'level',label:`Lv ${RECRUIT_JOIN[id]+RECRUIT_PROMOTION} 이상 (현재 ${h.level})`,ok:h.level>=RECRUIT_JOIN[id]+RECRUIT_PROMOTION}];
@@ -59,3 +59,7 @@ export function commitSkirmish(s){const sk=MISSIONS[s.missionId]?.skirmish;if(!s
  if(sk.kind==='trial'){const tier=sk.tier||2,cls=CLASS_TREE[sk.hero]?.find(c=>c.tier===tier);s.campaign.promotions??={};if(cls&&(s.campaign.promotions[sk.hero]?.tier||0)<tier)s.campaign.promotions[sk.hero]={tier,key:cls.key,mission:s.missionId,turn:s.turn};s.campaign.skirmishes.trials[sk.hero]=(s.campaign.skirmishes.trials[sk.hero]||0)+1;s.campaign.flags[tier===3?`awakened_${sk.hero}`:`promoted_${sk.hero}`]=true;}
  else s.campaign.skirmishes.drills++;
  return true;}
+
+// v2.0.0 부장: officers promote at camp as soon as they are ready (no trial). Returns the officers promoted.
+export function autoPromoteOfficers(s){const out=[];for(const rec of s.campaign?.heroes||[]){if(!CLASS_TREE[rec.id]?.[0]?.officer)continue;let st=promotionStatus(s,rec.id);while(st.next&&st.eligible){applyClass(rec,st.next);s.campaign.promotions??={};s.campaign.promotions[rec.id]={tier:st.next.tier,key:st.next.key,mission:s.missionId,turn:s.turn};out.push({id:rec.id,ko:st.next.ko});st=promotionStatus(s,rec.id);}}
+ for(const o of out)s.log.push(`${s.campaign.heroes.find(h=>h.id===o.id)?.name||o.id}: ${o.ko}(으)로 승급했습니다.`);return out;}

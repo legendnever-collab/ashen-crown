@@ -162,6 +162,11 @@ export const CATALOG_SKILLS=[
  cSkill('hundredCounters','dario',4,'백 번의 반격','A Hundred Counters',5,'전투당 1회 · 다음 적 턴 동안 받는 모든 공격에 반격(사거리와 관계없이) · 반격 피해 +30%'),
  // v0.10.1 (D-102): Baldrick's own four
  cSkill('lionStrike','baldrick',1,'사자의 일격','Lion Strike',4,'근접 피해 +6 · 반격 없음'),
+ // v2.0.0 부장의 ① (D-115): the class skill (core/stats8 skillOf)
+ cSkill('braceStance','bram',1,'방진','Brace',3,'근접 공격 ×1.1 · 다음 아군 턴까지 반격 ×1.5'),
+ cSkill('aimedShotNoa','noa',1,'조준 사격','Aimed Shot',3,'명중 +18 · 피해 ×1.15'),
+ cSkill('shieldOath','marta',1,'방패의 맹세','Shield Oath',3,'근접 공격 후 곁의 동료 피해 −30% (평소 −15%)'),
+ cSkill('chargeRowell','rowell',1,'돌격','Charge',3,'피해 ×1.25 · 3칸 이상 달리면 ×1.45, 반격 없음'),
  cSkill('lionRoar','baldrick',2,'사자의 포효','Lion\'s Roar',4,'주위 2칸 적 모두 속박 60% (지휘관 절반)'),
  cSkill('lionBanner','baldrick',3,'사자의 깃발','Lion Banner',5,'주위 2칸 아군 · 다음 아군 턴까지 받는 피해 −4'),
  cSkill('lastCharge','baldrick',4,'검은 사자의 결의','The Black Lion\'s Resolve',6,'전투당 1회 · 곁의 적 모두 공격(반격 없음) · 다음 아군 턴까지 받는 피해 절반')

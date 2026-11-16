@@ -45,6 +45,7 @@ function bustFromCast(id){const k=CAST[id]||CAST.bandit,chief=/captain|Captain|q
  beard:k.beard,beardColor:k.beardColor,hoodDown:k.hood&&k.helm?k.hood:null,mail:k.helm==='kettle'};}
 const LORD_LOOK={oswin:'lordA',brennan:'lordB'};
 const BUST_REUSE={ritualKnight:'executor'}; /* the chancellery's rite knights speak with the plum-armored executor's face */
+const OFFICER_BUST={bram:'guard',noa:'refugee',marta:'smith',rowell:'captain16_iron'};
 export function bustKey(u,missionId=1){
  if(!u)return 'refugee';
  if(u.kind==='lion'||u.id==='baldrick')return 'baldrick';
@@ -54,6 +55,7 @@ export function bustKey(u,missionId=1){
  if(u.id==='eric'&&(appearanceFor(u)?.tier||1)>=2)return 'eric_adv';
  if(u.id==='elder'&&(missionId===17||missionId===18)){const k=missionId===17?'guardianElder':'forestElder';if(PAINTED?.[k])return k;} // pack F2: the keep's and the forest's elders
  if(u.id==='elder'&&missionId>=19&&missionId<=22&&PAINTED?.archivist)return 'archivist'; // v0.9.2–v0.9.3: the lower city's old archivist
+ if(OFFICER_BUST[u.id])return PAINTED?.[u.id]?u.id:OFFICER_BUST[u.id]; // v2.0.0 부장: their own painting once pack H1 returns, until then a camp figure's (D-094 manner)
  if(BUST_SPEC[u.id])return u.id;
  // v0.6 ACT II recruits and leaders (pack B, D-059): painted busts by id; without the art the cast vector bust below.
  if(['thea','dario','ines'].includes(u.id)&&u.team!=='enemy'&&(u.classTier||1)>=2&&PAINTED?.[`${u.id}_t2`])return `${u.id}_t2`; // pack F2: recruits' tier 2
