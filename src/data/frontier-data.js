@@ -1,6 +1,7 @@
 // Original local scenes/NPC details are PROPOSED content within approved chronology.
 import {ART_HUBS} from './hubs-v05.js';
-import {GEAR_V081,TREASURES,GEAR_I_GROW} from './arms-v081.js';
+import {GEAR_V081,TREASURES,GEAR_I_GROW,statText} from './arms-v081.js';
+import {applyClassGear} from './gear8.js';
 // v0.3 tier I gear (ids, prices, bonuses unchanged). v0.8.1: Korean names; one star (★2) equals the old +1 upgrade.
 export const GEAR={
  ironBlade:{name:'단련된 검',en:'Tempered Sword',icon:'⚔',slot:'weapon',heroes:['eric'],price:65,bonus:{atk:2},description:'에릭의 전열 유지 · ATK +2'},
@@ -18,6 +19,8 @@ export const GEAR={
 for(const [id,g] of Object.entries(GEAR))Object.assign(g,{tier:1,grow:GEAR_I_GROW[id],upgrade:GEAR_I_GROW[id]});
 // v0.8.1 (D-073 §6): regional and elite gear (tiers II–III) and the twelve treasures (slot 'treasure', never sold).
 Object.assign(GEAR,GEAR_V081,TREASURES);
+// v2.0.0 (D-115): who may use each piece follows the class (gear8.js).
+applyClassGear(GEAR,statText);
 // v0.8.0 (D-073 Q4; PROPOSED): 13 tools. Recovery, cure and buff tools work on the user or an adjacent ally; throwables
 // fly 2–3 tiles (three per battle). `unlock` = the mission whose clear first puts the tool on sale (0: from the start;
 // null: never sold). Specialty tools are first sold in their home town and from then on by every quartermaster.

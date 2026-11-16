@@ -1,5 +1,5 @@
 import {applyTerrainRecovery,recoveryValue} from './terrain-recovery.js';
-import {ensureEconomy,commitEconomyReward,effectiveStats} from './economy.js';
+import {ensureEconomy,commitEconomyReward,effectiveStats,equipmentBonus} from './economy.js';
 import {VERSION,SCHEMA,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,DEPLOYMENTS,BALANCE,partyHeroes,partyIds} from '../data/game-data.js';
 import {tallyKill,tallyRescue,tallyHeal,commitRecords} from './records.js';
 import {skillOf,ensureStats,deriveUnit,planLevels,scaleTroop,DIFFICULTY,difficultyOf,classKeyOf,isBossRank} from './stats8.js';
@@ -13,7 +13,7 @@ import {isClassMode,applyClassAction,overwatchStop,hazardAt,expireClassEffects} 
 import {CLASS_ACTIONS} from '../data/classes.js';
 import {isTacticMode,isToolMode,applyTactic,enemyStatusOnHit,expireTactics,caltropStop,fallenAllies,besideSpot} from './tactics.js';
 import {poisonTick,statusAge,inflict,STATUS_KO} from './status.js';
-import {gainGearExp,fx,checkFeat,markCarrier,dropSupply,cutIn} from './arms.js';
+import {gainGearExp,fx,checkFeat,markCarrier,dropSupply,cutIn,claimTreasure,dropChance} from './arms.js';
 import {skillByMode} from '../data/skills.js';
 import {duelOpen} from './duel.js';
 import {defaultCommand,togetherOpen,lastOrderOpen} from './command.js';
@@ -43,7 +43,7 @@ export function deployZoneOf(s){const z=missionOf(s).deployZone?.(s);if(z)return
 export function setSortie(s,id,on){const u=findUnit(s,id);if(!u||u.team!=='ally'||!['exploration','warroom','deployment'].includes(s.screen)||(!on&&SORTIE_LOCKED.includes(id)))return false;
  const out=s.units.filter(a=>a.team==='ally'&&!a.benched).length;if(!on&&out<=1||on&&u.benched&&out>=deployLimit(s))return false;if(on&&u.benched){const zone=deployZoneOf(s);if(at(s,u.x,u.y)||!zone.has(`${u.x},${u.y}`)){const free=[...zone].map(k=>k.split(',').map(Number)).find(([x,y])=>!at(s,x,y)&&Number.isFinite(terrainAt(x,y,s)?.cost));if(free)[u.x,u.y]=free;}}
  if(on)delete u.benched;else u.benched=true;return true;}
-export function startBattle(s){if(s.screen!=='deployment'||s.units.filter(a=>a.team==='ally'&&!a.benched).length>deployLimit(s))return false;planLevels(s,missionOf(s));s.screen='battle';s.battleFlags={};applyTerrainRecovery(s);s.log.push(missionOf(s).brief);const {stageStart,...initial}=s;s.stageStart=structuredClone({...initial,feedback:[]});return true;}
+export function startBattle(s){if(s.screen!=='deployment'||s.units.filter(a=>a.team==='ally'&&!a.benched).length>deployLimit(s))return false;planLevels(s,missionOf(s));for(const u of s.units)if(u.team==='ally'&&!u.gearHP){const con=equipmentBonus(s.economy,u.id).con||0,n=Math.round(2.5*con);if(n){u.maxHP+=n;u.hp+=n;u.gearHP=n;}} /* v2.0.0: 강인 from treasures adds HP for the battle */s.screen='battle';s.battleFlags={};applyTerrainRecovery(s);s.log.push(missionOf(s).brief);const {stageStart,...initial}=s;s.stageStart=structuredClone({...initial,feedback:[]});return true;}
 export function canAct(s,u){return s.screen==='battle'&&s.phase==='player'&&!s.narrative?.active&&!duelOpen(s)&&u?.team==='ally'&&alive(u)&&!u.acted;}
 // v0.5: a promoted Kai may still move after Quick Strike (strikeMove = this turn); otherwise moving needs an unspent action.
 export function canMove(s,u){return s.screen==='battle'&&s.phase==='player'&&!s.narrative?.active&&!duelOpen(s)&&u?.team==='ally'&&alive(u)&&!u.moved&&(!u.acted||u.strikeMove===s.turn);}
@@ -87,6 +87,7 @@ function damage(s,u,t,mode,counter=false,opts=null){
  const pouch=fx(s,victim,'pouch');if(pouch&&victim.hp>0&&victim.hp<victim.maxHP/2&&!victim.pouchUsed){victim.pouchUsed=true;const n=Math.min(pouch,victim.maxHP-victim.hp);victim.hp+=n;s.feedback.push({type:'heal',id:victim.id,text:`약초 주머니 +${n}`,toHP:victim.hp});s.log.push(`${victim.name}: 약초 주머니로 HP +${n}.`);}
  if(!alive(victim))dropSupply(s,victim);
  if(!alive(victim))tallyKill(s,u,victim); /* v0.9.3 장수 열전 */
+ if(!alive(victim)&&victim.carries&&victim.team==='enemy'&&sideOf(u)==='legion'){if(roll(s)*100<dropChance(u))claimTreasure(s,victim.carries,`${victim.name} 격파`);else s.log.push(`${victim.name}의 보물은 혼란 속에 사라졌습니다.`);victim.carries=null;}
  // v2.0.0 (§6.3): a fallen commander shakes the soldiers around it (ATK −10%, until the end of the next turn).
  if(!alive(victim)&&victim.team==='enemy'&&isBossRank(victim)){let n=0;for(const e of s.units)if(e.team==='enemy'&&alive(e)&&distance(e,victim)<=4){e.atkDown={n:Math.max(1,Math.round((e.atk||0)*.1)),until:s.turn+1};n++;}if(n)s.log.push(`${victim.name}이(가) 쓰러져 주위의 적 ${n}명이 흔들립니다.`);}
  if(!alive(victim)){if(victim.id==='boss'){setStoryFlag(s,`mission_0${s.missionId}_garr_defeated`);enqueueStory(s,`${s.missionId}:boss`);}s.feedback.push({type:'death',id:victim.id,text:'FALLEN'});s.log.push(`${victim.name} 전투불능.`);}
@@ -131,8 +132,8 @@ export function performAction(s,id,mode,targetId){
  const theaRun=mode==='skill'&&u.id==='thea'&&(u.classTier||1)>=2?effectiveStats(s,u).mov-(u.moved?(u.chargeRun||0):0):null;
  if(mode==='search'){const custom=rulesOf(s)?.search?.(s,u,t);if(!custom)searchEvidence(s,u,t);awardXP(s,u,30,`${t.name} ${custom?'작동':'조사'}`);}
  else if(mode==='persuade'){rulesOf(s)?.persuade?.(s,u,t);awardXP(s,u,20,`${t.name} 설득`);}
- else if(mode==='capture'&&s.missionId!==2){rulesOf(s)?.capture?.(s,u,t);awardXP(s,u,50,`${t.name} 생포`);}
- else if(mode==='capture'){t.rescued=true;setStoryFlag(s,'mission_02_prisoner_captured');setStoryFlag(s,'mission_02_supply_route_discovered');remember(s,`${u.id}_capture`);awardXP(s,u,50,'도주 대장 생포');enqueueStory(s,'2:capture');s.log.push('포로 확보 · 보급로 진술을 얻었습니다.');}
+ else if(mode==='capture'&&s.missionId!==2){rulesOf(s)?.capture?.(s,u,t);if(t.carries){claimTreasure(s,t.carries,`${t.name} 생포`);t.carries=null;}awardXP(s,u,50,`${t.name} 생포`);}
+ else if(mode==='capture'){if(t.carries){claimTreasure(s,t.carries,`${t.name} 생포`);t.carries=null;}t.rescued=true;setStoryFlag(s,'mission_02_prisoner_captured');setStoryFlag(s,'mission_02_supply_route_discovered');remember(s,`${u.id}_capture`);awardXP(s,u,50,'도주 대장 생포');enqueueStory(s,'2:capture');s.log.push('포로 확보 · 보급로 진술을 얻었습니다.');}
  else if(mode==='rescue'){t.rescued=true;tallyRescue(s,u);remember(s,`${u.id}_rescue`);awardXP(s,u,BALANCE.rescueXP,`${t.name} 구출`);s.log.push(`${u.name}: ${t.name}을 안전한 피난로로 구출했습니다.`);s.feedback.push({type:'rescue',id:t.id,text:'RESCUED'});if(u.id==='kai')discover(s,u,'Shadow Exchange');}
  else if(mode==='skill'&&skillOf(u)==='guard'){u.guarding=true;u.guardUsed=false;u.guardTarget=null;awardXP(s,u,12,'방어 태세');s.log.push('에릭: 방어 태세. 다음 아군 턴까지 DEF +3, 인접 동료가 받는 첫 근접 공격을 대신 받습니다.');s.feedback.push({type:'guard',id:u.id,text:'GUARD'});}
  else if(mode==='skill'&&skillOf(u)==='heal'){

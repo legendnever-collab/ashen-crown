@@ -58,3 +58,11 @@ export function dropSupply(s,victim){if(!victim?.carrier||victim.hp>0)return;con
  else s.log.push(`보급병이 ${TOOLS[tool].name}을(를) 떨어뜨렸지만 가방이 가득 찼습니다.`);}
 // ---------- cut-ins ----------
 export function cutIn(s,u,kind){if(u?.team!=='ally'||!CUTIN[u.id]||s.feedback.some(e=>e.type==='cutin'))return;s.feedback.unshift({type:'cutin',id:u.id,kind,text:CUTIN[u.id][kind]});}
+
+// v2.0.0 (REFORM_DESIGN §4.4, D-115): a named enemy carries a treasure (u.carries). Taken alive or beaten in a duel it is
+// always yours; struck down, it drops by the striker's luck (40% + 운·2, at most 90%). The battle copy of the economy
+// takes it, so it stays only when the battle is won. Never twice, never in practice.
+export function claimTreasure(s,type,how){if(!type||!GEAR[type]?.treasure||s.practice||!s.economy)return null;if(s.economy.gear.some(g=>g.type===type)||s.campaign?.economy?.gear?.some(g=>g.type===type))return null;
+ s.economy.gear.push({id:`g${s.economy.next++}`,type,star:1,exp:0});s.battleFlags??={};(s.battleFlags.treasures??=[]).push(type);
+ s.feedback.push({type:'gear',id:null,text:`보물 · ${GEAR[type].name}`});s.log.push(`보물 획득 · ${GEAR[type].name}${how?` (${how})`:''} — 전투에서 이기면 남습니다.`);return type;}
+export function dropChance(u){return Math.min(90,40+2*Math.floor(u?.stats?.luk||5));}

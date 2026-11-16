@@ -454,3 +454,11 @@
 .epi-open{margin:0;text-align:center;font-style:italic;color:#b9ad92;font-size:13px}
 @media (max-width:520px){.epi-ledger{grid-template-columns:1fr}.epi-title h2{font-size:22px}.epi-card{grid-template-columns:44px 1fr}.epi-face{width:44px;height:44px}}
 .ending-card-art{display:block;width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin-bottom:8px}
+
+/* v2.0.0 item window tabs, six stats, treasure codex (REFORM_DESIGN §4.3–4.4) */
+.inv-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.inv-tabs button{padding:6px 10px;font-size:.85rem}.inv-tabs button.active{background:var(--accent,#c9a24a);color:#1b1612}
+.inv-fit button{background:transparent;border:1px dashed rgba(201,162,74,.5)}
+.six-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:8px}.six-stats div{display:flex;justify-content:space-between;background:rgba(255,255,255,.04);padding:3px 6px;border-radius:4px;font-size:.82rem}.six-stats em{color:#9fd18b;font-style:normal;margin-left:2px}
+.class-label{display:block;opacity:.8;font-size:.8rem}
+.gear-card.legendary{border-color:#e0b860;box-shadow:0 0 0 1px rgba(224,184,96,.35) inset}.legend-tag{color:#e0b860}
+.codex-head{margin:12px 0 6px}.codex{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px}.codex-cell{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px;border:1px dashed rgba(255,255,255,.15);border-radius:6px;text-align:center}.codex-sil{filter:brightness(0) opacity(.45)}.codex-cell small{font-size:.7rem;opacity:.8}

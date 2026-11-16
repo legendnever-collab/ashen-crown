@@ -6,7 +6,7 @@ import {transact,effectiveStats,equipmentLabel,itemCount,CARRY_CAPACITY,GEAR_CAP
 import {temperCost,rareShelf} from '../core/arms.js';
 import {FEATS} from '../data/arms-v081.js';
 import {drawWorld} from '../render/world-renderer.js';
-import {renderFrontier,councilHTML,inventoryHTML,shopHTML,shopkeeperHTML,stallHTML,ownedShopHTML,bonusText,frontierButton,starLabel,gearEffect,SLOT_KO} from './frontier-ui.js';
+import {invView,renderFrontier,councilHTML,inventoryHTML,shopHTML,shopkeeperHTML,stallHTML,ownedShopHTML,bonusText,frontierButton,starLabel,gearEffect,SLOT_KO} from './frontier-ui.js';
 import {itemIcon} from './item-art.js';
 import {paintedChestSrc,drawChest} from '../render/chest-art.js';
 import {frontierRoom,chestStyle} from '../data/rooms-v06.js';
@@ -170,6 +170,8 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'confession28-pick':{if(!needsConfession28()||!chooseConfession28(state,id))break;closeModal();enqueueStory(state,`after:28:${id}`);openStory(state);commit();break;} /* v0.10.2 (D-110) */
  case 'difficulty-pick':{if(!DIFFICULTY[id])break;state.campaign.difficulty=id;if(state.frontier||state.screen==='exploration')state.campaign.difficulty=id;closeModal();if(state.screen==='title'){state=newGame(state.initialSeed,state.campaign,1);ui.selected='eric';enterHub(state);}else toast(`난이도: ${DIFFICULTY[id].ko} — 다음 전투부터 적용됩니다.`);commit();break;} /* v2.0.0 (§6.2) */
  case 'difficulty':showDifficulty(false);break;
+ case 'inv-tab':{const [tab,hero]=String(id).split('|');invView.tab=tab;showInventory(hero);break;} /* v2.0.0 (§4.3) */
+ case 'inv-fit':invView.fit=!invView.fit;showInventory(id);break;
  case 'fate29-pick':{if(!needsFate29()||!chooseFate29(state,id))break;closeModal();enqueueStory(state,`after:29:${id}`);openStory(state);commit();break;} /* v1.0.0 (D-113) */
  case 'ending-choose':{if(needsEnding())showEnding();break;}
  case 'ending-pick':{if(!needsEnding()||!chooseEnding(state,id))break;closeModal();enqueueStory(state,`ending:${id}`);openStory(state);commit();break;}
