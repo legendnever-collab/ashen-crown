@@ -4,7 +4,7 @@ import {VERSION,SCHEMA,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,DEPLOYMENTS,BALAN
 import {tallyKill,tallyRescue,tallyHeal,commitRecords} from './records.js';
 import {skillOf,ensureStats,deriveUnit,planLevels,scaleTroop,DIFFICULTY,difficultyOf,classKeyOf,isBossRank} from './stats8.js';
 import {TIER_ATTACK} from '../data/classes8.js';
-import {terrainCost as terrainCostOf,distance,healAmount,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,forecast,strikeStats,guardFor,roll,awardXP,discover,terrainAt,counterBlocked,hostile,chargeBreaks,riposteBonus,sideOf,weatherOf,inWard,blockadeHolds} from './rules.js';
+import {challengeChance,terrainCost as terrainCostOf,distance,healAmount,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,forecast,strikeStats,guardFor,roll,awardXP,discover,terrainAt,counterBlocked,hostile,chargeBreaks,riposteBonus,sideOf,weatherOf,inWard,blockadeHolds} from './rules.js';
 import {MISSIONS,missionOf,LAST_MISSION} from '../data/missions.js';
 import {ensureOfficers} from './roster.js';
 import {rulesOf,objectUnit,searchEvidence} from './mission-rules.js';
@@ -16,7 +16,7 @@ import {isTacticMode,isToolMode,applyTactic,enemyStatusOnHit,expireTactics,caltr
 import {poisonTick,statusAge,inflict,STATUS_KO} from './status.js';
 import {gainGearExp,fx,checkFeat,markCarrier,dropSupply,cutIn,claimTreasure,dropChance} from './arms.js';
 import {skillByMode} from '../data/skills.js';
-import {duelOpen} from './duel.js';
+import {duelOpen,startDuel,setDuelWon} from './duel.js';
 import {defaultCommand,togetherOpen,lastOrderOpen} from './command.js';
 export function newGame(seed=20261014,campaign=null,missionId=1){
  const mission=MISSIONS[missionId];
@@ -117,12 +117,19 @@ function strikeWithPattern(s,u,t,mode){const p=mode==='attack'?attackPattern(u):
  return r;}
 // v2.0.0 §3.4: an attacker 8 or more 민첩 faster strikes once more (×0.6) after the exchange.
 function followUp(s,u,v,mode){if(mode!=='attack'||!alive(u)||!alive(v)||!hostile(s,u,v)||!validTarget(s,u,v,'attack'))return null;if((effectiveStats(s,u).spd||0)<(effectiveStats(s,v).spd||0)+8)return null;s.log.push(`${u.name}: 추가 공격.`);return damage(s,u,v,mode,false,{scale:.6});}
+// v2.0.0 일기토 신청 (REFORM_DESIGN §4.4, §7, Q9): a hero beside a named enemy (a commander, or one who carries a treasure)
+// may call it out — twice a battle at most. The foe accepts by its nature: 60% + 5% for each point of 무력 it has over the
+// hero (20–90%). A refusal spends the action. Winning the duel takes the foe's treasure (duel.js onDuelWon).
+export const CHALLENGE_LIMIT=2;
+export function canChallenge(s,u,t){return s.screen==='battle'&&s.phase==='player'&&!duelOpen(s)&&!missionOf(s).skirmish&&u?.team==='ally'&&alive(u)&&!u.acted&&t?.team==='enemy'&&alive(t)&&!t.duelled&&!t.withdrawing&&distance(u,t)===1&&(isBossRank(t)||!!t.carries)&&(s.challenges||0)<CHALLENGE_LIMIT;}
+setDuelWon((s,f)=>{claimTreasure(s,f.carries,'일기토 승리');f.carries=null;});
 export function performAction(s,id,mode,targetId){
  const u=findUnit(s,id),t=findUnit(s,targetId);if(!canAct(s,u))return {ok:false,error:'행동할 수 없는 장수입니다.'};
  s.feedback=[];
  if(mode==='wait'){consumeAction(s,u);if(s.missionId===3&&u.id==='kai'&&u.y<=4)remember(s,'kai_bypass');s.log.push(`${u.name}: 대기.`);if(missionOf(s).skirmish){checkOutcome(s);afterBattleEvents(s);}return {ok:true};}
  if((mode==='skill'||isClassMode(mode)&&!isToolMode(mode))&&u.status?.silence)return {ok:false,error:'침묵 상태라 스킬을 쓸 수 없습니다.'};
  if(isTacticMode(mode))return performTactic(s,u,mode,targetId??(isToolMode(mode)?u.id:null));
+ if(mode==='challenge'){if(!canChallenge(s,u,t))return {ok:false,error:'일기토를 신청할 수 없습니다.'};consumeAction(s,u);const c=challengeChance(u,t);if(roll(s)*100<c){s.challenges=(s.challenges||0)+1;t.duelled=true;startDuel(s,u.id,t.id,'challenge');s.log.push(`${t.name}이(가) 일기토에 응했습니다. (${c}%)`);}else{t.duelled=true;s.log.push(`${t.name}이(가) 일기토를 거절했습니다. (${c}%)`);s.feedback.push({type:'miss',id:t.id,text:'거절'});}return {ok:true};}
  if(mode==='item'){if(!s.potions||u.hp===u.maxHP)return {ok:false,error:'회복약을 사용할 수 없습니다.'};s.potions--;const n=Math.min(20,u.maxHP-u.hp);u.hp+=n;s.feedback.push({type:'heal',id,text:`+${n}`,toHP:u.hp});consumeAction(s,u);if(s.missionId===3&&u.id==='kai'&&u.y<=4)remember(s,'kai_bypass');s.log.push(`${u.name}: 회복약으로 ${n} HP 회복.`);return {ok:true};}
  if(isClassMode(mode)){const r=applyClassAction(s,u,targetId,mode);if(!r.ok)return r;cutIn(s,u,'third');consumeAction(s,u);awardXP(s,u,20,CLASS_ACTIONS[mode].ko);rulesOf(s)?.onAction?.(s,u,mode,t);checkOutcome(s);afterBattleEvents(s);return {ok:true};}
  if(!validTarget(s,u,t,mode))return {ok:false,error:'대상 또는 사거리가 올바르지 않습니다.'};

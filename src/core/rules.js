@@ -6,7 +6,8 @@ import {proficiencyBonus,classGrowth} from './progression.js';
 import {fx} from './arms.js';
 import {inSmallWard} from './wards.js';
 import {commandShield} from './command.js';
-import {skillOf,classKeyOf,matchup8,ratioDamage,levelUpStats} from './stats8.js';
+import {skillOf,classKeyOf,matchup8,ratioDamage,levelUpStats,isBossRank} from './stats8.js';
+export const challengeChance=(u,t)=>Math.max(20,Math.min(90,Math.round(60+5*((t.stats?.str??(t.atk||0)/1.5)-(u.stats?.str??(u.atk||0)/1.5)))));
 import {SKILL_MUL} from '../data/classes8.js';
 export const distance=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
 export const key=(x,y)=>`${x},${y}`;
@@ -65,6 +66,8 @@ export function validTarget(s,u,t,mode='attack'){
  const d=distance(u,t);if(t.team==='object')return mode==='search'&&u.team==='ally'&&d===1&&!t.locked&&!t.inert&&!(t.kind==='ritualCircle'&&s.units.some(r=>r.kind==='ritualist'&&r.team==='enemy'&&alive(r)&&distance(r,t)<=1)); /* v0.9.2 M19: a ritualist beside its circle keeps the seal shut */if(mode==='search')return false;if(mode==='capture')return (s.missionId===2&&t.id==='boss'||[].concat(missionOf(s).capture||[]).includes(t.id))&&t.team==='enemy'&&t.hp<=t.maxHP/2&&d===1;
  // v0.7.1 (D-071): Erik persuades Baldrick from beside him (once a turn); Thea may speak to him once in the battle.
  if(mode==='persuade')return canPersuade(s,u,t)&&d===1;
+ // v2.0.0 일기토 신청 (Q9): a named enemy beside the hero, twice a battle, not in trials or drills.
+ if(mode==='challenge')return u.team==='ally'&&t.team==='enemy'&&d===1&&(isBossRank(t)||!!t.carries)&&!t.duelled&&!t.withdrawing&&(s.challenges||0)<2&&!missionOf(s).skirmish&&!(s.duel&&!s.duel.result);
  if(mode==='rescue')return t.team==='civilian'&&t.kind!=='wagon'&&!t.noRescue&&!missionOf(s).escortOnly&&(!missionOf(s).orderTurn||s.campaign?.choices?.m08_order==='rescue')&&d===1;
  if(mode==='skill'&&skillOf(u)==='guard')return t.id===u.id;
  // v0.9.3 (D-093, the user's feedback): Heal reaches anyone in range — heroes, allied units, civilians, even enemies; not wagons, props or objects.
@@ -168,6 +171,7 @@ export function forecast(s,u,t,mode='attack'){
  if(mode==='rescue')return {rescue:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='search')return {search:true,damage:0,hit:100,counter:0,after:t.hp};
  if(mode==='persuade')return {persuade:true,damage:0,hit:100,counter:0,after:t.hp};
+ if(mode==='challenge')return {challenge:true,damage:0,hit:challengeChance(u,t),counter:0,after:t.hp};
  const guard=guardFor(s,u,t,mode),victim=guard||t,stats=strikeStats(s,u,victim,mode),canCounter=validTarget(s,victim,u,'attack')&&!counterBlocked(s,victim)&&!chargeBreaks(u,mode)&&!fx(s,u,'silence')&&victim.hp>stats.damage;
  const counter=canCounter?Math.max(1,Math.round(strikeStats(s,victim,u).damage*riposteBonus(victim))):0;
  return {...stats,counter,counterHit:canCounter?strikeStats(s,victim,u).hit:0,after:Math.max(0,victim.hp-stats.damage),guard:guard?.id,victim:victim.id};

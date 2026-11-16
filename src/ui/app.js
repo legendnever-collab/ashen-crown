@@ -41,7 +41,7 @@ import {endingArt,ENDING_ART} from './ending-art.js';
 import {paintedURL} from '../render/bust.js';
 import {recordOf,signatureDeed,RECORD_KO} from '../core/records.js';
 import {TOGETHER} from '../core/command.js';
-import {duelOpen,duelPick,DUEL_PICKS} from '../core/duel.js';
+import {duelOpen,duelPick,DUEL_PICKS,DUEL_ROUNDS,DUEL_TO_WIN,duelNature,NATURE_KO} from '../core/duel.js';
 import {setCommand,commandsFor} from '../core/command.js';
 import {chooseDeserters,chooseOrder} from '../core/mission-rules-v06.js';
 import {chooseStance} from '../core/mission-rules-v061.js';
@@ -180,7 +180,7 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'banner25-pick':{if(!needsBanner25()||!chooseBanner25(state,id))break;closeModal();enqueueStory(state,`after:25:${id}`);openStory(state);commit();break;}
  case 'plan20-pick':{if(!needsPlan20()||!choosePlan20(state,id))break;closeModal();enqueueStory(state,`after:20:${id}`);enqueueStory(state,'after:20:kai');enqueueStory(state,`after:20:baldrick:${state.campaign.flags.mission_13_baldrick==='halted'?'halted':'envoy'}`);enqueueStory(state,'after:20:next');openStory(state);commit();break;}
  case 'stones16-pick':{if(!needsStones16()||!chooseStones16(state,id))break;closeModal();enqueueStory(state,`after:16:${id}`);enqueueStory(state,'after:16:next');openStory(state);commit();break;}
- case 'duel-pick':{const key=state.duel?.key;if(!duelPick(state,id))break;if(state.duel.result){closeModal();if(state.duel.result!=='skipped')enqueueStory(state,`${key}:${state.duel.result}`);openStory(state);}else showDuel();commit();break;}
+ case 'duel-pick':{const d=state.duel,key=d?.key;if(!duelPick(state,id))break;if(d.result){closeModal();if(d.result!=='skipped'&&STORY[`${key}:${d.result}`])enqueueStory(state,`${key}:${d.result}`);if(key==='challenge')toast(d.result==='hero'?'일기토 승리!':'일기토 패배…');openStory(state);}else showDuel();commit();break;}
  case 'aren-command':{const list=commandsFor(state),i=list.indexOf(state.command);if(setCommand(state,i<0?list[0]:i+1<list.length?list[i+1]:null))commit();break;}
  case 'records12-pick':{if(!needsRecords12()||!chooseRecords(state,id))break;closeModal();enqueueStory(state,`after:12:${id}`);enqueueStory(state,`after:12:ines:${state.campaign.roster?.includes('ines')?'joined':'parted'}`);openStory(state);commit();break;}
  case 'order-pick':{if(!needsOrder()||state.screen!=='deployment'||!chooseOrder(state,id))break;closeModal();enqueueStory(state,`8:order:${id}`);openStory(state);commit();break;}
@@ -400,9 +400,17 @@ function showTruth18(){if(!needsTruth18())return;modal('숲의 값',`<p>숲지�
 function showStones16(){if(!needsStones16())return;modal('잊힌 전장의 결계석',`<p>결계석은 이 들판에서 죽은 이들과 그들을 기억하던 사람들의 기억을 품고 있습니다. 돌을 부수면 근처 마을의 기억이 조금씩 돌아오지만 이 땅의 결계가 약해집니다. 남기면 결계는 그대로이고 기억은 돌아오지 않습니다. 고른 뒤에는 바꿀 수 없습니다.</p>`,
  frontierButton('stones16-pick','<b>결계석을 부순다</b> — 잊힌 기억을 돌려준다','break',false,'primary')+frontierButton('stones16-pick','<b>결계석을 남긴다</b> — 지금의 안전을 지킨다','leave',false,'primary')+'<button data-do="close-modal">조금 더 생각한다</button>');}
 // 일기토 (M16, D-079 §7): three exchanges; the modal reopens after each one until the duel is decided.
-function showDuel(){const d=state.duel;if(!duelOpen(state))return;const h=findUnit(state,d.hero),f=findUnit(state,d.foe),last=d.picks.at(-1);
- modal('일기토',`<div class="duel-card"><div class="duel-faces">${portrait(h,'card-sprite')}<b>${d.wins[0]} : ${d.wins[1]}</b>${portrait(f,'card-sprite')}</div><p><b>${esc(h.name)}</b> 대 <b>${esc(f.name)}</b> · ${d.round+1}합</p>${last?`<p class="duel-last">지난 합: ${esc(h.name)} ${DUEL_PICKS[last[0]]} / ${esc(f.name)} ${DUEL_PICKS[last[1]]} → <b>${last[2]?esc(h.name):esc(f.name)}</b></p>`:''}<p class="promo-note">공격은 필살을, 필살은 수비를, 수비는 공격을 이깁니다. 같은 수면 힘(ATK+SPD)이 정합니다. 두 합을 먼저 이기면 승리하고, 진 쪽은 HP가 30% 깎인 채 싸웁니다.</p></div>`,
- frontierButton('duel-pick','<b>공격</b>','strike',false,'primary')+frontierButton('duel-pick','<b>수비</b>','guard',false,'primary')+frontierButton('duel-pick','<b>필살</b>','finisher',false,'primary')+(d.round===0?frontierButton('duel-pick',d.key==='29:duel'?'아렌에게 맡긴다 — 아렌의 마지막 말':'거절한다 — 그대로 싸운다','skip'):''));paintPortraits();}
+// v2.0.0 「잿빛 결투장」 (REFORM_DESIGN §7, D-115): our own arena — an ash-covered ring inside both sides' banners, the two
+// champions facing each other, the words in a band below (not the 조조전 stone layout, §13). Up to five exchanges, first to three.
+const DUEL_BG=typeof ASHEN_DUEL_BG!=='undefined'?ASHEN_DUEL_BG:null;
+const DUEL_TAUNT={bold:'덤벼라. 한 번에 끝내 주마!',careful:'서두르지 마라. 빈틈은 곧 보인다.',seasoned:'이 칼을 몇 번이나 들었는지 아느냐.'};
+function showDuel(){const d=state.duel;if(!duelOpen(state))return;const h=findUnit(state,d.hero),f=findUnit(state,d.foe),last=d.picks.at(-1),nature=duelNature(state,f);
+ const line=last?(last[2]?`${esc(h.name)}의 ${DUEL_PICKS[last[0]]}! ${esc(f.name)}의 ${DUEL_PICKS[last[1]]}을(를) 꺾었다.`:`${esc(f.name)}의 ${DUEL_PICKS[last[1]]}! ${esc(h.name)}의 ${DUEL_PICKS[last[0]]}이(가) 밀렸다.`):esc(DUEL_TAUNT[nature]);
+ modal('잿빛 결투장',`<div class="duel-arena${DUEL_BG?' painted':''}"${DUEL_BG?` style="background-image:url('${DUEL_BG}')"`:''}><div class="arena-banners"><i class="b-legion"></i><i class="b-foe"></i><i class="b-legion"></i><i class="b-foe"></i></div>
+ <div class="arena-ring"><div class="arena-fighter left">${portrait(h,'card-sprite')}<b>${esc(h.name)}</b></div><div class="arena-score"><span>${d.wins[0]}</span><small>${d.round+1}합 / 최대 ${DUEL_ROUNDS}합</small><span>${d.wins[1]}</span></div><div class="arena-fighter right">${portrait(f,'card-sprite')}<b>${esc(f.name)}</b></div></div>
+ <div class="arena-band"><span class="arena-speaker">${last?'':esc(f.name)}</span><p>${line}</p></div>
+ <p class="arena-hint">상대는 ${esc(NATURE_KO[nature])} · 베기는 노리기를, 노리기는 막기를, 막기는 베기를 이깁니다 · 같은 수면 무력·민첩·운이 정합니다 · 먼저 ${DUEL_TO_WIN}합을 이기면 승리${f.carries&&GEAR[f.carries]?` · 이기면 「${esc(GEAR[f.carries].name)}」을(를) 얻습니다`:''}</p></div>`,
+ frontierButton('duel-pick','<b>베기</b>','strike',false,'primary')+frontierButton('duel-pick','<b>막기</b>','guard',false,'primary')+frontierButton('duel-pick','<b>노리기</b>','finisher',false,'primary')+(d.round===0&&d.key!=='challenge'?frontierButton('duel-pick',d.key==='29:duel'?'아렌에게 맡긴다 — 아렌의 마지막 말':'거절한다 — 그대로 싸운다','skip'):''));paintPortraits();}
 function offerDuel(){if(state.screen!=='battle'||!duelOpen(state)||state.narrative.active||$('#modal-root').children.length)return;showDuel();}
 // v0.10.0: allied orders for an allied unit that takes them.
 function showAllyOrders(t){const now=t.order||'free';modal(`동맹군 지시 · ${t.name}`,`<p>${esc(t.name)}에게 지시합니다. 지시는 바꿀 때까지 이어집니다. 지금: <b>「${ALLY_ORDERS[now]}」</b></p>`,
