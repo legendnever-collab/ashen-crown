@@ -1,4 +1,11 @@
 import {legacyRewardCatchup} from '../core/battle-rewards.js';
+import {UNIT_CLASS8} from '../data/classes8.js';
+import {statsAt,deriveUnit} from '../core/stats8.js';
+import {ensureOfficers,recruitRecord} from '../core/roster.js';
+import {newGame,deployZoneOf} from '../core/game.js';
+import {enterHub} from '../core/frontier.js';
+import {START_TREASURES} from '../core/economy.js';
+import {GEAR} from '../data/frontier-data.js';
 import {ensureEconomy,validateEconomy} from '../core/economy.js';
 import {validDuel} from '../core/duel.js';
 import {validTally} from '../core/records.js';
@@ -81,6 +88,20 @@ export function validate(s){
 // Exported for the migration tests: the economy as a schema-10 save's economy reads in schema 11.
 export function arms081View(e){const c=structuredClone(e);arms081(c);return c;}
 function arms081(e){for(const g of e.gear||[]){if('level' in g){g.star=g.level===1?2:1;g.exp=g.level===1?30:0;delete g.level;}}for(const slots of Object.values(e.equipped||{}))if(slots&&!Object.hasOwn(slots,'treasure'))slots.treasure=null;for(const r of e.rewardPending||[])delete r.level;}
+function reform200(s){
+ const battle=['battle','result','deployment'].includes(s.screen)||!!s.skirmish;
+ if(battle){const c=structuredClone(s.skirmish?.campaign||s.campaign),mid=s.skirmish?.returnMission??s.missionId,fresh=newGame(s.initialSeed??20261014,c,MISSIONS[mid]?.skirmish?1:mid);
+  if(c.completed?.length&&s.screen==='result'&&s.outcome==='victory'&&!s.practice){}enterHub(fresh,{story:false});fresh.migrated200='battle';s=fresh;}
+ const c=s.campaign;c.difficulty??='normal';
+ for(const rec of c.heroes||[]){if(!rec||rec.stats||!UNIT_CLASS8[rec.id])continue;rec.cls=UNIT_CLASS8[rec.id];rec.stats=statsAt(rec.id,rec.level||1,rec.classTier||1);delete rec.hp;deriveUnit(rec);rec.hp=rec.maxHP;}
+ ensureOfficers(c,s.missionId);
+ for(const u of s.units||[]){if(u.team!=='ally')continue;const rec=(c.heroes||[]).find(h=>h.id===u.id);if(rec?.stats){u.cls=rec.cls;u.stats=structuredClone(rec.stats);}else if(UNIT_CLASS8[u.id]&&!u.stats){u.cls=UNIT_CLASS8[u.id];u.stats=statsAt(u.id,u.level||1,u.classTier||1);}delete u.hp;deriveUnit(u);u.hp=u.maxHP;}
+ for(const id of c.roster||[])if(!s.units.some(u=>u.id===id)){const rec=c.heroes?.find(h=>h.id===id)||recruitRecord(id,1);const m=MISSIONS[s.missionId],free=[...deployZoneOf(s)].map(k=>k.split(',').map(Number)).find(([x,y])=>!s.units.some(o=>o.x===x&&o.y===y)&&Number.isFinite(terrainAt(x,y,s)?.cost))||(()=>{for(let y=0;y<m.height;y++)for(let x=0;x<m.width;x++)if(Number.isFinite(terrainAt(x,y,s)?.cost)&&!s.units.some(o=>o.x===x&&o.y===y))return [x,y];return [0,0];})();s.units.push({...structuredClone(rec),team:'ally',x:free[0],y:free[1],moved:false,acted:false,hitThisTurn:false,shadowBonus:0,guardTarget:null,benched:true});if(Array.isArray(s.missionStart)&&!s.missionStart.some(m=>m.id===id))s.missionStart.push({id,level:rec.level||1,stats:{maxHP:rec.maxHP,atk:rec.atk,def:rec.def,mag:rec.mag}});}
+ for(const e of [s.economy,c.economy]){if(!e?.equipped)continue;for(const id of c.roster||[])e.equipped[id]??={weapon:null,armor:null,accessory:null,treasure:null};
+  for(const [hero,slots] of Object.entries(e.equipped))for(const [slot,gid] of Object.entries(slots)){if(!gid)continue;const g=e.gear.find(a=>a.id===gid);if(!g||!GEAR[g.type]?.heroes.includes(hero))slots[slot]=null;}
+  for(const [hero,type] of Object.entries(START_TREASURES)){if(e.gear.some(g=>g.type===type))continue;const id=`g${e.next++}`;e.gear.push({id,type,exp:0,star:1});if(e.equipped[hero]&&!e.equipped[hero].treasure)e.equipped[hero].treasure=id;}}
+ s.schema=20;s.version='2.0.0';delete s.stageStart;if(s.frontier&&c.frontier)for(const id of c.roster||[])if(!s.frontier.members.includes(id)){s.frontier.members.push(id);s.frontier.affiliation[id]='affiliated';}
+ return s;}
 export function migrate(s){
  if(s?.schema===0){s.schema=1;s.feedback=s.feedback||[];}
  if(s?.schema===1){s.schema=2;s.version='0.2.0';s.missionId=1;s.practice=false;s.narrative=narrativeState();const c=s.campaign;c.completed=c.clears>0?[1]:[];c.flags=c.clears>0?{mission_01_completed:true}:{};c.bonds={};c.tacticalMemory={};for(const u of [...s.units,...(c.heroes||[])])if(u.team==='ally'||HEROES.some(h=>h.id===u.id)){u.appearanceTier=u.id==='eric'&&u.level>=5?2:1;const h=HEROES.find(h=>h.id===u.id);u.name=h.name;u.ko=h.ko;}if(s.stageStart)s.stageStart=migrate(s.stageStart);}
@@ -115,6 +136,10 @@ export function migrate(s){
  if(s?.schema===17){s.schema=18;s.version='0.10.2';if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  // v1.0.0 (D-113): ACT IV part 4 — M29–M30, Bellard, the new ward, the endings; a schema-18 save keeps everything.
  if(s?.schema===18){s.schema=19;s.version='1.0.0';if(s.stageStart)s.stageStart=migrate(s.stageStart);}
+ // v2.0.0 (D-115, REFORM_DESIGN §8): the six stats replace the old growth (recomputed from level and tier), gear follows the
+ // class (pieces that no longer fit go back to the bag), the start treasures and the earned officers join, a battle in
+ // progress reopens in the camp of its mission (the big maps differ). Difficulty starts at 보통.
+ if(s?.schema===19)s=reform200(s);
  if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');
  // v0.6.1: a save of the current schema made by an earlier build of it (e.g. v0.6.0) is now this version.
  if(s?.schema===SCHEMA&&s.version!==VERSION){s.version=VERSION;if(s.stageStart?.version)s.stageStart.version=VERSION;}

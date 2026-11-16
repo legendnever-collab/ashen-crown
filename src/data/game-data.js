@@ -1,5 +1,5 @@
-export const VERSION = '1.0.0';
-export const SCHEMA = 19;
+export const VERSION = '2.0.0';
+export const SCHEMA = 20;
 export const WIDTH = 12, HEIGHT = 10;
 // v0.4 benchmark pass: physical cut (fraction), evade (%), fire multiplier and per-class
 // movement live together so the tap readout can describe each tile in one line.
