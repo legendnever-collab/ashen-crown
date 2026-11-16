@@ -16,6 +16,7 @@ import {hubCamera,drawHub} from '../render/frontier-renderer.js';
 import {VERSION,HEROES,BALANCE,TERRAIN,partyHeroes,heroDef} from '../data/game-data.js';
 import {factionRows,FACTIONS} from '../core/factions.js';
 import {setSortie} from '../core/game.js';
+import {DIFFICULTY,difficultyOf} from '../core/stats8.js';
 import {isClassMode,tileTarget,validClassTarget} from '../core/class-actions.js';
 import {canStartSkirmish,trialState,startSkirmish,returnToCamp,skirmishOf} from '../core/skirmish.js';
 import {classOf,potentialOf} from '../core/progression.js';
@@ -167,6 +168,8 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'act3-pick':{if(!needsAct3()||!chooseAct3(state,id))break;closeModal();enqueueStory(state,`after:22:${id}`);enqueueStory(state,'after:22:end');openStory(state);commit();break;}
  case 'lead23-pick':{if(!needsLead23()||!chooseLead23(state,id))break;closeModal();enqueueStory(state,`after:23:${id}`);openStory(state);commit();break;}
  case 'confession28-pick':{if(!needsConfession28()||!chooseConfession28(state,id))break;closeModal();enqueueStory(state,`after:28:${id}`);openStory(state);commit();break;} /* v0.10.2 (D-110) */
+ case 'difficulty-pick':{if(!DIFFICULTY[id])break;state.campaign.difficulty=id;if(state.frontier||state.screen==='exploration')state.campaign.difficulty=id;closeModal();if(state.screen==='title'){state=newGame(state.initialSeed,state.campaign,1);ui.selected='eric';enterHub(state);}else toast(`난이도: ${DIFFICULTY[id].ko} — 다음 전투부터 적용됩니다.`);commit();break;} /* v2.0.0 (§6.2) */
+ case 'difficulty':showDifficulty(false);break;
  case 'fate29-pick':{if(!needsFate29()||!chooseFate29(state,id))break;closeModal();enqueueStory(state,`after:29:${id}`);openStory(state);commit();break;} /* v1.0.0 (D-113) */
  case 'ending-choose':{if(needsEnding())showEnding();break;}
  case 'ending-pick':{if(!needsEnding()||!chooseEnding(state,id))break;closeModal();enqueueStory(state,`ending:${id}`);openStory(state);commit();break;}
@@ -182,7 +185,7 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'stance-pick':{if(!needsStance()||state.screen!=='deployment'||!chooseStance(state,id))break;closeModal();enqueueStory(state,`10:stance:${id}`);openStory(state);commit();break;}
  case 'records-pick':{if(state.missionId!==4||state.practice||state.frontier?.phase!=='aftermath'||state.campaign.choices?.m04_records_choice||!['kept','reported'].includes(id))break;state.campaign.choices??={};state.campaign.choices.m04_records_choice=id;closeModal();enqueueStory(state,`after:4:${id}`);openStory(state);commit();break;}
  case 'appearance':showAppearance();break;
- case 'new':state=newGame(state.initialSeed,state.campaign,state.campaign.completed.includes(1)?Math.min(LAST_MISSION,(state.campaign.completed.at(-1)||0)+1):1);ui.selected='eric';enterHub(state);commit();break;
+ case 'new':if(!state.campaign.difficulty&&!state.campaign.completed.length){showDifficulty(true);break;}state=newGame(state.initialSeed,state.campaign,state.campaign.completed.includes(1)?Math.min(LAST_MISSION,(state.campaign.completed.at(-1)||0)+1):1);ui.selected='eric';enterHub(state);commit();break;
  case 'warroom':await prepareCouncil();break;case 'deploy':state.frontier.ready.formation=true;syncFrontier(state);if(findUnit(state,ui.selected)?.benched||!findUnit(state,ui.selected))ui.selected='eric';ui.mode='choose';setScreen('deployment');break;
  case 'sortie-add':case 'sortie-remove':{if(setSortie(state,ui.selected,action==='sortie-add'))commit();break;}
  case 'select':{const u=findUnit(state,id);if(!u||u.team!=='ally'||state.screen==='battle'&&!alive(u)||state.screen==='deployment'&&u.benched)break;ui.selected=id;ui.menu=state.screen==='battle'?'root':null;ui.mode=state.screen==='deployment'?'deploy':initialMode(u);renderer.focus(u.x,u.y);ui.preview=null;ui.notice=null;ui.inspected=null;ui.phaseConfirm=false;render();break;}
@@ -416,6 +419,9 @@ function showConfession28(){if(!needsConfession28())return;
  frontierButton('confession28-pick','<b>군단 모두에게 말한다</b> — 모두가 그 밤의 무게를 함께 안다','all',false,'primary')+frontierButton('confession28-pick','<b>에릭에게만 말한다</b> — 아렌이 스스로 말할 때를 기다린다','eric',false,'primary')+'<button data-do="close-modal">조금 더 생각한다</button>');}
 // v1.0.0 (D-113): Bellard's fate after M29 — the offer only when Aren spoke his last words to him (Bellard asks it himself).
 function needsFate29(){return state.missionId===29&&!state.practice&&state.frontier?.phase==='aftermath'&&state.campaign.completed.includes(29)&&!state.campaign.choices?.m29_bellard;}
+// v2.0.0 난이도 (REFORM_DESIGN §6.2, D-115): 보통 is the new, harder baseline; 어려움 adds two levels, ×1.15 stats, a quarter more in waves, one potion.
+function showDifficulty(first){const cur=difficultyOf(state);modal('난이도',`<p>${first?'캠페인을 시작하기 전에 난이도를 고르세요. 진영의 ☰ 메뉴에서 언제든 바꿀 수 있고, 바꾼 뒤의 전투부터 적용됩니다.':'바꾼 뒤의 전투부터 적용됩니다.'}</p><p class="muted">적 레벨은 출전 장수의 평균 레벨에 맞춰 정해집니다(잡병 ±0, 지휘관 +3).</p>`,
+ frontierButton('difficulty-pick',`<b>보통</b> — 적 레벨 = 출전 평균 + 미션 보정 · 회복약 2개${cur==='normal'&&!first?' <small>(지금)</small>':''}`,'normal',false,'primary')+frontierButton('difficulty-pick',`<b>어려움</b> — 적 레벨 +2 · 적 능력치 ×1.15 · 증원 +25% · 회복약 1개${cur==='hard'&&!first?' <small>(지금)</small>':''}`,'hard',false,'primary'));}
 function showFate29(){if(!needsFate29())return;const c=state.campaign,words=fateOpen29(c,'offer');
  modal('벨라드의 처분',`<p>벨라드가 무릎을 꿇었습니다. 그는 봉인 명령을 쓰고, 통제된 전쟁을 계획했습니다. 그러나 그 밤의 책임은 국왕과 그가 함께 졌고, 그는 괴물이 아니라 다른 계산을 한 사람이었습니다. 어떻게 할까요? 고른 뒤에는 바꿀 수 없습니다.</p>${words?'<p class="promo-note">아렌의 마지막 말을 들은 벨라드가 스스로 청합니다 — 자기 기억을 새 결계에 바치겠다고.</p>':'<p class="promo-note">아렌이 그에게 말을 건넸다면, 벨라드가 스스로 다른 길을 청했을지도 모릅니다.</p>'}`,
  frontierButton('fate29-pick','<b>재판에 세운다</b> — 모든 것이 기록된다 <small>(자유 영주 연맹 +1)</small>','trial',false,'primary')+frontierButton('fate29-pick','<b>왕도에서 추방한다</b> — 칼을 거둔 자를 베지 않는다 <small>(철왕관 +1)</small>','exile',false,'primary')+

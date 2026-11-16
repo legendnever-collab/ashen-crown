@@ -87,6 +87,8 @@ function damage(s,u,t,mode,counter=false,opts=null){
  const pouch=fx(s,victim,'pouch');if(pouch&&victim.hp>0&&victim.hp<victim.maxHP/2&&!victim.pouchUsed){victim.pouchUsed=true;const n=Math.min(pouch,victim.maxHP-victim.hp);victim.hp+=n;s.feedback.push({type:'heal',id:victim.id,text:`약초 주머니 +${n}`,toHP:victim.hp});s.log.push(`${victim.name}: 약초 주머니로 HP +${n}.`);}
  if(!alive(victim))dropSupply(s,victim);
  if(!alive(victim))tallyKill(s,u,victim); /* v0.9.3 장수 열전 */
+ // v2.0.0 (§6.3): a fallen commander shakes the soldiers around it (ATK −10%, until the end of the next turn).
+ if(!alive(victim)&&victim.team==='enemy'&&isBossRank(victim)){let n=0;for(const e of s.units)if(e.team==='enemy'&&alive(e)&&distance(e,victim)<=4){e.atkDown={n:Math.max(1,Math.round((e.atk||0)*.1)),until:s.turn+1};n++;}if(n)s.log.push(`${victim.name}이(가) 쓰러져 주위의 적 ${n}명이 흔들립니다.`);}
  if(!alive(victim)){if(victim.id==='boss'){setStoryFlag(s,`mission_0${s.missionId}_garr_defeated`);enqueueStory(s,`${s.missionId}:boss`);}s.feedback.push({type:'death',id:victim.id,text:'FALLEN'});s.log.push(`${victim.name} 전투불능.`);}
  return {hit:true,damage:dealt,victim};
 }
@@ -157,11 +159,18 @@ export function planEnemy(s,u){
  const taunt=provokedPlan(s,u,reachable);if(taunt)return taunt;
  const custom=rulesOf(s)?.planEnemy?.(s,u,reachable);if(custom)return custom;
  if(s.missionId===2&&u.id==='boss'){const cells=[...reachable].map(([p,c])=>{const [x,y]=p.split(',').map(Number);return {x,y,c};}).sort((a,b)=>a.y-b.y||Math.abs(a.x-5)-Math.abs(b.x-5)||a.c-b.c);const d=cells[0];return {...d,target:null,reason:'북쪽 출구로 도주'};}
-const targets=s.units.filter(t=>alive(t)&&(hostile(s,u,t)||t.team==='civilian'&&s.turn>=missionOf(s).threatTurn));let best=null;
+const targets=s.units.filter(t=>alive(t)&&(hostile(s,u,t)||t.team==='civilian'&&s.turn>=missionOf(s).threatTurn));let best=null;const hard=difficultyOf(s)==='hard';
+ // v2.0.0 (§6.3): a post holds until a foe comes near (u.hold = radius), so big maps keep their positions.
+ if(u.hold&&!u.roused){if(targets.some(t=>t.team!=='civilian'&&distance(u,t)<=u.hold))u.roused=true;else return {x:u.x,y:u.y,target:null,reason:'초소 유지'};}
+ // a badly hurt soldier falls back towards its healer unless it can finish someone
+ if(u.team==='enemy'&&u.hp<=u.maxHP*.35&&!isBossRank(u)){const medic=s.units.find(m=>m!==u&&m.team==='enemy'&&alive(m)&&classKeyOf(m)==='healer');if(medic&&!targets.some(t=>t.team!=='civilian'&&distance(u,t)<=(u.mov||3)+u.range[1]&&t.hp<=strikeStats(s,u,t).damage)){let dest=null;for(const [pos,c] of reachable){const [x,y]=pos.split(',').map(Number),d=Math.abs(x-medic.x)+Math.abs(y-medic.y),near=Math.min(...targets.filter(t=>t.team!=='civilian').map(t=>Math.abs(x-t.x)+Math.abs(y-t.y)),99),sc=d*2-near;if(!dest||sc<dest.sc)dest={x,y,sc};}if(dest)return {x:dest.x,y:dest.y,target:null,reason:'치유사 쪽으로 후퇴'};}}
  const hazards=!!s.runes||s.units.some(a=>a.team==='ally'&&a.overwatch&&alive(a)),hz=(x,y)=>hazards?hazardAt(s,u,x,y):0; // v0.5 overwatch/runes; 0 in ACT I
  for(const [pos,cost] of reachable){const [x,y]=pos.split(',').map(Number),actor={...u,x,y};for(const t of targets){const d=distance(actor,t);if(d<u.range[0]||d>u.range[1])continue;
-   const f=strikeStats(s,actor,t);const priority=t.team==='civilian'?38:u.kind==='captain'?16-t.def:t.id==='sain'?12:t.id==='lia'?8:0;
-   const score=f.damage+priority+(t.hp<=f.damage?30:0)+(u.kind==='archer'?Math.min(d,3)*3:0)-cost*.3+recoveryValue(s,u,x,y)*.35-hz(x,y); if(!best||score>best.score)best={x,y,target:t.id,score,reason:`공격 가능 · ${t.team==='civilian'?'주민 위협':t.id==='sain'?'지원 장수 견제':'유효 피해'} · 거리 ${d}`};
+   const f=strikeStats(s,actor,t),tc=classKeyOf(t),support=tc==='healer'||skillOf(t)==='heal';const priority=t.team==='civilian'?38:u.kind==='captain'?16-Math.min(16,t.def):support?(hard?20:12):tc==='mage'?(hard?14:8):tc==='archer'&&hard?8:0;
+   // v2.0.0 강화 AI (§6.3): focus the wounded, weigh the counter it will eat, riders and rogues love a flank.
+   const wounded=t.maxHP?(1-t.hp/t.maxHP)*14:0,kill=t.hp<=f.damage?30:0,canHitBack=!kill&&t.team!=='civilian'&&Array.isArray(t.range)&&d>=t.range[0]&&d<=t.range[1]&&(t.atk||0)>0?strikeStats(s,t,actor).damage*.45:0;
+   const side=(['cavalry','rogue'].includes(classKeyOf(u))&&flank(s,actor,t))?8:0;
+   const score=f.damage+priority+kill+wounded-canHitBack+side+(classKeyOf(u)==='archer'||u.kind==='archer'?Math.min(d,3)*3:0)-cost*.3+recoveryValue(s,u,x,y)*.35-hz(x,y); if(!best||score>best.score)best={x,y,target:t.id,score,reason:`공격 가능 · ${t.team==='civilian'?'주민 위협':support?'지원 장수 견제':kill?'마무리':'유효 피해'} · 거리 ${d}`};
  }}
  if(best)return best;
  // Attack and the M02 escape objective always win over retreat. Only local, useful recovery.
