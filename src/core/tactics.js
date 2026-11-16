@@ -38,7 +38,7 @@ function pushOutSpot(s,t,p,taken){const inside=c=>Math.abs(c.x-p.x)<=1&&Math.abs
  return null;}
 // v0.9.2 Shadow Dance (Kai's ④): two units within 4 of Kai trade places. The target is "a|b"; a single unit is a valid first
 // pick when it has a partner. Anchored things (statues, trees, braziers, wagons, ritual circles) and units held by a duel stay.
-const ANCHORED=['beacon','wagon','brazier','statue','wardTree','ritualCircle','cabinet','wardStone','ram'];
+const ANCHORED=['beacon','wagon','brazier','statue','wardTree','ritualCircle','cabinet','wardStone','ram','rite','anchorStone'];
 const dancer=(s,u,t)=>!!t&&alive(t)&&!t.benched&&t.team!=='object'&&!ANCHORED.includes(t.kind)&&!t.withdrawing&&(t.mov||0)+(t.alertMov||0)>0&&distance(u,t)<=4;
 function danceOK(s,u,a,b){if(!dancer(s,u,a)||!dancer(s,u,b)||a.id===b.id)return false;if(a.team!=='enemy'&&b.team!=='enemy'&&a.team!=='ally'&&b.team!=='ally')return false;
  const fits=(m,x,y)=>Number.isFinite(terrainAt(x,y,s)?.cost)&&!(m.team==='enemy'&&inSmallWard(s,{x,y}));return fits(a,b.x,b.y)&&fits(b,a.x,a.y);}

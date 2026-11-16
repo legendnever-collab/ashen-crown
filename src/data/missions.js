@@ -562,6 +562,59 @@ MISSIONS[28]=authored({id:28,title:'잿빛 밤의 진실',en:'The Truth of the A
  threatTurn:1,par:10,turnLimit:14,level:20,deployLimit:8,
  objective:'기억 조각 3개 찾기 → 그 밤의 끝까지 버티기 (조각을 모두 찾은 뒤 적 턴 2번) · 에릭이 쓰러지면 패배 (TURN 14가 지나면 기억이 닫힘)',
  brief:'국왕의 마지막 기억, 잿빛 밤의 궁입니다. 기억 조각 셋을 곁에서 「기억 보기」로 엽니다 — 순서는 상관없고, 연 조각 곁(3칸)의 잔영은 흩어집니다. 잔영 병사는 쓰러져도 3턴 뒤 제자리에서 다시 섭니다. 젊은 아렌이 기억 속에서만 함께 싸웁니다(지시 가능). 조각을 모두 찾으면 그 밤의 끝까지 — 적 턴 두 번을 버티면 됩니다.'});
+// v1.0.0 ACT IV part 4 「왕관 없는 새벽」 (D-099/D-113, docs/v0.10.0/ACT4_DESIGN.md §4.2, §6; maps and numbers PROPOSED).
+// M29 The Heart of the Crown: the hall of the crown heart (M21's hall). Bellard stands on the throne dais and fights in two
+// phases — the chancellor, then (struck down once) the chancellor with the crown's power. Three rite points hold the new
+// ward's rite; where they stand follows the path chosen at M22 (king: round the foot of the dais; council: three far corners;
+// oath: a line across the hall). Ritualists unbind the rites, knights hold the hall, grey cloaks go for the rites. A hero
+// beside a rite point at the start of the player phase mends it (+10 HP). TURN 2: Erik is offered a duel with Bellard — or he
+// steps back and Aren speaks his last words to Bellard (the crown's power then answers Bellard less). Victory: Bellard's
+// second phase struck down with two rite points or more standing. Defeat: two rite points broken, or TURN 14 ending.
+const knight29=(id,x,y,stats={})=>unit(id,'의식 기사','spear',x,y,{hp:100,atk:53,def:29,res:17,spd:23,mov:3,look:'ritualKnight',...stats});
+const ritualist29=(id,x,y)=>unit(id,'재상부 의식사','ritualist',x,y,{hp:62,atk:46,def:16,res:28,spd:23,mov:3,range:[1,2],look:'ritualist',unbinder:true});
+const cloak29=(id,x,y)=>unit(id,'재상부 회색 망토','bandit',x,y,{hp:76,atk:48,def:22,res:16,spd:26,mov:4,movementProfile:'rogue',look:'grayCloak'});
+const rite29=(id,name,x,y)=>({id,name,kind:'rite',x,y,hp:130,def:20,res:24,noRescue:true});
+const squad29=(id,name,look,x,y,banner,stats={})=>ally(id,name,look,x,y,{faction:banner,banner29:banner,orderable:true,hp:88,atk:46,def:24,res:16,spd:21,mov:4,...stats});
+MISSIONS[29]=authored({id:29,title:'왕관의 심장',en:'The Heart of the Crown',
+ rows:['xxxxxxxxkkxxxxxxxx','xkkkkkxkkkkxkkkkkx','xkkkkkkkkkkkkkkkkx','xkkxkkkkzzkkkkxkkx','xkkkkkkzzzzkkkkkkx','xkkkkkkzzzzkkkkkkx','xkkxkkkkzzkkkkxkkx','xkkkkkkkkkkkkkkkkx','xkkkkxkkkkkkxkkkkx','xkkkkkkkkkkkkkkkkx','xkkkkkkkkkkkkkkkkx','xxkkkkkkkkkkkkkkxx','xkkkkkkkkkkkkkkkkx','xxxxxxkkkkkkxxxxxx'],
+ enemies:[unit('boss','재상 벨라드','ritualist',8,3,{hp:170,atk:50,def:24,res:30,spd:24,mov:3,range:[1,2],look:'bellard',bellard:true}),
+  knight29('k1',3,2),knight29('k2',14,2),knight29('k3',4,5),knight29('k4',13,5),ritualist29('r1',5,4),ritualist29('r2',12,4),ritualist29('r3',9,1),cloak29('g1',2,8),cloak29('g2',15,8)],
+ civilians:[rite29('rp1','의식 지점 · 하나',6,7),rite29('rp2','의식 지점 · 둘',11,7),rite29('rp3','의식 지점 · 셋',9,9)], /* moved at init to the M22 path's places */
+ allies:[squad29('ib1','철왕관 근위병','ironInfantry',2,12,'iron'),squad29('ib2','철왕관 궁수','ironArcher',3,12,'iron',{kind:'archer',range:[2,3],hp:64,def:16}),
+  squad29('fb1','연맹 경비병','guard',15,12,'free'),squad29('fb2','연맹 궁수','archer',14,12,'free',{kind:'archer',range:[2,3],hp:64,def:16}),
+  squad29('lb1','성화 기사','flameKnight',6,12,'flame'),squad29('lb2','성화 기사','flameKnight',11,12,'flame'),
+  ally('bk','발드릭 · 철왕관 기병대','lion',9,12,{faction:'iron',orderable:true,lion29:true,kind:'lion',hp:200,atk:52,def:30,res:20,spd:26,mov:5,movementProfile:'cavalry'})],
+ waves:[{turn:3,story:'29:reinforce',units:[knight29('k5',8,0),knight29('k6',9,0)]},{turn:5,units:[cloak29('g3',1,10),cloak29('g4',16,10)]},{turn:7,story:'29:last',units:[ritualist29('r4',8,0),knight29('k7',9,0)]}],
+ rites29:{king:[[6,7],[11,7],[9,9]],council:[[2,6],[15,6],[9,10]],oath:[[4,8],[9,8],[13,8]]},riteMend:10,needRites:2,duelTurn:2,squadTrust:2,
+ crown29:{full:{hp:210,atk:57,def:28,mov:4},words:{hp:160,atk:51,def:25,mov:4}},
+ deployZone:s=>{const base=[];for(let y=11;y<=12;y++)for(let x=2;x<=15;x++)base.push([x,y]);return zone(base.filter(([x,y])=>!MISSIONS[29].allies.some(a=>a.x===x&&a.y===y)));},
+ deployments:{recommended:[[8,11],[10,11],[5,11],[12,11],[7,11],[11,11],[4,11],[13,11]],assault:[[7,11],[8,11],[10,11],[11,11],[5,11],[12,11],[8,12],[10,12]],defense:[[4,11],[13,11],[6,11],[11,11],[8,11],[10,11],[5,12],[12,12]]},
+ threatTurn:1,par:10,turnLimit:14,level:21,deployLimit:8,
+ objective:'벨라드 2단계 격파 + 의식 지점 2곳 이상 유지 · 의식 지점 2곳이 무너지거나 TURN 14를 넘기면 패배',
+ brief:'왕관의 심장입니다. 의식 지점 셋이 새 결계의 의식을 붙들고 있습니다 — 자리는 M22에서 고른 길에 따라 다릅니다. 의식사는 의식 지점을 풀려 하고, 회색 망토도 의식 지점을 노립니다. 아군 턴이 시작될 때 장수가 곁에 있는 의식 지점은 HP +10. 벨라드는 두 단계로 싸웁니다 — 한 번 쓰러뜨리면 왕관의 힘을 빌려 다시 일어섭니다. TURN 2 벨라드가 에릭에게 일기토를 청합니다. 거절하면 아렌이 그에게 마지막 말을 건넵니다. 신뢰 2 이상인 깃발이 부대를 보내고, M26에서 「협력」한 발드릭도 함께합니다.'});
+// M30 The Crownless Dawn: the square before the crown heart at dawn. The new ward rises from the heart stone; one last wave of
+// ash comes over the broken edge from the north. The legion, the three banners (all of them, whatever their trust) and Baldrick
+// (when he rides beside the legion) hold the heart until the end of TURN 8. Defeat: the heart stone broken.
+const beast30=(id,x,y,stats={})=>unit(id,'재의 짐승','bandit',x,y,{hp:80,atk:50,def:21,res:13,spd:24,mov:4,look:'ashRaider',ashBorn:true,...stats});
+const ashKnight30=(id,x,y)=>unit(id,'재에 삼켜진 기사','spear',x,y,{hp:104,atk:54,def:29,res:16,spd:22,mov:3,look:'ritualKnight',ashBorn:true});
+const banner30=(id,name,look,x,y,banner,stats={})=>ally(id,name,look,x,y,{faction:banner,orderable:true,hp:90,atk:47,def:25,res:16,spd:21,mov:4,...stats});
+MISSIONS[30]=authored({id:30,title:'왕관 없는 새벽',en:'The Crownless Dawn',
+ rows:['ffggggggrrggggggff','fgggggggrrgggggggf','ggggxggggggggxgggg','gggggggggggggggggg','gggxggggrrggggxggg','ggggggggrrgggggggg','kkkkkkkkkkkkkkkkkk','kkxkkkkkkkkkkkxkkk','kkkkkkkkkkkkkkkkkk','kkkkkkkkkkkkkkkkkk','kkkkkkkkkkkkkkkkkk','xxxxkkkkkkkkkkxxxx'],
+ enemies:[beast30('b1',2,1),beast30('b2',6,0),beast30('b3',11,0),beast30('b4',15,1),beast30('b5',4,3),beast30('b6',13,3)],
+ civilians:[{id:'heart',name:'결계의 심장',kind:'anchorStone',x:9,y:9,hp:240,def:22,res:22,noRescue:true}],
+ allies:[banner30('ib1','철왕관 근위병','ironInfantry',3,8,'iron'),banner30('ib2','철왕관 궁수','ironArcher',4,9,'iron',{kind:'archer',range:[2,3],hp:66,def:17}),
+  banner30('fb1','연맹 경비병','guard',14,8,'free'),banner30('fb2','연맹 궁수','archer',13,9,'free',{kind:'archer',range:[2,3],hp:66,def:17}),
+  banner30('lb1','성화 기사','flameKnight',7,10,'flame'),banner30('lb2','성화 기사','flameKnight',11,10,'flame'),
+  ally('bk','발드릭 · 철왕관 기병대','lion',9,10,{faction:'iron',orderable:true,lion30:true,kind:'lion',hp:200,atk:52,def:30,res:20,spd:26,mov:5,movementProfile:'cavalry'})],
+ waves:[{turn:2,units:[beast30('b7',0,2),beast30('b8',17,2),beast30('b9',8,0),beast30('b10',9,0)]},
+  {turn:4,story:'30:tide',units:[ashKnight30('a1',3,0),ashKnight30('a2',14,0),beast30('b11',0,4),beast30('b12',17,4),beast30('b13',7,0),beast30('b14',10,0)]},
+  {turn:6,story:'30:last',units:[beast30('b15',1,0),beast30('b16',16,0),ashKnight30('a3',8,0),ashKnight30('a4',9,0)]}],
+ holdTurn:8,
+ deployZone:s=>{const base=[];for(let y=6;y<=9;y++)for(let x=3;x<=14;x++)base.push([x,y]);return zone(base.filter(([x,y])=>Number.isFinite(TERRAIN[MISSIONS[30].map[y][x]].cost)&&!(x===9&&y===9)&&!MISSIONS[30].allies.some(a=>a.x===x&&a.y===y)));},
+ deployments:{recommended:[[8,6],[10,6],[6,6],[12,6],[8,7],[10,7],[5,7],[12,7]],assault:[[7,6],[8,6],[10,6],[11,6],[5,6],[12,6],[9,7],[9,6]],defense:[[8,8],[10,8],[9,8],[8,9],[10,9],[6,8],[12,8],[9,7]]},
+ threatTurn:1,par:8,turnLimit:8,level:21,deployLimit:8,
+ objective:'TURN 8이 끝날 때까지 결계의 심장 지키기 · 결계의 심장이 부서지면 패배',
+ brief:'새 결계가 결계의 심장에서 일어나는 새벽입니다. 마지막 재의 물결이 북쪽 가장자리를 넘어옵니다 — TURN 2, TURN 4(가장 큰 물결), TURN 6. 재의 짐승은 결계의 심장을 노립니다. 세 깃발의 부대가 모두 함께 싸우고(지시 가능), M26에서 「협력」한 발드릭도 함께합니다. TURN 8이 끝날 때까지 결계의 심장을 지키면 새 결계가 섭니다. 그 뒤 엔딩을 고릅니다.'});
 // v0.5.0 Phase E (D-047): promotion trials (101–105) and the repeatable Legion Drill (110). Non-story
 // skirmishes after ACT I: never pushed into campaign.completed, no gold, permanent EXP (mission level 7).
 // goal: survive (turn N ends with `protect` alive) · rout (all enemies down by `limit`) · reach (hero at row ≤ y)
