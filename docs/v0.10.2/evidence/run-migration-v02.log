@@ -1,0 +1,17 @@
+PASS Actual v0.2 M1 UI victory
+PASS Actual v0.2 M2 UI victory
+PASS Actual v0.2 M3 UI victory
+PASS Legacy schema2 save contains three campaign clears and growth
+PASS Schema2→6 keeps exact original hero growth and appearance
+PASS Schema2→6 preserves permanent hero growth
+PASS Schema2→6 retains results
+PASS Schema2→6 retains clears
+PASS Schema2→6 retains completed
+PASS Schema2→6 retains flags
+PASS Schema2→6 retains bonds
+PASS Schema2→6 retains tacticalMemory
+PASS Migration grants first-clear economy catchup once
+PASS Migration reload cannot duplicate Gold
+PASS Completed legacy player returns to aftermath without forced pre-mission scenes
+PASS Migration flows have no runtime errors
+16 actual v0.2 migration checks PASS

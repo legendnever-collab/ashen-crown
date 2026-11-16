@@ -1,0 +1,5 @@
+cell,id,title,description
+1,ram,siege ram,"a covered siege ram seen from the classic three-quarter view, its nose pointing UP the map (toward the top of the cell): a long dark-oak trunk with an iron head hung on chains under a low pitched roof of wet hides and planks, four solid wooden wheels, no crew; about as long as 1.3 characters' heights, filling most of the cell"
+2,ladder,scaling ladder,"a tall rough siege ladder of two lashed timber poles and eight rungs leaning straight up against the wall (seen from the front, upright, its top hooked over a stone parapet edge that is NOT drawn), rope lashings at each rung; it fills the whole cell height"
+3,memory,memory fragment,"a tall floating shard of pale violet-white crystal, like a splinter of frozen moonlight, hovering a little above a small round plinth of cracked grey stone, faint grey ash motes and a soft cold glow around it; about 0.9 times a character's height"
+4,memory_read,memory fragment — read,"the SAME plinth and shard, now dark and dull slate-grey with a thin crack through it, no glow, a few ash flakes settled on the plinth; same size and position"

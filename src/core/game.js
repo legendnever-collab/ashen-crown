@@ -9,12 +9,12 @@ import {narrativeState,enqueueStory,remember,setStoryFlag,afterBattleEvents} fro
 import {proficiencyBonus,commitSkirmish} from './progression.js';
 import {isClassMode,applyClassAction,overwatchStop,hazardAt,expireClassEffects} from './class-actions.js';
 import {CLASS_ACTIONS} from '../data/classes.js';
-import {isTacticMode,isToolMode,applyTactic,enemyStatusOnHit,expireTactics,caltropStop} from './tactics.js';
+import {isTacticMode,isToolMode,applyTactic,enemyStatusOnHit,expireTactics,caltropStop,fallenAllies,besideSpot} from './tactics.js';
 import {poisonTick,statusAge,inflict,STATUS_KO} from './status.js';
 import {gainGearExp,fx,checkFeat,markCarrier,dropSupply,cutIn} from './arms.js';
 import {skillByMode} from '../data/skills.js';
 import {duelOpen} from './duel.js';
-import {defaultCommand,togetherOpen} from './command.js';
+import {defaultCommand,togetherOpen,lastOrderOpen} from './command.js';
 export function newGame(seed=20261014,campaign=null,missionId=1){
  const mission=MISSIONS[missionId];
  const spots=(mission.deployments||DEPLOYMENTS).recommended;
@@ -52,6 +52,14 @@ function consumeAction(s,u){u.acted=true;delete s.undo[u.id];}
 export const canTogether=(s,u)=>togetherOpen(s)&&s.screen==='battle'&&s.phase==='player'&&!s.narrative?.active&&!duelOpen(s)&&u?.team==='ally'&&alive(u)&&!u.benched&&!!u.acted;
 export function useTogether(s,id){const u=findUnit(s,id);if(!canTogether(s,u))return false;s.together={hero:u.id,turn:s.turn};u.acted=false;u.moved=false;delete u.strikeMove;delete u.moveLeft;delete s.undo[u.id];
  s.feedback.push({type:'guard',id:u.id,text:'함께 정한다'});s.log.push(`아렌의 군령 「함께 정한다」 · ${u.name}이(가) 다시 움직입니다.`);remember(s,`together_${u.id}`);return true;}
+// v0.10.2 「끝까지 함께」 (from M28): given from any hero's menu while a hero of this battle lies fallen; that hero rises next turn.
+export const lastOrderTarget=s=>fallenAllies(s).find(f=>f.id!==s.lastOrder?.hero)||null;
+export const canLastOrder=(s,u)=>lastOrderOpen(s)&&s.screen==='battle'&&s.phase==='player'&&!s.narrative?.active&&!duelOpen(s)&&u?.team==='ally'&&alive(u)&&!u.benched&&!!lastOrderTarget(s);
+export function useLastOrder(s,id){const u=findUnit(s,id);if(!canLastOrder(s,u))return false;const f=lastOrderTarget(s);s.lastOrder={hero:f.id,turn:s.turn,risen:false};
+ s.feedback.push({type:'guard',id:u.id,text:'끝까지 함께'});s.log.push(`아렌의 군령 「끝까지 함께」 · 다음 아군 턴에 ${f.name}이(가) HP 1로 일어납니다.`);remember(s,`last_order_${f.id}`);return true;}
+function riseLastOrder(s){const o=s.lastOrder;if(!o||o.risen)return;const f=findUnit(s,o.hero);o.risen=true;if(!f||f.hp>0||f.benched)return;
+ let spot=at(s,f.x,f.y)?null:{x:f.x,y:f.y};if(!spot){const near=s.units.filter(a=>a.team==='ally'&&alive(a)).sort((a,b)=>distance(a,f)-distance(b,f));for(const a of near){spot=besideSpot(s,a);if(spot)break;}}if(!spot)return;
+ f.x=spot.x;f.y=spot.y;f.hp=1;delete f.status;f.raised=true;s.feedback.push({type:'heal',id:f.id,text:'일어섬 HP 1',toHP:1});s.log.push(`아렌의 군령 「끝까지 함께」 · ${f.name}이(가) 일어섭니다 (HP 1).`);}
 function damage(s,u,t,mode,counter=false,opts=null){
  let victim=guardFor(s,u,t,mode)||t;s.feedback.push({type:'attack',id:u.id,target:victim.id,mode,counter});const fromHP=victim.hp;const stats=strikeStats(s,u,victim,mode);if(counter)stats.damage+=riposteBonus(u);
  if(opts){if(opts.scale&&opts.scale!==1)stats.damage=Math.max(1,Math.round(stats.damage*opts.scale));if(opts.bonus)stats.damage+=opts.bonus;}const hit=roll(s)*100<stats.hit,critical=roll(s)*100<stats.crit;
@@ -184,7 +192,7 @@ export function advanceEnemy(s){
  expireClassEffects(s);expireTactics(s);statusAge(s,'enemy');
  if(s.missionId===1&&s.turn===2)s.log.push('북쪽 숲에서 발소리가 들립니다. TURN 3에 북서·북동 모서리로 산적 2명이 진입합니다.');
  if(s.turn>=3&&!s.reinforced&&missionOf(s).reinforcements.length){for(const e of missionOf(s).reinforcements){let pos={x:e.x,y:e.y};if(at(s,pos.x,pos.y)){const free=[];for(let y=0;y<missionOf(s).height;y++)for(let x=0;x<missionOf(s).width;x++)if(!at(s,x,y)&&Number.isFinite(terrainAt(x,y,s).cost))free.push({x,y});free.sort((a,b)=>distance(a,e)-distance(b,e));pos=free[0];}s.units.push({...structuredClone(e),...pos,team:'enemy',maxHP:e.hp,mp:0,maxMP:0,mag:0,spawnTurn:s.turn});s.feedback.push({type:'spawn',id:e.id,text:'REINFORCEMENT'});}s.reinforced=true;s.log.push('적 증원 2명 출현. 이번 Player Phase 동안 먼저 대응할 수 있습니다.');}
- rulesOf(s)?.onTurnStart?.(s);
+ riseLastOrder(s);rulesOf(s)?.onTurnStart?.(s);
  ageFires(s);burnUnits(s,'ally');poisonTick(s,'legion');
  // v0.8.1 treasures: the Flame Reliquary (HP) and the Mana Ring (MP) each player phase.
  for(const u of s.units.filter(u=>u.team==='ally'&&alive(u))){const hp=Math.min(fx(s,u,'reliquary'),u.maxHP-u.hp),mp=Math.min(fx(s,u,'mana'),u.maxMP-u.mp);if(hp>0){u.hp+=hp;s.feedback.push({type:'heal',id:u.id,text:`+${hp}`,toHP:u.hp});}if(mp>0){u.mp+=mp;s.feedback.push({type:'heal',id:u.id,resource:'mp',text:`+${mp} MP`});}}

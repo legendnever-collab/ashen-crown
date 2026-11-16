@@ -512,6 +512,56 @@ MISSIONS[26]=authored({id:26,title:'검은 사자의 마지막 전투',en:"The B
  threatTurn:1,par:8,turnLimit:12,level:19,deployLimit:7,
  objective:'발드릭 설득(결단 4) 또는 격파(사자 기수 둘을 쓰러뜨리고 HP 절반까지) · 에릭이 쓰러지면 패배 (TURN 12가 끝나면 발드릭이 물러남)',
  brief:'TURN 2 발드릭이 에릭에게 일기토를 청합니다(이기면 결단 +2). 에릭은 턴마다 한 번, 발드릭 곁에서 「설득」할 수 있습니다(결단 +1, 테아는 전투당 한 번). 결단 4면 발드릭이 칼을 내립니다 — M13에서 군을 멈췄다면 군단에 합류하고, 아니면 마지막 작전에 철왕관 기병을 이끌고 함께합니다. 발드릭은 HP 절반 아래로 떨어지지 않습니다 — 곁의 사자 기수 둘이 쓰러진 뒤 TURN 4부터 HP 절반까지 몰아붙이면 살아서 물러납니다.'});
+// ---------- v0.10.2 ACT IV part 3 「잿빛 밤」 (D-099/D-110, docs/v0.10.0/ACT4_DESIGN.md §4.2, §7; maps and numbers PROPOSED) ----------
+// M27 The Royal Gate: the alliance storms the capital. Two fronts and a sortie of eight: the battering ram (escorted: it rolls
+// up to two tiles north each player phase while a hero stands beside it, one with an enemy beside it) breaks the gate in three
+// blows; three ladders lead up the wall — a hero who ends the player phase on the rampart above a ladder takes that section.
+// Victory: the gate broken and two sections taken. Defeat: the ram destroyed, or TURN 14 ends. Each banner at trust 2 or more
+// sends a squad (orderable allied units); Baldrick rides beside the legion with two riders when he chose to cooperate at M26.
+// D-094: the rite knights, guards and cloaks keep their painted sheets; the banner squads wear their banner's soldiers.
+const knight27=(id,x,y,stats={})=>unit(id,'의식 기사','spear',x,y,{hp:96,atk:51,def:28,res:16,spd:22,mov:3,look:'ritualKnight',...stats});
+const wall27=(id,x,y,stats={})=>unit(id,'성벽 경비병','spear',x,y,{hp:88,atk:48,def:27,res:15,spd:20,mov:3,look:'guard',wall:true,...stats});
+const bow27=(id,x,y)=>unit(id,'성벽 궁수','archer',x,y,{hp:60,atk:46,def:16,res:14,spd:23,mov:3,range:[2,3],look:'archer',wall:true});
+const cloak27=(id,x,y)=>unit(id,'재상부 회색 망토','bandit',x,y,{hp:74,atk:47,def:21,res:15,spd:26,mov:4,movementProfile:'rogue',look:'grayCloak'});
+const squad27=(id,name,look,x,y,banner,stats={})=>ally(id,name,look,x,y,{faction:banner,banner27:banner,orderable:true,hp:86,atk:45,def:24,res:15,spd:21,mov:4,...stats});
+MISSIONS[27]=authored({id:27,title:'왕도의 성문',en:'The Royal Gate',
+ rows:['kkllkkkkrrkkkkllkk','kkkkllkkrrkkllkkkk','qqqqqqqqkkqqqqqqqq','xxqxxqxxkkxxxxqxxx','ggggggggrrgggggggg','gfggggggrrggggggfg','ggggfgggrrgggfgggg','ggggggggrrgggggggg','fgggggggrrggggggff','ggggggggrrgggggggg','ggfgggggrrgggggfgg','ggggggggrrgggggggg','fgggggggrrgggggggf','ffggggggrrggggggff'],
+ enemies:[wall27('s1',2,2),wall27('s2',5,2),wall27('s3',14,2),bow27('a1',3,2),bow27('a2',7,2),bow27('a3',12,2),bow27('a4',16,2),knight27('k1',8,1),knight27('k2',9,1)],
+ civilians:[{id:'ram',name:'공성추',kind:'ram',x:8,y:11,hp:170,def:22,res:18,noRescue:true}],
+ objects:[{id:'gl1',name:'왕도 성문',kind:'gateLeaf',x:8,y:3,prop:true,locked:true},{id:'gl2',name:'왕도 성문',kind:'gateLeaf',x:9,y:3,prop:true,locked:true}],
+ allies:[squad27('ib1','철왕관 근위병','ironInfantry',3,12,'iron'),squad27('ib2','철왕관 궁수','ironArcher',4,13,'iron',{kind:'archer',range:[2,3],hp:62,def:16}),
+  squad27('fb1','연맹 경비병','guard',14,12,'free'),squad27('fb2','연맹 궁수','archer',13,13,'free',{kind:'archer',range:[2,3],hp:62,def:16}),
+  squad27('lb1','성화 기사','flameKnight',6,13,'flame'),squad27('lb2','성화 기사','flameKnight',11,13,'flame'),
+  ally('bk','발드릭 · 철왕관 기병대','lion',9,13,{faction:'iron',orderable:true,lion27:true,kind:'lion',hp:200,atk:52,def:30,res:20,spd:26,mov:5,movementProfile:'cavalry'}),
+  ally('bc1','철왕관 기병','cavalry',1,12,{faction:'iron',orderable:true,lion27:true,kind:'cavalry',hp:80,atk:48,def:24,res:14,spd:25,mov:5,movementProfile:'cavalry'}),
+  ally('bc2','철왕관 기병','cavalry',16,12,{faction:'iron',orderable:true,lion27:true,kind:'cavalry',hp:80,atk:48,def:24,res:14,spd:25,mov:5,movementProfile:'cavalry'})],
+ waves:[{turn:3,story:'27:sally',units:[knight27('k3',7,0),knight27('k4',10,0),wall27('s4',4,0)]},{turn:5,story:'27:flank',units:[cloak27('g1',0,9),cloak27('g2',17,9)]},
+  {turn:7,units:[wall27('s5',1,0),wall27('s6',15,0),bow27('a5',11,0)]},{turn:9,units:[knight27('k5',8,0),cloak27('g3',0,13),cloak27('g4',17,13)]}],
+ gate27:[[8,3],[9,3]],gateBlows:3,ramRow:4,ramSteps:2,sections:[[2,2],[5,2],[14,2]],ladders:[[2,3],[5,3],[14,3]],needSections:2,squadTrust:2,
+ deployZone:s=>{const base=[];for(let y=9;y<=12;y++)for(let x=1;x<=16;x++)base.push([x,y]);return zone(base.filter(([x,y])=>Number.isFinite(TERRAIN[MISSIONS[27].map[y][x]].cost)&&!(x===8&&y===11)&&!MISSIONS[27].allies.some(a=>a.x===x&&a.y===y)));},
+ deployments:{recommended:[[7,11],[10,11],[7,10],[2,10],[3,10],[5,10],[13,10],[14,10]],assault:[[2,9],[3,9],[5,9],[6,9],[13,9],[14,9],[7,10],[10,10]],defense:[[7,10],[10,10],[7,11],[10,11],[6,11],[4,10],[13,10],[11,12]]},
+ threatTurn:1,par:10,turnLimit:14,level:20,deployLimit:8,
+ objective:'성문 부수기 + 성벽 2곳 장악 · 공성추가 부서지거나 TURN 14를 넘기면 패배',
+ brief:'두 전선입니다. 공성추는 장수가 곁에 있으면 아군 턴마다 길을 따라 2칸 전진합니다(적이 곁에 있으면 1칸). 성문 앞에 닿으면 턴마다 한 번 성문을 칩니다 — 세 번이면 성문이 부서집니다. 사다리는 세 곳입니다. 사다리 위 성벽 칸에서 장수가 아군 턴을 마치면 그 구간을 장악합니다. 신뢰 2 이상인 깃발은 부대를 보내고(지시 가능), M26에서 발드릭이 「협력」했다면 철왕관 기병을 이끌고 함께합니다.'});
+// M28 The Truth of the Ashen Night: inside the king's last memory — the Ashen Night's palace. Three memory fragments (search
+// them from beside) open the night's scenes in any order; reading one releases the remnants beside it. Remnant soldiers do
+// not die: struck down, they scatter and stand again at their post three turns later. Young Aren fights in the memory as an
+// orderable allied unit (the one time he takes the field, ACT4_DESIGN §11.5). After the third fragment the night runs to its
+// end: hold until two more enemy phases pass. Defeat: Erik falls, or the memory closes after TURN 14.
+const remnant28=(id,x,y,kind='spear',stats={})=>unit(id,'잔영 병사',kind,x,y,{hp:84,atk:47,def:24,res:16,spd:21,mov:3,look:kind==='archer'?'archer':'guard',remnant:true,post:{x,y},...stats});
+MISSIONS[28]=authored({id:28,title:'잿빛 밤의 진실',en:'The Truth of the Ashen Night',
+ rows:['xxxxxxkkkkkkxxxxxx','xkkkkxkkkkkkxkkkkx','xkkkkxkkkkkkxkkkkx','xkkkkkkkxxkkkkkkkx','xkkkkxkkkkkkxkkkkx','xxxkkxkkkkkkxkkxxx','kkkkkkkkkkkkkkkkkk','kkxkkkkkxxkkkkkxkk','kkkkkkkkkkkkkkkkkk','kkkkxkkkkkkkkxkkkk','kkkkkkkkkkkkkkkkkk','kkkkkkkkrrkkkkkkkk','kkkkkkkkrrkkkkkkkk','kkkkkkkkrrkkkkkkkk'],
+ enemies:[remnant28('r1',2,2),remnant28('r2',4,4),remnant28('r3',15,2),remnant28('r4',13,4),remnant28('r5',8,1),remnant28('r6',10,2),
+  remnant28('r7',3,1,'archer',{hp:58,atk:44,def:15,range:[2,3]}),remnant28('r8',14,1,'archer',{hp:58,atk:44,def:15,range:[2,3]}),remnant28('r9',6,6),remnant28('r10',11,6)],
+ objects:[{id:'mem1',name:'기억 조각 · 맹세의 단',kind:'memory',memory:'oath',x:2,y:3},{id:'mem2',name:'기억 조각 · 국왕의 자리',kind:'memory',memory:'king',x:15,y:3},{id:'mem3',name:'기억 조각 · 봉인 명령',kind:'memory',memory:'order',x:9,y:2}],
+ allies:[ally('aren','젊은 아렌 · 기억 속','aren',9,11,{kind:'commander',orderable:true,memory28:true,hp:150,atk:50,def:28,res:20,spd:25,mov:5})],
+ waves:[{turn:4,story:'28:echo',units:[remnant28('r11',0,6),remnant28('r12',17,6)]},{turn:8,units:[remnant28('r13',0,9),remnant28('r14',17,9)]}],
+ reformTurns:3,releaseRadius:3,dawnHold:2,
+ deployZone:s=>{const base=[];for(let y=10;y<=13;y++)for(let x=3;x<=14;x++)base.push([x,y]);return zone(base.filter(([x,y])=>Number.isFinite(TERRAIN[MISSIONS[28].map[y][x]].cost)&&!(x===9&&y===11)));},
+ deployments:{recommended:[[8,10],[10,10],[6,10],[12,10],[7,11],[11,11],[5,11],[13,11]],assault:[[8,10],[10,10],[7,10],[11,10],[6,10],[12,10],[8,11],[10,12]],defense:[[8,12],[10,12],[6,12],[12,12],[7,11],[11,11],[5,12],[13,12]]},
+ threatTurn:1,par:10,turnLimit:14,level:20,deployLimit:8,
+ objective:'기억 조각 3개 찾기 → 그 밤의 끝까지 버티기 (조각을 모두 찾은 뒤 적 턴 2번) · 에릭이 쓰러지면 패배 (TURN 14가 지나면 기억이 닫힘)',
+ brief:'국왕의 마지막 기억, 잿빛 밤의 궁입니다. 기억 조각 셋을 곁에서 「기억 보기」로 엽니다 — 순서는 상관없고, 연 조각 곁(3칸)의 잔영은 흩어집니다. 잔영 병사는 쓰러져도 3턴 뒤 제자리에서 다시 섭니다. 젊은 아렌이 기억 속에서만 함께 싸웁니다(지시 가능). 조각을 모두 찾으면 그 밤의 끝까지 — 적 턴 두 번을 버티면 됩니다.'});
 // v0.5.0 Phase E (D-047): promotion trials (101–105) and the repeatable Legion Drill (110). Non-story
 // skirmishes after ACT I: never pushed into campaign.completed, no gold, permanent EXP (mission level 7).
 // goal: survive (turn N ends with `protect` alive) · rout (all enemies down by `limit`) · reach (hero at row ≤ y)

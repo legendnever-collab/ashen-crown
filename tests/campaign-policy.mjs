@@ -54,6 +54,16 @@ function act2Goals(s,u){const live=t=>alive(t)&&t.team==='enemy';
   if(siege.length)return siege;if(near.length)return near;const cap=s.units.find(e=>e.id==='rk'&&live(e));return cap?[cap]:s.units.filter(live);}
  // v0.10.1 M25: hardliners near a leader first, then the hardline captain and his men (the neutral camps are never targets).
  if(s.missionId===25){const lead=s.units.filter(l=>['lw','le'].includes(l.id)&&alive(l)),hard=s.units.filter(e=>live(e)&&e.camp==='north'),near=hard.filter(e=>lead.some(l=>distance(e,l)<=4));if(near.length)return near;const hc=hard.find(e=>e.id==='hc');return hc&&s.turn>=3?[hc,...hard]:hard.length?hard:s.units.filter(live);}
+ // v0.10.2 M27: the climbers (Kai, Thea, Dario, Elina, Baldrick) take the nearest open wall section (its guards first); the
+ // rest keep beside the ram and meet whoever nears it. M28: everyone but Erik makes for the nearest unread fragment (its
+ // remnants first); Erik meets whoever comes near him, then follows the fragments.
+ if(s.missionId===27){const m=missionOf(s),st=s.missionState,ram=s.units.find(r=>r.id==='ram'&&alive(r)),foes=s.units.filter(live),open=m.sections.map(([x,y],i)=>({x,y,i,name:'성벽'})).filter(p=>!st.sections[p.i]);
+  if(open.length&&['kai','thea','dario','elina','baldrick'].includes(u?.id)){const t=[...open].sort((a,b)=>distance(u,a)-distance(u,b))[0],guard=foes.filter(e=>distance(e,t)<=1);return guard.length?guard:[t];}
+  if(ram){const near=foes.filter(e=>distance(e,ram)<=3);if(near.length)return near;if(!st.broken)return [{x:ram.x,y:ram.y,name:'공성추'}];}
+  if(open.length){const t=[...open].sort((a,b)=>distance(u,a)-distance(u,b))[0],guard=foes.filter(e=>distance(e,t)<=1);return guard.length?guard:[t];}return foes;}
+ if(s.missionId===28){const mem=s.units.filter(o=>o.kind==='memory'&&!o.inert),e=s.units.find(x=>x.id==='eric'&&alive(x)),foes=s.units.filter(live),nearE=e?foes.filter(f=>distance(f,e)<=3):[];
+  if(u?.id==='eric'||!mem.length)return nearE.length?nearE:mem.length?[[...mem].sort((a,b)=>distance(u,a)-distance(u,b))[0]]:foes;
+  const t=[...mem].sort((a,b)=>distance(u,a)-distance(u,b))[0],guard=foes.filter(f=>distance(f,t)<=2);return guard.length?[...guard,t]:[t];}
  // v0.10.1 M26: Baldrick first (Erik keeps beside him for the persuasion), then his riders.
  if(s.missionId===26){const b=s.units.find(e=>e.id==='boss'&&live(e));return b?[b]:s.units.filter(live);}
  if(s.missionId===24){const walkers=s.units.filter(r=>r.refugee&&alive(r)),beasts=s.units.filter(e=>live(e)&&walkers.some(r=>distance(e,r)<=4)),lever=s.units.find(o=>o.kind==='gateLever'&&!o.locked&&!o.inert);
@@ -83,6 +93,9 @@ function missionGoals(s,u){if(s.missionId>=7)return act2Goals(s,u);
  if(st.phase===3){const boss=s.units.find(t=>t.id==='boss'&&alive(t));return boss?[boss]:[{x:7,y:1},{x:8,y:0},{x:9,y:0},{x:10,y:1}];}const stones=s.units.filter(o=>o.kind==='sealstone'&&!o.rescued&&!o.locked);return stones.length?[...stones,...refs]:refs.length?refs:[{x:8,y:1}];}
  const open=s.units.filter(o=>o.team==='object'&&o.kind==='evidence'&&alive(o));return open.length?open:s.units.filter(t=>t.id==='boss'&&alive(t));}
 function fieldDistance(s,u,goals){const d=new Map(),q=[];for(const g of goals)for(const [dx,dy]of [[0,-1],[-1,0],[1,0],[0,1]]){const x=g.x+dx,y=g.y+dy;if(Number.isFinite(terrainCost(s,u,x,y))){d.set(`${x},${y}`,0);q.push({x,y,c:0});}}while(q.length){q.sort((a,b)=>a.c-b.c);const p=q.shift();if(p.c!==d.get(`${p.x},${p.y}`))continue;for(const [dx,dy]of [[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,step=terrainCost(s,u,x,y),k=`${x},${y}`;if(!Number.isFinite(step))continue;const c=p.c+step;if(c<(d.get(k)??Infinity)){d.set(k,c);q.push({x,y,c});}}}return d;}
+// v0.10.2 M27: keep the road ahead of the ram clear (it rolls only along the road); ending on an open wall section is worth a lot
+// (a hero must stand on it, not beside it, to take it).
+function block27(s,x,y){const st=s.missionState,m=missionOf(s),r=s.units.find(u=>u.id==='ram'&&alive(u));if(!st)return 0;const sec=m.sections.findIndex(([sx,sy])=>sx===x&&sy===y);if(sec>=0&&!st.sections[sec])return -260;if(!r||st.broken)return 0;return m.map[y]?.[x]==='r'&&y<r.y&&y>=r.y-3?300:0;}
 // v0.10.0 M24: keep the gate tiles, the tiles just before them and the next steps of each refugee clear; avoid ending on ash.
 function block24(s,x,y){const m=missionOf(s),st=s.missionState;if(!st||Number.isInteger(st.closedTurn))return 0;let p=0;if(m.gate.some(([gx,gy])=>gx===x&&(gy===y||gy-1===y||gy+1===y)))p+=400;if(y<(st.ash|0)+1)p+=60;const g=(a,b)=>Math.abs(a-m.gate[0][0]-.5)+Math.abs(b-m.gate[0][1]);for(const r of s.units.filter(r=>r.refugee&&alive(r)))if(Math.abs(r.x-x)+Math.abs(r.y-y)<=2&&g(x,y)<g(r.x,r.y))p+=150;return p;}
 export function drain(s){openStory(s);for(let i=0;s.narrative.active&&i<100;i++)advanceStory(s);}
@@ -138,16 +151,16 @@ export function campaignAction(s,u,capture=true){
   else if(f.heal!==undefined)score=hostile(s,a,t)?-1000:t.team==='civilian'&&t.hp<=t.maxHP/2?900:f.heal>=10?80+f.heal:0;
   else if(f.guard===true)score=0;
   else score=strikeScore(s,u,t,f,capture);
-  score-=c*.5;if(s.missionId===24)score-=block24(s,x,y);if(s.missionId===11&&missionOf(s).map[y][x]==='r'&&s.units.some(p=>p.team==='civilian'&&alive(p)&&p.x===x&&p.y>y))score-=80;if(s.missionId===12&&watchRisk(s,x,y)&&!(mode==='attack'&&f.after===0))score-=900;if(!best||score>best.score)best={id:u.id,x,y,mode,target:t.id,score};}
+  score-=c*.5;if(s.missionId===24)score-=block24(s,x,y);if(s.missionId===27)score-=block27(s,x,y);if(s.missionId===11&&missionOf(s).map[y][x]==='r'&&s.units.some(p=>p.team==='civilian'&&alive(p)&&p.x===x&&p.y>y))score-=80;if(s.missionId===12&&watchRisk(s,x,y)&&!(mode==='attack'&&f.after===0))score-=900;if(!best||score>best.score)best={id:u.id,x,y,mode,target:t.id,score};}
   let score;
   if(goalDistance)score=200-(goalDistance.get(`${x},${y}`)??100)*12-c*.1-(s.missionId===7&&['r','i'].includes(missionOf(s).map[y][x])&&s.units.some(w=>w.kind==='wagon'&&alive(w)&&Math.abs(w.x-x)<=1&&w.y>y)?60:0)-(s.missionId===11&&missionOf(s).map[y][x]==='r'&&s.units.some(p=>p.team==='civilian'&&alive(p)&&p.x===x&&p.y>y)?80:0)-(s.missionId===12&&watchRisk(s,x,y)?900:0);
   else if(s.missionId===3&&!civ.length)score=200-(exitDistance.get(`${x},${y}`)??100)*15-y*3-c*.1;
   else{const targets=civ.length?civ:s.units.filter(t=>t.id==='boss'&&alive(t));const near=targets.reduce((n,t)=>Math.min(n,distance(a,t)),100);score=80-near*8-c*.1;}
-  if(s.missionId===24)score-=block24(s,x,y);
+  if(s.missionId===24)score-=block24(s,x,y);if(s.missionId===27)score-=block27(s,x,y);
   if(!best||score>best.score)best={id:u.id,x,y,mode:'wait',score};
   // Strike skills compete with attacks; support skills (rally, provoke, purify, lantern) add to the worth of standing here.
   if(useTactics)for(const o of tacticOptions(s,u,a)){const sc=o.support?score+o.score:o.score-c*.5;if(!best||sc>best.score)best={id:u.id,x,y,mode:o.mode,target:o.target,score:sc};}
  }
  return best||{id:u.id,x:u.x,y:u.y,mode:'wait'};
 }
-export function playCampaignBattle(s,capture=true){const trace=[];let steps=0;drain(s);while(!s.outcome&&steps++<150){if(duelOpen(s)){let n=0;while(duelOpen(s)&&n++<3)duelPick(s,['strike','guard','finisher'][(s.turn+n)%3]);trace.push({type:'duel',result:s.duel.result});drain(s);}for(const id of ['kai','lia','elina','sain','eric','thea','dario','ines']){const u=findUnit(s,id);if(!canAct(s,u))continue;const a=campaignAction(s,u,capture);if(a.x!==u.x||a.y!==u.y){if(!moveUnit(s,id,a.x,a.y))throw Error('illegal move');trace.push({type:'move',id,x:a.x,y:a.y});}const action=performAction(s,id,a.mode,a.target);if(!action.ok)throw Error(action.error);USAGE[`M${String(s.missionId).padStart(2,'0')} ${a.mode}`]=(USAGE[`M${String(s.missionId).padStart(2,'0')} ${a.mode}`]||0)+1;trace.push({type:'action',id,mode:a.mode,target:a.target});drain(s);if(s.outcome)break;}if(!s.outcome){beginEnemyPhase(s);trace.push({type:'phase'});while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);}}return {outcome:s.outcome,turn:s.turn,trace,saved:s.units.filter(u=>u.team==='civilian'&&u.rescued).length,captured:!!s.campaign.flags.mission_02_prisoner_captured};}
+export function playCampaignBattle(s,capture=true){const trace=[];let steps=0;drain(s);while(!s.outcome&&steps++<150){if(duelOpen(s)){let n=0;while(duelOpen(s)&&n++<3)duelPick(s,['strike','guard','finisher'][(s.turn+n)%3]);trace.push({type:'duel',result:s.duel.result});drain(s);}for(const id of ['kai','lia','elina','sain','eric','thea','dario','ines','baldrick']){const u=findUnit(s,id);if(!canAct(s,u))continue;const a=campaignAction(s,u,capture);if(a.x!==u.x||a.y!==u.y){if(!moveUnit(s,id,a.x,a.y))throw Error('illegal move');trace.push({type:'move',id,x:a.x,y:a.y});}const action=performAction(s,id,a.mode,a.target);if(!action.ok)throw Error(action.error);USAGE[`M${String(s.missionId).padStart(2,'0')} ${a.mode}`]=(USAGE[`M${String(s.missionId).padStart(2,'0')} ${a.mode}`]||0)+1;trace.push({type:'action',id,mode:a.mode,target:a.target});drain(s);if(s.outcome)break;}if(!s.outcome){beginEnemyPhase(s);trace.push({type:'phase'});while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);}}return {outcome:s.outcome,turn:s.turn,trace,saved:s.units.filter(u=>u.team==='civilian'&&u.rescued).length,captured:!!s.campaign.flags.mission_02_prisoner_captured};}

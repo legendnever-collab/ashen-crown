@@ -7,18 +7,18 @@ import {GEAR,TOOLS} from '../src/data/frontier-data.js';
 
 // The log has no quoted fields; cells.csv quotes only its last column (description), which is not read here.
 const csv=f=>{const [head,...rows]=fs.readFileSync(f,'utf8').trim().split(/\r?\n/);const cols=head.split(',');return rows.map(r=>{const v=r.split(',');return Object.fromEntries(cols.map((c,i)=>[c,v[i]]));});};
-const cells=csv('docs/v0.8.0/art/item-work-pack/cells.csv'),cellsF1=csv('docs/v0.9.0/art/act3-f1-work-pack/cells.csv'),cellsF2=csv('docs/v0.9.1/art/act3-f2-work-pack/cells.csv'),cellsF3=csv('docs/v0.9.2/art/act3-f3-work-pack/cells.csv'),cellsF4=csv('docs/v0.9.3/art/act3-f4-work-pack/cells.csv'),cellsG1=csv('docs/v0.10.0/art/act4-g1-work-pack/cells.csv'),cellsG2=csv('docs/v0.10.1/art/act4-g2-work-pack/cells.csv'),all=csv('src/assets/item-art-import-log.csv');
+const cells=csv('docs/v0.8.0/art/item-work-pack/cells.csv'),cellsF1=csv('docs/v0.9.0/art/act3-f1-work-pack/cells.csv'),cellsF2=csv('docs/v0.9.1/art/act3-f2-work-pack/cells.csv'),cellsF3=csv('docs/v0.9.2/art/act3-f3-work-pack/cells.csv'),cellsF4=csv('docs/v0.9.3/art/act3-f4-work-pack/cells.csv'),cellsG1=csv('docs/v0.10.0/art/act4-g1-work-pack/cells.csv'),cellsG2=csv('docs/v0.10.1/art/act4-g2-work-pack/cells.csv'),cellsG3=csv('docs/v0.10.2/art/act4-g3-work-pack/cells.csv'),all=csv('src/assets/item-art-import-log.csv');
 // v0.9.1: ACT III pack F1 adds sheet H (eight capital pieces) to the same log (scripts/import-item-art.py --cells).
-const log=all.filter(r=>cells.some(c=>c.id===r.id)),logF1=all.filter(r=>cellsF1.some(c=>c.id===r.id)),logF2=all.filter(r=>cellsF2.some(c=>c.id===r.id)),logF3=all.filter(r=>cellsF3.some(c=>c.id===r.id)),logF4=all.filter(r=>cellsF4.some(c=>c.id===r.id)),logG1=all.filter(r=>cellsG1.some(c=>c.id===r.id)),logG2=all.filter(r=>cellsG2.some(c=>c.id===r.id));
+const log=all.filter(r=>cells.some(c=>c.id===r.id)),logF1=all.filter(r=>cellsF1.some(c=>c.id===r.id)),logF2=all.filter(r=>cellsF2.some(c=>c.id===r.id)),logF3=all.filter(r=>cellsF3.some(c=>c.id===r.id)),logF4=all.filter(r=>cellsF4.some(c=>c.id===r.id)),logG1=all.filter(r=>cellsG1.some(c=>c.id===r.id)),logG2=all.filter(r=>cellsG2.some(c=>c.id===r.id)),logG3=all.filter(r=>cellsG3.some(c=>c.id===r.id));
 
 test('pack E: 102 icons, one per work-order cell, hashes match the import log, 128×128 WebP',()=>{
- assert.equal(cells.length,102);assert.equal(log.length,102);assert.equal(all.length,102+8+6+4+4+4+7);
+ assert.equal(cells.length,102);assert.equal(log.length,102);assert.equal(all.length,102+8+6+4+4+4+7+3);
  assert.deepEqual(log.map(r=>r.id).sort(),cells.map(c=>c.id).sort());
  for(const r of log){const b=fs.readFileSync(`src/assets/items/${r.id}.webp`);assert.equal(crypto.createHash('sha256').update(b).digest('hex'),r.webp_sha256,r.id);
   assert.equal(b.length,+r.bytes,r.id);assert.equal(b.toString('ascii',8,12),'WEBP');assert.equal(r.qa,'ok',r.id);
   const c=cells.find(c=>c.id===r.id);assert.equal(`${r.sheet}${r.cell}`,`${c.sheet}${c.cell}`,r.id);}
  assert.equal(new Set(log.map(r=>r.source_sha256)).size,7,'seven source sheets');
- assert.equal(fs.readdirSync('src/assets/items').filter(f=>f.endsWith('.webp')).length,102+8+6+4+4+4+7);
+ assert.equal(fs.readdirSync('src/assets/items').filter(f=>f.endsWith('.webp')).length,102+8+6+4+4+4+7+3);
 });
 
 test('ACT III pack F1: sheet H gives the capital\'s six tier III pieces and the M15–M16 treasures their painted icons',()=>{
@@ -71,4 +71,11 @@ test('ACT IV pack G2: sheet M paints Dario\'s ④, Baldrick\'s four skills and t
  for(const r of logG2){const b=fs.readFileSync(`src/assets/items/${r.id}.webp`);assert.equal(crypto.createHash('sha256').update(b).digest('hex'),r.webp_sha256,r.id);assert.equal(r.sheet,'M');assert.equal(r.qa,'ok');}
  for(const k of SKILLS.filter(k=>k.hero==='baldrick'))assert.ok(logG2.some(r=>r.id===k.id),`baldrick ${k.id}`);
  for(const id of ['hundredCounters','threeSeals','blackMane'])assert.ok(logG2.some(r=>r.id===id),id);
+});
+test('ACT IV pack G3: sheet N paints Aren\'s last order and the two v0.10.2 treasures (D-111)',()=>{
+ assert.equal(cellsG3.length,3);assert.deepEqual(logG3.map(r=>r.id).sort(),cellsG3.map(c=>c.id).sort());
+ for(const r of logG3){const b=fs.readFileSync(`src/assets/items/${r.id}.webp`);assert.equal(crypto.createHash('sha256').update(b).digest('hex'),r.webp_sha256,r.id);assert.equal(r.sheet,'N');assert.equal(r.qa,'ok');}
+ for(const id of ['ramHead','nightLocket'])assert.ok(GEAR[id]&&logG3.some(r=>r.id===id),id);
+ assert.ok(logG3.some(r=>r.id==='lastOrder'),'「끝까지 함께」');
+ for(const id of ['ram','ladder','memory','memory_read'])assert.equal(fs.readFileSync(`src/assets/props/${id}.webp`).toString('ascii',8,12),'WEBP',`prop ${id}`);
 });

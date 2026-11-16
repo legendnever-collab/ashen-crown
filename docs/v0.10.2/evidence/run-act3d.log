@@ -1,0 +1,45 @@
+PASS 1440 the v0.9.2 lower city offers Mission 21
+PASS 1440 M21 battle: seven heroes, the king on the dais, four anchor stones
+PASS 1440 the objective panel shows the stones, the king's HP and the pulsing ring
+PASS 1440 a hero beside an anchor stone may break it (고정석 깨기)
+PASS 1440 Erik breaks it at one blow
+PASS 1440 Sain aims Heal
+PASS 1440 tapping an empty tile cancels the aim and reopens the menu
+PASS 1440 Heal can aim at an enemy (a foe healed earns no EXP)
+PASS 1440 the zone of control screenshot is taken with Lia beside a foe's zone
+PASS 1440 after M21 the camp asks Aren's answer to the king (two ways)
+PASS 1440 the answer is kept and Aren's awakening scene plays
+PASS 1440 Aren's awakening card shows 「함께 정한다」
+PASS 1440 Mission 22 is next
+PASS 1440 M22: three heralds on the daises, readings 0/4
+PASS 1440 an acted hero shows 「아렌의 군령 · 함께 정한다」
+PASS 1440 Erik acts again; the command is spent for this battle
+PASS 1440 the unit sheet's bio tab carries the hero records (장수 열전)
+PASS 1440 after M22 the camp asks to whom the truth goes (three ways, each with its trust cost)
+PASS 1440 the choice is kept; its scene and the close follow
+PASS 1440 the ACT III card: 왕관의 진실, each hero's deed, the choices of ACT III, on to ACT IV
+PASS 1440 after M22 the way goes on to Mission 23 (v0.10.0, ACT IV)
+PASS 1440 no page errors
+PASS 390 the v0.9.2 lower city offers Mission 21
+PASS 390 M21 battle: seven heroes, the king on the dais, four anchor stones
+PASS 390 the objective panel shows the stones, the king's HP and the pulsing ring
+PASS 390 a hero beside an anchor stone may break it (고정석 깨기)
+PASS 390 Erik breaks it at one blow
+PASS 390 Sain aims Heal
+PASS 390 tapping an empty tile cancels the aim and reopens the menu
+PASS 390 Heal can aim at an enemy (a foe healed earns no EXP)
+PASS 390 the zone of control screenshot is taken with Lia beside a foe's zone
+PASS 390 after M21 the camp asks Aren's answer to the king (two ways)
+PASS 390 the answer is kept and Aren's awakening scene plays
+PASS 390 Aren's awakening card shows 「함께 정한다」
+PASS 390 Mission 22 is next
+PASS 390 M22: three heralds on the daises, readings 0/4
+PASS 390 an acted hero shows 「아렌의 군령 · 함께 정한다」
+PASS 390 Erik acts again; the command is spent for this battle
+PASS 390 the unit sheet's bio tab carries the hero records (장수 열전)
+PASS 390 after M22 the camp asks to whom the truth goes (three ways, each with its trust cost)
+PASS 390 the choice is kept; its scene and the close follow
+PASS 390 the ACT III card: 왕관의 진실, each hero's deed, the choices of ACT III, on to ACT IV
+PASS 390 after M22 the way goes on to Mission 23 (v0.10.0, ACT IV)
+PASS 390 no page errors
+act3d-e2e: 44 checks passed

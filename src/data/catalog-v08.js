@@ -109,7 +109,9 @@ export const CATALOG_TREASURES=[
  cTreasure('allianceBanner','연합의 깃발','The Alliance Banner','인접 아군 DEF +1 · ATK +1 · DEF +1','M23 숨은 전과'),
  cTreasure('lastLantern','마지막 등불','The Last Lantern','아군 턴마다 HP +4 · RES +2','M24 숨은 전과'),
  cTreasure('threeSeals','세 왕가의 인장','The Seal of the Three Houses','전투 첫 턴 전군 MOV +1 · RES +1','M25 숨은 전과'),
- cTreasure('blackMane','검은 갈기','The Black Mane','인접 아군 DEF +1 · ATK +2','M26 숨은 전과')
+ cTreasure('blackMane','검은 갈기','The Black Mane','인접 아군 DEF +1 · ATK +2','M26 숨은 전과'),
+ cTreasure('ramHead','성문 파쇄추의 쇠머리','The Ram\'s Iron Head','ATK +2 · 이 장수가 공격한 적은 반격하지 못함','M27 숨은 전과'),
+ cTreasure('nightLocket','잿빛 밤의 목걸이','The Ashen Night Locket','RES +2 · 전투마다 한 번, 쓰러질 피해에도 HP 1로 버팀','M28 숨은 전과')
 ];
 const cSkill=(id,hero,slot,ko,en,cost,effect)=>({id,kind:'skill',hero,slot,ko,en,cost,effect});
 export const CATALOG_SKILLS=[
