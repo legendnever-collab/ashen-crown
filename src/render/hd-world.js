@@ -45,7 +45,10 @@ export function drawTownBuilding(c,b,tone,state){const s=townBuildingSprite(b,to
 // ---------- figures ----------
 const ENEMY_LOOK={9:{spear:'mercSpear',archer:'archer',assassin:'assassin',captain:'assassin'},7:{bandit:'ironDeserter',archer:'ironArcher',captain:'deserterCaptain'},8:{spear:'mercSpear',archer:'archer',captain:'mercSpear',bandit:'assassin'},6:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},5:{lion:'lion',bearer:'bearer',spear:'ironSpear',archer:'ironArcher',cavalry:'cavalry',captain:'lion'},1:{bandit:'bandit',archer:'archer',captain:'captain'},2:{bandit:'deserter',archer:'archer',captain:'deserterCaptain'},3:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},4:{bandit:'fortGuard',archer:'fortArcher',captain:'quartermaster'}};
 const STAGE_LOOK={oswin:'lordA',brennan:'lordB',councilor:'councillor',teacher:'liaTeacher',sup:'greyMaster',bellard:'bellard'}; // v0.9.2: the teacher, the old superior, Bellard
+// v2.0.0 부장: in camps and scenes an officer wears their class's figure (pack H1's tier sheet when it is in, else a close one).
+const OFFICER_LOOK={bram:['spear','ironSpear'],noa:['archer','archer'],marta:['shield','bearer'],rowell:['cavalry','cavalry']};
 export function hdCastFor(u,missionId=1){
+ if(OFFICER_LOOK[u?.id]&&u.team!=='enemy'){const [cls,temp]=OFFICER_LOOK[u.id],t=Math.max(1,Math.min(3,u.classTier||1));return SPRITES?.[`class_${cls}_${t}`]?`class_${cls}_${t}`:temp;}
  if(u.look&&CAST[u.look])return u.look; // v0.6: mission data may name a look (allied escorts, Baldrick, ACT II troops)
  if(STAGE_LOOK[u.id])return STAGE_LOOK[u.id]; // v0.6.1: the M10 lords on the dialogue stage wear their army's look
  if(u.kind==='statue')return 'guardianStatue'; // v0.9.1 (pack F2): an awakened guardian statue (sleeping ones are props)
@@ -71,6 +74,7 @@ const SPRITES=typeof ASHEN_SPRITES!=='undefined'?ASHEN_SPRITES:null,spriteImages
 const SPRITE_ALIAS={captain:'garr',lion:'baldrick',aide:'advisor'};
 export const PAINTED_CELL=74;
 export const spriteIdFor=castId=>SPRITE_ALIAS[castId]||castId;
+export const hasSpriteSheet=id=>!!SPRITES?.[id]; /* v2.0.0: pack H1 class sheets (class_<cls>_<tier>) */
 let spritesWarm=false;
 function loadSheet(id){let img=spriteImages.get(id);if(!img){img=new Image();img.decoding='async';img.onerror=()=>{img.failed=true;};img.src=SPRITES[id];spriteImages.set(id,img);img.decode?.().catch(()=>{});}return img;}
 // decode every sheet once up front so no frame pays for a first-time decode mid-animation
