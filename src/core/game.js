@@ -4,7 +4,7 @@ import {VERSION,SCHEMA,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,DEPLOYMENTS,BALAN
 import {tallyKill,tallyRescue,tallyHeal,commitRecords} from './records.js';
 import {skillOf,ensureStats,deriveUnit,planLevels,scaleTroop,DIFFICULTY,difficultyOf,classKeyOf,isBossRank} from './stats8.js';
 import {TIER_ATTACK} from '../data/classes8.js';
-import {challengeChance,terrainCost as terrainCostOf,distance,healAmount,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,forecast,strikeStats,guardFor,roll,awardXP,discover,terrainAt,counterBlocked,hostile,chargeBreaks,riposteBonus,sideOf,weatherOf,inWard,blockadeHolds} from './rules.js';
+import {flank,challengeChance,terrainCost as terrainCostOf,distance,healAmount,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,forecast,strikeStats,guardFor,roll,awardXP,discover,terrainAt,counterBlocked,hostile,chargeBreaks,riposteBonus,sideOf,weatherOf,inWard,blockadeHolds} from './rules.js';
 import {MISSIONS,missionOf,LAST_MISSION} from '../data/missions.js';
 import {ensureOfficers} from './roster.js';
 import {rulesOf,objectUnit,searchEvidence} from './mission-rules.js';
