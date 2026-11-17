@@ -1,0 +1,77 @@
+{
+  "checks": [
+    {
+      "name": "the page is v2.0.0",
+      "status": "PASS"
+    },
+    {
+      "name": "a new campaign asks for the difficulty first: 보통 · 어려움",
+      "status": "PASS"
+    },
+    {
+      "name": "어려움: the camp opens and the campaign keeps the choice",
+      "status": "PASS"
+    },
+    {
+      "name": "the camp ☰ menu changes it back to 보통",
+      "status": "PASS"
+    },
+    {
+      "name": "the ACT I officers (Bram, Noa, Marta) are in the roster and the camp",
+      "status": "PASS"
+    },
+    {
+      "name": "the inventory has tabs (전체 · 무기 · 방어구 · 장신구 · 보물 · 도구)",
+      "status": "PASS"
+    },
+    {
+      "name": "the 보물 tab shows Aren's Shield Crest and the Teacher's Tome",
+      "status": "PASS"
+    },
+    {
+      "name": "the unit sheet shows the six stats (무력 · 지혜 · 의지 · 강인 · 민첩 · 운)",
+      "status": "PASS"
+    },
+    {
+      "name": "deployment: eight to choose from, five go out, the officers wait in reserve",
+      "status": "PASS"
+    },
+    {
+      "name": "M01 is fought on the 22×16 village",
+      "status": "PASS"
+    },
+    {
+      "name": "the battle minimap is shown",
+      "status": "PASS"
+    },
+    {
+      "name": "the enemies fight at the sortie's level (Garr above it)",
+      "status": "PASS"
+    },
+    {
+      "name": "the shipped v1.0.0 village save is schema 19",
+      "status": "PASS"
+    },
+    {
+      "name": "the v1.0.0 village opens as schema 20 in camp, the officers and start treasures added",
+      "status": "PASS"
+    },
+    {
+      "name": "the v1.0.0 M01 battle reopens in the camp before M01 (the village is a new map)",
+      "status": "PASS"
+    },
+    {
+      "name": "the finished v1.0.0 campaign (ending B) opens in camp with thirty missions, nine heroes and four officers",
+      "status": "PASS"
+    },
+    {
+      "name": "the migrated save reloads as v2.0.0",
+      "status": "PASS"
+    },
+    {
+      "name": "no runtime errors in either build",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}
