@@ -48,7 +48,7 @@ try{
   await p.screenshot({path:`${shots}/banner25-choice-${label}.png`});await press('banner25-pick','forgive');await drainStory(p);await p.waitForTimeout(300);s=await snap();
   check(`${label} the choice is kept and its scene plays; Mission 26 is next`,s.campaign.choices.m25_banner==='forgive'&&s.narrative.seen.includes('after:25:forgive')&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 26'));
   // 4. M26: the duel on TURN 2
-  await restore(m26Duel());await p.waitForTimeout(300);
+  await restore(m26Duel());await drainStory(p);for(let i=0;i<10&&!(await p.locator('[data-do="duel-pick"]').count());i++)await p.waitForTimeout(200); /* v2.1: the pair's two lines, then the arena */
   check(`${label} M26 TURN 2: Baldrick calls Erik to a duel (strike, guard, finisher, refuse)`,await p.locator('[data-do="duel-pick"]').count()===4);
   await p.screenshot({path:`${shots}/m26-duel-${label}.png`});for(let i=0;i<6&&await p.locator('[data-do="duel-pick"][data-id="strike"]').count();i++){await press('duel-pick','strike');await p.waitForTimeout(200);}
   await drainStory(p);s=await snap();check(`${label} the duel is decided (a win is two of resolve)`,['hero','foe'].includes(s.duel.result)&&(s.duel.result==='hero'?s.missionState.resolve>=2:true));

@@ -35,7 +35,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  for(let i=0;i<3&&await p.locator('#modal-root .modal').count();i++){await cmd(p,'close-modal');await drainStory(p);}
  await p.screenshot({path:'test-output/migration-v081-camp.png'});check('The migrated camp now goes on to ACT III (Mission 15)',(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 15'));
  await cmd(p,'inventory');check('The equipment sheet of the migrated camp shows four slots and Erik\'s ★2 sword',await p.locator('.modal .doll-slot').count()===4&&(await p.locator('.modal').textContent()).includes('★★☆'));await cmd(p,'close-modal');
- await cmd(p,'world-map');check('From the migrated summit camp the four towns can be revisited (the capital opens with M15)',await p.locator('[data-do="travel"]').count()===4);await cmd(p,'close-modal');
+ await cmd(p,'world-map');{const ids=await p.locator('.town-list [data-do="travel"]').evaluateAll(b=>b.map(x=>x.dataset.id));check(`From the migrated summit camp the four towns and the two small villages can be revisited (the capital opens with M15): ${ids}`,ids.length===6&&!ids.includes('capital'));}await cmd(p,'close-modal');
  await p.screenshot({path:'test-output/migration-v081-summit.png'});
  await restore(fixture('m14-battle').save);s=await snapshot(p);check('v0.8.1 Mission 14 battle reopens in the camp before it (v2.0.0)',reopened(s,14));
  /* v2.0.0: depart again from the camp */for(const a of ['warroom','deploy','start-battle','confirm-battle']){if(await p.locator(`[data-do="${a}"]`).count()){await cmd(p,a);await drainStory(p);}}await cmd(p,'open-unit-menu');await cmd(p,'submenu','skills');const menu=await p.locator('#unit-popover').textContent();
