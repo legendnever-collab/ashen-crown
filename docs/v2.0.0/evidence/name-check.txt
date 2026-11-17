@@ -1,0 +1,9 @@
+names checked: 173
+exact · 병종 「보병」 ~ 조조전 병과·승급 「보병」 (generic word)
+exact · 병종 「궁병」 ~ 조조전 병과·승급 「궁병」 (generic word)
+exact · 병종 「도적」 ~ 조조전 병과·승급 「도적」 (generic word)
+exact · 능력치 「무력」 ~ 삼국지 능력치 「무력」 (generic word)
+exact · 능력치 「민첩」 ~ 삼국지 능력치 「민첩」 (generic word)
+exact · 능력치 「운」 ~ 삼국지 능력치 「운」 (generic word)
+stat set: 무력·지혜·의지·강인·민첩·운 vs 삼국지 무력·지력·통솔·정치·매력·민첩·운 — shared 무력·민첩·운
+non-generic exact matches: 0

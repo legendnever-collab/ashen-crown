@@ -101,7 +101,7 @@ export const V200_MISSIONS={
 // at average × 1.5 (a party at Lv 8 meets Lv 12, one at Lv 4 meets Lv 6). Fitted by the N-seed campaign runs from the
 // offsets in levels at the run's own averages (M03 +2 at 4.9, M04 +4 at 7.6, M05 +3 at 9.8, M15 −4 at 19, M16 −2 at 20,
 // M17 −2 at 21, M22 −1 at 25; docs/v2.0.0/TEST_REPORT.md). Missions not listed fight at the average.
-export const LEVEL_PCT_V200={3:.4,4:.53,5:.3,15:-.21,16:-.1,17:-.1,22:-.04};
+export const LEVEL_PCT_V200={3:.55,4:.53,5:.3,15:-.21,16:-.1,17:-.1,22:-.04};
 export function applyV200(MISSIONS){
  for(const [id,pct] of Object.entries(LEVEL_PCT_V200))if(MISSIONS[id])MISSIONS[id].levelPct=pct;
  for(const [k,d] of Object.entries(V200_MISSIONS)){const id=+k,m=MISSIONS[id],rows=ROWS2000[id];
