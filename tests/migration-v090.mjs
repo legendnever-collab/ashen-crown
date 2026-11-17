@@ -27,7 +27,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  check('v0.9.0 village save opens in the painted village (schema 13, gold kept, legal position)',s.schema===20&&s.screen==='exploration'&&s.frontier.hub==='village'&&s.economy.gold===village.economy.gold&&sameHeroes(s.campaign.heroes,village.campaign.heroes));
  check('Imported village save does not replay the world-map intro',!s.narrative.active?.key?.startsWith('world:'));
  await restore(battleText);s=await snapshot(p);check('v0.9.0 battle reopens in the camp before it (v2.0.0)',reopened(s));
- await cmd(p,'menu');await cmd(p,'restart-stage');await cmd(p,'confirm-restart-stage');await p.waitForFunction(()=>!AshenCrown.view().busy);s=await snapshot(p);check('Restart of a migrated v0.9.0 battle works',s.screen==='battle'&&s.turn===1);
+ for(const a of ['warroom','deploy','start-battle']){await cmd(p,a);await drainStory(p);}await p.waitForFunction(()=>!AshenCrown.view().busy);s=await snapshot(p);check('The reopened v0.9.0 battle departs again from the camp',s.screen==='battle'&&s.turn===1);
  // 3. Source-built fixtures: the v0.9.0 end-of-content camp (the field camp after M16, stones broken) and a mid-M16 battle.
  const done=fixture('m16-camp'),before=JSON.parse(JSON.parse(done.save).data);await restore(done.save);s=await snapshot(p);
  check('v0.9.0 field-camp save (ACT III part 1 complete) opens with every asset kept and the roster intact',s.schema===20&&s.frontier.hub==='fieldcamp'&&JSON.stringify(econV200(s.campaign.economy))===JSON.stringify(econV200(before.campaign.economy))&&sameRoster(s.campaign.roster,before.campaign.roster)&&JSON.stringify(s.campaign.factionTrust)===JSON.stringify(before.campaign.factionTrust)&&s.campaign.choices.m16_stones==='break');
@@ -36,7 +36,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  await cmd(p,'legion');const legion=await p.locator('#modal-root').textContent();check('The legion panel lists the recruits and the awakening path',legion.includes('테아')&&legion.includes('이네스')&&(legion.includes('매의 사수')||legion.includes('레인저')));await cmd(p,'close-modal');
  await cmd(p,'world-map');check('From the migrated field camp the towns can be revisited (the capital included)',await p.locator('[data-do="travel"][data-id="capital"]').count()===1);await cmd(p,'close-modal');
  await restore(fixture('m16-battle').save);s=await snapshot(p);check('v0.9.0 Mission 16 battle reopens in the camp before it (v2.0.0)',reopened(s,16));
- await cmd(p,'open-unit-menu');await cmd(p,'submenu','skills');const menu=await p.locator('#unit-popover').textContent();
+ /* v2.0.0: depart again from the camp */for(const a of ['warroom','deploy','start-battle','confirm-battle']){if(await p.locator(`[data-do="${a}"]`).count()){await cmd(p,a);await drainStory(p);}}await cmd(p,'open-unit-menu');await cmd(p,'submenu','skills');const menu=await p.locator('#unit-popover').textContent();
  check('Erik of a v0.9.0 save keeps ② and ③ and shows ④ locked until his awakening',menu.includes('②')&&menu.includes('③')&&menu.includes('④')&&menu.includes('각성하면'));await cmd(p,'close-unit-menu');
  await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===20&&s.version==='2.0.0'&&s.missionId===16);
  check('No runtime errors in either build',errors.length===0);await ctx.close();

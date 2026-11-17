@@ -9490,7 +9490,8 @@ function arms081(e){for(const g of e.gear||[]){if('level' in g){g.star=g.level==
 function reform200(s){
  const battle=['battle','result','deployment'].includes(s.screen)||!!s.skirmish;
  if(battle){const c=structuredClone(s.skirmish?.campaign||s.campaign),mid=s.skirmish?.returnMission??s.missionId,fresh=newGame(s.initialSeed??20261014,c,MISSIONS[mid]?.skirmish?1:mid);
-  if(c.completed?.length&&s.screen==='result'&&s.outcome==='victory'&&!s.practice){}enterHub(fresh,{story:false});fresh.migrated200='battle';s=fresh;}
+  // a won battle's result screen reopens in that mission's aftermath (its choices and camp talk still ahead)
+  const won=s.screen==='result'&&s.outcome==='victory'&&!s.practice&&!s.skirmish&&c.completed?.includes(mid);if(won)fresh.practice=false;enterHub(fresh,won?{story:false,aftermath:true}:{story:false});fresh.migrated200='battle';s=fresh;}
  // ACT I is on new maps: a camp state of M01–M06 takes the new map's troops and places the heroes on it
  if(!battle&&MISSIONS[s.missionId]?.v200){const fresh=newGame(s.initialSeed??20261014,structuredClone(s.campaign),s.missionId),allies=s.units.filter(u=>u.team==='ally');for(const u of allies){const f=fresh.units.find(v=>v.id===u.id);if(f){u.x=f.x;u.y=f.y;}}const free=[...deployZoneOf(fresh)].map(k=>k.split(',').map(Number));for(const u of allies)if(!fresh.units.some(v=>v.id===u.id)){const t=free.find(([x,y])=>!allies.some(o=>o!==u&&o.x===x&&o.y===y)&&!fresh.units.some(o=>o.x===x&&o.y===y));if(t){u.x=t[0];u.y=t[1];}}for(const u of allies)delete u.recoveryPhase;s.units=[...allies,...fresh.units.filter(u=>u.team!=='ally')];s.missionState=fresh.missionState;s.missionStart=fresh.missionStart;s.turn=1;s.phase=fresh.phase;s.enemyQueue=[];s.enemyIndex=0;delete s.reinforced;s.burning={};delete s.stageStart;}
  const c=s.campaign;c.difficulty??='normal';

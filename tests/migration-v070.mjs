@@ -26,7 +26,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  check('v0.7.0 village save opens in the painted village (schema 10, gold kept, legal position)',s.schema===20&&s.screen==='exploration'&&s.frontier.hub==='village'&&s.economy.gold===village.economy.gold&&sameHeroes(s.campaign.heroes,village.campaign.heroes));
  check('Imported village save does not replay the world-map intro',!s.narrative.active?.key?.startsWith('world:'));
  await restore(battleText);s=await snapshot(p);check('v0.7.0 battle reopens in the camp before it (v2.0.0)',reopened(s));
- await cmd(p,'menu');await cmd(p,'restart-stage');await cmd(p,'confirm-restart-stage');await p.waitForFunction(()=>!AshenCrown.view().busy);s=await snapshot(p);check('Restart of a migrated v0.7.0 battle works',s.screen==='battle'&&s.turn===1);
+ for(const a of ['warroom','deploy','start-battle']){await cmd(p,a);await drainStory(p);}await p.waitForFunction(()=>!AshenCrown.view().busy);s=await snapshot(p);check('The reopened v0.7.0 battle departs again from the camp',s.screen==='battle'&&s.turn===1);
  // 3. Source-built fixtures: the v0.7.0 end-of-content camp (refugee camp after M12, Ines joined) and a mid-M12 battle.
  const done=fixture('m12-camp'),before=JSON.parse(JSON.parse(done.save).data);await restore(done.save);s=await snapshot(p);
  check('v0.7.0 refugee-camp save opens with every asset kept and Thea, Dario and Ines in the legion',s.schema===20&&s.frontier.hub==='refuge'&&s.frontier.phase==='aftermath'&&JSON.stringify(econV200(s.campaign.economy))===JSON.stringify(econV200(arms081View(before.campaign.economy)))&&['thea','dario','ines'].every(id=>s.campaign.roster.includes(id))&&JSON.stringify(s.campaign.factionTrust)===JSON.stringify(before.campaign.factionTrust));

@@ -27,7 +27,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  check('v0.7.1 village save opens in the painted village (schema 10, gold kept, legal position)',s.schema===20&&s.screen==='exploration'&&s.frontier.hub==='village'&&s.economy.gold===village.economy.gold&&sameHeroes(s.campaign.heroes,village.campaign.heroes));
  check('Imported village save does not replay the world-map intro',!s.narrative.active?.key?.startsWith('world:'));
  await restore(battleText);s=await snapshot(p);check('v0.7.1 battle reopens in the camp before it (v2.0.0)',reopened(s));
- await cmd(p,'menu');await cmd(p,'restart-stage');await cmd(p,'confirm-restart-stage');await p.waitForFunction(()=>!AshenCrown.view().busy);s=await snapshot(p);check('Restart of a migrated v0.7.1 battle works',s.screen==='battle'&&s.turn===1);
+ for(const a of ['warroom','deploy','start-battle']){await cmd(p,a);await drainStory(p);}await p.waitForFunction(()=>!AshenCrown.view().busy);s=await snapshot(p);check('The reopened v0.7.1 battle departs again from the camp',s.screen==='battle'&&s.turn===1);
  // 3. Source-built fixtures: the v0.7.1 end-of-content camp (summit after M14) and a mid-M14 battle.
  const done=fixture('m14-camp'),before=JSON.parse(JSON.parse(done.save).data);await restore(done.save);s=await snapshot(p);
  check('v0.7.1 summit-camp save (ACT II complete) opens with every asset kept and the roster intact',s.schema===20&&s.frontier.hub==='summit'&&JSON.stringify(econV200(s.campaign.economy))===JSON.stringify(econV200(arms081View(before.campaign.economy)))&&sameRoster(s.campaign.roster,before.campaign.roster)&&JSON.stringify(s.campaign.factionTrust)===JSON.stringify(before.campaign.factionTrust)&&!!s.campaign.flags.act2_completed);
@@ -35,7 +35,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  check('The migrated camp still says ACT III comes in a later update',(await p.locator('body').textContent()).includes('ACT III'));
  await p.screenshot({path:'test-output/migration-v071-summit.png'});
  await restore(fixture('m14-battle').save);s=await snapshot(p);check('v0.7.1 Mission 14 battle reopens in the camp before it (v2.0.0)',reopened(s,14));
- await cmd(p,'open-unit-menu');await cmd(p,'submenu','skills');const menu=await p.locator('#unit-popover').textContent();
+ /* v2.0.0: depart again from the camp into M14 */for(const a of ['warroom','deploy','start-battle','confirm-battle']){if(await p.locator(`[data-do="${a}"]`).count()){await cmd(p,a);await drainStory(p);}}await cmd(p,'open-unit-menu');await cmd(p,'submenu','skills');const menu=await p.locator('#unit-popover').textContent();
  check('Erik of a v0.7.1 save now has ② 도발 in battle and his promotion action as ③',menu.includes('도발')&&menu.includes('②')&&menu.includes('③'));await cmd(p,'close-unit-menu');
  await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===20&&s.version==='2.0.0'&&s.missionId===14);
  check('No runtime errors in either build',errors.length===0);await ctx.close();

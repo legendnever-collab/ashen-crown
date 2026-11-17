@@ -27,7 +27,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  check('v0.9.1 village save opens in the painted village (schema 18, gold kept, legal position)',s.schema===20&&s.screen==='exploration'&&s.frontier.hub==='village'&&s.economy.gold===village.economy.gold&&sameHeroes(s.campaign.heroes,village.campaign.heroes));
  check('Imported village save does not replay the world-map intro',!s.narrative.active?.key?.startsWith('world:'));
  await restore(battleText);s=await snapshot(p);check('v0.9.1 battle reopens in the camp before it (v2.0.0)',reopened(s));
- await cmd(p,'menu');await cmd(p,'restart-stage');await cmd(p,'confirm-restart-stage');await p.waitForFunction(()=>!AshenCrown.view().busy);s=await snapshot(p);check('Restart of a migrated v0.9.1 battle works',s.screen==='battle'&&s.turn===1);
+ for(const a of ['warroom','deploy','start-battle']){await cmd(p,a);await drainStory(p);}await p.waitForFunction(()=>!AshenCrown.view().busy);s=await snapshot(p);check('The reopened v0.9.1 battle departs again from the camp',s.screen==='battle'&&s.turn===1);
  // 3. Source-built fixtures: the v0.9.1 end-of-content camp (the forest village after M18, the truth told) and a mid-M18 battle.
  const done=fixture('m18-camp'),before=JSON.parse(JSON.parse(done.save).data);await restore(done.save);s=await snapshot(p);
  check('v0.9.1 forest-village save (ACT III part 2 complete) opens with every asset kept and the roster intact',s.schema===20&&s.frontier.hub==='forest'&&JSON.stringify(econV200(s.campaign.economy))===JSON.stringify(econV200(before.campaign.economy))&&sameRoster(s.campaign.roster,before.campaign.roster)&&JSON.stringify(s.campaign.factionTrust)===JSON.stringify(before.campaign.factionTrust)&&s.campaign.choices.m18_truth==='tell');
@@ -35,7 +35,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  await p.screenshot({path:'test-output/migration-v091-camp.png'});check('The migrated camp now goes on to Mission 19',(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 19'));
  await cmd(p,'legion');const legion=await p.locator('#modal-root').textContent();check('The legion panel shows Lia and Kai with their next class (promotion, or the v0.9.2 awakening once promoted)',(legion.includes('결계술사')||legion.includes('비전술사'))&&(legion.includes('그림자 군주')||legion.includes('그림자 추적자')));await cmd(p,'close-modal');
  await restore(fixture('m18-battle').save);s=await snapshot(p);check('v0.9.1 Mission 18 battle reopens in the camp before it (v2.0.0)',reopened(s,18));
- await cmd(p,'open-unit-menu');await cmd(p,'submenu','skills');const menu=await p.locator('#unit-popover').textContent();
+ /* v2.0.0: depart again from the camp */for(const a of ['warroom','deploy','start-battle','confirm-battle']){if(await p.locator(`[data-do="${a}"]`).count()){await cmd(p,a);await drainStory(p);}}await cmd(p,'open-unit-menu');await cmd(p,'submenu','skills');const menu=await p.locator('#unit-popover').textContent();
  check('Erik of a v0.9.1 save keeps ② and ③ and shows ④ (locked until his awakening, or open)',menu.includes('②')&&menu.includes('③')&&menu.includes('④'));await cmd(p,'close-unit-menu');
  await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===20&&s.version==='2.0.0'&&s.missionId===18);
  check('No runtime errors in either build',errors.length===0);await ctx.close();
