@@ -42,6 +42,7 @@ export const M29={
  status(s){const m=missionOf(s),st=s.missionState,b=bellardOf29(s);return `의식 지점 ${ritesStanding29(s)}/3 (필요 ${m.needRites}) · 벨라드 ${st.fallen?'쓰러짐':`${st.phase}단계 HP ${b?Math.max(0,b.hp):0}/${b?.maxHP||0}`} · ${Math.max(0,m.turnLimit+1-s.turn)}턴 남음`;},
  optional(s){const f=s.campaign.flags;return `의식 지점 셋 모두 지킴 ${f.mission_29_rites==null?'—':f.mission_29_rites===3?'예':'아니요'} · 일기토 ${({hero:'승리',foe:'패배',skipped:'아렌의 마지막 말',none:'—'})[f.mission_29_duel]||'—'} · 승리 턴 ${f.mission_29_turn??'—'}`;},
  // Start of the player phase: waves; rite points with a hero beside them mend; on the duel turn Bellard calls Erik out.
+ afterDuel(s){countDuel29(s);}, // v2.0.0: counted the moment the duel ends
  onTurnStart(s){const m=missionOf(s),st=s.missionState;act2Waves(s);countDuel29(s);
   for(const r of ritesOf29(s).filter(alive)){if(r.hp<r.maxHP&&heroesOf1000(s).some(h=>distance(h,r)===1)){const n=Math.min(m.riteMend,r.maxHP-r.hp);r.hp+=n;s.feedback.push({type:'heal',id:r.id,text:`의식 +${n}`});}}
   if(s.turn===m.duelTurn&&!st.duelDone){st.duelDone=true;const b=bellardOf29(s),e=findUnit(s,'eric');if(b&&alive(b)&&e&&alive(e)&&!e.benched&&s.duel==null&&startDuel(s,'eric','boss','29:duel'))enqueueStory(s,'29:duel');}},

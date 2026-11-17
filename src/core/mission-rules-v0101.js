@@ -93,6 +93,7 @@ export const M26={
  onTurnStart(s){const m=missionOf(s),st=s.missionState;act2Waves(s);
   if(s.turn===m.duelTurn&&!st.duelDone){st.duelDone=true;const b=baldrickOf26(s),e=findUnit(s,'eric');if(b&&alive(b)&&e&&alive(e)&&!e.benched&&s.duel==null){if(startDuel(s,'eric','boss','26:duel'))enqueueStory(s,'26:duel');}}},
  beforeEnemyPhase(s){countDuel26(s);},
+ afterDuel(s){countDuel26(s);}, // v2.0.0: the resolve shows the moment the duel ends
  // Baldrick keeps to the north until the duel turn, then rides at Erik; his riders hunt the legion; the bearers stay by him.
  planEnemy(s,u,reachable){const foes=s.units.filter(t=>alive(t)&&hostile(s,u,t)),e=findUnit(s,'eric'),b=baldrickOf26(s);
   if(u.id==='boss'){if(s.turn<missionOf(s).duelTurn)return strike101(s,u,within101(reachable,(x,y)=>y<=3),foes,null);return strike101(s,u,reachable,foes,goalOf101(e&&alive(e)&&!e.benched?e:nearest101(u,foes)),t=>t.id==='eric'?8:0);}

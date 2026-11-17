@@ -7066,6 +7066,7 @@ const M26={
  onTurnStart(s){const m=missionOf(s),st=s.missionState;act2Waves(s);
   if(s.turn===m.duelTurn&&!st.duelDone){st.duelDone=true;const b=baldrickOf26(s),e=findUnit(s,'eric');if(b&&alive(b)&&e&&alive(e)&&!e.benched&&s.duel==null){if(startDuel(s,'eric','boss','26:duel'))enqueueStory(s,'26:duel');}}},
  beforeEnemyPhase(s){countDuel26(s);},
+ afterDuel(s){countDuel26(s);}, // v2.0.0: the resolve shows the moment the duel ends
  // Baldrick keeps to the north until the duel turn, then rides at Erik; his riders hunt the legion; the bearers stay by him.
  planEnemy(s,u,reachable){const foes=s.units.filter(t=>alive(t)&&hostile(s,u,t)),e=findUnit(s,'eric'),b=baldrickOf26(s);
   if(u.id==='boss'){if(s.turn<missionOf(s).duelTurn)return strike101(s,u,within101(reachable,(x,y)=>y<=3),foes,null);return strike101(s,u,reachable,foes,goalOf101(e&&alive(e)&&!e.benched?e:nearest101(u,foes)),t=>t.id==='eric'?8:0);}
@@ -7238,6 +7239,7 @@ const M29={
  status(s){const m=missionOf(s),st=s.missionState,b=bellardOf29(s);return `의식 지점 ${ritesStanding29(s)}/3 (필요 ${m.needRites}) · 벨라드 ${st.fallen?'쓰러짐':`${st.phase}단계 HP ${b?Math.max(0,b.hp):0}/${b?.maxHP||0}`} · ${Math.max(0,m.turnLimit+1-s.turn)}턴 남음`;},
  optional(s){const f=s.campaign.flags;return `의식 지점 셋 모두 지킴 ${f.mission_29_rites==null?'—':f.mission_29_rites===3?'예':'아니요'} · 일기토 ${({hero:'승리',foe:'패배',skipped:'아렌의 마지막 말',none:'—'})[f.mission_29_duel]||'—'} · 승리 턴 ${f.mission_29_turn??'—'}`;},
  // Start of the player phase: waves; rite points with a hero beside them mend; on the duel turn Bellard calls Erik out.
+ afterDuel(s){countDuel29(s);}, // v2.0.0: counted the moment the duel ends
  onTurnStart(s){const m=missionOf(s),st=s.missionState;act2Waves(s);countDuel29(s);
   for(const r of ritesOf29(s).filter(alive)){if(r.hp<r.maxHP&&heroesOf1000(s).some(h=>distance(h,r)===1)){const n=Math.min(m.riteMend,r.maxHP-r.hp);r.hp+=n;s.feedback.push({type:'heal',id:r.id,text:`의식 +${n}`});}}
   if(s.turn===m.duelTurn&&!st.duelDone){st.duelDone=true;const b=bellardOf29(s),e=findUnit(s,'eric');if(b&&alive(b)&&e&&alive(e)&&!e.benched&&s.duel==null&&startDuel(s,'eric','boss','29:duel'))enqueueStory(s,'29:duel');}},
@@ -10591,7 +10593,7 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'banner25-pick':{if(!needsBanner25()||!chooseBanner25(state,id))break;closeModal();enqueueStory(state,`after:25:${id}`);openStory(state);commit();break;}
  case 'plan20-pick':{if(!needsPlan20()||!choosePlan20(state,id))break;closeModal();enqueueStory(state,`after:20:${id}`);enqueueStory(state,'after:20:kai');enqueueStory(state,`after:20:baldrick:${state.campaign.flags.mission_13_baldrick==='halted'?'halted':'envoy'}`);enqueueStory(state,'after:20:next');openStory(state);commit();break;}
  case 'stones16-pick':{if(!needsStones16()||!chooseStones16(state,id))break;closeModal();enqueueStory(state,`after:16:${id}`);enqueueStory(state,'after:16:next');openStory(state);commit();break;}
- case 'duel-pick':{const d=state.duel,key=d?.key;if(!duelPick(state,id))break;if(d.result){closeModal();if(d.result!=='skipped'&&STORY[`${key}:${d.result}`])enqueueStory(state,`${key}:${d.result}`);if(key==='challenge')toast(d.result==='hero'?'일기토 승리!':'일기토 패배…');openStory(state);}else showDuel();commit();break;}
+ case 'duel-pick':{const d=state.duel,key=d?.key;if(!duelPick(state,id))break;if(d.result){closeModal();rulesOf(state)?.afterDuel?.(state);if(d.result!=='skipped'&&STORY[`${key}:${d.result}`])enqueueStory(state,`${key}:${d.result}`);if(key==='challenge')toast(d.result==='hero'?'일기토 승리!':'일기토 패배…');openStory(state);}else showDuel();commit();break;}
  case 'aren-command':{const list=commandsFor(state),i=list.indexOf(state.command);if(setCommand(state,i<0?list[0]:i+1<list.length?list[i+1]:null))commit();break;}
  case 'records12-pick':{if(!needsRecords12()||!chooseRecords(state,id))break;closeModal();enqueueStory(state,`after:12:${id}`);enqueueStory(state,`after:12:ines:${state.campaign.roster?.includes('ines')?'joined':'parted'}`);openStory(state);commit();break;}
  case 'order-pick':{if(!needsOrder()||state.screen!=='deployment'||!chooseOrder(state,id))break;closeModal();enqueueStory(state,`8:order:${id}`);openStory(state);commit();break;}
@@ -10818,7 +10820,7 @@ const DUEL_TAUNT={bold:'덤벼라. 한 번에 끝내 주마!',careful:'서두르
 function showDuel(){const d=state.duel;if(!duelOpen(state))return;const h=findUnit(state,d.hero),f=findUnit(state,d.foe),last=d.picks.at(-1),nature=duelNature(state,f);
  const line=last?(last[2]?`${esc(h.name)}의 ${DUEL_PICKS[last[0]]}! ${esc(f.name)}의 ${DUEL_PICKS[last[1]]}을(를) 꺾었다.`:`${esc(f.name)}의 ${DUEL_PICKS[last[1]]}! ${esc(h.name)}의 ${DUEL_PICKS[last[0]]}이(가) 밀렸다.`):esc(DUEL_TAUNT[nature]);
  modal('잿빛 결투장',`<div class="duel-arena${DUEL_BG?' painted':''}"${DUEL_BG?` style="background-image:url('${DUEL_BG}')"`:''}><div class="arena-banners"><i class="b-legion"></i><i class="b-foe"></i><i class="b-legion"></i><i class="b-foe"></i></div>
- <div class="arena-ring"><div class="arena-fighter left">${portrait(h,'card-sprite')}<b>${esc(h.name)}</b></div><div class="arena-score"><span>${d.wins[0]}</span><small>${d.round+1}합 / 최대 ${DUEL_ROUNDS}합</small><span>${d.wins[1]}</span></div><div class="arena-fighter right">${portrait(f,'card-sprite')}<b>${esc(f.name)}</b></div></div>
+ <div class="arena-ring"><div class="arena-fighter left">${portrait(h,'card-sprite')}<b>${esc(h.name)}</b></div><div class="arena-score"><span>${d.wins[0]}</span><small>일기토 · ${d.round+1}합 / 최대 ${DUEL_ROUNDS}합</small><span>${d.wins[1]}</span></div><div class="arena-fighter right">${portrait(f,'card-sprite')}<b>${esc(f.name)}</b></div></div>
  <div class="arena-band"><span class="arena-speaker">${last?'':esc(f.name)}</span><p>${line}</p></div>
  <p class="arena-hint">상대는 ${esc(NATURE_KO[nature])} · 베기는 노리기를, 노리기는 막기를, 막기는 베기를 이깁니다 · 같은 수면 무력·민첩·운이 정합니다 · 먼저 ${DUEL_TO_WIN}합을 이기면 승리${f.carries&&GEAR[f.carries]?` · 이기면 「${esc(GEAR[f.carries].name)}」을(를) 얻습니다`:''}</p></div>`,
  frontierButton('duel-pick','<b>베기</b>','strike',false,'primary')+frontierButton('duel-pick','<b>막기</b>','guard',false,'primary')+frontierButton('duel-pick','<b>노리기</b>','finisher',false,'primary')+(d.round===0&&d.key!=='challenge'?frontierButton('duel-pick',d.key==='29:duel'?'아렌에게 맡긴다 — 아렌의 마지막 말':'거절한다 — 그대로 싸운다','skip'):''));paintPortraits();}

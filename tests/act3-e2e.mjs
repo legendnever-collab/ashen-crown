@@ -50,7 +50,7 @@ try{
   check(`${label} M16 TURN 3: the duel is open and Thea, who left, fights beside the legion`,s.missionId===16&&s.turn===3&&!!s.duel&&!s.duel.result&&s.units.some(u=>u.id==='rthea'&&!u.benched&&u.team==='allied'));
   check(`${label} the duel modal offers strike, guard and finisher (and refusing)`,await p.locator('[data-do="duel-pick"]').count()===4);
   await p.screenshot({path:`${shots}/duel-${label}.png`});
-  for(let i=0;i<3&&await p.locator('[data-do="duel-pick"][data-id="strike"]').count();i++){await press('duel-pick','strike');await p.waitForTimeout(200);}
+  for(let i=0;i<6&&await p.locator('[data-do="duel-pick"][data-id="strike"]').count();i++){await press('duel-pick','strike');await p.waitForTimeout(200);}
   await drainStory(p);s=await snap();check(`${label} the duel is decided and the battle goes on`,['hero','foe'].includes(s.duel.result)&&!(await p.locator('[data-do="duel-pick"]').count()));
   const hidden=s.units.find(u=>u.team==='enemy'&&u.hp>0&&!u.benched&&fogHidden(s,u));
   if(hidden){await p.evaluate(id=>document.querySelector('[data-do="unit-info"]')?null:null,hidden.id);}

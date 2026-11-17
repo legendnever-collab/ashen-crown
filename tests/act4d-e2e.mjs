@@ -38,7 +38,7 @@ try{
   await restore(camp28);await drainStory(p);await closeModals();let s=await snap();
   check(`${label} the v0.10.2 lower city (after M28, nine heroes) offers Mission 29`,s.schema===20&&s.version==='2.0.0'&&s.frontier.hub==='capital'&&s.campaign.roster.includes('baldrick')&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 29'));
   await press('next-mission');await p.waitForTimeout(400);await drainStory(p);await closeModals();s=await snap();check(`${label} the lower city before M29`,s.frontier.hub==='capital'&&s.missionId===29);
-  await enterWarCouncil(p,touch);await press('deploy');await p.waitForTimeout(300);s=await snap();check(`${label} the sortie is eight of nine heroes`,s.units.filter(u=>u.team==='ally').length===9&&s.units.filter(u=>u.team==='ally'&&!u.benched).length===8);
+  await enterWarCouncil(p,touch);await press('deploy');await p.waitForTimeout(300);s=await snap();check(`${label} the sortie is eight of nine heroes`,s.units.filter(u=>u.team==='ally'&&!['bram','noa','marta','rowell'].includes(u.id)).length===9&&s.units.filter(u=>u.team==='ally'&&!u.benched).length===8&&s.units.filter(u=>['bram','noa','marta','rowell'].includes(u.id)).every(u=>u.benched)); /* v2.0.0: the four officers wait on the bench */
   await press('start-battle');await drainStory(p);s=await snap();
   // 2. M29: the crown's heart
   check(`${label} M29: Bellard on the dais, the rite points where the council path puts them`,s.screen==='battle'&&s.missionState.path==='council'&&JSON.stringify(['rp1','rp2','rp3'].map(id=>{const r=s.units.find(u=>u.id===id);return [r.x,r.y];}))===JSON.stringify(MISSIONS[29].rites29.council)&&s.units.find(u=>u.id==='boss')?.look==='bellard');

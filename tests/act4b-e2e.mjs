@@ -50,7 +50,7 @@ try{
   // 4. M26: the duel on TURN 2
   await restore(m26Duel());await p.waitForTimeout(300);
   check(`${label} M26 TURN 2: Baldrick calls Erik to a duel (strike, guard, finisher, refuse)`,await p.locator('[data-do="duel-pick"]').count()===4);
-  await p.screenshot({path:`${shots}/m26-duel-${label}.png`});for(let i=0;i<3&&await p.locator('[data-do="duel-pick"][data-id="strike"]').count();i++){await press('duel-pick','strike');await p.waitForTimeout(200);}
+  await p.screenshot({path:`${shots}/m26-duel-${label}.png`});for(let i=0;i<6&&await p.locator('[data-do="duel-pick"][data-id="strike"]').count();i++){await press('duel-pick','strike');await p.waitForTimeout(200);}
   await drainStory(p);s=await snap();check(`${label} the duel is decided (a win is two of resolve)`,['hero','foe'].includes(s.duel.result)&&(s.duel.result==='hero'?s.missionState.resolve>=2:true));
   // 5. Erik persuades at resolve 3: Baldrick yields and joins
   const pr=m26Persuade();await restore(pr);await drainStory(p);const e=pr.units.find(u=>u.id==='eric');await select(e);
