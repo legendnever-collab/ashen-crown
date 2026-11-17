@@ -46,7 +46,8 @@ export function drawTownBuilding(c,b,tone,state){const s=townBuildingSprite(b,to
 const ENEMY_LOOK={9:{spear:'mercSpear',archer:'archer',assassin:'assassin',captain:'assassin'},7:{bandit:'ironDeserter',archer:'ironArcher',captain:'deserterCaptain'},8:{spear:'mercSpear',archer:'archer',captain:'mercSpear',bandit:'assassin'},6:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},5:{lion:'lion',bearer:'bearer',spear:'ironSpear',archer:'ironArcher',cavalry:'cavalry',captain:'lion'},1:{bandit:'bandit',archer:'archer',captain:'captain'},2:{bandit:'deserter',archer:'archer',captain:'deserterCaptain'},3:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},4:{bandit:'fortGuard',archer:'fortArcher',captain:'quartermaster'}};
 const STAGE_LOOK={oswin:'lordA',brennan:'lordB',councilor:'councillor',teacher:'liaTeacher',sup:'greyMaster',bellard:'bellard'}; // v0.9.2: the teacher, the old superior, Bellard
 // v2.0.0 부장: in camps and scenes an officer wears their class's figure (pack H1's tier sheet when it is in, else a close one).
-const OFFICER_LOOK={bram:['spear','ironSpear'],noa:['archer','archer'],marta:['shield','bearer'],rowell:['cavalry','cavalry']};
+const OFFICER_LOOK={bram:['spear','ironSpear'],noa:['archer','archer'],marta:['shield','bearer'],rowell:['cavalry','cavalry'],
+ sera:['spear','ironSpear'],orin:['mage','councillor'],celine:['healer','pilgrim'],ren:['rogue','grayCloak'],silva:['archer','forester'],adel:['spear','mercSpear']}; /* v2.1: the hires and the rescued hero */
 export function hdCastFor(u,missionId=1){
  if(OFFICER_LOOK[u?.id]&&u.team!=='enemy'){const [cls,temp]=OFFICER_LOOK[u.id],t=Math.max(1,Math.min(3,u.classTier||1));return SPRITES?.[`class_${cls}_${t}`]?`class_${cls}_${t}`:temp;}
  if(u.look&&CAST[u.look])return u.look; // v0.6: mission data may name a look (allied escorts, Baldrick, ACT II troops)
@@ -60,6 +61,7 @@ export function hdCastFor(u,missionId=1){
  if(missionId===6&&u.id==='boss')return 'executor';
  if(missionId===6&&u.team==='enemy'&&/^g\d/.test(u.id))return 'fortGuard';
  if(missionId===6&&u.id==='i1')return 'inspector';
+ if(u.id==='adelc')return SPRITES?.class_spear_1?'class_spear_1':'mercSpear'; // v2.1: the besieged spearknight before he joins
  if(u.team==='civilian'){const n=String(u.name||'');return /Mira|미라/.test(n)?'mira':/Tomas|토마스/.test(n)?'farmer':CAST[u.id]?u.id:'refugee';}
  if(u.burns)return 'torch';
  if(missionId===4&&/^r\d/.test(u.id))return 'storeman';

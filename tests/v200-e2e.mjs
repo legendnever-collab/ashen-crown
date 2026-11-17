@@ -9,7 +9,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  const cmd=async(p,a,id)=>{await p.locator(`[data-do="${a}"]${id?`[data-id="${id}"]`:''}`).first().click();await p.waitForTimeout(150);};const snapshot=p=>p.evaluate(()=>AshenCrown.snapshot());
  const press=async(p,a,id)=>{await p.evaluate(([a,id])=>{const b=document.createElement('button');b.dataset.do=a;if(id)b.dataset.id=id;b.style.cssText='position:fixed;left:0;top:0;width:4px;height:4px;z-index:99999';document.body.append(b);b.click();b.remove();},[a,id]);await p.waitForTimeout(200);};
  const backup=async p=>{await cmd(p,'menu');await cmd(p,'backup');const text=await p.locator('#backup-text').inputValue();await cmd(p,'close-modal');return text;};
- const p=await ctx.newPage();p.__askDifficulty=true;p.on('pageerror',e=>errors.push(e.message));await p.goto(pathToFileURL(path.resolve('releases/Ashen_Crown_v2.0.0.html')).href);await p.waitForFunction(()=>!!window.AshenCrown);
+ const p=await ctx.newPage();p.__askDifficulty=true;p.on('pageerror',e=>errors.push(e.message));await p.goto(pathToFileURL(path.resolve('releases/Ashen_Crown_v2.1.0.html')).href);await p.waitForFunction(()=>!!window.AshenCrown);
  check('the page is v2.0.0',await p.evaluate(()=>AshenCrown.version)==='2.0.0');
  // 1. Difficulty
  await cmd(p,'new');check('a new campaign asks for the difficulty first: 보통 · 어려움',await p.locator('[data-do="difficulty-pick"]').count()===2);await p.screenshot({path:`${shots}/difficulty.png`});
@@ -33,12 +33,12 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  await cmd(old,'new');await drainStory(old);const village=await snapshot(old),villageText=await backup(old);check('the shipped v1.0.0 village save is schema 19',village.schema===19&&village.screen==='exploration');
  await cmd(old,'npc','advisor');await drainStory(old);if(await old.locator('[data-do="advisor-operation"]').count())await cmd(old,'advisor-operation');await drainStory(old);await cmd(old,'deploy');await cmd(old,'start-battle');await drainStory(old);const battleText=await backup(old);
  const restore=async text=>{await drainStory(p);await cmd(p,'menu');await cmd(p,'backup');await p.locator('#backup-text').fill(text);await cmd(p,'restore');await p.waitForFunction(()=>!AshenCrown.view().busy);await p.waitForTimeout(300);};
- await restore(villageText);s=await snapshot(p);check('the v1.0.0 village opens as schema 20 in camp, the officers and start treasures added',s.schema===20&&s.version==='2.0.0'&&s.screen==='exploration'&&s.campaign.roster.includes('bram')&&s.campaign.economy.gear.some(g=>g.type==='arenCrest'));
- await restore(battleText);s=await snapshot(p);check('the v1.0.0 M01 battle reopens in the camp before M01 (the village is a new map)',s.schema===20&&s.screen==='exploration'&&s.missionId===1&&!s.stageStart);
+ await restore(villageText);s=await snapshot(p);check('the v1.0.0 village opens as schema 20 in camp, the officers and start treasures added',s.schema===21&&s.version==='2.1.0'&&s.screen==='exploration'&&s.campaign.roster.includes('bram')&&s.campaign.economy.gear.some(g=>g.type==='arenCrest'));
+ await restore(battleText);s=await snapshot(p);check('the v1.0.0 M01 battle reopens in the camp before M01 (the village is a new map)',s.schema===21&&s.screen==='exploration'&&s.missionId===1&&!s.stageStart);
  const ending=JSON.parse(fs.readFileSync('tests/fixtures/v100/v100-m30-ending.json','utf8')).save;await restore(ending);s=await snapshot(p);
- check('the finished v1.0.0 campaign (ending B) opens in camp with thirty missions, nine heroes and four officers',s.schema===20&&s.screen==='exploration'&&s.campaign.completed.length===30&&s.campaign.choices.ending==='B'&&['thea','dario','ines','baldrick','bram','noa','marta','rowell'].every(id=>s.campaign.roster.includes(id)));
+ check('the finished v1.0.0 campaign (ending B) opens in camp with thirty missions, nine heroes and four officers',s.schema===21&&s.screen==='exploration'&&s.campaign.completed.length===30&&s.campaign.choices.ending==='B'&&['thea','dario','ines','baldrick','bram','noa','marta','rowell'].every(id=>s.campaign.roster.includes(id)));
  await p.screenshot({path:`${shots}/v100-ending-camp.png`});
- await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('the migrated save reloads as v2.0.0',s.schema===20&&s.version==='2.0.0'&&s.campaign.completed.length===30);
+ await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('the migrated save reloads as v2.0.0',s.schema===21&&s.version==='2.1.0'&&s.campaign.completed.length===30);
  check('no runtime errors in either build',errors.length===0);await ctx.close();
 }finally{fs.mkdirSync('test-output',{recursive:true});fs.writeFileSync('test-output/v200-e2e.json',JSON.stringify({checks,errors},null,2));await browser.close();}
 console.log(`${checks.length} v2.0.0 browser checks PASS`);

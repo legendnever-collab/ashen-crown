@@ -4,7 +4,7 @@
 import {launchTestBrowser} from './browser-helper.mjs';import {drainStory} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,checksum} from '../src/persistence/save-manager.js';import {actOneCamp} from './skirmish-policy.mjs';
 import {newGame} from '../src/core/game.js';import {enterHub,chestKey} from '../src/core/frontier.js';import {HUBS,INTERIORS} from '../src/data/frontier-data.js';import {drain} from './campaign-policy.mjs';import {joinRoster} from '../src/core/roster.js';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v2.0.0.html').href;fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v2.1.0.html').href;fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const check=(name,ok)=>{assert.ok(ok,name);n++;console.log('PASS',name);};
 // Put Eric inside a building of the current hub (as if he walked in), optionally with chest 'a' already opened.
 function inside(s,buildingId,opened=false){const f=s.frontier,door=HUBS[f.hub].places.find(p=>p.buildingId===buildingId);f.returnPosition={hub:f.hub,x:door.x,y:door.y,facing:'up'};f.interior=door.interior;f.interiorBuilding=buildingId;[f.x,f.y]=INTERIORS[door.interior].spawn;f.facing='up';s.campaign.frontier=structuredClone(f);
@@ -40,7 +40,7 @@ try{
   const press=async(a)=>{await p.locator(`[data-do="${a}"]`).first().click();await p.waitForTimeout(250);};
   const old=actOneCamp(20261021,6);old.schema=8;old.version='0.5.0';delete old.campaign.roster;const data=JSON.stringify({...old,feedback:[]}),text=JSON.stringify({format:'AshenCrown',schema:8,checksum:checksum(data),data});
   await p.goto(url);await press('new');await drainStory(p);await press('menu');await press('backup');await p.fill('#backup-text',text);await press('restore');await drainStory(p);
-  const s=await p.evaluate(()=>AshenCrown.snapshot());check('schema 8 camp save restores as schema 20 in the oath camp with the five heroes and the four ACT I officers',s.schema===20&&s.frontier.hub==='oathcamp'&&s.campaign.roster.join()==='bram,noa,marta,rowell'&&s.units.filter(u=>u.team==='ally').length===9);
+  const s=await p.evaluate(()=>AshenCrown.snapshot());check('schema 8 camp save restores as schema 20 in the oath camp with the five heroes and the four ACT I officers',s.schema===21&&s.frontier.hub==='oathcamp'&&s.campaign.roster.join()==='bram,noa,marta,rowell'&&s.units.filter(u=>u.team==='ally').length===9);
   check('schema 8 restore: no runtime errors',errors.length===0);await ctx.close();}
  fs.writeFileSync('test-output/act2-e2e.json',JSON.stringify({checks:n},null,1));console.log(`act2-e2e: ${n} checks passed`);
 }finally{await b.close();}

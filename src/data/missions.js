@@ -738,6 +738,42 @@ skirmish(117,'trial','dario',{tier:3,level:14,title:'칼의 주인의 시련',en
  deployments:{recommended:[[5,5],[1,5],[10,5],[0,0],[11,0],[0,9],[11,9],[2,2]]},limit:4,companions:['elina'],
  goal:{type:'rout',targets:['r1','r2','r3','r4','r5','r6']},must:['dario'],
  objective:'TURN 4까지 검진 교관 6명 격파 (엘리나 지원)',brief:'백 번의 반격(④, 전투당 1회): 다음 적 턴 동안 받는 모든 공격에 반격합니다 — 활에도, 사거리와 관계없이 — 반격 피해 +30%. 검진 한가운데에 서서 쓰세요.'});
+// v2.1 의뢰 (D-118, TAVERN_WORLD_DESIGN §7; maps and numbers PROPOSED): short battles of the small villages (16×12). Troops
+// fight at the sortie's level like any battle; a win pays the request's reward (core/villages.js), a loss goes back to the
+// village to try again. Up to eight may sortie (the legion picks who).
+const reqZone=(y0,y1,x0=2,x1=13)=>s=>{const c=[];for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++)c.push([x,y]);return zone(c);};
+const req=(id,m)=>skirmish(id,'request',null,{level:6,threatTurn:1,deployLimit:8,...m});
+const bandit=(id,x,y,s={})=>unit(id,'떠돌이 산적','bandit',x,y,{hp:30,atk:14,def:5,spd:6,mov:4,...s}),archerB=(id,x,y,s={})=>unit(id,'산적 궁수','archer',x,y,{hp:24,atk:13,def:3,spd:7,mov:4,...s});
+req(120,{title:'나루터의 산적',en:'Bandits at the Ferry',
+ rows:['wwwwwwwwwwwwwwww','gggggggbbggggggg','gfggggrrrrggggfg','ggggrrggggrrgggg','gggrrggvvggrrggg','ggrrgggvvgggrrgg','grrggfggggfggrrg','rrggggggggggggrr','gggfggggggggfggg','gggggggggggggggg','gggggggggggggggg','gggggggggggggggg'],
+ enemies:[bandit('b1',5,2),bandit('b2',10,2),bandit('b3',7,3),bandit('b4',3,4),bandit('b5',12,4),archerB('a1',7,1),archerB('a2',8,1),unit('boss','나루 산적 두목','captain',8,4,{hp:44,atk:16,def:7,spd:6,mov:4})],
+ deployments:{recommended:[[7,10],[6,10],[8,10],[5,11],[9,11],[4,10],[10,10],[7,11]]},deployZone:reqZone(9,11),limit:8,goal:{type:'rout'},
+ objective:'TURN 8까지 나루터의 산적 8명 격파',brief:'나루터를 점거한 산적들입니다. 강가의 궁수 둘이 다리 위를 노립니다. 마을 칸(지붕)에 서면 회복합니다.'});
+req(121,{title:'짐배 호위',en:'Barge Escort',
+ rows:['wwwwwwwwwwwwwwww','wwwwwwwwwwwwwwww','gggggggbbggggggg','gfgggggrrgggggfg','ggggggrrrrgggggg','fgggggrggrggggfg','ggggrrrggrrrgggg','gggrrgggggggrrgg','ggrrgfggggfggrrg','grrgggggggggggrr','rrgggggggggggggr','gggggggggggggggg'],
+ civilians:[{id:'cargo',name:'짐배',kind:'wagon',x:7,y:2,hp:60,def:6,res:4}],
+ enemies:[bandit('b1',0,9),bandit('b2',1,10),bandit('b3',15,9),bandit('b4',14,10),archerB('a1',0,6),archerB('a2',15,6),bandit('b5',3,11),bandit('b6',12,11)],
+ waves:[{turn:4,units:[bandit('w1',0,8),bandit('w2',15,8)]}],
+ deployments:{recommended:[[7,3],[8,3],[6,4],[9,4],[7,5],[8,5],[5,3],[10,3]]},deployZone:reqZone(3,5,4,11),limit:8,escortOnly:true,
+ goal:{type:'survive',turn:8,protect:['cargo']},
+ objective:'TURN 8이 끝날 때까지 짐배 지키기',brief:'짐배가 출발 준비를 마칠 때까지 나루를 지킵니다. 산적이 양쪽 강둑에서 오고, TURN 4에 둘이 더 옵니다.'});
+req(122,{title:'포위된 창기사',en:'The Besieged Spearknight',
+ rows:['ggggffgggggffggg','gfggggrrrrggggfg','ggggrrggggrrgggg','ggfrrggxxggrrfgg','gggrggxggxggrggg','ggrrgggggggggrrg','gggrggxggxggrggg','ggfrrggxxggrrfgg','ggggrrggggrrgggg','gfggggrrrrggggfg','gggggggggggggggg','gggggggggggggggg'],
+ civilians:[{id:'adelc',name:'아델',kind:'knight',x:7,y:5,hp:46,def:9,res:5}],
+ enemies:[bandit('b1',5,4),bandit('b2',10,4),bandit('b3',5,6),bandit('b4',10,6),bandit('b5',7,2),bandit('b6',8,8),archerB('a1',3,2),archerB('a2',12,2),unit('boss','포위대 두목','captain',8,1,{hp:46,atk:16,def:7,spd:6,mov:4})],
+ deployments:{recommended:[[7,11],[6,11],[8,11],[5,11],[9,11],[4,11],[10,11],[7,10]]},deployZone:reqZone(10,11),limit:6,escortOnly:true,
+ goal:{type:'survive',turn:6,protect:['adelc']},
+ objective:'TURN 6이 끝날 때까지 창기사 아델 지키기',brief:'무너진 초소 터에서 창기사 아델이 산적 열 명 가까이에게 둘러싸였습니다. 남쪽에서 뚫고 들어가 TURN 6까지 그를 지키세요. 아델이 살아남으면 군단에 합류합니다.'});
+req(123,{title:'길목의 약탈자',en:'Raiders at the Pass',
+ rows:['ggggmmmmmmmmgggg','gfgggmmrrmmggggf','ggggggrrrrgggggg','ggfgggrggrggfggg','gggggrrggrrggggg','ggggrrggggrrgggg','gfggrggffggrggfg','ggggrggggggrgggg','gggrrggggggrrggg','ggrrggggggggrrgg','gggggggggggggggg','gggggggggggggggg'],
+ enemies:[bandit('b1',6,2),bandit('b2',9,2),bandit('b3',5,4),bandit('b4',10,4),archerB('a1',7,1),archerB('a2',8,1),unit('c1','약탈 기수','cavalry',3,3,{hp:34,atk:15,def:6,spd:8,mov:6}),unit('c2','약탈 기수','cavalry',12,3,{hp:34,atk:15,def:6,spd:8,mov:6})],
+ deployments:{recommended:[[7,10],[8,10],[6,11],[9,11],[5,10],[10,10],[7,11],[8,11]]},deployZone:reqZone(10,11),limit:7,goal:{type:'rout'},
+ objective:'TURN 7까지 약탈자 8명 격파',brief:'국경 길목의 약탈자들입니다. 양옆의 기수 둘이 먼저 달려옵니다. 창병과 방패병이 기병에 강합니다.'});
+req(124,{title:'현상금: 떠돌이 산적',en:'Bounty: Roving Bandits',
+ rows:['gggggggggggggggg','gfgggggffgggggfg','gggggggggggggggg','ggggrrrrrrrrgggg','gggrrggggggrrggg','gggrggvvvvggrggg','gggrggvvvvggrggg','gggrrggggggrrggg','ggggrrrrrrrrgggg','gggggggggggggggg','gfgggggffgggggfg','gggggggggggggggg'],
+ enemies:[bandit('b1',3,0),bandit('b2',12,0),bandit('b3',7,1),archerB('a1',1,2),archerB('a2',14,2),unit('boss','떠돌이 두목','captain',8,0,{hp:40,atk:15,def:6,spd:6,mov:4})],
+ deployments:{recommended:[[7,10],[8,10],[6,11],[9,11],[5,10],[10,10],[7,11],[8,11]]},deployZone:reqZone(9,11),limit:6,goal:{type:'rout'},
+ objective:'TURN 6까지 떠돌이 산적 6명 격파',brief:'현상금이 걸린 떠돌이 산적 무리입니다. 본편 작전을 하나 마칠 때마다 새 무리가 나타납니다.'});
 export const isSkirmish=id=>!!MISSIONS[id]?.skirmish;
 export const LAST_MISSION=Math.max(...Object.keys(MISSIONS).map(Number).filter(id=>!MISSIONS[id].skirmish));
 

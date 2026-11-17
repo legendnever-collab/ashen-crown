@@ -16,9 +16,9 @@ const position=(s,id,x,y)=>{const u=findUnit(s,id);u.x=x;u.y=y;return u;};
 const only=(s,...ids)=>{s.units=s.units.filter(u=>u.team!=='enemy'||ids.includes(u.id));return s;};
 const expected=(s,u,t,mode)=>{const a=effectiveStats(s,u),d=effectiveStats(s,t),f=strikeStats(s,u,t,mode),g=terrainAt(t.x,t.y,s);return {f,a,d,g};};
 
-test('M01 is 22×16 with five heroes, three officers, the raiders and two villagers',()=>{const s=newGame(),m=missionOf(s);
+test('M01 is 22×16 with the five heroes (v2.1: no officers at the start — tavern hires), the raiders and two villagers',()=>{const s=newGame(),m=missionOf(s);
  assert.equal(m.map.length,16);assert.ok(m.map.every(r=>r.length===22));
- assert.deepEqual(s.units.filter(u=>u.team==='ally').map(u=>u.id).sort(),['bram','elina','eric','kai','lia','marta','noa','sain']);
+ assert.deepEqual(s.units.filter(u=>u.team==='ally').map(u=>u.id).sort(),['elina','eric','kai','lia','sain']);
  assert.equal(s.units.filter(u=>u.team==='civilian').length,2);assert.ok(s.units.filter(u=>u.team==='enemy').length>=10);
  assert.ok(s.units.some(u=>u.team==='enemy'&&u.y<=4)&&s.units.some(u=>u.team==='enemy'&&u.x>=18),'raiders come from the north road and the east road');});
 
@@ -30,9 +30,9 @@ test('ruins, occupied tiles and the map edge cannot be entered',()=>{const s=bat
  assert.equal(terrainAt(10,4,s).name,'Ruin');assert.equal(pathTo(s,e,10,4),null);assert.equal(pathTo(s,e,-1,4),null);
  const l=findUnit(s,'lia');assert.equal(pathTo(s,findUnit(s,'kai'),l.x,l.y),null);assert.ok(pathTo(s,e,9,5));});
 
-test('free deployment swaps inside the zone; presets give eight unique tiles',()=>{const s=newGame();s.screen='deployment';const e=findUnit(s,'eric'),l=findUnit(s,'lia'),o={x:e.x,y:e.y};
+test('free deployment swaps inside the zone; presets give each hero a unique tile',()=>{const s=newGame();s.screen='deployment';const e=findUnit(s,'eric'),l=findUnit(s,'lia'),o={x:e.x,y:e.y};
  assert.ok(setDeployment(s,'eric',l.x,l.y));assert.deepEqual({x:l.x,y:l.y},o);assert.equal(setDeployment(s,'eric',0,0),false);
- for(const name of ['recommended','assault','defense']){const t=newGame();t.screen='deployment';presetDeployment(t,name);assert.equal(new Set(t.units.filter(u=>u.team==='ally').map(u=>`${u.x},${u.y}`)).size,8);assert.ok(startBattle(t));}});
+ for(const name of ['recommended','assault','defense']){const t=newGame();t.screen='deployment';presetDeployment(t,name);const al=t.units.filter(u=>u.team==='ally');assert.equal(new Set(al.map(u=>`${u.x},${u.y}`)).size,al.length);assert.ok(startBattle(t));}});
 
 test('move once and undo before an irreversible action',()=>{const s=battle(),e=findUnit(s,'eric'),o=[e.x,e.y];
  assert.ok(moveUnit(s,'eric',6,10));assert.equal(moveUnit(s,'eric',7,10),null);assert.ok(undoMove(s,'eric'));assert.deepEqual([e.x,e.y],o);

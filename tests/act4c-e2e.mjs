@@ -7,7 +7,7 @@ import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterW
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {startBattle,beginEnemyPhase,advanceEnemy,nextMission} from '../src/core/game.js';
 import {enterHub} from '../src/core/frontier.js';import {drain} from './campaign-policy.mjs';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v2.0.0.html').href,shots='docs/v0.10.2/screenshots/act4c';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v2.1.0.html').href,shots='docs/v0.10.2/screenshots/act4c';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const results=[];const check=(name,ok)=>{assert.ok(ok,name);n++;results.push(name);console.log('PASS',name);};
 const camp26=JSON.parse(fs.readFileSync('tests/fixtures/v0101/v0101-m26-camp.json','utf8')).save;
 const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);};
@@ -32,7 +32,7 @@ try{
   await p.goto(url);await press('new');await drainStory(p);
   // 1. the real v0.10.1 oath camp offers Mission 27; the world card; the lower city with Baldrick
   await restore(camp26);await drainStory(p);await closeModals();let s=await snap();
-  check(`${label} the v0.10.1 oath camp (after M26, nine heroes) offers Mission 27`,s.schema===20&&s.frontier.hub==='oathcamp'&&s.campaign.roster.includes('baldrick')&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 27'));
+  check(`${label} the v0.10.1 oath camp (after M26, nine heroes) offers Mission 27`,s.schema===21&&s.frontier.hub==='oathcamp'&&s.campaign.roster.includes('baldrick')&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 27'));
   await press('next-mission');await p.waitForTimeout(400);let card=false;for(let i=0;i<40;i++){if((await body()).includes('왕도의 성문')){card=true;await p.screenshot({path:`${shots}/royalgate-card-${label}.png`});break;}if(!(await snap()).narrative.active)break;await p.keyboard.press('Enter').catch(()=>{});await p.waitForTimeout(150);}
   await drainStory(p);await closeModals();s=await snap();check(`${label} the world card of the royal gate and the lower city`,(card||s.narrative.seen.includes('world:royalgate'))&&s.frontier.hub==='capital'&&s.missionId===27);
   await p.screenshot({path:`${shots}/lowercity-${label}.png`});

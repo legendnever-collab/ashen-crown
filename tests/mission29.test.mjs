@@ -2,6 +2,7 @@
 // M22; a hero beside a rite point mends it; TURN 2 the duel — or Aren's last words (the crown answers Bellard less, and he may
 // later ask to give his own memory to the ward). Bellard's second phase struck down with two rite points standing wins; two
 // rite points broken or TURN 14 ending loses. Then Bellard's fate (trial / exile / his own offer) and the king rests.
+import {standBeside} from './duel-helper.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {MISSIONS} from '../src/data/missions.js';
 import {STORY} from '../src/data/story.js';
@@ -42,11 +43,11 @@ test('Bellard rises once with the crown\'s power; his second fall with two rite 
  const l=battle();while(!l.outcome&&l.turn<20){for(const u of l.units.filter(u=>u.team==='ally'||['rp1','rp2','rp3'].includes(u.id)))u.hp=u.maxHP;enemyPhase(l);}assert.equal(l.outcome,'defeat');assert.match(l.reason,/TURN 14/);
 });
 test('TURN 2: the duel with Bellard, or Aren\'s last words (skip) — the crown then answers him less and his own offer opens',()=>{
- const s=battle();quiet(s);enemyPhase(s);assert.equal(s.turn,2);assert.equal(s.duel?.key,'29:duel');assert.ok(duelPick(s,'skip'));M29.beforeEnemyPhase(s);assert.equal(s.missionState.words,true);
+ const s=battle();quiet(s);enemyPhase(s);assert.equal(s.turn,2);standBeside(s,'eric','boss');assert.equal(s.duel?.key,'29:duel');assert.ok(duelPick(s,'skip'));M29.beforeEnemyPhase(s);assert.equal(s.missionState.words,true);
  strikeBoss(s,999);const b=findUnit(s,'boss');assert.equal(b.maxHP,MISSIONS[29].crown29.words.hp);assert.ok(b.maxHP<MISSIONS[29].crown29.full.hp);
  strikeBoss(s,999);enemyPhase(s);assert.equal(s.outcome,'victory');assert.equal(s.campaign.flags.mission_29_duel,'skipped');assert.equal(s.campaign.flags.mission_29_words,true);
  assert.ok(fateOpen29(s.campaign,'offer'));assert.ok(chooseFate29(s,'offer'));assert.equal(s.campaign.choices.m29_bellard,'offer');assert.ok(!chooseFate29(s,'trial'),'once');assert.equal(s.campaign.factionTrust.flame,2);deserialize(serialize(s));
- const t=battle();quiet(t);enemyPhase(t);for(let i=0;i<3&&!t.duel.result;i++)duelPick(t,'strike');M29.beforeEnemyPhase(t);assert.equal(t.missionState.words,false);strikeBoss(t,999);strikeBoss(t,999);enemyPhase(t);assert.equal(t.outcome,'victory');
+ const t=battle();quiet(t);enemyPhase(t);standBeside(t,'eric','boss');for(let i=0;i<5&&!t.duel.result;i++)duelPick(t,'strike');M29.beforeEnemyPhase(t);assert.equal(t.missionState.words,false);strikeBoss(t,999);strikeBoss(t,999);enemyPhase(t);assert.equal(t.outcome,'victory');
  assert.ok(!fateOpen29(t.campaign,'offer'),'without Aren\'s words Bellard does not ask');assert.ok(!chooseFate29(t,'offer'));assert.ok(chooseFate29(t,'exile'));assert.equal(t.campaign.factionTrust.iron,3);
  assert.deepEqual(Object.keys(FATE29),['trial','exile','offer']);
 });

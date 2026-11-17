@@ -1,3 +1,4 @@
+import {MERC_BUST} from '../data/mercs-v210.js';
 // v0.4 dialogue busts: painted, original character illustrations for the story window.
 // Every shape here is authored for Ashen Crown (vector paths + gradients, no traced art). The
 // layout follows the classic SRPG dialogue convention: a large three-quarter bust facing the
@@ -45,7 +46,7 @@ function bustFromCast(id){const k=CAST[id]||CAST.bandit,chief=/captain|Captain|q
  beard:k.beard,beardColor:k.beardColor,hoodDown:k.hood&&k.helm?k.hood:null,mail:k.helm==='kettle'};}
 const LORD_LOOK={oswin:'lordA',brennan:'lordB'};
 const BUST_REUSE={ritualKnight:'executor'}; /* the chancellery's rite knights speak with the plum-armored executor's face */
-const OFFICER_BUST={bram:'guard',noa:'refugee',marta:'smith',rowell:'captain16_iron'};
+const OFFICER_BUST={bram:'guard',noa:'refugee',marta:'smith',rowell:'deserterCaptain',...MERC_BUST}; /* v2.1: hires' stand-ins until pack H1 (v2) */
 export function bustKey(u,missionId=1){
  if(!u)return 'refugee';
  if(u.kind==='lion'||u.id==='baldrick')return 'baldrick';

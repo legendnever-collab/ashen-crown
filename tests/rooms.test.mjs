@@ -47,7 +47,7 @@ test('night hubs dim the same room; a v0.5 save standing on an old template tile
  assert.equal(paintedRoom('bivouac','barracks','inn-1').night,true);assert.equal(paintedRoom('camp','barracks','inn-3').night,false);assert.equal(paintedRoom('bivouac','barracks','inn-1').art,'int_tent_soldier');
  const s=newGame(5);enterHub(s,{story:false});drain(s);const door=HUBS.village.places.find(p=>p.buildingId==='inn-1');Object.assign(s.frontier,{x:door.x,y:door.y});assert.ok(enterInterior(s,'inn-1'));
  const raw=JSON.parse(JSON.stringify({...s,feedback:[]}));raw.schema=8;raw.version='0.5.0';delete raw.campaign.roster;raw.frontier.x=5;raw.frontier.y=2;raw.campaign.frontier=structuredClone(raw.frontier); // a bunk in the painting
- const m=migrate(raw);assert.equal(m.frontier.interior,'barracks');assert.ok(walkable(m,m.frontier.x,m.frontier.y));assert.deepEqual([m.frontier.x,m.frontier.y],currentHub(m).spawn);
+ const m=migrate(raw);assert.equal(m.frontier.interior,'tavern'); /* v2.1: the village inn is its tavern (same room) */assert.ok(walkable(m,m.frontier.x,m.frontier.y));assert.deepEqual([m.frontier.x,m.frontier.y],currentHub(m).spawn);
 });
 
 test('shipped room and chest WebPs equal the hash-verified import log',()=>{

@@ -7,17 +7,17 @@ import {HUBS,INTERIORS} from './frontier-data.js';
 
 export const ROOM_FAMILY={village:'village',garrison:'tent',bivouac:'tent',oathcamp:'tent',fortress:'fort',castletown:'north',velmar:'port',pilgrim:'pilgrim',refuge:'tent',summit:'tent',capital:'capital',fieldcamp:'tent',keep:'fort',forest:'forest'};
 const RV6_BY_KIND={
- village:{house:'int_village_house',weapon:'int_village_forge',item:'int_village_shop',barracks:'int_village_barracks',quarters:'int_village_hall',store:'int_village_store'},
+ village:{tavern:'int_village_barracks',house:'int_village_house',weapon:'int_village_forge',item:'int_village_shop',barracks:'int_village_barracks',quarters:'int_village_hall',store:'int_village_store'},
  tent:{barracks:'int_tent_soldier',quarters:'int_tent_command',store:'int_tent_supply'},
  fort:{barracks:'int_fort_barracks',quarters:'int_fort_command',store:'int_fort_armory'},
- north:{house:'int_north_house',weapon:'int_north_smithy',item:'int_north_provisioner',barracks:'int_north_inn',quarters:'int_north_office',store:'int_north_store'},
- port:{house:'int_port_house',weapon:'int_port_armory',item:'int_port_apothecary',barracks:'int_port_tavern',quarters:'int_port_council',store:'int_port_warehouse'},
+ north:{tavern:'int_north_inn',house:'int_north_house',weapon:'int_north_smithy',item:'int_north_provisioner',barracks:'int_north_inn',quarters:'int_north_office',store:'int_north_store'},
+ port:{tavern:'int_port_tavern',house:'int_port_house',weapon:'int_port_armory',item:'int_port_apothecary',barracks:'int_port_tavern',quarters:'int_port_council',store:'int_port_warehouse'},
  // v0.9.1 (art pack D): the pilgrim village's rooms
- pilgrim:{house:'int_pilgrim_house',weapon:'int_pilgrim_smithy',item:'int_pilgrim_apothecary',barracks:'int_pilgrim_hostel',quarters:'int_pilgrim_hospice',store:'int_pilgrim_granary'},
+ pilgrim:{tavern:'int_pilgrim_hostel',house:'int_pilgrim_house',weapon:'int_pilgrim_smithy',item:'int_pilgrim_apothecary',barracks:'int_pilgrim_hostel',quarters:'int_pilgrim_hospice',store:'int_pilgrim_granary'},
  // v0.9.1 (ACT III art pack F1): the capital's lower city, Velmar's doors
- capital:{house:'int_capital_house',weapon:'int_capital_armory',item:'int_capital_apothecary',barracks:'int_capital_tavern',quarters:'int_capital_records',store:'int_capital_warehouse'},
+ capital:{tavern:'int_capital_tavern',house:'int_capital_house',weapon:'int_capital_armory',item:'int_capital_apothecary',barracks:'int_capital_tavern',quarters:'int_capital_records',store:'int_capital_warehouse'},
  // v0.9.1 (ACT III art pack F2): the forest village, on the Ashen Village's doors
- forest:{house:'int_forest_house',weapon:'int_forest_bowyer',item:'int_forest_herbalist',barracks:'int_forest_longhouse',quarters:'int_forest_lodge',store:'int_forest_store'}
+ forest:{tavern:'int_forest_longhouse',house:'int_forest_house',weapon:'int_forest_bowyer',item:'int_forest_herbalist',barracks:'int_forest_longhouse',quarters:'int_forest_lodge',store:'int_forest_store'}
 };
 // Buildings whose sign makes them a different room of the same kind.
 const RV6_BY_LABEL={tent:{TRIAGE:'int_tent_triage',OPERATIONS:'int_tent_operations'},fort:{'RECORDS HALL':'int_fort_records'},pilgrim:{CHAPEL:'int_pilgrim_chapel',COPYISTS:'int_pilgrim_copyists'}};

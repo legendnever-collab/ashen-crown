@@ -31,6 +31,8 @@ import {STORY_V05} from './story-v05.js';
 import {STORY_WORLD} from './story-world.js';
 import {LAST_MISSION} from './missions.js';
 import {REVISIT_LINES} from './arms-v081.js';
+import {NEW_HEROES,MERC_TALK} from './mercs-v210.js';
+import {DUEL_EVENTS,DUEL_SPEAKERS} from './duel-events-v210.js';
 Object.assign(FRONTIER_SCENES,FRONTIER_V04);Object.assign(ADVISOR_BRIEFINGS,ADVISOR_V04,ADVISOR_V06,ADVISOR_V061,ADVISOR_V070,ADVISOR_V071,ADVISOR_V090,ADVISOR_V091,ADVISOR_V092,ADVISOR_V093,ADVISOR_V0100,ADVISOR_V0101,ADVISOR_V0102,ADVISOR_V100);Object.assign(NPC_TALK,NPC_TALK_V061,NPC_TALK_V070,NPC_TALK_V071,NPC_TALK_V090,NPC_TALK_V091,NPC_TALK_V092,NPC_TALK_V093,NPC_TALK_V0100,NPC_TALK_V0101,NPC_TALK_V0102,NPC_TALK_V100);Object.assign(ADVISOR_AFTER,ADVISOR_AFTER_V061,ADVISOR_AFTER_V070,ADVISOR_AFTER_V071,ADVISOR_AFTER_V090,ADVISOR_AFTER_V091,ADVISOR_AFTER_V092,ADVISOR_AFTER_V093,ADVISOR_AFTER_V0100,ADVISOR_AFTER_V0101,ADVISOR_AFTER_V0102,ADVISOR_AFTER_V100);
 const line=(speaker,text,expression='neutral')=>({speaker,text,expression});
 export const STORY={
@@ -118,12 +120,9 @@ Object.assign(STORY,STORY_WORLD);
 for(const [npc,hero]of [['aren','eric'],['elina','elina'],['lia','lia'],['sain','sain'],['kai','kai']])if(STORY[`pre:6:reason:${hero}`])STORY[`npc:6:preparation:${npc}`]=STORY[`pre:6:reason:${hero}`].map(l=>({...l,stage:undefined,inPlace:true,actors:['eric',npc],focus:1}));
 // v0.8.1 revisits (D-073 §6.3): townsfolk say a word on how their town is doing (PROPOSED wording).
 for(const [hub,talks]of Object.entries(REVISIT_LINES))for(const [id,lines]of Object.entries(talks)){const label=HUBS[hub]?.npcs.find(n=>n.id===id)?.name.split(' · ')[0];STORY[`revisit:${hub}:${id}`]=lines.map(text=>({...line(id,text),...(label?{name:label}:{}),inPlace:true,actors:['eric',id],focus:1}));}
-// v2.0.0 부장 (REFORM_DESIGN §5.3, D-115; PROPOSED): the officers say a word as each ACT I battle opens. The heroes' lines
-// and the flow of the scenes are untouched; the officer's line comes last.
-for(const [key,sp,text,expr] of [
- ['1:intro','bram','자경단, 길목으로! 쇠스랑 든 사람은 내 뒤에 서라!','determined'],
- ['2:intro','noa','북쪽 출구는 내 덫 자리야. 거기로는 못 빠져나가!','determined'],
- ['3:intro','marta','다리 판자, 내가 박은 못이다. 서두르면 버틴다. 뛰어!','concerned'],
- ['4:intro','bram','성벽 위 궁수 둘. 정문 말고 무너진 데를 찾아라.','concerned'],
- ['5:intro','rowell','기병이 동쪽에서 온다. 앞길은 내가 본다.','determined'],
- ['6:intro','marta','피난민 곁은 내가 맡는다. 문짝 방패, 오늘 제일 바쁘겠군.','determined']])if(STORY[key])STORY[key]=[...STORY[key],{...STORY[key].at(-1),...line(sp,text,expr),focus:undefined,actors:undefined,officer:true}];
+// v2.1 (D-118): the officers are tavern hires now, so the ACT I battle intros no longer give them a line (they may not
+// be in the legion yet). Hires and the rescued hero speak in camp (officer:<id>:<n>) and in their duels.
+for(const [id,name] of Object.entries({...Object.fromEntries(NEW_HEROES.map(h=>[h.id,h.name])),...DUEL_SPEAKERS}))SPEAKERS[id]??={id,name,ko:name,officer:!DUEL_SPEAKERS[id]};
+for(const [id,talks]of Object.entries(MERC_TALK))talks.forEach((lines,i)=>{STORY[`officer:${id}:${i}`]=lines.map(([speaker,text,expression])=>({...line(speaker,text,expression),inPlace:true,actors:['eric',id],focus:speaker==='eric'?0:1}));});
+for(const evs of Object.values(DUEL_EVENTS))for(const ev of evs)if(ev.lines)STORY[ev.key]=ev.lines.map(([speaker,text,expression])=>line(speaker,text,expression));
+

@@ -1,3 +1,5 @@
+import {openStory,advanceStory} from '../src/core/narrative.js';
+import {duelOpen,duelPick} from '../src/core/duel.js';
 import {findUnit,alive,movement,validTarget,forecast,distance,terrainAt,hostile} from '../src/core/rules.js';
 import {moveUnit,performAction,canAct,beginEnemyPhase,advanceEnemy} from '../src/core/game.js';
 import {HEROES} from '../src/data/game-data.js';
@@ -24,7 +26,7 @@ export function playBattle(s,options={}){
  const trace=[],states=[];let steps=0;
  while(!s.outcome&&s.turn<=30&&steps++<500){
   // Rescue specialist first; archer and mage before front line leaves occupied corridors.
-  for(const id of ['kai','lia','elina','sain','eric']){const u=findUnit(s,id);if(!canAct(s,u))continue;const a=chooseAction(s,u,options);if(a.x!==u.x||a.y!==u.y){const path=moveUnit(s,id,a.x,a.y);if(!path)throw Error('Policy chose illegal move');trace.push({type:'move',id,x:a.x,y:a.y});}const r=performAction(s,id,a.mode,a.target);if(!r.ok)throw Error(r.error);trace.push({type:'action',id,mode:a.mode,target:a.target});if(s.outcome)break;}
+  for(const id of ['kai','lia','elina','sain','eric']){const u=findUnit(s,id);if(!canAct(s,u))continue;const a=chooseAction(s,u,options);if(a.x!==u.x||a.y!==u.y){const path=moveUnit(s,id,a.x,a.y);if(!path)throw Error('Policy chose illegal move');trace.push({type:'move',id,x:a.x,y:a.y});if(duelOpen(s)){let n=0;while(duelOpen(s)&&n++<6)duelPick(s,['strike','guard','finisher'][(s.turn+n)%3]);trace.push({type:'duel',result:s.duel.result});openStory(s);for(let i=0;s.narrative.active&&i<100;i++)advanceStory(s);if(s.outcome)break;if(!canAct(s,u))continue;}}const r=performAction(s,id,a.mode,a.target);if(!r.ok)throw Error(r.error);trace.push({type:'action',id,mode:a.mode,target:a.target});if(s.outcome)break;}
   states.push({turn:s.turn,hp:s.units.filter(u=>u.team==='ally').map(u=>({id:u.id,hp:u.hp})),rescued:s.units.filter(u=>u.rescued).length});
   if(!s.outcome){beginEnemyPhase(s);trace.push({type:'phase'});while(s.phase==='enemy'&&!s.outcome)advanceEnemy(s);}
  }

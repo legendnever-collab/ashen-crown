@@ -2,6 +2,7 @@
 // turn) and Thea's word (once); four of resolve and he yields — he joins the legion as its ninth hero (Lv 19, tier 3) when he
 // halted his army at M13, otherwise he rides beside it; with his two bearers down from TURN 4, at half his HP he withdraws
 // alive; Erik falling loses. Then Baldrick's own four skills, and Dario's ④ (A Hundred Counters, trial 117).
+import {standBeside} from './duel-helper.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {MISSIONS} from '../src/data/missions.js';
 import {STORY} from '../src/data/story.js';
@@ -29,7 +30,7 @@ test('M26 data: 18×14 lion\'s pass, level 19, sortie of seven, TURN 12; Baldric
  for(const k of ['26:intro','26:duel','26:duel:hero','26:duel:foe','26:waver','26:thea','26:riders','26:broken','26:yield:join','26:yield:cooperate','26:end','pre:26','after:26','after:26:join','after:26:cooperate','after:26:withdraw','after:26:thea','npc:26:preparation:thea','npc:26:aftermath:baldrick','world:lionpass','skirmish:117:intro','awaken:dario'])assert.ok(STORY[k]?.length,k);
 });
 test('a won duel is two of resolve; Erik (once a turn) and Thea (once) add one; at four he yields — and joins when he halted at M13',()=>{
- const s=battle('halted');calm(s);enemyPhase(s);assert.equal(s.turn,2);assert.ok(s.duel&&!s.duel.result,'the duel opens on TURN 2');
+ const s=battle('halted');calm(s);enemyPhase(s);assert.equal(s.turn,2);standBeside(s,'eric','boss');assert.ok(s.duel&&!s.duel.result,'the duel opens on TURN 2 with Erik beside him (v2.1 event)');
  while(!s.duel.result){s.duel.picks.length;duelPick(s,'strike');}const won=s.duel.result==='hero';
  if(!won){s.duel.result='hero';}s.missionState.duelCounted=false;
  const e=beside(s,'eric');assert.ok(performAction(s,'eric','persuade','boss').ok);assert.equal(s.missionState.resolve,3,'duel 2 + Erik 1');assert.ok(!performAction(s,'eric','persuade','boss').ok,'once a turn');

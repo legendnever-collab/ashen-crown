@@ -473,3 +473,19 @@
 .arena-score{display:flex;align-items:center;gap:10px;color:#f3e8d4;font-size:1.6rem;font-weight:700}.arena-score small{font-size:.7rem;font-weight:400;opacity:.8;text-align:center}
 .arena-band{margin-top:8px;background:rgba(14,12,12,.78);border:1px solid rgba(220,200,170,.25);border-radius:8px;padding:8px 10px;color:#f3e8d4}.arena-band p{margin:0}.arena-speaker{font-size:.75rem;color:#e0b860}
 .arena-hint{margin:8px 0 0;font-size:.75rem;color:#d8cdbb;opacity:.9}
+/* v2.1 주점 · 의뢰 · 세계지도 (D-118) */
+.merc-list,.request-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:8px}
+.merc-card,.request-card{border:1px solid rgba(220,182,108,.45);border-radius:8px;padding:10px;background:rgba(14,26,30,.85)}
+.merc-card.elite{border-color:#f0c46a;box-shadow:0 0 0 1px rgba(240,196,106,.35)}
+.merc-head{display:flex;gap:10px;align-items:center}.merc-head canvas{width:56px!important;height:56px!important}
+.merc-card h3,.request-card h3{margin:0 0 4px;font-size:16px}.merc-stats{font-size:12px;color:#cfe0d6}
+.merc-elite,.merc-wander,.request-done,.request-new{display:inline-block;margin-left:6px;padding:1px 6px;border-radius:9px;font-size:11px;background:#5b4520;color:#ffe6a8}
+.merc-wander{background:#2d4a3c;color:#cdeedd}.request-done{background:#3a3f3f;color:#d6d6d6}.request-card.done{opacity:.6}
+.request-sortie{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin:8px 0}
+.world-travel{position:relative;width:min(960px,100%);aspect-ratio:3/2;margin:0 auto}
+.world-travel .world-view{width:100%;height:100%}
+.world-markers{position:absolute;inset:0;pointer-events:none}
+.world-marker{position:absolute;transform:translate(-50%,-110%);pointer-events:auto;min-height:30px;padding:3px 8px!important;border-radius:14px!important;font:bold 12px Arial,'Ashen UI',sans-serif;background:rgba(24,20,14,.85)!important;border:1px solid #f0c46a!important;color:#fbf1d6!important;white-space:nowrap}
+.world-marker.home{background:#7a3424!important}.world-marker.small{border-color:#9fd0a8!important}.world-marker.here{box-shadow:0 0 0 3px rgba(240,196,106,.6)}
+.world-marker:disabled{opacity:.85;cursor:default}
+@media(max-width:600px){.world-marker span{font-size:10px}.merc-list,.request-list{grid-template-columns:1fr}}

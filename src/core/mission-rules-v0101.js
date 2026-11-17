@@ -91,7 +91,7 @@ export const M26={
  status(s){const m=missionOf(s),st=s.missionState,b=baldrickOf26(s);return `결단 ${st.resolve}/${m.persuade.threshold}${st.halted?' · 칼을 내림':''} · 발드릭 HP ${b?Math.round(100*Math.max(0,b.hp)/b.maxHP):0}% · ${Math.max(0,m.turnLimit+1-s.turn)}턴 남음`;},
  optional(s){const f=s.campaign.flags;return `발드릭 ${({join:'합류',cooperate:'협력',withdraw:'물러남'})[f.mission_26_baldrick]||'—'} · 일기토 ${({hero:'승리',foe:'패배',skipped:'거절',none:'—'})[f.mission_26_duel]||'—'}`;},
  onTurnStart(s){const m=missionOf(s),st=s.missionState;act2Waves(s);
-  if(s.turn===m.duelTurn&&!st.duelDone){st.duelDone=true;const b=baldrickOf26(s),e=findUnit(s,'eric');if(b&&alive(b)&&e&&alive(e)&&!e.benched&&s.duel==null){if(startDuel(s,'eric','boss','26:duel'))enqueueStory(s,'26:duel');}}},
+  /* v2.1: the duel is an event when the pair stands side by side (core/duel-events.js) */},
  beforeEnemyPhase(s){countDuel26(s);},
  afterDuel(s){countDuel26(s);}, // v2.0.0: the resolve shows the moment the duel ends
  // Baldrick keeps to the north until the duel turn, then rides at Erik; his riders hunt the legion; the bearers stay by him.

@@ -4,9 +4,9 @@ import {VERSION,SCHEMA,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,DEPLOYMENTS,BALAN
 import {tallyKill,tallyRescue,tallyHeal,commitRecords} from './records.js';
 import {skillOf,ensureStats,deriveUnit,planLevels,scaleTroop,DIFFICULTY,difficultyOf,classKeyOf,isBossRank,OFFICER_IDS} from './stats8.js';
 import {TIER_ATTACK} from '../data/classes8.js';
-import {flank,challengeChance,terrainCost as terrainCostOf,distance,healAmount,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,forecast,strikeStats,guardFor,roll,awardXP,discover,terrainAt,counterBlocked,hostile,chargeBreaks,riposteBonus,sideOf,weatherOf,inWard,blockadeHolds} from './rules.js';
+import {flank,terrainCost as terrainCostOf,distance,healAmount,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,forecast,strikeStats,guardFor,roll,awardXP,discover,terrainAt,counterBlocked,hostile,chargeBreaks,riposteBonus,sideOf,weatherOf,inWard,blockadeHolds} from './rules.js';
 import {MISSIONS,missionOf,LAST_MISSION} from '../data/missions.js';
-import {ensureOfficers} from './roster.js';
+import {checkDuelEvents} from './duel-events.js';
 import {rulesOf,objectUnit,searchEvidence} from './mission-rules.js';
 import {narrativeState,enqueueStory,remember,setStoryFlag,afterBattleEvents} from './narrative.js';
 import {proficiencyBonus,commitSkirmish,autoPromoteOfficers} from './progression.js';
@@ -20,7 +20,7 @@ import {duelOpen,startDuel,setDuelWon} from './duel.js';
 import {defaultCommand,togetherOpen,lastOrderOpen} from './command.js';
 export function newGame(seed=20261014,campaign=null,missionId=1){
  const mission=MISSIONS[missionId];
- if(campaign){campaign=structuredClone(campaign);ensureOfficers(campaign,missionId);}else{campaign={heroes:null,results:[],clears:0,completed:[],roster:[]};ensureOfficers(campaign,missionId);} /* v2.0.0 부장 */
+ if(campaign){campaign=structuredClone(campaign);}else{campaign={heroes:null,results:[],clears:0,completed:[],roster:[]};} /* v2.1 (D-118): the five start alone; the officers are tavern hires */
  const spots=(mission.deployments||DEPLOYMENTS).recommended;
  const units=partyHeroes(campaign).map((h,i)=>{const old=campaign?.heroes?.find(a=>a.id===h.id);const u={...structuredClone(h),team:'ally',maxHP:h.hp,maxMP:h.mp,x:spots[i]?.[0]??-1,y:spots[i]?.[1]??-1,xp:0,earnedXP:0,growthHistory:[],clues:[],highlights:[],healTargets:[],moved:false,acted:false,hitThisTurn:false,shadowBonus:0,guardTarget:null};
   if(old){for(const k of ['level','xp','maxHP','maxMP','atk','def','mag','res','spd','growthHistory','clues','appearanceTier','classTier','storyTier','classMovementModifier','movementProfile','stats','cls'])if(old[k]!==undefined)u[k]=structuredClone(old[k]);}if(u.stats)deriveUnit(u);else{delete u.hp;ensureStats(u);}u.hp=u.maxHP;u.mp=u.maxMP;u.name=h.name;u.ko=h.ko;u.appearanceTier=u.appearanceTier|| (u.id==='eric'&&u.level>=5?2:1);return u;
@@ -49,7 +49,7 @@ export function startBattle(s){if(s.screen!=='deployment'||s.units.filter(a=>a.t
 export function canAct(s,u){return s.screen==='battle'&&s.phase==='player'&&!s.narrative?.active&&!duelOpen(s)&&u?.team==='ally'&&alive(u)&&!u.acted;}
 // v0.5: a promoted Kai may still move after Quick Strike (strikeMove = this turn); otherwise moving needs an unspent action.
 export function canMove(s,u){return s.screen==='battle'&&s.phase==='player'&&!s.narrative?.active&&!duelOpen(s)&&u?.team==='ally'&&alive(u)&&!u.moved&&(!u.acted||u.strikeMove===s.turn);}
-export function moveUnit(s,id,x,y){const u=findUnit(s,id);if(!canMove(s,u)||(u.x===x&&u.y===y))return null;const path=pathTo(s,u,x,y);if(!path)return null;if(u.acted){delete u.strikeMove;delete u.moveLeft;delete s.undo[id];}else s.undo[id]={x:u.x,y:u.y};u.x=x;u.y=y;u.moved=true;if(skillOf(u)==='charge')u.chargeRun=path.length-1;s.feedback.push({type:'move',id,path});return path;}
+export function moveUnit(s,id,x,y){const u=findUnit(s,id);if(!canMove(s,u)||(u.x===x&&u.y===y))return null;const path=pathTo(s,u,x,y);if(!path)return null;if(u.acted){delete u.strikeMove;delete u.moveLeft;delete s.undo[id];}else s.undo[id]={x:u.x,y:u.y};u.x=x;u.y=y;u.moved=true;if(skillOf(u)==='charge')u.chargeRun=path.length-1;s.feedback.push({type:'move',id,path});if(u.team==='ally')checkDuelEvents(s,id); /* v2.1 일기토 이벤트 */return path;}
 export function undoMove(s,id){const u=findUnit(s,id),origin=s.undo[id];if(!canAct(s,u)||!origin||at(s,origin.x,origin.y))return false;u.x=origin.x;u.y=origin.y;u.moved=false;if(u.chargeRun)u.chargeRun=0;delete s.undo[id];return true;}
 function consumeAction(s,u){u.acted=true;delete s.undo[u.id];}
 // v0.9.3 「함께 정한다」: Aren lets one hero who has acted this player phase move and act again (once a battle).
@@ -117,11 +117,7 @@ function strikeWithPattern(s,u,t,mode){const p=mode==='attack'?attackPattern(u):
  return r;}
 // v2.0.0 §3.4: an attacker 8 or more 민첩 faster strikes once more (×0.6) after the exchange.
 function followUp(s,u,v,mode){if(mode!=='attack'||!alive(u)||!alive(v)||!hostile(s,u,v)||!validTarget(s,u,v,'attack'))return null;if((effectiveStats(s,u).spd||0)<(effectiveStats(s,v).spd||0)+8)return null;s.log.push(`${u.name}: 추가 공격.`);return damage(s,u,v,mode,false,{scale:.6});}
-// v2.0.0 일기토 신청 (REFORM_DESIGN §4.4, §7, Q9): a hero beside a named enemy (a commander, or one who carries a treasure)
-// may call it out — twice a battle at most. The foe accepts by its nature: 60% + 5% for each point of 무력 it has over the
-// hero (20–90%). A refusal spends the action. Winning the duel takes the foe's treasure (duel.js onDuelWon).
-export const CHALLENGE_LIMIT=2;
-export function canChallenge(s,u,t){return s.screen==='battle'&&s.phase==='player'&&!duelOpen(s)&&!missionOf(s).skirmish&&u?.team==='ally'&&alive(u)&&!u.acted&&t?.team==='enemy'&&alive(t)&&!t.duelled&&!t.withdrawing&&distance(u,t)===1&&(isBossRank(t)||!!t.carries)&&(s.challenges||0)<CHALLENGE_LIMIT;}
+// v2.1 (D-118): duels are story events between linked pairs (core/duel-events.js); the v2.0.0 challenge menu is gone.
 setDuelWon((s,f)=>{claimTreasure(s,f.carries,'일기토 승리');f.carries=null;});
 export function performAction(s,id,mode,targetId){
  const u=findUnit(s,id),t=findUnit(s,targetId);if(!canAct(s,u))return {ok:false,error:'행동할 수 없는 장수입니다.'};
@@ -129,7 +125,6 @@ export function performAction(s,id,mode,targetId){
  if(mode==='wait'){consumeAction(s,u);if(s.missionId===3&&u.id==='kai'&&u.y<=4)remember(s,'kai_bypass');s.log.push(`${u.name}: 대기.`);if(missionOf(s).skirmish){checkOutcome(s);afterBattleEvents(s);}return {ok:true};}
  if((mode==='skill'||isClassMode(mode)&&!isToolMode(mode))&&u.status?.silence)return {ok:false,error:'침묵 상태라 스킬을 쓸 수 없습니다.'};
  if(isTacticMode(mode))return performTactic(s,u,mode,targetId??(isToolMode(mode)?u.id:null));
- if(mode==='challenge'){if(!canChallenge(s,u,t))return {ok:false,error:'일기토를 신청할 수 없습니다.'};consumeAction(s,u);const c=challengeChance(u,t);if(roll(s)*100<c){s.challenges=(s.challenges||0)+1;t.duelled=true;startDuel(s,u.id,t.id,'challenge');s.log.push(`${t.name}이(가) 일기토에 응했습니다. (${c}%)`);}else{t.duelled=true;s.log.push(`${t.name}이(가) 일기토를 거절했습니다. (${c}%)`);s.feedback.push({type:'miss',id:t.id,text:'거절'});}return {ok:true};}
  if(mode==='item'){if(!s.potions||u.hp===u.maxHP)return {ok:false,error:'회복약을 사용할 수 없습니다.'};s.potions--;const n=Math.min(20,u.maxHP-u.hp);u.hp+=n;s.feedback.push({type:'heal',id,text:`+${n}`,toHP:u.hp});consumeAction(s,u);if(s.missionId===3&&u.id==='kai'&&u.y<=4)remember(s,'kai_bypass');s.log.push(`${u.name}: 회복약으로 ${n} HP 회복.`);return {ok:true};}
  if(isClassMode(mode)){const r=applyClassAction(s,u,targetId,mode);if(!r.ok)return r;cutIn(s,u,'third');consumeAction(s,u);awardXP(s,u,20,CLASS_ACTIONS[mode].ko);rulesOf(s)?.onAction?.(s,u,mode,t);checkOutcome(s);afterBattleEvents(s);return {ok:true};}
  if(!validTarget(s,u,t,mode))return {ok:false,error:'대상 또는 사거리가 올바르지 않습니다.'};
@@ -239,7 +234,7 @@ export function advanceEnemy(s){
  expireClassEffects(s);expireTactics(s);statusAge(s,'enemy');
  if(s.missionId===1&&s.turn===2)s.log.push('북쪽 숲에서 발소리가 들립니다. TURN 3에 북서·북동 모서리로 산적 2명이 진입합니다.');
  if(s.turn>=3&&!s.reinforced&&missionOf(s).reinforcements.length){for(const e of missionOf(s).reinforcements){let pos={x:e.x,y:e.y};if(at(s,pos.x,pos.y)){const free=[];for(let y=0;y<missionOf(s).height;y++)for(let x=0;x<missionOf(s).width;x++)if(!at(s,x,y)&&Number.isFinite(terrainAt(x,y,s).cost))free.push({x,y});free.sort((a,b)=>distance(a,e)-distance(b,e));pos=free[0];}{const nu={...structuredClone(e),...pos,team:'enemy',maxHP:e.hp,mp:0,maxMP:0,mag:0,spawnTurn:s.turn};s.units.push(nu);scaleTroop(s,nu,missionOf(s));}s.feedback.push({type:'spawn',id:e.id,text:'REINFORCEMENT'});}s.reinforced=true;s.log.push('적 증원 2명 출현. 이번 Player Phase 동안 먼저 대응할 수 있습니다.');}
- riseLastOrder(s);rulesOf(s)?.onTurnStart?.(s);
+ riseLastOrder(s);rulesOf(s)?.onTurnStart?.(s);checkDuelEvents(s); /* v2.1: a pair already side by side */
  ageFires(s);burnUnits(s,'ally');poisonTick(s,'legion');
  // v0.8.1 treasures: the Flame Reliquary (HP) and the Mana Ring (MP) each player phase.
  for(const u of s.units.filter(u=>u.team==='ally'&&alive(u))){const hp=Math.min(fx(s,u,'reliquary'),u.maxHP-u.hp),mp=Math.min(fx(s,u,'mana'),u.maxMP-u.mp);if(hp>0){u.hp+=hp;s.feedback.push({type:'heal',id:u.id,text:`+${hp}`,toHP:u.hp});}if(mp>0){u.mp+=mp;s.feedback.push({type:'heal',id:u.id,resource:'mp',text:`+${mp} MP`});}}

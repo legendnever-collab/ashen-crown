@@ -4,7 +4,8 @@
 import {MISSIONS,LAST_MISSION} from '../data/missions.js';
 import {CLASS_TREE} from '../data/classes.js';
 import {newGame,startBattle} from './game.js';
-import {enterHub} from './frontier.js';
+import {enterHub,travelTo} from './frontier.js';
+import {settleRequest} from './villages.js';
 import {findUnit} from './rules.js';
 import {promotionStatus,applyClass,act1Complete,classTierOf} from './progression.js';
 import {enqueueStory} from './narrative.js';
@@ -42,5 +43,7 @@ export function returnToCamp(s){const sk=s.skirmish;if(!sk)return null;
  const c=newGame(sk.returnSeed,campaign,sk.returnMission);c.practice=false;c.outcome=sk.returnOutcome;c.reason=sk.returnReason;c.economy=structuredClone(campaign.economy);c.frontier=structuredClone(sk.frontier);
  c.narrative.seen=[...(s.narrative?.seen||[])];c.narrative.history=structuredClone(s.narrative?.history||[]);
  enterHub(c,{aftermath:sk.frontier?.phase!=='preparation',story:false});
+ // v2.1 의뢰 (D-118): a request pays (and may bring the rescued hero); the legion is back at the village's board.
+ if(sk.kind==='request'){c.requestResult=settleRequest(c,s);if(sk.village&&c.frontier.hub!==sk.village)travelTo(c,sk.village);}
  const sk2=skirmishOf(s),promoted=s.outcome==='victory'&&sk2?.kind==='trial'?sk2.hero:null,tier=sk2?.tier||2;if(promoted&&classTierOf(c.campaign.heroes.find(h=>h.id===promoted))>=tier)enqueueStory(c,tier===3?`awaken:${promoted}`:`promo:${promoted}`);
  return c;}

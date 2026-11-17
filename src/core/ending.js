@@ -2,7 +2,9 @@
 // The path chosen at M22 always opens its ending; the other two open by a banner's trust (2 or more) and one choice of the
 // story. The player picks among the open ones after M30. campaign.ending = {id, at, path, bellard, confession}; the save
 // stays open after the ending (the camp, practice, training and revisits go on).
-import {OFFICER_EPILOGUE} from '../data/talk-v200.js';
+import {OFFICER_EPILOGUE as EPI_V200} from '../data/talk-v200.js';
+import {MERC_EPILOGUE} from '../data/mercs-v210.js';
+const HIRE_EPILOGUE={...EPI_V200,...MERC_EPILOGUE};
 import {ENDINGS,ENDING_IDS,BY_END,BY_CHOICE,BELLARD,BALDRICK_OUT,HERO_NAME,STAGE_LINE} from '../data/ending-v100.js';
 import {ensureTrust,trustStage,FACTIONS} from './factions.js';
 import {setStoryFlag} from './narrative.js';
@@ -24,8 +26,8 @@ export function validEnding(c){const e=c?.ending;if(e==null)return true;return !
 export function epilogue(c,id=c?.ending?.id){if(!ENDINGS[id])return [];const cards=[],f=c.flags||{};
  for(const h of partyHeroes(c)){const lines=[BY_END[h.id]?.[id],BY_CHOICE[h.id]?.(c)].filter(Boolean),rec=(c.heroes||[]).find(u=>u.id===h.id),deed=signatureDeed(recordOf(c,h.id));
   if(deed)lines.push(`장수 열전 · 대표 전과 「${deed}」.`);if((rec?.classTier||1)>=3)lines.push(`${HERO_NAME[h.id]||h.name}의 각성은 새 결계를 세우는 날에도 함께였다.`);
-  if(OFFICER_EPILOGUE[h.id])lines.unshift(OFFICER_EPILOGUE[h.id][id]); /* v2.0.0 부장: one line each */
-  cards.push({id:h.id,name:HERO_NAME[h.id]||h.name,kind:OFFICER_EPILOGUE[h.id]?'officer':'hero',lines:lines.slice(0,5)});}
+  if(HIRE_EPILOGUE[h.id])lines.unshift(HIRE_EPILOGUE[h.id][id]); /* v2.0.0 부장: one line each */
+  cards.push({id:h.id,name:HERO_NAME[h.id]||h.name,kind:HIRE_EPILOGUE[h.id]?'officer':'hero',lines:lines.slice(0,5)});}
  cards.push({id:'aren',name:HERO_NAME.aren,kind:'commander',lines:[BY_END.aren[id],BY_CHOICE.aren(c)].filter(Boolean)});
  cards.push({id:'king',name:HERO_NAME.king,kind:'king',lines:[BY_END.king[id],BY_CHOICE.king(c)].filter(Boolean)});
  cards.push({id:'bellard',name:HERO_NAME.bellard,kind:'bellard',lines:BELLARD[c.choices?.m29_bellard]||BELLARD.trial});

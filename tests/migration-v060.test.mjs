@@ -16,7 +16,7 @@ test('fixtures are genuine v0.6.0 schema-9 saves',()=>{for(const n of ['m08-camp
 
 test('the v0.6.0 end-of-content camp (canyon bivouac, Thea joined) loads as the current version with every asset kept',()=>{
  const before=raw('m08-camp'),s=load('m08-camp');assert.equal(s.schema,SCHEMA);assert.equal(s.version,VERSION);
- assert.equal(s.frontier.hub,'march');assert.equal(s.frontier.phase,'aftermath');assert.deepEqual(s.campaign.roster.filter(id=>!OFFICER_IDS.includes(id)),['thea']);assert.deepEqual(s.campaign.roster.filter(id=>OFFICER_IDS.includes(id)),['bram','noa','marta','rowell'],'v2.0.0: the officers earned in ACT I join');
+ assert.equal(s.frontier.hub,'march');assert.equal(s.frontier.phase,'aftermath');assert.deepEqual(s.campaign.roster.filter(id=>!OFFICER_IDS.includes(id)),['thea']);assert.deepEqual(s.campaign.roster.filter(id=>OFFICER_IDS.includes(id)),[],'v2.1: no officer joins by itself (tavern hires)');
  for(const k of ['completed','economy','flags','choices','promotions','factionTrust','trustLog'])k==='economy'?assert.deepEqual(econV200(s.campaign[k]),econV200(arms081View(before.campaign[k])),k):assert.deepEqual(s.campaign[k],before.campaign[k],k);
  assert.equal(deserialize(serialize(s)).version,VERSION);
 });

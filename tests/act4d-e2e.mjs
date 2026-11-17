@@ -9,7 +9,7 @@ import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {startBattle,beginEnemyPhase,advanceEnemy,nextMission} from '../src/core/game.js';
 import {enterHub} from '../src/core/frontier.js';import {drain} from './campaign-policy.mjs';
 import {M29} from '../src/core/mission-rules-v100.js';import {duelPick,duelOpen} from '../src/core/duel.js';import {MISSIONS} from '../src/data/missions.js';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v2.0.0.html').href,shots='docs/v1.0.0/screenshots/act4d';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v2.1.0.html').href,shots='docs/v1.0.0/screenshots/act4d';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const results=[];const check=(name,ok)=>{assert.ok(ok,name);n++;results.push(name);console.log('PASS',name);};
 const camp28=JSON.parse(fs.readFileSync('tests/fixtures/v0102/v0102-m28-camp.json','utf8')).save;
 const enemyPhase=s=>{for(let i=0;duelOpen(s)&&i<3;i++)duelPick(s,'skip');beginEnemyPhase(s);for(let i=0;s.phase==='enemy'&&!s.outcome&&i<200;i++){advanceEnemy(s);drain(s);}drain(s);};
@@ -36,7 +36,7 @@ try{
   await p.goto(url);await press('new');await drainStory(p);
   // 1. the real v0.10.2 lower city offers Mission 29
   await restore(camp28);await drainStory(p);await closeModals();let s=await snap();
-  check(`${label} the v0.10.2 lower city (after M28, nine heroes) offers Mission 29`,s.schema===20&&s.version==='2.0.0'&&s.frontier.hub==='capital'&&s.campaign.roster.includes('baldrick')&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 29'));
+  check(`${label} the v0.10.2 lower city (after M28, nine heroes) offers Mission 29`,s.schema===21&&s.version==='2.1.0'&&s.frontier.hub==='capital'&&s.campaign.roster.includes('baldrick')&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 29'));
   await press('next-mission');await p.waitForTimeout(400);await drainStory(p);await closeModals();s=await snap();check(`${label} the lower city before M29`,s.frontier.hub==='capital'&&s.missionId===29);
   await enterWarCouncil(p,touch);await press('deploy');await p.waitForTimeout(300);s=await snap();check(`${label} the sortie is eight of nine heroes`,s.units.filter(u=>u.team==='ally'&&!['bram','noa','marta','rowell'].includes(u.id)).length===9&&s.units.filter(u=>u.team==='ally'&&!u.benched).length===8&&s.units.filter(u=>['bram','noa','marta','rowell'].includes(u.id)).every(u=>u.benched)); /* v2.0.0: the four officers wait on the bench */
   await press('start-battle');await drainStory(p);s=await snap();

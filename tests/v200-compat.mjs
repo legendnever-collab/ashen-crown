@@ -1,7 +1,8 @@
 // v2.0.0 (D-115, REFORM_DESIGN §8): what "every asset kept" means after schema 20. The reform changes three things by
 // design — hero records gain the six stats (recomputed from level and tier), the economy gains the two start treasures and
 // the officers' slots (and lets go of pieces a hero's class can no longer hold), the roster gains the officers earned so
-// far. Everything else must be byte-for-byte the same. Shared by the older migration tests.
+// far (v2.1, D-118: no more — the officers are tavern hires; a v2.0 save keeps the ones it has). Everything else must be
+// byte-for-byte the same. Shared by the older migration tests.
 import assert from 'node:assert/strict';
 import {START_TREASURES} from '../src/core/economy.js';
 import {OFFICER_IDS} from '../src/core/stats8.js';
@@ -15,7 +16,7 @@ const heroView=h=>h&&({id:h.id,level:h.level,xp:h.xp,classTier:h.classTier,story
 export function keptV200(after,before,k){
  if(k==='economy')return assert.deepEqual(econV200(after[k]),econV200(before[k]),k);
  if(k==='heroes'){const a=(after.heroes||[]).filter(h=>!OFFICER_IDS.includes(h.id));assert.deepEqual(a.map(heroView),(before.heroes||[]).map(heroView),k);for(const h of a)assert.ok(h.stats&&h.cls,`${h.id} has the six stats`);return;}
- if(k==='roster'){const b=before.roster||[];assert.deepEqual((after.roster||[]).filter(id=>!OFFICER_IDS.includes(id)),b,k);assert.ok(['bram','noa','marta'].every(id=>after.roster.includes(id)),'the ACT I officers joined');return;}
+ if(k==='roster'){const b=before.roster||[];assert.deepEqual((after.roster||[]).filter(id=>!OFFICER_IDS.includes(id)),b.filter(id=>!OFFICER_IDS.includes(id)),k);const hires=OFFICER_IDS.filter(id=>after.roster?.includes(id));assert.deepEqual(hires,OFFICER_IDS.filter(id=>b.includes(id)),'v2.1: no officer joins by itself; hires a save already has stay');return;}
  assert.deepEqual(after[k],before[k],k);}
 // v2.0.0 (D-115, REFORM_DESIGN §8): a save made in the middle of a battle reopens in the camp before that battle (the
 // enemies, the stats and some maps changed under it); the campaign is untouched and the battle can be fought again and won.

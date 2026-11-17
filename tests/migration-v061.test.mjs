@@ -17,7 +17,7 @@ test('fixtures are genuine v0.6.1 schema-9 saves',()=>{for(const n of ['m10-camp
 
 test('the v0.6.1 end-of-content camp (Velmar after M10, Thea and Dario joined) loads as the current version with every asset kept',()=>{
  const before=raw('m10-camp'),s=load('m10-camp');assert.equal(s.schema,SCHEMA);assert.equal(s.version,VERSION);
- assert.equal(s.frontier.hub,'velmar');assert.equal(s.frontier.phase,'aftermath');assert.deepEqual(s.campaign.roster.filter(id=>!OFFICER_IDS.includes(id)),['thea','dario']);assert.deepEqual(s.campaign.roster.filter(id=>OFFICER_IDS.includes(id)),['bram','noa','marta','rowell'],'v2.0.0: the officers earned in ACT I join');
+ assert.equal(s.frontier.hub,'velmar');assert.equal(s.frontier.phase,'aftermath');assert.deepEqual(s.campaign.roster.filter(id=>!OFFICER_IDS.includes(id)),['thea','dario']);assert.deepEqual(s.campaign.roster.filter(id=>OFFICER_IDS.includes(id)),[],'v2.1: no officer joins by itself (tavern hires)');
  for(const k of ['completed','economy','flags','choices','promotions','factionTrust','trustLog'])k==='economy'?assert.deepEqual(econV200(s.campaign[k]),econV200(arms081View(before.campaign[k])),k):assert.deepEqual(s.campaign[k],before.campaign[k],k);
  assert.equal(deserialize(serialize(s)).version,VERSION);
 });

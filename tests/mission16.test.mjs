@@ -1,6 +1,7 @@
 // v0.9.0 — M16 The Forgotten Battlefield: fog (reach −1, far enemies hidden), ward stones (search clears the fog around them
 // and stops the harvest), memory harvesters drain MP, the betraying banner's captain duels Erik on TURN 3, recruits who left
 // (or Ines who never joined) come back as allies and rejoin if they stand to the end; the camp choice on the stones.
+import {standBeside} from './duel-helper.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {MISSIONS} from '../src/data/missions.js';
 import {STORY} from '../src/data/story.js';
@@ -43,9 +44,9 @@ test('harvest: a harvester beside an unsearched stone drains MP near it; searchi
  k.mp=10;enemyPhase(s);assert.equal(k.mp,10,'no drain once searched');
 });
 
-test('the duel opens on TURN 3, pauses the battle, and the loser starts 30% down; it survives a save',()=>{
+test('the duel opens from TURN 3 when Erik stands beside the captain (v2.1 event), pauses the battle, and the loser starts 30% down; it survives a save',()=>{
  const s=battle();beginEnemyPhase(s);while(s.phase==='enemy')advanceEnemy(s);drain(s);beginEnemyPhase(s);while(s.phase==='enemy')advanceEnemy(s);
- assert.equal(s.turn,3);assert.ok(duelOpen(s),'duel open');assert.ok(!performAction(s,'eric','wait').ok,'battle waits');
+ assert.equal(s.turn,3);assert.ok(!duelOpen(s),'v2.1: not until Erik stands beside him');standBeside(s,'eric','cap');assert.ok(duelOpen(s),'duel open');assert.ok(!performAction(s,'eric','wait').ok,'battle waits');
  const back=deserialize(serialize(s));assert.ok(duelOpen(back));
  const cap=findUnit(s,'cap'),eric=findUnit(s,'eric'),hp=[cap.hp,eric.hp];let n=0;while(duelOpen(s)&&n++<5)duelPick(s,'strike'); /* v2.0.0: up to five rounds, three to win */
  assert.ok(['hero','foe'].includes(s.duel.result));const loser=s.duel.result==='hero'?cap:eric;assert.equal(loser.hp,Math.max(1,(loser===cap?hp[0]:hp[1])-Math.ceil(loser.maxHP*.3)));
