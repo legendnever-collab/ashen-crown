@@ -111,7 +111,9 @@ export const CATALOG_TREASURES=[
  cTreasure('threeSeals','세 왕가의 인장','The Seal of the Three Houses','전투 첫 턴 전군 MOV +1 · RES +1','M25 숨은 전과'),
  cTreasure('blackMane','검은 갈기','The Black Mane','인접 아군 DEF +1 · ATK +2','M26 숨은 전과'),
  cTreasure('ramHead','성문 파쇄추의 쇠머리','The Ram\'s Iron Head','ATK +2 · 이 장수가 공격한 적은 반격하지 못함','M27 숨은 전과'),
- cTreasure('nightLocket','잿빛 밤의 목걸이','The Ashen Night Locket','RES +2 · 전투마다 한 번, 쓰러질 피해에도 HP 1로 버팀','M28 숨은 전과')
+ cTreasure('nightLocket','잿빛 밤의 목걸이','The Ashen Night Locket','RES +2 · 전투마다 한 번, 쓰러질 피해에도 HP 1로 버팀','M28 숨은 전과'),
+ cTreasure('bellardQuill','벨라드의 깃펜','Bellard\'s Quill','MAG +2 · RES +1 · 턴마다 MP +2','M29 숨은 전과'),
+ cTreasure('dawnRing','새벽의 반지','The Dawn Ring','SPD +1 · RES +2 · 상태이상에 걸리지 않음','M30 숨은 전과')
 ];
 const cSkill=(id,hero,slot,ko,en,cost,effect)=>({id,kind:'skill',hero,slot,ko,en,cost,effect});
 export const CATALOG_SKILLS=[

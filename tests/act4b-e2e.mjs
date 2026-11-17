@@ -7,7 +7,7 @@ import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterW
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {startBattle,beginEnemyPhase,advanceEnemy,nextMission,newGame} from '../src/core/game.js';
 import {enterHub} from '../src/core/frontier.js';import {chooseBanner25} from '../src/core/mission-rules-v0101.js';import {drain} from './campaign-policy.mjs';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v0.10.2.html').href,shots='docs/v0.10.1/screenshots/act4b';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v1.0.0.html').href,shots='docs/v0.10.1/screenshots/act4b';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const results=[];const check=(name,ok)=>{assert.ok(ok,name);n++;results.push(name);console.log('PASS',name);};
 const camp24=JSON.parse(fs.readFileSync('tests/fixtures/v0100/v0100-m24-camp.json','utf8')).save;
 const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);};
@@ -31,7 +31,7 @@ try{
   await p.goto(url);await press('new');await drainStory(p);
   // 1. the real v0.10.0 Ashen Village offers Mission 25; the world card; the summit field
   await restore(camp24);await drainStory(p);await closeModals();let s=await snap();
-  check(`${label} the v0.10.0 Ashen Village (after M24) offers Mission 25`,s.schema===18&&s.frontier.hub==='village_raid'&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 25'));
+  check(`${label} the v0.10.0 Ashen Village (after M24) offers Mission 25`,s.schema===19&&s.frontier.hub==='village_raid'&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 25'));
   await press('next-mission');await p.waitForTimeout(400);let card=false;for(let i=0;i<40;i++){if((await body()).includes('세 깃발의 땅')){card=true;await p.screenshot({path:`${shots}/banners-card-${label}.png`});break;}if(!(await snap()).narrative.active)break;await p.keyboard.press('Enter').catch(()=>{});await p.waitForTimeout(150);}
   await drainStory(p);await closeModals();s=await snap();check(`${label} the world card of the three banners and the summit camp`,(card||s.narrative.seen.includes('world:banners'))&&s.frontier.hub==='summit'&&s.missionId===25);
   await enterWarCouncil(p,touch);await press('deploy');await p.waitForTimeout(300);await press('start-battle');await drainStory(p);s=await snap();

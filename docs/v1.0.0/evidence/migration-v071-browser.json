@@ -1,0 +1,53 @@
+{
+  "checks": [
+    {
+      "name": "Shipped v0.7.1 village save is schema 9",
+      "status": "PASS"
+    },
+    {
+      "name": "Shipped v0.7.1 battle checkpoint generated",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.7.1 village save opens in the painted village (schema 10, gold kept, legal position)",
+      "status": "PASS"
+    },
+    {
+      "name": "Imported village save does not replay the world-map intro",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.7.1 battle and its checkpoint migrate unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "Restart of a migrated v0.7.1 battle works",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.7.1 summit-camp save (ACT II complete) opens with every asset kept and the roster intact",
+      "status": "PASS"
+    },
+    {
+      "name": "The migrated camp still says ACT III comes in a later update",
+      "status": "PASS"
+    },
+    {
+      "name": "v0.7.1 Mission 14 battle resumes",
+      "status": "PASS"
+    },
+    {
+      "name": "Erik of a v0.7.1 save now has ② 도발 in battle and his promotion action as ③",
+      "status": "PASS"
+    },
+    {
+      "name": "Migrated save reloads as the current version",
+      "status": "PASS"
+    },
+    {
+      "name": "No runtime errors in either build",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}

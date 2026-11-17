@@ -17,7 +17,10 @@
 작업 단계별 커밋. npm test, balance, browser regression, campaign E2E, migration, offline, documentation audit. 실제 검증만 완료 표시. 모든 PR의 documentation checklist: README, CHANGELOG, CURRENT_STATUS, NEXT_TASKS, ROADMAP, Story Bible review, Decision Log review, tests/evidence, artifacts.
 
 
-## Current v0.10.2 entry (ACT IV part 3 release candidate)
+## Current v1.0.0 entry (ACT IV part 4 release candidate — the endings)
+v1.0.0 「왕관 없는 새벽」 release candidate on feature/v1.0.0-crown (D-113, on main 3984064 = v0.10.2 merged, D-112): M29–M30 in src/core/mission-rules-v100.js (data in missions.js, story-v100.js, talk-v100.js), Bellard's two phases (missionState.phase, crown29), the rite points (kind 'rite': not supportable, ANCHORED; rites29 by act3_choice), Aren's last words (the M29 duel skipped → missionState.words), Bellard's fate (chooseFate29), the heart stone (civilian anchorStone), the endings (src/core/ending.js: openEndings, chooseEnding, epilogue, campaign.ending; texts in src/data/ending-v100.js; UI in app.js showEnding/showEpilogue/showEndingCard), schema 19 (imports 0–18; tests/fixtures/v0102). Ending art registry ASHEN_ENDINGS (src/assets/endings, scripts/import-ending-art.py). Art pack G4 work order: scripts/make-act4-g4-art-pack.py → docs/v1.0.0/art/act4-g4-work-pack. Never merge before the user plays and approves it.
+
+## v0.10.2 entry (merged, PR #27 → 3984064, D-112)
 v0.10.2 「잿빛 밤」 release candidate on feature/v0.10.2-ashen-night (D-110, on main 6adba79 = v0.10.1 merged, D-109): M27–M28 in src/core/mission-rules-v0102.js (data in missions.js, story-v0102.js, talk-v0102.js), the escorted ram (kind 'ram': not supportable, ANCHORED), wall sections, squads by trust and Baldrick's lion (benched with `absent` when missing), the memory fragments and reforming remnants (`reformAt`), young Aren as an orderable ally (memory28), Aren's confession (chooseConfession28) and last order 「끝까지 함께」 (command.js LAST_ORDER, game.js useLastOrder/riseLastOrder, s.lastOrder), schema 18 (imports 0–17; tests/fixtures/v0101). Art pack G3 (scripts/make-act4-g3-art-pack.py → docs/v0.10.2/art/act4-g3-work-pack) returned and imported (D-111; QA in docs/v0.10.2/art/pack-g3-qa). Never merge before the user plays and approves it.
 
 ## v0.10.1 entry (merged, PR #26 → 6adba79, D-109)

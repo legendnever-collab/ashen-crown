@@ -2,6 +2,7 @@ import {legacyRewardCatchup} from '../core/battle-rewards.js';
 import {ensureEconomy,validateEconomy} from '../core/economy.js';
 import {validDuel} from '../core/duel.js';
 import {validTally} from '../core/records.js';
+import {validEnding} from '../core/ending.js';
 import {COMMANDS} from '../core/command.js';
 import {migrateFrontier,frontierState,validateFrontier,alignFrontier} from '../core/frontier.js';
 import {SCHEMA,VERSION,WIDTH,HEIGHT,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,ALL_HEROES,RECRUIT_HEROES,partyIds} from '../data/game-data.js';
@@ -59,7 +60,9 @@ export function validate(s){
  if(s.burning!=null&&(typeof s.burning!=='object'||Array.isArray(s.burning)||Object.entries(s.burning).some(([k,v])=>!/^\d{1,2},\d{1,2}$/.test(k)||!Number.isInteger(v)||v<1||v>2)))throw Error('화염 기록이 손상되었습니다.');
  if(s.units.some(u=>u.team==='ally'&&(![1,2,3].includes(u.appearanceTier)||['classTier','storyTier'].some(k=>u[k]!=null&&![1,2,3].includes(u[k])))))throw Error('외형 Tier가 손상되었습니다.');
  // v0.8.1: hidden objectives won (mission ids), this battle's flag record, the supply carrier's crate.
- if(c.feats!=null&&(!Array.isArray(c.feats)||c.feats.length>28||new Set(c.feats).size!==c.feats.length||c.feats.some(id=>!Number.isInteger(id)||id<1||id>28)))throw Error('숨은 전과 기록이 손상되었습니다.');
+ if(c.feats!=null&&(!Array.isArray(c.feats)||c.feats.length>30||new Set(c.feats).size!==c.feats.length||c.feats.some(id=>!Number.isInteger(id)||id<1||id>30)))throw Error('숨은 전과 기록이 손상되었습니다.');
+ /* v1.0.0 (D-113): the ending seen (after M30 only) */
+ if(!validEnding(c))throw Error('엔딩 기록이 손상되었습니다.');
  if(s.battleFlags!=null&&(typeof s.battleFlags!=='object'||Array.isArray(s.battleFlags)||Object.keys(s.battleFlags).length>60||Object.values(s.battleFlags).some(v=>!['boolean','number','string'].includes(typeof v)||typeof v==='string'&&v.length>40)))throw Error('전투 기록이 손상되었습니다.');
  if(s.units.some(u=>u.carrier!=null&&(!['enemy','allied'].includes(u.team)||typeof u.carrier!=='string'||!TOOLS[u.carrier])||u.pouchUsed!=null&&typeof u.pouchUsed!=='boolean'))throw Error('보급 기록이 손상되었습니다.');
  // v0.9.0 (D-079): the duel of this battle, Aren's command, the weather's cleared tiles and a turned watchman.
@@ -110,6 +113,8 @@ export function migrate(s){
  if(s?.schema===16){s.schema=17;s.version='0.10.1';if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  // v0.10.2 (D-110): ACT IV part 3 — M27–M28, two fronts, the Ashen Night's memory, Aren's last order; a schema-17 save keeps everything.
  if(s?.schema===17){s.schema=18;s.version='0.10.2';if(s.stageStart)s.stageStart=migrate(s.stageStart);}
+ // v1.0.0 (D-113): ACT IV part 4 — M29–M30, Bellard, the new ward, the endings; a schema-18 save keeps everything.
+ if(s?.schema===18){s.schema=19;s.version='1.0.0';if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');
  // v0.6.1: a save of the current schema made by an earlier build of it (e.g. v0.6.0) is now this version.
  if(s?.schema===SCHEMA&&s.version!==VERSION){s.version=VERSION;if(s.stageStart?.version)s.stageStart.version=VERSION;}

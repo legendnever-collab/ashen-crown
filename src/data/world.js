@@ -51,6 +51,9 @@ export const SITES=[
  // v0.10.2 (D-110): the capital's southern gate (M27) and the Ashen Night's palace inside the king's memory (M28).
  {id:'royalgate',name:'왕도의 성문',icon:'gate',x:815,y:445,region:'center',mission:27,small:true},
  {id:'ashenpalace',name:'잿빛 밤의 궁',icon:'ruin',x:780,y:430,region:'center',mission:28,small:true},
+ // v1.0.0 (D-113): the crown's heart again for the last battle with Bellard (M29) and the square before it at dawn (M30).
+ {id:'heartbattle',name:'왕관의 심장 · 결전',icon:'ruin',x:812,y:418,region:'center',mission:29,small:true},
+ {id:'crownlessdawn',name:'왕관 없는 새벽',icon:'village',x:826,y:432,region:'center',mission:30,small:true},
  {id:'village',name:'잿빛 마을',icon:'village',x:1150,y:620,region:'east',mission:1,hub:'village'},
  {id:'garrison',name:'국경 수비대 진영',icon:'camp',x:1235,y:585,region:'east',hub:'camp'},
  {id:'forest',name:'숲길',icon:null,x:1292,y:505,region:'east',mission:2},
@@ -71,7 +74,7 @@ export const ACT2_ROUTE=['oathcamp','stronghold','canyon','freecity','pilgrimvil
 export const ACT3_ROUTE=['waystation','capital','oldfield','guardkeep','unburning','undercroft','chancellery','crownheart','ashsquare'];
 // The whole march for the world map (ACT II legs are drawn once ACT I is complete).
 // v0.10.0 ACT IV (D-100): → the alliance camp → the last border.
-export const ACT4_ROUTE=['ashsquare','alliancecamp','lastborder','threebanners','lionpass','royalgate','ashenpalace'];
+export const ACT4_ROUTE=['ashsquare','alliancecamp','lastborder','threebanners','lionpass','royalgate','ashenpalace','heartbattle','crownlessdawn'];
 export const FULL_ROUTE=[...ACT1_ROUTE,...ACT2_ROUTE.slice(1),...ACT3_ROUTE.slice(1),...ACT4_ROUTE.slice(1)];
 export const siteById=id=>SITES.find(s=>s.id===id);
 // How far along the march the legion has come, from completed missions.

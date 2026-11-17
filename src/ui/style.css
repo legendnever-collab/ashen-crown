@@ -432,3 +432,25 @@
 .growth-goal span{font:600 11px Arial,sans-serif;color:#e2c27c;letter-spacing:.04em}.growth-goal p{margin:2px 0 0;font-size:13px;line-height:1.5;color:#f3ead0}
 .potential-steps li.next{color:#f1d58c}.step-prog{margin-left:4px;font:600 11px Arial,sans-serif;color:#9ed09a}
 .growth-h small{font-weight:normal;color:#a7c0b4;font-size:11px}
+/* v1.0.0 (D-113): the ending choice, the epilogue and the ending card */
+.ending-options{display:grid;gap:10px;margin-top:8px}
+.ending-option{border:1px solid rgba(240,196,106,.35);border-radius:8px;padding:10px 12px;background:rgba(20,28,32,.55)}
+.ending-option h4{margin:0 0 6px;color:#f0c46a;font-size:17px}.ending-option h4 small{color:#b9ad92;font-weight:normal;font-size:12px}
+.ending-option p{margin:4px 0;font-size:14px;line-height:1.45}.ending-option p b{color:#e8d6a8;margin-right:6px}
+.ending-option.locked{opacity:.55;border-style:dashed}.ending-option button{margin-top:6px;width:100%}
+.epilogue{display:grid;gap:10px}
+.epi-art{position:relative;border-radius:8px;overflow:hidden;min-height:150px;background:#1a2228}
+.epi-art img{display:block;width:100%;max-height:320px;object-fit:cover}
+.epi-art.epi-dawn{background:linear-gradient(180deg,#2a3550 0%,#7a6a8a 40%,#e8a868 72%,#f6d898 100%)}
+.epi-art.epi-dawn::after{content:'';position:absolute;left:50%;bottom:-40px;width:180px;height:180px;margin-left:-90px;border-radius:50%;background:radial-gradient(circle,#fff4d0 0%,rgba(255,230,170,.55) 40%,rgba(255,220,150,0) 70%)}
+.epi-title{position:absolute;left:0;right:0;bottom:0;padding:10px 14px;background:linear-gradient(0deg,rgba(10,14,18,.82),rgba(10,14,18,0));z-index:1}
+.epi-title span{font:12px Georgia,serif;letter-spacing:.2em;color:#f0c46a}.epi-title h2{margin:2px 0 0;font:bold 28px Georgia,'Ashen UI',serif;color:#fff2d0}.epi-title p{margin:0;color:#d9cdb0;font:13px Georgia,serif}
+.epi-holds{margin:0;font-size:15px;line-height:1.5}.epi-ledger{display:grid;grid-template-columns:1fr 1fr;gap:8px}.epi-ledger p{margin:0;padding:8px;border-radius:6px;background:rgba(240,196,106,.08);font-size:14px}.epi-ledger b{display:block;color:#f0c46a}
+.epi-cards{display:grid;gap:8px;max-height:46vh;overflow:auto;padding-right:4px}
+.epi-card{display:grid;grid-template-columns:56px 1fr;gap:10px;align-items:start;padding:8px;border-radius:8px;background:rgba(20,28,32,.6)}
+.epi-card h4{margin:0 0 4px;color:#f0c46a;font-size:15px}.epi-card p{margin:2px 0;font-size:13.5px;line-height:1.45}
+.epi-face{width:56px;height:56px;border-radius:50%;object-fit:cover;object-position:50% 18%;background:#22383c;border:1px solid rgba(240,196,106,.4)}
+.epi-initial{display:grid;place-items:center;font:bold 22px Georgia,'Ashen UI',serif;color:#f0c46a}
+.epi-open{margin:0;text-align:center;font-style:italic;color:#b9ad92;font-size:13px}
+@media (max-width:520px){.epi-ledger{grid-template-columns:1fr}.epi-title h2{font-size:22px}.epi-card{grid-template-columns:44px 1fr}.epi-face{width:44px;height:44px}}
+.ending-card-art{display:block;width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin-bottom:8px}

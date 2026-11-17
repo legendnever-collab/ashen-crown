@@ -1,0 +1,6 @@
+order,part,kind,id,file,size,references,prompt_file
+1,A,scene,ending_a,ending_a.png,1600x900,"bust_eric_t3_neutral.png, bust_aren_neutral.png, bust_lia_neutral.png, bust_kai_neutral.png, hub_capital.png, ref_ending_epilogue.jpg",prompts/01_ending_a.txt
+2,A,scene,ending_b,ending_b.png,1600x900,"bust_eric_t3_neutral.png, bust_dario_neutral.png, bust_leonora_neutral.png, hub_capital.png, ref_ending_epilogue.jpg",prompts/02_ending_b.txt
+3,A,scene,ending_c,ending_c.png,1600x900,"bust_ines_neutral.png, bust_sain_neutral.png, bust_elina_neutral.png, bust_eric_t3_neutral.png, hub_capital.png, ref_ending_epilogue.jpg",prompts/03_ending_c.txt
+4,A,scene,epilogue,epilogue.png,1600x900,"hub_capital.png, ref_ending_epilogue.jpg",prompts/04_epilogue.txt
+5,B,icons,icons_O,icons_O.png,1024x1024,"layout_icons_O.png, approved_icons_D.png, approved_icons_H.png, style_aren_neutral.png",prompts/05_icons_O.txt

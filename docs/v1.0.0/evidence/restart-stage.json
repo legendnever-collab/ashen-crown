@@ -1,0 +1,93 @@
+{
+  "checks": [
+    {
+      "name": "1440: stage progress actually changed after attack",
+      "status": "PASS"
+    },
+    {
+      "name": "1440: reset confirmation explains rollback",
+      "status": "PASS"
+    },
+    {
+      "name": "1440: cancelling reset preserves exact current progress",
+      "status": "PASS"
+    },
+    {
+      "name": "1440: reset restores exact stage start and assault formation",
+      "status": "PASS"
+    },
+    {
+      "name": "1440: renderer and commands are ready after reset",
+      "status": "PASS"
+    },
+    {
+      "name": "1440: checkpoint and reset state survive reload",
+      "status": "PASS"
+    },
+    {
+      "name": "1440: repeated reset permits movement and attack",
+      "status": "PASS"
+    },
+    {
+      "name": "1440: natural civilian failure before reset",
+      "status": "PASS"
+    },
+    {
+      "name": "1440: result reset revives objectives and removes current defeat",
+      "status": "PASS"
+    },
+    {
+      "name": "360: stage progress actually changed after attack",
+      "status": "PASS"
+    },
+    {
+      "name": "360: reset confirmation explains rollback",
+      "status": "PASS"
+    },
+    {
+      "name": "360: cancelling reset preserves exact current progress",
+      "status": "PASS"
+    },
+    {
+      "name": "360: reset restores exact stage start and assault formation",
+      "status": "PASS"
+    },
+    {
+      "name": "360: renderer and commands are ready after reset",
+      "status": "PASS"
+    },
+    {
+      "name": "360: checkpoint and reset state survive reload",
+      "status": "PASS"
+    },
+    {
+      "name": "360: repeated reset permits movement and attack",
+      "status": "PASS"
+    },
+    {
+      "name": "360: natural civilian failure before reset",
+      "status": "PASS"
+    },
+    {
+      "name": "360: result reset revives objectives and removes current defeat",
+      "status": "PASS"
+    },
+    {
+      "name": "Legacy checkpoint absence is explained",
+      "status": "PASS"
+    },
+    {
+      "name": "Legacy reset safely returns to deployment",
+      "status": "PASS"
+    },
+    {
+      "name": "Restart save failure is visible instead of a success toast",
+      "status": "PASS"
+    },
+    {
+      "name": "Restart UI has no runtime errors",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}

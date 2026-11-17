@@ -281,6 +281,8 @@ export function bustCanvas(key,expr='neutral',scale=2){const id=`${key}|${expr}|
 const PAINTED=typeof ASHEN_PORTRAITS!=='undefined'?ASHEN_PORTRAITS:null;
 const paintedImages=new Map();
 export const hasPainted=key=>!!PAINTED?.[paintedId(key)];
+// v1.0.0 (D-113): the painted bust's data URL for plain <img> cards (the epilogue).
+export const paintedURL=(key,expr='neutral')=>{const set=PAINTED?.[paintedId(key)];return set?.[expr]||set?.neutral||null;};
 const PAINTED_ALIAS={'cast:captain':'garr','cast:deserterCaptain':'deserterCaptain','cast:pursuerCaptain':'pursuerCaptain','cast:quartermaster':'quartermaster','cast:executor':'executor'};
 export const paintedId=key=>PAINTED_ALIAS[key]||key;
 export function paintedImage(key,expr='neutral'){key=paintedId(key);const set=PAINTED?.[key];if(!set||typeof Image==='undefined')return null;const e=set[expr]?expr:set.neutral?'neutral':['determined','concerned','sad'].find(k=>set[k]);if(!e)return null;/* pack F2: the M16 captains have no neutral face */const id=`${key}|${e}`;let img=paintedImages.get(id);if(!img){img=new Image();img.decoding='async';img.src=set[e];paintedImages.set(id,img);}return img.failed?null:img;}

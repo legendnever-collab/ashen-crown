@@ -16,8 +16,8 @@ const load=name=>deserialize(fixture(name).save);
 test('fixtures are genuine v0.10.1 schema-17 saves after ACT IV part 2, with Baldrick in the legion',()=>{for(const n of ['m26-camp','m26-battle']){const f=fixture(n);assert.equal(f.version,'0.10.1');assert.equal(f.schema,17);}
  const c=raw('m26-camp').campaign;assert.ok(c.completed.includes(26));assert.equal(c.choices.m25_banner,'forgive');assert.equal(c.flags.mission_26_baldrick,'join');assert.ok(c.roster.includes('baldrick'));assert.equal(raw('m26-camp').frontier.hub,'oathcamp');});
 
-test('the v0.10.1 oath camp loads as schema 18 with every asset kept',()=>{
- const before=raw('m26-camp'),s=load('m26-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,18);assert.equal(s.version,VERSION);assert.equal(VERSION,'0.10.2');assert.equal(s.frontier.hub,'oathcamp');
+test('the v0.10.1 oath camp loads as schema 19 with every asset kept',()=>{
+ const before=raw('m26-camp'),s=load('m26-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,19);assert.equal(s.version,VERSION);assert.equal(VERSION,'1.0.0');assert.equal(s.frontier.hub,'oathcamp');
  for(const k of ['completed','flags','choices','promotions','factionTrust','trustLog','roster','feats','departed','economy','heroes','bonds','tacticalMemory','records'])assert.deepEqual(s.campaign[k],before.campaign[k],k);
  assert.deepEqual(s.economy,before.economy);const back=deserialize(serialize(s));assert.deepEqual(back.campaign.economy,before.campaign.economy);
 });
