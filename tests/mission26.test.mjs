@@ -61,6 +61,6 @@ test('Dario awakens after M25 (trial 117) with A Hundred Counters: every blow an
  assert.ok(promotionStatus(c,'dario').eligible);assert.equal(trialMissionOf(c,'dario'),117);const t=startSkirmish(c,'trial','dario',{force:true});assert.equal(t.missionId,117);
  const d=findUnit(t,'dario'),a=findUnit(t,'r5');assert.equal(d.classTier,3);assert.ok(skillsOf(d).find(k=>k.slot===4).open);d.mp=40;
  for(const u of t.units.filter(u=>u.team==='enemy'&&u.id!=='r5'))u.hp=0;a.x=d.x;a.y=d.y-3;a.mov=0;const ah=a.hp;
- assert.ok(performAction(t,'dario','hundredCounters','dario').ok);assert.equal(d.hundred,t.turn);enemyPhase(t);assert.ok(a.hp<ah,'Dario answered an arrow from three tiles away');
+ assert.ok(performAction(t,'dario','hundredCounters','dario').ok);assert.equal(d.hundred,t.turn);a.level=1;a.spd=d.spd;a.hit=100;d.hit=100; /* v2.0.0: one plain shot, sure hits — the test is about the reach */enemyPhase(t);assert.ok(a.hp<ah,'Dario answered an arrow from three tiles away');
  assert.ok(t.log.some(l=>/반격 · 다리오 → 검진 궁수/.test(l)));
 });

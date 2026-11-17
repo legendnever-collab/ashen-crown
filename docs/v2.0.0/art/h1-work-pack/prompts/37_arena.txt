@@ -1,0 +1,6 @@
+Paint the background of the 「잿빛 결투장」 (Ash Dueling Ground) for Ashen Crown: one opaque PNG, exactly 1600x900 px. A circular dueling ground of trampled grey ash and earth at dusk, seen from a low three-quarter view. At a distance the ring is lined by two loose rows of soldiers' banners on poles — the left half plain blue cloth, the right half plain red cloth, no emblems — with a few low torches and distant ruined walls. NO people at all (the game draws the two fighters on top). The middle of the lower half is an empty, evenly lit circle of ash where the fighters stand; keep the bottom fifth darker and quiet (a dialogue band is laid over it).
+
+Painting style: the same hand as the attached painted hub (hub_capital.png): soft painterly rendering, warm firelight against cool dusk, Western medieval frontier fantasy, no anime, no photo-realism, no 3D render look. No text, letters, numbers or logos.
+
+
+Attach: hub_capital.png, ref_duel_screen.png.

@@ -642,8 +642,8 @@ skirmish(103,'trial','lia',{title:'마력의 시련',en:'Trial of the Rune',
  objective:'TURN 7까지 룬 수호상 3기 격파 (에릭 호위)',brief:'마력 지형: 십자 5칸 룬 위에서 아군 MAG +3, 적 RES −2. 수호상은 단단하지만 마법에 약해집니다.'});
 skirmish(104,'trial','sain',{title:'구원의 시련',en:'Trial of the Ember',
  rows:['gggggggggggg','ggfgggggggfg','gggggggggggg','gggggggggggg','ggggggfggggg','gggggggggggg','gggggggggggg','ggggvttvgggg','gggggttggggg','gggggggggggg'],
- enemies:[unit('b1','추격 교관','bandit',2,0,{hp:34,atk:14,def:6,spd:6}),unit('b2','추격 교관','bandit',5,0,{hp:34,atk:14,def:6,spd:6}),unit('b3','추격 교관','bandit',9,0,{hp:34,atk:14,def:6,spd:6}),unit('b4','추격 교관','bandit',11,1,{hp:34,atk:14,def:6,spd:6}),unit('b5','추격 교관','bandit',0,1,{hp:34,atk:14,def:6,spd:6}),unit('a1','추격 궁수','archer',7,0,{hp:26,atk:13,def:3,spd:7})],
- deployments:{recommended:[[1,2],[0,9],[1,9],[6,8],[10,2]]},limit:5,companions:['eric','kai'],wounded:['eric','kai'],
+ enemies:[unit('b1','추격 교관','bandit',2,0,{hp:34,atk:12,def:6,spd:6}),unit('b2','추격 교관','bandit',5,0,{hp:34,atk:12,def:6,spd:6}),unit('b3','추격 교관','bandit',9,0,{hp:34,atk:12,def:6,spd:6}),unit('b4','추격 교관','bandit',11,1,{hp:34,atk:12,def:6,spd:6}),unit('b5','추격 교관','bandit',0,1,{hp:34,atk:12,def:6,spd:6}),unit('a1','추격 궁수','archer',7,0,{hp:26,atk:13,def:3,spd:7})],
+ deployments:{recommended:[[1,2],[0,9],[1,9],[6,8],[10,5]]},limit:5,companions:['eric','kai'],wounded:['eric','kai'],
  goal:{type:'gather',turn:5,radius:2},must:['sain','eric','kai'],
  objective:'TURN 5가 끝날 때 부상한 에릭·카이가 세인 곁(2칸 이내)에 생존',brief:'에릭과 카이는 부상으로 걷지 못합니다(HP 40%). 귀환의 기도로 2–4칸 떨어진 동료를 세인 곁으로 데려오세요.'});
 skirmish(105,'trial','kai',{title:'그림자의 시련',en:'Trial of the Shadow',
@@ -740,3 +740,7 @@ skirmish(117,'trial','dario',{tier:3,level:14,title:'칼의 주인의 시련',en
  objective:'TURN 4까지 검진 교관 6명 격파 (엘리나 지원)',brief:'백 번의 반격(④, 전투당 1회): 다음 적 턴 동안 받는 모든 공격에 반격합니다 — 활에도, 사거리와 관계없이 — 반격 피해 +30%. 검진 한가운데에 서서 쓰세요.'});
 export const isSkirmish=id=>!!MISSIONS[id]?.skirmish;
 export const LAST_MISSION=Math.max(...Object.keys(MISSIONS).map(Number).filter(id=>!MISSIONS[id].skirmish));
+
+// v2.0.0 전장 개편 (D-115): ACT I M01–M06 on big maps with new directions (missions-v200.js).
+import {applyV200} from './missions-v200.js';
+applyV200(MISSIONS);

@@ -68,7 +68,29 @@ const TREASURE_RULES={
  bellardQuill:[{mag:2,res:1},{mag:1},'mana',[2,2,3,3,4],ARMS_ALL8],dawnRing:[{spd:1,res:2},{res:1},'clear',[1,1,1,1,1],ARMS_ALL8]
 };
 export const TREASURE_FX_KO={oath:()=>'전투마다 한 번, 쓰러질 피해를 받아도 HP 1로 버팀',pouch:n=>`HP 절반 아래로 떨어지면 1회 HP +${n}`,hawk:()=>'활 사거리 +1',sage:n=>`얻는 경험치 +${n}%`,twin:n=>`반격을 받으면 한 번 더 공격 (${n}%)`,silence:()=>'이 장수가 공격한 적은 반격하지 못함',mirror:()=>'원거리 피해 절반',clear:()=>'상태이상 면역',reliquary:n=>`턴마다 HP +${n}`,mana:n=>`턴마다 MP +${n}`,lion:n=>`인접 아군 DEF +${n}`,seal:n=>`전투 첫 ${n}턴 전군 MOV +1`,mist:()=>'안개 속에서도 사거리가 줄지 않음'};
-export const TREASURES=Object.fromEntries(CATALOG_TREASURES.map(c=>{const [bonus,grow,fx,power,heroes]=TREASURE_RULES[c.id];return [c.id,{name:c.ko,en:c.en,icon:'✧',slot:'treasure',heroes,price:0,bonus,grow,fx,power,treasure:true,tier:'T',description:c.effect}];}));
+// v2.0.0 (REFORM_DESIGN §4.4, Q10, D-115): treasures raise the six stats (무력 str · 지혜 int · 의지 wil · 강인 con · 민첩 agi · 운 luk);
+// each star above ★1 adds `grow`. Only the ten legendary treasures (전설) keep a special effect. Wearable by every hero and
+// officer (the Hawk Feather by archers only, the class rule of core/gear8).
+export const TREASURE_V2={
+ hawkFeather:{stats:{agi:2,luk:1},grow:{agi:1},legendary:true},twinDaggers:{stats:{agi:2,str:1},grow:{agi:1},legendary:true},
+ silenceShield:{stats:{con:2,str:1},grow:{con:1},legendary:true},mirrorCuirass:{stats:{wil:2,con:1},grow:{wil:1},legendary:true},
+ oathBadge:{stats:{con:2,wil:1},grow:{con:1},legendary:true},allianceSeal:{stats:{luk:2,agi:1},grow:{luk:1},legendary:true},
+ lionEpaulette:{stats:{con:2,str:1},grow:{con:1},legendary:true},dawnRing:{stats:{wil:3,agi:1},grow:{wil:1},legendary:true},
+ nightLocket:{stats:{wil:2,con:1},grow:{wil:1},legendary:true},sageNotebook:{stats:{int:2,wil:1},grow:{int:1},legendary:true},
+ herbPouch:{stats:{con:2,wil:1},grow:{con:1}},windHorseshoe:{stats:{agi:3},grow:{agi:1}},clearCharm:{stats:{wil:3},grow:{wil:1}},
+ flameReliquary:{stats:{con:3},grow:{con:1}},manaRing:{stats:{int:3},grow:{int:1}},archivistLens:{stats:{agi:2,luk:2},grow:{luk:1}},
+ mistLantern:{stats:{int:2,wil:2},grow:{wil:1}},groveLeaf:{stats:{con:2,wil:2},grow:{con:1}},teacherQuill:{stats:{int:3,wil:1},grow:{int:1}},
+ greyLedger:{stats:{agi:3,luk:1},grow:{agi:1}},kingsSignet:{stats:{con:2,wil:2},grow:{wil:1}},heraldHorn:{stats:{agi:2,luk:2},grow:{agi:1}},
+ allianceBanner:{stats:{str:2,con:1},grow:{str:1}},lastLantern:{stats:{wil:3,con:1},grow:{wil:1}},threeSeals:{stats:{wil:2,luk:2},grow:{luk:1}},
+ blackMane:{stats:{str:3},grow:{str:1}},ramHead:{stats:{str:3,con:1},grow:{str:1}},bellardQuill:{stats:{int:3,wil:2},grow:{int:1}},
+ arenCrest:{stats:{con:3,str:1},grow:{con:1}},teacherTome:{stats:{int:3},grow:{int:1}},
+ garrRing:{stats:{str:2,luk:1},grow:{str:1}},runnerMapCase:{stats:{int:2,agi:1},grow:{int:1}},pursuerGreaves:{stats:{agi:2,con:1},grow:{agi:1}},quartermasterSeal:{stats:{int:2,wil:1},grow:{int:1}}
+};
+const T2_KO={str:'무력',int:'지혜',wil:'의지',con:'강인',agi:'민첩',luk:'운'};
+const t2Text=b=>Object.entries(b).map(([k,v])=>`${T2_KO[k]} +${v}`).join(' · ');
+for(const id of ['arenCrest','teacherTome','garrRing','runnerMapCase','pursuerGreaves','quartermasterSeal'])TREASURE_RULES[id]=[{},{},null,null,ARMS_ALL8];
+export const TREASURES=Object.fromEntries(CATALOG_TREASURES.map(c=>{const [,,fx0,power0,heroes]=TREASURE_RULES[c.id],v2=TREASURE_V2[c.id]||{stats:{},grow:{}},fx=v2.legendary?fx0:null,power=v2.legendary?power0:null;
+ return [c.id,{name:c.ko,en:c.en,icon:'✧',slot:'treasure',heroes,price:0,bonus:{...v2.stats},grow:{...v2.grow},fx,power,legendary:!!v2.legendary,treasure:true,tier:'T',where:c.where,description:t2Text(v2.stats)+(fx?` · ${TREASURE_FX_KO[fx](power[0])}`:'')}];}));
 // Hidden objectives (숨은 전과): Lia's hint, the reward and the test, read from this battle's own record (bf: flags set during
 // this battle, also in practice; fell: a deployed hero fell). M02 and M09 give an Elixir; the others a treasure.
 const featDef=(missionId,reward,hint,test)=>({missionId,reward,hint,test});

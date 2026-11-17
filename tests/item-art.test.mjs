@@ -2,7 +2,7 @@
 // work order has its WebP, the import log's hashes match the shipped files, and the ids cover the catalog's tools, gear,
 // treasures, statuses, commands and every hero skill. Gear added after the pack (the capital's tier III) keeps the SVG.
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import crypto from 'node:crypto';
-import {SKILLS} from '../src/data/skills.js';
+import {SKILLS} from '../src/data/skills.js';import {SKILL_ICON_ALIAS} from '../src/ui/item-art.js';
 import {GEAR,TOOLS} from '../src/data/frontier-data.js';
 
 // The log has no quoted fields; cells.csv quotes only its last column (description), which is not read here.
@@ -45,7 +45,7 @@ test('ACT III pack F3: sheet J paints Lia\'s and Kai\'s ④ and the two v0.9.2 t
 
 test('pack E covers every hero skill, the four statuses, buffs and the battle commands',()=>{
  const ids=new Set(log.map(r=>r.id));
- for(const k of SKILLS.filter(k=>k.slot<=3&&k.hero!=='baldrick'))assert.ok(ids.has(k.id),`skill ${k.hero} ${k.id}`); /* Baldrick's icons come with pack G2 (below) */
+ for(const k of SKILLS.filter(k=>k.slot<=3&&k.hero!=='baldrick'))assert.ok(ids.has(SKILL_ICON_ALIAS[k.id]||k.id),`skill ${k.hero} ${k.id}`); /* v2.0.0: officers' class skills reuse a hero's disk (D-094) */ /* Baldrick's icons come with pack G2 (below) */
  // the ④ skills (v0.9.1) came after the pack: they show no painted disk until the ACT III art
  assert.ok(SKILLS.filter(k=>k.slot===4).every(k=>!ids.has(k.id)));
  for(const id of ['poison','confuse','bind','silence','buff','debuff','attack','wait','persuade','capture','supplyCrate','gold'])assert.ok(ids.has(id),id);

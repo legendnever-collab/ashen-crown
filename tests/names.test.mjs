@@ -1,6 +1,6 @@
 // v0.6 (D-060, user request 2026-10-25): every character name is written in Hangul (English pronunciation),
 // e.g. Dario → 다리오. Covers heroes, recruits, speakers, hub NPCs and every mission/skirmish unit; old saves are renamed.
-import test from 'node:test';import assert from 'node:assert/strict';
+import test from 'node:test';import {OFFICER_IDS} from '../src/core/stats8.js';import assert from 'node:assert/strict';
 import {HEROES,RECRUIT_HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS} from '../src/data/game-data.js';
 import {SPEAKERS} from '../src/data/story.js';
 import {HUBS,INTERIORS} from '../src/data/frontier-data.js';
@@ -16,7 +16,7 @@ test('character names contain no Latin letters',()=>{
  for(const m of Object.values(MISSIONS))for(const u of [...m.enemies,...(m.reinforcements||[]),...m.civilians,...(m.allies||[]),...(m.waves||[]).flatMap(w=>w.units)])names.push([`M${m.id}:${u.id}`,u.name]);
  for(const [id,c] of Object.entries(CAST))names.push([`cast:${id}`,c.name]);
  for(const [id,name] of names)assert.ok(typeof name==='string'&&name&&!latin.test(name),`${id}: ${name}`);
- assert.deepEqual(HEROES.map(h=>h.name),['에릭','엘리나','리아','세인','카이']);assert.deepEqual(RECRUIT_HEROES.map(h=>h.name),['테아','다리오','이네스','발드릭']);
+ assert.deepEqual(HEROES.map(h=>h.name),['에릭','엘리나','리아','세인','카이']);assert.deepEqual(RECRUIT_HEROES.filter(h=>!OFFICER_IDS.includes(h.id)).map(h=>h.name),['테아','다리오','이네스','발드릭']);assert.equal(RECRUIT_HEROES.filter(h=>OFFICER_IDS.includes(h.id)).length,4,'v2.0.0: the four ACT I officers');
  assert.equal(SPEAKERS.aren.name,'아렌 발터');assert.equal(SPEAKERS.baldrick.name,'발드릭 로엔');
 });
 test('a save made with English names is renamed on load',()=>{

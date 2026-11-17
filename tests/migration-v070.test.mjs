@@ -1,7 +1,7 @@
 // v0.7.0 → v0.7.1 save compatibility with real schema-9 saves made by the released v0.7.0 source
 // (tests/fixtures/v070/make-v070-fixtures.mjs, worktree of the v0.7.0 merge 81f11d3). Schema 9 is unchanged; a save of an
 // earlier build loads as the current version and continues to M13 at the refugee camp.
-import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
+import test from 'node:test';import {econV200} from './v200-compat.mjs';import {OFFICER_IDS} from '../src/core/stats8.js';import {reopensInCamp} from './v200-compat.mjs';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,deserialize,arms081View} from '../src/persistence/save-manager.js';
 import {SCHEMA,VERSION} from '../src/data/game-data.js';
 import {findUnit} from '../src/core/rules.js';
@@ -16,8 +16,8 @@ test('fixtures are genuine v0.7.0 schema-9 saves',()=>{for(const n of ['m12-camp
 
 test('the v0.7.0 end-of-content camp (refugee camp after M12, Ines joined) loads as the current version with every asset kept',()=>{
  const before=raw('m12-camp'),s=load('m12-camp');assert.equal(s.schema,SCHEMA);assert.equal(s.version,VERSION);
- assert.equal(s.frontier.hub,'refuge');assert.equal(s.frontier.phase,'aftermath');assert.deepEqual(s.campaign.roster,['thea','dario','ines']);
- for(const k of ['completed','economy','flags','choices','promotions','factionTrust','trustLog'])assert.deepEqual(s.campaign[k],k==='economy'?arms081View(before.campaign[k]):before.campaign[k],k);
+ assert.equal(s.frontier.hub,'refuge');assert.equal(s.frontier.phase,'aftermath');assert.deepEqual(s.campaign.roster.filter(id=>!OFFICER_IDS.includes(id)),['thea','dario','ines']);assert.deepEqual(s.campaign.roster.filter(id=>OFFICER_IDS.includes(id)),['bram','noa','marta','rowell'],'v2.0.0: the officers earned in ACT I join');
+ for(const k of ['completed','economy','flags','choices','promotions','factionTrust','trustLog'])k==='economy'?assert.deepEqual(econV200(s.campaign[k]),econV200(arms081View(before.campaign[k])),k):assert.deepEqual(s.campaign[k],before.campaign[k],k);
  assert.equal(deserialize(serialize(s)).version,VERSION);
 });
 
@@ -28,8 +28,6 @@ test('that camp continues to M13 at the refugee camp; Baldrick\'s resolve starts
  assert.deepEqual(n.missionState.sources,['m05','m08','iron']);playCampaignBattle(n);assert.equal(n.outcome,'victory');
 });
 
-test('the v0.7.0 mid-M12 battle resumes unchanged and is won under v0.7.1 rules',()=>{
- const before=raw('m12-battle'),s=load('m12-battle');assert.equal(s.screen,'battle');assert.equal(s.missionId,12);assert.equal(s.version,VERSION);
- for(const u of before.units){const now=findUnit(s,u.id);assert.deepEqual([now.x,now.y,now.hp,now.team],[u.x,u.y,u.hp,u.team],u.id);}
- drain(s);playCampaignBattle(s);assert.equal(s.outcome,'victory');
+test('the v0.7.0 mid-M12 battle reopens in camp (v2.0.0) and is won again',()=>{
+ const before=raw('m12-battle'),s=reopensInCamp(load('m12-battle'),raw('m12-battle'),12);
 });

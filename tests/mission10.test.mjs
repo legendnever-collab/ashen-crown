@@ -1,6 +1,6 @@
 // v0.6.1 — M10 Two Lords' War: the pre-battle stance (support Oswin / support Brennan / mediate), rival armies
 // fighting each other, captures that stand an army down, the truce, Free Lords trust, Dario joining, Riposte.
-import test from 'node:test';import assert from 'node:assert/strict';
+import test from 'node:test';import {SKILL_MUL} from '../src/data/classes8.js';import assert from 'node:assert/strict';
 import {MISSIONS} from '../src/data/missions.js';
 import {STORY} from '../src/data/story.js';
 import {newGame,startBattle,beginEnemyPhase,advanceEnemy,performAction,checkOutcome,restartStage} from '../src/core/game.js';
@@ -60,10 +60,10 @@ test('Free Lords trust and Dario: a side +1, a truce +2, a failed mediation 0; D
  assert.equal(darioEligible({factionTrust:{iron:0,free:1,flame:0},flags:{}}),true);assert.equal(darioEligible({factionTrust:{iron:0,free:0,flame:0},flags:{}}),false);
 });
 
-test('Dario\'s Riposte: counters +4, +8 after the skill until the next player phase; the skill itself +2',()=>{
+test('Dario\'s Riposte: counters ×1.25, ×1.5 after the skill until the next player phase; the skill itself ×1.15 (v2.0.0 multipliers)',()=>{
  const s=newGame(9,camp({completed:[1,2,3,4,5,6,7,8,9,10],roster:['thea','dario']}),10);s.screen='deployment';const d=findUnit(s,'dario');delete d.benched;startBattle(s);drain(s);
  const foe=s.units.find(u=>u.team==='enemy'&&u.id!=='boss');d.x=3;d.y=7;foe.x=4;foe.y=7;const base=strikeStats(s,d,foe,'attack').damage;
- assert.equal(strikeStats(s,d,foe,'skill').damage,base+2);assert.equal(forecast(s,foe,d,'attack').counter,base+4);
- d.riposte=true;assert.equal(forecast(s,foe,d,'attack').counter,base+8);
+ const near=(a,b,m)=>assert.ok(Math.abs(a-b)<=1,`${a} ≈ ${b}`);near(strikeStats(s,d,foe,'skill').damage,base*SKILL_MUL.riposte);const c1=forecast(s,foe,d,'attack').counter;near(c1,base*1.25);
+ d.riposte=true;const c2=forecast(s,foe,d,'attack').counter;near(c2,base*1.5);assert.ok(c2>c1&&c1>base);
  const eric=findUnit(s,'eric');assert.equal(forecast(s,foe,eric,'attack').counter,eric.hp>strikeStats(s,foe,eric).damage?strikeStats(s,eric,foe).damage:0,'other heroes unchanged');
 });

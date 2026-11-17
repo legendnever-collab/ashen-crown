@@ -13,10 +13,10 @@ const battle=(choices={m05_erik_answer:'present'})=>{const s=newGame(5005,campai
 const place=(s,id,x,y)=>{const u=findUnit(s,id);u.x=x;u.y=y;return u;};
 const endTurn=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);};
 
-test('M05 data: 18×14 ridge map, presets inside the deployment zone, two wagons, M04 continues to M05',()=>{
- const m=MISSIONS[5];assert.deepEqual([m.width,m.height],[18,14]);assert.ok(m.map.every(r=>r.length===18));
+test('M05 data: 28×16 ridge map (v2.0.0), presets inside the deployment zone, two wagons, M04 continues to M05',()=>{
+ const m=MISSIONS[5];assert.deepEqual([m.width,m.height],[28,16]);assert.ok(m.map.every(r=>r.length===28));
  const s=newGame(5005,campaign(),5),zone=m.deployZone(s);for(const preset of Object.values(m.deployments))for(const [x,y]of preset)assert.ok(zone.has(`${x},${y}`),`${x},${y}`);
- const wagons=s.units.filter(u=>u.kind==='wagon');assert.equal(wagons.length,2);assert.ok(wagons.every(w=>w.team==='civilian'&&w.hp===34&&w.def===4));
+ const wagons=s.units.filter(u=>u.kind==='wagon');assert.equal(wagons.length,2);assert.ok(wagons.every(w=>w.team==='civilian'&&w.hp===56&&w.def===8));
  const m4=newGame(4004,{...campaign(),completed:[1,2,3],clears:3},4);m4.outcome='victory';m4.campaign.completed.push(4);assert.equal(nextMission(m4).missionId,5);
  for(const k of ['pre:5','5:parley','5:parley:acknowledged','5:parley:present','5:intro','5:turn2','5:reinforce','5:formation-broken','5:encounter','5:withdraw:broken','5:withdraw:held','5:farewell:acknowledged','5:farewell:present','5:bond','5:end','after:5','after:5:acknowledged','after:5:present'])assert.ok(STORY[k]?.length,k);
 });
@@ -27,11 +27,11 @@ test('M05 lion formation: bearer-adjacent soldiers get DEF +2 and HIT +10; aura 
  const near=strikeStats(s,e,sp),hitNear=strikeStats(s,sp,e).hit;f1.hp=0;const far=strikeStats(s,e,sp),hitFar=strikeStats(s,sp,e).hit;
  assert.equal(far.damage-near.damage,2);assert.ok(hitNear-hitFar===10||hitNear===100);
 });
-test('M05 lion charge: +4 against an isolated hero, none when a comrade is adjacent or Erik guards',()=>{
+test('M05 lion charge: ×1.3 against an isolated hero (v2.0.0 ratio formula), none when a comrade is adjacent or Erik guards',()=>{
  const s=battle();for(const u of s.units)if(u.team==='enemy'&&u.id!=='boss')u.hp=0;const boss=place(s,'boss',9,6);
  const lia=place(s,'lia',9,7);for(const id of ['eric','elina','sain','kai'])place(s,id,1+['eric','elina','sain','kai'].indexOf(id),13);
- const alone=strikeStats(s,boss,lia).damage;place(s,'kai',10,7);const covered=strikeStats(s,boss,lia).damage;assert.equal(alone-covered,4);
- const e=place(s,'eric',9,7);place(s,'lia',1,12);place(s,'kai',4,13);const before=strikeStats(s,boss,e).damage;e.guarding=true;e.guardUsed=false;assert.equal(before-strikeStats(s,boss,e).damage>=4,true);
+ const alone=strikeStats(s,boss,lia).damage;place(s,'kai',10,7);const covered=strikeStats(s,boss,lia).damage;assert.equal(alone,Math.round(covered*1.3));assert.ok(alone>covered);
+ const e=place(s,'eric',9,7);place(s,'lia',1,12);place(s,'kai',4,13);const before=strikeStats(s,boss,e).damage;e.guarding=true;e.guardUsed=false;assert.ok(strikeStats(s,boss,e).damage<before);
 });
 test('M05 Baldrick never falls below half HP and withdraws once both bearers are down (victory A)',()=>{
  const s=battle({m05_erik_answer:'acknowledged'}),boss=findUnit(s,'boss');boss.hp=boss.maxHP/2+1;rulesOf(s).afterDamage(s,Object.assign(boss,{hp:3}));assert.equal(boss.hp,Math.ceil(boss.maxHP/2));

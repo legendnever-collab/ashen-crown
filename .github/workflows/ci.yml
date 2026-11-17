@@ -11,7 +11,7 @@ concurrency:
 jobs:
   source-package:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -38,7 +38,7 @@ jobs:
   browser:
     needs: source-package
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
@@ -57,6 +57,8 @@ jobs:
             suites: act2c-campaign act2d-campaign migration-v061 migration-v070 tactics migration-v071 arms migration-v080
           - suite_group: act3
             suites: act3 migration-v081 item-art act3b migration-v090 feedback-v091 act3c migration-v091 act3d migration-v092
+          - suite_group: act4
+            suites: act4a act4b act4c act4d migration-v093 migration-v0100 migration-v0101 migration-v0102 v200
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

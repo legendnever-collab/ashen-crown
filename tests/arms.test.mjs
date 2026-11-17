@@ -1,6 +1,6 @@
 // v0.8.1 「무기」 (D-073 §6): gear stars and 단련, town shelves (specialty, premium, elite, Velmar's rare-goods shelf),
 // town revisits, treasures, hidden objectives, supply carriers, cut-ins and schema 11 saves.
-import test from 'node:test';import assert from 'node:assert/strict';
+import test from 'node:test';import {econV200,keptV200} from './v200-compat.mjs';import assert from 'node:assert/strict';
 import {newGame,startBattle,performAction,beginEnemyPhase,advanceEnemy,checkOutcome,restartStage} from '../src/core/game.js';
 import {findUnit,alive,strikeStats,rangeFor,awardXP,distance} from '../src/core/rules.js';
 import {transact,effectiveStats,equipmentBonus,initialEconomy} from '../src/core/economy.js';
@@ -21,16 +21,16 @@ const tx=(s,op,id,hero,slot)=>transact(s,{op,id,hero,slot,token:`tx:${s.economy.
 // A camp at a story moment: missions 1…done cleared, standing in the hub of mission `at`.
 function hubAt(at,done=at-1,extra={}){const s=newGame(5,camp({completed:upTo(done),...extra}),at);if(done>=at)s.practice=false;enterHub(s,{aftermath:done>=at,story:false});drain(s);s.economy.gold=5000;return s;}
 // A quiet M01 board with every enemy down but the ones a test wakes.
-function board(level=6){const s=newGame(11,camp({completed:[]}),1);s.screen='deployment';startBattle(s);drain(s);for(const u of s.units.filter(u=>u.team==='ally'))u.level=level;for(const e of s.units.filter(u=>u.team==='enemy'))e.hp=0;return s;}
+function board(level=6){const s=newGame(11,camp({completed:[]}),1);s.screen='deployment';startBattle(s);drain(s);for(const u of s.units.filter(u=>u.team==='ally'))u.level=level;s.levelPlan.avg=level; /* v2.0.0: EXP is measured against the sortie */for(const e of s.units.filter(u=>u.team==='enemy'))e.hp=0;return s;}
 const wake=(s,id,x,y,more={})=>{const e=findUnit(s,id);Object.assign(e,{hp:e.maxHP,x,y,...more});return e;};
 const place=(u,x,y)=>{u.x=x;u.y=y;u.moved=false;u.acted=false;};
 const own=(s,type,hero)=>{const g={id:`g${s.economy.next++}`,type,star:1,exp:0};s.economy.gear.push(g);if(hero)s.economy.equipped[hero][GEAR[type].slot]=g.id;return g;};
 
 test('the gear table: 11 tier I, 24 tier II, 14 tier III and 26 treasures (v0.9.0 adds six from the capital and two ACT III treasures; v0.9.1 two more; v0.9.2 two more; v0.9.3 a lance for Thea, a mace for Ines and two treasures; v0.10.0 two treasures; v0.10.1 two more; v0.10.2 two more), named as in the catalog; every new piece has a town',()=>{
- assert.equal(Object.keys(GEAR).length,77);for(const c of [...CATALOG_GEAR,...CATALOG_TREASURES])assert.equal(GEAR[c.id].name,c.ko,c.id);
+ assert.equal(Object.keys(GEAR).length,83); /* v2.0.0: six new treasures (two start treasures, four from missions and captures; D-115) */for(const c of [...CATALOG_GEAR,...CATALOG_TREASURES])assert.equal(GEAR[c.id].name,c.ko,c.id);
  for(const c of CATALOG_GEAR.filter(c=>c.tier>1)){const g=GEAR[c.id];assert.ok(['castletown','velmar','pilgrim','capital'].includes(g.home),c.id);assert.ok(g.after||g.premium||g.trust,c.id);assert.equal(g.price,c.price);}
  for(const c of CATALOG_TREASURES)assert.equal(GEAR[c.id].slot,'treasure');
- const rewards=Object.values(FEATS).map(f=>f.reward);assert.deepEqual(rewards.filter(r=>r!=='elixir').sort(),CATALOG_TREASURES.map(c=>c.id).sort(),'one treasure per hidden objective');assert.equal(rewards.filter(r=>r==='elixir').length,2);
+ const rewards=Object.values(FEATS).map(f=>f.reward);const V200=['arenCrest','teacherTome','garrRing','runnerMapCase','pursuerGreaves','quartermasterSeal'];assert.deepEqual(rewards.filter(r=>r!=='elixir').sort(),CATALOG_TREASURES.map(c=>c.id).filter(id=>!V200.includes(id)).sort(),'one treasure per hidden objective (the v2.0.0 six come from the start, missions and captures)');for(const id of V200)assert.equal(GEAR[id]?.slot,'treasure',id);assert.equal(rewards.filter(r=>r==='elixir').length,2);
 });
 
 test('stars: ★2 of a tier I piece is exactly the old +1 upgrade; 단련 costs 40 then 70 and scales with EXP already earned',()=>{
@@ -72,29 +72,27 @@ test('gear grows in battle: strikes for the weapon, blows for the armor; the sta
  const s=board(),eric=findUnit(s,'eric'),blade=own(s,'ironBlade','eric'),shield=own(s,'heavyShield','eric');place(eric,5,6);
  for(let i=0;i<20;i++){gainGearExp(s,eric,'strike');}assert.equal(blade.star,2);assert.ok(s.feedback.some(f=>f.type==='gear'&&f.text.includes('★2')));gainGearExp(s,eric,'hit');assert.equal(shield.exp,2);
  assert.ok(effectiveStats(s,eric).atk>=eric.atk+3,'★2 = ATK +2 +1');
- const r=restartStage(s);assert.equal(r.economy.gear.length,0,'the stage start knows nothing of it');
+ const r=restartStage(s);assert.ok(!r.economy.gear.some(g=>g.id===blade.id||g.id===shield.id),'the stage start knows nothing of it');
  const p=board();p.practice=true;const pb=own(p,'ironBlade','eric');gainGearExp(p,findUnit(p,'eric'),'strike');assert.equal(pb.exp,0,'no growth in practice');
 });
 
-test('treasures in battle: Twin Daggers strike again, Shield of Silence stops counters, Herb Pouch heals once, Mirror Cuirass halves arrows',()=>{
+test('treasures in battle: Twin Daggers strike again, Shield of Silence stops counters, Mirror Cuirass halves arrows (legendary effects); the Herb Pouch is stats only (v2.0.0)',()=>{
  let s,eric,e,seen=0;for(let seed=1;seed<60&&seen<3;seed++){s=board();s.rng=seed*2654435761>>>0;eric=findUnit(s,'eric');place(eric,5,6);e=wake(s,'b1',5,5,{hp:200,maxHP:200});own(s,'twinDaggers','eric');
   performAction(s,'eric','attack','b1');const counter=s.feedback.findIndex(f=>f.type==='attack'&&f.id==='b1'),landed=counter>=0&&['hit','critical'].includes(s.feedback[counter+1]?.type);if(!landed)continue;seen++;assert.equal(s.feedback.filter(f=>f.type==='attack'&&f.id==='eric').length,2,'struck back, Erik strikes once more');}
  assert.ok(seen>=3,'counters that landed were seen');
  s=board();eric=findUnit(s,'eric');place(eric,5,6);e=wake(s,'b1',5,5,{hp:200,maxHP:200});own(s,'silenceShield','eric');performAction(s,'eric','attack','b1');assert.ok(!s.feedback.some(f=>f.type==='attack'&&f.id==='b1'),'no counter');
- let healed=0;for(let seed=1;seed<40&&!healed;seed++){s=board();s.rng=seed*40503>>>0;const lia=findUnit(s,'lia');place(lia,5,6);own(s,'herbPouch','lia');e=wake(s,'b1',5,5,{atk:lia.def+Math.ceil(lia.maxHP*.6)});
-  beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}if(lia.pouchUsed){healed++;assert.ok(s.log.some(l=>l.includes('약초 주머니')));assert.ok(lia.hp>0);}}
- assert.ok(healed,'the pouch fired');
+ {s=board();const lia=findUnit(s,'lia'),d=effectiveStats(s,lia).def;own(s,'herbPouch','lia');assert.equal(effectiveStats(s,lia).def,d+Math.round(.7*2),'v2.0.0: the Herb Pouch is 강인 +2 · 의지 +1 (not legendary, no effect)');}
  s=board();eric=findUnit(s,'eric');place(eric,5,6);const a=wake(s,'a1',5,3);const plain=strikeStats(s,a,eric).damage;own(s,'mirrorCuirass','eric');assert.equal(strikeStats(s,a,eric).damage,Math.max(1,Math.round(plain/2)));
 });
 
 test('treasures: Hawk Feather +1 bow range, Sage Notebook +20% EXP, Charm of Clarity blocks statuses, Lion Epaulette, Alliance Seal, Wind Horseshoe, Reliquary and Mana Ring',()=>{
  const s=board(),elina=findUnit(s,'elina'),lia=findUnit(s,'lia'),eric=findUnit(s,'eric'),sain=findUnit(s,'sain');const r0=rangeFor(elina,'attack',s)[1];own(s,'hawkFeather','elina');assert.equal(rangeFor(elina,'attack',s)[1],r0+1);
  own(s,'sageNotebook','lia');const xp=lia.xp;awardXP(s,lia,10,'test');assert.equal(lia.xp-xp,12);
- own(s,'clearCharm','eric');assert.equal(statusChance(s,eric,'poison',100),0);assert.ok(statusChance(s,lia,'poison',100)>0);
+ {const foe=findUnit(s,'b1'),before=statusChance(s,eric,'poison',50,foe);own(s,'clearCharm','eric');assert.ok(statusChance(s,eric,'poison',50,foe)<before,'v2.0.0: the Charm is 의지 +3 — it resists curses');}
  place(sain,1,1);place(eric,1,2);const def=effectiveStats(s,sain).def;own(s,'lionEpaulette','eric');assert.equal(effectiveStats(s,sain).def,def+1);
  const mov=effectiveStats(s,lia).mov;own(s,'allianceSeal','sain');assert.equal(effectiveStats(s,lia).mov,mov+1,'turn 1');s.turn=2;assert.equal(effectiveStats(s,lia).mov,mov);
- const kai=findUnit(s,'kai'),km=effectiveStats(s,kai).mov;own(s,'windHorseshoe','kai');assert.equal(effectiveStats(s,kai).mov,km+2);
- const t=board(),l2=findUnit(t,'lia');own(t,'flameReliquary','lia');own(t,'manaRing','sain');l2.hp-=10;findUnit(t,'sain').mp-=4;beginEnemyPhase(t);while(t.phase==='enemy'){advanceEnemy(t);drain(t);}assert.equal(l2.hp,l2.maxHP-5);assert.equal(findUnit(t,'sain').mp,findUnit(t,'sain').maxMP-2);
+ const kai=findUnit(s,'kai'),ks=effectiveStats(s,kai).spd;own(s,'windHorseshoe','kai');assert.equal(effectiveStats(s,kai).spd,ks+3,'v2.0.0: 민첩 +3');
+ const t=board(),l2=findUnit(t,'lia'),sn=findUnit(t,'sain'),d0=effectiveStats(t,l2).def,m0=effectiveStats(t,sn).mag;own(t,'flameReliquary','lia');own(t,'manaRing','sain');assert.equal(effectiveStats(t,l2).def,d0+Math.round(.7*3),'강인 +3');assert.equal(effectiveStats(t,sn).mag,m0+Math.round(1.5*3),'지혜 +3');
 });
 
 test('regional gear effects: Lucky Coin crits, Iron Tower Shield, Pilgrim Mantle, Chrism Charm, Knight Lance, Sacred Flame Staff',()=>{
@@ -142,7 +140,7 @@ test('cut-ins: a hero critical hit and a ③ skill carry one line; enemies never
 });
 
 test('schema 11: stars, treasure slot, hidden objectives and battle flags round-trip; damaged records are rejected; treasures are never sold or tempered',()=>{
- assert.equal(SCHEMA,19);const s=hubAt(9,8);assert.ok(tx(s,'buy-gear','twinSabers').ok===false||true);own(s,'herbPouch');s.campaign.feats=[1];
+ assert.equal(SCHEMA,20);const s=hubAt(9,8);assert.ok(tx(s,'buy-gear','twinSabers').ok===false||true);own(s,'herbPouch');s.campaign.feats=[1];
  const blade=s.economy.gear.at(-1);assert.equal(tx(s,'sell-gear',blade.id).ok,false);assert.equal(tx(s,'upgrade',blade.id).ok,false);assert.ok(tx(s,'equip',blade.id,'eric','treasure').ok);
  const again=deserialize(serialize(s));assert.equal(again.economy.equipped.eric.treasure,blade.id);assert.deepEqual(again.campaign.feats,[1]);
  for(const bad of [x=>{x.economy.gear.at(-1).star=3;},x=>{x.economy.gear.push({...x.economy.gear.at(-1),id:`g${x.economy.next++}`});},x=>{x.campaign.feats=[1,1];},x=>{x.economy.gear.at(-1).level=0;},x=>{delete x.economy.equipped.eric.treasure;}]){const c=structuredClone(s);bad(c);assert.throws(()=>serialize(c));}

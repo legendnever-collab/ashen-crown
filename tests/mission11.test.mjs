@@ -53,7 +53,7 @@ test('light: a legion attacker in light aims +10; any target outside the light i
 test('march: from TURN 2 pilgrims walk the road — 1 tile in the dark, 2 in light, none with an enemy beside them, a hero blocks',()=>{
  let s=battle();clearEnemies(s);const p1=findUnit(s,'p1');turn(s);assert.equal(s.turn,2);assert.deepEqual([p1.x,p1.y],[8,9],'dark: one tile');
  s=battle();clearEnemies(s);findUnit(s,'br1').lit=true;const q=findUnit(s,'p1');turn(s);assert.deepEqual([q.x,q.y],[8,8],'light: two tiles');
- s=battle();clearEnemies(s);const r=findUnit(s,'p1'),raider=findUnit(s,'r1');raider.hp=30;raider.x=9;raider.y=10;raider.mov=0;raider.atk=0;turn(s);assert.deepEqual([r.x,r.y],[8,10],'an enemy beside: stop');
+ s=battle();clearEnemies(s);const r=findUnit(s,'p1'),raider=findUnit(s,'r1');raider.hp=30;raider.x=9;raider.y=10;raider.mov=0;raider.atk=0;for(const a of s.units.filter(u=>u.team==='allied'))a.level=1; /* v2.0.0: no shield push from the escort */turn(s);assert.deepEqual([r.x,r.y],[8,10],'an enemy beside: stop');
  s=battle();clearEnemies(s);const w=findUnit(s,'p1'),eric=findUnit(s,'eric');eric.x=8;eric.y=9;turn(s);assert.deepEqual([w.x,w.y],[8,10],'a hero on the road blocks it');
 });
 
@@ -69,10 +69,10 @@ test('M11 outcome: three pilgrims in the sanctuary win; two lost lose; dawn (aft
  s=battle();s.turn=13;findUnit(s,'p1').hp=0;rulesOf(s).checkOutcome(s,finish(s));assert.equal(s.outcome,'victory');assert.match(s.reason,/새벽/);
 });
 
-test('Sanctuary: legion units beside Ines (the escort or the recruit) take 2 less, 4 after her oath (her too)',()=>{
+test('Sanctuary: legion units beside Ines (the escort or the recruit) are covered (cut 2 → ×0.85, 4 after her oath → ×0.7; her too)',()=>{
  const s=battle(),ines=findUnit(s,'ines_warden'),fk=findUnit(s,'fk1'),e=findUnit(s,'r1');fk.x=ines.x+1;fk.y=ines.y;e.x=fk.x+1;e.y=fk.y;
  assert.equal(sanctuaryCut(s,fk),2);assert.equal(sanctuaryCut(s,ines),0);assert.equal(sanctuaryCut(s,e),0,'enemies are not covered');
- const MISS=MISSIONS[11].night;MISSIONS[11].night=null;const near=strikeStats(s,e,fk).damage;fk.x=ines.x+4;fk.y=ines.y-2;e.x=fk.x+1;e.y=fk.y;const far=strikeStats(s,e,fk).damage;MISSIONS[11].night=MISS;assert.equal(far-near,2);
+ const MISS=MISSIONS[11].night;MISSIONS[11].night=null;const near=strikeStats(s,e,fk).damage;fk.x=ines.x+4;fk.y=ines.y-2;e.x=fk.x+1;e.y=fk.y;const far=strikeStats(s,e,fk).damage;MISSIONS[11].night=MISS;assert.ok(Math.abs(near-Math.round(far*.85))<=1&&near<far,`${near} ≈ ${far}×0.85 (v2.0.0)`);
  const t=newGame(9,camp({roster:['ines'],completed:[1,2,3,4,5,6,7,8,9,10,11,12]}),12);t.screen='deployment';startBattle(t);drain(t);const i2=findUnit(t,'ines'),k=findUnit(t,'kai');k.x=i2.x+1;k.y=i2.y;
  assert.equal(sanctuaryCut(t,k),2);i2.sanctuary=true;assert.equal(sanctuaryCut(t,k),4);assert.equal(sanctuaryCut(t,i2),2);
 });

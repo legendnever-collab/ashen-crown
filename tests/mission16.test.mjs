@@ -47,7 +47,7 @@ test('the duel opens on TURN 3, pauses the battle, and the loser starts 30% down
  const s=battle();beginEnemyPhase(s);while(s.phase==='enemy')advanceEnemy(s);drain(s);beginEnemyPhase(s);while(s.phase==='enemy')advanceEnemy(s);
  assert.equal(s.turn,3);assert.ok(duelOpen(s),'duel open');assert.ok(!performAction(s,'eric','wait').ok,'battle waits');
  const back=deserialize(serialize(s));assert.ok(duelOpen(back));
- const cap=findUnit(s,'cap'),eric=findUnit(s,'eric'),hp=[cap.hp,eric.hp];let n=0;while(duelOpen(s)&&n++<3)duelPick(s,'strike');
+ const cap=findUnit(s,'cap'),eric=findUnit(s,'eric'),hp=[cap.hp,eric.hp];let n=0;while(duelOpen(s)&&n++<5)duelPick(s,'strike'); /* v2.0.0: up to five rounds, three to win */
  assert.ok(['hero','foe'].includes(s.duel.result));const loser=s.duel.result==='hero'?cap:eric;assert.equal(loser.hp,Math.max(1,(loser===cap?hp[0]:hp[1])-Math.ceil(loser.maxHP*.3)));
 });
 

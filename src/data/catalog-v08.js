@@ -113,7 +113,15 @@ export const CATALOG_TREASURES=[
  cTreasure('ramHead','성문 파쇄추의 쇠머리','The Ram\'s Iron Head','ATK +2 · 이 장수가 공격한 적은 반격하지 못함','M27 숨은 전과'),
  cTreasure('nightLocket','잿빛 밤의 목걸이','The Ashen Night Locket','RES +2 · 전투마다 한 번, 쓰러질 피해에도 HP 1로 버팀','M28 숨은 전과'),
  cTreasure('bellardQuill','벨라드의 깃펜','Bellard\'s Quill','MAG +2 · RES +1 · 턴마다 MP +2','M29 숨은 전과'),
- cTreasure('dawnRing','새벽의 반지','The Dawn Ring','SPD +1 · RES +2 · 상태이상에 걸리지 않음','M30 숨은 전과')
+ cTreasure('dawnRing','새벽의 반지','The Dawn Ring','SPD +1 · RES +2 · 상태이상에 걸리지 않음','M30 숨은 전과'),
+ // v2.0.0 (REFORM_DESIGN §4.4, D-115): the two treasures carried from the start
+ cTreasure('arenCrest','아렌의 방패 문장','Aren\'s Shield Crest','강인 +3 · 무력 +1','처음부터 · 에릭'),
+ cTreasure('teacherTome','스승의 마도서','The Teacher\'s Tome','지혜 +3','처음부터 · 리아'),
+ // v2.0.0 (§4.4): carried by named enemies of ACT I — defeat them (by luck) or take them alive (always), or win a duel
+ cTreasure('garrRing','가르의 쇠가락지','Garr\'s Iron Ring','무력 +2 · 운 +1','M01 가르가 지님'),
+ cTreasure('runnerMapCase','도주 대장의 지도통','The Runner\'s Map Case','지혜 +2 · 민첩 +1','M02 도주 대장이 지님'),
+ cTreasure('pursuerGreaves','추격 지휘관의 각반','The Pursuer\'s Greaves','민첩 +2 · 강인 +1','M03 추격 지휘관이 지님'),
+ cTreasure('quartermasterSeal','병참관의 인장','The Quartermaster\'s Seal','지혜 +2 · 의지 +1','M04 성채 병참관이 지님')
 ];
 const cSkill=(id,hero,slot,ko,en,cost,effect)=>({id,kind:'skill',hero,slot,ko,en,cost,effect});
 export const CATALOG_SKILLS=[
@@ -154,6 +162,11 @@ export const CATALOG_SKILLS=[
  cSkill('hundredCounters','dario',4,'백 번의 반격','A Hundred Counters',5,'전투당 1회 · 다음 적 턴 동안 받는 모든 공격에 반격(사거리와 관계없이) · 반격 피해 +30%'),
  // v0.10.1 (D-102): Baldrick's own four
  cSkill('lionStrike','baldrick',1,'사자의 일격','Lion Strike',4,'근접 피해 +6 · 반격 없음'),
+ // v2.0.0 부장의 ① (D-115): the class skill (core/stats8 skillOf)
+ cSkill('braceStance','bram',1,'방진','Brace',3,'근접 공격 ×1.1 · 다음 아군 턴까지 반격 ×1.5'),
+ cSkill('aimedShotNoa','noa',1,'조준 사격','Aimed Shot',3,'명중 +18 · 피해 ×1.15'),
+ cSkill('shieldOath','marta',1,'방패의 맹세','Shield Oath',3,'근접 공격 후 곁의 동료 피해 −30% (평소 −15%)'),
+ cSkill('chargeRowell','rowell',1,'돌격','Charge',3,'피해 ×1.25 · 3칸 이상 달리면 ×1.45, 반격 없음'),
  cSkill('lionRoar','baldrick',2,'사자의 포효','Lion\'s Roar',4,'주위 2칸 적 모두 속박 60% (지휘관 절반)'),
  cSkill('lionBanner','baldrick',3,'사자의 깃발','Lion Banner',5,'주위 2칸 아군 · 다음 아군 턴까지 받는 피해 −4'),
  cSkill('lastCharge','baldrick',4,'검은 사자의 결의','The Black Lion\'s Resolve',6,'전투당 1회 · 곁의 적 모두 공격(반격 없음) · 다음 아군 턴까지 받는 피해 절반')

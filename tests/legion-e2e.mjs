@@ -4,14 +4,14 @@ import {launchTestBrowser} from './browser-helper.mjs';import {drainStory} from 
 import {serialize} from '../src/persistence/save-manager.js';import {actOneCamp} from './skirmish-policy.mjs';
 const camp=actOneCamp(20261021,6,{kai_rescue:4,kai_bypass:2,m6_kai_lever:1});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const results=[];const check=(name,ok)=>{assert.ok(ok,name);n++;results.push(name);console.log('PASS',name);};
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v1.0.0.html').href;
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v2.0.0.html').href;
 try{
  // Desktop: panel layout and conditions
  {const ctx=await b.newContext({viewport:{width:1440,height:900}});await ctx.setOffline(true);const p=await ctx.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
   const press=async(a,id)=>{await p.locator(`[data-do="${a}"]${id?`[data-id="${id}"]`:''}`).first().click();await p.waitForTimeout(300);};
   await p.goto(url);await press('new');await drainStory(p);await press('menu');await press('backup');await p.fill('#backup-text',serialize(camp));await press('restore');await drainStory(p);
   check('1440 ACT I camp offers the rite panel',await p.locator('[data-do="legion"]').count()===1);await press('legion');
-  check('1440 panel lists five heroes with conditions',await p.locator('.legion-row').count()===5&&await p.locator('.legion-checks').count()===5);
+  check('1440 panel lists the five heroes and the officers, each with conditions',await p.locator('.legion-row').count()>=5&&await p.locator('.legion-checks').count()===await p.locator('.legion-row').count());
   check('1440 only Kai (Lv 6, potential 3/3) may start a trial',await p.locator('[data-do="trial-start"][data-id="kai"]:not([disabled])').count()===1&&await p.locator('[data-do="trial-start"]:not([disabled])').count()===1);
   await p.screenshot({path:'test-output/legion-panel-1440.png'});check('1440 no runtime errors',errors.length===0);await ctx.close();}
  // Phone: full trial
@@ -24,7 +24,7 @@ try{
  const moveTo=async(id,pickCell)=>{await pick(id);await press('mode','move');await p.waitForTimeout(150);const cell=pickCell((await v()).ranges);await tile(cell.x,cell.y);await idle();await press('confirm-move');await idle();return cell;};
  await p.goto(url);await press('new');await drainStory(p);await press('menu');await press('backup');await p.fill('#backup-text',serialize(camp));await press('restore');await drainStory(p);
  await press('legion');await press('trial-start','kai');await drainStory(p);await p.waitForTimeout(400);
- let s=await snap();check('390 Kai trial starts (PROMOTION TRIAL, Kai provisionally Shadowblade, others in reserve)',s.screen==='battle'&&s.missionId===105&&s.units.find(u=>u.id==='kai').classTier===2&&s.units.filter(u=>u.team==='ally'&&u.benched).length===4&&(await p.locator('#phasebar').textContent()).includes('PROMOTION TRIAL'));
+ let s=await snap();check('390 Kai trial starts (PROMOTION TRIAL, Kai provisionally Shadowblade, others in reserve)',s.screen==='battle'&&s.missionId===105&&s.units.find(u=>u.id==='kai').classTier===2&&s.units.filter(u=>u.team==='ally'&&u.benched&&!['bram','noa','marta','rowell'].includes(u.id)).length===4&&(await p.locator('#phasebar').textContent()).includes('PROMOTION TRIAL'));
  await moveTo('kai',r=>r.find(c=>c.x===6&&c.y===4));check('390 Kai reaches the sentinel',(await unit('kai')).y===4);
  await press('submenu','skills');await press('mode','exchange');await tile(6,3);check('390 exchange forecast on the sentinel',(await v()).preview==='s1');await tile(6,3);await idle();
  check('390 Shadow Exchange puts Kai in the gate',(await unit('kai')).y===3&&(await unit('s1')).y===4);

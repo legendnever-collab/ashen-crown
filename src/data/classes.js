@@ -32,6 +32,9 @@ export const CLASS_TREE={
  baldrick:[{tier:1,key:'ironKnight',name:'Black Iron Knight',ko:'흑철 기사'},{tier:2,key:'lionCaptain',name:'Lion Captain',ko:'사자 기병대장',bonus:{},growth:{}},
   {tier:3,key:'blackLion',name:'The Black Lion',ko:'검은 사자',ultimate:'lastCharge',bonus:{},growth:{}}]
 };
+// v2.0.0 부장 (D-115): their tree is their class's three tiers (classes8). No trial: they promote at camp when ready.
+import {CLASSES8,OFFICER_CLASS8} from './classes8.js';
+for(const [id,cls] of Object.entries(OFFICER_CLASS8))CLASS_TREE[id]=CLASSES8[cls].tiers.map((t,i)=>({tier:i+1,key:`${cls}${i+1}`,name:t.en,ko:t.ko,bonus:{},growth:{},officer:true}));
 // v0.9.1 awakening (Tier 3, D-079 Q5, ACT3_DESIGN §6; PROPOSED): Lv 14, tier 2, the hero's own ACT III mission cleared and
 // a won awakening trial. The ④ skill is used once a battle. v0.9.2 (D-089): Lia after M19, Kai after M20.
 export const AWAKEN_LEVEL=14;

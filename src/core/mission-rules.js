@@ -19,10 +19,14 @@ export const objectUnit=o=>({...structuredClone(o),team:'object',hp:1,maxHP:1,mp
 export const enemyUnit=(e,spawnTurn=0)=>({...structuredClone(e),team:'enemy',maxHP:e.hp,mp:0,maxMP:0,mag:0,moved:false,acted:false,spawnTurn});
 const searched=(s,type)=>s.units.some(u=>u.team==='object'&&u.evidence===type&&u.rescued);
 
+import {scaleTroop,DIFFICULTY,difficultyOf} from './stats8.js';
+import {ACT1_V200_RULES,inSafe2000} from './mission-rules-v200.js';
 export function spawnWave(s,list){
  const m=missionOf(s);
+ // v2.0.0 (§6.2): on 어려움 a wave brings a quarter more (copies of its first soldiers, never its commanders).
+ const extra=Math.ceil(list.length*(DIFFICULTY[difficultyOf(s)].waves-1));if(extra>0){const pool=list.filter(e=>e.id!=='boss'&&!['captain','lion'].includes(e.kind)&&!e.leader&&!e.commander);list=[...list,...pool.slice(0,extra).map((e,i)=>({...e,id:`${e.id}h${i}`,name:e.name}))];}
  for(const e of list){let pos={x:e.x,y:e.y};if(at(s,pos.x,pos.y)){const free=[];for(let y=0;y<m.height;y++)for(let x=0;x<m.width;x++)if(!at(s,x,y)&&Number.isFinite(terrainAt(x,y,s)?.cost))free.push({x,y});free.sort((a,b)=>distance(a,e)-distance(b,e)||a.y-b.y||a.x-b.x);pos=free[0];}
-  s.units.push({...enemyUnit(e,s.turn),...pos});s.feedback.push({type:'spawn',id:e.id,text:'REINFORCEMENT'});}
+  const nu={...enemyUnit(e,s.turn),...pos};s.units.push(nu);scaleTroop(s,nu,m);s.feedback.push({type:'spawn',id:e.id,text:'REINFORCEMENT'});}
 }
 
 const M4={
@@ -41,7 +45,7 @@ const M4={
   M4.alert(s);
  },
  checkOutcome(s,finish){
-  if(s.turn>missionOf(s).turnLimit)return finish(s,'defeat','제한 14턴 안에 장부 확보와 병참관 격파를 마치지 못했습니다.');
+  if(s.turn>missionOf(s).turnLimit)return finish(s,'defeat',`제한 ${missionOf(s).turnLimit}턴 안에 장부 확보와 병참관 격파를 마치지 못했습니다.`);
   if(searched(s,'ledger')&&findUnit(s,'boss').hp<=0)finish(s,'victory',`보급 장부 확보 · 성채 병참관 격파 · 증거 ${['ledger','seal','orders'].filter(t=>searched(s,t)).length}/3.`);
  },
  beforeCommit(s){
@@ -122,6 +126,8 @@ function movementCells(s,u){const out=[];const mov=u.mov,seen=new Map([[`${u.x},
 
 // ---------- M06 The Ashen Oath (ACT I finale) ----------
 const SAFE_Y=2;
+// v2.0.0 (D-115): M06's safe ground is mission.safe (beyond the south-west gate); the old map kept y ≤ 2.
+const safe6=(s,p)=>missionOf(s).safe?inSafe2000(s,p):p.y<=SAFE_Y;
 const refugeesOf=s=>s.units.filter(u=>u.team==='civilian');
 const passedOf=s=>refugeesOf(s).filter(u=>u.rescued).length;
 const stonesOf=s=>s.units.filter(u=>u.kind==='sealstone');
@@ -132,7 +138,7 @@ function triggerWaves(s,trigger){const m=missionOf(s),st=s.missionState;m.waves.
  spawnWave(s,w.units);if(w.story)enqueueStory(s,w.story);s.log.push(`적 증원 ${w.units.length}명 출현.`);});}
 // refugees walk the shortest open route north; they may pass through heroes but never stop on anyone
 function refugeeRoute(s,c){const start=`${c.x},${c.y}`,prev=new Map([[start,null]]),q=[{x:c.x,y:c.y}];let goal=null;
- while(q.length){const p=q.shift();if(p.y<=SAFE_Y&&`${p.x},${p.y}`!==start){goal=p;break;}
+ while(q.length){const p=q.shift();if(safe6(s,p)&&`${p.x},${p.y}`!==start){goal=p;break;}
   for(const [dx,dy]of[[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,k=`${x},${y}`;if(prev.has(k))continue;const t=terrainAt(x,y,s);if(!t||!Number.isFinite(t.cost))continue;const o=at(s,x,y);if(o&&o.team!=='ally')continue;prev.set(k,`${p.x},${p.y}`);q.push({x,y});}}
  if(!goal)return [];const path=[];let k=`${goal.x},${goal.y}`;while(k&&k!==start){const [x,y]=k.split(',').map(Number);path.unshift({x,y});k=prev.get(k);}return path;}
 function escortRefugees(s){const st=s.missionState;
@@ -141,7 +147,7 @@ function escortRefugees(s){const st=s.missionState;
   const escorted=s.units.some(u=>u.team==='ally'&&alive(u)&&distance(u,c)===1),steps=escorted?2:st.lever?1:0;if(!steps)continue;
   const path=refugeeRoute(s,c);let dest=-1;for(let i=0;i<Math.min(steps,path.length);i++)if(!at(s,path[i].x,path[i].y))dest=i;if(dest<0)continue;
   const from={x:c.x,y:c.y};c.x=path[dest].x;c.y=path[dest].y;s.feedback.push({type:'move',id:c.id,path:[from,...path.slice(0,dest+1)]});
-  if(c.y<=SAFE_Y){c.rescued=true;s.feedback.push({type:'rescue',id:c.id,text:'SAFE'});s.log.push(`${c.name}이(가) 관문을 넘었습니다. (${passedOf(s)}/4)`);enqueueStory(s,'6:through');}
+  if(safe6(s,c)){c.rescued=true;s.feedback.push({type:'rescue',id:c.id,text:'SAFE'});s.log.push(`${c.name}이(가) 관문을 넘었습니다. (${passedOf(s)}/4)`);enqueueStory(s,'6:through');}
   else s.log.push(`${c.name} ${escorted?'호위 이동':'우회로 이동'}.`);}}
 // civBias < 0: soldiers prefer heroes and only strike refugees when nothing better is in reach
 function plan6(s,u,cells,{civBias=-20,goal=null,reason='전진'}={}){
@@ -178,7 +184,7 @@ const M6={
  planEnemy(s,u,reachable){
   const cells=[...reachable].map(([p,c])=>{const [x,y]=p.split(',').map(Number);return {x,y,c};}),st=s.missionState;
   if(u.kind==='beacon')return {x:u.x,y:u.y,target:null,reason:'봉화 신호 대기'};
-  if(u.id==='boss'){if(st.phase<3)return plan6(s,u,[{x:u.x,y:u.y,c:0}],{reason:'관문 북쪽 지휘'});const hold=cells.filter(p=>p.y<=SAFE_Y);return plan6(s,u,hold.length?hold:cells,{goal:{x:8,y:2},reason:'관문을 직접 막는다'});}
+  if(u.id==='boss'){if(st.phase<3)return plan6(s,u,[{x:u.x,y:u.y,c:0}],{reason:'관문 북쪽 지휘'});const hold=cells.filter(p=>safe6(s,p));return plan6(s,u,hold.length?hold:cells,{goal:missionOf(s).gateGoal||{x:8,y:2},reason:'관문을 직접 막는다'});}
   if(GUARD_STONE[u.id]){const stone=findUnit(s,GUARD_STONE[u.id]);if(stone&&!stone.rescued){const near=cells.filter(p=>distance(p,stone)<=2);return plan6(s,u,near.length?near:[{x:u.x,y:u.y,c:0}],{goal:stone,reason:'봉인석 사수'});}}
   if(/^r\d/.test(u.id))return plan6(s,u,cells,{civBias:40,goal:refugeesOf(s).filter(alive).sort((a,b)=>distance(u,a)-distance(u,b))[0]||null,reason:'피난민 추격'});
   return plan6(s,u,cells,{reason:'공격 대상으로 이동'});},
@@ -189,7 +195,7 @@ const M6={
   if(s.turn>m.turnLimit)return finish(s,'defeat',`제한 ${m.turnLimit}턴 안에 관문을 넘지 못했습니다.`);
   if(st.phase===3&&passed>=1){const heroes=s.units.filter(u=>u.team==='ally'&&alive(u));
    if(!alive(boss))return finish(s,'victory',`봉쇄 집행관 격파 · 피난민 ${passed}/4 통과.`);
-   if(heroes.length&&heroes.every(u=>u.y<=SAFE_Y))return finish(s,'victory',`관문 돌파 · 생존 장수 전원 철수 · 피난민 ${passed}/4 통과.`);}
+   if(heroes.length&&heroes.every(u=>safe6(s,u)))return finish(s,'victory',`관문 돌파 · 생존 장수 전원 철수 · 피난민 ${passed}/4 통과.`);}
  },
  beforeCommit(s){setStoryFlag(s,'mission_06_refugees_through',passedOf(s));setStoryFlag(s,'mission_06_beacon_destroyed',!!s.missionState.beacon);setStoryFlag(s,'act1_completed');setStoryFlag(s,'legion_independent');},
  afterVictory(){},
@@ -217,7 +223,7 @@ const SK={
   if(s.turn>m.turnLimit)return finish(s,'defeat',`TURN ${m.turnLimit} 안에 목표를 달성하지 못했습니다.`);
  }
 };
-export const MISSION_RULES={4:M4,5:M5,6:M6,...ACT2_RULES,...ACT2B_RULES,...ACT2C_RULES,...ACT2D_RULES,...ACT3A_RULES,...ACT3B_RULES,...ACT3C_RULES,...ACT3D_RULES,...ACT4A_RULES,...ACT4B_RULES,...ACT4C_RULES,...ACT4D_RULES,101:SK,102:SK,103:SK,104:SK,105:SK,106:SK,107:SK,108:SK,109:SK,110:SK,111:SK,112:SK,113:SK,114:SK,115:SK,116:SK,117:SK};
+export const MISSION_RULES={...ACT1_V200_RULES,4:M4,5:M5,6:M6,...ACT2_RULES,...ACT2B_RULES,...ACT2C_RULES,...ACT2D_RULES,...ACT3A_RULES,...ACT3B_RULES,...ACT3C_RULES,...ACT3D_RULES,...ACT4A_RULES,...ACT4B_RULES,...ACT4C_RULES,...ACT4D_RULES,101:SK,102:SK,103:SK,104:SK,105:SK,106:SK,107:SK,108:SK,109:SK,110:SK,111:SK,112:SK,113:SK,114:SK,115:SK,116:SK,117:SK};
 export const rulesOf=s=>MISSION_RULES[s?.missionId]||null;
 
 export function searchEvidence(s,u,t){
@@ -229,4 +235,6 @@ export function searchEvidence(s,u,t){
 }
 export const missionUnitIds=m=>[...m.enemies,...m.reinforcements,...m.civilians,...(m.objects||[]),...(m.waves||[]).flatMap(w=>w.units)].map(u=>u.id);
 // v0.6: room for ACT II recruits (up to eight heroes from v0.7, nine with Baldrick from v0.10.1) and allied troops.
-export const maxUnits=m=>9+missionUnitIds(m).length+(m.allies||[]).length;
+// v2.0.0 (D-116): the soldiers 어려움 adds to a wave are copies named `<id>h<n>` (n below the wave's size); saves know them.
+export const hardWaveIds=m=>(m.waves||[]).flatMap(w=>w.units.flatMap(u=>w.units.map((_,n)=>`${u.id}h${n}`)));
+export const maxUnits=m=>13+missionUnitIds(m).length+Math.ceil(missionUnitIds(m).length*.25)+(m.allies||[]).length; /* v2.0.0: nine heroes + four officers; 어려움 adds a quarter to the waves */

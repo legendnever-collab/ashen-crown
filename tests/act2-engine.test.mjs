@@ -1,7 +1,7 @@
 // v0.6.0 Phase C engine (D-055/D-056): schema 9, ACT II roster and sortie limit, allied troops and rival
 // enemy factions, new terrain, faction trust, ACT II hub plan and west reveal, room-fitting chest styles.
 // ACT I behaviour must be untouched (five heroes, no allied units, same targets).
-import test from 'node:test';import assert from 'node:assert/strict';
+import test from 'node:test';import {econV200,keptV200} from './v200-compat.mjs';import assert from 'node:assert/strict';
 import {newGame,startBattle,setSortie,beginEnemyPhase,advanceEnemy,planEnemy,planAllied,alliedUnit,deployLimit} from '../src/core/game.js';
 import {findUnit,hostile,validTarget,terrainCost,rangeFor,strikeStats,alive} from '../src/core/rules.js';
 import {HEROES,SCHEMA,TERRAIN,partyIds,RECRUIT_HEROES,heroDef} from '../src/data/game-data.js';
@@ -13,37 +13,37 @@ import {HUBS,INTERIORS} from '../src/data/frontier-data.js';
 import {roomId,chestStyle,CHEST_STYLES,ROOM_CHESTS} from '../src/data/rooms-v06.js';
 import {act2HubFor,hubFor} from '../src/data/hubs-v05.js';
 import {frontierState,validateFrontier} from '../src/core/frontier.js';
-import {REGIONS} from '../src/data/world.js';
+import {REGIONS} from '../src/data/world.js';import {OFFICER_IDS,derivedFrom} from '../src/core/stats8.js';import {OFFICER_JOIN} from '../src/core/roster.js';
 
 const battle=(seed=11,campaign=null,id=1)=>{const s=newGame(seed,campaign,id);s.screen='deployment';startBattle(s);return s;};
 // A 12×10 board copy of mission 1 we can repaint for terrain checks (restored after each use).
 function withTile(s,x,y,type,fn){const m=MISSIONS[s.missionId].map,old=m[y][x];m[y][x]=type;try{return fn();}finally{m[y][x]=old;}}
 
-test('schema 9: ACT I parties are exactly the five heroes, sortie limit 5, and an empty roster',()=>{
- assert.equal(SCHEMA,19);
- for(const id of [1,2,3,4,5,6]){const s=newGame(7,null,id);assert.deepEqual(s.units.filter(u=>u.team==='ally').map(u=>u.id),HEROES.map(h=>h.id));assert.equal(deployLimit(s),5);assert.ok(s.units.every(u=>u.team!=='allied'));assert.deepEqual(s.campaign.roster,[]);assert.ok(!s.units.some(u=>u.benched));}
+test('schema 9 → v2.0.0: ACT I parties are the five heroes in the field and the officers earned so far on the bench, sortie limit 5',()=>{
+ assert.equal(SCHEMA,20);
+ for(const id of [1,2,3,4,5,6]){const s=newGame(7,null,id),allies=s.units.filter(u=>u.team==='ally'),officers=OFFICER_IDS.filter(o=>OFFICER_JOIN[o]===0); /* a fresh campaign: Rowell joins only after M04 is won */assert.deepEqual(allies.map(u=>u.id),[...HEROES.map(h=>h.id),...officers]);assert.equal(deployLimit(s),5);assert.ok(s.units.every(u=>u.team!=='allied'));assert.deepEqual(s.campaign.roster,officers);assert.deepEqual(allies.filter(u=>u.benched).map(u=>u.id),officers);}
 });
 
-test('schema 8 saves migrate to 9 with an empty roster and no trust yet; round trip holds',()=>{
+test('schema 8 saves migrate (v2.0.0: the ACT I officers join, no trust yet); round trip holds',()=>{
  const s=battle(5);const old=JSON.parse(JSON.stringify(s));old.schema=8;old.version='0.5.0';delete old.campaign.roster;old.stageStart.schema=8;delete old.stageStart.campaign.roster;
- const m=migrate(old);assert.equal(m.schema,19);assert.deepEqual(m.campaign.roster,[]);assert.equal(m.campaign.factionTrust,undefined);assert.equal(m.stageStart.schema,19);
- assert.deepEqual(m.units.map(u=>[u.id,u.hp,u.x,u.y]),s.units.map(u=>[u.id,u.hp,u.x,u.y]));
- assert.equal(deserialize(serialize(m)).schema,19);
+ const m=migrate(old);assert.equal(m.schema,20);assert.deepEqual(m.campaign.roster,['bram','noa','marta']);assert.equal(m.campaign.factionTrust,undefined);
+ assert.equal(m.stageStart,undefined,'v2.0.0: an ACT I battle reopens in camp on the new map');assert.equal(m.screen,'exploration');
+ assert.equal(deserialize(serialize(m)).schema,20);
 });
 
 test('a recruit joins at a level, gets slots and a hub place, and fields only within the sortie limit',()=>{
- const rec=recruitRecord('thea',8);assert.equal(rec.level,8);assert.equal(rec.maxHP,heroDef('thea').hp+7*heroDef('thea').growth.hp);assert.equal(rec.growthHistory.length,7);
+ const rec=recruitRecord('thea',8);assert.equal(rec.level,8);assert.equal(rec.maxHP,derivedFrom('cavalry',rec.stats,8).maxHP,'v2.0.0: from the six stats');assert.equal(rec.growthHistory.length,7);
  const camp=newGame(3,null,6);camp.screen='exploration';camp.frontier=frontierState(6);camp.campaign.frontier=structuredClone(camp.frontier);camp.campaign.heroes=structuredClone(camp.units.filter(u=>u.team==='ally'));
  assert.ok(joinRoster(camp,'thea',8));assert.ok(!joinRoster(camp,'thea',8),'joins once');assert.ok(!joinRoster(camp,'nobody'));
- assert.deepEqual(camp.campaign.roster,['thea']);assert.ok(camp.economy.equipped.thea&&camp.campaign.economy.equipped.thea);assert.ok(camp.frontier.members.includes('thea'));validateFrontier(camp.frontier);
- assert.deepEqual(partyIds(camp.campaign),['eric','elina','lia','sain','kai','thea']);
+ assert.deepEqual(camp.campaign.roster.filter(id=>!OFFICER_IDS.includes(id)),['thea']);assert.ok(camp.economy.equipped.thea&&camp.campaign.economy.equipped.thea);assert.ok(camp.frontier.members.includes('thea'));validateFrontier(camp.frontier);
+ assert.deepEqual(partyIds(camp.campaign).filter(id=>!OFFICER_IDS.includes(id)),['eric','elina','lia','sain','kai','thea']);
  // ACT I mission (limit 5): Thea starts in reserve and cannot be added until someone else stays back.
  const s=newGame(4,camp.campaign,6);s.screen='deployment';const thea=findUnit(s,'thea');
  assert.equal(thea.level,8);assert.ok(thea.benched);assert.equal(s.units.filter(u=>u.team==='ally'&&!u.benched).length,5);
  assert.ok(!setSortie(s,'thea',true));assert.ok(setSortie(s,'kai',false));assert.ok(setSortie(s,'thea',true));assert.ok(!thea.benched);
- assert.ok(startBattle(s));validate(s);assert.equal(deserialize(serialize(s)).units.filter(u=>u.team==='ally').length,6);
+ assert.ok(startBattle(s));validate(s);assert.equal(deserialize(serialize(s)).units.filter(u=>u.team==='ally'&&!OFFICER_IDS.includes(u.id)).length,6);
  // A mission with a six-hero sortie fields her from the start.
- const m=MISSIONS[6],had=m.deployLimit;m.deployLimit=6;try{const t=newGame(4,camp.campaign,6);assert.equal(deployLimit(t),6);assert.ok(t.units.filter(u=>u.team==='ally').every(u=>!u.benched));const spot=findUnit(t,'thea');assert.ok(spot.x>=0&&spot.y>=0);assert.ok(!t.units.some(o=>o!==spot&&alive(o)&&o.x===spot.x&&o.y===spot.y));}finally{if(had===undefined)delete m.deployLimit;else m.deployLimit=had;}
+ const m=MISSIONS[6],had=m.deployLimit;m.deployLimit=6;try{const t=newGame(4,camp.campaign,6);assert.equal(deployLimit(t),6);assert.ok(t.units.filter(u=>u.team==='ally'&&!OFFICER_IDS.includes(u.id)).every(u=>!u.benched));const spot=findUnit(t,'thea');assert.ok(spot.x>=0&&spot.y>=0);assert.ok(!t.units.some(o=>o!==spot&&alive(o)&&o.x===spot.x&&o.y===spot.y));}finally{if(had===undefined)delete m.deployLimit;else m.deployLimit=had;}
 });
 
 test('sides: heroes and allied troops are one side; rival enemy factions fight each other unless in truce',()=>{
@@ -77,7 +77,7 @@ test('ACT II terrain: snow, ice bridge, rooftop high ground, alley — by moveme
  withTile(s,4,5,'i',()=>assert.equal(terrainCost(s,eric,4,5),1));
  // Rooftop: +2 defense for the one standing on it, and a bow on a roof reaches one tile further.
  const foe=s.units.find(u=>u.team==='enemy');foe.x=4;foe.y=5;const atk={...eric,x:4,y:6};
- const flat=strikeStats(s,atk,foe).damage,roof=withTile(s,4,5,'o',()=>strikeStats(s,atk,foe).damage);assert.equal(flat-roof,Math.min(2,flat-1));
+ const flat=strikeStats(s,atk,foe).damage,roof=withTile(s,4,5,'o',()=>strikeStats(s,atk,foe).damage);assert.ok(roof<flat||flat===1,'the roof guards (DEF +2 through the ratio formula)');
  elina.x=4;elina.y=5;assert.deepEqual(rangeFor(elina,'attack',s),[2,3]);withTile(s,4,5,'o',()=>assert.deepEqual(rangeFor(elina,'attack',s),[2,4]));
  assert.equal(TERRAIN.o.high,true);
 });

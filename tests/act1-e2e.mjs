@@ -6,7 +6,7 @@ import {newGame,startBattle,nextMission} from '../src/core/game.js';import {ente
 import {serialize} from '../src/persistence/save-manager.js';import {playBattle} from './player-policy.mjs';import {playCampaignBattle,drain} from './campaign-policy.mjs';
 
 const shots='docs/v0.6.0/screenshots';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
-const url=pathToFileURL(path.resolve('releases/Ashen_Crown_v1.0.0.html')).href,checks=[],errors=[];let external=0;
+const url=pathToFileURL(path.resolve('releases/Ashen_Crown_v2.0.0.html')).href,checks=[],errors=[];let external=0;
 const check=(name,ok)=>{assert.ok(ok,name);checks.push({name,status:'PASS'});console.log('PASS',name);};
 
 // Deterministic legal campaign through M03, then the real aftermath hub.
@@ -39,7 +39,7 @@ try{for(const [width,height,touch]of viewports){
  check(`${label} advisor briefing leads to the M04 War Council`,s.screen==='warroom'&&(await p.locator('.council-summary').textContent()).includes('성채의 기록'));
  if(width===1440)await p.screenshot({path:`${shots}/m04-council-${width}.png`});
  await cmd('deploy');await settle();s=await snap();
- check(`${label} M04 deployment uses the authored fortress presets`,s.screen==='deployment'&&findUnit(s,'eric').y===11&&findUnit(s,'eric').x===7);
+ check(`${label} M04 deployment uses the authored fortress presets (v2.0.0: the 24×20 fortress, Erik at 11,15)`,s.screen==='deployment'&&findUnit(s,'eric').y===15&&findUnit(s,'eric').x===11);
  await cmd('start-battle');await settle();s=await snap();
  check(`${label} M04 battle starts with three evidence objects and archive boss holding`,s.screen==='battle'&&s.units.filter(u=>u.team==='object').length===3&&findUnit(s,'boss').mov===0&&s.missionState.alerted===false);
  check(`${label} M04 objective bar shows evidence and burn timer`,(await p.locator('#phasebar').textContent()).includes('증거 0/3'));
@@ -47,16 +47,16 @@ try{for(const [width,height,touch]of viewports){
  check(`${label} M04 battle has no horizontal overflow`,await noOverflow());
 
  // 2. Search through the visible menu: Lia beside the west-tower record.
- await restore(m04Battle(base,s=>{const l=findUnit(s,'lia');l.x=1;l.y=2;findUnit(s,'t1').hp=0;}));await settle();
- await menuFor('lia',1,2);await cmd('mode','search');await tile(1,1);
+ await restore(m04Battle(base,s=>{const l=findUnit(s,'lia');l.x=6;l.y=1;findUnit(s,'t1').hp=0;}));await settle(); /* v2.0.0: the 24×20 fortress — the seal record at 5,1 */
+ await menuFor('lia',6,1);await cmd('mode','search');await tile(5,1);
  check(`${label} Search forecast is labelled and costs no HP`,(await p.locator('.forecast').textContent()).includes('증거 확보'));
  await cmd('confirm');await settle();s=await snap();
  check(`${label} Lia searches the seal record and her teacher-notation scene plays`,findUnit(s,'e2').rescued&&findUnit(s,'lia').acted&&s.narrative.seen.includes('4:search:seal:lia'));
  check(`${label} searched record leaves the board, ledger still pending`,(await p.locator('#phasebar').textContent()).includes('증거 1/3'));
 
  // 3. Victory through the ledger, then the aftermath records choice.
- await restore(m04Battle(base,s=>{for(const u of s.units)if(u.team==='enemy'&&u.id!=='boss')u.hp=0;findUnit(s,'boss').hp=0;const e=findUnit(s,'eric');e.x=9;e.y=1;}));await settle();
- await menuFor('eric',9,1);await cmd('mode','search');await tile(8,1);await cmd('confirm');await settle();s=await snap();
+ await restore(m04Battle(base,s=>{for(const u of s.units)if(u.team==='enemy'&&u.id!=='boss')u.hp=0;findUnit(s,'boss').hp=0;const e=findUnit(s,'eric');e.x=12;e.y=1;}));await settle(); /* the ledger at 13,1 */
+ await menuFor('eric',12,1);await cmd('mode','search');await tile(13,1);await cmd('confirm');await settle();s=await snap();
  check(`${label} ledger + fallen quartermaster = victory with M04 flags and first-clear Gold`,s.outcome==='victory'&&s.campaign.flags.mission_04_ledger_recovered&&s.campaign.completed.includes(4)&&s.economy.rewards.includes(4));
  check(`${label} result shows evidence summary and sends the legion back to camp first`,(await p.locator('#app').textContent()).includes('증거 1/3')&&await p.locator('[data-do="aftermath"]').count()>0);
  if(width===1440)await p.screenshot({path:`${shots}/m04-result-${width}.png`});
@@ -102,8 +102,8 @@ try{for(const [width,height,touch]of viewports){
  check(`${label} M06 battle has no horizontal overflow`,await noOverflow());
  // 7. Lia opens the last seal through the visible menu → phase 3 and Erik's Oath Banner.
  const m06=JSON.parse(JSON.stringify(s));for(const u of m06.units)if(u.team==='enemy'&&!['boss','beacon'].includes(u.id))u.hp=0;m06.missionState.phase=2;for(const o of m06.units.filter(u=>u.kind==='sealstone'))o.locked=false;m06.units.find(u=>u.id==='seal1').rescued=true;
- const ref=m06.units.find(u=>u.id==='p1');ref.x=8;ref.y=1;ref.rescued=true;const ml=m06.units.find(u=>u.id==='lia');ml.x=11;ml.y=4;const mE=m06.units.find(u=>u.id==='eric');mE.x=12;mE.y=5;
- await restore(m06);await settle();await menuFor('lia',11,4);await cmd('mode','search');await tile(10,4);
+ const ref=m06.units.find(u=>u.id==='p1');ref.x=2;ref.y=19;ref.rescued=true;const ml=m06.units.find(u=>u.id==='lia');ml.x=4;ml.y=14;const mE=m06.units.find(u=>u.id==='eric');mE.x=5;mE.y=13; /* v2.0.0: the 24×20 village — seal stone 2 at 5,14, the gate to the south-west */
+ await restore(m06);await settle();await menuFor('lia',4,14);await cmd('mode','search');await tile(5,14);
  check(`${label} unseal forecast names the seal stone`,(await p.locator('.forecast').textContent()).includes('봉인 해제'));
  await cmd('confirm');await settle();s=await snap();
  check(`${label} Lia unseals in one action → phase 3 and Erik's Oath Banner`,s.missionState.phase===3&&s.missionState.banner&&s.narrative.seen.includes('6:phase3')&&s.narrative.seen.includes('6:banner')&&s.units.find(u=>u.id==='eric').oathUntil===s.turn+1);

@@ -1,5 +1,5 @@
 // v0.5.0 Phase E: promotion trials and Legion Drill (D-047) — start conditions, commit, return to camp.
-import test from 'node:test';import assert from 'node:assert/strict';
+import test from 'node:test';import {OFFICER_IDS} from '../src/core/stats8.js';import assert from 'node:assert/strict';
 import {MISSIONS,LAST_MISSION} from '../src/data/missions.js';
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {findUnit} from '../src/core/rules.js';
@@ -26,7 +26,7 @@ test('the rite opens only in the ACT I camp after the Ashen Oath; trials need th
 test('a trial battle: hero provisionally promoted, others in reserve, not practice, saves round-trip',()=>{
  const camp=actOneCamp(2,6,ready),s=startSkirmish(camp,'trial','kai');assert.ok(s);
  assert.equal(s.missionId,105);assert.equal(s.practice,false);assert.equal(s.screen,'battle');assert.equal(findUnit(s,'kai').classTier,2);
- assert.deepEqual(s.units.filter(u=>u.team==='ally'&&u.benched).map(u=>u.id).sort(),['elina','eric','lia','sain']);
+ assert.deepEqual(s.units.filter(u=>u.team==='ally'&&u.benched&&!OFFICER_IDS.includes(u.id)).map(u=>u.id).sort(),['elina','eric','lia','sain']);assert.ok(s.units.filter(u=>OFFICER_IDS.includes(u.id)).every(u=>u.benched));
  const again=deserialize(serialize(s));assert.equal(again.skirmish.kind,'trial');assert.equal(again.skirmish.returnMission,6);
 });
 

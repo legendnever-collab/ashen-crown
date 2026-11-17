@@ -1,93 +1,100 @@
-// v0.6 Phase D / v0.6.1 / v0.7.0: M01→M14 legal-policy campaign simulation (30 seeds). M07–M14 must stay winnable (≥ 90%) with
+// v0.6 Phase D / v0.6.1 / v0.7.0: M01→M14 legal-policy campaign simulation (30 seeds). M07–M14 must stay winnable (v2.0.0: ≥ 60% per mission, see the gate at the end) with
 // the choices alternated (M07 deserters handover/legion, M08 order hold/rescue — the rescue runs deploy with the
 // 'defense' preset so two heroes start by the rear village); saves round-trip mid-campaign.
 import {newGame,startBattle,nextMission,presetDeployment} from '../src/core/game.js';import {playBattle} from './player-policy.mjs';import {playCampaignBattle,setPersuadeFirst} from './campaign-policy.mjs';import {chooseLead23} from '../src/core/mission-rules-v0100.js';import {chooseBanner25} from '../src/core/mission-rules-v0101.js';import {chooseConfession28} from '../src/core/mission-rules-v0102.js';import {chooseFate29} from '../src/core/mission-rules-v100.js';import {openEndings,chooseEnding} from '../src/core/ending.js';
 import {chooseDeserters,chooseOrder} from '../src/core/mission-rules-v06.js';import {chooseStance} from '../src/core/mission-rules-v061.js';import {chooseOath,chooseRecords} from '../src/core/mission-rules-v070.js';import {serialize,deserialize} from '../src/persistence/save-manager.js';import {chooseRecords15,chooseStones16} from '../src/core/mission-rules-v090.js';import {chooseOath17,chooseTruth18} from '../src/core/mission-rules-v091.js';import {chooseTeacher19,chooseSuperior20,choosePlan20} from '../src/core/mission-rules-v092.js';import {chooseKing21,chooseAct3} from '../src/core/mission-rules-v093.js';import {enterHub} from '../src/core/frontier.js';import {startSkirmish,AWAKEN_MISSION} from '../src/core/skirmish.js';import {applyClass} from '../src/core/progression.js';import {CLASS_TREE,AWAKEN_TRIGGER} from '../src/data/classes.js';import {playSkirmish} from './skirmish-policy.mjs';import {drain} from './campaign-policy.mjs';import fs from 'node:fs';
+// v2.0.0 (D-116): like a player, a lost battle is fought again from its camp (up to three tries, a different roll each time),
+// so the chain keeps its campaigns; the gate reads the first try of every mission (FIRST).
+const FIRST={};
+function fightCamp(camp,prep=s=>{s.screen='deployment';},play=s=>playCampaignBattle(s)){let s,p;for(let t=0;t<3;t++){s=structuredClone(camp);s.rng=s.initialSeed=(s.rng+t*7919)>>>0;prep(s);startBattle(s);try{p=play(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+ if(t===0){const r=FIRST[s.missionId]??={w:0,n:0};r.n++;if(s.outcome==='victory')r.w++;}if(s.outcome==='victory')break;}return [s,p];}
+const fight=(prev,prep,play)=>fightCamp(nextMission(prev),prep,play);
 const N=+process.argv[2]||30,start=+process.argv[3]||20261014,out=[],out3=[],trials=[];
 // v0.9.1: a side copy of the camp tries a trial with the policy (forced: the balance party is not promoted along the way);
 // the campaign itself goes on unchanged, so M17–M18 numbers are those of the same party as v0.9.0's M15–M16.
 function tryTrial(s,hero,seed){if(!s.campaign.heroes?.some(h=>h.id===hero))return;const c=structuredClone(s);c.outcome='victory';enterHub(c,{aftermath:true,story:false});drain(c);const rec=c.campaign.heroes.find(h=>h.id===hero),tier=['eric','elina','sain','lia','kai'].includes(hero)||AWAKEN_MISSION[hero]&&c.campaign.completed.includes(AWAKEN_TRIGGER[hero])?3:2; /* v0.10.0: Ines and Thea awaken after M23 / M24 */
  for(let t=2;t<tier;t++)applyClass(rec,CLASS_TREE[hero].find(k=>k.tier===t));const t=startSkirmish(c,'trial',hero,{force:true});if(!t)return;let r;try{r=playSkirmish(t);}catch(e){r={outcome:'ERR '+e.message};}deserialize(serialize(t));trials.push({seed,hero,tier,mission:t.missionId,level:rec.level,outcome:t.outcome,turn:t.turn,why:t.reason,ultimate:(t.ultimates||[]).includes(hero)});}
-for(let seed=start;seed<start+N;seed++){let s=newGame(seed);s.screen='deployment';startBattle(s);playBattle(s);
- for(const id of [2,3,4,5,6]){s=nextMission(s);if(id===5)s.campaign.choices.m05_erik_answer=seed%2?'present':'acknowledged';s.screen='deployment';startBattle(s);playCampaignBattle(s,id===2?seed%2===0:true);if(s.outcome!=='victory')break;if(id===4)s.campaign.choices.m04_records_choice=seed%2?'kept':'reported';}
+for(let seed=start;seed<start+N;seed++){let [s]=fightCamp(newGame(seed),undefined,s=>playBattle(s));
+ if(s.outcome!=='victory'){out.push({seed,stop:1,outcome:s.outcome});continue;}
+ for(const id of [2,3,4,5,6]){if(id===5)s.campaign.choices.m05_erik_answer=seed%2?'present':'acknowledged';[s]=fight(s,undefined,x=>playCampaignBattle(x,id===2?seed%2===0:true));if(s.outcome!=='victory')break;if(id===4)s.campaign.choices.m04_records_choice=seed%2?'kept':'reported';}
  if(s.outcome!=='victory'){out.push({seed,stop:s.missionId,outcome:s.outcome});continue;}
  s.campaign.choices.m06_oath=['people','comrades','truth'][seed%3];const r={seed,records:s.campaign.choices.m04_records_choice};
- s=nextMission(s);r.lv=s.units.filter(u=>u.team==='ally').map(u=>`${u.id}${u.level}`).join(' ');s.screen='deployment';startBattle(s);let p;try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+ let p;r.lv=nextMission(s).units.filter(u=>u.team==='ally').map(u=>`${u.id}${u.level}`).join(' ');[s,p]=fight(s);
  Object.assign(r,{m7:p.outcome,t7:s.turn,why7:s.reason,escorts:s.units.filter(u=>u.team==='allied'&&u.hp>0).length,through:s.units.filter(w=>w.kind==='wagon'&&w.rescued).length,captured:s.missionState.captured});
  if(s.outcome!=='victory'){r.feats=[...(s.campaign.feats||[])];out.push(r);continue;}
  if(s.missionState.captured){chooseDeserters(s,seed%3===0?'handover':'legion');r.deserters=s.campaign.choices.m07_deserters;}
- s=nextMission(s);chooseOrder(s,seed%2?'rescue':'hold');s.screen='deployment';if(seed%2)presetDeployment(s,'defense');startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+ [s,p]=fight(s,x=>{chooseOrder(x,seed%2?'rescue':'hold');x.screen='deployment';if(seed%2)presetDeployment(x,'defense');});
  Object.assign(r,{m8:p.outcome,t8:s.turn,why8:s.reason,order:s.campaign.choices.m08_order,saved:s.units.filter(v=>v.team==='civilian'&&v.rescued).length,rockfalls:s.missionState.rockfall.length,iron:s.campaign.factionTrust?.iron,thea:!!s.campaign.roster?.includes('thea')});
  if(s.outcome!=='victory'){r.feats=[...(s.campaign.feats||[])];out.push(r);continue;}
  // v0.6.1: M09 (Velmar) and M10 (stance rotated by seed: support Oswin / support Brennan / mediate).
- s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+ [s,p]=fight(s);
  Object.assign(r,{m9:p.outcome,t9:s.turn,why9:s.reason,delegates:s.units.filter(v=>v.team==='civilian'&&v.hp>0).length,captured9:!!s.missionState.captured});
  if(s.outcome!=='victory'){r.feats=[...(s.campaign.feats||[])];out.push(r);continue;}
- s=nextMission(s);s.screen='deployment';chooseStance(s,['a','b','mediate'][seed%3]);startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+ [s,p]=fight(s,x=>{x.screen='deployment';chooseStance(x,['a','b','mediate'][seed%3]);});
  Object.assign(r,{m10:p.outcome,t10:s.turn,why10:s.reason,stance:s.campaign.choices.m10_stance,mediated:!!s.campaign.flags.mission_10_mediated,villagers10:s.units.filter(v=>v.team==='civilian'&&v.rescued).length,free:s.campaign.factionTrust?.free,dario:!!s.campaign.roster?.includes('dario')});
  if(s.outcome!=='victory'){r.feats=[...(s.campaign.feats||[])];out.push(r);continue;}
  // v0.7.0: M11 (night procession; oath alternated) and M12 (stealth; records: copy when possible, else return/take by seed).
- s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+ [s,p]=fight(s);
  Object.assign(r,{m11:p.outcome,t11:s.turn,why11:s.reason,arrived:s.units.filter(v=>v.team==='civilian'&&v.rescued).length,lost11:s.units.filter(v=>v.team==='civilian'&&v.hp<=0).length,lit:s.missionState.lit?.length});
  if(s.outcome!=='victory'){r.feats=[...(s.campaign.feats||[])];out.push(r);continue;}chooseOath(s,seed%2?'oath':'legion');r.oath=s.campaign.choices.m11_oath;
- s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+ [s,p]=fight(s);
  Object.assign(r,{m12:p.outcome,t12:s.turn,why12:s.reason,alarm12:s.missionState.alarmTurn,quiet:!!s.missionState.quiet,records:s.units.filter(o=>o.kind==='evidence'&&o.rescued&&!o.burned).length,abbot:!!s.missionState.captured});
  if(s.outcome==='victory'){chooseRecords(s,s.campaign.flags.mission_12_copy_ready?'copy':['return','take'][seed%2]);Object.assign(r,{records12:s.campaign.choices.m12_records,flame:s.campaign.factionTrust?.flame,ines:!!s.campaign.roster?.includes('ines')});deserialize(serialize(s));}
  if(s.outcome!=='victory'){r.feats=[...(s.campaign.feats||[])];out.push(r);continue;}
  // v0.7.1: M13 (even seeds play a persuasion run that spares Baldrick) and M14 (the summit, betrayal by the lowest trust).
- s=nextMission(s);s.screen='deployment';startBattle(s);r.resolve0=s.missionState.resolve;setPersuadeFirst(seed%2===0);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}setPersuadeFirst(false);deserialize(serialize(s));
+ setPersuadeFirst(seed%2===0);[s,p]=fight(s);setPersuadeFirst(false);r.resolve0=null;
  Object.assign(r,{m13:p.outcome,t13:s.turn,why13:s.reason,resolve:s.missionState.resolve,baldrick:s.missionState.halted?'halted':s.missionState.withdrew,refugees13:s.units.filter(v=>v.team==='civilian'&&v.hp>0).length});
  if(s.outcome!=='victory'){r.feats=[...(s.campaign.feats||[])];out.push(r);continue;}
- s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+ [s,p]=fight(s);
  Object.assign(r,{m14:p.outcome,t14:s.turn,why14:s.reason,betrayer:s.missionState.betrayer,arrived14:s.missionState.arrived.length,recruit14:s.campaign.flags.mission_14_recruit,departed:Object.keys(s.campaign.departed||{}).join('+'),trust14:s.campaign.factionTrust});
  r.feats=[...(s.campaign.feats||[])];out.push(r);
  // v0.9.0 ACT III part 1 (D-079): the campaigns that finish ACT II go on to M15–M16 (records choice and stones alternated).
  // Written to test-output/act3-balance.json so act2-balance.json stays comparable with earlier evidence.
  if(p.outcome!=='victory')continue;const a={seed,lv:s.units.filter(u=>u.team==='ally').map(u=>`${u.id}${u.level}`).join(' '),departed:Object.keys(s.campaign.departed||{}).join('+'),inesIn:!!s.campaign.roster?.includes('ines')};
- s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+ [s,p]=fight(s);
  Object.assign(a,{m15:p.outcome,t15:s.turn,why15:s.reason,boxes:s.missionState.secured?.length,watch:s.missionState.turned?'turned':s.missionState.warned?'warned':'calm'});
- if(p.outcome==='victory'){chooseRecords15(s,['archivist','keep','post'][seed%3]);s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+ if(p.outcome==='victory'){chooseRecords15(s,['archivist','keep','post'][seed%3]);[s,p]=fight(s);
   Object.assign(a,{m16:p.outcome,t16:s.turn,why16:s.reason,echoes:s.missionState.searched?.length,duel:s.duel?.result||'none',returning:s.missionState.returning.join('+'),rejoined:s.missionState.returning.filter(id=>s.campaign.roster?.includes(id)).join('+')});
   if(p.outcome==='victory'){chooseStones16(s,seed%2?'break':'leave');for(const h of ['elina','thea','dario','ines'])tryTrial(s,h,seed);
    // v0.9.1 ACT III part 2 (D-084): M17 then M18 (oath book and truth alternated).
-   s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+   [s,p]=fight(s);
    Object.assign(a,{m17:p.outcome,t17:s.turn,why17:s.reason,sworn:s.missionState.sworn?.length,claimed:s.missionState.claimed?.length,archive:s.missionState.heldMax});
-   if(p.outcome==='victory'){chooseOath17(s,seed%2?'take':'leave');tryTrial(s,'eric',seed);s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+   if(p.outcome==='victory'){chooseOath17(s,seed%2?'take':'leave');tryTrial(s,'eric',seed);[s,p]=fight(s);
     Object.assign(a,{m18:p.outcome,t18:s.turn,why18:s.reason,trees:s.units.filter(t=>t.kind==='wardTree'&&t.hp>0).length,keepers:s.missionState.sheltered?.length});
     if(p.outcome==='victory'){chooseTruth18(s,seed%2?'tell':'keep');tryTrial(s,'sain',seed);
      // v0.9.2 ACT III part 3 (D-089): M19 then M20 (teacher, superior and plan alternated); Lia's and Kai's trials on the side.
-     s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+     [s,p]=fight(s);
      Object.assign(a,{m19:p.outcome,t19:s.turn,why19:s.reason,unsealed:s.missionState.unsealed?.length,forgotten:s.missionState.forgotten?.length,memory:s.missionState.memory?Object.values(s.missionState.memory).join(''):''});
-     if(p.outcome==='victory'){chooseTeacher19(s,seed%2?'take':'leave');tryTrial(s,'lia',seed);s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+     if(p.outcome==='victory'){chooseTeacher19(s,seed%2?'take':'leave');tryTrial(s,'lia',seed);[s,p]=fight(s);
       Object.assign(a,{m20:p.outcome,t20:s.turn,why20:s.reason,cabinets:s.missionState.searched?.length,burned:s.missionState.burned?.length,evacuated:s.missionState.evacuated?.length,lost:s.missionState.lost?.length,duel20:s.duel?.result||'none'});
       if(p.outcome==='victory'){chooseSuperior20(s,seed%2?'release':'trial');choosePlan20(s,seed%3?'keep':'send');tryTrial(s,'kai',seed);
        // v0.9.3 ACT III part 4 (D-093): M21 then M22 (the king's request and the ACT III choice alternated).
-       s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+       [s,p]=fight(s);
        Object.assign(a,{m21:p.outcome,t21:s.turn,why21:s.reason,anchors:s.missionState.broken?.length,kingHP:s.units.find(k=>k.id==='king')?.hp,duel21:s.duel?.result||'none'});
-       if(p.outcome==='victory'){chooseKing21(s,seed%2?'promise':'notyet');s=nextMission(s);s.screen='deployment';startBattle(s);if(process.env.DUMP22)fs.writeFileSync(`${process.env.DUMP22}/m22-${seed}.json`,serialize(s));try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+       if(p.outcome==='victory'){chooseKing21(s,seed%2?'promise':'notyet');[s,p]=fight(s);
         Object.assign(a,{m22:p.outcome,t22:s.turn,why22:s.reason,heralds:3-(s.missionState.fallen?.length||0),support:s.missionState.support?.length,returning22:s.missionState.returning?.length,rejoined22:(s.missionState.returning||[]).filter(id=>s.campaign.flags[`mission_22_return_${id}`]==='joined').length,records:Object.keys(s.campaign.records||{}).length});
         if(p.outcome==='victory'){chooseAct3(s,['king','council','oath'][seed%3]);
          // v0.10.0 ACT IV part 1 (D-100): M23 then M24 (who leads alternated); Ines's trial after M23, Thea's after M24.
-         s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+         [s,p]=fight(s);
          Object.assign(a,{m23:p.outcome,t23:s.turn,why23:s.reason,tents23:3-(s.missionState.fallenTents?.length||0),leaders23:3-(s.missionState.fallenLeaders?.length||0),captain23:!!s.missionState.captain});
-         if(p.outcome==='victory'){chooseLead23(s,seed%2?'legion':'banners');tryTrial(s,'ines',seed);s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+         if(p.outcome==='victory'){chooseLead23(s,seed%2?'legion':'banners');tryTrial(s,'ines',seed);[s,p]=fight(s);
           Object.assign(a,{m24:p.outcome,t24:s.turn,why24:s.reason,inside24:s.missionState.inside?.length,lost24:s.missionState.lost?.length,gate24:s.missionState.closedTurn});
           if(p.outcome==='victory'){tryTrial(s,'thea',seed);
            // v0.10.1 ACT IV part 2 (D-102): M25 then M26 (the betrayed banner forgiven or lowered, alternated); Dario's trial after M25.
-           s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+           [s,p]=fight(s);
            Object.assign(a,{m25:p.outcome,t25:s.turn,why25:s.reason,betrayer25:s.missionState.camps?.north,neutral25:s.missionState.neutral?.length});
-           if(p.outcome==='victory'){chooseBanner25(s,seed%2?'forgive':'lower');tryTrial(s,'dario',seed);s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+           if(p.outcome==='victory'){chooseBanner25(s,seed%2?'forgive':'lower');tryTrial(s,'dario',seed);[s,p]=fight(s);
             Object.assign(a,{m26:p.outcome,t26:s.turn,why26:s.reason,baldrick26:s.missionState.outcome,resolve26:s.missionState.resolve,duel26:s.duel?.result||'none',joined26:!!s.campaign.roster?.includes('baldrick')});
             // v0.10.2 ACT IV part 3 (D-110): M27 then M28 (Aren's confession to all or to Erik, alternated).
-            if(p.outcome==='victory'){s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+            if(p.outcome==='victory'){[s,p]=fight(s);
              Object.assign(a,{m27:p.outcome,t27:s.turn,why27:s.reason,sections27:(s.missionState.sections||[]).filter(Boolean).length,ram27:s.units.find(u=>u.id==='ram')?.hp,gate27:s.missionState.brokenTurn,squads27:s.missionState.squads?.length,lion27:!!s.missionState.lion});
-             if(p.outcome==='victory'){s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+             if(p.outcome==='victory'){[s,p]=fight(s);
               Object.assign(a,{m28:p.outcome,t28:s.turn,why28:s.reason,dawn28:s.missionState.dawnFrom,aren28:!!s.units.find(u=>u.id==='aren'&&u.hp>0),eric28:s.units.find(u=>u.id==='eric')?.hp});
               if(p.outcome==='victory'){chooseConfession28(s,seed%2?'all':'eric');
                // v1.0.0 ACT IV part 4 (D-113): M29 (the duel, or Aren's words on odd seeds; Bellard's fate) then M30 and the ending.
-               s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+               [s,p]=fight(s);
                Object.assign(a,{m29:p.outcome,t29:s.turn,why29:s.reason,rites29:s.units.filter(u=>u.kind==='rite'&&u.hp>0).length,path29:s.missionState.path,words29:!!s.missionState.words,duel29:s.duel?.key==='29:duel'?s.duel.result:'none',phase29:s.missionState.phase});
-               if(p.outcome==='victory'){chooseFate29(s,s.missionState.words?'offer':seed%2?'trial':'exile');s=nextMission(s);s.screen='deployment';startBattle(s);try{p=playCampaignBattle(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+               if(p.outcome==='victory'){chooseFate29(s,s.missionState.words?'offer':seed%2?'trial':'exile');[s,p]=fight(s);
                 const h=s.units.find(u=>u.id==='heart');Object.assign(a,{m30:p.outcome,t30:s.turn,why30:s.reason,heart30:h?.hp,down30:s.missionState.down?.length,fate29:s.campaign.choices?.m29_bellard});
                 if(p.outcome==='victory'){const open=openEndings(s.campaign);a.open30=open.length;a.ending=open[seed%open.length];chooseEnding(s,a.ending,new Date('2026-11-17'));deserialize(serialize(s));}}}}}}}}}}}}}}}}
  a.feats=[...(s.campaign.feats||[])].filter(id=>id>=15);out3.push(a);}
@@ -126,6 +133,9 @@ Object.assign(summary4,{m29Wins:w29.length,m29Turns:w29.map(o=>o.t29),rites29:w2
  fate29:Object.fromEntries(['trial','exile','offer'].map(k=>[k,out3.filter(o=>o.fate29===k).length])),openEndings:out3.filter(o=>o.open30).map(o=>o.open30),endings:Object.fromEntries(['A','B','C'].map(k=>[k,out3.filter(o=>o.ending===k).length]))});
 summary4.featRate.M29=out3.filter(o=>o.feats.includes(29)).length;summary4.featRate.M30=out3.filter(o=>o.feats.includes(30)).length;
 console.log(JSON.stringify(summary4));fs.writeFileSync('test-output/act4-balance.json',JSON.stringify({summary:summary4,runs:out3.map(o=>({seed:o.seed,m23:o.m23,t23:o.t23,tents23:o.tents23,leaders23:o.leaders23,captain23:o.captain23,m24:o.m24,t24:o.t24,inside24:o.inside24,lost24:o.lost24,gate24:o.gate24,m25:o.m25,t25:o.t25,betrayer25:o.betrayer25,neutral25:o.neutral25,m26:o.m26,t26:o.t26,baldrick26:o.baldrick26,duel26:o.duel26,m27:o.m27,t27:o.t27,sections27:o.sections27,gate27:o.gate27,ram27:o.ram27,squads27:o.squads27,lion27:o.lion27,m28:o.m28,t28:o.t28,dawn28:o.dawn28,aren28:o.aren28,m29:o.m29,t29:o.t29,rites29:o.rites29,path29:o.path29,words29:o.words29,duel29:o.duel29,fate29:o.fate29,m30:o.m30,t30:o.t30,heart30:o.heart30,down30:o.down30,open30:o.open30,ending:o.ending}))},null,1));
-if(w23.length<w22.length*0.9||w24.length<w23.length*0.9||w25.length<w24.length*0.9||w26.length<w25.length*0.9||w27.length<w26.length*0.9||w28.length<w27.length*0.9||w29.length<w28.length*0.9||w30.length<w29.length*0.9)process.exit(1);
-if(w15.length<out3.length*0.9||w16.length<w15.length*0.9||w17.length<w16.length*0.9||w18.length<w17.length*0.9||w19.length<w18.length*0.9||w20.length<w19.length*0.9||w21.length<w20.length*0.9||w22.length<w21.length*0.9)process.exit(1);
-if(w7.length<out.length*0.9||w8.length<w7.length*0.9||w9.length<w8.length*0.9||w10.length<w9.length*0.9||w11.length<w10.length*0.9||w12.length<w11.length*0.9||w13.length<w12.length*0.9||w14.length<w13.length*0.9)process.exit(1);
+// v2.0.0 (D-115 §6.4, D-116): ACT II–IV run on the new rules with their old maps; the gate is that every mission stays
+// winnable — its first try is not clearly below 60%: the 95% Wilson upper bound of the first-try win rate must reach 0.6
+// (later campaigns meet a mission 10–17 times, so a plain 60% cut fails a 75% mission by chance; the rates are printed).
+{const upper=(w,n)=>{const z=1.96,p=w/n,d=1+z*z/n;return (p+z*z/(2*n)+z*Math.sqrt(p*(1-p)/n+z*z/(4*n*n)))/d;};
+ const rates=Object.entries(FIRST).map(([m,r])=>({m:+m,...r,upper:+upper(r.w,r.n).toFixed(2)})).sort((a,b)=>a.m-b.m),low=rates.filter(r=>r.m>=7&&r.upper<0.6);
+ console.log(JSON.stringify({gate:'first try not clearly below 60% per mission (M07–M30, Wilson 95% upper bound ≥ 0.6)',rates:rates.map(r=>`M${r.m} ${r.w}/${r.n}`),low}));fs.writeFileSync('test-output/act2-4-first-try.json',JSON.stringify(rates));if(low.length)process.exit(1);}

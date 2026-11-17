@@ -3,7 +3,7 @@
 // schema 15 with nothing changed; the lower city after M20 (the end of v0.9.2) continues to M21 (the crown's heart) with
 // three orders, 「함께 정한다」 waits for Aren's awakening, the hero records start at zero, and the mid-M20 battle resumes and is
 // won under v0.9.3 rules (zone of control included).
-import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
+import test from 'node:test';import {econV200,keptV200,reopensInCamp} from './v200-compat.mjs';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {SCHEMA,VERSION} from '../src/data/game-data.js';
 import {nextMission,deployLimit,startBattle} from '../src/core/game.js';
@@ -18,9 +18,9 @@ test('fixtures are genuine v0.9.2 schema-14 saves after ACT III part 3',()=>{for
  const c=raw('m20-camp').campaign;assert.ok(c.completed.includes(20));assert.equal(c.choices.m20_superior,'trial');assert.equal(c.choices.m20_plan,'send');assert.equal(raw('m20-camp').frontier.hub,'capital');assert.equal(c.records,undefined);});
 
 test('the v0.9.2 lower city loads as schema 19 with every asset kept',()=>{
- const before=raw('m20-camp'),s=load('m20-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,19);assert.equal(s.version,VERSION);assert.equal(VERSION,'1.0.0');assert.equal(s.frontier.hub,'capital');
- for(const k of ['completed','flags','choices','promotions','factionTrust','trustLog','roster','feats','departed','economy','heroes','bonds','tacticalMemory'])assert.deepEqual(s.campaign[k],before.campaign[k],k);
- assert.deepEqual(s.economy,before.economy);const back=deserialize(serialize(s));assert.deepEqual(back.campaign.economy,before.campaign.economy);
+ const before=raw('m20-camp'),s=load('m20-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,20);assert.equal(s.version,VERSION);assert.equal(VERSION,'2.0.0');assert.equal(s.frontier.hub,'capital');
+ for(const k of ['completed','flags','choices','promotions','factionTrust','trustLog','roster','feats','departed','economy','heroes','bonds','tacticalMemory'])keptV200(s.campaign,before.campaign,k);
+ assert.deepEqual(econV200(s.economy),econV200(before.economy));const back=deserialize(serialize(s));assert.deepEqual(econV200(back.campaign.economy),econV200(before.campaign.economy));
 });
 
 test('ACT III goes on from the lower city: M21 in the crown\'s heart, seven heroes, three orders; 「함께 정한다」 waits for M21',()=>{
@@ -29,7 +29,6 @@ test('ACT III goes on from the lower city: M21 in the crown\'s heart, seven hero
  assert.ok(n.units.some(u=>u.id==='king'));assert.equal(n.units.filter(u=>u.kind==='anchorStone').length,4);const back=deserialize(serialize(n));assert.equal(back.missionId,21);
 });
 
-test('the v0.9.2 mid-M20 battle resumes unchanged and is won under v0.9.3 rules; the win starts the hero records',()=>{
- const before=raw('m20-battle'),s=load('m20-battle');assert.equal(s.missionId,20);assert.equal(s.screen,'battle');assert.deepEqual(s.units.map(u=>[u.id,u.x,u.y,u.hp]),before.units.map(u=>[u.id,u.x,u.y,u.hp]));
- drain(s);playCampaignBattle(s);assert.equal(s.outcome,'victory',s.reason);assert.ok(s.campaign.records?.eric?.sorties===1,'the first counted sortie');
+test('the v0.9.2 mid-M20 battle reopens in camp (v2.0.0) and is won again; the win starts the hero records',()=>{
+ const before=raw('m20-battle'),s=reopensInCamp(load('m20-battle'),raw('m20-battle'),20); assert.ok(s.campaign.records?.eric?.sorties===1,'the first counted sortie');
 });

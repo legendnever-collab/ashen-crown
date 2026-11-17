@@ -6,7 +6,7 @@ import {transact,effectiveStats,equipmentLabel,itemCount,CARRY_CAPACITY,GEAR_CAP
 import {temperCost,rareShelf} from '../core/arms.js';
 import {FEATS} from '../data/arms-v081.js';
 import {drawWorld} from '../render/world-renderer.js';
-import {renderFrontier,councilHTML,inventoryHTML,shopHTML,shopkeeperHTML,stallHTML,ownedShopHTML,bonusText,frontierButton,starLabel,gearEffect,SLOT_KO} from './frontier-ui.js';
+import {invView,renderFrontier,councilHTML,inventoryHTML,shopHTML,shopkeeperHTML,stallHTML,ownedShopHTML,bonusText,frontierButton,starLabel,gearEffect,SLOT_KO} from './frontier-ui.js';
 import {itemIcon} from './item-art.js';
 import {paintedChestSrc,drawChest} from '../render/chest-art.js';
 import {frontierRoom,chestStyle} from '../data/rooms-v06.js';
@@ -16,6 +16,7 @@ import {hubCamera,drawHub} from '../render/frontier-renderer.js';
 import {VERSION,HEROES,BALANCE,TERRAIN,partyHeroes,heroDef} from '../data/game-data.js';
 import {factionRows,FACTIONS} from '../core/factions.js';
 import {setSortie} from '../core/game.js';
+import {DIFFICULTY,difficultyOf} from '../core/stats8.js';
 import {isClassMode,tileTarget,validClassTarget} from '../core/class-actions.js';
 import {canStartSkirmish,trialState,startSkirmish,returnToCamp,skirmishOf} from '../core/skirmish.js';
 import {classOf,potentialOf} from '../core/progression.js';
@@ -40,7 +41,7 @@ import {endingArt,ENDING_ART} from './ending-art.js';
 import {paintedURL} from '../render/bust.js';
 import {recordOf,signatureDeed,RECORD_KO} from '../core/records.js';
 import {TOGETHER} from '../core/command.js';
-import {duelOpen,duelPick,DUEL_PICKS} from '../core/duel.js';
+import {duelOpen,duelPick,DUEL_PICKS,DUEL_ROUNDS,DUEL_TO_WIN,duelNature,NATURE_KO} from '../core/duel.js';
 import {setCommand,commandsFor} from '../core/command.js';
 import {chooseDeserters,chooseOrder} from '../core/mission-rules-v06.js';
 import {chooseStance} from '../core/mission-rules-v061.js';
@@ -167,6 +168,10 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'act3-pick':{if(!needsAct3()||!chooseAct3(state,id))break;closeModal();enqueueStory(state,`after:22:${id}`);enqueueStory(state,'after:22:end');openStory(state);commit();break;}
  case 'lead23-pick':{if(!needsLead23()||!chooseLead23(state,id))break;closeModal();enqueueStory(state,`after:23:${id}`);openStory(state);commit();break;}
  case 'confession28-pick':{if(!needsConfession28()||!chooseConfession28(state,id))break;closeModal();enqueueStory(state,`after:28:${id}`);openStory(state);commit();break;} /* v0.10.2 (D-110) */
+ case 'difficulty-pick':{if(!DIFFICULTY[id])break;state.campaign.difficulty=id;if(state.frontier||state.screen==='exploration')state.campaign.difficulty=id;closeModal();if(state.screen==='title'){state=newGame(state.initialSeed,state.campaign,1);ui.selected='eric';enterHub(state);}else toast(`난이도: ${DIFFICULTY[id].ko} — 다음 전투부터 적용됩니다.`);commit();break;} /* v2.0.0 (§6.2) */
+ case 'difficulty':showDifficulty(false);break;
+ case 'inv-tab':{const [tab,hero]=String(id).split('|');invView.tab=tab;showInventory(hero);break;} /* v2.0.0 (§4.3) */
+ case 'inv-fit':invView.fit=!invView.fit;showInventory(id);break;
  case 'fate29-pick':{if(!needsFate29()||!chooseFate29(state,id))break;closeModal();enqueueStory(state,`after:29:${id}`);openStory(state);commit();break;} /* v1.0.0 (D-113) */
  case 'ending-choose':{if(needsEnding())showEnding();break;}
  case 'ending-pick':{if(!needsEnding()||!chooseEnding(state,id))break;closeModal();enqueueStory(state,`ending:${id}`);openStory(state);commit();break;}
@@ -175,14 +180,14 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'banner25-pick':{if(!needsBanner25()||!chooseBanner25(state,id))break;closeModal();enqueueStory(state,`after:25:${id}`);openStory(state);commit();break;}
  case 'plan20-pick':{if(!needsPlan20()||!choosePlan20(state,id))break;closeModal();enqueueStory(state,`after:20:${id}`);enqueueStory(state,'after:20:kai');enqueueStory(state,`after:20:baldrick:${state.campaign.flags.mission_13_baldrick==='halted'?'halted':'envoy'}`);enqueueStory(state,'after:20:next');openStory(state);commit();break;}
  case 'stones16-pick':{if(!needsStones16()||!chooseStones16(state,id))break;closeModal();enqueueStory(state,`after:16:${id}`);enqueueStory(state,'after:16:next');openStory(state);commit();break;}
- case 'duel-pick':{const key=state.duel?.key;if(!duelPick(state,id))break;if(state.duel.result){closeModal();if(state.duel.result!=='skipped')enqueueStory(state,`${key}:${state.duel.result}`);openStory(state);}else showDuel();commit();break;}
+ case 'duel-pick':{const d=state.duel,key=d?.key;if(!duelPick(state,id))break;if(d.result){closeModal();rulesOf(state)?.afterDuel?.(state);if(d.result!=='skipped'&&STORY[`${key}:${d.result}`])enqueueStory(state,`${key}:${d.result}`);if(key==='challenge')toast(d.result==='hero'?'일기토 승리!':'일기토 패배…');openStory(state);}else showDuel();commit();break;}
  case 'aren-command':{const list=commandsFor(state),i=list.indexOf(state.command);if(setCommand(state,i<0?list[0]:i+1<list.length?list[i+1]:null))commit();break;}
  case 'records12-pick':{if(!needsRecords12()||!chooseRecords(state,id))break;closeModal();enqueueStory(state,`after:12:${id}`);enqueueStory(state,`after:12:ines:${state.campaign.roster?.includes('ines')?'joined':'parted'}`);openStory(state);commit();break;}
  case 'order-pick':{if(!needsOrder()||state.screen!=='deployment'||!chooseOrder(state,id))break;closeModal();enqueueStory(state,`8:order:${id}`);openStory(state);commit();break;}
  case 'stance-pick':{if(!needsStance()||state.screen!=='deployment'||!chooseStance(state,id))break;closeModal();enqueueStory(state,`10:stance:${id}`);openStory(state);commit();break;}
  case 'records-pick':{if(state.missionId!==4||state.practice||state.frontier?.phase!=='aftermath'||state.campaign.choices?.m04_records_choice||!['kept','reported'].includes(id))break;state.campaign.choices??={};state.campaign.choices.m04_records_choice=id;closeModal();enqueueStory(state,`after:4:${id}`);openStory(state);commit();break;}
  case 'appearance':showAppearance();break;
- case 'new':state=newGame(state.initialSeed,state.campaign,state.campaign.completed.includes(1)?Math.min(LAST_MISSION,(state.campaign.completed.at(-1)||0)+1):1);ui.selected='eric';enterHub(state);commit();break;
+ case 'new':if(!state.campaign.difficulty&&!state.campaign.completed.length){showDifficulty(true);break;}state=newGame(state.initialSeed,state.campaign,state.campaign.completed.includes(1)?Math.min(LAST_MISSION,(state.campaign.completed.at(-1)||0)+1):1);ui.selected='eric';enterHub(state);commit();break;
  case 'warroom':await prepareCouncil();break;case 'deploy':state.frontier.ready.formation=true;syncFrontier(state);if(findUnit(state,ui.selected)?.benched||!findUnit(state,ui.selected))ui.selected='eric';ui.mode='choose';setScreen('deployment');break;
  case 'sortie-add':case 'sortie-remove':{if(setSortie(state,ui.selected,action==='sortie-add'))commit();break;}
  case 'select':{const u=findUnit(state,id);if(!u||u.team!=='ally'||state.screen==='battle'&&!alive(u)||state.screen==='deployment'&&u.benched)break;ui.selected=id;ui.menu=state.screen==='battle'?'root':null;ui.mode=state.screen==='deployment'?'deploy':initialMode(u);renderer.focus(u.x,u.y);ui.preview=null;ui.notice=null;ui.inspected=null;ui.phaseConfirm=false;render();break;}
@@ -395,9 +400,17 @@ function showTruth18(){if(!needsTruth18())return;modal('숲의 값',`<p>숲지�
 function showStones16(){if(!needsStones16())return;modal('잊힌 전장의 결계석',`<p>결계석은 이 들판에서 죽은 이들과 그들을 기억하던 사람들의 기억을 품고 있습니다. 돌을 부수면 근처 마을의 기억이 조금씩 돌아오지만 이 땅의 결계가 약해집니다. 남기면 결계는 그대로이고 기억은 돌아오지 않습니다. 고른 뒤에는 바꿀 수 없습니다.</p>`,
  frontierButton('stones16-pick','<b>결계석을 부순다</b> — 잊힌 기억을 돌려준다','break',false,'primary')+frontierButton('stones16-pick','<b>결계석을 남긴다</b> — 지금의 안전을 지킨다','leave',false,'primary')+'<button data-do="close-modal">조금 더 생각한다</button>');}
 // 일기토 (M16, D-079 §7): three exchanges; the modal reopens after each one until the duel is decided.
-function showDuel(){const d=state.duel;if(!duelOpen(state))return;const h=findUnit(state,d.hero),f=findUnit(state,d.foe),last=d.picks.at(-1);
- modal('일기토',`<div class="duel-card"><div class="duel-faces">${portrait(h,'card-sprite')}<b>${d.wins[0]} : ${d.wins[1]}</b>${portrait(f,'card-sprite')}</div><p><b>${esc(h.name)}</b> 대 <b>${esc(f.name)}</b> · ${d.round+1}합</p>${last?`<p class="duel-last">지난 합: ${esc(h.name)} ${DUEL_PICKS[last[0]]} / ${esc(f.name)} ${DUEL_PICKS[last[1]]} → <b>${last[2]?esc(h.name):esc(f.name)}</b></p>`:''}<p class="promo-note">공격은 필살을, 필살은 수비를, 수비는 공격을 이깁니다. 같은 수면 힘(ATK+SPD)이 정합니다. 두 합을 먼저 이기면 승리하고, 진 쪽은 HP가 30% 깎인 채 싸웁니다.</p></div>`,
- frontierButton('duel-pick','<b>공격</b>','strike',false,'primary')+frontierButton('duel-pick','<b>수비</b>','guard',false,'primary')+frontierButton('duel-pick','<b>필살</b>','finisher',false,'primary')+(d.round===0?frontierButton('duel-pick',d.key==='29:duel'?'아렌에게 맡긴다 — 아렌의 마지막 말':'거절한다 — 그대로 싸운다','skip'):''));paintPortraits();}
+// v2.0.0 「잿빛 결투장」 (REFORM_DESIGN §7, D-115): our own arena — an ash-covered ring inside both sides' banners, the two
+// champions facing each other, the words in a band below (not the 조조전 stone layout, §13). Up to five exchanges, first to three.
+const DUEL_BG=typeof ASHEN_DUEL_BG!=='undefined'?ASHEN_DUEL_BG:null;
+const DUEL_TAUNT={bold:'덤벼라. 한 번에 끝내 주마!',careful:'서두르지 마라. 빈틈은 곧 보인다.',seasoned:'이 칼을 몇 번이나 들었는지 아느냐.'};
+function showDuel(){const d=state.duel;if(!duelOpen(state))return;const h=findUnit(state,d.hero),f=findUnit(state,d.foe),last=d.picks.at(-1),nature=duelNature(state,f);
+ const line=last?(last[2]?`${esc(h.name)}의 ${DUEL_PICKS[last[0]]}! ${esc(f.name)}의 ${DUEL_PICKS[last[1]]}을(를) 꺾었다.`:`${esc(f.name)}의 ${DUEL_PICKS[last[1]]}! ${esc(h.name)}의 ${DUEL_PICKS[last[0]]}이(가) 밀렸다.`):esc(DUEL_TAUNT[nature]);
+ modal('잿빛 결투장',`<div class="duel-arena${DUEL_BG?' painted':''}"${DUEL_BG?` style="background-image:url('${DUEL_BG}')"`:''}><div class="arena-banners"><i class="b-legion"></i><i class="b-foe"></i><i class="b-legion"></i><i class="b-foe"></i></div>
+ <div class="arena-ring"><div class="arena-fighter left">${portrait(h,'card-sprite')}<b>${esc(h.name)}</b></div><div class="arena-score"><span>${d.wins[0]}</span><small>일기토 · ${d.round+1}합 / 최대 ${DUEL_ROUNDS}합</small><span>${d.wins[1]}</span></div><div class="arena-fighter right">${portrait(f,'card-sprite')}<b>${esc(f.name)}</b></div></div>
+ <div class="arena-band"><span class="arena-speaker">${last?'':esc(f.name)}</span><p>${line}</p></div>
+ <p class="arena-hint">상대는 ${esc(NATURE_KO[nature])} · 베기는 노리기를, 노리기는 막기를, 막기는 베기를 이깁니다 · 같은 수면 무력·민첩·운이 정합니다 · 먼저 ${DUEL_TO_WIN}합을 이기면 승리${f.carries&&GEAR[f.carries]?` · 이기면 「${esc(GEAR[f.carries].name)}」을(를) 얻습니다`:''}</p></div>`,
+ frontierButton('duel-pick','<b>베기</b>','strike',false,'primary')+frontierButton('duel-pick','<b>막기</b>','guard',false,'primary')+frontierButton('duel-pick','<b>노리기</b>','finisher',false,'primary')+(d.round===0&&d.key!=='challenge'?frontierButton('duel-pick',d.key==='29:duel'?'아렌에게 맡긴다 — 아렌의 마지막 말':'거절한다 — 그대로 싸운다','skip'):''));paintPortraits();}
 function offerDuel(){if(state.screen!=='battle'||!duelOpen(state)||state.narrative.active||$('#modal-root').children.length)return;showDuel();}
 // v0.10.0: allied orders for an allied unit that takes them.
 function showAllyOrders(t){const now=t.order||'free';modal(`동맹군 지시 · ${t.name}`,`<p>${esc(t.name)}에게 지시합니다. 지시는 바꿀 때까지 이어집니다. 지금: <b>「${ALLY_ORDERS[now]}」</b></p>`,
@@ -416,6 +429,9 @@ function showConfession28(){if(!needsConfession28())return;
  frontierButton('confession28-pick','<b>군단 모두에게 말한다</b> — 모두가 그 밤의 무게를 함께 안다','all',false,'primary')+frontierButton('confession28-pick','<b>에릭에게만 말한다</b> — 아렌이 스스로 말할 때를 기다린다','eric',false,'primary')+'<button data-do="close-modal">조금 더 생각한다</button>');}
 // v1.0.0 (D-113): Bellard's fate after M29 — the offer only when Aren spoke his last words to him (Bellard asks it himself).
 function needsFate29(){return state.missionId===29&&!state.practice&&state.frontier?.phase==='aftermath'&&state.campaign.completed.includes(29)&&!state.campaign.choices?.m29_bellard;}
+// v2.0.0 난이도 (REFORM_DESIGN §6.2, D-115): 보통 is the new, harder baseline; 어려움: a quarter more in waves, one potion, the sharper AI everywhere; from ACT II (a Lv 11+ sortie, full at Lv 19) +1 level and ×1.1 stats (D-116).
+function showDifficulty(first){const cur=difficultyOf(state);modal('난이도',`<p>${first?'캠페인을 시작하기 전에 난이도를 고르세요. 진영의 ☰ 메뉴에서 언제든 바꿀 수 있고, 바꾼 뒤의 전투부터 적용됩니다.':'바꾼 뒤의 전투부터 적용됩니다.'}</p><p class="muted">적 레벨은 출전 장수의 평균 레벨에 맞춰 정해집니다(잡병 ±0, 지휘관 +3).</p>`,
+ frontierButton('difficulty-pick',`<b>보통</b> — 적 레벨 = 출전 평균 + 미션 보정 · 회복약 2개${cur==='normal'&&!first?' <small>(지금)</small>':''}`,'normal',false,'primary')+frontierButton('difficulty-pick',`<b>어려움</b> — 증원 +25% · 회복약 1개 · 더 집요한 적 · ACT II부터 적 레벨 +1 · 능력치 ×1.1${cur==='hard'&&!first?' <small>(지금)</small>':''}`,'hard',false,'primary'));}
 function showFate29(){if(!needsFate29())return;const c=state.campaign,words=fateOpen29(c,'offer');
  modal('벨라드의 처분',`<p>벨라드가 무릎을 꿇었습니다. 그는 봉인 명령을 쓰고, 통제된 전쟁을 계획했습니다. 그러나 그 밤의 책임은 국왕과 그가 함께 졌고, 그는 괴물이 아니라 다른 계산을 한 사람이었습니다. 어떻게 할까요? 고른 뒤에는 바꿀 수 없습니다.</p>${words?'<p class="promo-note">아렌의 마지막 말을 들은 벨라드가 스스로 청합니다 — 자기 기억을 새 결계에 바치겠다고.</p>':'<p class="promo-note">아렌이 그에게 말을 건넸다면, 벨라드가 스스로 다른 길을 청했을지도 모릅니다.</p>'}`,
  frontierButton('fate29-pick','<b>재판에 세운다</b> — 모든 것이 기록된다 <small>(자유 영주 연맹 +1)</small>','trial',false,'primary')+frontierButton('fate29-pick','<b>왕도에서 추방한다</b> — 칼을 거둔 자를 베지 않는다 <small>(철왕관 +1)</small>','exile',false,'primary')+

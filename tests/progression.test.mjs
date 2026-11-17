@@ -1,5 +1,5 @@
 // v0.5.0 Phase C: potential (3 steps), proficiency ★, promotion state, schema 8 (D-047/D-048).
-import test from 'node:test';import assert from 'node:assert/strict';
+import test from 'node:test';import {derivedFrom,classKeyOf} from '../src/core/stats8.js';import {econV200,keptV200} from './v200-compat.mjs';import assert from 'node:assert/strict';
 import {newGame,startBattle,performAction} from '../src/core/game.js';
 import {findUnit,strikeStats,awardXP,terrainCost} from '../src/core/rules.js';
 import {effectiveStats} from '../src/core/economy.js';
@@ -45,18 +45,18 @@ test('promotion needs ACT I, the level and full potential; it applies once and i
  s=camp(full,{eric:PROMOTION_LEVEL-1});assert.deepEqual(promotionStatus(s,'eric').checks.map(c=>c.ok),[true,false,true]);
  s=camp({},{eric:PROMOTION_LEVEL});assert.deepEqual(promotionStatus(s,'eric').checks.map(c=>c.ok),[true,true,false]);
  s=camp(full);const rec=s.campaign.heroes.find(h=>h.id==='eric'),def=rec.def,hp=rec.maxHP;assert.ok(promotionStatus(s,'eric').eligible);
- assert.ok(promote(s,'eric'));assert.equal(rec.classTier,2);assert.equal(rec.def,def+2);assert.equal(rec.maxHP,hp+4);assert.equal(findUnit(s,'eric').classTier,2);
- assert.equal(s.campaign.promotions.eric.key,'guardianKnight');assert.equal(promote(s,'eric'),false,'never twice');assert.equal(rec.def,def+2);
+ assert.ok(promote(s,'eric'));assert.equal(rec.classTier,2);const d2=derivedFrom(classKeyOf(rec),rec.stats,rec.level);assert.ok(rec.def>def&&rec.maxHP>hp,'v2.0.0: the tier bonus raises the six stats');assert.equal(rec.def,d2.def);assert.equal(rec.maxHP,d2.maxHP);assert.equal(findUnit(s,'eric').classTier,2);
+ assert.equal(s.campaign.promotions.eric.key,'guardianKnight');assert.equal(promote(s,'eric'),false,'never twice');assert.equal(rec.def,d2.def);
  assert.equal(promotionStatus(s,'eric').promoted,true);
  const p=camp(full);p.practice=true;assert.equal(promote(p,'eric'),false,'practice never promotes');
 });
 
-test('tier-2 class traits: Kai MOV +1, Elina ranger crosses forest at cost 1, Erik grows DEF +3',()=>{
+test('tier-2 class traits: Kai MOV +1, Elina ranger crosses forest at cost 1, Erik grows by the stats (v2.0.0)',()=>{
  const s=camp({kai_rescue:6,elina_forest_shot:10},{});s.screen='deployment';startBattle(s);drain(s);
  const kai=findUnit(s,'kai'),mov=effectiveStats(s,kai).mov;promote(s,'kai',{force:true});assert.equal(effectiveStats(s,kai).mov,mov+1);
  const elina=findUnit(s,'elina'),m=s.missionId,map=(()=>{for(let y=0;y<14;y++)for(let x=0;x<18;x++)if(terrainCost(s,{...elina,movementProfile:'infantry'},x,y)===2)return [x,y];})();
  if(map){assert.equal(terrainCost(s,elina,...map),2);promote(s,'elina',{force:true});assert.equal(terrainCost(s,elina,...map),1);}
- const eric=findUnit(s,'eric');promote(s,'eric',{force:true});const d=eric.def;eric.xp=99;awardXP(s,eric,1,'t');assert.equal(eric.def,d+3);
+ const eric=findUnit(s,'eric');promote(s,'eric',{force:true});const d=eric.def;eric.xp=99;s.levelPlan.avg=eric.level;awardXP(s,eric,1,'t');assert.ok(eric.def>=d);assert.equal(eric.def,derivedFrom(classKeyOf(eric),eric.stats,eric.level).def);
  assert.equal(m,6);
 });
 
@@ -69,8 +69,8 @@ test('skill use and Lia kills are remembered (memory only, outside practice)',()
 
 test('schema 7 saves migrate to 8: heroes read as tier 1 and an empty promotion ledger; current saves round-trip',()=>{
  const s=newGame(3);const old=JSON.parse(JSON.stringify(s));old.schema=7;old.version='0.4.0';delete old.campaign.promotions;for(const u of old.units)delete u.classTier;
- const m=migrate(old);assert.equal(m.schema,SCHEMA);assert.equal(SCHEMA,19);assert.deepEqual(m.campaign.promotions,{});assert.ok(m.units.filter(u=>u.team==='ally').every(u=>classOf(u).tier===1),'unset classTier reads as tier 1');
- const again=deserialize(serialize(m));assert.equal(again.schema,19);
+ const m=migrate(old);assert.equal(m.schema,SCHEMA);assert.equal(SCHEMA,20);assert.deepEqual(m.campaign.promotions,{});assert.ok(m.units.filter(u=>u.team==='ally').every(u=>classOf(u).tier===1),'unset classTier reads as tier 1');
+ const again=deserialize(serialize(m));assert.equal(again.schema,20);
 });
 
 test('promoted heroes resolve to the tier-2 painted look; tier 1 keeps the original (incl. Erik Mantle)',async()=>{

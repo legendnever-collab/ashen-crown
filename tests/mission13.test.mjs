@@ -47,7 +47,7 @@ test('resolve 6 halts the army (victory, Iron Crown trust −1); Baldrick never 
  const s=battle({factionTrust:{iron:2,free:0,flame:0}}),boss=findUnit(s,'boss'),eric=findUnit(s,'eric');s.missionState.resolve=5;beside(s,eric,boss);
  performAction(s,'eric','persuade','boss');drain(s);assert.ok(s.missionState.halted);assert.equal(s.outcome,'victory');assert.match(s.reason,/군을 멈췄습니다/);assert.ok(s.units.filter(u=>u.team==='enemy').every(u=>!alive(u)));
  assert.equal(s.campaign.flags.mission_13_baldrick,'halted');assert.equal(s.campaign.factionTrust.iron,1);
- const t=battle(),b=findUnit(t,'boss');b.hp=3;rulesOf(t).afterDamage(t,b);assert.equal(b.hp,b.maxHP/2);
+ const t=battle(),b=findUnit(t,'boss');b.hp=3;rulesOf(t).afterDamage(t,b);assert.equal(b.hp,Math.ceil(b.maxHP/2));
 });
 
 test('formation broken + Baldrick at half wins only from TURN 5; holding to TURN 12 wins; two refugees lost lose',()=>{

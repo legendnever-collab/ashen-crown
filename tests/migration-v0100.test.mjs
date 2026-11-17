@@ -2,7 +2,7 @@
 // (tests/fixtures/v0100/make-v0100-fixtures.mjs, worktree of dd81b3e — the v0.10.0 merge). Schema 16 imports into schema 18
 // with nothing changed; the Ashen Village after M24 (the end of v0.10.0) continues to M25 at the summit field of the three
 // banners; the mid-M24 battle resumes and is won under v0.10.1 rules.
-import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
+import test from 'node:test';import {econV200,keptV200,reopensInCamp} from './v200-compat.mjs';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {SCHEMA,VERSION} from '../src/data/game-data.js';
 import {nextMission,deployLimit,startBattle,canOrderAlly} from '../src/core/game.js';
@@ -17,9 +17,9 @@ test('fixtures are genuine v0.10.0 schema-16 saves after ACT IV part 1',()=>{for
  const c=raw('m24-camp').campaign;assert.ok(c.completed.includes(24));assert.equal(c.choices.m23_lead,'banners');assert.ok(Number.isInteger(c.flags.mission_24_gate_turn));assert.equal(raw('m24-camp').frontier.hub,'village_raid');});
 
 test('the v0.10.0 Ashen Village loads as schema 19 with every asset kept',()=>{
- const before=raw('m24-camp'),s=load('m24-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,19);assert.equal(s.version,VERSION);assert.equal(VERSION,'1.0.0');assert.equal(s.frontier.hub,'village_raid');
- for(const k of ['completed','flags','choices','promotions','factionTrust','trustLog','roster','feats','departed','economy','heroes','bonds','tacticalMemory','records','choices'])assert.deepEqual(s.campaign[k],before.campaign[k],k);
- assert.deepEqual(s.economy,before.economy);const back=deserialize(serialize(s));assert.deepEqual(back.campaign.economy,before.campaign.economy);
+ const before=raw('m24-camp'),s=load('m24-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,20);assert.equal(s.version,VERSION);assert.equal(VERSION,'2.0.0');assert.equal(s.frontier.hub,'village_raid');
+ for(const k of ['completed','flags','choices','promotions','factionTrust','trustLog','roster','feats','departed','economy','heroes','bonds','tacticalMemory','records','choices'])keptV200(s.campaign,before.campaign,k);
+ assert.deepEqual(econV200(s.economy),econV200(before.economy));const back=deserialize(serialize(s));assert.deepEqual(econV200(back.campaign.economy),econV200(before.campaign.economy));
 });
 
 test('ACT IV goes on from the Ashen Village: M25 at the summit field, seven heroes, the three camps',()=>{
@@ -29,7 +29,6 @@ test('ACT IV goes on from the Ashen Village: M25 at the summit field, seven hero
  const back=deserialize(serialize(n));assert.equal(back.missionId,25);
 });
 
-test('the v0.10.0 mid-M24 battle resumes unchanged and is won under v0.10.1 rules',()=>{
- const before=raw('m24-battle'),s=load('m24-battle');assert.equal(s.missionId,24);assert.equal(s.screen,'battle');assert.deepEqual(s.units.map(u=>[u.id,u.x,u.y,u.hp]),before.units.map(u=>[u.id,u.x,u.y,u.hp]));
- drain(s);playCampaignBattle(s);assert.equal(s.outcome,'victory',s.reason);assert.ok(Number.isInteger(s.campaign.flags.mission_24_gate_turn));
+test('the v0.10.0 mid-M24 battle reopens in camp (v2.0.0) and is won again',()=>{
+ const before=raw('m24-battle'),s=reopensInCamp(load('m24-battle'),raw('m24-battle'),24); assert.ok(Number.isInteger(s.campaign.flags.mission_24_gate_turn));
 });

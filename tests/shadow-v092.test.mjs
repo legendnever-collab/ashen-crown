@@ -70,6 +70,6 @@ test('「한 사람도 두고 가지 않는다」 opens at M19 (the newest order
 test('grey cloaks in the shadows: the first blow shows 0% and misses, then they stand in the open',()=>{
  const c=camp(19);const s=newGame(5,c.campaign,20);s.screen='deployment';startBattle(s);drain(s);if(s.duel)s.duel.result='skipped';
  const g=findUnit(s,'g5'),e=findUnit(s,'eric');assert.equal(g.shade,true);e.x=g.x;e.y=g.y-1;e.moved=true;
- assert.equal(strikeStats(s,e,g).hit,0);const hp=g.hp;assert.ok(performAction(s,'eric','attack','g5').ok);assert.equal(g.hp,hp);assert.equal(g.shade,undefined);
+ assert.equal(strikeStats(s,e,g).hit,0);const hp=g.hp,n=s.feedback.length;e.level=1;e.classTier=1;e.spd=g.spd; /* v2.0.0: one plain blow (no tier pattern, no follow-up) */assert.ok(performAction(s,'eric','attack','g5').ok);assert.equal(g.hp,hp);assert.equal(g.shade,undefined);assert.equal(s.feedback.slice(n).find(f=>['hit','critical','miss'].includes(f.type)&&f.id==='g5')?.text,'그림자','the first blow slips into the shadow');
  assert.ok(strikeStats(s,e,g).hit>0);
 });

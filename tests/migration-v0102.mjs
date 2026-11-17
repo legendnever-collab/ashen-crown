@@ -1,7 +1,13 @@
 // Browser migration (v1.0.0): saves made by the shipped v0.10.2 HTML and by the v0.10.2 source (tests/fixtures/v0102) open in
 // v1.0.0 through the visible backup dialog: schema 18 → 19 with nothing changed, the lower city after M28 (the confession
 // told, Baldrick in the legion) keeps every asset and goes on to Mission 29 (the crown's heart), and the mid-M28 battle resumes.
-import {launchTestBrowser} from './browser-helper.mjs';import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {pathToFileURL} from 'node:url';import {drainStory} from './story-helper.mjs';
+import {launchTestBrowser} from './browser-helper.mjs';import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {pathToFileURL} from 'node:url';import {drainStory} from './story-helper.mjs';import {econV200} from './v200-compat.mjs';
+// v2.0.0 (D-115, REFORM_DESIGN §8): heroes gain the six stats (numbers recomputed), the officers join, the start treasures
+// are added and unfit gear is taken off into the bag; a battle in progress reopens in the camp before it.
+const OFFICERS=['bram','noa','marta','rowell'],heroKey=h=>({id:h.id,level:h.level,xp:h.xp,classTier:h.classTier??1,clues:h.clues,growthHistory:h.growthHistory});
+const sameHeroes=(a,b)=>JSON.stringify((a||[]).filter(h=>!OFFICERS.includes(h.id)).map(heroKey))===JSON.stringify((b||[]).filter(h=>!OFFICERS.includes(h.id)).map(heroKey));
+const sameRoster=(a,b)=>JSON.stringify((a||[]).filter(id=>!OFFICERS.includes(id)))===JSON.stringify((b||[]).filter(id=>!OFFICERS.includes(id)));
+const reopened=(s,id)=>s.screen==='exploration'&&s.migrated200==='battle'&&!s.stageStart&&(id==null||s.missionId===id);
 // v0.6 (D-060): names were rewritten in Hangul; compare saves without the display name.
 const nmStrip=a=>(a||[]).map(({name,...u})=>u);
 const browser=await launchTestBrowser({headless:true,args:['--no-sandbox','--disable-gpu']}),checks=[],errors=[];const check=(name,ok)=>{assert.ok(ok,name);checks.push({name,status:'PASS'});console.log('PASS',name);};
@@ -15,23 +21,23 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  await cmd(old,'npc','advisor');await drainStory(old);if(await old.locator('[data-do="advisor-operation"]').count())await cmd(old,'advisor-operation');await drainStory(old);await cmd(old,'deploy');await cmd(old,'start-battle');await drainStory(old);
  const battle=await snapshot(old),battleText=await backup(old);check('Shipped v0.10.2 battle checkpoint generated',battle.screen==='battle'&&battle.stageStart.schema===18);
  // 2. Restore each into v1.0.0.
- const p=await ctx.newPage();p.on('pageerror',e=>errors.push(`v0102: ${e.message}`));await p.goto(pathToFileURL(path.resolve('releases/Ashen_Crown_v1.0.0.html')).href);await p.waitForFunction(()=>!!window.AshenCrown);if(await p.locator('[data-do="new"]').count()){await cmd(p,'new');}await drainStory(p);
+ const p=await ctx.newPage();p.on('pageerror',e=>errors.push(`v0102: ${e.message}`));await p.goto(pathToFileURL(path.resolve('releases/Ashen_Crown_v2.0.0.html')).href);await p.waitForFunction(()=>!!window.AshenCrown);if(await p.locator('[data-do="new"]').count()){await cmd(p,'new');}await drainStory(p);
  const restore=async text=>{await drainStory(p);await cmd(p,'menu');await cmd(p,'backup');await p.locator('#backup-text').fill(text);await cmd(p,'restore');await p.waitForFunction(()=>!AshenCrown.view().busy);await p.waitForTimeout(300);};
  await restore(villageText);let s=await snapshot(p);
- check('v0.10.2 village save opens in the painted village (schema 19, gold kept, legal position)',s.schema===19&&s.screen==='exploration'&&s.frontier.hub==='village'&&s.economy.gold===village.economy.gold&&JSON.stringify(nmStrip(s.campaign.heroes))===JSON.stringify(nmStrip(village.campaign.heroes)));
+ check('v0.10.2 village save opens in the painted village (schema 19, gold kept, legal position)',s.schema===20&&s.screen==='exploration'&&s.frontier.hub==='village'&&s.economy.gold===village.economy.gold&&sameHeroes(s.campaign.heroes,village.campaign.heroes));
  check('Imported village save does not replay the world-map intro',!s.narrative.active?.key?.startsWith('world:'));
- await restore(battleText);s=await snapshot(p);check('v0.10.2 battle and its checkpoint migrate unchanged',s.screen==='battle'&&s.stageStart.schema===19&&JSON.stringify(nmStrip(s.units))===JSON.stringify(nmStrip(battle.units))&&JSON.stringify(s.economy)===JSON.stringify(battle.economy));
- await cmd(p,'menu');await cmd(p,'restart-stage');await cmd(p,'confirm-restart-stage');await p.waitForFunction(()=>!AshenCrown.view().busy);s=await snapshot(p);check('Restart of a migrated v0.10.2 battle works',s.screen==='battle'&&s.turn===1);
+ await restore(battleText);s=await snapshot(p);check('v0.10.2 battle reopens in the camp before it (v2.0.0)',reopened(s));
+ for(const a of ['warroom','deploy','start-battle']){await cmd(p,a);await drainStory(p);}await p.waitForFunction(()=>!AshenCrown.view().busy);s=await snapshot(p);check('The reopened v0.10.2 battle departs again from the camp',s.screen==='battle'&&s.turn===1);
  // 3. Source-built fixtures: the v0.10.2 end-of-content camp (the lower city after M28) and a mid-M28 battle.
  const done=fixture('m28-camp'),before=JSON.parse(JSON.parse(done.save).data);await restore(done.save);s=await snapshot(p);
- check('v0.10.2 lower city save (after M28, Baldrick in the legion) opens with every asset kept and the roster intact',s.schema===19&&s.frontier.hub==='capital'&&JSON.stringify(s.campaign.economy)===JSON.stringify(before.campaign.economy)&&JSON.stringify(s.campaign.roster)===JSON.stringify(before.campaign.roster)&&JSON.stringify(s.campaign.factionTrust)===JSON.stringify(before.campaign.factionTrust)&&s.campaign.choices.m28_confession==='all');
+ check('v0.10.2 lower city save (after M28, Baldrick in the legion) opens with every asset kept and the roster intact',s.schema===20&&s.frontier.hub==='capital'&&JSON.stringify(econV200(s.campaign.economy))===JSON.stringify(econV200(before.campaign.economy))&&sameRoster(s.campaign.roster,before.campaign.roster)&&JSON.stringify(s.campaign.factionTrust)===JSON.stringify(before.campaign.factionTrust)&&s.campaign.choices.m28_confession==='all');
  for(let i=0;i<3&&await p.locator('#modal-root .modal').count();i++){await cmd(p,'close-modal');await drainStory(p);}
  await p.screenshot({path:'test-output/migration-v0102-camp.png'});check('The migrated camp now goes on to Mission 29',(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 29'));
  await cmd(p,'legion');const legion=await p.locator('#modal-root').textContent();check('The legion panel opens with every hero of the v0.10.2 roster, Baldrick included',['에릭','엘리나','리아','세인','카이','발드릭'].every(n=>legion.includes(n)));await cmd(p,'close-modal');
- await restore(fixture('m28-battle').save);s=await snapshot(p);check('v0.10.2 Mission 28 battle resumes in the Ashen Night\'s palace',s.screen==='battle'&&s.missionId===28&&s.stageStart.schema===19&&s.units.filter(u=>u.kind==='memory').length===3&&s.units.some(u=>u.id==='aren'&&u.memory28));
+ await restore(fixture('m28-battle').save);s=await snapshot(p);check('v0.10.2 Mission 28 battle reopens in the camp before it (v2.0.0)',reopened(s,28));/* v2.0.0: depart again from the camp */for(const a of ['warroom','deploy','start-battle','confirm-battle']){if(await p.locator(`[data-do="${a}"]`).count()){await cmd(p,a);await drainStory(p);}}
  await cmd(p,'open-unit-menu');await cmd(p,'submenu','skills');const menu=await p.locator('#unit-popover').textContent();
  check('Erik of a v0.10.2 save keeps ② and ③ and shows ④',menu.includes('②')&&menu.includes('③')&&menu.includes('④'));await cmd(p,'close-unit-menu');
- await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===19&&s.version==='1.0.0'&&s.missionId===28);
+ await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===20&&s.version==='2.0.0'&&s.missionId===28);
  check('No runtime errors in either build',errors.length===0);await ctx.close();
 }finally{fs.mkdirSync('test-output',{recursive:true});fs.writeFileSync('test-output/migration-v0102-browser.json',JSON.stringify({checks,errors},null,2));await browser.close();}
 console.log(`${checks.length} v0.10.2 browser migration checks PASS`);

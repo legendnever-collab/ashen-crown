@@ -6,7 +6,7 @@ import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterW
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {newGame,startBattle,beginEnemyPhase,advanceEnemy,nextMission} from '../src/core/game.js';import {findUnit,fogHidden} from '../src/core/rules.js';
 import {departRoster} from '../src/core/mission-rules-v071.js';import {enterHub} from '../src/core/frontier.js';import {drain} from './campaign-policy.mjs';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v1.0.0.html').href,shots='docs/v0.9.0/screenshots/act3';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v2.0.0.html').href,shots='docs/v0.9.0/screenshots/act3';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const results=[];const check=(name,ok)=>{assert.ok(ok,name);n++;results.push(name);console.log('PASS',name);};
 const camp14=JSON.parse(fs.readFileSync('tests/fixtures/v081/v081-m14-camp.json','utf8')).save;
 const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);};
@@ -50,7 +50,7 @@ try{
   check(`${label} M16 TURN 3: the duel is open and Thea, who left, fights beside the legion`,s.missionId===16&&s.turn===3&&!!s.duel&&!s.duel.result&&s.units.some(u=>u.id==='rthea'&&!u.benched&&u.team==='allied'));
   check(`${label} the duel modal offers strike, guard and finisher (and refusing)`,await p.locator('[data-do="duel-pick"]').count()===4);
   await p.screenshot({path:`${shots}/duel-${label}.png`});
-  for(let i=0;i<3&&await p.locator('[data-do="duel-pick"][data-id="strike"]').count();i++){await press('duel-pick','strike');await p.waitForTimeout(200);}
+  for(let i=0;i<6&&await p.locator('[data-do="duel-pick"][data-id="strike"]').count();i++){await press('duel-pick','strike');await p.waitForTimeout(200);}
   await drainStory(p);s=await snap();check(`${label} the duel is decided and the battle goes on`,['hero','foe'].includes(s.duel.result)&&!(await p.locator('[data-do="duel-pick"]').count()));
   const hidden=s.units.find(u=>u.team==='enemy'&&u.hp>0&&!u.benched&&fogHidden(s,u));
   if(hidden){await p.evaluate(id=>document.querySelector('[data-do="unit-info"]')?null:null,hidden.id);}

@@ -45,7 +45,10 @@ export function drawTownBuilding(c,b,tone,state){const s=townBuildingSprite(b,to
 // ---------- figures ----------
 const ENEMY_LOOK={9:{spear:'mercSpear',archer:'archer',assassin:'assassin',captain:'assassin'},7:{bandit:'ironDeserter',archer:'ironArcher',captain:'deserterCaptain'},8:{spear:'mercSpear',archer:'archer',captain:'mercSpear',bandit:'assassin'},6:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},5:{lion:'lion',bearer:'bearer',spear:'ironSpear',archer:'ironArcher',cavalry:'cavalry',captain:'lion'},1:{bandit:'bandit',archer:'archer',captain:'captain'},2:{bandit:'deserter',archer:'archer',captain:'deserterCaptain'},3:{bandit:'pursuer',archer:'pursuerArcher',captain:'pursuerCaptain'},4:{bandit:'fortGuard',archer:'fortArcher',captain:'quartermaster'}};
 const STAGE_LOOK={oswin:'lordA',brennan:'lordB',councilor:'councillor',teacher:'liaTeacher',sup:'greyMaster',bellard:'bellard'}; // v0.9.2: the teacher, the old superior, Bellard
+// v2.0.0 부장: in camps and scenes an officer wears their class's figure (pack H1's tier sheet when it is in, else a close one).
+const OFFICER_LOOK={bram:['spear','ironSpear'],noa:['archer','archer'],marta:['shield','bearer'],rowell:['cavalry','cavalry']};
 export function hdCastFor(u,missionId=1){
+ if(OFFICER_LOOK[u?.id]&&u.team!=='enemy'){const [cls,temp]=OFFICER_LOOK[u.id],t=Math.max(1,Math.min(3,u.classTier||1));return SPRITES?.[`class_${cls}_${t}`]?`class_${cls}_${t}`:temp;}
  if(u.look&&CAST[u.look])return u.look; // v0.6: mission data may name a look (allied escorts, Baldrick, ACT II troops)
  if(STAGE_LOOK[u.id])return STAGE_LOOK[u.id]; // v0.6.1: the M10 lords on the dialogue stage wear their army's look
  if(u.kind==='statue')return 'guardianStatue'; // v0.9.1 (pack F2): an awakened guardian statue (sleeping ones are props)
@@ -71,6 +74,7 @@ const SPRITES=typeof ASHEN_SPRITES!=='undefined'?ASHEN_SPRITES:null,spriteImages
 const SPRITE_ALIAS={captain:'garr',lion:'baldrick',aide:'advisor'};
 export const PAINTED_CELL=74;
 export const spriteIdFor=castId=>SPRITE_ALIAS[castId]||castId;
+export const hasSpriteSheet=id=>!!SPRITES?.[id]; /* v2.0.0: pack H1 class sheets (class_<cls>_<tier>) */
 let spritesWarm=false;
 function loadSheet(id){let img=spriteImages.get(id);if(!img){img=new Image();img.decoding='async';img.onerror=()=>{img.failed=true;};img.src=SPRITES[id];spriteImages.set(id,img);img.decode?.().catch(()=>{});}return img;}
 // decode every sheet once up front so no frame pays for a first-time decode mid-animation
@@ -90,7 +94,15 @@ export function walkSheet(img){let out=walkSheets.get(img);if(out)return out;con
     g.drawImage(img,0,oy+cut,cx,legH,ox,oy+cut,cx,Math.min(left,cell-cut-1));g.drawImage(img,cx,oy+cut,cell-cx,legH,ox+cx,oy+cut,cell-cx,Math.min(right,cell-cut-1));}}}
  catch(e){out=img;}
  walkSheets.set(img,out);return out;}
-function drawPaintedFigure(c,img,x,footY,{facing,frame,pose,alpha}){const sheet=walkSheet(img),cell=img.naturalWidth/4,{row,col,mirror}=paintedFrame(facing,frame,pose),D=PAINTED_CELL,lean=pose==='attack'?{left:[-4,0],right:[4,0],up:[0,-4],down:[0,3]}[facing]:[0,0];
+// v2.0.0 (REFORM_DESIGN §4.2): the side's colour. A class sheet of pack H1 marks the cloth to recolour in pure magenta
+// (it is replaced by the colour); a temporary sheet is washed with the colour (blend 'color', the shading kept).
+const tintCache=new WeakMap();
+export function tintSheet(sheet,color,mask=false){let byColor=tintCache.get(sheet);if(!byColor){byColor=new Map();tintCache.set(sheet,byColor);}let out=byColor.get(color);if(out)return out;
+ try{out=document.createElement('canvas');out.width=sheet.width||sheet.naturalWidth;out.height=sheet.height||sheet.naturalHeight;const g=out.getContext('2d',{willReadFrequently:mask});g.drawImage(sheet,0,0);
+  if(mask){const d=g.getImageData(0,0,out.width,out.height),p=d.data,[cr,cg,cb]=[1,3,5].map(i=>parseInt(color.slice(i,i+2),16));for(let i=0;i<p.length;i+=4){const r=p[i],gg=p[i+1],b=p[i+2];if(p[i+3]>20&&r>120&&b>120&&gg<Math.min(r,b)*.55){const k=(r+b)/2/255;p[i]=cr*k;p[i+1]=cg*k;p[i+2]=cb*k;}}g.putImageData(d,0,0);}
+  else{g.globalCompositeOperation='color';g.globalAlpha=.5;g.fillStyle=color;g.fillRect(0,0,out.width,out.height);g.globalAlpha=1;g.globalCompositeOperation='destination-in';g.drawImage(sheet,0,0);}}
+ catch(e){out=sheet;}byColor.set(color,out);return out;}
+function drawPaintedFigure(c,img,x,footY,{facing,frame,pose,alpha,tint,mask}){const sheet=tint?tintSheet(walkSheet(img),tint,mask):walkSheet(img),cell=img.naturalWidth/4,{row,col,mirror}=paintedFrame(facing,frame,pose),D=PAINTED_CELL,lean=pose==='attack'?{left:[-4,0],right:[4,0],up:[0,-4],down:[0,3]}[facing]:[0,0];
  c.save();c.globalAlpha*=alpha;c.imageSmoothingEnabled=true;c.imageSmoothingQuality='low';c.translate(x+lean[0],footY+lean[1]);
  if(pose==='death'){c.globalAlpha*=.45;c.translate(0,-8);c.rotate(-Math.PI/2);}if(mirror)c.scale(-1,1);
  c.drawImage(sheet,col*cell,row*cell,cell,cell,-D/2,-D*120/128,D,D);c.restore();}
@@ -100,10 +112,10 @@ function drawPaintedFigure(c,img,x,footY,{facing,frame,pose,alpha}){const sheet=
 // sheet is drawn larger around its foot point: rank and file to about hero height (104), captains a little taller (110).
 export const FIGURE_FIT={executor:1.3,baldrick:1.24,garr:1.22,guard:1.16,ironSpear:1.16,fortGuard:1.14,ironInfantry:1.13,lordA:1.13,lordB:1.13,
  archer:1.12,mercSpear:1.12,fortArcher:1.11,smith:1.11,pursuerCaptain:1.16,bearer:1.08,assassin:1.07,pursuer:1.07,cavalry:1.06,pursuerArcher:1.06,ironDeserter:1.05,deserterCaptain:1.08};
-export function drawHDFigure(c,castId,x,footY,{facing='down',frame=0,pose='idle',alpha=1,scale=1,fitted=false}={}){
+export function drawHDFigure(c,castId,x,footY,{facing='down',frame=0,pose='idle',alpha=1,scale=1,fitted=false,tint=null,mask=false}={}){
  const fit=!fitted&&FIGURE_FIT[spriteIdFor(castId)];if(fit&&paintedSheet(castId))scale*=fit;
- if(scale!==1){c.save();c.translate(x,footY);c.scale(scale,scale);c.translate(-x,-footY);drawHDFigure(c,castId,x,footY,{facing,frame,pose,alpha,fitted:true});c.restore();return;}
- const sheet=paintedSheet(castId);if(sheet){drawPaintedFigure(c,sheet,x,footY,{facing,frame,pose,alpha});return;}
+ if(scale!==1){c.save();c.translate(x,footY);c.scale(scale,scale);c.translate(-x,-footY);drawHDFigure(c,castId,x,footY,{facing,frame,pose,alpha,fitted:true,tint,mask});c.restore();return;}
+ const sheet=paintedSheet(castId);if(sheet){drawPaintedFigure(c,sheet,x,footY,{facing,frame,pose,alpha,tint,mask});return;}
  if(castId==='beacon'){drawBeacon(c,x,footY,pose==='death',alpha);return;}
  if(castId==='wagon'){const w=wagonSprite();c.save();c.globalAlpha*=pose==='death'?.4:alpha;hdBlit(c,w,x-24*HD_K,footY-50*HD_K);c.restore();return;}
  const s=figureSprite(castId,{facing,frame}),K=HD_K,lean=pose==='attack'?{left:[-6,0],right:[6,0],up:[0,-6],down:[0,5]}[facing]:[0,0];

@@ -3,6 +3,7 @@
 import {CLASS_TREE,POTENTIAL,PROFICIENCY_STEPS,PROFICIENCY_SOURCE,PROFICIENCY_EFFECT,PROMOTION_LEVEL,AWAKEN_LEVEL,AWAKEN_TRIGGER,RECRUIT_PROMOTION} from '../data/classes.js';
 import {RECRUIT_JOIN} from '../data/skills.js';
 import {LAST_MISSION,MISSIONS} from '../data/missions.js';
+import {promoteStats} from './stats8.js';
 
 export const classTierOf=u=>Math.max(1,u?.classTier||1);
 export function classOf(u){const tree=CLASS_TREE[u?.id];if(!tree)return null;return tree.find(c=>c.tier===classTierOf(u))||tree[0];}
@@ -28,7 +29,7 @@ export function promotionStatus(s,id){
  const done=s.campaign?.completed||[];let checks,pot=null;
  if(next.tier===3)checks=[  // v0.9.1 awakening (ACT3_DESIGN §6.1)
   {key:'level',label:`Lv ${AWAKEN_LEVEL} 이상 (현재 ${h.level})`,ok:h.level>=AWAKEN_LEVEL},
-  {key:'mission',label:`Mission ${String(AWAKEN_TRIGGER[id]).padStart(2,'0')} 클리어`,ok:done.includes(AWAKEN_TRIGGER[id])}];
+  AWAKEN_TRIGGER[id]?{key:'mission',label:`Mission ${String(AWAKEN_TRIGGER[id]).padStart(2,'0')} 클리어`,ok:done.includes(AWAKEN_TRIGGER[id])}:{key:'act2',label:'ACT II 완료',ok:!!s.campaign?.flags?.act2_completed||done.includes(14)}];
  else if(RECRUIT_JOIN[id])checks=[  // v0.9.1 recruits' tier 2 (ACT3_DESIGN §5.2)
   {key:'act2',label:'ACT II 완료',ok:!!s.campaign?.flags?.act2_completed||done.includes(14)},
   {key:'level',label:`Lv ${RECRUIT_JOIN[id]+RECRUIT_PROMOTION} 이상 (현재 ${h.level})`,ok:h.level>=RECRUIT_JOIN[id]+RECRUIT_PROMOTION}];
@@ -40,7 +41,8 @@ export function promotionStatus(s,id){
 }
 // Applies the class change to one hero object (campaign record or live unit). Idempotent per tier.
 export function applyClass(u,cls){if(!u||!cls||classTierOf(u)>=cls.tier)return false;u.classTier=cls.tier;
- for(const [k,v]of Object.entries(cls.bonus||{})){u[k]=(u[k]||0)+v;if(k==='maxHP'&&'hp'in u)u.hp=Math.min(u.maxHP,(u.hp||0)+v);if(k==='maxMP'&&'mp'in u)u.mp=Math.min(u.maxMP,(u.mp||0)+v);}
+ // v2.0.0 (§3.5): a promotion raises the class's main stats; only the MP bonus is still added directly.
+ if(u.stats){promoteStats(u,cls.tier);if(cls.bonus?.maxMP){u.maxMP=(u.maxMP||0)+cls.bonus.maxMP;if('mp'in u)u.mp=Math.min(u.maxMP,(u.mp||0)+cls.bonus.maxMP);}}else for(const [k,v]of Object.entries(cls.bonus||{})){u[k]=(u[k]||0)+v;if(k==='maxHP'&&'hp'in u)u.hp=Math.min(u.maxHP,(u.hp||0)+v);if(k==='maxMP'&&'mp'in u)u.mp=Math.min(u.maxMP,(u.mp||0)+v);}
  if(cls.movBonus)u.classMovementModifier=(u.classMovementModifier||0)+cls.movBonus;if(cls.profile)u.movementProfile=cls.profile;return true;}
 // Confirms a promotion in the campaign (called after a won trial, Phase E). Returns false when not eligible.
 export function promote(s,id,{force=false}={}){const st=promotionStatus(s,id);if(!st.next||(!st.eligible&&!force)||s.practice)return false;
@@ -50,10 +52,14 @@ export function classGrowth(u){return classOf(u)?.growth||{};}
 
 // v0.5 Phase E: a won trial or drill keeps the growth earned in it. Only deployed heroes change; temporary
 // battle conditions (wounded MOV, HP) are never copied. A won trial makes the provisional tier-2 class permanent.
-const SKIRMISH_GROWTH=['level','xp','maxHP','maxMP','atk','def','mag','res','spd','growthHistory','clues','classTier','classMovementModifier','movementProfile','appearanceTier'];
+const SKIRMISH_GROWTH=['level','xp','maxHP','maxMP','atk','def','mag','res','spd','stats','cls','growthHistory','clues','classTier','classMovementModifier','movementProfile','appearanceTier'];
 export function commitSkirmish(s){const sk=MISSIONS[s.missionId]?.skirmish;if(!sk||s.practice)return false;const heroes=s.campaign.heroes;if(!Array.isArray(heroes))return false;
  for(const u of s.units.filter(u=>u.team==='ally'&&!u.benched)){const rec=heroes.find(h=>h.id===u.id);if(!rec)continue;for(const k of SKIRMISH_GROWTH)if(u[k]!==undefined)rec[k]=structuredClone(u[k]);}
  s.campaign.skirmishes??={drills:0,trials:{}};
  if(sk.kind==='trial'){const tier=sk.tier||2,cls=CLASS_TREE[sk.hero]?.find(c=>c.tier===tier);s.campaign.promotions??={};if(cls&&(s.campaign.promotions[sk.hero]?.tier||0)<tier)s.campaign.promotions[sk.hero]={tier,key:cls.key,mission:s.missionId,turn:s.turn};s.campaign.skirmishes.trials[sk.hero]=(s.campaign.skirmishes.trials[sk.hero]||0)+1;s.campaign.flags[tier===3?`awakened_${sk.hero}`:`promoted_${sk.hero}`]=true;}
  else s.campaign.skirmishes.drills++;
  return true;}
+
+// v2.0.0 부장: officers promote at camp as soon as they are ready (no trial). Returns the officers promoted.
+export function autoPromoteOfficers(s){const out=[];for(const rec of s.campaign?.heroes||[]){if(!CLASS_TREE[rec.id]?.[0]?.officer)continue;let st=promotionStatus(s,rec.id);while(st.next&&st.eligible){applyClass(rec,st.next);s.campaign.promotions??={};s.campaign.promotions[rec.id]={tier:st.next.tier,key:st.next.key,mission:s.missionId,turn:s.turn};out.push({id:rec.id,ko:st.next.ko});st=promotionStatus(s,rec.id);}}
+ for(const o of out)s.log.push(`${s.campaign.heroes.find(h=>h.id===o.id)?.name||o.id}: ${o.ko}(으)로 승급했습니다.`);return out;}
