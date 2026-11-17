@@ -3,7 +3,7 @@
 // after the win the betrayed banner (two ways) → Mission 26 → M26 (the duel modal on TURN 2, Erik's 설득 beside Baldrick at
 // resolve 3 → he yields and joins) → Baldrick in the legion with ①–④, the camp below the pass → Dario's ④ in the menu.
 // 1440×900 and 390×844 touch. Screenshots: docs/v0.10.1/screenshots/act4b.
-import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterWarCouncil} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
+import {standBeside} from './duel-helper.mjs';import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterWarCouncil} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {startBattle,beginEnemyPhase,advanceEnemy,nextMission,newGame} from '../src/core/game.js';
 import {enterHub} from '../src/core/frontier.js';import {chooseBanner25} from '../src/core/mission-rules-v0101.js';import {drain} from './campaign-policy.mjs';
@@ -15,7 +15,7 @@ function ready(){const s=deserialize(camp24);for(const h of s.campaign.heroes){h
 function m25Won(){const s=nextMission(ready());s.screen='deployment';startBattle(s);drain(s);for(const u of s.units.filter(u=>u.camp==='north'))u.hp=0;s.missionState.captain=true;enemyPhase(s);enterHub(s,{aftermath:true});drain(s);return s;}
 function m26(){const s=m25Won();chooseBanner25(s,'lower');const t=nextMission(s);t.screen='deployment';startBattle(t);drain(t);return t;}
 // M26 on TURN 2 with the duel open (every rider down, Baldrick still).
-function m26Duel(){const s=m26();for(const u of s.units.filter(u=>u.team==='enemy'&&u.id!=='boss'))u.hp=0;const bo=s.units.find(u=>u.id==='boss');bo.mov=0;bo.atk=0;enemyPhase(s);return deserialize(serialize(s));}
+function m26Duel(){const s=m26();for(const u of s.units.filter(u=>u.team==='enemy'&&u.id!=='boss'))u.hp=0;const bo=s.units.find(u=>u.id==='boss');bo.mov=0;bo.atk=0;enemyPhase(s);standBeside(s,'eric','boss');return deserialize(serialize(s));} /* v2.1: Erik beside Baldrick opens it */
 // Erik beside Baldrick at resolve 3 (the duel settled).
 function m26Persuade(){const s=m26Duel();if(s.duel&&!s.duel.result)s.duel.result='skipped';s.missionState.duelCounted=true;s.missionState.resolve=3;const bo=s.units.find(u=>u.id==='boss'),e=s.units.find(u=>u.id==='eric');
  for(const [dx,dy] of [[0,1],[1,0],[-1,0]]){if(!s.units.some(o=>o.hp>0&&!o.benched&&o.x===bo.x+dx&&o.y===bo.y+dy)){e.x=bo.x+dx;e.y=bo.y+dy;break;}}e.moved=e.acted=false;return deserialize(serialize(s));}

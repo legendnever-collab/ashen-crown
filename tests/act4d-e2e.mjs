@@ -4,7 +4,7 @@
 // offer, open after Aren's words) → Mission 30 (the heart stone, all three banners) → the dawn after TURN 8 → the ending
 // choice among the open endings → its scene → the epilogue (every hero, Aren, the king, Bellard, the leaders) → the ending
 // card → the camp stays open with the epilogue to see again. 1440×900 and 390×844 touch. Screenshots: docs/v1.0.0/screenshots/act4d.
-import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterWarCouncil} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
+import {standBeside} from './duel-helper.mjs';import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterWarCouncil} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {startBattle,beginEnemyPhase,advanceEnemy,nextMission} from '../src/core/game.js';
 import {enterHub} from '../src/core/frontier.js';import {drain} from './campaign-policy.mjs';
@@ -17,7 +17,7 @@ function ready(){const s=deserialize(camp28);for(const h of s.campaign.heroes){h
 function m29(){const s=nextMission(ready());s.screen='deployment';startBattle(s);drain(s);return s;}
 const quiet=s=>{for(const u of s.units.filter(u=>u.team==='enemy'&&u.id!=='boss'))u.hp=0;};
 // TURN 2 with the duel open (the hall quiet but for Bellard).
-function m29Duel(){const s=m29();quiet(s);beginEnemyPhase(s);for(let i=0;s.phase==='enemy'&&i<200;i++){advanceEnemy(s);drain(s);}drain(s);return deserialize(serialize(s));}
+function m29Duel(){const s=m29();quiet(s);beginEnemyPhase(s);for(let i=0;s.phase==='enemy'&&i<200;i++){advanceEnemy(s);drain(s);}drain(s);standBeside(s,'eric','boss');return deserialize(serialize(s));} /* v2.1: Erik beside Bellard opens it */
 // Bellard risen with the crown's power after Aren's words.
 function m29Crowned(){const s=m29();quiet(s);s.missionState.words=true;s.missionState.duelDone=s.missionState.duelCounted=true;const bl=s.units.find(u=>u.id==='boss');bl.hp=0;M29.afterDamage(s,bl);drain(s);return deserialize(serialize(s));}
 // His second fall: the outcome comes at the end of the player phase.

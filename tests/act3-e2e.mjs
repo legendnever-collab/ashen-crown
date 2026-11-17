@@ -2,7 +2,7 @@
 // city (Aren's 「지켜라」 on the deployment bar, seven heroes, the clerks and the neutral watch) → the records choice in the
 // camp → Mission 16 in fog (hidden enemy sheet, the duel modal on TURN 3) → a returning recruit rejoins and the ward-stone
 // choice. 1440×900 and 390×844 touch. Screenshots: docs/v0.9.0/screenshots/act3.
-import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterWarCouncil} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
+import {standBeside} from './duel-helper.mjs';import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterWarCouncil} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {newGame,startBattle,beginEnemyPhase,advanceEnemy,nextMission} from '../src/core/game.js';import {findUnit,fogHidden} from '../src/core/rules.js';
 import {departRoster} from '../src/core/mission-rules-v071.js';import {enterHub} from '../src/core/frontier.js';import {drain} from './campaign-policy.mjs';
@@ -13,7 +13,7 @@ const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){adv
 // M15 won with all three boxes, back in the camp (aftermath, before the records choice).
 function m15Won(){const s=nextMission(deserialize(camp14));s.screen='deployment';startBattle(s);drain(s);s.missionState.secured.push('c1','c2','c3');for(const id of ['c1','c2','c3'])findUnit(s,id).hp=0;enemyPhase(s);enterHub(s,{aftermath:true});drain(s);return s;}
 // M16 with Thea who left after the summit (kept aside), at the start of TURN 3 with the duel open.
-function m16Duel(){const c=deserialize(camp14);departRoster(c,'thea');const a=m15From(c);const s=nextMission(a);s.screen='deployment';startBattle(s);drain(s);for(let i=0;i<2;i++)enemyPhase(s);return s;}
+function m16Duel(){const c=deserialize(camp14);departRoster(c,'thea');const a=m15From(c);const s=nextMission(a);s.screen='deployment';startBattle(s);drain(s);for(let i=0;i<2;i++)enemyPhase(s);standBeside(s,'eric','cap');return s;} /* v2.1: the duel is an event — Erik beside the captain */
 function m15From(c){const s=nextMission(c);s.screen='deployment';startBattle(s);drain(s);s.missionState.secured.push('c1','c2','c3');for(const id of ['c1','c2','c3'])findUnit(s,id).hp=0;enemyPhase(s);s.campaign.choices.m15_records='keep';return s;}
 function m16Won(){const s=m16Duel();s.duel.result='skipped';for(const h of s.units.filter(u=>u.kind==='harvester'))h.hp=0;enemyPhase(s);enterHub(s,{aftermath:true});drain(s);return s;}
 try{
