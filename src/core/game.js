@@ -97,7 +97,7 @@ function damage(s,u,t,mode,counter=false,opts=null){
 }
 // v2.0.0 §3.5: the basic attack changes with the class tier (heroes, officers, enemies alike) — two blows, a sweep, a pierce,
 // ember arrows to the sides, a ride-through, a shove, the ward wall, the afterimage. Multiple blows are real blows.
-export const tierOfUnit=u=>u?.team==='ally'?Math.max(1,u.classTier||1):u?.team==='enemy'||u?.team==='allied'?((u.level||1)>=16?3:(u.level||1)>=8?2:1):1;
+export const tierOfUnit=u=>u?.team==='ally'?Math.max(1,u.classTier||1):u?.team==='enemy'||u?.team==='allied'?(u.troopTier??((u.level||1)>=16?3:(u.level||1)>=8?2:1)):1; /* troops: their level's tier, capped by the sortie's (core/stats8.js scaleTroop) */
 export function attackPattern(u){const c=classKeyOf(u);if(!c)return null;return TIER_ATTACK[c]?.[tierOfUnit(u)-1]||null;}
 const STEP=[[0,-1],[1,0],[0,1],[-1,0]];
 function freeTile(s,x,y,mover){const t=terrainAt(x,y,s);return !!t&&Number.isFinite(t.cost)&&!missionOf(s).layers?.collision?.[y]?.[x]&&!at(s,x,y)&&(!mover||Number.isFinite(terrainCostOf(s,mover,x,y)));}

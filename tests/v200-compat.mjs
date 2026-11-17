@@ -25,4 +25,7 @@ export function reopensInCamp(s,before,id,{win=true}={}){
  assert.equal(s.screen,'exploration','reopens in camp');assert.equal(s.missionId,id);assert.equal(s.migrated200,'battle');assert.equal(s.stageStart,undefined);
  const bc=before.campaign;assert.deepEqual(s.campaign.completed,bc.completed);assert.deepEqual(s.campaign.flags,bc.flags);assert.equal(s.campaign.economy.gold,bc.economy.gold);
  for(const h of bc.heroes||[]){const now=s.campaign.heroes.find(x=>x.id===h.id);assert.ok(now,h.id);assert.equal(now.level,h.level,h.id);assert.equal(now.classTier??1,h.classTier??1,h.id);}
- if(!win)return s;drain(s);s.screen='deployment';assert.ok(startBattle(s));drain(s);playCampaignBattle(s);assert.equal(s.outcome,'victory',s.reason);return s;}
+ if(!win)return s;return winsWithinRetries(s);}
+// The test player wins most of these battles, not all (v2.0.0 fits ACT II–IV at ≥ 60%); like a player, it may retry from
+// the camp — up to three tries with the same party, a different roll each time.
+export function winsWithinRetries(camp,tries=3){let last;for(let i=0;i<tries;i++){const s=structuredClone(camp);s.rng=(s.rng+i*7919)>>>0;drain(s);s.screen='deployment';assert.ok(startBattle(s));drain(s);playCampaignBattle(s);if(s.outcome==='victory')return s;last=s;}assert.equal(last.outcome,'victory',last.reason);return last;}

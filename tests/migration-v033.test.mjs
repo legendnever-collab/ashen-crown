@@ -1,6 +1,6 @@
 // v0.3.3 → v0.4.0 save compatibility, using real schema-6 saves produced by the tagged v0.3.3 source
 // (tests/fixtures/v033/make-v033-fixtures.mjs). Nothing here is hand-written save data.
-import test from 'node:test';import {econV200} from './v200-compat.mjs';import {reopensInCamp} from './v200-compat.mjs';import assert from 'node:assert/strict';import fs from 'node:fs';
+import test from 'node:test';import {econV200,winsWithinRetries} from './v200-compat.mjs';import {reopensInCamp} from './v200-compat.mjs';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,deserialize,saveGame,loadGame,SAVE_KEY,arms081View} from '../src/persistence/save-manager.js';
 import {nextMission,startBattle} from '../src/core/game.js';
 import {enterHub} from '../src/core/frontier.js';
@@ -40,8 +40,8 @@ test('M03 aftermath save: growth, gear, items, gold and story flags kept; the ca
  for(const [k,v]of Object.entries(before.campaign.flags))assert.equal(s.campaign.flags[k],v,k);
  const m4=nextMission(s);assert.ok(m4,'M04 opens from a v0.3.3 aftermath save');assert.equal(m4.missionId,4);enterHub(m4);drain(m4);assert.equal(m4.screen,'exploration');
  assert.equal(m4.campaign.economy.gold,before.campaign.economy.gold);assert.equal(findUnit(m4,'eric').level,before.campaign.heroes.find(h=>h.id==='eric').level);
- m4.screen='deployment';assert.ok(startBattle(m4));playCampaignBattle(m4,true);assert.equal(m4.outcome,'victory');assert.ok(m4.campaign.completed.includes(4));
- assert.ok(m4.campaign.economy.gold>before.campaign.economy.gold,'M04 victory pays on top of the migrated purse');
+ const won=winsWithinRetries(m4);assert.ok(won.campaign.completed.includes(4));
+ assert.ok(won.campaign.economy.gold>before.campaign.economy.gold,'M04 victory pays on top of the migrated purse');
 });
 
 test('storage path: a v0.3.3 save in localStorage loads, and the first v0.4.0 save keeps it as backup',()=>{
