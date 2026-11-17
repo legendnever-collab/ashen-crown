@@ -15,10 +15,11 @@ import {revisitTowns,canTravel} from '../core/frontier.js';
 import {hubFor} from '../data/hubs-v05.js';
 import {itemIcon} from './item-art.js';
 
+const SKILL_KO={'Brace':'방진','Aimed Shot':'조준 사격','Shield Oath':'방패의 맹세','Charge':'돌격','Fire Bolt':'화염탄','Heal':'치유','Quick Strike':'기습','Last Post':'마지막 초소'};
 const statLine=id=>{const st=HERO_STATS[id]||{};return Object.entries(STAT_KO).map(([k,ko])=>`${ko} ${st[k]??'—'}`).join(' · ');};
 export function tavernHTML(s,esc,portrait){const town=tavernTown(s);if(!town)return '<p>주점 안에서 이용할 수 있습니다.</p>';const list=mercsAt(s,town),gold=s.economy?.gold??0,lv=hireLevel(s.campaign),first=!Array.isArray(s.campaign.heroes);
  const card=m=>{const h=heroDef(m.id),cls=CLASSES8[UNIT_CLASS8[m.id]],lore=HERO_LORE[m.id];return `<article class="merc-card ${m.elite?'elite':''}"><div class="merc-head">${portrait({...h,team:'ally',classTier:1},'card-sprite')}<div><h3>${esc(h.name)} ${m.elite?'<span class="merc-elite">엘리트</span>':''}${m.wandering?'<span class="merc-wander">떠돌이</span>':''}</h3><p class="muted">${esc(cls?.ko||'')} · 고용하면 LV ${lv}</p></div></div>
-  <p>${esc(lore?.bio||h.description||'')}</p><p class="merc-stats">${statLine(m.id)}</p><p class="muted">기술 · ${esc(h.skill||'')}</p>
+  <p>${esc(lore?.bio||h.description||'')}</p><p class="merc-stats">${statLine(m.id)}</p><p class="muted">기술 · ${esc(SKILL_KO[h.skill]||h.skill||'')}</p>
   ${frontierButton('hire',`고용 · ${m.price} G`,m.id,first||gold<m.price,'primary')}</article>`;};
  return `<p>「인재 확보」 · ${esc(TOWN_NAME[town]||town)} 주점. 고용비는 한 번만 내고, 고용한 인재는 엔딩까지 군단과 함께합니다. 고용하면 지금 군단 평균보다 한 레벨 낮게 들어옵니다.</p>
  <p class="supply-gold">◆ ${gold} G</p>${first?'<p class="muted">첫 전투(잿빛 마을)를 마친 뒤부터 고용할 수 있습니다.</p>':''}
@@ -36,11 +37,18 @@ export function requestSortieHTML(s,esc,portrait,id,picked){const r=requestsAt(s
  return `<p><b>${esc(r.title)}</b> · ${esc(m.objective)}</p><p class="muted">${esc(m.brief)}</p><p>출전 ${picked.length} / 최대 ${m.deployLimit}명 · 눌러서 출전과 대기를 바꿉니다.</p><div class="sortie-list request-sortie">${heroes.map(tile).join('')}</div>
  ${frontierButton('request-start','이 장수들로 출전',id,!picked.length,'primary')}`;}
 // The world map at a town's exit: where the legion may go (§6) — the camp the story is in, the towns already reached and
-// the small villages a cleared castle opened. Markers sit on the painting; the list repeats them for small screens.
+// the small villages a cleared castle opened. The painting is cropped to the places in reach (3:2), so markers stay apart
+// on a phone; the list below repeats them.
+const WORLD_IMG=typeof ASHEN_WORLD!=='undefined'?ASHEN_WORLD.world_map:null;
+function cropFor(sites){const xs=sites.map(t=>t.x),ys=sites.map(t=>t.y),pad=110;let x0=Math.min(...xs)-pad,x1=Math.max(...xs)+pad,y0=Math.min(...ys)-pad,y1=Math.max(...ys)+pad;
+ let w=Math.max(x1-x0,360),h=Math.max(y1-y0,240);if(w/h<1.5)w=h*1.5;else h=w/1.5;w=Math.min(w,WORLD_SIZE.w);h=Math.min(h,WORLD_SIZE.h);
+ const cx=(Math.min(...xs)+Math.max(...xs))/2,cy=(Math.min(...ys)+Math.max(...ys))/2;x0=Math.max(0,Math.min(WORLD_SIZE.w-w,cx-w/2));y0=Math.max(0,Math.min(WORLD_SIZE.h-h,cy-h/2));return {x0,y0,w,h};}
 export function worldTravelHTML(s,esc){const f=s.frontier,go=canTravel(s),home=f?.revisit||hubFor(s.missionId,f?.phase),here=f?.hub,towns=revisitTowns(s);
- const homeSite=SITES.find(t=>t.id===HUB_SITE[home]),pos=t=>t?`left:${(100*t.x/WORLD_SIZE.w).toFixed(2)}%;top:${(100*t.y/WORLD_SIZE.h).toFixed(2)}%`:'';
+ const homeSite=SITES.find(t=>t.id===HUB_SITE[home]);
  const dest=[{hub:home,name:'야영지 · 이야기가 이어지는 곳',home:true,site:homeSite},...towns.map(t=>({...t,site:SITES.find(x=>x.id===t.site)}))];
- const marker=d=>d.site?`<button class="world-marker ${d.home?'home':d.small?'small':'town'} ${d.hub===here?'here':''}" style="${pos(d.site)}" data-do="${d.home?'town-return':'travel'}" data-id="${d.home?'':d.hub}" ${!go||d.hub===here?'disabled':''} title="${esc(d.name)}"><span>${esc(d.home?'야영지':d.name)}</span></button>`:'';
- const btn=d=>frontierButton(d.home?'town-return':'travel',`${d.home?'⛺':d.small?'⌂':'⌂'} ${esc(d.name)}${d.hub===here?' · 지금 여기':''}`,d.home?'':d.hub,!go||d.hub===here,d.home?'primary':'');
- return `<div class="world-travel"><canvas id="world-view" class="world-view" aria-label="에르디아 세계 지도"></canvas><div class="world-markers">${dest.map(marker).join('')}</div></div>
+ const c=cropFor(dest.map(d=>d.site).filter(Boolean)),pct=(v,o,n)=>`${(100*(v-o)/n).toFixed(2)}%`;
+ const marker=d=>d.site?`<button class="world-marker ${d.home?'home':d.small?'small':'town'} ${d.hub===here?'here':''} ${(d.site.x-c.x0)/c.w>.62?'flip':''}" style="left:${pct(d.site.x,c.x0,c.w)};top:${pct(d.site.y,c.y0,c.h)}" data-do="${d.home?'town-return':'travel'}" data-id="${d.home?'':d.hub}" ${!go||d.hub===here?'disabled':''} title="${esc(d.name)}"><i aria-hidden="true"></i><span>${esc(d.home?'야영지':d.name)}</span></button>`:'';
+ const img=WORLD_IMG?`<img class="world-crop" alt="" src="${WORLD_IMG}" style="width:${(100*WORLD_SIZE.w/c.w).toFixed(2)}%;left:${(-100*c.x0/c.w).toFixed(2)}%;top:${(-100*c.y0/c.h).toFixed(2)}%">`:'<canvas id="world-view" class="world-view" aria-label="에르디아 세계 지도"></canvas>';
+ const btn=d=>frontierButton(d.home?'town-return':'travel',`${d.home?'⛺':'⌂'} ${esc(d.name)}${d.hub===here?' · 지금 여기':''}`,d.home?'':d.hub,!go||d.hub===here,d.home?'primary':'');
+ return `<div class="world-travel" aria-label="에르디아 세계 지도">${img}<div class="world-markers">${dest.map(marker).join('')}</div></div>
  <div class="town-list"><p class="muted">지점을 누르면 군단이 길을 따라 그곳으로 갑니다. 시간과 비용은 들지 않습니다. 성이나 거점을 클리어하면 주변의 작은 마을이 지도에 나타납니다.</p>${dest.map(btn).join('')}${go?'':'<p class="muted">탐색 중(건물 밖)에서만 오갈 수 있습니다.</p>'}</div>`;}

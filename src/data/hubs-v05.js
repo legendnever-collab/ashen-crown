@@ -45,7 +45,7 @@ const hv5Interior={inn:'barracks',warroom:'quarters',depot:'store',residence:'ho
 const hv5Shop={forge:'weapon',shop:'item'};
 function hv5Build(id,spec){
  const mask=spec.solid?spec.mask.map((r,y)=>[...r].map((c,x)=>spec.solid.some(([a,b])=>a===x&&b===y)?'#':c).join('')):spec.mask;if(mask.length!==16||mask.some(r=>r.length!==24))throw Error(`hub mask ${id}`);
- const buildings=[],places=spec.places.map(([pid,name,x,y])=>({id:pid,name,x,y}));
+ const buildings=[],places=spec.places.map(([pid,name,x,y])=>({id:pid,name,x,y,...(pid==='exit'||pid==='gate'?{action:'world'}:{})})); /* v2.1: the way out opens the world map */
  for(const [bid,label0,name0,x,y,w,h,dx,dy] of spec.doors){const type=bid.split('-')[0],shop=hv5Shop[bid],tavern=TAVERN_SPECS.has(id)&&bid==='inn-1',interior=shop||(tavern?'tavern':hv5Interior[type]),label=tavern?'TAVERN':label0,name=tavern?'주점':name0; /* v2.1: the town's inn is its tavern (D-118) */
   const entrance={tileX:dx,tileY:dy,approachDirection:'north',triggerType:'interact'};
   buildings.push({x,y,w,h,label,type,buildingId:bid,entrance,returnPoint:{tileX:dx,tileY:dy+1},interiorScene:interior,painted:true});

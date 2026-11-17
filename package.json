@@ -72,7 +72,8 @@
     "test:migration-v0101": "node tests/migration-v0101.mjs",
     "test:act4d": "node tests/act4d-e2e.mjs",
     "test:migration-v0102": "node tests/migration-v0102.mjs",
-    "test:v200": "node tests/v200-e2e.mjs"
+    "test:v200": "node tests/v200-e2e.mjs",
+    "test:v210": "node tests/v210-e2e.mjs"
   },
   "devDependencies": {
     "playwright": "1.58.2"

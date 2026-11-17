@@ -2,9 +2,9 @@
 // The path chosen at M22 always opens its ending; the other two open by a banner's trust (2 or more) and one choice of the
 // story. The player picks among the open ones after M30. campaign.ending = {id, at, path, bellard, confession}; the save
 // stays open after the ending (the camp, practice, training and revisits go on).
-import {OFFICER_EPILOGUE as EPI_V200} from '../data/talk-v200.js';
+import {OFFICER_EPILOGUE} from '../data/talk-v200.js';
 import {MERC_EPILOGUE} from '../data/mercs-v210.js';
-const HIRE_EPILOGUE={...EPI_V200,...MERC_EPILOGUE};
+const HIRE_EPILOGUE={...OFFICER_EPILOGUE,...MERC_EPILOGUE};
 import {ENDINGS,ENDING_IDS,BY_END,BY_CHOICE,BELLARD,BALDRICK_OUT,HERO_NAME,STAGE_LINE} from '../data/ending-v100.js';
 import {ensureTrust,trustStage,FACTIONS} from './factions.js';
 import {setStoryFlag} from './narrative.js';
