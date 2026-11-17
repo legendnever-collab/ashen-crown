@@ -30,7 +30,7 @@ test('Ines awakens after M23, Thea after M24 (Lv 14, tier 2); trials 115 and 116
   for(const u of s.units.filter(u=>u.team==='enemy'))u.hp=0;enemyPhase(s);assert.equal(s.outcome,'victory',s.reason);assert.equal(s.campaign.promotions[id].tier,3);}
 });
 test('④ 성역의 문: everyone of the legion\'s side within 3 takes half until the next player turn and is cured; once a battle',()=>{
- const s=board(),ines=findUnit(s,'ines'),lia=findUnit(s,'lia'),k=findUnit(s,'k1'),far=findUnit(s,'kai');ines.x=8;ines.y=7;lia.x=8;lia.y=8;k.x=8;k.y=9;k.mov=0;k.atk=lia.def+60;far.x=15;far.y=12;
+ const s=board(),ines=findUnit(s,'ines'),lia=findUnit(s,'lia'),k=findUnit(s,'k1'),far=findUnit(s,'kai');ines.x=8;ines.y=7;lia.x=8;lia.y=8;k.x=8;k.y=9;k.mov=0;k.atk=lia.def+60;k.level=1;k.spd=lia.spd; /* v2.0.0: one plain blow (tier-1 pattern, no follow-up) */far.x=15;far.y=12;
  lia.status={poison:2};far.status={poison:2};lia.hp=lia.maxHP=999;const plain=strikeStats(s,k,lia).damage;
  const r=performAction(s,'ines','sanctumGate','ines');assert.ok(r.ok,r.error);assert.deepEqual(s.ultimates,['ines']);assert.equal(lia.gateGuard,s.turn);assert.ok(!lia.status?.poison,'cured');assert.ok(far.status?.poison,'out of reach');
  const back=deserialize(serialize(s));assert.equal(findUnit(back,'lia').gateGuard,lia.gateGuard);

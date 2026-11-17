@@ -40,7 +40,7 @@ test('Overwatch: the first enemy step inside Elina\'s range draws one shot; a hi
  let shots=0,stops=0;
  for(let seed=1;seed<=12;seed++){const s=arena(['b1']);park(s,['lia','sain','kai']);s.rng=seed*7919;const el=place(s,'elina',6,9),er=place(s,'eric',6,8),b=place(s,'b1',6,4);b.mov=5; // reaching Erik means crossing Elina's range
   assert.ok(performAction(s,'elina','overwatch','elina').ok);assert.ok(el.overwatch);
-  const plan=planEnemy(structuredClone(s),structuredClone(b)),erHP=er.hp;beginEnemyPhase(s);const hp=b.hp;advanceEnemy(s);
+  const plan=planEnemy(structuredClone(s),structuredClone(b)),erHP=er.hp;beginEnemyPhase(s);s.enemyQueue=s.enemyQueue.filter(id=>id==='b1');s.enemyIndex=0; /* v2.0.0: the queue order changed — act the raider alone */const hp=b.hp;advanceEnemy(s);
   const shot=s.feedback.some(f=>f.type==='attack'&&f.id==='elina');if(shot){shots++;assert.equal(el.overwatch,false,'one shot only');}
   if(b.hp<hp&&alive(b)){stops++;const d=Math.abs(b.x-el.x)+Math.abs(b.y-el.y);assert.ok(d>=el.range[0]&&d<=el.range[1],'stopped inside the range it entered');assert.equal(d,el.range[1],'stopped on the first in-range step');assert.equal(er.hp,erHP,'stopped short of Erik, no attack');}
   if(!shot)assert.ok(Math.abs(plan.x-el.x)+Math.abs(plan.y-el.y)>el.range[1],'no shot only if the plan never entered range');}

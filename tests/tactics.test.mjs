@@ -1,6 +1,6 @@
 // v0.8.0 「전술」 (D-073): three skills per hero, the four status effects, targeted and thrown tools, class matchups,
 // tool stock by progress, and schema 10 saves.
-import test from 'node:test';import assert from 'node:assert/strict';
+import test from 'node:test';import {MATCHUP8} from '../src/data/classes8.js';import {econV200,keptV200} from './v200-compat.mjs';import assert from 'node:assert/strict';
 import {newGame,startBattle,performAction,beginEnemyPhase,advanceEnemy,moveUnit} from '../src/core/game.js';
 import {findUnit,alive,movement,strikeStats,matchup,armOf,distance} from '../src/core/rules.js';
 import {skillsOf,knowsMode} from '../src/data/skills.js';
@@ -21,7 +21,7 @@ const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){adv
 
 test('catalog: 13 tools match the game tools, 31 skills (three per hero, plus the ④ of the five ACT I heroes, and v0.10.0 Ines and Thea), unique ids',()=>{
  assert.deepEqual(CATALOG_TOOLS.map(t=>t.id).sort(),Object.keys(TOOLS).sort());for(const t of CATALOG_TOOLS)assert.equal(TOOLS[t.id].name,t.ko,t.id);
- assert.equal(CATALOG_SKILLS.length,36);for(const h of ['eric','elina','lia','sain','kai','thea','dario','ines','baldrick'])assert.deepEqual(CATALOG_SKILLS.filter(k=>k.hero===h).map(k=>k.slot),[1,2,3,4],h); /* v0.10.1: Dario's ④ and Baldrick's four */
+ assert.equal(CATALOG_SKILLS.length,40);for(const o of ['bram','noa','marta','rowell'])assert.ok(CATALOG_SKILLS.some(k=>k.hero===o),o); /* v2.0.0: one class skill entry per officer */for(const h of ['eric','elina','lia','sain','kai','thea','dario','ines','baldrick'])assert.deepEqual(CATALOG_SKILLS.filter(k=>k.hero===h).map(k=>k.slot),[1,2,3,4],h); /* v0.10.1: Dario's ④ and Baldrick's four */
 });
 
 test('skills open by level: ① always, ② at Lv 4 (recruits on joining), ③ on promotion (recruits at join level + 3)',()=>{
@@ -98,10 +98,12 @@ test('tools: on self or an adjacent ally only; three throws a battle; bombs hurt
  const u=findUnit(t,'kai');place(u,2,8);assert.ok(performAction(t,'kai','tool:caltrops','2,5').ok);assert.ok(t.traps.some(p=>p.x===2&&p.y===5));
 });
 
-test('class matchups: cavalry > infantry > archers > cavalry (±20%), spears beat cavalry; mages and irregulars are neutral',()=>{
- assert.equal(armOf({team:'ally',id:'thea'}),'cavalry');assert.equal(armOf({team:'enemy',kind:'spear'}),'spear');assert.equal(armOf({team:'ally',id:'lia'}),null);
- assert.equal(matchup({team:'ally',id:'thea'},{team:'enemy',kind:'soldier'}),1.2);assert.equal(matchup({team:'ally',id:'thea'},{team:'enemy',kind:'bandit'}),1,'bandits are irregulars');assert.equal(matchup({team:'enemy',kind:'spear'},{team:'ally',id:'thea'}),1.2);
- assert.equal(matchup({team:'ally',id:'elina'},{team:'enemy',kind:'cavalry'}),1.2);assert.equal(matchup({team:'enemy',kind:'archer'},{team:'ally',id:'eric'}),.8);assert.equal(matchup({team:'ally',id:'lia'},{team:'enemy',kind:'soldier'}),1);
+test('class matchups (v2.0.0 §3.3): the eight-class triangle at ±25%; healers stand outside it',()=>{
+ assert.equal(armOf({team:'ally',id:'thea'}),'cavalry');assert.equal(armOf({team:'enemy',kind:'spear'}),'spear');assert.equal(armOf({team:'ally',id:'lia'}),'mage');
+ assert.equal(matchup({team:'ally',id:'thea'},{team:'ally',id:'eric'}),1.25,'cavalry rides down infantry');assert.equal(matchup({team:'enemy',kind:'spear'},{team:'ally',id:'thea'}),1.25,'spears stop riders');
+ assert.equal(matchup({team:'ally',id:'elina'},{team:'enemy',kind:'cavalry'}),1.25);assert.equal(matchup({team:'enemy',kind:'archer'},{team:'ally',id:'ines'}),.75,'shields turn arrows');
+ assert.equal(matchup({team:'ally',id:'sain'},{team:'enemy',kind:'spear'}),1);assert.equal(matchup({team:'ally',id:'kai'},{team:'ally',id:'lia'}),1.25,'rogues reach mages');
+ const mutual=[];for(const [a,m] of Object.entries(MATCHUP8))for(const b of m.up)if(MATCHUP8[b].up.includes(a))mutual.push([a,b].sort().join('/'));assert.deepEqual([...new Set(mutual)],['infantry/shield'],'only the approved table\'s shield–infantry pair cuts both ways (REFORM_DESIGN §3.3)');
 });
 
 test('tool stock opens with progress (net after M01, drum/caltrops after M06, bomb/smoke/clarity after M08, powder after M09); never the elixir',()=>{
@@ -112,7 +114,7 @@ test('tool stock opens with progress (net after M01, drum/caltrops after M06, bo
 
 test('schema 10 saves keep statuses, marks and throws; damaged status records are rejected',()=>{
  const s=board(),eric=findUnit(s,'eric');eric.status={poison:2};eric.rally=s.turn+1;s.throws=2;s.smoke=[{x:1,y:1,until:1}];s.traps=[{x:2,y:2}];
- const back=deserialize(serialize(s));assert.equal(back.schema,SCHEMA);assert.equal(SCHEMA,19);assert.deepEqual(findUnit(back,'eric').status,{poison:2});assert.equal(back.throws,2);assert.deepEqual(back.traps,[{x:2,y:2}]);
+ const back=deserialize(serialize(s));assert.equal(back.schema,SCHEMA);assert.equal(SCHEMA,20);assert.deepEqual(findUnit(back,'eric').status,{poison:2});assert.equal(back.throws,2);assert.deepEqual(back.traps,[{x:2,y:2}]);
  for(const bad of [x=>{findUnit(x,'eric').status={sleep:1};},x=>{findUnit(x,'eric').status={poison:9};},x=>{x.throws=7;},x=>{x.traps=[{x:'a'}];}]){const b=structuredClone(s);bad(b);assert.throws(()=>deserialize(serialize(b)));}
 });
 

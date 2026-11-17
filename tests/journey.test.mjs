@@ -1,4 +1,4 @@
-import test from 'node:test';import assert from 'node:assert/strict';
+import test from 'node:test';import {econV200,keptV200} from './v200-compat.mjs';import assert from 'node:assert/strict';
 import {HUBS} from '../src/data/frontier-data.js';
 import {newGame} from '../src/core/game.js';import {enterHub,interactions,walkable,enterInterior,exitInterior,openCouncil} from '../src/core/frontier.js';import {drain} from './campaign-policy.mjs';
 const hub=id=>{const s=newGame(17,null,id);enterHub(s);drain(s);return s;};
@@ -14,7 +14,7 @@ test('Schema5 blocked doors and nested battle checkpoints recover spatial state 
  const {migrate}=await import('../src/persistence/save-manager.js');const {startBattle}=await import('../src/core/game.js');
  for(const schema of [4,5])for(const blocked of [false,true]){const s=hub(2);s.campaign.flags.keep_flag=true;s.campaign.bonds.erik_kai=true;s.screen='deployment';startBattle(s);const before=structuredClone(s);
  for(const target of [s,s.stageStart]){target.schema=schema;delete target.frontier.actorId;delete target.campaign.frontier.actorId;if(blocked){target.frontier.x=12;target.frontier.y=9;}target.campaign.frontier.x=5;target.campaign.frontier.y=5;}
- const fixed=migrate(s);assert.equal(fixed.schema,19);assert.equal(fixed.stageStart.schema,19);assert.equal(fixed.frontier.actorId,'eric');assert.ok(walkable(fixed,fixed.frontier.x,fixed.frontier.y));assert.deepEqual(fixed.units,before.units);assert.deepEqual(fixed.economy,before.economy);assert.deepEqual(fixed.campaign.flags,before.campaign.flags);assert.deepEqual(fixed.campaign.bonds,before.campaign.bonds);assert.deepEqual(fixed.campaign.heroes,before.campaign.heroes);assert.equal(fixed.rng,before.rng);assert.ok(walkable({frontier:fixed.campaign.frontier},fixed.campaign.frontier.x,fixed.campaign.frontier.y));}
+ const fixed=migrate(s);assert.equal(fixed.schema,20);assert.equal(fixed.stageStart,undefined,'v2.0.0: an ACT I battle reopens in camp');assert.equal(fixed.screen,'exploration');assert.equal(fixed.frontier.actorId,'eric');assert.ok(walkable(fixed,fixed.frontier.x,fixed.frontier.y));assert.deepEqual(econV200(fixed.campaign.economy),econV200(before.campaign.economy));assert.deepEqual(fixed.campaign.flags,before.campaign.flags);assert.deepEqual(fixed.campaign.bonds,before.campaign.bonds);assert.ok(walkable({frontier:fixed.campaign.frontier},fixed.campaign.frontier.x,fixed.campaign.frontier.y));}
 });
 
 test('Advisor authorization and error-only recovery share council API without remote/aftermath bypass',async()=>{

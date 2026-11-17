@@ -1,5 +1,5 @@
 // v0.6 Phase D — M07 Northern Orders: the convoy on the snowy road, Thea's escort, the deserter captain, the camp choice.
-import test from 'node:test';import assert from 'node:assert/strict';
+import test from 'node:test';import {SKILL_MUL} from '../src/data/classes8.js';import assert from 'node:assert/strict';
 import {MISSIONS,LAST_MISSION} from '../src/data/missions.js';
 import {STORY} from '../src/data/story.js';
 import {newGame,startBattle,nextMission,beginEnemyPhase,advanceEnemy,performAction,moveUnit,planAllied,checkOutcome} from '../src/core/game.js';
@@ -68,10 +68,10 @@ test('M07 save round trip mid-battle and practice replays leave trust alone',()=
  const p=newGame(5,{...camp(),completed:[1,2,3,4,5,6,7],factionTrust:{iron:1,free:0,flame:0}},7);assert.ok(p.practice);for(const id of ['w1','w2'])findUnit(p,id).rescued=true;p.screen='battle';checkOutcome(p);assert.equal(p.outcome,'victory');assert.equal(p.campaign.factionTrust.iron,1);
 });
 
-test('Thea\'s Charge: +4, and after a 3-tile run +7 with no counterattack (ACT I heroes unchanged)',()=>{
+test('Thea\'s Charge: ×1.25, and after a 3-tile run ×1.45 with no counterattack (v2.0.0 multipliers; ACT I heroes unchanged)',()=>{
  const s=newGame(9,{...camp(),completed:[1,2,3,4,5,6,7,8],roster:['thea']},8);s.screen='deployment';const thea=findUnit(s,'thea');delete thea.benched;startBattle(s);drain(s);
  const foe=s.units.find(u=>u.team==='enemy');foe.x=7;foe.y=8;foe.kind='neutral'; // v0.8 matchups scale by troop type; a neutral target keeps the Charge numbers plain
- thea.x=7;thea.y=9;const base=strikeStats(s,thea,foe,'attack').damage,charge=strikeStats(s,thea,foe,'skill').damage;assert.equal(charge,base+4);
- thea.chargeRun=3;assert.equal(strikeStats(s,thea,foe,'skill').damage,base+7);assert.equal(forecast(s,thea,foe,'skill').counter,0,'no counter after a run');
+ thea.x=7;thea.y=9;const base=strikeStats(s,thea,foe,'attack').damage,charge=strikeStats(s,thea,foe,'skill').damage;assert.ok(Math.abs(charge-base*SKILL_MUL.charge)<=1,`${charge} ≈ ${base}×${SKILL_MUL.charge}`);assert.ok(charge>base);
+ thea.chargeRun=3;{const run=strikeStats(s,thea,foe,'skill').damage;assert.ok(Math.abs(run-base*SKILL_MUL.chargeRun)<=1+(thea.chargeDmg||0),`${run} ≈ ${base}×${SKILL_MUL.chargeRun}`);assert.ok(run>charge);}assert.equal(forecast(s,thea,foe,'skill').counter,0,'no counter after a run');
  const eric=findUnit(s,'eric');assert.equal(strikeStats(s,eric,foe,'skill').damage,strikeStats(s,eric,foe,'skill').damage);
 });

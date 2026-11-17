@@ -90,7 +90,7 @@ export const M22={
   s.missionState={waves:[],banner:f,read:Object.fromEntries(HERALDS.map(id=>[id,0])),hurt:[],fallen:[],support,returning:back};
   for(const [fid,ids] of Object.entries(BANNER_UNITS))for(const id of ids){const a=findUnit(s,id);if(!a)continue;a.benched=true;if(!support.includes(fid))a.withdrawn=true;}
   for(const a of s.units.filter(u=>RETURNERS93[u.id])){const id=RETURNERS93[a.id];a.benched=true;if(!back.includes(id)){a.withdrawn=true;continue;}
-   const rec=c.departed?.[id]||recruitRecord(id,13),keep=['level','maxHP','maxMP','atk','def','mag','res','spd','mov','range','movementProfile','classTier'];for(const k of keep)if(rec[k]!==undefined)a[k]=structuredClone(rec[k]);a.hp=a.maxHP;a.mp=a.maxMP;a.kind=id==='thea'?'cavalry':'soldier';}
+   const rec=c.departed?.[id]||recruitRecord(id,13),keep=['level','maxHP','maxMP','atk','def','mag','res','spd','mov','range','movementProfile','classTier','stats','cls','healPow','critBase'];for(const k of keep)if(rec[k]!==undefined)a[k]=structuredClone(rec[k]);a.noScale=true; /* v2.0.0: a named hero keeps the record, not the sortie scale */a.hp=a.maxHP;a.mp=a.maxMP;a.kind=id==='thea'?'cavalry':'soldier';}
   for(const h of heralds22(s))h.noRescue=true;bannerLooks22(s);},
  clearLabel:'하층가 광장의 세 낭독',
  validState(m){return !!m&&typeof m==='object'&&Array.isArray(m.waves)&&m.waves.every(n=>Number.isInteger(n)&&n>0)&&!!FACTIONS[m.banner]

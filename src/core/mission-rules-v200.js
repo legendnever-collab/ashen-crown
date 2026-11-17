@@ -26,7 +26,7 @@ const M1V={
   if(s.turn>missionOf(s).turnLimit)return finish(s,'defeat',`제한 ${missionOf(s).turnLimit}턴 안에 구출과 격파를 마치지 못했습니다.`);},
  beforeCommit(){},afterVictory(){}
 };
-// M02 추격 → : the runner makes for the east edge along the road
+// M02 추격 → : the runner makes for the east edge along the road (after ransacking the cart: TURN 4 or a hero within 4)
 const M2V={
  init(s){s.missionState={waves:[]};},
  clearLabel:'숲길 추격',
@@ -34,7 +34,10 @@ const M2V={
  status(s){const b=findUnit(s,'boss');return `도주 대장 ${b?.rescued?'생포':b&&alive(b)?`출구까지 ${Math.max(0,missionOf(s).escapeX-b.x)}칸`:'격파'} · ${left(s)}턴 남음`;},
  optional(s){return s.campaign.flags.mission_02_prisoner_captured?'포로 확보':'추격';},
  onTurnStart(){},beforeEnemyPhase(){},
- planEnemy(s,u,reachable){if(u.id!=='boss')return null;const X=missionOf(s).escapeX;let best=null;for(const [p,c] of reachable){const [x,y]=p.split(',').map(Number);if(at(s,x,y)&&!(x===u.x&&y===u.y))continue;const road=terrainAt(x,y,s)?.name==='Road'?.5:0,sc=x+road-c*.01;if(!best||sc>best.sc)best={x,y,sc};}return best?{x:best.x,y:best.y,target:null,reason:'동쪽 출구로 도주'}:{x:u.x,y:u.y,target:null,reason:'포위됨'};},
+ planEnemy(s,u,reachable){if(u.id!=='boss')return null;const X=missionOf(s).escapeX;
+  // he ransacks the supply cart until a hero comes within four tiles or TURN 4, then runs
+  if(!u.spooked){if(s.turn>=4||s.units.some(h=>h.team==='ally'&&!h.benched&&alive(h)&&distance(h,u)<=4))u.spooked=true;else return {x:u.x,y:u.y,target:null,reason:'보급 수레를 뒤지는 중'};}
+  let best=null;for(const [p,c] of reachable){const [x,y]=p.split(',').map(Number);if(at(s,x,y)&&!(x===u.x&&y===u.y))continue;const road=terrainAt(x,y,s)?.name==='Road'?.5:0,sc=x+road-c*.01;if(!best||sc>best.sc)best={x,y,sc};}return best?{x:best.x,y:best.y,target:null,reason:'동쪽 출구로 도주'}:{x:u.x,y:u.y,target:null,reason:'포위됨'};},
  checkOutcome(s,finish){const boss=findUnit(s,'boss');if(!boss)return;if(boss.rescued||boss.hp<=0||boss.x>=missionOf(s).escapeX||s.turn>missionOf(s).turnLimit||s.units.filter(u=>u.team==='enemy').every(u=>!alive(u)))finish(s,'victory',boss.rescued?'포로와 보급로 진술 확보.':'추격 종료. 상자의 흔적은 남았지만 진술은 얻지 못했습니다.');},
  beforeCommit(){},afterVictory(){}
 };

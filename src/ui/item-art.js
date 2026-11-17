@@ -74,4 +74,6 @@ const PAINTED_ITEMS=typeof ASHEN_ITEMS!=='undefined'?ASHEN_ITEMS:{};
 export const paintedItem=type=>!!PAINTED_ITEMS[type];
 // Skills (sheets F–G), statuses and commands (sheet E) have no temporary SVG: without the pack nothing is drawn.
 export const paintedIcon=(id,size=24,cls='')=>PAINTED_ITEMS[id]?`<img class="item-icon painted ${cls}" src="${PAINTED_ITEMS[id]}" width="${size}" height="${size}" alt="" aria-hidden="true" decoding="async">`:'';
-export function itemIcon(type,size=32){if(PAINTED_ITEMS[type])return `<img class="item-icon painted" src="${PAINTED_ITEMS[type]}" width="${size}" height="${size}" alt="" aria-hidden="true" decoding="async">`;return `<svg class="item-icon" viewBox="0 0 32 32" width="${size}" height="${size}" shape-rendering="crispEdges" aria-hidden="true">${ART[type]||ART.potion}</svg>`;}
+// v2.0.0 (D-094 art rule): the officers' class skills show the painted disk of the hero skill they share a form with.
+export const SKILL_ICON_ALIAS={braceStance:'riposte',aimedShotNoa:'aimedShot',shieldOath:'sanctuaryOath',chargeRowell:'charge'};
+export function itemIcon(type,size=32){type=SKILL_ICON_ALIAS[type]||type;if(PAINTED_ITEMS[type])return `<img class="item-icon painted" src="${PAINTED_ITEMS[type]}" width="${size}" height="${size}" alt="" aria-hidden="true" decoding="async">`;return `<svg class="item-icon" viewBox="0 0 32 32" width="${size}" height="${size}" shape-rendering="crispEdges" aria-hidden="true">${ART[type]||ART.potion}</svg>`;}

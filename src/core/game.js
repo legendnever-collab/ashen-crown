@@ -2,7 +2,7 @@ import {applyTerrainRecovery,recoveryValue} from './terrain-recovery.js';
 import {ensureEconomy,commitEconomyReward,effectiveStats,equipmentBonus} from './economy.js';
 import {VERSION,SCHEMA,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,DEPLOYMENTS,BALANCE,partyHeroes,partyIds} from '../data/game-data.js';
 import {tallyKill,tallyRescue,tallyHeal,commitRecords} from './records.js';
-import {skillOf,ensureStats,deriveUnit,planLevels,scaleTroop,DIFFICULTY,difficultyOf,classKeyOf,isBossRank} from './stats8.js';
+import {skillOf,ensureStats,deriveUnit,planLevels,scaleTroop,DIFFICULTY,difficultyOf,classKeyOf,isBossRank,OFFICER_IDS} from './stats8.js';
 import {TIER_ATTACK} from '../data/classes8.js';
 import {flank,challengeChance,terrainCost as terrainCostOf,distance,healAmount,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,forecast,strikeStats,guardFor,roll,awardXP,discover,terrainAt,counterBlocked,hostile,chargeBreaks,riposteBonus,sideOf,weatherOf,inWard,blockadeHolds} from './rules.js';
 import {MISSIONS,missionOf,LAST_MISSION} from '../data/missions.js';
@@ -34,7 +34,7 @@ export const alliedUnit=a=>({...structuredClone(a),team:'allied',maxHP:a.hp,mp:0
 // Sortie size per mission (D-055 Q2: six from M07; M01–M06 field the five). Recruits beyond the limit start in reserve,
 // and any hero without an authored spot takes the first free tile of the deployment zone.
 export const deployLimit=s=>missionOf(s).deployLimit??5;
-function placeParty(s){const heroes=s.units.filter(u=>u.team==='ally');let out=heroes.length;for(const u of [...heroes].reverse()){if(out<=deployLimit(s))break;if(SORTIE_LOCKED.includes(u.id))continue;u.benched=true;out--;}
+function placeParty(s){const heroes=s.units.filter(u=>u.team==='ally');let out=heroes.length;for(const u of [...heroes].reverse().sort((a,b)=>OFFICER_IDS.includes(b.id)-OFFICER_IDS.includes(a.id))){if(out<=deployLimit(s))break; /* v2.0.0: officers wait on the bench before any named hero */if(SORTIE_LOCKED.includes(u.id))continue;u.benched=true;out--;}
  for(const u of heroes){if(u.x>=0&&u.y>=0)continue;const free=[...deployZoneOf(s)].map(k=>k.split(',').map(Number)).find(([x,y])=>!at(s,x,y)&&Number.isFinite(terrainAt(x,y,s)?.cost)&&!s.units.some(o=>o!==u&&o.x===x&&o.y===y));if(free)[u.x,u.y]=free;else{u.benched=true;[u.x,u.y]=[0,0];}}}
 export function setDeployment(s,id,x,y){const zone=missionOf(s).deployZone?.(s);if(s.screen!=='deployment'||(zone?!zone.has(`${x},${y}`):(y<7||y>9||x<1||x>10))||!Number.isFinite(terrainAt(x,y,s)?.cost))return false;const u=findUnit(s,id);if(!u||u.team!=='ally')return false;const other=at(s,x,y);if(other&&other.team!=='ally')return false;if(other){other.x=u.x;other.y=u.y;}u.x=x;u.y=y;return true;}
 export function presetDeployment(s,name){if(s.screen!=='deployment')return;const spots=(missionOf(s).deployments||DEPLOYMENTS)[name];partyIds(s.campaign).forEach((id,i)=>{const u=findUnit(s,id);if(u&&spots[i])[u.x,u.y]=spots[i];});}
@@ -69,7 +69,7 @@ function damage(s,u,t,mode,counter=false,opts=null){
  if(opts){if(opts.scale&&opts.scale!==1)stats.damage=Math.max(1,Math.round(stats.damage*opts.scale));if(opts.bonus)stats.damage+=opts.bonus;}const hit=roll(s)*100<stats.hit,critical=roll(s)*100<stats.crit;
  // v0.9.2 M20: a grey cloak in the shadows slips the first blow (strikeStats shows 0%), then stands in the open.
  if(victim.shade){delete victim.shade;s.feedback.push({type:'miss',id:victim.id,text:'그림자'});s.log.push(`${u.name} → ${victim.name}: 그림자 속으로 피했습니다. 이제 모습이 드러납니다.`);return {hit:false,damage:0,victim};}
- if(!hit){s.feedback.push({type:'miss',id:victim.id,text:'MISS'});s.log.push(`${u.name} → ${victim.name}: MISS (${stats.hit}%).`);return {hit:false,damage:0,victim};}
+ if(!hit){s.feedback.push({type:'miss',id:victim.id,text:'MISS'});s.log.push(`${counter?'반격 · ':''}${u.name} → ${victim.name}: MISS (${stats.hit}%).`);return {hit:false,damage:0,victim};}
  let dealt=stats.damage+(critical?Math.ceil(stats.damage*.5):0);if(critical&&!counter)cutIn(s,u,'crit');
  // v0.10.0 Gate of the Sanctum (Ines' ④): until the next player turn the legion, civilians and allies she covered take half.
  if(victim.gateGuard===s.turn&&sideOf(victim)!=='enemy'&&dealt>1)dealt=Math.ceil(dealt/2);

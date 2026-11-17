@@ -44,9 +44,9 @@ test('guards turn in their order each enemy phase while quiet and hold their pla
  assert.equal(s.missionState.alert,0);
 });
 
-test('sneak: a quiet guard struck from outside its watch takes +5 and is hit +30; one blow is silent, a surviving guard rings the bell',()=>{
+test('sneak: a quiet guard struck from outside its watch takes ×1.3 and is hit +30; one blow is silent, a surviving guard rings the bell',()=>{
  let s=battle();park(s);const g=findUnit(s,'g1'),kai=findUnit(s,'kai');kai.x=9;kai.y=9;g.facing='left';assert.ok(surprised(s,kai,g));
- const quiet=strikeStats(s,kai,g);g.facing='right';assert.ok(!surprised(s,kai,g));const seen=strikeStats(s,kai,g);assert.equal(quiet.damage-seen.damage,5);assert.ok(quiet.hit>=Math.min(100,seen.hit+30)||quiet.hit===100);
+ const quiet=strikeStats(s,kai,g);g.facing='right';assert.ok(!surprised(s,kai,g));const seen=strikeStats(s,kai,g);assert.ok(Math.abs(quiet.damage-Math.round(seen.damage*1.3))<=1,`${quiet.damage} ≈ ${seen.damage}×1.3 (v2.0.0)`);assert.ok(quiet.hit>=Math.min(100,seen.hit+30)||quiet.hit===100);
  g.facing='left';g.hp=1;assert.ok(performAction(s,'kai','attack','g1').ok);drain(s);assert.ok(!alive(g));assert.equal(s.missionState.alert,0,'silent');
  s=battle();park(s);const h=findUnit(s,'g1'),k2=findUnit(s,'kai');k2.x=9;k2.y=9;h.facing='left';h.hp=h.maxHP;k2.atk=10;assert.ok(performAction(s,'kai','attack','g1').ok);drain(s);assert.ok(alive(h));assert.equal(s.missionState.alert,2,'noise rings the bell');
 });

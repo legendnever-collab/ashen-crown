@@ -3,7 +3,7 @@
 // each of them; every count drops at the end of the unit's side phase (player phase for the legion's heroes, enemy
 // phase for enemies and allied troops). Bosses and commanders: half the chance, one phase at most.
 import {alive,roll} from './rules.js';
-import {equipmentBonus} from './economy.js';
+import {equipmentBonus,effectiveStats} from './economy.js';
 import {curseChance} from './stats8.js';
 export const STATUS=['poison','confuse','bind','silence'];
 export const STATUS_KO={poison:'독',confuse:'혼란',bind:'속박',silence:'침묵'};
@@ -12,7 +12,7 @@ export const isCommander=u=>!!u&&(u.id==='boss'||u.id==='boss2'||['captain','lio
 export const hasStatus=(u,k)=>!!u?.status?.[k];
 export const immune=(s,u)=>u?.immuneUntil!=null&&s.turn<=u.immuneUntil;
 // Chance in percent that a status lands on this target (0 when immune).
-export function statusChance(s,t,k,base,caster=null){if(!t||!alive(t)||t.team==='object'||t.team==='civilian'||immune(s,t))return 0;let c=curseChance(base,caster,t); // v2.0.0 (§3.4): 50% + (의지 차)·2 around the base
+export function statusChance(s,t,k,base,caster=null){if(!t||!alive(t)||t.team==='object'||t.team==='civilian'||immune(s,t))return 0;let c=curseChance(base,caster&&s?.economy&&caster.team==='ally'?effectiveStats(s,caster):caster,t.team==='ally'&&s?.economy?effectiveStats(s,t):t); /* treasures' 의지 counts on both sides */ // v2.0.0 (§3.4): 50% + (의지 차)·2 around the base
  // v0.8.1 gear: the Charm of Clarity (all), the Chrism Charm (poison) and the Pilgrim Mantle (−25%).
  const g=t.team==='ally'&&s?.economy?equipmentBonus(s.economy,t.id):null;if(g?.clear||k==='poison'&&g?.poisonImmune)return 0;if(g?.resist)c=Math.round(c*(1-g.resist/100));if(isCommander(t))c=Math.floor(c/2);if(t.statusResist)c=Math.round(c*(1-t.statusResist));return Math.max(0,Math.min(100,c));}
 // Rolls and applies; returns true when it landed. `turns` defaults to the status length.

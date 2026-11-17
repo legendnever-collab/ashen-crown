@@ -2,7 +2,7 @@
 // (tests/fixtures/v091/make-v091-fixtures.mjs, worktree of the v0.9.1 merge 184536a). Schema 13 imports into schema 14 with
 // nothing changed; the forest village after M18 (the end of v0.9.1) continues to M19 in the capital's lower city with
 // 「한 사람도 두고 가지 않는다」, Lia's awakening waits for M19, and the mid-M18 battle resumes and is won under v0.9.2 rules.
-import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
+import test from 'node:test';import {econV200,keptV200,reopensInCamp} from './v200-compat.mjs';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {SCHEMA,VERSION} from '../src/data/game-data.js';
 import {nextMission,deployLimit} from '../src/core/game.js';
@@ -18,9 +18,9 @@ test('fixtures are genuine v0.9.1 schema-13 saves after ACT III part 2',()=>{for
  assert.ok(raw('m18-camp').campaign.completed.includes(18));assert.equal(raw('m18-camp').campaign.choices.m18_truth,'tell');assert.equal(raw('m18-camp').frontier.hub,'forest');});
 
 test('the v0.9.1 forest village loads as schema 14 with every asset kept',()=>{
- const before=raw('m18-camp'),s=load('m18-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,19);assert.equal(s.version,VERSION);assert.equal(VERSION,'1.0.0');assert.equal(s.frontier.hub,'forest');
- for(const k of ['completed','flags','choices','promotions','factionTrust','trustLog','roster','feats','departed','economy','heroes','bonds','tacticalMemory'])assert.deepEqual(s.campaign[k],before.campaign[k],k);
- assert.deepEqual(s.economy,before.economy);const back=deserialize(serialize(s));assert.deepEqual(back.campaign.economy,before.campaign.economy);
+ const before=raw('m18-camp'),s=load('m18-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,20);assert.equal(s.version,VERSION);assert.equal(VERSION,'2.0.0');assert.equal(s.frontier.hub,'forest');
+ for(const k of ['completed','flags','choices','promotions','factionTrust','trustLog','roster','feats','departed','economy','heroes','bonds','tacticalMemory'])keptV200(s.campaign,before.campaign,k);
+ assert.deepEqual(econV200(s.economy),econV200(before.economy));const back=deserialize(serialize(s));assert.deepEqual(econV200(back.campaign.economy),econV200(before.campaign.economy));
 });
 
 test('ACT III goes on from the forest: M19 in the lower city, seven heroes, three orders with 「한 사람도 두고 가지 않는다」 first',()=>{
@@ -30,7 +30,6 @@ test('ACT III goes on from the forest: M19 in the lower city, seven heroes, thre
  const lia=promotionStatus(s,'lia');if(lia.next?.tier===3)assert.ok(!lia.eligible,'Lia waits for M19');
 });
 
-test('the v0.9.1 mid-M18 battle resumes unchanged and is won under v0.9.2 rules',()=>{
- const before=raw('m18-battle'),s=load('m18-battle');assert.equal(s.missionId,18);assert.equal(s.screen,'battle');assert.deepEqual(s.units.map(u=>[u.id,u.x,u.y,u.hp]),before.units.map(u=>[u.id,u.x,u.y,u.hp]));
- drain(s);playCampaignBattle(s);assert.equal(s.outcome,'victory',s.reason);
+test('the v0.9.1 mid-M18 battle reopens in camp (v2.0.0) and is won again',()=>{
+ const before=raw('m18-battle'),s=reopensInCamp(load('m18-battle'),raw('m18-battle'),18);
 });

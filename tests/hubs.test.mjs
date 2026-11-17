@@ -1,6 +1,6 @@
 // v0.5.0 painted interlude hubs (D-052): story-moment → hub table, authored walk masks, services
 // in every hub, unchanged chest/door counts, staged scenes, and v0.4.0 saves re-anchored on load.
-import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
+import test from 'node:test';import {econV200,keptV200} from './v200-compat.mjs';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {HUBS,INTERIORS} from '../src/data/frontier-data.js';
 import {ART_HUBS,hubFor,stageHubFor} from '../src/data/hubs-v05.js';
 import {STORY} from '../src/data/story.js';
@@ -58,7 +58,7 @@ test('staged scenes use the hub of their moment',()=>{
 test('v0.4.0 ACT I complete save (Border Camp) loads into the oath camp, valid and walkable',()=>{
  const f=JSON.parse(fs.readFileSync(new URL('./fixtures/v040/v040-act1-complete.json',import.meta.url),'utf8')),before=JSON.parse(JSON.parse(f.save).data);
  assert.equal(before.frontier.hub,'camp');const s=deserialize(f.save);assert.equal(s.frontier.hub,'oathcamp');assert.ok(walkable(s,s.frontier.x,s.frontier.y));
- assert.deepEqual(s.campaign.economy,arms081View(before.campaign.economy));{const sq=HUBS.oathcamp.places.find(p=>p.id==='square');assert.ok(frontierPath(s,sq.x,sq.y));}
+ assert.deepEqual(econV200(s.campaign.economy),econV200(arms081View(before.campaign.economy)));{const sq=HUBS.oathcamp.places.find(p=>p.id==='square');assert.ok(frontierPath(s,sq.x,sq.y));}
  const again=deserialize(serialize(s));assert.equal(again.frontier.hub,'oathcamp');
 });
 

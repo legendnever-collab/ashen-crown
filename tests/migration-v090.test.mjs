@@ -2,7 +2,7 @@
 // (tests/fixtures/v090/make-v090-fixtures.mjs, worktree of the v0.9.0 merge 45d5c0a). Schema 12 imports into schema 13 with
 // nothing changed; the field camp after M16 (the end of v0.9.0) continues to M17 at the guardians' keep with both of Aren's
 // commands, Elina's awakening trial opens there, and the mid-M16 battle resumes and is won under v0.9.1 rules.
-import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
+import test from 'node:test';import {econV200,keptV200,reopensInCamp} from './v200-compat.mjs';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {SCHEMA,VERSION} from '../src/data/game-data.js';
 import {nextMission,deployLimit} from '../src/core/game.js';
@@ -18,9 +18,9 @@ test('fixtures are genuine v0.9.0 schema-12 saves after ACT III part 1',()=>{for
  assert.ok(raw('m16-camp').campaign.completed.includes(16));assert.equal(raw('m16-camp').campaign.choices.m16_stones,'break');assert.equal(raw('m16-camp').frontier.hub,'fieldcamp');});
 
 test('the v0.9.0 field camp loads as schema 13 with every asset kept',()=>{
- const before=raw('m16-camp'),s=load('m16-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,19);assert.equal(s.version,VERSION);assert.equal(s.frontier.hub,'fieldcamp');
- for(const k of ['completed','flags','choices','promotions','factionTrust','trustLog','roster','feats','departed','economy','heroes','bonds','tacticalMemory'])assert.deepEqual(s.campaign[k],before.campaign[k],k);
- assert.deepEqual(s.economy,before.economy);const back=deserialize(serialize(s));assert.deepEqual(back.campaign.economy,before.campaign.economy);
+ const before=raw('m16-camp'),s=load('m16-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,20);assert.equal(s.version,VERSION);assert.equal(s.frontier.hub,'fieldcamp');
+ for(const k of ['completed','flags','choices','promotions','factionTrust','trustLog','roster','feats','departed','economy','heroes','bonds','tacticalMemory'])keptV200(s.campaign,before.campaign,k);
+ assert.deepEqual(econV200(s.economy),econV200(before.economy));const back=deserialize(serialize(s));assert.deepEqual(econV200(back.campaign.economy),econV200(before.campaign.economy));
 });
 
 test('ACT III goes on from the field camp: M17 at the guardians\' keep, seven heroes, 「지켜라」 and 「나아가라」',()=>{
@@ -30,7 +30,6 @@ test('ACT III goes on from the field camp: M17 at the guardians\' keep, seven he
  const el=s.campaign.heroes.find(h=>h.id==='elina');const st=promotionStatus(s,'elina');assert.equal(st.next?.tier??(el.classTier||1)+1,(el.classTier||1)+1,'Elina\'s next step is read from her own tier');
 });
 
-test('the v0.9.0 mid-M16 battle resumes unchanged and is won under v0.9.1 rules',()=>{
- const before=raw('m16-battle'),s=load('m16-battle');assert.equal(s.missionId,16);assert.equal(s.screen,'battle');assert.deepEqual(s.units.map(u=>[u.id,u.x,u.y,u.hp]),before.units.map(u=>[u.id,u.x,u.y,u.hp]));
- drain(s);playCampaignBattle(s);assert.equal(s.outcome,'victory',s.reason);
+test('the v0.9.0 mid-M16 battle reopens in camp (v2.0.0) and is won again',()=>{
+ const before=raw('m16-battle'),s=reopensInCamp(load('m16-battle'),raw('m16-battle'),16);
 });
