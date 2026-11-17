@@ -4967,14 +4967,19 @@ function derivedGrowth(cls){const c=CLASSES8[cls]||CLASSES8.infantry,g=c.growth;
 // stays as weak next to the line troops as it was authored, at any level.
 function refAt(cls,L){const c=CLASSES8[cls]||CLASSES8.infantry,st={};for(const k of STAT_KEYS)st[k]=(c.main.includes(k)?8:5)+c.growth[k]*(Math.max(1,L)-1);return derivedFrom(CLASSES8[cls]?cls:'infantry',st,L);}
 const isBossRank=u=>!!u&&(u.id==='boss'||u.id==='boss2'||['captain','lion'].includes(u.kind)||!!u.leader||!!u.commander||!!u.boss);
-const DIFFICULTY={normal:{ko:'보통',levels:0,mul:1,potions:2,waves:1},hard:{ko:'어려움',levels:2,mul:1.15,potions:1,waves:1.25}};
+const DIFFICULTY={normal:{ko:'보통',levels:0,mul:1,potions:2,waves:1},hard:{ko:'어려움',levels:1,mul:1.1,potions:1,waves:1.25}};
 const difficultyOf=s=>DIFFICULTY[s?.campaign?.difficulty]?s.campaign.difficulty:'normal';
+// 어려움 grows in with the legion (D-116): through ACT I it is 보통's numbers with the sharper AI, bigger waves and one potion
+// (the stat push walled M03–M05 for the test player); its extra level and ×1.1 stats start from a Lv 11 sortie (ACT II) and
+// are full from Lv 19 (the designed +2 / ×1.15 left the M15 chase at 2 of 20).
+const HARD_FROM=11,HARD_FULL_AT=19;
+function difficultyPush(s){const d=DIFFICULTY[difficultyOf(s)];if(!d.levels&&d.mul===1)return {levels:0,mul:1};const avg=s?.levelPlan?.avg??sortieAverage(s)??1,h=Math.max(0,Math.min(1,(avg-HARD_FROM)/(HARD_FULL_AT-HARD_FROM)));return {levels:Math.round(d.levels*h),mul:1+(d.mul-1)*h};}
 // The sortie's average level (deployed heroes and officers).
 function sortieAverage(s){const out=(s.units||[]).filter(u=>u.team==='ally'&&!u.benched&&u.hp>0);if(!out.length)return null;return out.reduce((a,u)=>a+(u.level||1),0)/out.length;}
 const authoredLevel=(s,m)=>m?.level||Math.max(1,s?.missionId||1);
 // The level an enemy fights at: sortie average + rank offset + mission offset + difficulty, never below the authored level − 2.
 function enemyLevel(s,u,m){const auth=u.base?.level??authoredLevel(s,m),avg=s.levelPlan?.avg??sortieAverage(s)??auth;
- const rank=u.team==='allied'?0:isBossRank(u)?3:u.elite?2:0,off=u.team==='allied'?0:(m?.levelOffset??0),pct=u.team==='allied'?0:(m?.levelPct??0),diff=u.team==='allied'?0:DIFFICULTY[difficultyOf(s)].levels;
+ const rank=u.team==='allied'?0:isBossRank(u)?3:u.elite?2:0,off=u.team==='allied'?0:(m?.levelOffset??0),pct=u.team==='allied'?0:(m?.levelPct??0),diff=u.team==='allied'?0:difficultyPush(s).levels;
  // the mission's offset is a share of the average (levelPct), so it weighs the same on a young legion and a seasoned one
  return Math.max(auth-2+diff,Math.round(avg*(1+pct))+rank+off+diff);}
 // Snapshot the authored numbers once, then (re)scale from them. Idempotent: always computed from u.base.
@@ -4982,7 +4987,7 @@ function scaleTroop(s,u,m){if(!u||!['enemy','allied'].includes(u.team)||u.noScal
  // a promotion or awakening trial is a set piece: its troops keep the authored numbers (only the attack tier is capped)
  if(m?.skirmish?.kind==='trial'){const L=u.level??authoredLevel(s,m),lv=L>=16?3:L>=8?2:1;u.troopTier=Math.min(lv,Math.min(3,(s.levelPlan?.tier||3)+(isBossRank(u)||u.elite?1:0)));return u;}
  if(!u.base)u.base={level:u.level??authoredLevel(s,m),maxHP:u.maxHP??u.hp,atk:u.atk||0,mag:u.mag||0,def:u.def||0,res:u.res||0,spd:u.spd||0};
- const b=u.base,L=enemyLevel(s,u,m),dl=L-b.level,g=derivedGrowth(classKeyOf(u)),mul=u.team==='allied'?1:DIFFICULTY[difficultyOf(s)].mul,r0=refAt(classKeyOf(u),b.level),r1=refAt(classKeyOf(u),L),f=(v,k)=>v>0?Math.max(1,Math.round(v*(r1[k]/Math.max(1,r0[k]))*mul)):v;
+ const b=u.base,L=enemyLevel(s,u,m),dl=L-b.level,g=derivedGrowth(classKeyOf(u)),mul=u.team==='allied'?1:difficultyPush(s).mul,r0=refAt(classKeyOf(u),b.level),r1=refAt(classKeyOf(u),L),f=(v,k)=>v>0?Math.max(1,Math.round(v*(r1[k]/Math.max(1,r0[k]))*mul)):v;
  const lost=(u.maxHP??b.maxHP)-(u.hp??b.maxHP);u.level=L;u.maxHP=f(b.maxHP,'maxHP');u.hp=Math.max(1,u.maxHP-Math.max(0,lost));u.atk=f(b.atk,'atk');u.mag=f(b.mag,'mag');u.def=f(b.def,'def');u.res=f(b.res,'res');u.spd=Math.max(1,Math.round(b.spd+g.spd*dl));
  // stats for curses, luck and duels, read back from the derived numbers
  const c=CLASSES8[classKeyOf(u)]||CLASSES8.infantry;u.stats={str:round1(Math.max(1,(u.atk-c.base.wpn)/1.5)),int:round1(Math.max(1,(u.mag-c.base.foc)/1.5)),wil:round1(Math.max(1,(u.res-c.base.ward)/.8)),con:round1(Math.max(1,(u.def-c.base.arm)/.7)),agi:u.spd,luk:round1(3+.4*L)};
@@ -7587,6 +7592,8 @@ function searchEvidence(s,u,t){
 }
 const missionUnitIds=m=>[...m.enemies,...m.reinforcements,...m.civilians,...(m.objects||[]),...(m.waves||[]).flatMap(w=>w.units)].map(u=>u.id);
 // v0.6: room for ACT II recruits (up to eight heroes from v0.7, nine with Baldrick from v0.10.1) and allied troops.
+// v2.0.0 (D-116): the soldiers 어려움 adds to a wave are copies named `<id>h<n>` (n below the wave's size); saves know them.
+const hardWaveIds=m=>(m.waves||[]).flatMap(w=>w.units.flatMap(u=>w.units.map((_,n)=>`${u.id}h${n}`)));
 const maxUnits=m=>13+missionUnitIds(m).length+Math.ceil(missionUnitIds(m).length*.25)+(m.allies||[]).length; /* v2.0.0: nine heroes + four officers; 어려움 adds a quarter to the waves */
 
 // src/core/status.js
@@ -9435,7 +9442,7 @@ function validate(s){
  // v0.7.1 (D-071): a recruit who left after M14 is kept aside until ACT III, never also in the roster.
  if(s.campaign.departed!=null&&(typeof s.campaign.departed!=='object'||Array.isArray(s.campaign.departed)||Object.keys(s.campaign.departed).some(id=>!RECRUIT_HEROES.some(h=>h.id===id)||s.campaign.roster?.includes(id)||s.campaign.departed[id]?.id!==id)))throw Error('군단 이탈 기록이 손상되었습니다.');
  if(!validTrust(s.campaign))throw Error('세력 신뢰 기록이 손상되었습니다.');
- const known=new Set([...party,...missionUnitIds(mission),...allies.map(a=>a.id)]),ids=new Set(),occupied=new Set();
+ const known=new Set([...party,...missionUnitIds(mission),...hardWaveIds(mission),...allies.map(a=>a.id)]),ids=new Set(),occupied=new Set();
  for(const u of s.units){if(!known.has(u.id)||ids.has(u.id)||!['ally','allied','enemy','civilian','object'].includes(u.team))throw Error('장수 목록이 손상되었습니다.');ids.add(u.id);
   const expected=party.includes(u.id)?'ally':allies.some(a=>a.id===u.id)?(u.betrayed&&s.missionState?.betrayer===u.faction||s.missionId===25&&Array.isArray(s.missionState?.neutral)&&s.missionState.neutral.includes(u.id)?'enemy':'allied'):mission.civilians.some(c=>c.id===u.id)?(u.turned?'enemy':'civilian'):(mission.objects||[]).some(o=>o.id===u.id)?(u.woke==='ally'?'allied':u.woke==='enemy'?'enemy':'object'):u.faction&&u.faction===s.campaign?.choices?.m10_stance?'allied':'enemy';if(u.team!==expected||typeof u.name!=='string'||u.name.length>120||!Array.isArray(u.range)||u.range.length!==2||u.range.some(n=>!Number.isInteger(n)||n<0||n>12)||u.range[0]>u.range[1])throw Error('유닛 분류 또는 사거리가 손상되었습니다.');
   for(const k of ['hp','maxHP','mp','maxMP','atk','def','mag','res','spd','mov','x','y'])if(!Number.isFinite(u[k])||u[k]<0||!Number.isInteger(u[k]))throw Error('유닛 수치가 올바르지 않습니다.');
@@ -10842,9 +10849,9 @@ function showConfession28(){if(!needsConfession28())return;
  frontierButton('confession28-pick','<b>군단 모두에게 말한다</b> — 모두가 그 밤의 무게를 함께 안다','all',false,'primary')+frontierButton('confession28-pick','<b>에릭에게만 말한다</b> — 아렌이 스스로 말할 때를 기다린다','eric',false,'primary')+'<button data-do="close-modal">조금 더 생각한다</button>');}
 // v1.0.0 (D-113): Bellard's fate after M29 — the offer only when Aren spoke his last words to him (Bellard asks it himself).
 function needsFate29(){return state.missionId===29&&!state.practice&&state.frontier?.phase==='aftermath'&&state.campaign.completed.includes(29)&&!state.campaign.choices?.m29_bellard;}
-// v2.0.0 난이도 (REFORM_DESIGN §6.2, D-115): 보통 is the new, harder baseline; 어려움 adds two levels, ×1.15 stats, a quarter more in waves, one potion.
+// v2.0.0 난이도 (REFORM_DESIGN §6.2, D-115): 보통 is the new, harder baseline; 어려움: a quarter more in waves, one potion, the sharper AI everywhere; from ACT II (a Lv 11+ sortie, full at Lv 19) +1 level and ×1.1 stats (D-116).
 function showDifficulty(first){const cur=difficultyOf(state);modal('난이도',`<p>${first?'캠페인을 시작하기 전에 난이도를 고르세요. 진영의 ☰ 메뉴에서 언제든 바꿀 수 있고, 바꾼 뒤의 전투부터 적용됩니다.':'바꾼 뒤의 전투부터 적용됩니다.'}</p><p class="muted">적 레벨은 출전 장수의 평균 레벨에 맞춰 정해집니다(잡병 ±0, 지휘관 +3).</p>`,
- frontierButton('difficulty-pick',`<b>보통</b> — 적 레벨 = 출전 평균 + 미션 보정 · 회복약 2개${cur==='normal'&&!first?' <small>(지금)</small>':''}`,'normal',false,'primary')+frontierButton('difficulty-pick',`<b>어려움</b> — 적 레벨 +2 · 적 능력치 ×1.15 · 증원 +25% · 회복약 1개${cur==='hard'&&!first?' <small>(지금)</small>':''}`,'hard',false,'primary'));}
+ frontierButton('difficulty-pick',`<b>보통</b> — 적 레벨 = 출전 평균 + 미션 보정 · 회복약 2개${cur==='normal'&&!first?' <small>(지금)</small>':''}`,'normal',false,'primary')+frontierButton('difficulty-pick',`<b>어려움</b> — 증원 +25% · 회복약 1개 · 더 집요한 적 · ACT II부터 적 레벨 +1 · 능력치 ×1.1${cur==='hard'&&!first?' <small>(지금)</small>':''}`,'hard',false,'primary'));}
 function showFate29(){if(!needsFate29())return;const c=state.campaign,words=fateOpen29(c,'offer');
  modal('벨라드의 처분',`<p>벨라드가 무릎을 꿇었습니다. 그는 봉인 명령을 쓰고, 통제된 전쟁을 계획했습니다. 그러나 그 밤의 책임은 국왕과 그가 함께 졌고, 그는 괴물이 아니라 다른 계산을 한 사람이었습니다. 어떻게 할까요? 고른 뒤에는 바꿀 수 없습니다.</p>${words?'<p class="promo-note">아렌의 마지막 말을 들은 벨라드가 스스로 청합니다 — 자기 기억을 새 결계에 바치겠다고.</p>':'<p class="promo-note">아렌이 그에게 말을 건넸다면, 벨라드가 스스로 다른 길을 청했을지도 모릅니다.</p>'}`,
  frontierButton('fate29-pick','<b>재판에 세운다</b> — 모든 것이 기록된다 <small>(자유 영주 연맹 +1)</small>','trial',false,'primary')+frontierButton('fate29-pick','<b>왕도에서 추방한다</b> — 칼을 거둔 자를 베지 않는다 <small>(철왕관 +1)</small>','exile',false,'primary')+

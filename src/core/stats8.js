@@ -46,14 +46,19 @@ function derivedGrowth(cls){const c=CLASSES8[cls]||CLASSES8.infantry,g=c.growth;
 // stays as weak next to the line troops as it was authored, at any level.
 function refAt(cls,L){const c=CLASSES8[cls]||CLASSES8.infantry,st={};for(const k of STAT_KEYS)st[k]=(c.main.includes(k)?8:5)+c.growth[k]*(Math.max(1,L)-1);return derivedFrom(CLASSES8[cls]?cls:'infantry',st,L);}
 export const isBossRank=u=>!!u&&(u.id==='boss'||u.id==='boss2'||['captain','lion'].includes(u.kind)||!!u.leader||!!u.commander||!!u.boss);
-export const DIFFICULTY={normal:{ko:'보통',levels:0,mul:1,potions:2,waves:1},hard:{ko:'어려움',levels:2,mul:1.15,potions:1,waves:1.25}};
+export const DIFFICULTY={normal:{ko:'보통',levels:0,mul:1,potions:2,waves:1},hard:{ko:'어려움',levels:1,mul:1.1,potions:1,waves:1.25}};
 export const difficultyOf=s=>DIFFICULTY[s?.campaign?.difficulty]?s.campaign.difficulty:'normal';
+// 어려움 grows in with the legion (D-116): through ACT I it is 보통's numbers with the sharper AI, bigger waves and one potion
+// (the stat push walled M03–M05 for the test player); its extra level and ×1.1 stats start from a Lv 11 sortie (ACT II) and
+// are full from Lv 19 (the designed +2 / ×1.15 left the M15 chase at 2 of 20).
+export const HARD_FROM=11,HARD_FULL_AT=19;
+export function difficultyPush(s){const d=DIFFICULTY[difficultyOf(s)];if(!d.levels&&d.mul===1)return {levels:0,mul:1};const avg=s?.levelPlan?.avg??sortieAverage(s)??1,h=Math.max(0,Math.min(1,(avg-HARD_FROM)/(HARD_FULL_AT-HARD_FROM)));return {levels:Math.round(d.levels*h),mul:1+(d.mul-1)*h};}
 // The sortie's average level (deployed heroes and officers).
 export function sortieAverage(s){const out=(s.units||[]).filter(u=>u.team==='ally'&&!u.benched&&u.hp>0);if(!out.length)return null;return out.reduce((a,u)=>a+(u.level||1),0)/out.length;}
 const authoredLevel=(s,m)=>m?.level||Math.max(1,s?.missionId||1);
 // The level an enemy fights at: sortie average + rank offset + mission offset + difficulty, never below the authored level − 2.
 export function enemyLevel(s,u,m){const auth=u.base?.level??authoredLevel(s,m),avg=s.levelPlan?.avg??sortieAverage(s)??auth;
- const rank=u.team==='allied'?0:isBossRank(u)?3:u.elite?2:0,off=u.team==='allied'?0:(m?.levelOffset??0),pct=u.team==='allied'?0:(m?.levelPct??0),diff=u.team==='allied'?0:DIFFICULTY[difficultyOf(s)].levels;
+ const rank=u.team==='allied'?0:isBossRank(u)?3:u.elite?2:0,off=u.team==='allied'?0:(m?.levelOffset??0),pct=u.team==='allied'?0:(m?.levelPct??0),diff=u.team==='allied'?0:difficultyPush(s).levels;
  // the mission's offset is a share of the average (levelPct), so it weighs the same on a young legion and a seasoned one
  return Math.max(auth-2+diff,Math.round(avg*(1+pct))+rank+off+diff);}
 // Snapshot the authored numbers once, then (re)scale from them. Idempotent: always computed from u.base.
@@ -61,7 +66,7 @@ export function scaleTroop(s,u,m){if(!u||!['enemy','allied'].includes(u.team)||u
  // a promotion or awakening trial is a set piece: its troops keep the authored numbers (only the attack tier is capped)
  if(m?.skirmish?.kind==='trial'){const L=u.level??authoredLevel(s,m),lv=L>=16?3:L>=8?2:1;u.troopTier=Math.min(lv,Math.min(3,(s.levelPlan?.tier||3)+(isBossRank(u)||u.elite?1:0)));return u;}
  if(!u.base)u.base={level:u.level??authoredLevel(s,m),maxHP:u.maxHP??u.hp,atk:u.atk||0,mag:u.mag||0,def:u.def||0,res:u.res||0,spd:u.spd||0};
- const b=u.base,L=enemyLevel(s,u,m),dl=L-b.level,g=derivedGrowth(classKeyOf(u)),mul=u.team==='allied'?1:DIFFICULTY[difficultyOf(s)].mul,r0=refAt(classKeyOf(u),b.level),r1=refAt(classKeyOf(u),L),f=(v,k)=>v>0?Math.max(1,Math.round(v*(r1[k]/Math.max(1,r0[k]))*mul)):v;
+ const b=u.base,L=enemyLevel(s,u,m),dl=L-b.level,g=derivedGrowth(classKeyOf(u)),mul=u.team==='allied'?1:difficultyPush(s).mul,r0=refAt(classKeyOf(u),b.level),r1=refAt(classKeyOf(u),L),f=(v,k)=>v>0?Math.max(1,Math.round(v*(r1[k]/Math.max(1,r0[k]))*mul)):v;
  const lost=(u.maxHP??b.maxHP)-(u.hp??b.maxHP);u.level=L;u.maxHP=f(b.maxHP,'maxHP');u.hp=Math.max(1,u.maxHP-Math.max(0,lost));u.atk=f(b.atk,'atk');u.mag=f(b.mag,'mag');u.def=f(b.def,'def');u.res=f(b.res,'res');u.spd=Math.max(1,Math.round(b.spd+g.spd*dl));
  // stats for curses, luck and duels, read back from the derived numbers
  const c=CLASSES8[classKeyOf(u)]||CLASSES8.infantry;u.stats={str:round1(Math.max(1,(u.atk-c.base.wpn)/1.5)),int:round1(Math.max(1,(u.mag-c.base.foc)/1.5)),wil:round1(Math.max(1,(u.res-c.base.ward)/.8)),con:round1(Math.max(1,(u.def-c.base.arm)/.7)),agi:u.spd,luk:round1(3+.4*L)};

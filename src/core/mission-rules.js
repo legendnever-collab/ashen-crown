@@ -235,4 +235,6 @@ export function searchEvidence(s,u,t){
 }
 export const missionUnitIds=m=>[...m.enemies,...m.reinforcements,...m.civilians,...(m.objects||[]),...(m.waves||[]).flatMap(w=>w.units)].map(u=>u.id);
 // v0.6: room for ACT II recruits (up to eight heroes from v0.7, nine with Baldrick from v0.10.1) and allied troops.
+// v2.0.0 (D-116): the soldiers 어려움 adds to a wave are copies named `<id>h<n>` (n below the wave's size); saves know them.
+export const hardWaveIds=m=>(m.waves||[]).flatMap(w=>w.units.flatMap(u=>w.units.map((_,n)=>`${u.id}h${n}`)));
 export const maxUnits=m=>13+missionUnitIds(m).length+Math.ceil(missionUnitIds(m).length*.25)+(m.allies||[]).length; /* v2.0.0: nine heroes + four officers; 어려움 adds a quarter to the waves */

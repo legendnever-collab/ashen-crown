@@ -16,7 +16,7 @@ import {SCHEMA,VERSION,WIDTH,HEIGHT,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,ALL_
 import {validTrust} from '../core/factions.js';
 import {terrainAt,alive} from '../core/rules.js';
 import {MISSIONS,missionOf} from '../data/missions.js';
-import {maxUnits,missionUnitIds,rulesOf} from '../core/mission-rules.js';
+import {maxUnits,missionUnitIds,hardWaveIds,rulesOf} from '../core/mission-rules.js';
 import {STORY} from '../data/story.js';
 import {narrativeState} from '../core/narrative.js';
 import {validStatus} from '../core/status.js';
@@ -34,7 +34,7 @@ export function validate(s){
  // v0.7.1 (D-071): a recruit who left after M14 is kept aside until ACT III, never also in the roster.
  if(s.campaign.departed!=null&&(typeof s.campaign.departed!=='object'||Array.isArray(s.campaign.departed)||Object.keys(s.campaign.departed).some(id=>!RECRUIT_HEROES.some(h=>h.id===id)||s.campaign.roster?.includes(id)||s.campaign.departed[id]?.id!==id)))throw Error('군단 이탈 기록이 손상되었습니다.');
  if(!validTrust(s.campaign))throw Error('세력 신뢰 기록이 손상되었습니다.');
- const known=new Set([...party,...missionUnitIds(mission),...allies.map(a=>a.id)]),ids=new Set(),occupied=new Set();
+ const known=new Set([...party,...missionUnitIds(mission),...hardWaveIds(mission),...allies.map(a=>a.id)]),ids=new Set(),occupied=new Set();
  for(const u of s.units){if(!known.has(u.id)||ids.has(u.id)||!['ally','allied','enemy','civilian','object'].includes(u.team))throw Error('장수 목록이 손상되었습니다.');ids.add(u.id);
   const expected=party.includes(u.id)?'ally':allies.some(a=>a.id===u.id)?(u.betrayed&&s.missionState?.betrayer===u.faction||s.missionId===25&&Array.isArray(s.missionState?.neutral)&&s.missionState.neutral.includes(u.id)?'enemy':'allied'):mission.civilians.some(c=>c.id===u.id)?(u.turned?'enemy':'civilian'):(mission.objects||[]).some(o=>o.id===u.id)?(u.woke==='ally'?'allied':u.woke==='enemy'?'enemy':'object'):u.faction&&u.faction===s.campaign?.choices?.m10_stance?'allied':'enemy';if(u.team!==expected||typeof u.name!=='string'||u.name.length>120||!Array.isArray(u.range)||u.range.length!==2||u.range.some(n=>!Number.isInteger(n)||n<0||n>12)||u.range[0]>u.range[1])throw Error('유닛 분류 또는 사거리가 손상되었습니다.');
   for(const k of ['hp','maxHP','mp','maxMP','atk','def','mag','res','spd','mov','x','y'])if(!Number.isFinite(u[k])||u[k]<0||!Number.isInteger(u[k]))throw Error('유닛 수치가 올바르지 않습니다.');

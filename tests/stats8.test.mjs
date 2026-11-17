@@ -2,7 +2,7 @@
 // enemies at the sortie's level (with the mission's share), proportional troop scaling, the troop tier cap, the ratio
 // formula, curses and the matchup triangle.
 import test from 'node:test';import assert from 'node:assert/strict';
-import {derivedFrom,deriveUnit,statsAt,levelUpStats,promoteStats,growthOf,enemyLevel,scaleTroop,planLevels,ratioDamage,curseChance,matchup8,DIFFICULTY,sortieAverage} from '../src/core/stats8.js';
+import {derivedFrom,deriveUnit,statsAt,levelUpStats,promoteStats,growthOf,enemyLevel,scaleTroop,planLevels,ratioDamage,curseChance,matchup8,DIFFICULTY,sortieAverage,difficultyPush,HARD_FROM,HARD_FULL_AT} from '../src/core/stats8.js';
 import {CLASSES8,STAT_KEYS,TIER_STAT_BONUS,HERO_STATS} from '../src/data/classes8.js';
 
 test('the bases are fitted: today\'s heroes keep their Lv 1 numbers (Erik HP 42 / ATK 15 / DEF 8, Lia MAG 18)',()=>{
@@ -17,12 +17,18 @@ test('growth: one level adds the class growth (heroes ×1.15) and re-derives; pr
  assert.equal(u.atk,derivedFrom('infantry',u.stats,u.level).atk);
  const off={id:'bram'},hero={id:'eric'};assert.ok(growthOf({...off,cls:'infantry'}).str<growthOf({...hero,cls:'infantry'}).str,'an officer grows one grade slower');});
 
-test('enemy level: sortie average + rank (+3 boss, +2 elite) + the mission\'s share; never below the authored level − 2; hard adds 2',()=>{
+test('enemy level: sortie average + rank (+3 boss, +2 elite) + the mission\'s share; never below the authored level − 2; hard adds 1 (from a Lv 19 sortie)',()=>{
  const s={levelPlan:{avg:10},campaign:{}},m={level:8};
  assert.equal(enemyLevel(s,{team:'enemy',base:{level:8}},m),10);assert.equal(enemyLevel(s,{team:'enemy',id:'boss',base:{level:8}},m),13);assert.equal(enemyLevel(s,{team:'enemy',elite:true,base:{level:8}},m),12);
  assert.equal(enemyLevel(s,{team:'enemy',base:{level:8}},{...m,levelPct:.5}),15);assert.equal(enemyLevel({...s,levelPlan:{avg:2}},{team:'enemy',base:{level:8}},m),6,'floor: authored − 2');
- assert.equal(enemyLevel({...s,campaign:{difficulty:'hard'}},{team:'enemy',base:{level:8}},m),12);assert.equal(enemyLevel(s,{team:'allied',base:{level:8}},{...m,levelPct:.5}),10,'allied troops: no share');
- assert.deepEqual([DIFFICULTY.normal.potions,DIFFICULTY.hard.potions,DIFFICULTY.hard.mul],[2,1,1.15]);});
+ assert.equal(enemyLevel({levelPlan:{avg:20},campaign:{difficulty:'hard'}},{team:'enemy',base:{level:8}},m),21);assert.equal(enemyLevel(s,{team:'allied',base:{level:8}},{...m,levelPct:.5}),10,'allied troops: no share');
+ assert.deepEqual([DIFFICULTY.normal.potions,DIFFICULTY.hard.potions,DIFFICULTY.hard.mul,DIFFICULTY.hard.levels],[2,1,1.1,1]);});
+
+test('어려움 grows in with the legion: no stat push through ACT I (below a Lv 11 sortie), full +1 level and ×1.1 from Lv 19; 보통 never pushes',()=>{
+ const at=(avg,difficulty='hard')=>difficultyPush({levelPlan:{avg},campaign:{difficulty}});
+ assert.deepEqual(at(1),{levels:0,mul:1});assert.deepEqual(at(HARD_FROM),{levels:0,mul:1});assert.deepEqual(at(HARD_FULL_AT),{levels:1,mul:1.1});assert.deepEqual(at(20),{levels:1,mul:1.1});
+ const mid=at(15);assert.equal(mid.levels,1);assert.ok(Math.abs(mid.mul-1.05)<1e-9);assert.deepEqual(at(12,'normal'),{levels:0,mul:1});
+ const s={levelPlan:{avg:1.4},campaign:{difficulty:'hard'}};assert.equal(enemyLevel(s,{team:'enemy',base:{level:1}},{level:1}),1,'the first village: no extra levels');});
 
 test('troops scale by their class\'s reference curve: a weak unit stays as weak beside the line, and scaling twice changes nothing',()=>{
  const s={levelPlan:{avg:15,tier:3},campaign:{}},m={level:5},mk=(hp,atk)=>({team:'enemy',kind:'soldier',level:5,hp,maxHP:hp,atk,def:6,res:3,spd:6});

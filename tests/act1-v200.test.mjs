@@ -5,7 +5,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {newGame,setDeployment,presetDeployment,startBattle,moveUnit,undoMove,performAction,beginEnemyPhase,advanceEnemy,planEnemy,checkOutcome} from '../src/core/game.js';
 import {movement,pathTo,findUnit,at,alive,forecast,strikeStats,awardXP,terrainAt,skillCost,terrainCost} from '../src/core/rules.js';
-import {missionOf} from '../src/data/missions.js';
+import {missionOf,MISSIONS} from '../src/data/missions.js';
 import {effectiveStats} from '../src/core/economy.js';
 import {ratioDamage,derivedFrom,classKeyOf} from '../src/core/stats8.js';
 import {SKILL_MUL} from '../src/data/classes8.js';
@@ -91,8 +91,16 @@ test('every ACT I preset tile lies inside its mission\'s deployment zone and on 
  for(const id of [1,2,3,4,5,6]){const s=newGame(1,{heroes:null,results:[],clears:id-1,completed:[1,2,3,4,5,6].slice(0,id-1),flags:{}},id),m=MISSIONS[id],zone=m.deployZone(s);
   for(const [name,preset] of Object.entries(m.deployments)){assert.ok(preset.length>=8,`M${id} ${name} has room for the whole party`);for(const [x,y] of preset){assert.ok(zone.has(`${x},${y}`),`M${id} ${name} ${x},${y}`);assert.ok(Number.isFinite(terrainAt(x,y,s)?.cost),`M${id} ${x},${y} open`);}}}});
 
-test('difficulty: 어려움 carries one potion and stronger troops; a change in camp applies at the next battle start, and both saves validate',()=>{
+test('difficulty: 어려움 carries one potion and bigger waves (ACT I troops at 보통\'s numbers, D-116); a change in camp applies at the next battle start, and both saves validate',()=>{
  const camp=d=>({heroes:null,results:[],clears:0,completed:[],flags:{},difficulty:d});
  const h=newGame(2,camp('hard'),1);h.screen='deployment';startBattle(h);assert.equal(h.potions,1);assert.equal(h.levelPlan.difficulty,'hard');assert.ok(deserialize(serialize(h)));
- const n=newGame(2,camp('normal'),1);n.screen='deployment';startBattle(n);const lv=u=>findUnit(u,'b1').level;assert.equal(lv(h),lv(n)+2);assert.ok(findUnit(h,'b1').atk>findUnit(n,'b1').atk);
+ const n=newGame(2,camp('normal'),1);n.screen='deployment';startBattle(n);const lv=u=>findUnit(u,'b1').level;assert.equal(lv(h),lv(n));assert.equal(findUnit(h,'b1').atk,findUnit(n,'b1').atk);
+ assert.ok(h.units.filter(u=>u.team==='enemy').length>=n.units.filter(u=>u.team==='enemy').length,'never fewer enemies on 어려움');
  const s=newGame(1,camp('hard'),1);s.campaign.difficulty='normal';s.screen='deployment';startBattle(s);assert.equal(s.potions,2);assert.ok(deserialize(serialize(s)),'the stage start agrees with the difficulty');});
+
+test('어려움: a wave brings a quarter more (copies, never commanders) and the battle still saves and reloads',async()=>{
+ const {spawnWave}=await import('../src/core/mission-rules.js');
+ for(const id of [1,3,4,5,6]){const s=newGame(5,{heroes:null,results:[],clears:0,completed:[],flags:{},difficulty:'hard'},id);s.screen='deployment';startBattle(s);
+  const before=s.units.length;for(const w of MISSIONS[id].waves)spawnWave(s,w.units);const added=s.units.length-before,authored=MISSIONS[id].waves.reduce((a,w)=>a+w.units.length,0);
+  assert.ok(added>authored,`M${id} hard waves are bigger`);assert.ok(s.units.filter(u=>/h\d+$/.test(u.id)).every(u=>!['captain','lion'].includes(u.kind)),'no commander copies');
+  const back=deserialize(serialize(s));assert.equal(back.units.length,s.units.length,`M${id} saves with the extra soldiers`);}});
