@@ -17,3 +17,6 @@ export function legacyArena(extra={},opts={}){const s=newGame(opts.seed??2026101
 // Restores a backup text through ☰ → 백업 → 복원 (click or tap).
 export async function restoreText(p,text,touch=false){const press=async(a)=>{const l=p.locator(`[data-do="${a}"]`).first();touch?await l.tap():await l.click();await p.waitForTimeout(120);};
  await drainStory(p);await press('menu');await press('backup');await p.locator('#backup-text').fill(text);await press('restore');await p.waitForFunction(()=>!window.AshenCrown.view().busy);await p.waitForTimeout(250);await drainStory(p);}
+// v2.0.0: the big maps do not fit the battle view at the default zoom; suites that click tiles across the field (trace
+// replays) zoom out with the visible − button until the whole map is in view, as a player would.
+export async function fitMap(p,touch=false){for(let i=0;i<14;i++){const ok=await p.evaluate(()=>{const v=window.AshenCrown.view().camera;return v.scale*64*v.mapHeight<=v.height+1&&v.scale*64*v.mapWidth<=v.width+1;});if(ok)return true;const l=p.locator('[data-do="zoom-out"]').first();if(!(await l.count()))return false;touch?await l.tap():await l.click();await p.waitForTimeout(80);}return false;}
