@@ -17,7 +17,7 @@ const ROWS2000={
 };
 const deploySpots2000=cells=>({recommended:cells.slice(0,8),assault:cells.slice(0,8),defense:cells.slice(-8)});
 export const V200_MISSIONS={
- 1:{zoneArea:[4,10,9,13],level:1,threatTurn:5,par:9,turnLimit:14,
+ 1:{zoneArea:[4,10,9,13],level:1,threatTurn:6,par:9,turnLimit:14,
   enemies:[unit2000('boss','가르 — 산적 두목','captain',13,4,{hp:62,atk:15,def:7,res:4,spd:6,mov:3,carries:'garrRing',hold:6}),
    unit2000('b1','룩','bandit',11,2,{hp:24,atk:11,def:3}),unit2000('b2','바르','bandit',12,3,{hp:26,atk:11,def:4}),unit2000('a1','애시 보우','archer',9,2,{hp:22,atk:10,def:2,spd:7}),
    unit2000('b3','동쪽 습격대원','bandit',19,8,{hp:24,atk:11,def:3}),unit2000('b4','동쪽 습격대원','bandit',20,9,{hp:24,atk:11,def:3}),unit2000('a2','동쪽 사수','archer',18,6,{hp:22,atk:10,def:2,spd:7}),
@@ -28,7 +28,7 @@ export const V200_MISSIONS={
    {turn:5,units:[unit2000('e1','동쪽 증원','bandit',21,8,{hp:24,atk:11,def:3}),unit2000('e2','동쪽 증원','bandit',21,9,{hp:24,atk:11,def:3})]}],
   deploy:[[5,11],[4,10],[6,12],[5,13],[7,11],[4,12],[6,13],[8,12],[7,13],[9,12],[8,13],[5,10],[6,10]],
   objective:'주민 2명 구출 + 가르 격파',
-  brief:'북쪽 길과 동쪽 길로 산적이 동시에 들이칩니다. 주민은 서쪽 집(토마스)과 동쪽 집(미라)에 있습니다 — 군을 나눠야 합니다. T3 북쪽 증원 · T5 동쪽 증원과 주민 위협. 구조는 인접해서 행동 1회. 가르는 쇠가락지를 지녔습니다.'},
+  brief:'북쪽 길과 동쪽 길로 산적이 동시에 들이칩니다. 주민은 서쪽 집(토마스)과 동쪽 집(미라)에 있습니다 — 군을 나눠야 합니다. T3 북쪽 증원 · T5 동쪽 증원 · T6부터 주민 위협. 구조는 인접해서 행동 1회. 가르는 쇠가락지를 지녔습니다.'},
  2:{zoneArea:[0,5,4,10],level:2,threatTurn:99,par:8,turnLimit:8,escapeX:27,
   enemies:[{...unit2000('boss','도주 대장','captain',15,9,{hp:46,atk:12,def:4,res:3,spd:6,mov:2,carries:'runnerMapCase'})},
    unit2000('b1','탈영병','bandit',7,6,{hp:28}),unit2000('a1','숲의 사수','archer',9,3,{hp:25,spd:7}),unit2000('b2','굶주린 습격자','bandit',12,5,{hp:28}),
@@ -38,7 +38,7 @@ export const V200_MISSIONS={
   deploy:[[2,7],[1,6],[3,8],[1,8],[3,6],[0,7],[4,9],[0,9],[2,5],[4,5]],
   objective:'도주 대장 생포 또는 추격 종료 (8턴)',
   brief:'숲길이 동쪽으로 굽이칩니다. 도주 대장은 보급 수레를 뒤지다가 장수가 4칸 안에 오거나 4턴이 되면 동쪽 끝(출구)으로 달아납니다 — 후미대를 뚫고 따라잡으세요. HP 절반 이하면 인접 장수가 생포(지도통을 얻음). 생포 실패도 진행 가능.'},
- 3:{zoneArea:[2,12,8,16],level:3,threatTurn:3,par:13,turnLimit:15,safe:[0,0,7,3],
+ 3:{zoneArea:[2,12,8,16],level:3,threatTurn:3,par:13,turnLimit:16,safe:[0,0,7,3],
   enemies:[unit2000('boss','추격 지휘관','captain',10,16,{hp:55,atk:13,def:5,res:3,spd:6,mov:3,carries:'pursuerGreaves'}),
    unit2000('b3','남쪽 추격병','bandit',12,12,{hp:26}),unit2000('b4','남쪽 추격병','bandit',15,13,{hp:26}),
    unit2000('s1','여울 창병','spear',16,6,{hp:28,def:5,hold:4}),unit2000('b1','북쪽 매복병','bandit',8,5,{hp:26}),unit2000('b2','북쪽 매복병','bandit',12,6,{hp:26}),
@@ -48,7 +48,7 @@ export const V200_MISSIONS={
    {turn:5,units:[unit2000('r6','동쪽 추격병','bandit',18,12,{hp:26}),unit2000('r7','동쪽 추격 사수','archer',18,13,{hp:22,spd:7}),unit2000('r8','동쪽 추격병','spear',17,13,{hp:26,def:5})]},
    {turn:6,units:[unit2000('r4','북쪽 길목병','bandit',1,0,{hp:24}),unit2000('r5','북쪽 길목병','bandit',6,1,{hp:24})]}],
   deploy:[[3,12],[4,12],[5,12],[3,14],[5,14],[2,13],[4,15],[6,15],[2,15],[7,12]],
-  objective:'15턴 안에 1명 이상 구조 + 생존 장수 전원 북서쪽 출구로 철수',
+  objective:'16턴 안에 1명 이상 구조 + 생존 장수 전원 북서쪽 출구로 철수',
   brief:'다리가 무너졌습니다. 동쪽 여울목의 징검다리로 돌아 건너 북쪽 강변길을 되짚어 북서쪽 출구(왼쪽 위)로 철수합니다. 장수가 인접한 주민은 매 턴 출구 쪽으로 2칸 따라옵니다. 인접 구출은 즉시 안전 이송. 강 건너 사수가 남쪽 길을 노립니다.'},
  4:{zoneArea:[3,14,20,16],par:11,turnLimit:16,
   enemies:[unit2000('boss','성채 병참관','captain',12,2,{hp:96,atk:20,def:10,res:4,spd:6,mov:0,alertMov:3,carries:'quartermasterSeal'}),

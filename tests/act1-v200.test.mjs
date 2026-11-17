@@ -77,7 +77,7 @@ test('rescue requires adjacency and frees the villager\'s tile',()=>{const s=bat
 test('the northern wave arrives on turn 3 at the sortie\'s level',()=>{const s=battle();for(let turn=1;turn<=2;turn++){beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome)advanceEnemy(s);}
  assert.equal(s.turn,3);assert.equal(s.phase,'player');const n1=findUnit(s,'n1'),n2=findUnit(s,'n2');assert.ok(n1&&n2,'two raiders from the north');assert.ok(n1.y<=3&&n2.y<=3);assert.equal(n1.level,Math.max(n1.base.level-2,Math.round(s.levelPlan.avg)));});
 
-test('the villagers are safe from attack until turn 5',()=>{const s=only(battle(),'b3'),b=position(s,'b3',16,6);assert.notEqual(planEnemy(s,b).target,'c1');s.turn=5;assert.equal(planEnemy(s,b).target,'c1');});
+test('the villagers are safe from attack until turn 6 (v2.0.0: one turn more on the big map)',()=>{const s=only(battle(),'b3'),b=position(s,'b3',16,6);s.turn=5;assert.notEqual(planEnemy(s,b).target,'c1');s.turn=6;assert.equal(planEnemy(s,b).target,'c1');});
 
 test('Fire Bolt sets grass alight for two turns; fire hurts but never kills',()=>{const s=battle(31),l=position(s,'lia',3,4),t=position(s,'b1',3,5);t.hp=t.maxHP;assert.equal(terrainAt(3,5,s).name,'Grass');for(const u of s.units)if(u.team==='enemy'&&u.id!=='b1'){u.hold=1;u.atk=1;}
  let hit=false;for(let i=0;i<20&&!hit;i++){l.acted=false;l.mp=l.maxMP;s.rng=1000+i;const before=t.hp;performAction(s,'lia','skill','b1');hit=t.hp<before;if(!alive(t))break;}
@@ -90,3 +90,9 @@ test('victory needs both villagers and Garr; a fallen villager is a defeat',()=>
 test('every ACT I preset tile lies inside its mission\'s deployment zone and on open ground',async()=>{const {MISSIONS}=await import('../src/data/missions.js');
  for(const id of [1,2,3,4,5,6]){const s=newGame(1,{heroes:null,results:[],clears:id-1,completed:[1,2,3,4,5,6].slice(0,id-1),flags:{}},id),m=MISSIONS[id],zone=m.deployZone(s);
   for(const [name,preset] of Object.entries(m.deployments)){assert.ok(preset.length>=8,`M${id} ${name} has room for the whole party`);for(const [x,y] of preset){assert.ok(zone.has(`${x},${y}`),`M${id} ${name} ${x},${y}`);assert.ok(Number.isFinite(terrainAt(x,y,s)?.cost),`M${id} ${x},${y} open`);}}}});
+
+test('difficulty: 어려움 carries one potion and stronger troops; a change in camp applies at the next battle start, and both saves validate',()=>{
+ const camp=d=>({heroes:null,results:[],clears:0,completed:[],flags:{},difficulty:d});
+ const h=newGame(2,camp('hard'),1);h.screen='deployment';startBattle(h);assert.equal(h.potions,1);assert.equal(h.levelPlan.difficulty,'hard');assert.ok(deserialize(serialize(h)));
+ const n=newGame(2,camp('normal'),1);n.screen='deployment';startBattle(n);const lv=u=>findUnit(u,'b1').level;assert.equal(lv(h),lv(n)+2);assert.ok(findUnit(h,'b1').atk>findUnit(n,'b1').atk);
+ const s=newGame(1,camp('hard'),1);s.campaign.difficulty='normal';s.screen='deployment';startBattle(s);assert.equal(s.potions,2);assert.ok(deserialize(serialize(s)),'the stage start agrees with the difficulty');});

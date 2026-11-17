@@ -45,7 +45,7 @@ export function deployZoneOf(s){const z=missionOf(s).deployZone?.(s);if(z)return
 export function setSortie(s,id,on){const u=findUnit(s,id);if(!u||u.team!=='ally'||!['exploration','warroom','deployment'].includes(s.screen)||(!on&&SORTIE_LOCKED.includes(id)))return false;
  const out=s.units.filter(a=>a.team==='ally'&&!a.benched).length;if(!on&&out<=1||on&&u.benched&&out>=deployLimit(s))return false;if(on&&u.benched){const zone=deployZoneOf(s);if(at(s,u.x,u.y)||!zone.has(`${u.x},${u.y}`)){const free=[...zone].map(k=>k.split(',').map(Number)).find(([x,y])=>!at(s,x,y)&&Number.isFinite(terrainAt(x,y,s)?.cost));if(free)[u.x,u.y]=free;}}
  if(on)delete u.benched;else u.benched=true;return true;}
-export function startBattle(s){if(s.screen!=='deployment'||s.units.filter(a=>a.team==='ally'&&!a.benched).length>deployLimit(s))return false;planLevels(s,missionOf(s));for(const u of s.units)if(u.team==='ally'&&!u.gearHP){const con=equipmentBonus(s.economy,u.id).con||0,n=Math.round(2.5*con);if(n){u.maxHP+=n;u.hp+=n;u.gearHP=n;}} /* v2.0.0: 강인 from treasures adds HP for the battle */s.screen='battle';s.battleFlags={};applyTerrainRecovery(s);s.log.push(missionOf(s).brief);const {stageStart,...initial}=s;s.stageStart=structuredClone({...initial,feedback:[]});return true;}
+export function startBattle(s){if(s.screen!=='deployment'||s.units.filter(a=>a.team==='ally'&&!a.benched).length>deployLimit(s))return false;s.potions=DIFFICULTY[difficultyOf(s)].potions; /* the difficulty may have changed in camp */planLevels(s,missionOf(s));for(const u of s.units)if(u.team==='ally'&&!u.gearHP){const con=equipmentBonus(s.economy,u.id).con||0,n=Math.round(2.5*con);if(n){u.maxHP+=n;u.hp+=n;u.gearHP=n;}} /* v2.0.0: 강인 from treasures adds HP for the battle */s.screen='battle';s.battleFlags={};applyTerrainRecovery(s);s.log.push(missionOf(s).brief);const {stageStart,...initial}=s;s.stageStart=structuredClone({...initial,feedback:[]});return true;}
 export function canAct(s,u){return s.screen==='battle'&&s.phase==='player'&&!s.narrative?.active&&!duelOpen(s)&&u?.team==='ally'&&alive(u)&&!u.acted;}
 // v0.5: a promoted Kai may still move after Quick Strike (strikeMove = this turn); otherwise moving needs an unspent action.
 export function canMove(s,u){return s.screen==='battle'&&s.phase==='player'&&!s.narrative?.active&&!duelOpen(s)&&u?.team==='ally'&&alive(u)&&!u.moved&&(!u.acted||u.strikeMove===s.turn);}
@@ -248,7 +248,7 @@ export function advanceEnemy(s){
  applyTerrainRecovery(s);
  if(s.missionId===3&&!missionOf(s).v200)escortCivilians(s);
  checkOutcome(s);afterBattleEvents(s);
- s.log.push(`TURN ${s.turn} · PLAYER PHASE${s.turn>=5?' · 주민이 직접 공격받습니다!':''}`);return true;
+ s.log.push(`TURN ${s.turn} · PLAYER PHASE${s.turn>=(missionOf(s).threatTurn??5)&&s.units.some(u=>u.team==='civilian'&&alive(u)&&!u.rescued)?' · 주민이 직접 공격받습니다!':''}`);return true;
 }
 export function checkOutcome(s){
  if(s.outcome)return s.outcome;

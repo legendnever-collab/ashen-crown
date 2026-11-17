@@ -58,6 +58,8 @@ export function enemyLevel(s,u,m){const auth=u.base?.level??authoredLevel(s,m),a
  return Math.max(auth-2+diff,Math.round(avg*(1+pct))+rank+off+diff);}
 // Snapshot the authored numbers once, then (re)scale from them. Idempotent: always computed from u.base.
 export function scaleTroop(s,u,m){if(!u||!['enemy','allied'].includes(u.team)||u.noScale)return u;
+ // a promotion or awakening trial is a set piece: its troops keep the authored numbers (only the attack tier is capped)
+ if(m?.skirmish?.kind==='trial'){const L=u.level??authoredLevel(s,m),lv=L>=16?3:L>=8?2:1;u.troopTier=Math.min(lv,Math.min(3,(s.levelPlan?.tier||3)+(isBossRank(u)||u.elite?1:0)));return u;}
  if(!u.base)u.base={level:u.level??authoredLevel(s,m),maxHP:u.maxHP??u.hp,atk:u.atk||0,mag:u.mag||0,def:u.def||0,res:u.res||0,spd:u.spd||0};
  const b=u.base,L=enemyLevel(s,u,m),dl=L-b.level,g=derivedGrowth(classKeyOf(u)),mul=u.team==='allied'?1:DIFFICULTY[difficultyOf(s)].mul,r0=refAt(classKeyOf(u),b.level),r1=refAt(classKeyOf(u),L),f=(v,k)=>v>0?Math.max(1,Math.round(v*(r1[k]/Math.max(1,r0[k]))*mul)):v;
  const lost=(u.maxHP??b.maxHP)-(u.hp??b.maxHP);u.level=L;u.maxHP=f(b.maxHP,'maxHP');u.hp=Math.max(1,u.maxHP-Math.max(0,lost));u.atk=f(b.atk,'atk');u.mag=f(b.mag,'mag');u.def=f(b.def,'def');u.res=f(b.res,'res');u.spd=Math.max(1,Math.round(b.spd+g.spd*dl));
