@@ -20,7 +20,7 @@ test('ACT I complete camp loads as schema 8 with every asset kept and promotion 
  for(const h of before.campaign.heroes){const now=s.campaign.heroes.find(x=>x.id===h.id);assert.equal(now.classTier??1,1);for(const k of ['level','xp'])assert.equal(now[k],h[k],`${h.id}.${k}`);assert.ok(now.stats,`${h.id}: six stats (v2.0.0 recomputes the numbers from them)`);}
  assert.ok(act1Complete(s));for(const id of ['eric','elina','lia','sain','kai']){const st=promotionStatus(s,id);assert.equal(st.checks.length,3);assert.ok(st.checks[0].ok,'ACT I check passes');
   assert.equal(st.potential.step,potentialOf(s.campaign,s.campaign.heroes.find(h=>h.id===id)).step);assert.ok(proficiencyOf(s.campaign,id).stars>=0);}
- assert.equal(deserialize(serialize(s)).schema,20);
+ assert.equal(deserialize(serialize(s)).schema,21);
 });
 
 test('M05 mid-battle save reopens in camp (v2.0.0) and is won again',()=>{

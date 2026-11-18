@@ -42,7 +42,7 @@ export const M21={
  status(s){const m=missionOf(s),st=s.missionState,king=findUnit(s,'king');return `고정석 ${st.broken.length}/4 · 국왕 HP ${Math.max(0,king?.hp||0)}/${king?.maxHP||0} · 맥동 ${pulseRing21(s)==='outer'?'바깥':'안쪽'} 고리 · ${Math.max(0,m.turnLimit+1-s.turn)}턴 남음`;},
  optional(s){const f=s.campaign.flags,st=s.missionState;return `고정석 ${f.mission_21_anchors??st?.broken.length??0}/4 · 국왕 ${(f.mission_21_king_half??st?.kingHalf??true)?'HP 절반 이상':'HP 절반 아래로 떨어짐'} · 일기토 ${({hero:'승리',foe:'패배',skipped:'거절'})[f.mission_21_duel]||'—'}`;},
  onTurnStart(s){const m=missionOf(s),st=s.missionState;act2Waves(s);
-  if(s.turn===m.duelTurn&&!st.duelDone){st.duelDone=true;const rc=findUnit(s,'rc'),e=findUnit(s,'eric');if(rc&&alive(rc)&&e&&alive(e)&&startDuel(s,'eric','rc','21:duel'))enqueueStory(s,'21:duel');}
+  /* v2.1: the duel is an event when the pair stands side by side (core/duel-events.js) */
   if(s.turn===2)enqueueStory(s,'21:pulse:inner');},
  // A hero who ends the player phase on a pulsing tile loses MP.
  beforeEnemyPhase(s){const m=missionOf(s),st=s.missionState,cells=new Set(pulseCells21(s).map(c=>key(c.x,c.y)));let n=0;

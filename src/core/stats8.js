@@ -17,7 +17,7 @@ export const classLabel=u=>{const c=classDef(u);return c?`${c.ko} · ${c.tiers[t
 export function skillOf(u){if(!u||u.team!=='ally'&&u.team)return null;if(HERO_SKILL[u.id])return HERO_SKILL[u.id];if(OFFICER_IDS.includes(u.id))return CLASS_SKILL8[classKeyOf(u)]||null;return null;}
 export const isOfficer=u=>OFFICER_IDS.includes(u?.id);
 // Expected growth of one level for this unit (class growth, heroes a little more).
-export function growthOf(u){const c=classDef(u)||CLASSES8.infantry,bonus=HERO_IDS.includes(u?.id)?1+HERO_GROWTH_BONUS:1;return Object.fromEntries(STAT_KEYS.map(k=>[k,(c.growth[k]||0)*bonus]));}
+export function growthOf(u){const c=classDef(u)||CLASSES8.infantry,bonus=HERO_IDS.includes(u?.id)||u?.id==='adel'?1+HERO_GROWTH_BONUS:1; /* v2.1: the rescued hero grows like a hero */return Object.fromEntries(STAT_KEYS.map(k=>[k,(c.growth[k]||0)*bonus]));}
 // Derived numbers from the stats (no equipment, no battle effects).
 export function derivedFrom(cls,stats,level=1){const b=(CLASSES8[cls]||CLASSES8.infantry).base,s=stats;
  return {maxHP:Math.round(b.hp+2.5*s.con+b.hpLv*(Math.max(1,level)-1)),atk:Math.round(b.wpn+1.5*s.str),mag:Math.round(b.foc+1.5*s.int),def:Math.round(b.arm+.7*s.con),res:Math.round(b.ward+.8*s.wil),spd:Math.round(s.agi),healPow:Math.round(b.staff+1.5*s.wil),critBase:Math.floor(s.luk/2)};}

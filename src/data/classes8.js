@@ -1,3 +1,4 @@
+import {NEW_CLASS,NEW_STATS} from './mercs-v210.js';
 // v2.0.0 전장 개편 (D-114/D-115, docs/v2.0.0/REFORM_DESIGN.md §3; numbers PROPOSED, tuned by the balance runs).
 // Eight classes × three tiers. Tier names are our own (서약·재·결계·새벽 motifs, §13: no 조조전 class or promotion names).
 // Derived numbers come from the six stats (core/stats8.js): HP = hp + 2.5·강인 + hpLv·(level−1); 물리 공격 = wpn + 1.5·무력;
@@ -38,14 +39,16 @@ export const CLASS8_KEYS=Object.keys(CLASSES8);
 export const TIER_STAT_BONUS={2:{main:2,rest:1},3:{main:3,rest:1}};
 // The heroes' classes (§3.2, Q3 approved) and their Lv 1 stats (§3.4, Q8 approved).
 export const HERO_CLASS8={eric:'infantry',elina:'archer',lia:'mage',sain:'healer',kai:'rogue',thea:'cavalry',dario:'infantry',ines:'shield',baldrick:'cavalry'};
-export const OFFICER_CLASS8={bram:'spear',noa:'archer',marta:'shield',rowell:'cavalry'};
+// v2.1 (D-118): the officers are tavern hires; the later hires and the rescued hero share their shape (data/mercs-v210.js).
+export const OFFICER_CLASS8={bram:'spear',noa:'archer',marta:'shield',rowell:'cavalry',...NEW_CLASS};
 export const UNIT_CLASS8={...HERO_CLASS8,...OFFICER_CLASS8};
 export const HERO_STATS={
  eric:{str:8,int:2,wil:4,con:9,agi:5,luk:6},elina:{str:8,int:3,wil:4,con:5,agi:9,luk:7},lia:{str:3,int:9,wil:7,con:4,agi:6,luk:5},
  sain:{str:4,int:6,wil:10,con:5,agi:6,luk:6},kai:{str:7,int:3,wil:3,con:5,agi:12,luk:9},thea:{str:8,int:2,wil:3,con:7,agi:8,luk:5},
  dario:{str:8,int:2,wil:3,con:6,agi:10,luk:7},ines:{str:7,int:3,wil:7,con:9,agi:6,luk:5},baldrick:{str:9,int:2,wil:5,con:10,agi:7,luk:5},
  // the officers (§5.2, Q1 approved)
- bram:{str:8,int:3,wil:5,con:8,agi:5,luk:5},noa:{str:7,int:3,wil:4,con:5,agi:9,luk:8},marta:{str:7,int:2,wil:6,con:9,agi:4,luk:5},rowell:{str:8,int:2,wil:4,con:7,agi:8,luk:5}
+ bram:{str:8,int:3,wil:5,con:8,agi:5,luk:5},noa:{str:7,int:3,wil:4,con:5,agi:9,luk:8},marta:{str:7,int:2,wil:6,con:9,agi:4,luk:5},rowell:{str:10,int:2,wil:4,con:7,agi:10,luk:5}, // v2.1: Rowell is an elite hire (+2 main)
+ ...NEW_STATS
 };
 // A hero grows a little faster than an officer of the same class (§3.2: one growth grade).
 export const HERO_GROWTH_BONUS=.15;

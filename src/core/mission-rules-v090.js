@@ -88,7 +88,7 @@ export const M16={
  onTurnStart(s){const m=missionOf(s),st=s.missionState;act2Waves(s);
   if(s.turn===m.returnTurn)for(const a of s.units.filter(u=>RETURNERS[u.id]&&st.returning.includes(RETURNERS[u.id])&&u.benched&&!u.withdrawn&&u.hp>0)){a.benched=false;a.moved=false;a.acted=false;if(s.units.some(o=>o!==a&&alive(o)&&o.x===a.x&&o.y===a.y)){for(let y=m.height-1;y>=0;y--){const t=terrainAt(0,y,s);if(Number.isFinite(t?.cost)&&!s.units.some(o=>alive(o)&&o.x===0&&o.y===y)){a.x=0;a.y=y;break;}}}
    s.feedback.push({type:'spawn',id:a.id,text:'돌아옴'});s.log.push(`${a.name}이(가) 안개 속에서 나타났습니다. 군단 곁에서 싸웁니다.`);enqueueStory(s,`16:return:${RETURNERS[a.id]}`);}
-  if(s.turn===m.duelTurn&&!st.duelDone){st.duelDone=true;const cap=findUnit(s,'cap'),e=findUnit(s,'eric');if(cap&&alive(cap)&&e&&alive(e)&&startDuel(s,'eric','cap','16:duel'))enqueueStory(s,'16:duel');}
+  /* v2.1: the duel is an event when the pair stands side by side (core/duel-events.js) */
   // Harvest: a harvester beside an unsearched stone draws on the memories of the heroes near that stone.
   let drained=0;for(const h of harvesters16(s).filter(alive)){const st1=stones16(s).find(t=>!t.inert&&distance(t,h)<=1);if(!st1)continue;
    for(const u of s.units.filter(u=>u.team==='ally'&&alive(u)&&distance(u,st1)<=m.harvestRadius)){const n=Math.min(u.mp,m.harvestMP);if(n>0){u.mp-=n;drained+=n;s.feedback.push({type:'guard',id:u.id,text:`MP −${n}`});}}}

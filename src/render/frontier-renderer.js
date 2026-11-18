@@ -26,10 +26,19 @@ function hudPad(canvas,box){const wrap=canvas.parentElement;if(!wrap||!box.width
   const top=r.top-box.top,left=r.left-box.left,right=box.right-r.right;
   if(r.height>r.width*1.2&&left>box.width*.5)p.right=Math.max(p.right,box.right-r.left+8);else if(top>box.height*.45)p.bottom=Math.max(p.bottom,box.bottom-r.top+8);else if(r.bottom-box.top<box.height*.3)p.top=Math.max(p.top,r.bottom-box.top+8);}
  p.right=Math.min(p.right,box.width*.35);p.bottom=Math.min(p.bottom,box.height*.35);p.top=Math.min(p.top,box.height*.3);return p;}
+// v2.1 play-test (D-120): the walker glides from tile to tile over one step instead of jumping, so the slower town pace
+// (WALK_STEP_MS per tile) reads as walking. Runtime only; a jump of more than one tile (a door, a restore) snaps.
+export const WALK_STEP_MS=210;
+const glide={key:'',fx:0,fy:0,tx:0,ty:0,t:0};
+function heroGlide(f,time){const key=`${f.hub}:${f.interior||''}`,k=Math.min(1,Math.max(0,(time-glide.t)/WALK_STEP_MS)),cx=glide.fx+(glide.tx-glide.fx)*k,cy=glide.fy+(glide.ty-glide.fy)*k;
+ if(glide.key!==key||Math.abs(f.x-cx)+Math.abs(f.y-cy)>1.01)Object.assign(glide,{key,fx:f.x,fy:f.y,tx:f.x,ty:f.y,t:time-WALK_STEP_MS});
+ else if(glide.tx!==f.x||glide.ty!==f.y)Object.assign(glide,{fx:cx,fy:cy,tx:f.x,ty:f.y,t:time});
+ const q=Math.min(1,Math.max(0,(time-glide.t)/WALK_STEP_MS));return {x:glide.fx+(glide.tx-glide.fx)*q,y:glide.fy+(glide.ty-glide.fy)*q,moving:q<1};}
 export function drawHub(canvas,s,{line=null,time=performance.now()}={}){
  const c=canvas.getContext('2d'),f=s.frontier,h=line?npcsFor(s,HUBS[line.stage]):currentHub(s),box=canvas.getBoundingClientRect(),width=Math.max(1,box.width||1024),height=Math.max(1,box.height||768),resolution=width<600?Math.max(1,window.devicePixelRatio||1):Math.max(2.1,window.devicePixelRatio||1);
  if(canvas.width!==Math.round(width*resolution)||canvas.height!==Math.round(height*resolution)){canvas.width=Math.round(width*resolution);canvas.height=Math.round(height*resolution);}c.setTransform(resolution,0,0,resolution,0,0);c.imageSmoothingEnabled=false;pixel(c,'#172c31',0,0,width,height);
- const camera=line?stageCamera(line,width,height,h):hubCamera.layout(width,height,h.width,h.height,{follow:{x:f.x,y:f.y},key:`${f.hub}:${f.interior||'outside'}`,pad:hudPad(canvas,box)});
+ const hp=line?{x:f.x,y:f.y,moving:false}:heroGlide(f,time);
+ const camera=line?stageCamera(line,width,height,h):hubCamera.layout(width,height,h.width,h.height,{follow:{x:hp.x,y:hp.y},key:`${f.hub}:${f.interior||'outside'}`,pad:hudPad(canvas,box)});
  c.translate(camera.x,camera.y);c.scale(camera.scale,camera.scale);
  const art=h.art?hubArt(h.art):null,painted=!!h.art;
  const map=hubTerrain(h),hd=painted?{objects:[]}:hdGround(`hub:${h.name}:${h.width}x${h.height}:${h.tone}`,h.tone==='interior'?map.map(r=>r.map(()=>'p')):map,'',o=>{const tx=Math.floor(o.x/48),ty=Math.floor((o.y-1)/48);return (o.kind==='tree'||o.kind==='bush')&&(tx<=0||ty<=0||tx>=h.width-1||ty>=h.height-1);});if(painted){if(art)c.drawImage(art,0,0,h.width*64,h.height*64);else pixel(c,'#2a3328',0,0,h.width*64,h.height*64);}else drawHDGround(c,hd);
@@ -44,7 +53,7 @@ export function drawHub(canvas,s,{line=null,time=performance.now()}={}){
   const items=[...hd.objects.map(o=>({y:hdObjectKey(o),draw:()=>drawHDObject(c,o,time)})),...(painted?h.buildings.filter(b=>b.type==='chest'):h.buildings).map(b=>({y:(b.y+b.h)*64-2,draw:()=>drawB(b)})),...h.npcs.map((n,k)=>({y:(n.y+1)*64+(n.drop||0),draw:()=>{if(n.kind==='advisor'){if(!h.paintedTable)drawWarTable(c,n.x*64+32,n.y*64+58,time);if(near(n)||talking(n))pixel(c,'#f0d291',n.x*64+28,n.y*64-6,8,8);return;}const still=near(n)||talking(n),t=time/1700+k*1.7+n.x,dx=still?0:Math.round(Math.sin(t)*9),moving=!still&&Math.abs(Math.cos(t))>.3,actor=s.units.find(u=>u.id===n.id)||{...n,team:'civilian'},x=n.x*64+32+dx,y=n.y*64+36+(n.drop||0);
     const facing=still?hdDirection(f.x-n.x,f.y-n.y,'down'):moving?(Math.cos(t)>0?'right':'left'):'down';
     c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(x,y+23,13*FS,4*FS,0,0,Math.PI*2);c.fill();drawHDFigure(c,hdCastFor(actor),x,y+24,{facing,frame:moving?1+Math.floor(time/260)%4:0,scale:FS});if(near(n)||talking(n))pixel(c,'#f0d291',n.x*64+28,n.y*64+60-Math.round(90*FS),8,8);}})),
-   {y:(f.y+1)*64+1,draw:()=>{const hero=explorationHero(s),px=f.x*64+32,py=f.y*64+36-(s.doorStep?26:0);c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(px,py+23,13*FS,4*FS,0,0,Math.PI*2);c.fill();drawHDFigure(c,hdCastFor(hero),px,py+24,{facing:f.facing||'down',frame:s.walking?1+Math.floor(time/110)%4:0,scale:FS});pixel(c,'#e4c580',px-30,py+29,60,2);}}];
+   {y:(hp.y+1)*64+1,draw:()=>{const hero=explorationHero(s),px=hp.x*64+32,py=hp.y*64+36-(s.doorStep?26:0);c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(px,py+23,13*FS,4*FS,0,0,Math.PI*2);c.fill();drawHDFigure(c,hdCastFor(hero),px,py+24,{facing:f.facing||'down',frame:s.walking||hp.moving?1+Math.floor(time/170)%4:0,scale:FS});pixel(c,'#e4c580',px-30,py+29,60,2);}}];
   for(const it of items.sort((a,b)=>a.y-b.y))it.draw();}
  if(!line&&new URLSearchParams(location.search).get('debugMap')==='1'){
  c.save();c.lineWidth=1;c.strokeStyle='#91bcc055';for(let x=0;x<h.width;x++)for(let y=0;y<h.height;y++)c.strokeRect(x*64,y*64,64,64);

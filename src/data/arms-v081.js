@@ -143,7 +143,11 @@ export const TOWNS=[
  {hub:'castletown',name:'철관성 성하 마을',site:'stronghold',reached:m=>m>=7},
  {hub:'velmar',name:'벨마르 시장',site:'freecity',reached:m=>m>=9},
  {hub:'pilgrim',name:'순례자 마을',site:'pilgrimvillage',reached:m=>m>=11},
- {hub:'capital',name:'왕도 하층가',site:'capital',reached:m=>m>=15}
+ {hub:'capital',name:'왕도 하층가',site:'capital',reached:m=>m>=15},
+ // v2.1 (D-118): the forest village (ACT III) and the small villages a cleared castle opens (M04: 갈대 나루, 돌우물 마을)
+ {hub:'forest',name:'숲지기 마을',site:'unburning',reached:m=>m>=19},
+ {hub:'reed',name:'갈대 나루',site:'reed',small:true,reached:(m,c)=>!!c?.completed?.includes(4)},
+ {hub:'stonewell',name:'돌우물 마을',site:'stonewell',small:true,reached:(m,c)=>!!c?.completed?.includes(4)}
 ];
 // Townsfolk on a revisit: a short word on how the town is doing (PROPOSED wording; no new facts about the crown or factions).
 export const REVISIT_LINES={
@@ -151,6 +155,10 @@ export const REVISIT_LINES={
  castletown:{elder:['군단이 지나간 뒤로 수송로가 조용해졌소. 성하 사람들도 그걸 알고 있지.','대장간 화로는 밤낮없이 돌아가오. 철관 강철은 여기서만 나오니까.'],refugee:['천막 대신 집을 얻었어요. 아직 좁지만요.'],guard:['성문은 열려 있습니다. 통행증만 보여 주시면 됩니다.']},
  velmar:{elder:['벨마르는 장사꾼의 도시요. 다시 왔으니 진열장부터 보시오. 매번 바뀌거든.','의회도 군단 얘기를 하더군. 좋은 얘기만은 아니지만, 나쁜 얘기도 아니오.'],refugee:['시장이 다시 붐벼요. 그날 일은 다들 기억해요.'],guard:['시장 안에서는 칼을 뽑지 마십시오. 상인들이 놀랍니다.']},
  capital:{elder:['기록원은 조용해졌소. 그 밤 이후로 아무도 상자 얘기를 하지 않지.','하층가 대장간은 왕실 근위대 물건도 다룬다오. 비싸지만 좋은 물건이오.'],refugee:['게시판 앞에 사람들이 모여요. 다들 뭔가를 기억해 내려고 해요.'],guard:['왕도 안에서는 소란을 피우지 마십시오. 그것만 지키면 됩니다.']},
+ // v2.1 (D-118, PROPOSED): the forest village and the small villages opened by M04
+ forest:{elder:['숲이 다시 숨을 쉬오. 군단이 지나간 뒤로 불씨 걱정이 줄었소.','주점에 숲지기 하나가 앉아 있더군. 숲 밖으로 나가 볼 생각인가 보오.'],refugee:['숲길이 다시 열렸어요. 아이들이 나무 열매를 따러 다녀요.'],guard:['길잡이는 늘 한 명 남겨 두오. 길 잃는 사람이 없게.']},
+ reed:{elder:['성채가 조용해진 뒤로 나루가 살아났소. 의뢰 게시판도 한번 보시오.','주점에 국경 기병 하나가 일거리를 찾고 있소. 말 다루는 솜씨가 보통이 아니더군.'],refugee:['배가 다시 떠요. 산적만 없으면 강은 순하답니다.'],guard:['나루 경비라 해 봐야 셋이오. 군단이 지나가면 한숨 돌리지.']},
+ stonewell:{elder:['돌우물 마을이오. 길가 마을이라 별의별 손님이 다 지나가지.','의뢰 게시판에 붙은 일들, 군단이라면 해낼 수 있을 거요.'],refugee:['우물이 무너져서 물 길으러 멀리 가요.'],guard:['길목 파수는 밤이 길어요. 그래도 군단 깃발을 보면 마음이 놓여요.']},
  pilgrim:{elder:['순례길이 다시 열렸소. 성화가 꺼지지 않은 건 그날 덕이오.','대장간에서 성물도 다룬다오. 성화 교단의 손을 거친 물건이지.'],refugee:['밤에도 화로가 켜져 있어서 이제는 덜 무서워요.'],guard:['대성당 쪽은 아직 출입이 엄합니다. 마을 안은 편히 다니십시오.']}
 };
 // Cut-in lines (§7 B, v0.8.1): a critical hit and the ③ skill show the hero's bust with one line.

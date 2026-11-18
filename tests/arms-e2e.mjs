@@ -5,7 +5,7 @@
 import {launchTestBrowser} from './browser-helper.mjs';import {drainStory} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize} from '../src/persistence/save-manager.js';
 import {newGame,startBattle} from '../src/core/game.js';import {findUnit} from '../src/core/rules.js';import {enterHub,enterInterior,currentHub,walkable,syncFrontier} from '../src/core/frontier.js';import {drain} from './campaign-policy.mjs';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v2.0.0.html').href,shots='docs/v0.8.1/screenshots/arms';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v2.1.0.html').href,shots='docs/v0.8.1/screenshots/arms';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const results=[];const check=(name,ok)=>{assert.ok(ok,name);n++;results.push(name);console.log('PASS',name);};
 const camp=(extra={})=>({heroes:null,results:[],clears:0,completed:[],flags:{},choices:{},roster:[],...extra});
 const upTo=k=>Array.from({length:k},(_,i)=>i+1);
@@ -44,8 +44,8 @@ try{
   // 4. Revisit: from the Velmar camp (M09 preparation) to Ironhold on the world map, buy armor unlocked by M08, come back.
   const v=newGame(5,camp({completed:upTo(8)}),9);enterHub(v,{story:false});drain(v);v.economy.gold=900;await restore(v);
   check(`${label} the camp shows 「마을 다시 찾기」`,await p.locator('[data-do="world-map"]').count()>=1);await press('world-map');t=await modal();
-  check(`${label} the world map lists the towns passed: 잿빛 마을, 철관성 성하 마을 (not Velmar itself)`,t.includes('지나온 마을 다시 찾아가기')&&await p.locator('[data-do="travel"][data-id="castletown"]').count()===1&&await p.locator('[data-do="travel"][data-id="village_raid"]').count()===1&&await p.locator('[data-do="travel"][data-id="velmar"]').count()===0);
-  await p.screenshot({path:`${shots}/world-map-towns-${label}.png`});await press('travel','castletown');st=await snap();
+  check(`${label} the world map lists the towns passed: 잿빛 마을, 철관성 성하 마을 (not Velmar itself)`,t.includes('잿빛 마을')&&await p.locator('.town-list [data-do="travel"][data-id="castletown"]').count()===1&&await p.locator('.town-list [data-do="travel"][data-id="village_raid"]').count()===1&&await p.locator('[data-do="travel"][data-id="velmar"]').count()===0 /* v2.1: the painted map with markers and the list below */);
+  await p.screenshot({path:`${shots}/world-map-towns-${label}.png`});{const el=p.locator('.town-list [data-do="travel"][data-id="castletown"]');touch?await el.tap():await el.click();await p.waitForTimeout(250);}st=await snap();
   check(`${label} travelled: Ironhold with the camp remembered; no council button there; the way back is shown`,st.frontier.hub==='castletown'&&st.frontier.revisit==='velmar'&&await p.locator('[data-do="warroom"]').count()===0&&await p.locator('[data-do="town-return"]').count()===1);
   await p.screenshot({path:`${shots}/revisit-castletown-${label}.png`});
   await p.reload();await drainStory(p);check(`${label} a reload keeps the visit`,(await snap()).frontier.hub==='castletown');

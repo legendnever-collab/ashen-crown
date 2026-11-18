@@ -15,7 +15,7 @@ const load=name=>deserialize(fixture(name).save);
 test('fixtures are genuine v0.8.1 schema-11 saves with star gear',()=>{for(const n of ['m14-camp','m14-battle']){const f=fixture(n);assert.equal(f.version,'0.8.1');assert.equal(f.schema,11);assert.ok(raw(n).campaign.economy.gear.some(g=>g.type==='ironBlade'&&g.star===2));}});
 
 test('the v0.8.1 summit camp loads as schema 13 with every asset kept',()=>{
- const before=raw('m14-camp'),s=load('m14-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,20);assert.equal(s.version,VERSION);assert.equal(s.frontier.hub,'summit');
+ const before=raw('m14-camp'),s=load('m14-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,21);assert.equal(s.version,VERSION);assert.equal(s.frontier.hub,'summit');
  for(const k of ['completed','flags','choices','promotions','factionTrust','trustLog','roster','feats','departed','economy','heroes','bonds','tacticalMemory'])keptV200(s.campaign,before.campaign,k);
  assert.deepEqual(econV200(s.economy),econV200(before.economy));const back=deserialize(serialize(s));assert.deepEqual(econV200(back.campaign.economy),econV200(before.campaign.economy));
 });

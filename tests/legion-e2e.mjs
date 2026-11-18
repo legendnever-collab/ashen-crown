@@ -4,14 +4,14 @@ import {launchTestBrowser} from './browser-helper.mjs';import {drainStory} from 
 import {serialize} from '../src/persistence/save-manager.js';import {actOneCamp} from './skirmish-policy.mjs';
 const camp=actOneCamp(20261021,6,{kai_rescue:4,kai_bypass:2,m6_kai_lever:1});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const results=[];const check=(name,ok)=>{assert.ok(ok,name);n++;results.push(name);console.log('PASS',name);};
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v2.0.0.html').href;
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v2.1.0.html').href;
 try{
  // Desktop: panel layout and conditions
  {const ctx=await b.newContext({viewport:{width:1440,height:900}});await ctx.setOffline(true);const p=await ctx.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
   const press=async(a,id)=>{await p.locator(`[data-do="${a}"]${id?`[data-id="${id}"]`:''}`).first().click();await p.waitForTimeout(300);};
   await p.goto(url);await press('new');await drainStory(p);await press('menu');await press('backup');await p.fill('#backup-text',serialize(camp));await press('restore');await drainStory(p);
   check('1440 ACT I camp offers the rite panel',await p.locator('[data-do="legion"]').count()===1);await press('legion');
-  check('1440 panel lists the five heroes and the officers, each with conditions',await p.locator('.legion-row').count()>=5&&await p.locator('.legion-checks').count()===await p.locator('.legion-row').count());
+  check('1440 panel lists the five heroes (and any hires), each with conditions',await p.locator('.legion-row').count()>=5&&await p.locator('.legion-checks').count()===await p.locator('.legion-row').count());
   check('1440 only Kai (Lv 6, potential 3/3) may start a trial',await p.locator('[data-do="trial-start"][data-id="kai"]:not([disabled])').count()===1&&await p.locator('[data-do="trial-start"]:not([disabled])').count()===1);
   await p.screenshot({path:'test-output/legion-panel-1440.png'});check('1440 no runtime errors',errors.length===0);await ctx.close();}
  // Phone: full trial

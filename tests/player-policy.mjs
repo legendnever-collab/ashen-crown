@@ -1,3 +1,5 @@
+import {openStory,advanceStory} from '../src/core/narrative.js';
+import {duelOpen,duelPick} from '../src/core/duel.js';
 import {findUnit,alive,movement,validTarget,forecast,distance,terrainAt,hostile} from '../src/core/rules.js';
 import {moveUnit,performAction,canAct,beginEnemyPhase,advanceEnemy} from '../src/core/game.js';
 import {HEROES} from '../src/data/game-data.js';
@@ -20,11 +22,14 @@ export function chooseAction(s,u,{guard=false}={}){
  }
  return best||{id:u.id,x:u.x,y:u.y,mode:'wait'};
 }
+// v2.1 (D-118): settles an open duel event the way the policy always has (strike, guard, finisher in turn); records the picks.
+function settleDuel(s,trace){if(!duelOpen(s))return false;let n=0;const picks=[];while(duelOpen(s)&&n++<6){const m=['strike','guard','finisher'][(s.turn+n)%3];picks.push(m);duelPick(s,m);}trace.push({type:'duel',picks,result:s.duel.result});return true;}
 export function playBattle(s,options={}){
  const trace=[],states=[];let steps=0;
  while(!s.outcome&&s.turn<=30&&steps++<500){
+  if(settleDuel(s,trace)){openStory(s);for(let i=0;s.narrative.active&&i<100;i++)advanceStory(s);if(s.outcome)break;} /* v2.1: a duel event may open as the player's phase starts (the foe walked up beside the hero) */
   // Rescue specialist first; archer and mage before front line leaves occupied corridors.
-  for(const id of ['kai','lia','elina','sain','eric']){const u=findUnit(s,id);if(!canAct(s,u))continue;const a=chooseAction(s,u,options);if(a.x!==u.x||a.y!==u.y){const path=moveUnit(s,id,a.x,a.y);if(!path)throw Error('Policy chose illegal move');trace.push({type:'move',id,x:a.x,y:a.y});}const r=performAction(s,id,a.mode,a.target);if(!r.ok)throw Error(r.error);trace.push({type:'action',id,mode:a.mode,target:a.target});if(s.outcome)break;}
+  for(const id of ['kai','lia','elina','sain','eric']){const u=findUnit(s,id);if(!canAct(s,u))continue;const a=chooseAction(s,u,options);if(a.x!==u.x||a.y!==u.y){const path=moveUnit(s,id,a.x,a.y);if(!path)throw Error('Policy chose illegal move');trace.push({type:'move',id,x:a.x,y:a.y});if(settleDuel(s,trace)){openStory(s);for(let i=0;s.narrative.active&&i<100;i++)advanceStory(s);if(s.outcome)break;if(!canAct(s,u))continue;}}const r=performAction(s,id,a.mode,a.target);if(!r.ok)throw Error(r.error);trace.push({type:'action',id,mode:a.mode,target:a.target});if(s.outcome)break;}
   states.push({turn:s.turn,hp:s.units.filter(u=>u.team==='ally').map(u=>({id:u.id,hp:u.hp})),rescued:s.units.filter(u=>u.rescued).length});
   if(!s.outcome){beginEnemyPhase(s);trace.push({type:'phase'});while(s.phase==='enemy'&&!s.outcome)advanceEnemy(s);}
  }

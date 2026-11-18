@@ -1,0 +1,15 @@
+sheet,cell,id,kind,name_en,name_ko,description
+P,1,arenCrest,treasure,Aren's Shield Crest,아렌의 방패 문장,"Aren's Shield Crest (아렌의 방패 문장): an old round steel shield boss, dented and scratched, with a strip of ash-grey cloth tied through it (no emblem, no letters)."
+P,2,teacherTome,treasure,The Teacher's Tome,스승의 마도서,"The Teacher's Tome (스승의 마도서): a worn leather-bound spellbook with brass corners, a faint violet glow leaking between the pages."
+P,3,garrRing,treasure,Garr's Iron Ring,가르의 쇠가락지,"Garr's Iron Ring (가르의 쇠가락지): a thick, crude iron ring with a scratched surface, resting on a scrap of red cloth."
+P,4,runnerMapCase,treasure,The Runner's Map Case,도주 대장의 지도통,"The Runner's Map Case (도주 대장의 지도통): a leather map tube with a shoulder strap, a rolled map peeking out of the open end."
+P,5,pursuerGreaves,treasure,The Pursuer's Greaves,추격 지휘관의 각반,The Pursuer's Greaves (추격 지휘관의 각반): a pair of leather-and-iron greaves splashed with dried mud.
+P,6,quartermasterSeal,treasure,The Quartermaster's Seal,병참관의 인장,"The Quartermaster's Seal (병참관의 인장): a small brass seal stamp with a dark wooden handle, its stamp face plain and blank."
+Q,1,tavern,ui,tavern,주점,"a heavy wooden tavern mug with foam, beside a small hanging tavern sign board that is blank"
+Q,2,requestBoard,ui,requestBoard,의뢰 게시판,a small wooden notice board on two posts with three pinned papers that are blank
+Q,3,bounty,ui,bounty,현상금,"a rolled bounty paper tied with cord and a plain red wax seal (no mark), a small stack of silver coins"
+Q,4,worldTravel,ui,worldTravel,세계 지도 이동,"a folded travel map with painted hills and a river, a brass compass resting on it"
+Q,5,duelEvent,ui,duelEvent,일기토,two longswords crossed blade to blade with a bright spark where they meet
+Q,6,eliteHire,ui,eliteHire,엘리트 용병,"a polished steel gauntlet gripping a short sword hilt, with a thin gold edge on the cuff"
+Q,7,hire,ui,hire,고용,a leather coin purse on top of a rolled contract (blank) tied with string
+Q,8,rescue,ui,rescue,구출,a cut rope and an opened iron shackle lying on grass

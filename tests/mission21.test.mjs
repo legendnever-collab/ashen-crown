@@ -2,6 +2,7 @@
 // Dario and Ines at one blow, the others in two; each broken stone gives the king 10 HP), the ward pulse (outer ring on odd
 // turns, inner ring on even turns; MP −3 for a hero ending the player phase there), Erik's duel at TURN 2, victory by
 // stones or by holding to the end of TURN 12, defeat when the king falls, the king's request, Aren's awakening, the feat.
+import {standBeside} from './duel-helper.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {MISSIONS} from '../src/data/missions.js';
 import {STORY} from '../src/data/story.js';
@@ -27,7 +28,7 @@ test('M21 data: 18×14 crown\'s heart, level 17, sortie of seven, the king on th
 });
 test('the king cannot be rescued or moved; Erik is challenged on TURN 2',()=>{
  const s=battle(),king=findUnit(s,'king'),e=findUnit(s,'eric');assert.ok(king.noRescue);place(e,8,6);assert.ok(!validTarget(s,e,king,'rescue'));
- quiet(s,'rc');s.duel=null;s.missionState.duelDone=false;enemyPhase(s);assert.equal(s.turn,2);assert.equal(s.duel?.foe,'rc');assert.equal(s.duel.hero,'eric');
+ quiet(s,'rc');s.duel=null;s.missionState.duelDone=false;enemyPhase(s);assert.equal(s.turn,2);standBeside(s,'eric','rc');assert.equal(s.duel?.foe,'rc');assert.equal(s.duel.hero,'eric');
  assert.equal(king.x,8);assert.equal(king.y,5);
 });
 test('anchor stones: Erik breaks one at one blow and the king gets 10 HP; Elina needs two',()=>{

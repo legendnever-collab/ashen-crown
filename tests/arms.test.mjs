@@ -57,9 +57,9 @@ test("Velmar's rare-goods shelf: one specialty of another town at +25%, bought o
 });
 
 test('revisiting a town: from the M09 camp to Ironhold and back; heroes stay in camp, no council there, the save keeps the visit',()=>{
- const s=hubAt(9,8);assert.deepEqual(revisitTowns(s).map(t=>t.hub),['village_raid','castletown']);assert.ok(!travelTo(s,'velmar'),'not the camp itself');
+ const s=hubAt(9,8);assert.deepEqual(revisitTowns(s).map(t=>t.hub),['village_raid','castletown','reed','stonewell'],'v2.1: the small villages opened by M04');assert.ok(!travelTo(s,'velmar'),'not the camp itself');
  assert.ok(travelTo(s,'castletown'));assert.equal(s.frontier.hub,'castletown');assert.equal(s.frontier.revisit,'velmar');
- const h=currentHub(s);assert.ok(!h.npcs.some(n=>['aren','lia','advisor','eric','thea'].includes(n.id)));assert.ok(h.npcs.some(n=>n.id==='elder'));assert.ok(!h.places.some(p=>p.action==='enter'),'no generic rooms (no chests) on a revisit');
+ const h=currentHub(s);assert.ok(!h.npcs.some(n=>['aren','lia','advisor','eric','thea'].includes(n.id)));assert.ok(h.npcs.some(n=>n.id==='elder'));assert.ok(!h.places.some(p=>p.action==='enter'&&p.interior!=='tavern'),'no generic rooms (no chests) on a revisit — only the tavern (v2.1)');
  assert.ok(!openCouncil(s));assert.equal(shelfState(s,'plateCuirass').state,'sale','armor unlocked by M08, bought on the way back');assert.ok(tx(s,'buy-gear','plateCuirass','eric').ok);
  const e=h.npcs.find(n=>n.id==='elder');s.frontier.x=e.x;s.frontier.y=e.y+1;assert.ok(interactNPC(s,'elder'));assert.ok(s.narrative.active?.key.startsWith('revisit:castletown')||s.narrative.queue.some(k=>k.startsWith('revisit:castletown')));drain(s);
  const again=deserialize(serialize(s));assert.equal(again.frontier.hub,'castletown');assert.equal(again.frontier.revisit,'velmar');
@@ -140,7 +140,7 @@ test('cut-ins: a hero critical hit and a ③ skill carry one line; enemies never
 });
 
 test('schema 11: stars, treasure slot, hidden objectives and battle flags round-trip; damaged records are rejected; treasures are never sold or tempered',()=>{
- assert.equal(SCHEMA,20);const s=hubAt(9,8);assert.ok(tx(s,'buy-gear','twinSabers').ok===false||true);own(s,'herbPouch');s.campaign.feats=[1];
+ assert.equal(SCHEMA,21);const s=hubAt(9,8);assert.ok(tx(s,'buy-gear','twinSabers').ok===false||true);own(s,'herbPouch');s.campaign.feats=[1];
  const blade=s.economy.gear.at(-1);assert.equal(tx(s,'sell-gear',blade.id).ok,false);assert.equal(tx(s,'upgrade',blade.id).ok,false);assert.ok(tx(s,'equip',blade.id,'eric','treasure').ok);
  const again=deserialize(serialize(s));assert.equal(again.economy.equipped.eric.treasure,blade.id);assert.deepEqual(again.campaign.feats,[1]);
  for(const bad of [x=>{x.economy.gear.at(-1).star=3;},x=>{x.economy.gear.push({...x.economy.gear.at(-1),id:`g${x.economy.next++}`});},x=>{x.campaign.feats=[1,1];},x=>{x.economy.gear.at(-1).level=0;},x=>{delete x.economy.equipped.eric.treasure;}]){const c=structuredClone(s);bad(c);assert.throws(()=>serialize(c));}

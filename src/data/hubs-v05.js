@@ -1,4 +1,6 @@
 import {ACT2_HUB_SPECS} from './hubs-v06.js';
+// v2.1 (D-118): the hubs whose inn-1 is a tavern (주점 · 인재 확보).
+const TAVERN_SPECS=new Set(['village','village_raid','castletown','velmar','pilgrim','capital','forest','reed','stonewell']);
 // v0.5.0 painted interlude hubs (D-052). Each hub is one 1536×1024 painting = 24×16 tiles of 64 px.
 // mask: '.' walkable, '#' solid (authored over the painting). Doors use the same five building ids in
 // every camp-type hub so chest records and saved interiors stay valid when the legion moves on.
@@ -43,8 +45,8 @@ const hv5Interior={inn:'barracks',warroom:'quarters',depot:'store',residence:'ho
 const hv5Shop={forge:'weapon',shop:'item'};
 function hv5Build(id,spec){
  const mask=spec.solid?spec.mask.map((r,y)=>[...r].map((c,x)=>spec.solid.some(([a,b])=>a===x&&b===y)?'#':c).join('')):spec.mask;if(mask.length!==16||mask.some(r=>r.length!==24))throw Error(`hub mask ${id}`);
- const buildings=[],places=spec.places.map(([pid,name,x,y])=>({id:pid,name,x,y}));
- for(const [bid,label,name,x,y,w,h,dx,dy] of spec.doors){const type=bid.split('-')[0],shop=hv5Shop[bid],interior=shop||hv5Interior[type];
+ const buildings=[],places=spec.places.map(([pid,name,x,y])=>({id:pid,name,x,y,...(pid==='exit'||pid==='gate'?{action:'world'}:{})})); /* v2.1: the way out opens the world map */
+ for(const [bid,label0,name0,x,y,w,h,dx,dy] of spec.doors){const type=bid.split('-')[0],shop=hv5Shop[bid],tavern=TAVERN_SPECS.has(id)&&bid==='inn-1',interior=shop||(tavern?'tavern':hv5Interior[type]),label=tavern?'TAVERN':label0,name=tavern?'주점':name0; /* v2.1: the town's inn is its tavern (D-118) */
   const entrance={tileX:dx,tileY:dy,approachDirection:'north',triggerType:'interact'};
   buildings.push({x,y,w,h,label,type,buildingId:bid,entrance,returnPoint:{tileX:dx,tileY:dy+1},interiorScene:interior,painted:true});
   places.push(shop?{id:bid,name,x:dx,y:dy+1,action:shop,entrance,buildingId:bid}:{id:bid,name,x:dx,y:dy+1,action:'enter',entrance,buildingId:bid,interior,hub:id});}
@@ -232,4 +234,13 @@ HV5_SPECS.keep={...HV5_SPECS.fortress,name:"Guardians' Keep · 수호자 성채"
 HV5_SPECS.forest={...HV5_VILLAGE,name:'Forest Village · 숲지기 마을',kind:'forest',art:'hub_forest', // ACT III pack F2 (D-088): painted on the village's footprint
  npcs:[...HV5_SPECS.village.npcs.map(n=>n[0]==='elder'?['elder','숲지기 장로',n[2],n[3],{look:'forestElder'}]:n[0]==='refugee'?['refugee','숲지기',n[2],n[3],{look:'forester'}]:n[0]==='guard'?['guard','숲 길잡이',n[2],n[3]]:n),
   ['thea','테아 · 숲 어귀',13,4,{kind:'hero',requires:'thea'}],['dario','다리오 · 우물',20,4,{kind:'hero',requires:'dario'}],['ines','이네스 · 고목 아래',9,4,{kind:'hero',requires:'ines'}]]};
+// v2.1 작은 마을 (D-118, TAVERN_WORLD_DESIGN §7; PROPOSED): the villages a cleared castle opens on the world map. Until
+// art pack H1 (v2) paints them they stand on the Ashen Village's daytime painting (D-094 manner); the war table becomes
+// the village's request board. Their townsfolk have their own names.
+// v2.1.0 (art pack H1 part F, imported 2026-11-18, D-121): each small village has its own painting on the ash village layout.
+const smallVillage=(name,elder,folk,guard,art)=>({...HV5_VILLAGE,name,kind:'village',art,lights:[],
+ places:HV5_VILLAGE.places.filter(p=>p[0]!=='advisor'),
+ npcs:[['elder',elder,22,9],['refugee',folk,7,8],['guard',guard,12,14],['requests','의뢰 게시판 · 촌장 회관',19,8,{service:'requests',reach:1}]]});
+HV5_SPECS.reed=smallVillage('Reed Ferry · 갈대 나루','나루 촌장','뱃사공','나루 경비','hub_reed');
+HV5_SPECS.stonewell=smallVillage('Stonewell · 돌우물 마을','돌우물 촌장','우물지기','길목 파수','hub_stonewell');
 export const ART_HUBS=Object.fromEntries(Object.entries(HV5_SPECS).map(([id,spec])=>[id,hv5Build(id,spec)]));

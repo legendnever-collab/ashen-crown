@@ -1,7 +1,7 @@
 import {legacyRewardCatchup} from '../core/battle-rewards.js';
 import {UNIT_CLASS8} from '../data/classes8.js';
 import {statsAt,deriveUnit,DIFFICULTY,difficultyOf} from '../core/stats8.js';
-import {ensureOfficers,recruitRecord} from '../core/roster.js';
+import {recruitRecord} from '../core/roster.js';
 import {newGame,deployZoneOf} from '../core/game.js';
 import {enterHub} from '../core/frontier.js';
 import {START_TREASURES} from '../core/economy.js';
@@ -97,7 +97,6 @@ function reform200(s){
  if(!battle&&MISSIONS[s.missionId]?.v200){const fresh=newGame(s.initialSeed??20261014,structuredClone(s.campaign),s.missionId),allies=s.units.filter(u=>u.team==='ally');for(const u of allies){const f=fresh.units.find(v=>v.id===u.id);if(f){u.x=f.x;u.y=f.y;}}const free=[...deployZoneOf(fresh)].map(k=>k.split(',').map(Number));for(const u of allies)if(!fresh.units.some(v=>v.id===u.id)){const t=free.find(([x,y])=>!allies.some(o=>o!==u&&o.x===x&&o.y===y)&&!fresh.units.some(o=>o.x===x&&o.y===y));if(t){u.x=t[0];u.y=t[1];}}for(const u of allies)delete u.recoveryPhase;s.units=[...allies,...fresh.units.filter(u=>u.team!=='ally')];s.missionState=fresh.missionState;s.missionStart=fresh.missionStart;s.turn=1;s.phase=fresh.phase;s.enemyQueue=[];s.enemyIndex=0;delete s.reinforced;s.burning={};delete s.stageStart;}
  const c=s.campaign;c.difficulty??='normal';
  for(const rec of c.heroes||[]){if(!rec||rec.stats||!UNIT_CLASS8[rec.id])continue;rec.cls=UNIT_CLASS8[rec.id];rec.stats=statsAt(rec.id,rec.level||1,rec.classTier||1);delete rec.hp;deriveUnit(rec);rec.hp=rec.maxHP;}
- ensureOfficers(c,s.missionId);
  for(const u of s.units||[]){if(u.team!=='ally')continue;const rec=(c.heroes||[]).find(h=>h.id===u.id);if(rec?.stats){u.cls=rec.cls;u.stats=structuredClone(rec.stats);}else if(UNIT_CLASS8[u.id]&&!u.stats){u.cls=UNIT_CLASS8[u.id];u.stats=statsAt(u.id,u.level||1,u.classTier||1);}const down=u.hp!=null&&u.hp<=0;delete u.hp;deriveUnit(u);u.hp=down?0:u.maxHP;}
  for(const id of c.roster||[])if(!s.units.some(u=>u.id===id)){const rec=c.heroes?.find(h=>h.id===id)||recruitRecord(id,1);const m=MISSIONS[s.missionId],free=[...deployZoneOf(s)].map(k=>k.split(',').map(Number)).find(([x,y])=>!s.units.some(o=>o.x===x&&o.y===y)&&Number.isFinite(terrainAt(x,y,s)?.cost))||(()=>{for(let y=0;y<m.height;y++)for(let x=0;x<m.width;x++)if(Number.isFinite(terrainAt(x,y,s)?.cost)&&!s.units.some(o=>o.x===x&&o.y===y))return [x,y];return [0,0];})();s.units.push({...structuredClone(rec),team:'ally',x:free[0],y:free[1],moved:false,acted:false,hitThisTurn:false,shadowBonus:0,guardTarget:null,benched:true});if(Array.isArray(s.missionStart)&&!s.missionStart.some(m=>m.id===id))s.missionStart.push({id,level:rec.level||1,stats:{maxHP:rec.maxHP,atk:rec.atk,def:rec.def,mag:rec.mag}});}
  for(const e of [s.economy,c.economy]){if(!e?.equipped)continue;for(const id of c.roster||[])e.equipped[id]??={weapon:null,armor:null,accessory:null,treasure:null};
@@ -140,9 +139,12 @@ export function migrate(s){
  // v1.0.0 (D-113): ACT IV part 4 — M29–M30, Bellard, the new ward, the endings; a schema-18 save keeps everything.
  if(s?.schema===18){s.schema=19;s.version='1.0.0';if(s.stageStart)s.stageStart=migrate(s.stageStart);}
  // v2.0.0 (D-115, REFORM_DESIGN §8): the six stats replace the old growth (recomputed from level and tier), gear follows the
- // class (pieces that no longer fit go back to the bag), the start treasures and the earned officers join, a battle in
+ // class (pieces that no longer fit go back to the bag), the start treasures join (v2.1: officers are hired, not given), a battle in
  // progress reopens in the camp of its mission (the big maps differ). Difficulty starts at 보통.
  if(s?.schema===19)s=reform200(s);
+ // v2.1 (D-118): the officers a save already has stay as hires (paid for, kept); the five are together from the start (no
+ // walk-and-talk joining); the v2.0.0 duel challenge leaves no record (duels are events now). Battles keep going.
+ if(s?.schema===20){s.schema=21;s.version='2.1.0';for(const t of [s,s.stageStart].filter(Boolean)){tavern210(t);delete t.challenges;delete t.lastChallenge;for(const u of t.units||[])delete u.duelled;}}
  if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');
  // v0.6.1: a save of the current schema made by an earlier build of it (e.g. v0.6.0) is now this version.
  if(s?.schema===SCHEMA&&s.version!==VERSION){s.version=VERSION;if(s.stageStart?.version)s.stageStart.version=VERSION;}
@@ -151,12 +153,14 @@ export function migrate(s){
  // v0.6 (D-062): rewritten scenes can differ in length; a save paused inside a scene resumes on its last line at most.
  if(s?.schema===SCHEMA)for(const n of [s.narrative,s.stageStart?.narrative]){const a=n?.active,len=a&&STORY[a.key]?.length;if(len&&Number.isInteger(a.index)&&a.index>=len)a.index=len-1;}
  // v0.5 hubs (D-052): every load re-anchors the frontier to the hub of its story moment (spatial only).
- if(s?.schema===SCHEMA){if(s.frontier)alignFrontier(s.frontier,s.missionId,s.screen);if(s.campaign?.frontier)alignFrontier(s.campaign.frontier,s.missionId,s.screen);if(s.skirmish?.frontier)alignFrontier(s.skirmish.frontier,s.skirmish.returnMission,'exploration');if(s.stageStart?.frontier)alignFrontier(s.stageStart.frontier,s.stageStart.missionId,s.stageStart.screen);if(s.stageStart?.campaign?.frontier)alignFrontier(s.stageStart.campaign.frontier,s.stageStart.missionId,s.stageStart.screen);}
+ if(s?.schema===SCHEMA){if(s.frontier)alignFrontier(s.frontier,s.missionId,s.screen,s.campaign);if(s.campaign?.frontier)alignFrontier(s.campaign.frontier,s.missionId,s.screen,s.campaign);if(s.skirmish?.frontier)alignFrontier(s.skirmish.frontier,s.skirmish.returnMission,'exploration');if(s.stageStart?.frontier)alignFrontier(s.stageStart.frontier,s.stageStart.missionId,s.stageStart.screen);if(s.stageStart?.campaign?.frontier)alignFrontier(s.stageStart.campaign.frontier,s.stageStart.missionId,s.stageStart.screen);}
  return validate(s);
 }
 const KO_NAMES={'Erik':'에릭','Elina':'엘리나','Lia':'리아','Sain':'세인','Kai':'카이','Thea':'테아','Dario':'다리오','Rook':'룩','Varr':'바르','Cinder':'신더','Ash Bow':'애시 보우',
  'Garr — Bandit Captain':'가르 — 산적 두목','North Raider':'북쪽 습격대원','North Bow':'북쪽 궁수','Mira':'미라','부상한 Mira':'부상한 미라','Tomas':'토마스','Baldrick Roen · 검은 사자':'발드릭 로엔 · 검은 사자'};
 function koreanNames(s){for(const list of [s.units,s.campaign?.heroes,s.stageStart?.units,s.stageStart?.campaign?.heroes])for(const u of list||[])if(KO_NAMES[u.name])u.name=KO_NAMES[u.name];}
+function tavern210(s){const c=s.campaign;if(!c)return;for(const e of [c.economy,s.economy].filter(Boolean)){const h=[...new Set([...(e.hired||[]),...['bram','noa','marta','rowell'].filter(id=>c.roster?.includes(id))])];if(h.length)e.hired=h;}
+ for(const f of [s.frontier,c.frontier].filter(Boolean)){for(const id of ['lia','sain','kai'])if(f.affiliation)f.affiliation[id]='affiliated';f.pendingRecruit=null;for(const id of ['eric','elina','lia','sain','kai'])if(f.members&&!f.members.includes(id))f.members.push(id);}}
 export function serialize(s){validate(s);const data=JSON.stringify({...s,feedback:[]});return JSON.stringify({format:'AshenCrown',schema:SCHEMA,checksum:checksum(data),data});}
 export function deserialize(text){if(typeof text!=='string'||text.length>5000000)throw Error('저장 크기가 올바르지 않습니다.');const envelope=JSON.parse(text);if(envelope.format!=='AshenCrown'||typeof envelope.data!=='string'||checksum(envelope.data)!==envelope.checksum)throw Error('저장 검증에 실패했습니다.');return migrate(JSON.parse(envelope.data));}
 export function saveGame(s,storage){let old,previousBackup,writing=false;try{const data=serialize(s);old=storage.getItem(SAVE_KEY);previousBackup=storage.getItem(BACKUP_KEY);if(old){try{deserialize(old);storage.setItem(BACKUP_KEY,old);}catch{}}

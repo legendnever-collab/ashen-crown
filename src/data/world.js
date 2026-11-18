@@ -62,9 +62,12 @@ export const SITES=[
  {id:'fortress',name:'버려진 성채',icon:'ruin',x:1361,y:360,region:'east',mission:4,hub:'fortress'},
  {id:'ridge',name:'국경 능선',icon:null,x:1325,y:275,region:'east',mission:5},
  {id:'gate',name:'국경 관문',icon:'gate',x:1432,y:333,region:'east',mission:6},
- {id:'oathcamp',name:'관문 너머 야영지',icon:'camp',x:1458,y:295,region:'east',hub:'oathcamp',small:true}
+ {id:'oathcamp',name:'관문 너머 야영지',icon:'camp',x:1458,y:295,region:'east',hub:'oathcamp',small:true},
+ // v2.1 작은 마을 (D-118): opened by clearing the abandoned fortress (M04)
+ {id:'reed',name:'갈대 나루',icon:'village',x:1398,y:398,region:'east',hub:'reed',small:true,opens:4},
+ {id:'stonewell',name:'돌우물 마을',icon:'village',x:1288,y:335,region:'east',hub:'stonewell',small:true,opens:4}
 ];
-export const HUB_SITE={village:'village',village_raid:'village',camp:'garrison',bivouac:'bivouac',fortress:'fortress',oathcamp:'oathcamp',castletown:'stronghold',march:'canyon',velmar:'freecity',pilgrim:'pilgrimvillage',refuge:'refugecamp',summit:'waystation',capital:'capital',fieldcamp:'oldfield',keep:'guardkeep',forest:'unburning'};
+export const HUB_SITE={village:'village',village_raid:'village',camp:'garrison',bivouac:'bivouac',fortress:'fortress',oathcamp:'oathcamp',castletown:'stronghold',march:'canyon',velmar:'freecity',pilgrim:'pilgrimvillage',refuge:'refugecamp',summit:'waystation',capital:'capital',fieldcamp:'oldfield',keep:'guardkeep',forest:'unburning',reed:'reed',stonewell:'stonewell'};
 // ACT I march order (W1): village → garrison → forest → bridge → bivouac → fortress → ridge → gate → oath camp.
 export const ACT1_ROUTE=['village','garrison','forest','bridge','bivouac','fortress','ridge','gate','oathcamp'];
 // ACT II first half (D-055 §6): oath camp → Ironhold's castle town → the grey canyon → Velmar. Drawn from v0.6 Phase F.
@@ -79,4 +82,4 @@ export const FULL_ROUTE=[...ACT1_ROUTE,...ACT2_ROUTE.slice(1),...ACT3_ROUTE.slic
 export const siteById=id=>SITES.find(s=>s.id===id);
 // How far along the march the legion has come, from completed missions.
 export function routeReached(campaign,hub){const c2=campaign?.completed||[];if(HUB_SITE[hub]&&(ACT2_ROUTE.includes(HUB_SITE[hub])||ACT3_ROUTE.includes(HUB_SITE[hub]))&&HUB_SITE[hub]!=='oathcamp'||c2.includes(7)){let j=FULL_ROUTE.indexOf(HUB_SITE[hub]);if(c2.includes(7))j=Math.max(j,FULL_ROUTE.indexOf('stronghold'));if(c2.includes(8))j=Math.max(j,FULL_ROUTE.indexOf('canyon'));if(c2.includes(12))j=Math.max(j,FULL_ROUTE.indexOf('monastery'));if(c2.includes(13))j=Math.max(j,FULL_ROUTE.indexOf('refugecamp'));if(c2.includes(14))j=Math.max(j,FULL_ROUTE.indexOf('waystation'));if(c2.includes(15))j=Math.max(j,FULL_ROUTE.indexOf('capital'));if(c2.includes(16))j=Math.max(j,FULL_ROUTE.indexOf('oldfield'));for(const [m,site] of [[17,'guardkeep'],[18,'unburning'],[19,'undercroft'],[20,'chancellery'],[21,'crownheart'],[22,'ashsquare'],[23,'alliancecamp'],[24,'lastborder'],[25,'threebanners'],[26,'lionpass'],[27,'royalgate'],[28,'ashenpalace']])if(c2.includes(m))j=Math.max(j,FULL_ROUTE.indexOf(site));return Math.max(ACT1_ROUTE.length-1,j);}const c=campaign?.completed||[];let i=ACT1_ROUTE.indexOf(HUB_SITE[hub]||'village');for(const [m,site] of [[1,'village'],[2,'forest'],[3,'bridge'],[4,'fortress'],[5,'ridge']])if(c.includes(m))i=Math.max(i,ACT1_ROUTE.indexOf(site));if(c.includes(5)&&hub==='oathcamp')i=ACT1_ROUTE.length-1;return Math.max(0,i);}
-export const siteKnown=(site,campaign)=>site.region==='east'||REGIONS.find(r=>r.id===site.region)?.shown(campaign||{completed:[]});
+export const siteKnown=(site,campaign)=>site.opens?!!campaign?.completed?.includes(site.opens):site.region==='east'||REGIONS.find(r=>r.id===site.region)?.shown(campaign||{completed:[]});

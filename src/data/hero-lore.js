@@ -1,3 +1,4 @@
+import {MERC_LORE} from './mercs-v210.js';
 // 2026-11-11 play-test (D-108): the hero sheet tells each hero's story — a title, personality, a line of their own, their
 // past, the chapters they have lived through (opened mission by mission, so nothing ahead is spoiled), their bonds, and
 // how to raise their potential with live progress. Wording follows docs/story (CHARACTER_BIBLE, STORY_BIBLE) and the
@@ -93,9 +94,11 @@ export const HERO_LORE={
   chapters:[{after:1,text:'대장간 문짝을 방패 삼아 마을 사람들 앞에 섰다. 화살 자국 다섯을 세며 다섯 번 살았다고 했다.'},{after:4,text:'버려진 성채에서 녹슨 경첩을 망치로 깼다. 대장장이는 원래 문 앞에 서는 법이라고 했다.'},{after:6,text:'대장간은 두고 왔지만 망치와 모루는 챙겼다.'}],
   bonds:[['eric','방패 끈을 매 주는 사이. 괜찮다는 그의 손목이 제일 떨린다는 걸 안다.'],['rowell','사슬갑옷 고리를 끼워 주었다. 고맙다는 말은 필요 없다고 했다.']]},
  rowell:{title:'떠난 기병',traits:['과묵함','성실','죄책감'],likes:'새벽의 빈 길, 잘 달리는 말',dislikes:'이유 없는 명령',quote:'앞길은 내가 먼저 보마.',
-  bio:'국경 순찰대를 떠난 기병. 버려진 성채의 지하 창고에 숨어 있다가 군단을 만났다. 떠난 이유는 아직 말하지 않는다.',
+  bio:'국경 순찰대를 떠난 기병. 버려진 성채 아래 갈대 나루 주점에서 일거리를 찾다가 군단에 고용되었다. 떠난 이유는 아직 말하지 않는다.',
   chapters:[{after:4,text:'버려진 성채의 지하 창고에서 군단을 만났다. 같이 가겠다고 했고, 이유는 묻지 말아 달라고 했다.'},{after:5,text:'검은 사자의 이름 앞에서 망설이지 않는 사람이 가장 무섭다고 말했다.'},{after:6,text:'명령을 어기는 쪽에 두 번째로 섰다. 이번엔 혼자가 아니었다.'}],
   bonds:[['marta','갑옷 고리를 끼워 준 사람.'],['bram','도망친 군인을 지켜보는 눈. 언젠가 이유를 말해야 할 사람.']]}
+ // v2.1 (D-118): the later hires and the ACT I rescued hero
+ ,...MERC_LORE
 };
 // How each hero grows: the signature action behind ★ (proficiency) and, for the first five, how each potential step is met
 // with its live progress [now, goal] (null when the step is a single event).
@@ -106,6 +109,7 @@ export const GROWTH_TIPS={
  sain:{signature:'치유하기',steps:[{how:'치유할 때 대상 곁의 다친 동료까지 함께 회복시킨다(연결 회복)',progress:null},{how:'치유 8번',progress:m=>[Math.min(8,tmN(m,'sain_heal')),8]},{how:'M06 피난민 치유, M05 엘리나 치유, 또는 치유 16번',progress:m=>[Math.min(16,tmN(m,'sain_heal')),16]}]},
  kai:{signature:'구출·우회·생포·빠른 일격',steps:[{how:'빠른 발로 주민을 구출한다',progress:m=>[Math.min(1,tmN(m,'kai_rescue')),1]},{how:'구출·우회·생포를 합쳐 3번',progress:m=>[Math.min(3,tmN(m,'kai_rescue')+tmN(m,'kai_bypass')+tmN(m,'kai_capture')),3]},{how:'M06 측면 관문 레버, 또는 구출·우회·조사를 합쳐 6번',progress:m=>[Math.min(6,tmN(m,'kai_rescue')+tmN(m,'kai_bypass')+tmN(m,'kai_capture')+tmN(m,'kai_search')),6]}]}
 };
-export const loreChapters=(id,campaign,tier=1)=>{const done=new Set(campaign?.completed||[]),f=campaign?.flags||{},all=HERO_LORE[id]?.chapters||[];
+// v2.1 (D-118): a hire's or rescued hero's chapters start after the mission they joined at (campaign.hires[id]).
+export const loreChapters=(id,campaign,tier=1)=>{const done=new Set(campaign?.completed||[]),f=campaign?.flags||{},from=campaign?.hires?.[id],all=(HERO_LORE[id]?.chapters||[]).filter(c=>from==null||c.after>from);
  /* the awakening is told only once the hero has awakened (the mission opens the trial; the trial awakens) */
  return {open:all.filter(c=>done.has(c.after)).map(c=>({after:c.after,text:(typeof c.text==='function'?c.text(f):c.text)+(c.awaken&&tier>=3?` → 각성 「${c.awaken}」`:'')})),next:all.find(c=>!done.has(c.after))?.after??null};};

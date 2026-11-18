@@ -1,5 +1,6 @@
-export const VERSION = '2.0.0';
-export const SCHEMA = 20;
+import {NEW_HEROES} from './mercs-v210.js';
+export const VERSION = '2.1.0';
+export const SCHEMA = 21;
 export const WIDTH = 12, HEIGHT = 10;
 // v0.4 benchmark pass: physical cut (fraction), evade (%), fire multiplier and per-class
 // movement live together so the tap readout can describe each tile in one line.
@@ -59,7 +60,8 @@ export const RECRUIT_HEROES = [
  {id:'bram',name:'브람',ko:'브람',officer:true,className:'Spearhand',role:'Spear',level:1,hp:39,mp:10,atk:15,def:8,mag:3,res:5,spd:5,mov:4,range:[1,1],skill:'Brace',cost:3,talent:'Old Watch',color:'#8c7a5a',growth:{mp:1},description:'잿빛 마을 자경단장. 아렌의 옛 부하. 방진: 공격 ×1.1, 다음 아군 턴까지 받은 공격에 반격 ×1.5.',clue:'',goal:''},
  {id:'noa',name:'노아',ko:'노아',officer:true,className:'Bowhand',role:'Ranged',level:1,hp:30,mp:12,atk:15,def:4,mag:3,res:4,spd:9,mov:4,range:[2,3],skill:'Aimed Shot',cost:3,talent:'Village Hunter',color:'#7aa05a',growth:{mp:2},description:'마을의 젊은 사냥꾼. 엘리나와 활 솜씨를 겨룬다. 조준 사격: 명중 +18, 피해 ×1.15.',clue:'',goal:''},
  {id:'marta',name:'마르타',ko:'마르타',officer:true,className:'Shieldhand',role:'Protector',level:1,hp:37,mp:10,atk:15,def:8,mag:3,res:5,spd:4,mov:3,range:[1,1],skill:'Shield Oath',cost:3,talent:'Forge Arm',color:'#a8714a',growth:{mp:1},description:'마을 대장장이. 망치와 문짝 방패. 방패의 맹세: 곁의 동료가 받는 피해 −15%, 맹세 후 −30%.',clue:'',goal:''},
- {id:'rowell',name:'로웰',ko:'로웰',officer:true,className:'Rider',role:'Cavalry',level:1,hp:36,mp:10,atk:16,def:7,mag:3,res:4,spd:8,mov:6,range:[1,1],skill:'Charge',cost:3,talent:'Border Rider',color:'#6a7fa0',growth:{mp:1},description:'버려진 성채에서 만난 탈영 국경 기병. 돌격: 피해 ×1.25, 3칸 이상 달리면 ×1.45에 반격 없음.',clue:'',goal:''}
+ {id:'rowell',name:'로웰',ko:'로웰',officer:true,className:'Rider',role:'Cavalry',level:1,hp:36,mp:10,atk:16,def:7,mag:3,res:4,spd:8,mov:6,range:[1,1],skill:'Charge',cost:3,talent:'Border Rider',color:'#6a7fa0',growth:{mp:1},description:'버려진 성채에서 만난 탈영 국경 기병. 돌격: 피해 ×1.25, 3칸 이상 달리면 ×1.45에 반격 없음.',clue:'',goal:''},
+ ...NEW_HEROES // v2.1 (D-118): later tavern hires and the ACT I rescued hero
 ];
 export const CORE_HERO_IDS = HEROES.map(h=>h.id);
 export const ALL_HEROES = [...HEROES,...RECRUIT_HEROES];

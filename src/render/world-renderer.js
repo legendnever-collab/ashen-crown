@@ -37,7 +37,7 @@ export function drawWorld(canvas,{campaign,world,time=performance.now(),start=ti
  c.save();c.lineCap='round';c.lineJoin='round';
  c.strokeStyle='rgba(120,40,30,.45)';c.setLineDash([12,10]);c.lineWidth=4;c.beginPath();pts.forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.stroke();
  c.setLineDash([]);c.strokeStyle='#c0392b';c.lineWidth=5;c.beginPath();pts.slice(0,reached+1).forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.stroke();c.restore();
- for(const s of SITES){const known=siteKnown(s,camp);if(s.mission&&!s.icon){c.save();c.fillStyle='#1d140c';c.beginPath();c.arc(s.x,s.y,6,0,Math.PI*2);c.fill();c.fillStyle='#f3e3b0';c.font='700 13px "Ashen UI",sans-serif';c.textAlign='center';c.fillText('⚔',s.x,s.y-10);c.restore();}
+ for(const s of SITES){const known=siteKnown(s,camp);if(s.opens&&!known)continue; /* v2.1: a small village appears once its castle is cleared */if(s.mission&&!s.icon){c.save();c.fillStyle='#1d140c';c.beginPath();c.arc(s.x,s.y,6,0,Math.PI*2);c.fill();c.fillStyle='#f3e3b0';c.font='700 13px "Ashen UI",sans-serif';c.textAlign='center';c.fillText('⚔',s.x,s.y-10);c.restore();}
   const img=s.icon&&worldImage(`icon_${s.icon}`),size=s.small?44:62;
   if(img)c.drawImage(img,s.x-size/2,s.y-size*.82,size,size);else if(s.icon){c.save();c.fillStyle=known?'#f3e3a4':'#cfc3a5';c.strokeStyle='#2b2118';c.lineWidth=3;c.fillRect(s.x-12,s.y-20,24,20);c.strokeRect(s.x-12,s.y-20,24,20);c.restore();}
   if(known&&!s.small){c.save();c.font='700 15px "Ashen UI",sans-serif';c.textAlign='center';const w=c.measureText(s.name).width+14;c.fillStyle='rgba(24,20,14,.72)';c.fillRect(s.x-w/2,s.y+6,w,21);c.fillStyle='#fbf1d6';c.fillText(s.name,s.x,s.y+22);c.restore();}}

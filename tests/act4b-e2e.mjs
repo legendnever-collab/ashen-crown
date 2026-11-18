@@ -3,11 +3,11 @@
 // after the win the betrayed banner (two ways) → Mission 26 → M26 (the duel modal on TURN 2, Erik's 설득 beside Baldrick at
 // resolve 3 → he yields and joins) → Baldrick in the legion with ①–④, the camp below the pass → Dario's ④ in the menu.
 // 1440×900 and 390×844 touch. Screenshots: docs/v0.10.1/screenshots/act4b.
-import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterWarCouncil} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
+import {standBeside} from './duel-helper.mjs';import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterWarCouncil} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {startBattle,beginEnemyPhase,advanceEnemy,nextMission,newGame} from '../src/core/game.js';
 import {enterHub} from '../src/core/frontier.js';import {chooseBanner25} from '../src/core/mission-rules-v0101.js';import {drain} from './campaign-policy.mjs';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v2.0.0.html').href,shots='docs/v0.10.1/screenshots/act4b';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v2.1.0.html').href,shots='docs/v0.10.1/screenshots/act4b';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const results=[];const check=(name,ok)=>{assert.ok(ok,name);n++;results.push(name);console.log('PASS',name);};
 const camp24=JSON.parse(fs.readFileSync('tests/fixtures/v0100/v0100-m24-camp.json','utf8')).save;
 const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);};
@@ -15,7 +15,7 @@ function ready(){const s=deserialize(camp24);for(const h of s.campaign.heroes){h
 function m25Won(){const s=nextMission(ready());s.screen='deployment';startBattle(s);drain(s);for(const u of s.units.filter(u=>u.camp==='north'))u.hp=0;s.missionState.captain=true;enemyPhase(s);enterHub(s,{aftermath:true});drain(s);return s;}
 function m26(){const s=m25Won();chooseBanner25(s,'lower');const t=nextMission(s);t.screen='deployment';startBattle(t);drain(t);return t;}
 // M26 on TURN 2 with the duel open (every rider down, Baldrick still).
-function m26Duel(){const s=m26();for(const u of s.units.filter(u=>u.team==='enemy'&&u.id!=='boss'))u.hp=0;const bo=s.units.find(u=>u.id==='boss');bo.mov=0;bo.atk=0;enemyPhase(s);return deserialize(serialize(s));}
+function m26Duel(){const s=m26();for(const u of s.units.filter(u=>u.team==='enemy'&&u.id!=='boss'))u.hp=0;const bo=s.units.find(u=>u.id==='boss');bo.mov=0;bo.atk=0;enemyPhase(s);standBeside(s,'eric','boss');return deserialize(serialize(s));} /* v2.1: Erik beside Baldrick opens it */
 // Erik beside Baldrick at resolve 3 (the duel settled).
 function m26Persuade(){const s=m26Duel();if(s.duel&&!s.duel.result)s.duel.result='skipped';s.missionState.duelCounted=true;s.missionState.resolve=3;const bo=s.units.find(u=>u.id==='boss'),e=s.units.find(u=>u.id==='eric');
  for(const [dx,dy] of [[0,1],[1,0],[-1,0]]){if(!s.units.some(o=>o.hp>0&&!o.benched&&o.x===bo.x+dx&&o.y===bo.y+dy)){e.x=bo.x+dx;e.y=bo.y+dy;break;}}e.moved=e.acted=false;return deserialize(serialize(s));}
@@ -31,7 +31,7 @@ try{
   await p.goto(url);await press('new');await drainStory(p);
   // 1. the real v0.10.0 Ashen Village offers Mission 25; the world card; the summit field
   await restore(camp24);await drainStory(p);await closeModals();let s=await snap();
-  check(`${label} the v0.10.0 Ashen Village (after M24) offers Mission 25`,s.schema===20&&s.frontier.hub==='village_raid'&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 25'));
+  check(`${label} the v0.10.0 Ashen Village (after M24) offers Mission 25`,s.schema===21&&s.frontier.hub==='village_raid'&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 25'));
   await press('next-mission');await p.waitForTimeout(400);let card=false;for(let i=0;i<40;i++){if((await body()).includes('세 깃발의 땅')){card=true;await p.screenshot({path:`${shots}/banners-card-${label}.png`});break;}if(!(await snap()).narrative.active)break;await p.keyboard.press('Enter').catch(()=>{});await p.waitForTimeout(150);}
   await drainStory(p);await closeModals();s=await snap();check(`${label} the world card of the three banners and the summit camp`,(card||s.narrative.seen.includes('world:banners'))&&s.frontier.hub==='summit'&&s.missionId===25);
   await enterWarCouncil(p,touch);await press('deploy');await p.waitForTimeout(300);await press('start-battle');await drainStory(p);s=await snap();
@@ -48,7 +48,7 @@ try{
   await p.screenshot({path:`${shots}/banner25-choice-${label}.png`});await press('banner25-pick','forgive');await drainStory(p);await p.waitForTimeout(300);s=await snap();
   check(`${label} the choice is kept and its scene plays; Mission 26 is next`,s.campaign.choices.m25_banner==='forgive'&&s.narrative.seen.includes('after:25:forgive')&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 26'));
   // 4. M26: the duel on TURN 2
-  await restore(m26Duel());await p.waitForTimeout(300);
+  await restore(m26Duel());await drainStory(p);for(let i=0;i<10&&!(await p.locator('[data-do="duel-pick"]').count());i++)await p.waitForTimeout(200); /* v2.1: the pair's two lines, then the arena */
   check(`${label} M26 TURN 2: Baldrick calls Erik to a duel (strike, guard, finisher, refuse)`,await p.locator('[data-do="duel-pick"]').count()===4);
   await p.screenshot({path:`${shots}/m26-duel-${label}.png`});for(let i=0;i<6&&await p.locator('[data-do="duel-pick"][data-id="strike"]').count();i++){await press('duel-pick','strike');await p.waitForTimeout(200);}
   await drainStory(p);s=await snap();check(`${label} the duel is decided (a win is two of resolve)`,['hero','foe'].includes(s.duel.result)&&(s.duel.result==='hero'?s.missionState.resolve>=2:true));

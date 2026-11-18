@@ -45,7 +45,7 @@ export const M29={
  afterDuel(s){countDuel29(s);}, // v2.0.0: counted the moment the duel ends
  onTurnStart(s){const m=missionOf(s),st=s.missionState;act2Waves(s);countDuel29(s);
   for(const r of ritesOf29(s).filter(alive)){if(r.hp<r.maxHP&&heroesOf1000(s).some(h=>distance(h,r)===1)){const n=Math.min(m.riteMend,r.maxHP-r.hp);r.hp+=n;s.feedback.push({type:'heal',id:r.id,text:`의식 +${n}`});}}
-  if(s.turn===m.duelTurn&&!st.duelDone){st.duelDone=true;const b=bellardOf29(s),e=findUnit(s,'eric');if(b&&alive(b)&&e&&alive(e)&&!e.benched&&s.duel==null&&startDuel(s,'eric','boss','29:duel'))enqueueStory(s,'29:duel');}},
+  /* v2.1: the duel is an event when the pair stands side by side (core/duel-events.js) */},
  beforeEnemyPhase(s){countDuel29(s);},
  // Bellard holds the dais in his first phase; with the crown's power he goes for the rite points. Ritualists and grey cloaks
  // unbind the rites; knights hold the hall.

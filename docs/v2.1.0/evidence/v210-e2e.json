@@ -1,0 +1,173 @@
+{
+  "checks": [
+    {
+      "name": "1440 the page is v2.1.0",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 a new campaign is the five alone (no officers in the legion or the camp)",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 walking in town: at most five tiles in a one-second hold (moved 5)",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 the restored save stands in the ash village tavern",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 인재 확보 lists Bram, Noa and Marta with their fee",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 hiring Bram: in the legion, the fee paid",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 the keeper says a word about the new hire",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 leaving the camp opens the world map: the camp, the ash village and the two small villages",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 tapping 갈대 나루 travels there",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 the request board: ferry bandits, barge escort, herbs and the bounty",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 the request asks who goes (five picked)",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 a tap leaves Sain behind",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 the request battle starts with the chosen four (mission 120)",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 no 일기토 신청 anywhere on the battle screen",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 the next player phase opens the Erik–Garr duel event",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 the arena offers 베기 · 막기 · 노리기 and 물러선다",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 물러선다 ends the pair's event",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 the M02 deployment holds six (Bram hired), five sent",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 출전 장수 lists all six",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 swapping who goes keeps five out",
+      "status": "PASS"
+    },
+    {
+      "name": "1440 Erik always goes",
+      "status": "PASS"
+    },
+    {
+      "name": "390 the page is v2.1.0",
+      "status": "PASS"
+    },
+    {
+      "name": "390 a new campaign is the five alone (no officers in the legion or the camp)",
+      "status": "PASS"
+    },
+    {
+      "name": "390 the restored save stands in the ash village tavern",
+      "status": "PASS"
+    },
+    {
+      "name": "390 인재 확보 lists Bram, Noa and Marta with their fee",
+      "status": "PASS"
+    },
+    {
+      "name": "390 hiring Bram: in the legion, the fee paid",
+      "status": "PASS"
+    },
+    {
+      "name": "390 the keeper says a word about the new hire",
+      "status": "PASS"
+    },
+    {
+      "name": "390 leaving the camp opens the world map: the camp, the ash village and the two small villages",
+      "status": "PASS"
+    },
+    {
+      "name": "390 tapping 갈대 나루 travels there",
+      "status": "PASS"
+    },
+    {
+      "name": "390 the request board: ferry bandits, barge escort, herbs and the bounty",
+      "status": "PASS"
+    },
+    {
+      "name": "390 the request asks who goes (five picked)",
+      "status": "PASS"
+    },
+    {
+      "name": "390 a tap leaves Sain behind",
+      "status": "PASS"
+    },
+    {
+      "name": "390 the request battle starts with the chosen four (mission 120)",
+      "status": "PASS"
+    },
+    {
+      "name": "390 no 일기토 신청 anywhere on the battle screen",
+      "status": "PASS"
+    },
+    {
+      "name": "390 the next player phase opens the Erik–Garr duel event",
+      "status": "PASS"
+    },
+    {
+      "name": "390 the arena offers 베기 · 막기 · 노리기 and 물러선다",
+      "status": "PASS"
+    },
+    {
+      "name": "390 물러선다 ends the pair's event",
+      "status": "PASS"
+    },
+    {
+      "name": "390 the M02 deployment holds six (Bram hired), five sent",
+      "status": "PASS"
+    },
+    {
+      "name": "390 출전 장수 lists all six",
+      "status": "PASS"
+    },
+    {
+      "name": "390 swapping who goes keeps five out",
+      "status": "PASS"
+    },
+    {
+      "name": "390 Erik always goes",
+      "status": "PASS"
+    },
+    {
+      "name": "no runtime errors",
+      "status": "PASS"
+    }
+  ],
+  "errors": []
+}

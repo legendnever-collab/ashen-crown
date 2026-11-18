@@ -117,6 +117,8 @@ Object.assign(INTERIORS,{
  store:room('창고 · 내부',10,9,[prop('crate',1,1,2,2),prop('barrel',4,1),prop('barrel',5,1),prop('crate',7,1,2,1),prop('crate',1,5),prop('barrel',8,5)],[['a',8,3],['b',3,4]]),
  quarters:room('지휘 막사 · 내부',10,8,[prop('maptable',3,2,4,2),prop('shelf',1,1,1,3),prop('barrel',8,1)],[['a',8,4]])
 });
+// v2.1 주점 (D-118): the barracks room with a keeper who opens 「인재 확보」 (same chests, so chest records hold).
+INTERIORS.tavern={...INTERIORS.barracks,name:'주점 · 내부',service:'tavern',npcs:[{id:'tavernkeeper',name:'주점 주인 · 인재 확보',x:5,y:5,service:'tavern',reach:2}]};
 export const BUILDING_INTERIOR={residence:'house',inn:'barracks',depot:'store',warroom:'quarters'};
 for(const [hubId,hub] of Object.entries(HUBS)){let n=0;
  for(const b of hub.buildings){const interior=BUILDING_INTERIOR[b.type];if(!interior||b.entrance)continue;

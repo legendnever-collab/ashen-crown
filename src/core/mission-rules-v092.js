@@ -92,7 +92,7 @@ export const M20={
   const spread=[];for(const k of st.fire){const [x,y]=k.split(',').map(Number);for(const [dx,dy] of [[0,-1],[-1,0],[1,0],[0,1]])if(houseAt(s,x+dx,y+dy))spread.push([x+dx,y+dy]);}lightFire(s,spread);
   for(const w of m.fires.filter(w=>w.turn===s.turn))lightFire(s,w.cells);syncFire(s);
   for(const r of residents20(s).filter(r=>alive(r)&&st.fire.includes(key(r.x,r.y)))){const n=Math.min(r.hp,m.fireDamage),fromHP=r.hp;r.hp-=n;s.feedback.push({type:'hit',id:r.id,text:`🔥 −${n}`,fromHP,toHP:r.hp,damage:n});s.log.push(`${r.name}: 불길에 ${n} 피해.`);M20.afterDamage(s,r);}
-  if(s.turn===m.duelTurn&&!st.duelDone){st.duelDone=true;const sup=findUnit(s,'sup'),k=findUnit(s,'kai');if(sup&&alive(sup)&&k&&alive(k)&&startDuel(s,'kai','sup','20:duel'))enqueueStory(s,'20:duel');}},
+  /* v2.1: the duel is an event when the pair stands side by side (core/duel-events.js) */},
  beforeEnemyPhase(){},
  // Clerks walk to the nearest cabinet still standing and stay beside it; the old superior keeps to the archive until
  // TURN 5; the grey cloaks fight the legion; the banner's soldiers (from the south gate) also go for the residents from TURN 4.

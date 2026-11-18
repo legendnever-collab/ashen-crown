@@ -1,6 +1,7 @@
 // v0.9.2 — M20 The Crown's Shadow: the archive (clerks light a cabinet from TURN 3; a lit cabinet burns at the end of the
 // next enemy phase unless searched), the burning lower city (spread through houses, set leaps, residents hurt in the fire),
 // evacuation by rescue, grey cloaks in the shadows, Kai's duel at TURN 2, victory / defeat, the camp choices and the feat.
+import {standBeside} from './duel-helper.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {MISSIONS} from '../src/data/missions.js';
 import {STORY} from '../src/data/story.js';
@@ -54,7 +55,7 @@ test('two cabinets searched and four residents evacuated win; three residents lo
 
 test('Kai\'s old superior challenges him at TURN 2; M20 rewards, feat, carrier and the two camp choices (superior, then the plan)',()=>{
  const s=newGame(82,camp20(),20);s.screen='deployment';startBattle(s);drain(s);for(const u of s.units.filter(u=>u.team==='enemy'))if(u.id!=='sup')u.hp=0;
- beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);assert.equal(s.turn,2);assert.equal(s.duel?.hero,'kai');assert.equal(s.duel?.foe,'sup');
+ beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);assert.equal(s.turn,2);standBeside(s,'kai','sup');assert.equal(s.duel?.hero,'kai');assert.equal(s.duel?.foe,'sup');
  assert.deepEqual(supplementalRewards(20,{cabinets20:3,residents20:6}).map(r=>r.id),['v092:m20:supply-hp','v092:m20:supply-mp','v092:m20:all-cabinets','v092:m20:all-residents']);
  assert.equal(FEATS[20].reward,'greyLedger');assert.ok(FEATS[20].test(null,{mission_20_cabinets:3,mission_20_residents:6}));assert.ok(!FEATS[20].test(null,{mission_20_cabinets:2,mission_20_residents:6}));
  const b=battle();assert.ok(findUnit(b,'g6').carrier);

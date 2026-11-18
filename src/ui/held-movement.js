@@ -1,5 +1,6 @@
 // Runtime-only input: never serialized. One step per frame avoids catch-up overshoot.
-export function createHeldMovement(step,{delay=180,interval=100}={}){
+// v2.1 play-test (D-120): one tile per 210 ms when a direction is held (was 100 ms), the same pace as a tap-walk.
+export function createHeldMovement(step,{delay=230,interval=210}={}){
  let held=new Map(),next=Infinity;
  return {
   press(source,direction,now){if(held.has(source))return;held.set(source,direction);next=now+delay;if(!step(...direction))this.clear();},
