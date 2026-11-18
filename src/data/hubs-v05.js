@@ -237,9 +237,10 @@ HV5_SPECS.forest={...HV5_VILLAGE,name:'Forest Village · 숲지기 마을',kind:
 // v2.1 작은 마을 (D-118, TAVERN_WORLD_DESIGN §7; PROPOSED): the villages a cleared castle opens on the world map. Until
 // art pack H1 (v2) paints them they stand on the Ashen Village's daytime painting (D-094 manner); the war table becomes
 // the village's request board. Their townsfolk have their own names.
-const smallVillage=(name,elder,folk,guard)=>({...HV5_VILLAGE,name,kind:'village',art:'hub_village_day',lights:[],
+// v2.1.0 (art pack H1 part F, imported 2026-11-18, D-121): each small village has its own painting on the ash village layout.
+const smallVillage=(name,elder,folk,guard,art)=>({...HV5_VILLAGE,name,kind:'village',art,lights:[],
  places:HV5_VILLAGE.places.filter(p=>p[0]!=='advisor'),
  npcs:[['elder',elder,22,9],['refugee',folk,7,8],['guard',guard,12,14],['requests','의뢰 게시판 · 촌장 회관',19,8,{service:'requests',reach:1}]]});
-HV5_SPECS.reed=smallVillage('Reed Ferry · 갈대 나루','나루 촌장','뱃사공','나루 경비');
-HV5_SPECS.stonewell=smallVillage('Stonewell · 돌우물 마을','돌우물 촌장','우물지기','길목 파수');
+HV5_SPECS.reed=smallVillage('Reed Ferry · 갈대 나루','나루 촌장','뱃사공','나루 경비','hub_reed');
+HV5_SPECS.stonewell=smallVillage('Stonewell · 돌우물 마을','돌우물 촌장','우물지기','길목 파수','hub_stonewell');
 export const ART_HUBS=Object.fromEntries(Object.entries(HV5_SPECS).map(([id,spec])=>[id,hv5Build(id,spec)]));

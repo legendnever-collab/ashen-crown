@@ -99,7 +99,7 @@ test('ACT II hub plan and the west reveal; ACT I hub table unchanged',()=>{
 });
 
 test('every chest in every hub building has a style that fits its room',()=>{
- const expect={'village:inn-1':'int_village_barracks','village:warroom-2':'int_village_hall','village:residence-3':'int_village_house','village:depot-4':'int_village_store',
+ const expect={'village:inn-1':'int_village_tavern' /* v2.1.0: the inn is the tavern (pack H1 F) */,'village:warroom-2':'int_village_hall','village:residence-3':'int_village_house','village:depot-4':'int_village_store',
   'camp:inn-1':'int_tent_triage','camp:inn-3':'int_tent_soldier','camp:warroom-2':'int_tent_command','camp:warroom-4':'int_tent_operations','camp:depot-5':'int_tent_supply',
   'bivouac:inn-1':'int_tent_soldier','oathcamp:warroom-4':'int_tent_operations','fortress:depot-5':'int_fort_armory','fortress:inn-3':'int_fort_barracks','fortress:warroom-2':'int_fort_records','fortress:warroom-4':'int_fort_command'};
  for(const [k,room] of Object.entries(expect)){const [hub,b]=k.split(':'),p=HUBS[hub].places.find(p=>p.buildingId===b);assert.equal(roomId(hub,p.interior,b),room,k);}

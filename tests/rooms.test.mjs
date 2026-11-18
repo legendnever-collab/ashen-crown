@@ -15,8 +15,8 @@ const roomsOf=hubs=>hubs.flatMap(hub=>[...HUBS[hub].places.filter(p=>p.action===
  ...HUBS[hub].places.filter(p=>['weapon','item'].includes(p.action)&&!hub.startsWith('village')).map(p=>[hub,p.action,p.buildingId])]);
 const rooms=()=>roomsOf([...ACT1_HUBS,...ACT2_HUBS,...ACT3_HUBS]);
 
-test('all 47 painted rooms are used (15 by the ACT I hubs, 20 by the ACT II towns incl. art pack D, 6 by the capital from pack F1, 6 by the forest village from pack F2), each with a 12×8 mask',()=>{
- const used=new Set(rooms().map(r=>roomId(...r)));assert.deepEqual([...used].sort(),Object.keys(ROOM_LAYOUTS).sort());assert.equal(used.size,47);
+test('47 of the 48 painted rooms are used (15 by the ACT I hubs: the v2.1.0 village tavern (pack H1 F) replaces the militia barracks, which is kept but no building opens it any more; 20 by the ACT II towns incl. art pack D, 6 by the capital from pack F1, 6 by the forest village from pack F2), each with a 12×8 mask',()=>{
+ const used=new Set(rooms().map(r=>roomId(...r)));assert.deepEqual([...used,'int_village_barracks'].sort(),Object.keys(ROOM_LAYOUTS).sort());assert.equal(used.size,47);assert.ok(used.has('int_village_tavern'));
  assert.equal(new Set(roomsOf(ACT1_HUBS).map(r=>roomId(...r))).size,15);assert.equal(new Set(roomsOf(ACT2_HUBS).map(r=>roomId(...r))).size,20);assert.equal(new Set(roomsOf(ACT3_HUBS).map(r=>roomId(...r))).size,12);
  for(const r of rooms()){const h=paintedRoom(...r);assert.ok(h,r.join(':'));assert.equal(h.mask.length,8);assert.ok(h.mask.every(row=>row.length===12));}
 });
@@ -53,7 +53,7 @@ test('night hubs dim the same room; a v0.5 save standing on an old template tile
 test('shipped room and chest WebPs equal the hash-verified import log',()=>{
  const root=new URL('../src/assets/',import.meta.url),sha=p=>crypto.createHash('sha256').update(fs.readFileSync(new URL(p,root))).digest('hex');
  const [head,...rows]=fs.readFileSync(new URL('room-art-import-log.csv',root),'utf8').trim().split('\n'),cols=head.split(','),last=new Map();for(const r of rows){const o=Object.fromEntries(cols.map((c,i)=>[c,r.split(',')[i]]));last.set(o.webp,o);}
- const all=[...last.values()];assert.equal(all.filter(r=>r.kind==='room').length,47);assert.equal(all.filter(r=>r.kind==='chest').length,64);assert.equal(all.filter(r=>r.kind==='hub').length,6);assert.equal(all.filter(r=>r.kind==='prop').length,18);for(const id of ['ram','ladder','memory','memory_read'])assert.ok(all.some(r=>r.kind==='prop'&&r.id===id),`${id} (pack G3)`);for(const id of ['tent_iron','tent_free','tent_flame','tent_taken'])assert.ok(all.some(r=>r.kind==='prop'&&r.id===id),`${id} (pack G1)`);for(const id of ['anchorStone','anchorStone_broken'])assert.ok(all.some(r=>r.kind==='prop'&&r.id===id),`${id} (pack F4)`);
+ const all=[...last.values()];assert.equal(all.filter(r=>r.kind==='room').length,48);assert.equal(all.filter(r=>r.kind==='chest').length,64);assert.equal(all.filter(r=>r.kind==='hub').length,8); /* v2.1.0 pack H1 F: the village tavern, 갈대 나루, 돌우물 마을 */assert.equal(all.filter(r=>r.kind==='prop').length,18);for(const id of ['ram','ladder','memory','memory_read'])assert.ok(all.some(r=>r.kind==='prop'&&r.id===id),`${id} (pack G3)`);for(const id of ['tent_iron','tent_free','tent_flame','tent_taken'])assert.ok(all.some(r=>r.kind==='prop'&&r.id===id),`${id} (pack G1)`);for(const id of ['anchorStone','anchorStone_broken'])assert.ok(all.some(r=>r.kind==='prop'&&r.id===id),`${id} (pack F4)`);
  for(const r of all)assert.equal(sha(`${{room:'rooms',chest:'chests',hub:'hubs',prop:'props'}[r.kind]}/${r.webp}`),r.webp_sha256,r.webp);
  for(const id of Object.keys(ROOM_LAYOUTS))assert.ok(last.has(`${id}.webp`),id);
 });
