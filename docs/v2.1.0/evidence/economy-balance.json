@@ -5,7 +5,7 @@
       "seed": 20261014,
       "mission": 1,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 7,
       "gold": 280,
       "saved": 2,
       "captured": false
@@ -53,40 +53,40 @@
     {
       "loadout": "standard",
       "seed": 20261015,
-      "mission": 3,
-      "outcome": "victory",
-      "turn": 15,
-      "gold": 540,
-      "saved": 2,
-      "captured": false
-    },
-    {
-      "loadout": "standard",
-      "seed": 20261016,
-      "mission": 1,
-      "outcome": "victory",
-      "turn": 8,
-      "gold": 280,
-      "saved": 2,
-      "captured": false
-    },
-    {
-      "loadout": "standard",
-      "seed": 20261016,
-      "mission": 2,
-      "outcome": "victory",
-      "turn": 8,
-      "gold": 430,
-      "saved": 0,
-      "captured": true
-    },
-    {
-      "loadout": "standard",
-      "seed": 20261016,
       "mission": 3,
       "outcome": "defeat",
       "turn": 17,
+      "gold": 400,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261016,
+      "mission": 1,
+      "outcome": "victory",
+      "turn": 7,
+      "gold": 280,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261016,
+      "mission": 2,
+      "outcome": "victory",
+      "turn": 8,
       "gold": 430,
+      "saved": 0,
+      "captured": true
+    },
+    {
+      "loadout": "standard",
+      "seed": 20261016,
+      "mission": 3,
+      "outcome": "victory",
+      "turn": 15,
+      "gold": 570,
       "saved": 2,
       "captured": true
     },
@@ -95,7 +95,7 @@
       "seed": 20261017,
       "mission": 1,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 7,
       "gold": 280,
       "saved": 2,
       "captured": false
@@ -135,27 +135,27 @@
       "seed": 20261018,
       "mission": 2,
       "outcome": "victory",
-      "turn": 8,
-      "gold": 430,
+      "turn": 9,
+      "gold": 400,
       "saved": 0,
-      "captured": true
+      "captured": false
     },
     {
       "loadout": "standard",
       "seed": 20261018,
       "mission": 3,
-      "outcome": "victory",
-      "turn": 16,
-      "gold": 570,
+      "outcome": "defeat",
+      "turn": 17,
+      "gold": 400,
       "saved": 2,
-      "captured": true
+      "captured": false
     },
     {
       "loadout": "standard",
       "seed": 20261019,
       "mission": 1,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 7,
       "gold": 280,
       "saved": 2,
       "captured": false
@@ -185,7 +185,7 @@
       "seed": 20261020,
       "mission": 1,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 7,
       "gold": 280,
       "saved": 2,
       "captured": false
@@ -215,7 +215,7 @@
       "seed": 20261021,
       "mission": 1,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 7,
       "gold": 280,
       "saved": 2,
       "captured": false
@@ -245,7 +245,7 @@
       "seed": 20261022,
       "mission": 1,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 9,
       "gold": 280,
       "saved": 2,
       "captured": false
@@ -264,9 +264,9 @@
       "loadout": "standard",
       "seed": 20261022,
       "mission": 3,
-      "outcome": "victory",
-      "turn": 15,
-      "gold": 540,
+      "outcome": "defeat",
+      "turn": 17,
+      "gold": 400,
       "saved": 2,
       "captured": false
     },
@@ -275,7 +275,7 @@
       "seed": 20261023,
       "mission": 1,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 7,
       "gold": 280,
       "saved": 2,
       "captured": false
@@ -305,7 +305,7 @@
       "seed": 20261014,
       "mission": 1,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 7,
       "gold": 175,
       "saved": 2,
       "captured": false
@@ -325,7 +325,7 @@
       "seed": 20261014,
       "mission": 3,
       "outcome": "victory",
-      "turn": 15,
+      "turn": 14,
       "gold": 435,
       "saved": 2,
       "captured": false
@@ -335,7 +335,7 @@
       "seed": 20261015,
       "mission": 1,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 9,
       "gold": 175,
       "saved": 2,
       "captured": false
@@ -345,7 +345,7 @@
       "seed": 20261015,
       "mission": 2,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 9,
       "gold": 295,
       "saved": 0,
       "captured": false
@@ -354,9 +354,9 @@
       "loadout": "reinforced",
       "seed": 20261015,
       "mission": 3,
-      "outcome": "victory",
-      "turn": 14,
-      "gold": 435,
+      "outcome": "defeat",
+      "turn": 17,
+      "gold": 295,
       "saved": 2,
       "captured": false
     },
@@ -365,7 +365,7 @@
       "seed": 20261016,
       "mission": 1,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 7,
       "gold": 175,
       "saved": 2,
       "captured": false
@@ -395,7 +395,7 @@
       "seed": 20261017,
       "mission": 1,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 7,
       "gold": 175,
       "saved": 2,
       "captured": false
@@ -435,126 +435,6 @@
       "seed": 20261018,
       "mission": 2,
       "outcome": "victory",
-      "turn": 8,
-      "gold": 325,
-      "saved": 0,
-      "captured": true
-    },
-    {
-      "loadout": "reinforced",
-      "seed": 20261018,
-      "mission": 3,
-      "outcome": "victory",
-      "turn": 15,
-      "gold": 465,
-      "saved": 2,
-      "captured": true
-    },
-    {
-      "loadout": "reinforced",
-      "seed": 20261019,
-      "mission": 1,
-      "outcome": "victory",
-      "turn": 8,
-      "gold": 175,
-      "saved": 2,
-      "captured": false
-    },
-    {
-      "loadout": "reinforced",
-      "seed": 20261019,
-      "mission": 2,
-      "outcome": "victory",
-      "turn": 8,
-      "gold": 295,
-      "saved": 0,
-      "captured": false
-    },
-    {
-      "loadout": "reinforced",
-      "seed": 20261019,
-      "mission": 3,
-      "outcome": "victory",
-      "turn": 15,
-      "gold": 435,
-      "saved": 2,
-      "captured": false
-    },
-    {
-      "loadout": "reinforced",
-      "seed": 20261020,
-      "mission": 1,
-      "outcome": "victory",
-      "turn": 8,
-      "gold": 175,
-      "saved": 2,
-      "captured": false
-    },
-    {
-      "loadout": "reinforced",
-      "seed": 20261020,
-      "mission": 2,
-      "outcome": "victory",
-      "turn": 8,
-      "gold": 325,
-      "saved": 0,
-      "captured": true
-    },
-    {
-      "loadout": "reinforced",
-      "seed": 20261020,
-      "mission": 3,
-      "outcome": "victory",
-      "turn": 15,
-      "gold": 465,
-      "saved": 2,
-      "captured": true
-    },
-    {
-      "loadout": "reinforced",
-      "seed": 20261021,
-      "mission": 1,
-      "outcome": "victory",
-      "turn": 8,
-      "gold": 175,
-      "saved": 2,
-      "captured": false
-    },
-    {
-      "loadout": "reinforced",
-      "seed": 20261021,
-      "mission": 2,
-      "outcome": "victory",
-      "turn": 8,
-      "gold": 295,
-      "saved": 0,
-      "captured": false
-    },
-    {
-      "loadout": "reinforced",
-      "seed": 20261021,
-      "mission": 3,
-      "outcome": "victory",
-      "turn": 14,
-      "gold": 435,
-      "saved": 2,
-      "captured": false
-    },
-    {
-      "loadout": "reinforced",
-      "seed": 20261022,
-      "mission": 1,
-      "outcome": "victory",
-      "turn": 8,
-      "gold": 175,
-      "saved": 2,
-      "captured": false
-    },
-    {
-      "loadout": "reinforced",
-      "seed": 20261022,
-      "mission": 2,
-      "outcome": "victory",
       "turn": 9,
       "gold": 295,
       "saved": 0,
@@ -562,7 +442,7 @@
     },
     {
       "loadout": "reinforced",
-      "seed": 20261022,
+      "seed": 20261018,
       "mission": 3,
       "outcome": "victory",
       "turn": 15,
@@ -572,17 +452,17 @@
     },
     {
       "loadout": "reinforced",
-      "seed": 20261023,
+      "seed": 20261019,
       "mission": 1,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 7,
       "gold": 175,
       "saved": 2,
       "captured": false
     },
     {
       "loadout": "reinforced",
-      "seed": 20261023,
+      "seed": 20261019,
       "mission": 2,
       "outcome": "victory",
       "turn": 8,
@@ -592,10 +472,130 @@
     },
     {
       "loadout": "reinforced",
-      "seed": 20261023,
+      "seed": 20261019,
+      "mission": 3,
+      "outcome": "victory",
+      "turn": 15,
+      "gold": 435,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261020,
+      "mission": 1,
+      "outcome": "victory",
+      "turn": 7,
+      "gold": 175,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261020,
+      "mission": 2,
+      "outcome": "victory",
+      "turn": 8,
+      "gold": 325,
+      "saved": 0,
+      "captured": true
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261020,
       "mission": 3,
       "outcome": "victory",
       "turn": 16,
+      "gold": 465,
+      "saved": 2,
+      "captured": true
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261021,
+      "mission": 1,
+      "outcome": "victory",
+      "turn": 7,
+      "gold": 175,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261021,
+      "mission": 2,
+      "outcome": "victory",
+      "turn": 8,
+      "gold": 295,
+      "saved": 0,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261021,
+      "mission": 3,
+      "outcome": "victory",
+      "turn": 15,
+      "gold": 435,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261022,
+      "mission": 1,
+      "outcome": "victory",
+      "turn": 9,
+      "gold": 175,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261022,
+      "mission": 2,
+      "outcome": "victory",
+      "turn": 9,
+      "gold": 295,
+      "saved": 0,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261022,
+      "mission": 3,
+      "outcome": "victory",
+      "turn": 15,
+      "gold": 435,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261023,
+      "mission": 1,
+      "outcome": "victory",
+      "turn": 7,
+      "gold": 175,
+      "saved": 2,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261023,
+      "mission": 2,
+      "outcome": "victory",
+      "turn": 8,
+      "gold": 295,
+      "saved": 0,
+      "captured": false
+    },
+    {
+      "loadout": "reinforced",
+      "seed": 20261023,
+      "mission": 3,
+      "outcome": "victory",
+      "turn": 13,
       "gold": 435,
       "saved": 2,
       "captured": false
@@ -605,7 +605,7 @@
       "seed": 20261014,
       "mission": 1,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 9,
       "gold": 205,
       "saved": 2,
       "captured": false
@@ -635,7 +635,7 @@
       "seed": 20261015,
       "mission": 1,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 10,
       "gold": 205,
       "saved": 2,
       "captured": false
@@ -654,9 +654,9 @@
       "loadout": "supplies",
       "seed": 20261015,
       "mission": 3,
-      "outcome": "victory",
-      "turn": 16,
-      "gold": 430,
+      "outcome": "defeat",
+      "turn": 17,
+      "gold": 290,
       "saved": 2,
       "captured": false
     },
@@ -675,20 +675,20 @@
       "seed": 20261016,
       "mission": 2,
       "outcome": "victory",
-      "turn": 8,
-      "gold": 355,
+      "turn": 9,
+      "gold": 325,
       "saved": 0,
-      "captured": true
+      "captured": false
     },
     {
       "loadout": "supplies",
       "seed": 20261016,
       "mission": 3,
-      "outcome": "victory",
-      "turn": 15,
-      "gold": 460,
+      "outcome": "defeat",
+      "turn": 7,
+      "gold": 290,
       "saved": 2,
-      "captured": true
+      "captured": false
     },
     {
       "loadout": "supplies",
@@ -725,7 +725,7 @@
       "seed": 20261018,
       "mission": 1,
       "outcome": "defeat",
-      "turn": 7,
+      "turn": 9,
       "gold": 105,
       "saved": 1,
       "captured": false
@@ -735,7 +735,7 @@
       "seed": 20261019,
       "mission": 1,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 9,
       "gold": 205,
       "saved": 2,
       "captured": false
@@ -745,7 +745,7 @@
       "seed": 20261019,
       "mission": 2,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 9,
       "gold": 325,
       "saved": 0,
       "captured": false
@@ -755,7 +755,7 @@
       "seed": 20261019,
       "mission": 3,
       "outcome": "victory",
-      "turn": 15,
+      "turn": 16,
       "gold": 430,
       "saved": 2,
       "captured": false
@@ -765,7 +765,7 @@
       "seed": 20261020,
       "mission": 1,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 9,
       "gold": 205,
       "saved": 2,
       "captured": false
@@ -775,10 +775,10 @@
       "seed": 20261020,
       "mission": 2,
       "outcome": "victory",
-      "turn": 8,
-      "gold": 355,
+      "turn": 9,
+      "gold": 325,
       "saved": 0,
-      "captured": true
+      "captured": false
     },
     {
       "loadout": "supplies",
@@ -786,9 +786,9 @@
       "mission": 3,
       "outcome": "defeat",
       "turn": 17,
-      "gold": 320,
+      "gold": 290,
       "saved": 2,
-      "captured": true
+      "captured": false
     },
     {
       "loadout": "supplies",
@@ -855,7 +855,7 @@
       "seed": 20261023,
       "mission": 1,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 9,
       "gold": 205,
       "saved": 2,
       "captured": false
@@ -865,7 +865,7 @@
       "seed": 20261023,
       "mission": 2,
       "outcome": "victory",
-      "turn": 8,
+      "turn": 9,
       "gold": 325,
       "saved": 0,
       "captured": false
@@ -874,9 +874,9 @@
       "loadout": "supplies",
       "seed": 20261023,
       "mission": 3,
-      "outcome": "defeat",
-      "turn": 17,
-      "gold": 290,
+      "outcome": "victory",
+      "turn": 16,
+      "gold": 430,
       "saved": 2,
       "captured": false
     }
@@ -884,15 +884,15 @@
   "rates": {
     "standard M1": "10/10",
     "standard M2": "10/10",
-    "standard M3": "8/10",
+    "standard M3": "6/10",
     "reinforced M1": "10/10",
     "reinforced M2": "10/10",
-    "reinforced M3": "10/10",
+    "reinforced M3": "9/10",
     "supplies M1": "9/10",
     "supplies M2": "9/9",
-    "supplies M3": "5/9",
+    "supplies M3": "4/9",
     "all M1": "29/30",
     "all M2": "29/29",
-    "all M3": "23/29"
+    "all M3": "19/29"
   }
 }

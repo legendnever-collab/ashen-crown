@@ -9,6 +9,10 @@
       "status": "PASS"
     },
     {
+      "name": "1440 walking in town: at most five tiles in a one-second hold (moved 5)",
+      "status": "PASS"
+    },
+    {
       "name": "1440 the restored save stands in the ash village tavern",
       "status": "PASS"
     },

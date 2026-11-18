@@ -1,11 +1,34 @@
 # Ashen Crown v2.1.0 「주점과 세계지도」 — Test Report
-Updated 2026-11-18 KST. **Release candidate on feature/v2.1.0-tavern; not merged before the user plays and approves it.** Decisions: D-117 (v1.0.0 and v2.0.0 merged) and D-118 (docs/v2.1.0/TAVERN_WORLD_DESIGN.md, the user's five feedback items and eight answers, all recommended).
+Updated 2026-11-18 21:40 KST. **Merged on the user's word (D-121) after the play-test fixes (D-120) and art pack H1 A–C/F.** Decisions: D-117 (v1.0.0 and v2.0.0 merged), D-118 (docs/v2.1.0/TAVERN_WORLD_DESIGN.md, the user's five feedback items and eight answers, all recommended).
 
-HTML SHA256 of the build under review: see `releases/Ashen_Crown_v2.1.0_SHA256SUMS` (`index.html` identical). New characters and places use existing painted art until art pack H1 v2 returns.
+HTML SHA256 of the build under review: see `releases/Ashen_Crown_v2.1.0_SHA256SUMS` (`index.html` identical). Art pack H1 parts A–C (24 class sheets) and F (village tavern, 갈대 나루, 돌우물 마을) are in; the busts of the hires and Adel, the arena and the icon sheets still borrow existing painted art (D-121).
 
-## Summary
-- **Unit tests: **534 PASS / 0 FAIL / 16 skipped with reasons** (550 in all)** (docs/v2.1.0/evidence/unit-results.txt). New: tests/tavern-v210.test.mjs (8 tests: the five start alone; hiring; M04 opens the villages, the elite and the wanderer; a battle request; Adel's rescue; hand-over requests and the bounty; the Garr duel event; real v2.0.0 saves → schema 21).
-- **Full browser and balance matrix, 66 suites, on this build: all exit 0** (docs/v2.1.0/evidence/browser-run-summary.log, 2,347 `PASS` lines). Run in two halves on a 2-core container.
+## Final build (play-test D-120 + art pack H1 A–C/F, D-121) — what was run on it
+- **Unit tests: 534 PASS / 0 FAIL / 16 skipped with reasons (550 in all)** (docs/v2.1.0/evidence/unit-results.txt). Changed: held-movement (230 ms delay, 210 ms a tile); rooms/portraits/act2-engine counts for the 24 class sheets, the village tavern room and the two village paintings (the militia barracks painting is kept but no building opens it any more).
+- **Full browser and balance matrix, 66 suites, on the final build: all exit 0** (docs/v2.1.0/evidence/browser-run-summary.log, 2,316 `PASS` lines; run 19:50–21:25 KST in two parallel halves on 2 cores).
+  - 64 passed on the first run.
+  - quality: its hold-repeat check held a key 425 ms and expected 3–7 tiles; at the new pace that is 2. It now holds 900 ms (5 tiles) and passed on rerun.
+  - act1: a story-click timed out while both halves ran; rerun alone, unchanged, passed (113 checks).
+  - performance rerun alone (the parallel run measured under load): camp 16.7 ms at 1440 and 390, battle 33.3 ms at 1440 and 16.7 ms at 390 — the same as before.
+- **v210-e2e: 42 checks PASS** — the 41 before plus the town pace: holding a direction for 1.05 s walks 5 tiles (it was about 10).
+- **M01 ≥ 95% (D-120):**
+  - act1-balance (30 seeds, one try each, now gated at 95% for M01): **30/30**.
+  - The test player over 180 seeds (three blocks of 60): 59, 60 and 59 won — **178/180 (98.9%)**; before the change the same harness gave 55/60 on the first block. Both losses: a villager killed.
+- **Side colour (D-120, D-121):** screenshots before and after in docs/v2.1.0/screenshots/side-colour-*.png. Heads (face, hair, helmet) and bare skin keep the painting; the H1 sheets' magenta sash takes the side colour and the body is washed in it.
+- **Art import (D-121):** all 50 masters matched their packs' SHA256SUMS; 24 sprites, 1 room and 2 hubs imported through the existing import scripts (logs in src/assets/*import-log.csv). The tavern's walk mask was authored over the painting; the room test checks the doorway, every floor tile reachable, the chests solid and reachable and the keeper in reach.
+
+### Balance on the final build (보통)
+| ACT I (act1-balance, 30 seeds chained) | M01 | M02 | M03 | M04 | M05 | M06 |
+|---|---:|---:|---:|---:|---:|---:|
+| Won / played | **30/30** | 30/30 | 21/30 | 15/21 | 12/15 | 12/12 |
+| Win % | **100%** | 100% | 70% | 71% | 80% | 100% |
+
+- act2-balance, first try per mission (gate: Wilson upper bound ≥ 0.6, **no mission low**): ACT I M01 20/20, M02 20/20, M03 13/20, M04 14/19, M05 16/19, M06 16/19; ACT II M07–M14 all 17/17; M15 11/17, M16 17/17, M17 15/17, M18 17/17, M19 17/17, M20 9/17, M21 14/16, M22 12/15; ACT IV M23–M30 14/14 except M26 12/14.
+- economy-balance: all M1 29/30, all M2 29/29, all M3 19/29 (66%); per loadout within the Wilson gate.
+
+## First release-candidate run (before D-120 and the art) — kept for the record
+- Unit tests on the first RC build: 534 PASS / 0 FAIL / 16 skipped (550). New: tests/tavern-v210.test.mjs (8 tests: the five start alone; hiring; M04 opens the villages, the elite and the wanderer; a battle request; Adel's rescue; hand-over requests and the bounty; the Garr duel event; real v2.0.0 saves → schema 21).
+- Full browser and balance matrix, 66 suites, on the first RC build: all exit 0 (2,347 `PASS` lines). Run in two halves on a 2-core container.
   - 52 suites passed on the first run.
   - 14 failed first because their scripts still expected the v2.0 rules; each was updated and rerun to exit 0:
     - e2e, mobile, restart, campaign: a duel event opens in M01 when Garr stands beside Erik or Elina. The scripts now settle it or decline it (물러선다).
@@ -33,8 +56,8 @@ HTML SHA256 of the build under review: see `releases/Ashen_Crown_v2.1.0_SHA256SU
   - The v200 suite's "shipped v1.0.0 save" checks now run against the real v1.0.0 page.
 - Performance (performance suite, headless Chromium on 2 cores, median frame): camp 16.7 ms at 1440 and 390; battle 16.7 ms at 390 and 33.4 ms at 1440. This is the same as v2.0.0.
 
-## Balance (보통)
-### ACT I (act1-balance, 30 seeds chained, one try each; docs/v2.1.0/evidence/act1-balance.md)
+### Balance in the first RC run (보통)
+#### ACT I (act1-balance, 30 seeds chained, one try each)
 The five fight alone; nobody is hired. The policy takes every duel event and settles it with 베기 → 막기 → 노리기 in turn.
 
 | Mission | Played | Wins | Win % | Win turns (avg) | Par / Limit | Avg level in |
@@ -55,7 +78,7 @@ The five fight alone; nobody is hired. The policy takes every duel event and set
   - The purchased-tools loadout loses its first turn of each mission to the ward and won M03 5/9. The same harness on v2.0.0 code (316d447) gave 5/8, so this is not new. Without the change, the old gate (60% on 8–10 runs) failed on one seed.
 - campaign-balance, m05-balance, m06-balance and class-balance: exit 0.
 
-### ACT II–IV (act2-balance, 20 seeds, up to three tries per battle; gate on the first try)
+#### ACT II–IV (act2-balance, 20 seeds, up to three tries per battle; gate on the first try)
 `first try not clearly below 60% per mission (Wilson 95% upper bound ≥ 0.6)` — **no mission low.**
 
 | M | First try | M | First try | M | First try |

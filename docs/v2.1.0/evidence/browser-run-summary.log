@@ -1,30 +1,32 @@
-e2e first=1 final=0 pass_lines=84 (rerun: final-e2e.log)
-balance first=0 final=0 pass_lines=0 (rerun: final-balance.log)
-mobile first=1 final=0 pass_lines=97 (rerun: final-mobile.log)
+# v2.1.0 final build (play-test D-120 + art pack H1 A–C/F, D-121), run 2026-11-18 19:50–21:25 KST in two parallel halves.
+# quality: the hold-repeat check now holds 900 ms (one tile per 210 ms); rerun passed. act1: a story click timed out under load; rerun unchanged passed.
+balance first=0 final=0 pass_lines=0
+e2e first=0 final=0 pass_lines=77
+mobile first=0 final=0 pass_lines=92
 tactical first=0 final=0 pass_lines=27
 http first=0 final=0 pass_lines=0
 post-move first=0 final=0 pass_lines=0
-restart first=1 final=0 pass_lines=22 (rerun: rerun-restart.log)
-campaign first=1 final=0 pass_lines=226 (rerun: final-campaign.log)
-campaign-balance first=0 final=0 pass_lines=0 (rerun: final-campaign-balance.log)
-frontier first=1 final=0 pass_lines=90 (rerun: rerun-frontier.log)
-economy-balance first=1 final=0 pass_lines=0 (rerun: final-economy-balance.log)
-migration-v02 first=0 final=0 pass_lines=16 (rerun: final-migration-v02.log)
-renaissance first=1 final=0 pass_lines=141 (rerun: rerun-renaissance.log)
+restart first=0 final=0 pass_lines=22
+campaign first=0 final=0 pass_lines=206
+campaign-balance first=0 final=0 pass_lines=0
+frontier first=0 final=0 pass_lines=90
+economy-balance first=0 final=0 pass_lines=0
+migration-v02 first=0 final=0 pass_lines=16
+renaissance first=0 final=0 pass_lines=141
 performance first=0 final=0 pass_lines=0
-quality first=0 final=0 pass_lines=98
+quality first=1 final=0 pass_lines=98 (rerun: final-quality.log)
 migration-v031 first=0 final=0 pass_lines=11
 journey first=0 final=0 pass_lines=176
 migration-v032 first=0 final=0 pass_lines=9
-act1 first=0 final=0 pass_lines=113 (rerun: final-act1.log)
-m05-balance first=0 final=0 pass_lines=0 (rerun: final-m05-balance.log)
-m06-balance first=0 final=0 pass_lines=0 (rerun: final-m06-balance.log)
+act1 first=1 final=0 pass_lines=113 (rerun: final-act1.log)
+m05-balance first=0 final=0 pass_lines=0
+m06-balance first=0 final=0 pass_lines=0
 mobile-command first=0 final=0 pass_lines=24
 migration-v033 first=0 final=0 pass_lines=11
-act1-balance first=1 final=0 pass_lines=0 (rerun: rerun-act1-balance.log)
+act1-balance first=0 final=0 pass_lines=0
 class first=0 final=0 pass_lines=30
 legion first=0 final=0 pass_lines=19
-world first=1 final=0 pass_lines=32 (rerun: final-world.log)
+world first=0 final=0 pass_lines=32
 migration-v040 first=0 final=0 pass_lines=12
 class-balance first=0 final=0 pass_lines=0
 act2 first=0 final=0 pass_lines=28
@@ -36,13 +38,13 @@ act2b-campaign first=0 final=0 pass_lines=22
 migration-v060 first=0 final=0 pass_lines=12
 act2c-campaign first=0 final=0 pass_lines=26
 migration-v061 first=0 final=0 pass_lines=12
-act2d-campaign first=1 final=0 pass_lines=30 (rerun: final-act2d-campaign.log)
+act2d-campaign first=0 final=0 pass_lines=30
 migration-v070 first=0 final=0 pass_lines=12
 audio-mute first=0 final=0 pass_lines=20
 tactics first=0 final=0 pass_lines=26
 migration-v071 first=0 final=0 pass_lines=12
-arms first=1 final=0 pass_lines=42 (rerun: final-arms.log)
-migration-v080 first=1 final=0 pass_lines=14 (rerun: final-migration-v080.log)
+arms first=0 final=0 pass_lines=42
+migration-v080 first=0 final=0 pass_lines=14
 act3 first=0 final=0 pass_lines=38
 migration-v081 first=0 final=0 pass_lines=14
 item-art first=0 final=0 pass_lines=18
@@ -55,12 +57,12 @@ act3d first=0 final=0 pass_lines=44
 migration-v092 first=0 final=0 pass_lines=13
 act4a first=0 final=0 pass_lines=30
 migration-v093 first=0 final=0 pass_lines=13
-act4b first=1 final=0 pass_lines=32 (rerun: final-act4b.log)
+act4b first=0 final=0 pass_lines=32
 act4c first=0 final=0 pass_lines=34
 migration-v0100 first=0 final=0 pass_lines=13
 migration-v0101 first=0 final=0 pass_lines=13
 act4d first=0 final=0 pass_lines=38
 migration-v0102 first=0 final=0 pass_lines=13
-v200 first=1 final=0 pass_lines=18 (rerun: final-v200.log)
+v200 first=0 final=0 pass_lines=18
 act2-balance first=0 final=0 pass_lines=0
-v210 first=0 final=0 pass_lines=41
+v210 first=0 final=0 pass_lines=42
