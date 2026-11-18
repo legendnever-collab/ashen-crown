@@ -1,3 +1,10 @@
+# v2.2.0 — 일기토 장면과 새 주점 (release candidate)
+- Release candidate on feature/v2.2.0-duel (D-123); not merged before the user plays and approves it. Design docs/v2.2.0/DUEL_SCENE_DESIGN.md (D-122); art pack I work order docs/v2.2.0/art/duel-work-pack (59 images).
+- Duels are always won by our hero (core/duel.js duelWin): three scripted exchanges, +1 level (awardXP, so HP/MP refill), the foe left at a third of its HP (a half on 어려움), never killed, its treasure claimed. No choice and no stepping back — except M29, which keeps the story choice to leave the duel to Aren's last words (the 「제안」 fate).
+- The duel window (ui/duel-scene.js): a 16:9 stage with the pair's busts (VS), three exchanges, a slow-motion finisher, the foe on one knee and LEVEL UP; ~9.4 s; skip by button or Esc/Enter/Space; reduced effects drop shake and flash; a taller cropped stage on a phone held upright. Temporary art until pack I parts B–G arrive (ASHEN_DUEL: duel_<id>, finisher_<hero>, duelbg_<stage>).
+- Art pack I part A: the village tavern repainted and imported with its own mask, chests at (1,6)/(10,3) and the keeper behind the bar (per-room keeper position).
+- Version 2.2.0; schema 21 unchanged.
+
 # v2.1.0 — 주점과 세계지도: duel events, the five alone, taverns and hires, the world map, small villages and requests
 - Merged 2026-11-18 on the user's word ("이미지 적용해주고 병합해줘", D-121) after the play-test fixes (D-120) and art pack H1 A–C/F.
 - Play-test (D-120): the town walk is one tile per 210 ms with a gliding walker (was 100/75 ms); M01 ≥ 95% on 보통 (looters atk 8, villagers HP 36, east reinforcement TURN 7; act1-balance gates M01 at 95%); on the battlefield only armour and cloth take the side's colour, heads and skin keep the painting.
