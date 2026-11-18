@@ -17,7 +17,7 @@ const duel=(()=>{const s=newGame(20261014);s.campaign.difficulty='normal';s.scre
  for(const t of [s,s.stageStart]){const gg=findUnit(t,'boss'),ee=findUnit(t,'eric');ee.x=gg.x;ee.y=gg.y+1;}for(const u of s.units.filter(u=>u.team==='enemy'&&u.id!=='boss'))for(const t of [s,s.stageStart]){const v=findUnit(t,u.id);v.x=Math.min(21,v.x+8);}return serialize(s);})();
 
 const browser=await launchTestBrowser({headless:true,args:['--no-sandbox','--disable-gpu']}),checks=[],errors=[];const check=(name,ok)=>{assert.ok(ok,name);checks.push({name,status:'PASS'});console.log('PASS',name);};
-const shots='docs/v2.1.0/screenshots';fs.mkdirSync(shots,{recursive:true});
+const shots='docs/v2.2.0/screenshots';fs.mkdirSync(shots,{recursive:true});
 try{for(const [width,height,touch] of [[1440,900,false],[390,844,true]]){const label=`${width}`;
  const ctx=await browser.newContext({viewport:{width,height},hasTouch:touch,isMobile:touch});await ctx.setOffline(true);const p=await ctx.newPage();p.on('pageerror',e=>errors.push(`${label}: ${e.message}`));
  const press=async(a,id)=>{await p.evaluate(([a,id])=>{const b=document.createElement('button');b.dataset.do=a;if(id)b.dataset.id=id;b.style.cssText='position:fixed;left:0;top:0;width:4px;height:4px;z-index:99999';document.body.append(b);b.click();b.remove();},[a,id]);await p.waitForTimeout(220);};
