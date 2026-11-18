@@ -516,3 +516,4 @@
 @media (orientation:portrait){.ds-stage{width:100vw;height:min(78vh,88vw);aspect-ratio:auto}.ds-stage>canvas{object-fit:cover}
  .ds-vs{flex-wrap:wrap;align-content:center;padding:0 3%}.ds-card{width:40%}.ds-title{order:-1;width:100%;margin-bottom:.4em}
  .ds-skip{font-size:13px;min-height:40px;top:2%;bottom:auto}}
+.tavern-icon{vertical-align:middle;margin-right:8px;border-radius:6px}.merc-icon{vertical-align:-3px;margin-right:3px}

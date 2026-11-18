@@ -1,6 +1,7 @@
 // v2.1 (D-118, TAVERN_WORLD_DESIGN §4, §6, §7): the tavern's 「인재 확보」, the village request board, the request sortie
 // and the world map that opens at a town's exit. HTML builders only; app.js wires the actions.
 import {frontierButton} from './frontier-ui.js';
+import {paintedIcon} from './item-art.js';
 import {mercsAt,tavernTown,hireLevel} from '../core/tavern.js';
 import {requestsAt,atVillage,villageOpen} from '../core/villages.js';
 import {TOWN_NAME,MERCS} from '../data/mercs-v210.js';
@@ -18,10 +19,10 @@ import {itemIcon} from './item-art.js';
 const SKILL_KO={'Brace':'방진','Aimed Shot':'조준 사격','Shield Oath':'방패의 맹세','Charge':'돌격','Fire Bolt':'화염탄','Heal':'치유','Quick Strike':'기습','Last Post':'마지막 초소'};
 const statLine=id=>{const st=HERO_STATS[id]||{};return Object.entries(STAT_KO).map(([k,ko])=>`${ko} ${st[k]??'—'}`).join(' · ');};
 export function tavernHTML(s,esc,portrait){const town=tavernTown(s);if(!town)return '<p>주점 안에서 이용할 수 있습니다.</p>';const list=mercsAt(s,town),gold=s.economy?.gold??0,lv=hireLevel(s.campaign),first=!Array.isArray(s.campaign.heroes);
- const card=m=>{const h=heroDef(m.id),cls=CLASSES8[UNIT_CLASS8[m.id]],lore=HERO_LORE[m.id];return `<article class="merc-card ${m.elite?'elite':''}"><div class="merc-head">${portrait({...h,team:'ally',classTier:1},'card-sprite')}<div><h3>${esc(h.name)} ${m.elite?'<span class="merc-elite">엘리트</span>':''}${m.wandering?'<span class="merc-wander">떠돌이</span>':''}</h3><p class="muted">${esc(cls?.ko||'')} · 고용하면 LV ${lv}</p></div></div>
+ const card=m=>{const h=heroDef(m.id),cls=CLASSES8[UNIT_CLASS8[m.id]],lore=HERO_LORE[m.id];return `<article class="merc-card ${m.elite?'elite':''}"><div class="merc-head">${portrait({...h,team:'ally',classTier:1},'card-sprite')}<div><h3>${esc(h.name)} ${m.elite?`<span class="merc-elite">${paintedIcon('eliteHire',18,'merc-icon')}엘리트</span>`:''}${m.wandering?'<span class="merc-wander">떠돌이</span>':''}</h3><p class="muted">${esc(cls?.ko||'')} · 고용하면 LV ${lv}</p></div></div>
   <p>${esc(lore?.bio||h.description||'')}</p><p class="merc-stats">${statLine(m.id)}</p><p class="muted">기술 · ${esc(SKILL_KO[h.skill]||h.skill||'')}</p>
   ${frontierButton('hire',`고용 · ${m.price} G`,m.id,first||gold<m.price,'primary')}</article>`;};
- return `<p>「인재 확보」 · ${esc(TOWN_NAME[town]||town)} 주점. 고용비는 한 번만 내고, 고용한 인재는 엔딩까지 군단과 함께합니다. 고용하면 지금 군단 평균보다 한 레벨 낮게 들어옵니다.</p>
+ return `<p>${paintedIcon('tavern',28,'tavern-icon')}「인재 확보」 · ${esc(TOWN_NAME[town]||town)} 주점. 고용비는 한 번만 내고, 고용한 인재는 엔딩까지 군단과 함께합니다. 고용하면 지금 군단 평균보다 한 레벨 낮게 들어옵니다.</p>
  <p class="supply-gold">◆ ${gold} G</p>${first?'<p class="muted">첫 전투(잿빛 마을)를 마친 뒤부터 고용할 수 있습니다.</p>':''}
  <div class="merc-list">${list.length?list.map(card).join(''):'<p class="muted">지금 이 주점에서 기다리는 인재가 없습니다. 이야기가 진행되면 다른 마을 주점에 새 인재가 나타납니다.</p>'}</div>`;}
 const rewardText=r=>[r.gold?`${r.gold} G`:'',...Object.entries(r.items||{}).map(([id,n])=>`${TOOLS[id]?.name||id} ×${n}`)].filter(Boolean).join(' · ');
@@ -30,7 +31,7 @@ export function requestsHTML(s,esc){const v=atVillage(s);if(!v)return '<p>작은
   return `<article class="request-card ${r.done?'done':''}"><h3>${esc(r.title)} ${r.done?'<span class="request-done">완료</span>':r.again?'<span class="request-new">새 무리</span>':''}</h3><p>${esc(r.text)}</p>
   ${m?`<p class="muted">전투 · ${esc(m.objective)} · 최대 출전 ${m.deployLimit}명</p>`:`<p class="muted">전투 없음 · 내는 것: ${esc(pay)}</p>`}<p>보상 · ${esc(rewardText(r.reward||{}))}${r.rescue?` · <b>${esc(heroDef(r.rescue)?.name||'')} 합류</b>`:''}</p>
   ${r.done?'':r.kind==='battle'?frontierButton('request-sortie','출전 장수 고르기 →',r.id,first,'primary'):frontierButton('request-pay',`의뢰 해결 · ${esc(pay)}`,r.id,false,'primary')}</article>`;};
- return `<p>${esc(VILLAGES[v].name)} · 촌장 회관 의뢰 게시판. 의뢰 전투는 이야기 진행과 따로 치르며, 지면 마을로 돌아와 다시 할 수 있습니다.${r0(s)}</p><div class="request-list">${list.map(row).join('')}</div>`;}
+ return `<p>${paintedIcon('requestBoard',28,'tavern-icon')}${esc(VILLAGES[v].name)} · 촌장 회관 의뢰 게시판. 의뢰 전투는 이야기 진행과 따로 치르며, 지면 마을로 돌아와 다시 할 수 있습니다.${r0(s)}</p><div class="request-list">${list.map(row).join('')}</div>`;}
 const r0=s=>Array.isArray(s.campaign.heroes)?'':' (첫 전투를 마친 뒤부터)';
 export function requestSortieHTML(s,esc,portrait,id,picked){const r=requestsAt(s,atVillage(s)).find(x=>x.id===id);const m=MISSIONS[r?.mission];if(!r||!m)return '';const heroes=partyHeroes(s.campaign).map(h=>s.campaign.heroes?.find(x=>x.id===h.id)||h);
  const tile=h=>`<button class="hero-card sortie-tile ${picked.includes(h.id)?'active':''}" data-do="req-sortie" data-id="${h.id}" aria-pressed="${picked.includes(h.id)}">${portrait({...h,team:'ally'},'card-sprite')}<span><b>${esc(h.name)}</b><small>LV ${h.level||1}${picked.includes(h.id)?' · 출전':''}</small></span></button>`;
