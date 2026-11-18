@@ -28,6 +28,9 @@ try{for(const [width,height,touch] of [[1440,900,false],[390,844,true]]){const l
  check(`${label} the page is v2.1.0`,await p.evaluate(()=>AshenCrown.version)==='2.1.0');
  await click('[data-do="new"]');await drainStory(p);let s=await snap();
  check(`${label} a new campaign is the five alone (no officers in the legion or the camp)`,s.campaign.roster.length===0&&s.units.filter(u=>u.team==='ally').map(u=>u.id).join()==='eric,elina,lia,sain,kai'&&!(await p.evaluate(()=>AshenCrown.view().hubNpcs||[])).some?.(id=>['bram','noa','marta'].includes(id)));
+ // Play-test (D-120): the town pace — holding a direction for ~1 s walks at most five tiles (one per 210 ms; it was ten).
+ if(!touch&&s.screen==='exploration'){let best=0;for(const key of ['ArrowRight','ArrowLeft','ArrowDown','ArrowUp']){const a=(await snap()).frontier;await p.keyboard.down(key);await p.waitForTimeout(1050);await p.keyboard.up(key);await p.waitForTimeout(300);const b=(await snap()).frontier;best=Math.max(best,Math.abs(b.x-a.x)+Math.abs(b.y-a.y));}
+  check(`${label} walking in town: at most five tiles in a one-second hold (moved ${best})`,best>=2&&best<=5);}
  // 1. Tavern: 인재 확보 → hire Bram
  await restore(tavernSave);s=await snap();check(`${label} the restored save stands in the ash village tavern`,s.frontier.interior==='tavern');
  await press('npc','tavernkeeper');let text=await p.locator('.modal').innerText();check(`${label} 인재 확보 lists Bram, Noa and Marta with their fee`,['브람','노아','마르타','200 G'].every(k=>text.includes(k)));

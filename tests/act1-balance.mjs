@@ -30,7 +30,7 @@ const table=[1,2,3,4,5,6].map(id=>{const rows=by(id),wins=rows.filter(r=>r.outco
 for(const t of table)t.losses=by(t.id).filter(r=>r.outcome!=='victory').map(r=>r.reason||r.outcome);
 const complete=runs.filter(r=>r.complete).length,heroes=['eric','elina','lia','sain','kai'],done=runs.filter(r=>r.complete);
 const md=[`# ACT I balance report (M01→M06, legal policy)`,'',`Executed ${new Date().toISOString().slice(0,16).replace("T"," ")} UTC with \`node tests/act1-balance.mjs ${N} ${first}\` — ${N} seeds, rules API only, no shopping, no state edits.`,'',
- `**Full ACT I clears: ${complete}/${N} (${pct(complete,N)}%)** · gate: each mission ≥ 60% of the runs that reach it (band 60–85% on 보통, M02 cannot be lost)`,'',
+ `**Full ACT I clears: ${complete}/${N} (${pct(complete,N)}%)** · gate: M01 ≥ 95%, every other mission ≥ 60% of the runs that reach it (band 60–85% on 보통, M02 cannot be lost)`,'',
  '| Mission | Played | Wins | Win % | Win turns (avg) | Par / Limit | Heroes standing | Avg level in | Gold in → out | Civilians safe (M05: wagons) |','|---|---|---|---|---|---|---|---|---|---|',
  ...table.map(t=>`| M0${t.id} ${t.title} | ${t.played} | ${t.wins} | ${t.winRate}% | ${t.turns} (${t.avgTurn}) | ${t.par} / ${t.limit} | ${t.avgStanding}/${t.deployed} | ${t.avgLevelIn} | ${t.goldIn} → ${t.goldOut} | ${t.rescued} |`),'',
  '## Losses','',...(table.some(t=>t.losses.length)?table.filter(t=>t.losses.length).map(t=>`- M0${t.id}: ${t.losses.length} — ${[...new Set(t.losses)].join(', ')}`):['- none']),'',
@@ -39,4 +39,5 @@ const md=[`# ACT I balance report (M01→M06, legal policy)`,'',`Executed ${new 
 fs.mkdirSync('test-output',{recursive:true});fs.writeFileSync('test-output/act1-balance.json',JSON.stringify({seeds:N,first,table,runs},null,1));fs.writeFileSync('test-output/act1-balance.md',md);console.log(md);
 // v2.0.0 (D-115): the gate is the ACT I band on 보통 — every mission won in at least 60% of the runs that reach it (M02
 // cannot be lost); the 85% top of the band is a target the report shows, not a failure.
-const low=table.filter(t=>t.played&&t.winRate<60);if(low.length){console.error('below the ACT I band:',low.map(t=>`M0${t.id} ${t.winRate}%`).join(', '));process.exit(1);}
+// v2.1 play-test (D-120): the first battle must be won in at least 95% of the runs (the user's bar for M01).
+const low=table.filter(t=>t.played&&t.winRate<(t.id===1?95:60));if(low.length){console.error('below the ACT I band:',low.map(t=>`M0${t.id} ${t.winRate}%`).join(', '));process.exit(1);}

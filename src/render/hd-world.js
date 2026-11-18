@@ -99,10 +99,20 @@ export function walkSheet(img){let out=walkSheets.get(img);if(out)return out;con
 // v2.0.0 (REFORM_DESIGN §4.2): the side's colour. A class sheet of pack H1 marks the cloth to recolour in pure magenta
 // (it is replaced by the colour); a temporary sheet is washed with the colour (blend 'color', the shading kept).
 const tintCache=new WeakMap();
+// v2.1 play-test (D-120): only the armour and cloth take the side's colour — the head (face, hair, helmet line) and bare
+// skin keep the painting. Per cell of the 4×4 walk sheet the top 30% of the figure is the head; below it, skin-toned
+// pixels (hands, arms) are kept too.
+function skinTone(r,g,b){const mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/510;if(mx===mn||l<.5||l>.9||r!==mx)return false;const s=(mx-mn)/255/(1-Math.abs(2*l-1)),h=60*(((g-b)/(mx-mn))%6);return h>=8&&h<=28&&s>=.32&&s<=.78;}
+function keepFaces(g,orig,w,h){const cell=Math.round(w/4),tinted=g.getImageData(0,0,w,h),p=tinted.data,o=orig.data;
+ for(let cy=0;cy*cell<h;cy++)for(let cx=0;cx<4;cx++){let minY=cell,maxY=-1;for(let y=0;y<cell;y++){const row=(cy*cell+y)*w;for(let x=0;x<cell;x++)if(o[(row+cx*cell+x)*4+3]>40){if(y<minY)minY=y;if(y>maxY)maxY=y;break;}}
+  if(maxY<0)continue;const head=minY+Math.round((maxY-minY)*.3);
+  for(let y=minY;y<=maxY;y++){const row=(cy*cell+y)*w;for(let x=0;x<cell;x++){const i=(row+cx*cell+x)*4;if(o[i+3]<=20)continue;if(y<=head||skinTone(o[i],o[i+1],o[i+2])){p[i]=o[i];p[i+1]=o[i+1];p[i+2]=o[i+2];}}}}
+ g.putImageData(tinted,0,0);}
 export function tintSheet(sheet,color,mask=false){let byColor=tintCache.get(sheet);if(!byColor){byColor=new Map();tintCache.set(sheet,byColor);}let out=byColor.get(color);if(out)return out;
  try{out=document.createElement('canvas');out.width=sheet.width||sheet.naturalWidth;out.height=sheet.height||sheet.naturalHeight;const g=out.getContext('2d',{willReadFrequently:mask});g.drawImage(sheet,0,0);
   if(mask){const d=g.getImageData(0,0,out.width,out.height),p=d.data,[cr,cg,cb]=[1,3,5].map(i=>parseInt(color.slice(i,i+2),16));for(let i=0;i<p.length;i+=4){const r=p[i],gg=p[i+1],b=p[i+2];if(p[i+3]>20&&r>120&&b>120&&gg<Math.min(r,b)*.55){const k=(r+b)/2/255;p[i]=cr*k;p[i+1]=cg*k;p[i+2]=cb*k;}}g.putImageData(d,0,0);}
-  else{g.globalCompositeOperation='color';g.globalAlpha=.5;g.fillStyle=color;g.fillRect(0,0,out.width,out.height);g.globalAlpha=1;g.globalCompositeOperation='destination-in';g.drawImage(sheet,0,0);}}
+  else{const orig=g.getImageData(0,0,out.width,out.height);g.globalCompositeOperation='color';g.globalAlpha=.5;g.fillStyle=color;g.fillRect(0,0,out.width,out.height);g.globalAlpha=1;g.globalCompositeOperation='destination-in';g.drawImage(sheet,0,0);g.globalCompositeOperation='source-over';
+   keepFaces(g,orig,out.width,out.height);}}
  catch(e){out=sheet;}byColor.set(color,out);return out;}
 function drawPaintedFigure(c,img,x,footY,{facing,frame,pose,alpha,tint,mask}){const sheet=tint?tintSheet(walkSheet(img),tint,mask):walkSheet(img),cell=img.naturalWidth/4,{row,col,mirror}=paintedFrame(facing,frame,pose),D=PAINTED_CELL,lean=pose==='attack'?{left:[-4,0],right:[4,0],up:[0,-4],down:[0,3]}[facing]:[0,0];
  c.save();c.globalAlpha*=alpha;c.imageSmoothingEnabled=true;c.imageSmoothingQuality='low';c.translate(x+lean[0],footY+lean[1]);

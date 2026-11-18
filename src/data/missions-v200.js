@@ -17,18 +17,20 @@ const ROWS2000={
 };
 const deploySpots2000=cells=>({recommended:cells.slice(0,8),assault:cells.slice(0,8),defense:cells.slice(-8)});
 export const V200_MISSIONS={
+ // v2.1 play-test (D-120): the first battle is ≥ 95% on 보통 — the two looters strike softer (atk 10 → 8), the villagers
+ // hold longer (HP 28 → 36) and the east reinforcement comes at TURN 7 (was 5). 180 seeds: 178 won (98.9%).
  1:{zoneArea:[4,10,9,13],level:1,threatTurn:6,par:9,turnLimit:14,
   enemies:[unit2000('boss','가르 — 산적 두목','captain',13,4,{hp:62,atk:15,def:7,res:4,spd:6,mov:3,carries:'garrRing',hold:6}),
    unit2000('b1','룩','bandit',11,2,{hp:24,atk:11,def:3}),unit2000('b2','바르','bandit',12,3,{hp:26,atk:11,def:4}),unit2000('a1','애시 보우','archer',9,2,{hp:22,atk:10,def:2,spd:7}),
    unit2000('b3','동쪽 습격대원','bandit',19,8,{hp:24,atk:11,def:3}),unit2000('b4','동쪽 습격대원','bandit',20,9,{hp:24,atk:11,def:3}),unit2000('a2','동쪽 사수','archer',18,6,{hp:22,atk:10,def:2,spd:7}),
-   unit2000('r1','약탈자','bandit',9,7,{hp:24,atk:10,def:3}),unit2000('r2','약탈자','bandit',15,7,{hp:24,atk:10,def:3}),
+   unit2000('r1','약탈자','bandit',9,7,{hp:24,atk:8,def:3}),unit2000('r2','약탈자','bandit',15,7,{hp:24,atk:8,def:3}),
    unit2000('b5','남동 습격대원','bandit',16,10,{hp:24,atk:11,def:3}),unit2000('b6','남동 습격대원','bandit',18,11,{hp:24,atk:11,def:3,hold:4})],
-  civilians:[{id:'c1',name:'미라',x:16,y:5},{id:'c2',name:'토마스',x:8,y:5}],
+  civilians:[{id:'c1',name:'미라',x:16,y:5,hp:36},{id:'c2',name:'토마스',x:8,y:5,hp:36}],
   waves:[{turn:3,units:[unit2000('n1','북쪽 습격대원','bandit',4,2,{hp:23,atk:10,def:3}),unit2000('n2','북쪽 궁수','archer',18,2,{hp:21,atk:10,def:2,spd:7})]},
-   {turn:5,units:[unit2000('e1','동쪽 증원','bandit',21,8,{hp:24,atk:11,def:3}),unit2000('e2','동쪽 증원','bandit',21,9,{hp:24,atk:11,def:3})]}],
+   {turn:7,units:[unit2000('e1','동쪽 증원','bandit',21,8,{hp:24,atk:11,def:3}),unit2000('e2','동쪽 증원','bandit',21,9,{hp:24,atk:11,def:3})]}],
   deploy:[[5,11],[4,10],[6,12],[5,13],[7,11],[4,12],[6,13],[8,12],[7,13],[9,12],[8,13],[5,10],[6,10]],
   objective:'주민 2명 구출 + 가르 격파',
-  brief:'북쪽 길과 동쪽 길로 산적이 동시에 들이칩니다. 주민은 서쪽 집(토마스)과 동쪽 집(미라)에 있습니다 — 군을 나눠야 합니다. T3 북쪽 증원 · T5 동쪽 증원 · T6부터 주민 위협. 구조는 인접해서 행동 1회. 가르는 쇠가락지를 지녔습니다.'},
+  brief:'북쪽 길과 동쪽 길로 산적이 동시에 들이칩니다. 주민은 서쪽 집(토마스)과 동쪽 집(미라)에 있습니다 — 군을 나눠야 합니다. T3 북쪽 증원 · T7 동쪽 증원 · T6부터 주민 위협. 구조는 인접해서 행동 1회. 가르는 쇠가락지를 지녔습니다.'},
  2:{zoneArea:[0,5,4,10],level:2,threatTurn:99,par:8,turnLimit:8,escapeX:27,
   enemies:[{...unit2000('boss','도주 대장','captain',15,9,{hp:46,atk:12,def:4,res:3,spd:6,mov:2,carries:'runnerMapCase'})},
    unit2000('b1','탈영병','bandit',7,6,{hp:28}),unit2000('a1','숲의 사수','archer',9,3,{hp:25,spd:7}),unit2000('b2','굶주린 습격자','bandit',12,5,{hp:28}),
