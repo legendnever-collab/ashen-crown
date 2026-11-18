@@ -9,6 +9,7 @@ HTML SHA256 of the build under review: see `releases/Ashen_Crown_v2.1.0_SHA256SU
   - 64 passed on the first run.
   - quality: its hold-repeat check held a key 425 ms and expected 3–7 tiles; at the new pace that is 2. It now holds 900 ms (5 tiles) and passed on rerun.
   - act1: a story-click timed out while both halves ran; rerun alone, unchanged, passed (113 checks).
+  - CI (GitHub, 9 jobs) on the first push of this build: the renaissance NPC check read the camera while the walker was still gliding (210 ms) and failed in one job; the check now waits 350 ms after the walk. Rerun locally: 141 PASS.
   - performance rerun alone (the parallel run measured under load): camp 16.7 ms at 1440 and 390, battle 33.3 ms at 1440 and 16.7 ms at 390 — the same as before.
 - **v210-e2e: 42 checks PASS** — the 41 before plus the town pace: holding a direction for 1.05 s walks 5 tiles (it was about 10).
 - **M01 ≥ 95% (D-120):**

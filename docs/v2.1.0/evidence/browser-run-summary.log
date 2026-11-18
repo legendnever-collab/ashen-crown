@@ -1,4 +1,5 @@
 # v2.1.0 final build (play-test D-120 + art pack H1 A–C/F, D-121), run 2026-11-18 19:50–21:25 KST in two parallel halves.
+# renaissance: after CI caught a camera read during the walker's glide, the check waits 350 ms; rerun passed (final-renaissance).
 # quality: the hold-repeat check now holds 900 ms (one tile per 210 ms); rerun passed. act1: a story click timed out under load; rerun unchanged passed.
 balance first=0 final=0 pass_lines=0
 e2e first=0 final=0 pass_lines=77
