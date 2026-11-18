@@ -4,15 +4,21 @@ Updated 2026-11-19 KST. **Release candidate on feature/v2.2.0-duel; not merged b
 - HTML SHA256: see `releases/Ashen_Crown_v2.2.0_SHA256SUMS` (`index.html` is identical).
 
 ## What changed (for the reader of the results)
-- **Every duel is won by our hero** (`core/duel.js duelWin`):
-  - three scripted exchanges, then +1 level through `awardXP` (HP and MP refill);
-  - the foe is left at ⌈HP/3⌉ (⌈HP/2⌉ on 어려움) and never killed;
-  - the foe's treasure is claimed.
-- **No choice:** there is no exchange choice and no stepping back. The one exception is M29, which keeps the story choice to leave the duel to Aren's last words.
-- **The duel window** (`ui/duel-scene.js`):
-  - a 16:9 stage, about 9.4 s, which can be skipped;
-  - temporary art: the map figures drawn large on painted stages.
-- **The village tavern** is repainted (art pack I part A). The walk mask, chests and keeper position were authored over the painting.
+- **Every duel is won by our hero** (`core/duel.js duelWin`): three scripted exchanges, then +1 level through `awardXP` (HP and MP refill) and the foe's treasure.
+- **The beaten foe leaves the field** (D-124, `core/game.js setDuelFall`, mission rule `duelFall`):
+
+  | Missions | The foe after the duel |
+  |---|---|
+  | M01, M16, M18–M21, M25 | struck down (Garr counts as defeated) |
+  | M09, M10, M12 | captured (the mission's capture rule) |
+  | M05, M13 | Baldrick withdraws: the 「꺾임」 ending, victory |
+  | M26 | Baldrick lays down his sword: victory, joining or riding beside by the M13 flag |
+  | M29 | Bellard turns to his second phase |
+
+- **No choice:** there is no exchange choice and no stepping back, except at M29, which keeps the story choice to leave the duel to Aren's last words.
+- **Difficulty** (D-124, `core/stats8.js`): enemy stats ×1.08 from M02 on both difficulties; M03 ×1.01, M04 ×1.03, M15 and M16 ×1.
+- **The duel window** (`ui/duel-scene.js`): a 16:9 stage of about 9.4 s that can be skipped, now drawn with art pack I — 24 action sheets, 6 finisher arts, 5 backdrops and the effect sheet.
+- **Art pack I** (SHA256 verified): part A, the village tavern (earlier on this RC); B–G, the duel art (`scripts/import-duel-art-v220.py`); H/I, 20 busts of the hires and Adel and icon sheets P/Q (14 icons, shown at the tavern and the request board).
 
 ## Results on this build
 - **Unit tests: 535 PASS / 0 FAIL / 16 skipped with reasons (551 in all)** (docs/v2.2.0/evidence/unit-results.txt).
