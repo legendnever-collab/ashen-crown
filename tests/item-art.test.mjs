@@ -12,13 +12,13 @@ const cells=csv('docs/v0.8.0/art/item-work-pack/cells.csv'),cellsF1=csv('docs/v0
 const log=all.filter(r=>cells.some(c=>c.id===r.id)),logF1=all.filter(r=>cellsF1.some(c=>c.id===r.id)),logF2=all.filter(r=>cellsF2.some(c=>c.id===r.id)),logF3=all.filter(r=>cellsF3.some(c=>c.id===r.id)),logF4=all.filter(r=>cellsF4.some(c=>c.id===r.id)),logG1=all.filter(r=>cellsG1.some(c=>c.id===r.id)),logG2=all.filter(r=>cellsG2.some(c=>c.id===r.id)),logG3=all.filter(r=>cellsG3.some(c=>c.id===r.id));
 
 test('pack E: 102 icons, one per work-order cell, hashes match the import log, 128×128 WebP',()=>{
- assert.equal(cells.length,102);assert.equal(log.length,102);assert.equal(all.length,102+8+6+4+4+4+7+3);
+ assert.equal(cells.length,102);assert.equal(log.length,102);assert.equal(all.length,102+8+6+4+4+4+7+3+14);
  assert.deepEqual(log.map(r=>r.id).sort(),cells.map(c=>c.id).sort());
  for(const r of log){const b=fs.readFileSync(`src/assets/items/${r.id}.webp`);assert.equal(crypto.createHash('sha256').update(b).digest('hex'),r.webp_sha256,r.id);
   assert.equal(b.length,+r.bytes,r.id);assert.equal(b.toString('ascii',8,12),'WEBP');assert.equal(r.qa,'ok',r.id);
   const c=cells.find(c=>c.id===r.id);assert.equal(`${r.sheet}${r.cell}`,`${c.sheet}${c.cell}`,r.id);}
  assert.equal(new Set(log.map(r=>r.source_sha256)).size,7,'seven source sheets');
- assert.equal(fs.readdirSync('src/assets/items').filter(f=>f.endsWith('.webp')).length,102+8+6+4+4+4+7+3);
+ assert.equal(fs.readdirSync('src/assets/items').filter(f=>f.endsWith('.webp')).length,102+8+6+4+4+4+7+3+14); // v2.2.0: + pack H1 P/Q (14)
 });
 
 test('ACT III pack F1: sheet H gives the capital\'s six tier III pieces and the M15–M16 treasures their painted icons',()=>{
@@ -78,4 +78,12 @@ test('ACT IV pack G3: sheet N paints Aren\'s last order and the two v0.10.2 trea
  for(const id of ['ramHead','nightLocket'])assert.ok(GEAR[id]&&logG3.some(r=>r.id===id),id);
  assert.ok(logG3.some(r=>r.id==='lastOrder'),'「끝까지 함께」');
  for(const id of ['ram','ladder','memory','memory_read'])assert.equal(fs.readFileSync(`src/assets/props/${id}.webp`).toString('ascii',8,12),'WEBP',`prop ${id}`);
+});
+
+// v2.2.0 (D-124): art pack I brings the painted icon sheets P and Q of the H1 work order (14 cells; v2.1.0 kept them borrowed).
+test('pack H1 P/Q (v2.2.0): 14 painted icons, one per work-order cell, hashes match the import log',()=>{
+ const cellsPQ=csv('docs/v2.1.0/art/h1v2-work-pack/cells.csv'),logPQ=all.filter(r=>cellsPQ.some(c=>c.id===r.id));
+ assert.equal(cellsPQ.length,14);assert.deepEqual(logPQ.map(r=>r.id).sort(),cellsPQ.map(c=>c.id).sort());
+ for(const r of logPQ){const b=fs.readFileSync(`src/assets/items/${r.id}.webp`);assert.equal(crypto.createHash('sha256').update(b).digest('hex'),r.webp_sha256,r.id);assert.equal(b.toString('ascii',8,12),'WEBP');
+  const c=cellsPQ.find(c=>c.id===r.id);assert.equal(`${r.sheet}${r.cell}`,`${c.sheet}${c.cell}`,r.id);}
 });

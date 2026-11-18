@@ -49,7 +49,7 @@ try{
   await restore(m16Duel());const lv16=findUnit(m16Duel(),'eric').level;const scene16=await waitDuelScene(p);s=await snap();
   check(`${label} M16 TURN 3: the duel window opens (v2.2: decided for Erik at once) and Thea, who left, fights beside the legion`,scene16&&s.missionId===16&&s.turn===3&&s.duel?.result==='hero'&&s.units.some(u=>u.id==='rthea'&&!u.benched&&u.team==='allied'));
   await p.waitForTimeout(2600);await p.screenshot({path:`${shots}/duel-${label}.png`});
-  await drainStory(p);s=await snap();check(`${label} the duel window closes, Erik is a level up and the battle goes on`,!(await p.locator('#duel-scene').count())&&s.units.find(u=>u.id==='eric').level===lv16+1&&s.screen==='battle');
+  await drainStory(p);s=await snap();check(`${label} the duel window closes, Erik is a level up, the captain has fallen (D-124) and the battle goes on`,!(await p.locator('#duel-scene').count())&&s.units.find(u=>u.id==='eric').level===lv16+1&&s.units.find(u=>u.id==='cap').hp<=0&&s.screen==='battle');
   const hidden=s.units.find(u=>u.team==='enemy'&&u.hp>0&&!u.benched&&fogHidden(s,u));
   if(hidden){await p.evaluate(id=>document.querySelector('[data-do="unit-info"]')?null:null,hidden.id);}
   check(`${label} the fog: the map is hazed and a far enemy is hidden`,!!hidden);

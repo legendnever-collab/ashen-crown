@@ -34,11 +34,13 @@ export const M13={
   if(st.campHP!==null&&s.turn-1>=m.threatTurn&&st.calm<2&&!st.halted&&campOf(s).reduce((a,v)=>a+Math.max(0,v.hp),0)>=st.campHP){st.calm++;addResolve(s,'camp');}st.campHP=null;},
  persuade(s,u,t){const st=s.missionState;if(u.id==='eric'){st.persuadedTurn=s.turn;remember(s,'m13_persuade');enqueueStory(s,'13:persuade');}else if(u.id==='thea'){st.thea=true;remember(s,'m13_thea');enqueueStory(s,'13:thea');}
   s.feedback.push({type:'guard',id:u.id,text:'설득'});addResolve(s,u.id);},
+ // v2.2.0 (D-124): beaten in the duel, Baldrick withdraws (the formation's break, by single combat).
+ duelFall(s,h,f){return f.id==='boss'?'withdrawn':null;},
  afterDamage(s,v){if(v.id==='boss'&&v.hp<lionFloor13(v)){v.hp=lionFloor13(v);s.log.push('발드릭은 쓰러지지 않습니다. 더 이상의 피해는 막아 냅니다.');}if(v.team==='civilian'&&v.hp<=0)enqueueStory(s,'13:lost');},
  checkOutcome(s,finish){const m=missionOf(s),st=s.missionState,boss=findUnit(s,'boss'),tail=` · 피난민 ${campOf(s).filter(v=>v.hp>0).length}/4 · 결단 ${st.resolve}`;
   if(campLost(s)>=2)return finish(s,'defeat','야영지 피난민을 두 명 이상 잃었습니다.');
   if(st.halted)return finish(s,'victory',`발드릭이 카시안의 명령을 거두고 군을 멈췄습니다${tail}.`);
-  if(bearers13(s).every(b=>!alive(b))&&boss.hp<=lionFloor13(boss)&&s.turn>=(m.lionHold||1)){st.withdrew='broken';boss.withdrawn=true;return finish(s,'victory',`사자 대형 붕괴 · 발드릭 퇴각${tail}.`);}
+  if(bearers13(s).every(b=>!alive(b))&&boss.hp<=lionFloor13(boss)&&s.turn>=(m.lionHold||1)||s.duel?.key==='duel:13:baldrick'&&s.duel.result==='hero'){st.withdrew='broken';boss.withdrawn=true;return finish(s,'victory',`사자 대형 붕괴 · 발드릭 퇴각${tail}.`);}
   if(s.turn>m.turnLimit){st.withdrew='held';boss.withdrawn=true;return finish(s,'victory',`TURN ${m.turnLimit}까지 야영지 사수 · 발드릭 퇴각${tail}.`);}
  },
  beforeCommit(s){const st=s.missionState;setStoryFlag(s,'mission_13_baldrick',st.halted?'halted':st.withdrew||'held');setStoryFlag(s,'mission_13_resolve',st.resolve);setStoryFlag(s,'mission_13_refugees',campOf(s).filter(v=>v.hp>0).length);},

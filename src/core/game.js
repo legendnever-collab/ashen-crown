@@ -16,7 +16,7 @@ import {isTacticMode,isToolMode,applyTactic,enemyStatusOnHit,expireTactics,caltr
 import {poisonTick,statusAge,inflict,STATUS_KO} from './status.js';
 import {gainGearExp,fx,checkFeat,markCarrier,dropSupply,cutIn,claimTreasure,dropChance} from './arms.js';
 import {skillByMode} from '../data/skills.js';
-import {duelOpen,startDuel,setDuelWon} from './duel.js';
+import {setDuelFall,duelOpen,startDuel,setDuelWon} from './duel.js';
 import {defaultCommand,togetherOpen,lastOrderOpen} from './command.js';
 export function newGame(seed=20261014,campaign=null,missionId=1){
  const mission=MISSIONS[missionId];
@@ -119,6 +119,15 @@ function strikeWithPattern(s,u,t,mode){const p=mode==='attack'?attackPattern(u):
 function followUp(s,u,v,mode){if(mode!=='attack'||!alive(u)||!alive(v)||!hostile(s,u,v)||!validTarget(s,u,v,'attack'))return null;if((effectiveStats(s,u).spd||0)<(effectiveStats(s,v).spd||0)+8)return null;s.log.push(`${u.name}: 추가 공격.`);return damage(s,u,v,mode,false,{scale:.6});}
 // v2.1 (D-118): duels are story events between linked pairs (core/duel-events.js); the v2.0.0 challenge menu is gone.
 setDuelWon((s,f)=>{claimTreasure(s,f.carries,'일기토 승리');f.carries=null;});
+// v2.2.0 play-test (D-124): the beaten lead leaves the field. A mission rule may decide how (Baldrick withdraws or yields,
+// Bellard's first phase falls); where the mission takes prisoners the lead is captured; otherwise struck down.
+setDuelFall((s,h,f)=>{const R=rulesOf(s);let how=R?.duelFall?.(s,h,f);
+ if(!how&&R?.capture){R.capture(s,h,f);f.rescued=true;how='captured';s.log.push(`${f.name}을(를) 생포했습니다.`);s.feedback.push({type:'rescue',id:f.id,text:'생포'});}
+ if(!how){f.hp=0;R?.afterDamage?.(s,f);how=alive(f)?'phase':'down';
+  if(how==='down'){dropSupply(s,f);tallyKill(s,h,f);if(f.id==='boss'){setStoryFlag(s,`mission_0${s.missionId}_garr_defeated`);enqueueStory(s,`${s.missionId}:boss`);}
+   if(isBossRank(f)){for(const e of s.units)if(e.team==='enemy'&&alive(e)&&distance(e,f)<=4)e.atkDown={n:Math.max(1,Math.round((e.atk||0)*.1)),until:s.turn+1};}
+   s.feedback.push({type:'death',id:f.id,text:'FALLEN'});s.log.push(`${f.name}이(가) 일기토에서 쓰러졌습니다.`);}}
+ checkOutcome(s);return how;});
 export function performAction(s,id,mode,targetId){
  const u=findUnit(s,id),t=findUnit(s,targetId);if(!canAct(s,u))return {ok:false,error:'행동할 수 없는 장수입니다.'};
  s.feedback=[];

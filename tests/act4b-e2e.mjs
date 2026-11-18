@@ -50,7 +50,7 @@ try{
   // 4. M26: the duel on TURN 2
   await restore(m26Duel());{const sc=await waitDuelScene(p);s=await snap();check(`${label} M26 TURN 2: Baldrick and Erik — the duel window opens, won by Erik (v2.2)`,sc&&s.duel?.key==='26:duel'&&s.duel.result==='hero');}
   await p.waitForTimeout(2600);await p.screenshot({path:`${shots}/m26-duel-${label}.png`});
-  await drainStory(p);s=await snap();check(`${label} the duel is won: two of resolve, Baldrick left standing at a third`,s.duel.result==='hero'&&s.missionState.resolve>=2&&s.units.find(u=>u.id==='boss').hp>0);
+  await drainStory(p);s=await snap();check(`${label} the duel is won: two of resolve and Baldrick lays down his sword — he joins the legion (D-124)`,s.duel.result==='hero'&&s.duel.fall==='yielded'&&s.missionState.resolve>=2&&s.missionState.halted&&s.outcome==='victory'&&s.missionState.outcome==='join');
   // 5. Erik persuades at resolve 3: Baldrick yields and joins
   const pr=m26Persuade();await restore(pr);await drainStory(p);const e=pr.units.find(u=>u.id==='eric');await select(e);
   check(`${label} Erik beside Baldrick: the battle menu offers 설득`,await p.locator('[data-do="mode"][data-id="persuade"]').count()===1);

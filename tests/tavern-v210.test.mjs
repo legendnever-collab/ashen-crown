@@ -69,10 +69,10 @@ test('requests without a battle trade at the board; the bounty opens again after
  const k=s.campaign.completed.filter(id=>id<=30).length;assert.ok(requestsAt(s,'reed').find(r=>r.id==='bounty').done===false);
  s.economy.requests=[...(s.economy.requests||[]),`bounty:${k}`];assert.ok(requestsAt(s,'reed').find(r=>r.id==='bounty').done);s.campaign.completed.push(5);assert.ok(!requestsAt(s,'reed').find(r=>r.id==='bounty').done,'a new band after the next story win');});
 
-test('duels are events: Erik beside Garr starts it once (two lines); v2.2: always won, a level for Erik, Garr left at a third; no challenge command remains',()=>{
+test('duels are events: Erik beside Garr starts it once (two lines); v2.2: always won, a level for Erik, Garr falls and leaves the field (D-124); no challenge command remains',()=>{
  const s=newGame(5);s.screen='deployment';startBattle(s);drain(s);assert.equal(pendingDuelEvent(s),null);assert.equal(performAction(s,'eric','challenge','boss').ok,false,'the menu is gone');
  assert.equal(standBeside(s,'eric','boss'),'duel:1:garr');assert.ok(duelOpen(s));assert.equal(STORY['duel:1:garr'].length,2);assert.ok(s.narrative.queue.includes('duel:1:garr')||s.narrative.active?.key==='duel:1:garr');
- assert.equal(duelPick(s,'skip'),false,'v2.2: no stepping back');const garr=findUnit(s,'boss'),eric=findUnit(s,'eric'),hp=garr.hp,lv=eric.level;assert.ok(duelPick(s,'strike'));assert.equal(s.duel.result,'hero','always won');assert.equal(eric.level,lv+1,'a level');assert.equal(garr.hp,Math.ceil(hp/3));assert.ok(garr.hp>0,'alive');assert.equal(checkDuelEvents(s,'eric'),null,'one time per pair');
+ assert.equal(duelPick(s,'skip'),false,'v2.2: no stepping back');const garr=findUnit(s,'boss'),eric=findUnit(s,'eric'),hp=garr.hp,lv=eric.level;assert.ok(duelPick(s,'strike'));assert.equal(s.duel.result,'hero','always won');assert.equal(eric.level,lv+1,'a level');assert.equal(garr.hp,0,'Garr falls');assert.equal(s.duel.fall,'down');assert.ok(hp>0);assert.equal(checkDuelEvents(s,'eric'),null,'one time per pair');
  const t=newGame(5);t.screen='deployment';startBattle(t);drain(t);assert.equal(standBeside(t,'lia','boss'),null,'Lia has no tie to Garr');deserialize(serialize(s));});
 
 test('v2.0.0 saves (real, schema 20) load as schema 21: the officers stay as hires, the five are together, nothing else changes',()=>{

@@ -60,6 +60,13 @@ function dsSpeed(c,dir,k){c.save();c.strokeStyle=`rgba(255,255,255,${(.35*(1-k))
 function dsEmbers(c,t,col){c.save();c.globalCompositeOperation='lighter';const r=dsRand(11);for(let i=0;i<60;i++){const sx=r()*DS_W,sp=20+r()*40,y=(DS_H-((t/1000*sp+r()*DS_H)%DS_H)),x=sx+Math.sin(t/700+i)*18;c.fillStyle=`rgba(${col},${(.25+r()*.5).toFixed(2)})`;c.fillRect(x,y,2+r()*2,2+r()*2);}c.restore();}
 function dsColumn(c,x,k){c.save();c.globalCompositeOperation='lighter';const g=c.createLinearGradient(x-90,0,x+90,0);g.addColorStop(0,'rgba(255,210,90,0)');g.addColorStop(.5,`rgba(255,226,140,${(.75*Math.min(1,k*3)*(1-Math.max(0,k-.7)/.3)).toFixed(2)})`);g.addColorStop(1,'rgba(255,210,90,0)');c.fillStyle=g;c.fillRect(x-90,0,180,DS_FLOOR+20);
  const r=dsRand(3);for(let i=0;i<30;i++){const y=DS_FLOOR-((k*900+r()*DS_FLOOR)%DS_FLOOR),xx=x+(r()-.5)*150;c.fillStyle='rgba(255,240,180,.8)';c.fillRect(xx,y,3,3);}c.restore();}
+// Pack I part G's effects sheet (4×4): 1 slash white, 2 slash gold, 3 slash violet, 4 sparks, 5 impact ring, 6 dust, 7 speed
+// lines, 8 embers, 9 shield flash, 10 violet bolt, 11 holy light, 12 smoke, 13 ground crack, 14 light column, 15 stars, 16 wind.
+const DS_GLOW=new Set([1,2,3,4,5,7,9,10,11,14,15,16]);
+function dsVfx(c,cell,x,y,size,alpha=1,flip=false,squash=1){const im=dsImage('duel_vfx');if(!im)return false;const n=cell-1,cw=im.naturalWidth/4,sx=(n%4)*cw,sy=Math.floor(n/4)*cw;
+ c.save();c.globalAlpha=Math.max(0,Math.min(1,alpha));if(DS_GLOW.has(cell))c.globalCompositeOperation='lighter';c.translate(x,y);if(flip)c.scale(-1,1);c.drawImage(im,sx,sy,cw,cw,-size/2,-size*squash/2,size,size*squash);c.restore();return true;}
+// the finisher's colour by hero: Lia's violet, Sain's holy light, Kai's smoke; gold otherwise
+const DS_FIN={lia:[3,10],sain:[2,11],kai:[1,12]};
 const dsEase=k=>k<0?0:k>1?1:k*k*(3-2*k);
 const dsLerp=(a,b,k)=>a+(b-a)*dsEase(k);
 // The choreography: [start ms, end ms] for each beat. Reduced effects: no shake or flash, a shorter slow motion.
@@ -99,14 +106,15 @@ export function playDuelScene(opts){if(dsCurrent)finishDuelScene();const {hero,f
   if(reduced){shake=0;flash=Math.min(flash,.25);}
   c.save();c.clearRect(0,0,DS_W,DS_H);if(shake)c.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);
   c.drawImage(dsBackdrop(stage),0,0,DS_W,DS_H);dsEmbers(c,t,look.ember);
-  if(inBeat(t,'dash1')||inBeat(t,'rush'))dsSpeed(c,1,inBeat(t,'rush')?at(t,'rush'):at(t,'dash1'));
+  if(inBeat(t,'dash1')||inBeat(t,'rush')){const k=inBeat(t,'rush')?at(t,'rush'):at(t,'dash1');if(!dsVfx(c,7,DS_W/2,DS_FLOOR-200,900,.7*(1-k)))dsSpeed(c,1,k);dsVfx(c,6,hx-40,DS_FLOOR-10,220,.8*(1-k),false,.6);if(inBeat(t,'dash1'))dsVfx(c,6,fx+40,DS_FLOOR-10,220,.8*(1-k),true,.6);}
   const glowHero=t>=DS_BEATS.level[0]?'rgba(255,220,120,.9)':null;
   dsFighter(c,F0,fp,fx,t,'left',null);dsFighter(c,H0,hp,hx,t,'right',glowHero);
-  if(inBeat(t,'bind1'))dsSpark(c,(hx+fx)/2,DS_FLOOR-190,at(t,'bind1'));
-  if(inBeat(t,'guard'))dsSpark(c,hx+70,DS_FLOOR-170,at(t,'guard'),'190,220,255');
-  if(inBeat(t,'counter'))dsSlash(c,(hx+fx)/2,DS_FLOOR-210,at(t,'counter'),1);
-  if(inBeat(t,'finisher')){const k=at(t,'finisher');dsSlash(c,fx-40,DS_FLOOR-230,Math.min(1,k*1.4),1,'255,226,150');if(k>.5)dsRing(c,fx,DS_FLOOR,(k-.5)/.5);if(k>.5)dsSpark(c,fx-30,DS_FLOOR-170,(k-.5)/.5,'255,236,170');}
-  if(t>=DS_BEATS.level[0])dsColumn(c,hx,at(t,'level'));
+  if(inBeat(t,'bind1')){const k=at(t,'bind1');if(!dsVfx(c,4,(hx+fx)/2,DS_FLOOR-200,200+160*k,1-k*.7))dsSpark(c,(hx+fx)/2,DS_FLOOR-190,k);}
+  if(inBeat(t,'guard')){const k=at(t,'guard');if(!dsVfx(c,9,hx+70,DS_FLOOR-190,180+120*k,1-k))dsSpark(c,hx+70,DS_FLOOR-170,k,'190,220,255');}
+  if(inBeat(t,'counter')){const k=at(t,'counter');if(!dsVfx(c,1,(hx+fx)/2+20,DS_FLOOR-220,300,1-k*.8))dsSlash(c,(hx+fx)/2,DS_FLOOR-210,k,1);}
+  if(inBeat(t,'finisher')){const k=at(t,'finisher'),[sl,ex]=DS_FIN[hero.unit.id]||[2,4];if(!dsVfx(c,sl,fx-40,DS_FLOOR-230,380,Math.min(1,1.6-k*1.4)))dsSlash(c,fx-40,DS_FLOOR-230,Math.min(1,k*1.4),1,'255,226,150');
+   if(k>.5){const q=(k-.5)/.5;if(!dsVfx(c,5,fx,DS_FLOOR-20,260+320*q,1-q,false,.45))dsRing(c,fx,DS_FLOOR,q);dsVfx(c,13,fx,DS_FLOOR+10,300,1-q*.6,false,.5);if(!dsVfx(c,ex,fx-30,DS_FLOOR-180,240+120*q,1-q))dsSpark(c,fx-30,DS_FLOOR-170,q,'255,236,170');}}
+  if(t>=DS_BEATS.level[0]){const k=at(t,'level');if(!dsVfx(c,14,hx,DS_FLOOR-260,560,Math.min(1,k*4)*(1-Math.max(0,k-.75)/.25)))dsColumn(c,hx,k);else dsVfx(c,15,hx,DS_FLOOR-330,300,.9*Math.sin(Math.min(1,k)*Math.PI));}
   c.restore();
   // the finisher key art (pack I part F) flashes full frame; until then a radial burst frames the hero
   if(inBeat(t,'finisher')){const k=at(t,'finisher');if(k>.12&&k<.55){const a=Math.min(1,(k-.12)/.08)*Math.min(1,(.55-k)/.08);c.save();c.globalAlpha=a;

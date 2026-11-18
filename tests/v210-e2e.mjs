@@ -53,7 +53,7 @@ try{for(const [width,height,touch] of [[1440,900,false],[390,844,true]]){const l
  await press('end-phase');await press('confirm-phase');for(let i=0;i<80&&(await snap()).phase!=='player';i++)await p.waitForTimeout(150);await p.waitForTimeout(400);
  const lv0=(await snap()).units.find(u=>u.id==='eric').level;const sc=await waitDuelScene(p);s=await snap();
  check(`${label} the next player phase opens the Erik–Garr duel event and its window (v2.2)`,sc&&s.duel?.key==='duel:1:garr');
- check(`${label} v2.2: the duel is won by Erik at once — a level up, Garr left at a third and alive, no choice offered`,s.duel.result==='hero'&&s.units.find(u=>u.id==='eric').level===lv0+1&&s.units.find(u=>u.id==='boss').hp>0&&!(await p.locator('[data-do="duel-pick"]').count()));
+ check(`${label} v2.2: the duel is won by Erik at once — a level up, Garr falls and leaves the field (D-124), no choice offered`,s.duel.result==='hero'&&s.units.find(u=>u.id==='eric').level===lv0+1&&s.units.find(u=>u.id==='boss').hp<=0&&s.duel.fall==='down'&&!(await p.locator('[data-do="duel-pick"]').count()));
  text=await p.locator('#duel-scene').innerText();check(`${label} the window names both fighters (VS) and the stage`,['에릭','가르','일기토','불타는 잿빛 마을'].every(k=>text.includes(k)));
  await p.screenshot({path:`${shots}/duel-scene-vs-${label}.png`});await p.waitForTimeout(3000);await p.screenshot({path:`${shots}/duel-scene-clash-${label}.png`});
  await p.waitForTimeout(5000);check(`${label} the window ends on LEVEL UP (LV ${lv0} → ${lv0+1})`,(await p.locator('#duel-scene .ds-level').isVisible().catch(()=>false))&&(await p.locator('#duel-scene .ds-level').innerText()).includes(`LV ${lv0} → ${lv0+1}`));
