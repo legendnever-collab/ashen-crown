@@ -23,7 +23,7 @@ import {standBeside} from './duel-helper.mjs';
 
 const tavernOf=(s)=>{const d=currentHub(s).places.find(p=>p.interior==='tavern');s.frontier.x=d.x;s.frontier.y=d.y;s.frontier.facing='up';assert.ok(enterInterior(s,d.buildingId),'enter the tavern');return s;};
 function campAfter(n,seed=20261014){let s=newGame(seed);s.screen='deployment';startBattle(s);playBattle(s);assert.equal(s.outcome,'victory','M01');
- for(let id=2;id<=n;id++){const camp=nextMission(s);let won=null;for(let t=0;t<3&&!won;t++){const b=structuredClone(camp);b.rng=(b.rng+t*7919)>>>0;b.screen='deployment';startBattle(b);drain(b);playCampaignBattle(b,true);if(b.outcome==='victory')won=b;}assert.ok(won,`M0${id}`);s=won;if(id===4)s.campaign.choices.m04_records_choice='kept';}
+ for(let id=2;id<=n;id++){const camp=nextMission(s);let won=null;for(let t=0;t<6&&!won;t++){const b=structuredClone(camp);b.rng=b.initialSeed=(b.rng+t*7919)>>>0;b.screen='deployment';startBattle(b);drain(b);playCampaignBattle(b,true);if(b.outcome==='victory')won=b;}assert.ok(won,`M0${id}`);s=won;if(id===4)s.campaign.choices.m04_records_choice='kept';}
  enterHub(s,{aftermath:true,story:false});drain(s);return s;}
 let after4=null;const camp4=()=>structuredClone(after4??=campAfter(4));
 
@@ -39,7 +39,7 @@ test('hiring: one fee, the legion\'s average level −1, kept to the ending; nev
  const r=hire(s,'noa');assert.ok(r.ok,r.error);assert.equal(s.economy.gold,gold-200);assert.ok(s.campaign.roster.includes('noa'));assert.equal(s.campaign.heroes.find(h=>h.id==='noa').level,lv);
  assert.deepEqual(s.economy.hired,['noa']);assert.equal(hire(s,'noa').ok,false,'once');assert.ok(!mercsAt(s,'ash').some(m=>m.id==='noa'));
  s.economy.gold=50;s.campaign.economy.gold=50;assert.match(hire(s,'marta').error,/부족/);
- const back=deserialize(serialize(s));assert.ok(back.campaign.roster.includes('noa'));assert.equal(back.schema,SCHEMA);assert.equal(SCHEMA,21);assert.equal(VERSION,'2.1.0');
+ const back=deserialize(serialize(s));assert.ok(back.campaign.roster.includes('noa'));assert.equal(back.schema,SCHEMA);assert.equal(SCHEMA,21);assert.equal(VERSION,'2.2.0');
  assert.ok(STORY['officer:noa:0'],'camp talk');assert.deepEqual(loreChapters('noa',back.campaign).open.map(c=>c.after).filter(a=>a<=1),[],'chapters start after the hire');});
 
 test('M04 opens 갈대 나루 and 돌우물 마을 on the world map; Rowell waits at the reed tavern as an elite hire; a wanderer moves to stonewell',()=>{
@@ -69,14 +69,14 @@ test('requests without a battle trade at the board; the bounty opens again after
  const k=s.campaign.completed.filter(id=>id<=30).length;assert.ok(requestsAt(s,'reed').find(r=>r.id==='bounty').done===false);
  s.economy.requests=[...(s.economy.requests||[]),`bounty:${k}`];assert.ok(requestsAt(s,'reed').find(r=>r.id==='bounty').done);s.campaign.completed.push(5);assert.ok(!requestsAt(s,'reed').find(r=>r.id==='bounty').done,'a new band after the next story win');});
 
-test('duels are events: Erik beside Garr starts it once (two lines, 받는다/물러선다); no challenge command remains',()=>{
+test('duels are events: Erik beside Garr starts it once (two lines); v2.2: always won, a level for Erik, Garr left at a third; no challenge command remains',()=>{
  const s=newGame(5);s.screen='deployment';startBattle(s);drain(s);assert.equal(pendingDuelEvent(s),null);assert.equal(performAction(s,'eric','challenge','boss').ok,false,'the menu is gone');
  assert.equal(standBeside(s,'eric','boss'),'duel:1:garr');assert.ok(duelOpen(s));assert.equal(STORY['duel:1:garr'].length,2);assert.ok(s.narrative.queue.includes('duel:1:garr')||s.narrative.active?.key==='duel:1:garr');
- assert.ok(duelPick(s,'skip'),'물러선다');assert.equal(s.duel.result,'skipped');assert.equal(checkDuelEvents(s,'eric'),null,'one time per pair');
+ assert.equal(duelPick(s,'skip'),false,'v2.2: no stepping back');const garr=findUnit(s,'boss'),eric=findUnit(s,'eric'),hp=garr.hp,lv=eric.level;assert.ok(duelPick(s,'strike'));assert.equal(s.duel.result,'hero','always won');assert.equal(eric.level,lv+1,'a level');assert.equal(garr.hp,Math.ceil(hp/3));assert.ok(garr.hp>0,'alive');assert.equal(checkDuelEvents(s,'eric'),null,'one time per pair');
  const t=newGame(5);t.screen='deployment';startBattle(t);drain(t);assert.equal(standBeside(t,'lia','boss'),null,'Lia has no tie to Garr');deserialize(serialize(s));});
 
 test('v2.0.0 saves (real, schema 20) load as schema 21: the officers stay as hires, the five are together, nothing else changes',()=>{
  for(const [name,officers] of [['m01-camp',['bram','noa','marta']],['m05-camp',['bram','noa','marta','rowell']]]){const f=JSON.parse(fs.readFileSync(new URL(`./fixtures/v200/v200-${name}.json`,import.meta.url),'utf8'));assert.equal(f.schema,20);assert.equal(f.version,'2.0.0');
-  const before=JSON.parse(JSON.parse(f.save).data),s=deserialize(f.save);assert.equal(s.schema,21);assert.equal(s.version,'2.1.0');assert.deepEqual(s.campaign.roster,before.campaign.roster);assert.deepEqual(s.campaign.economy.hired,officers);
+  const before=JSON.parse(JSON.parse(f.save).data),s=deserialize(f.save);assert.equal(s.schema,21);assert.equal(s.version,'2.2.0');assert.deepEqual(s.campaign.roster,before.campaign.roster);assert.deepEqual(s.campaign.economy.hired,officers);
   assert.equal(s.campaign.economy.gold,before.campaign.economy.gold);assert.deepEqual(s.campaign.completed,before.campaign.completed);assert.ok(['lia','sain','kai'].every(id=>s.frontier.affiliation[id]==='affiliated'));assert.equal(s.frontier.pendingRecruit,null);
   for(const id of officers)assert.ok(MERCS[id]&&(s.campaign.heroes==null||s.campaign.heroes.some(h=>h.id===id)),id);assert.deepEqual(deserialize(serialize(s)).campaign,s.campaign,'round trip');}});

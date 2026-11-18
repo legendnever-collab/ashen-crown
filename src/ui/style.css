@@ -490,3 +490,29 @@
 .world-marker.home{background:#7a3424!important}.world-marker.small{border-color:#9fd0a8!important}.world-marker.here{box-shadow:0 0 0 3px rgba(240,196,106,.6)}
 .world-marker:disabled{opacity:.85;cursor:default}.world-marker.flip{--tx:calc(-100% + 12px);flex-direction:row-reverse}.world-marker.lift{--ty:-125%}.world-marker.drop{--ty:25%}.world-marker.flip i{margin:0 0 0 4px}.world-marker.home{z-index:2}
 @media(max-width:600px){.world-marker span{font-size:10px}.merc-list,.request-list{grid-template-columns:1fr}}
+/* v2.2.0 (D-123): the duel window — a 16:9 stage above everything, letterboxed on a phone. */
+.duel-scene{position:fixed;inset:0;z-index:9000;background:rgba(4,4,6,.94);display:flex;align-items:center;justify-content:center;animation:ds-in .3s ease-out}
+@keyframes ds-in{from{opacity:0}to{opacity:1}}
+.ds-stage{position:relative;width:min(100vw,177.78vh);aspect-ratio:16/9;max-height:100vh;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,.8)}
+.ds-stage>canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.ds-vs{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:0 4%;pointer-events:none}
+.ds-card{width:28%;display:flex;flex-direction:column;align-items:center;gap:.3em;filter:drop-shadow(0 6px 18px rgba(0,0,0,.7))}
+.ds-card.left{transform:translateX(calc(-1 * var(--slide,0%)))}.ds-card.right{transform:translateX(var(--slide,0%))}
+.ds-card canvas{width:100%;height:auto;border-bottom:3px solid #d8b25c}
+.ds-card b{font-size:clamp(14px,2.2vw,26px);color:#fff4d8;text-shadow:0 2px 6px #000;letter-spacing:.04em}
+.ds-title{display:flex;flex-direction:column;align-items:center;color:#f3d38a;text-shadow:0 3px 12px #000}
+.ds-title small{font-size:clamp(11px,1.3vw,16px);color:#d9c8a8;letter-spacing:.2em}
+.ds-title strong{font-size:clamp(28px,6vw,72px);letter-spacing:.12em;line-height:1.1}
+.ds-title span{font-size:clamp(18px,3vw,40px);color:#ff9a5a;font-weight:800}
+.ds-level{position:absolute;left:0;right:0;top:16%;display:flex;flex-direction:column;align-items:center;pointer-events:none;animation:ds-level .5s ease-out}
+.ds-level strong{font-size:clamp(30px,6.5vw,84px);color:#ffe08a;letter-spacing:.14em;text-shadow:0 0 18px rgba(255,200,90,.9),0 4px 10px #000}
+.ds-level span{font-size:clamp(14px,2.2vw,26px);color:#fff4d8;text-shadow:0 2px 6px #000}
+@keyframes ds-level{from{transform:scale(1.4);opacity:0}to{transform:scale(1);opacity:1}}
+.ds-skip{position:absolute;right:2%;bottom:3%;min-height:44px;padding:.4em 1em;background:rgba(10,12,16,.7);color:#f1e6cf;border:1px solid rgba(241,230,207,.45);border-radius:6px;font:inherit;cursor:pointer}
+.ds-skip:focus-visible{outline:2px solid #ffd46b}
+.duel-choice{display:flex;align-items:center;gap:1em;justify-content:center;text-align:center}
+@media (prefers-reduced-motion:reduce){.duel-scene,.ds-level{animation:none}}
+/* On a phone held upright the stage grows taller and the painting is cropped at the sides (the fight stays in the middle). */
+@media (orientation:portrait){.ds-stage{width:100vw;height:min(78vh,88vw);aspect-ratio:auto}.ds-stage>canvas{object-fit:cover}
+ .ds-vs{flex-wrap:wrap;align-content:center;padding:0 3%}.ds-card{width:40%}.ds-title{order:-1;width:100%;margin-bottom:.4em}
+ .ds-skip{font-size:13px;min-height:40px;top:2%;bottom:auto}}

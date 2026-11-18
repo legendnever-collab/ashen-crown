@@ -2,11 +2,11 @@
 // city (Aren's 「지켜라」 on the deployment bar, seven heroes, the clerks and the neutral watch) → the records choice in the
 // camp → Mission 16 in fog (hidden enemy sheet, the duel modal on TURN 3) → a returning recruit rejoins and the ward-stone
 // choice. 1440×900 and 390×844 touch. Screenshots: docs/v0.9.0/screenshots/act3.
-import {standBeside} from './duel-helper.mjs';import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterWarCouncil} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
+import {waitDuelScene} from './duel-helper.mjs';import {standBeside} from './duel-helper.mjs';import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterWarCouncil} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {newGame,startBattle,beginEnemyPhase,advanceEnemy,nextMission} from '../src/core/game.js';import {findUnit,fogHidden} from '../src/core/rules.js';
 import {departRoster} from '../src/core/mission-rules-v071.js';import {enterHub} from '../src/core/frontier.js';import {drain} from './campaign-policy.mjs';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v2.1.0.html').href,shots='docs/v0.9.0/screenshots/act3';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v2.2.0.html').href,shots='docs/v0.9.0/screenshots/act3';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const results=[];const check=(name,ok)=>{assert.ok(ok,name);n++;results.push(name);console.log('PASS',name);};
 const camp14=JSON.parse(fs.readFileSync('tests/fixtures/v081/v081-m14-camp.json','utf8')).save;
 const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);};
@@ -46,12 +46,10 @@ try{
   await p.screenshot({path:`${shots}/records15-choice-${label}.png`});
   await press('records15-pick','post');await drainStory(p);s=await snap();check(`${label} the records are posted in the lower city and the scene follows`,s.campaign.choices.m15_records==='post'&&s.narrative.seen.includes('after:15:post'));
   // 3. M16 in fog with the duel open
-  await restore(m16Duel());await drainStory(p);s=await snap();
-  check(`${label} M16 TURN 3: the duel is open and Thea, who left, fights beside the legion`,s.missionId===16&&s.turn===3&&!!s.duel&&!s.duel.result&&s.units.some(u=>u.id==='rthea'&&!u.benched&&u.team==='allied'));
-  check(`${label} the duel modal offers strike, guard and finisher (and refusing)`,await p.locator('[data-do="duel-pick"]').count()===4);
-  await p.screenshot({path:`${shots}/duel-${label}.png`});
-  for(let i=0;i<6&&await p.locator('[data-do="duel-pick"][data-id="strike"]').count();i++){await press('duel-pick','strike');await p.waitForTimeout(200);}
-  await drainStory(p);s=await snap();check(`${label} the duel is decided and the battle goes on`,['hero','foe'].includes(s.duel.result)&&!(await p.locator('[data-do="duel-pick"]').count()));
+  await restore(m16Duel());const lv16=findUnit(m16Duel(),'eric').level;const scene16=await waitDuelScene(p);s=await snap();
+  check(`${label} M16 TURN 3: the duel window opens (v2.2: decided for Erik at once) and Thea, who left, fights beside the legion`,scene16&&s.missionId===16&&s.turn===3&&s.duel?.result==='hero'&&s.units.some(u=>u.id==='rthea'&&!u.benched&&u.team==='allied'));
+  await p.waitForTimeout(2600);await p.screenshot({path:`${shots}/duel-${label}.png`});
+  await drainStory(p);s=await snap();check(`${label} the duel window closes, Erik is a level up and the battle goes on`,!(await p.locator('#duel-scene').count())&&s.units.find(u=>u.id==='eric').level===lv16+1&&s.screen==='battle');
   const hidden=s.units.find(u=>u.team==='enemy'&&u.hp>0&&!u.benched&&fogHidden(s,u));
   if(hidden){await p.evaluate(id=>document.querySelector('[data-do="unit-info"]')?null:null,hidden.id);}
   check(`${label} the fog: the map is hazed and a far enemy is hidden`,!!hidden);
