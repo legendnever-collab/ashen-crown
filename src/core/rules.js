@@ -158,7 +158,9 @@ export const chargeBreaks=(u,mode)=>mode==='skill'&&(skillOf(u)==='charge'&&(u.c
 // v0.6.1 Dario (PROPOSED): his counterattacks deal +4; after Riposte (skill: +2 damage) +8 until the next player phase.
 // v2.0.0: counters as multipliers — the Riposte holder ×1.25 (×1.5 after Riposte), a braced spear ×1.5.
 export const riposteBonus=u=>skillOf(u)==='riposte'?(u.riposte?1.5:1.25):u?.brace?1.5:1;
-export const healAmount=(s,v)=>Math.round((v.healPow??(12+(v.mag||0)))+(v.heal||0)+(proficiencyBonus(s,v).heal||0));
+// v2.2.1 play-test (D-126): heals restore half of what they did (「기본 힐 양이 너무 많이 차. 반정도로 줄여줘」), at least 1.
+export const HEAL_SCALE=.5;
+export const healAmount=(s,v)=>Math.max(1,Math.round(HEAL_SCALE*((v.healPow??(12+(v.mag||0)))+(v.heal||0)+(proficiencyBonus(s,v).heal||0))));
 export const isolated=(s,t)=>t.team==='ally'&&!s.units.some(a=>a.team==='ally'&&alive(a)&&a.id!==t.id&&distance(a,t)===1);
 // Tier-1 Guard covers melee only; the Guardian Knight (tier 2) also takes the first ranged or magic hit.
 export function guardFor(s,u,t,mode){const melee=!(mode==='skill'&&skillOf(u)==='fireBolt')&&distance(u,t)===1;return s.units.find(g=>alive(g)&&g.team===t.team&&g.id!==t.id&&(g.guarding&&!g.guardUsed||g.guardTarget===t.id)&&distance(g,t)===1&&(melee||(g.classTier||1)>=2))||null;}
