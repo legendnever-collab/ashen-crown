@@ -5,6 +5,7 @@
 - Builds go to build/Ashen_Crown.html (git-ignored); index.html and the release HTML are committed only by scripts/package.py; verify-release.py skips until packaged; CI builds first.
 - A notice when the browser cannot open AVIF.
 - Earlier builds: releases/ARCHIVE.json, the manual workflow "Archive old builds" (scripts/archive-releases.mjs) and scripts/fetch-releases.mjs.
+- Play-test (D-126): rogues MOV 4; heals halved; move/attack tiles drawn again above buildings and trees; M06's seal guards hold their posts; enemy strength M03 ×0.95, M04 ×0.97, M06 ×1.02, M15 ×0.95, M17 ×0.97.
 - Version 2.2.1; schema 21 unchanged.
 
 # v2.2.0 — 일기토 장면과 새 주점
