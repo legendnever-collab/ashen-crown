@@ -6,7 +6,9 @@ Folders and starting quality (measured on the v2.2.0 art: AVIF at these settings
   portraits 60, duel 60, sprites 60 (SSIM floor 0.975) · rooms 65, hubs 65, world 65 (floor 0.97)
 Each image is compared with the WebP it replaces (SSIM on alpha-weighted luminance). Below the floor the quality rises
 by 5 up to 80; an image still below the floor stays WebP. Resolution never changes (busts are drawn up to 500 px tall).
-Icons, chests and props stay WebP (small images gain nothing).
+Icons, chests and props stay WebP (small images gain nothing). The class sheets (sprite_class_*) stay WebP too: their
+pure-magenta sash is recoloured to the side's colour by threshold, and AVIF's softer colour edges left 31% more pink
+fringe pixels outside the threshold (14,247 → 18,679 over the 24 sheets).
 
 The original import logs keep recording the import as it was. src/assets/avif-conversion-log.csv records every
 conversion: folder, the WebP name and SHA256 it replaced, the AVIF name, quality, bytes, SHA256 and the SSIM.
@@ -23,6 +25,7 @@ ASSETS = os.path.join(ROOT, 'src', 'assets')
 LOG = os.path.join(ASSETS, 'avif-conversion-log.csv')
 PLAN = {'portraits': (60, 0.975), 'duel': (60, 0.975), 'sprites': (60, 0.975),
         'rooms': (65, 0.97), 'hubs': (65, 0.97), 'world': (65, 0.97)}
+KEEP_WEBP = lambda name: name.startswith('sprite_class_')  # magenta-marked side-colour sheets
 FIELDS = ['folder', 'webp', 'webp_sha256', 'avif', 'quality', 'avif_bytes', 'avif_sha256', 'ssim']
 
 def lum(im):
@@ -49,7 +52,7 @@ def convert(job):
 
 def main(folders):
     rows = list(csv.DictReader(open(LOG, encoding='utf-8'))) if os.path.exists(LOG) else []
-    jobs = [(f, n) for f in folders for n in sorted(os.listdir(os.path.join(ASSETS, f))) if n.endswith('.webp')]
+    jobs = [(f, n) for f in folders for n in sorted(os.listdir(os.path.join(ASSETS, f))) if n.endswith('.webp') and not KEEP_WEBP(n)]
     kept = []
     with ProcessPoolExecutor(max_workers=os.cpu_count() or 2) as pool:
         for r in pool.map(convert, jobs, chunksize=2):

@@ -11,15 +11,17 @@ test('the size budget: ok up to 80 MiB, warn above, fail above 90 MiB',()=>{
  const r=sizeReport('<html>'+'x'.repeat(100)+'</html>',['const ASHEN_A={"a":"1"};','function f(){}']);
  assert.equal(r.status,'ok');assert.equal(r.parts.ASHEN_A,Buffer.byteLength('const ASHEN_A={"a":"1"};'));assert.equal(r.parts.fonts,0);
 });
-test('the six painting folders are AVIF only; every file matches its conversion record, at least the SSIM floor',()=>{
+test('the six painting folders are AVIF (the 24 magenta-marked class sheets stay WebP); every file matches its conversion record, at least the SSIM floor',()=>{
  for(const [folder,floor] of Object.entries(AVIF_FOLDERS)){
   const files=fs.readdirSync(`src/assets/${folder}`).filter(f=>/\.(webp|avif)$/.test(f));
-  assert.deepEqual(files.filter(f=>f.endsWith('.webp')),[],`${folder}: WebP left (run scripts/convert-art-avif.py)`);
-  for(const f of files){const c=CONVERSIONS.find(r=>r.folder===folder&&r.avif===f);assert.ok(c,`${folder}/${f} has no conversion record`);
+  // the class sheets stay WebP: their magenta sash is recoloured by threshold and needs exact colour edges
+  assert.deepEqual(files.filter(f=>f.endsWith('.webp')&&!f.startsWith('sprite_class_')),[],`${folder}: WebP left (run scripts/convert-art-avif.py)`);
+  if(folder==='sprites')assert.equal(files.filter(f=>f.startsWith('sprite_class_')&&f.endsWith('.webp')).length,24);
+  for(const f of files.filter(f=>f.endsWith('.avif'))){const c=CONVERSIONS.find(r=>r.folder===folder&&r.avif===f);assert.ok(c,`${folder}/${f} has no conversion record`);
    const b=fs.readFileSync(`src/assets/${folder}/${f}`);assert.ok(isAvif(b),f);assert.equal(crypto.createHash('sha256').update(b).digest('hex'),c.avif_sha256,f);
    assert.ok(+c.ssim>=floor,`${f}: SSIM ${c.ssim} under ${floor}`);assert.ok(+c.quality>=60&&+c.quality<=80,f);assert.ok(imageSize(b)[0]>0,f);}
  }
- assert.equal(CONVERSIONS.length,406);
+ assert.equal(CONVERSIONS.length,382);
 });
 test('the AVIF notice: browsers that cannot open AVIF are told why the paintings are missing',()=>{
  const app=fs.readFileSync('src/ui/app.js','utf8');assert.match(app,/AVIF_NOTICE='[^']*iOS 16\.4[^']*'/);assert.match(app,/avifProbe\.src='data:image\/avif;base64,/);

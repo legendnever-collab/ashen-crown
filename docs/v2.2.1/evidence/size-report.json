@@ -1,6 +1,6 @@
 {
-  "bytes": 48036542,
-  "MiB": 45.81,
+  "bytes": 48735922,
+  "MiB": 46.48,
   "status": "ok",
   "parts": {
     "ASHEN_DUEL": 6069960,
@@ -12,7 +12,7 @@
     "ASHEN_CHESTS": 405471,
     "ASHEN_WORLD": 569330,
     "ASHEN_HUBS": 6610458,
-    "ASHEN_SPRITES": 4837917,
+    "ASHEN_SPRITES": 5537297,
     "ASHEN_PORTRAITS": 16693077,
     "fonts": 162726,
     "code": 1827663
