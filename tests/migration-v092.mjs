@@ -37,7 +37,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  await restore(fixture('m20-battle').save);s=await snapshot(p);check('v0.9.2 Mission 20 battle reopens in the camp before it (v2.0.0)',reopened(s,20));
  /* v2.0.0: depart again from the camp */for(const a of ['warroom','deploy','start-battle','confirm-battle']){if(await p.locator(`[data-do="${a}"]`).count()){await cmd(p,a);await drainStory(p);}}await cmd(p,'open-unit-menu');await cmd(p,'submenu','skills');const menu=await p.locator('#unit-popover').textContent();
  check('Erik of a v0.9.2 save keeps ② and ③ and shows ④ (locked until his awakening, or open)',menu.includes('②')&&menu.includes('③')&&menu.includes('④'));await cmd(p,'close-unit-menu');
- await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===21&&s.version==='2.2.1'&&s.missionId===20);
+ await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===21&&s.version==='2.3.0'&&s.missionId===20);
  check('No runtime errors in either build',errors.length===0);await ctx.close();
 }finally{fs.mkdirSync('test-output',{recursive:true});fs.writeFileSync('test-output/migration-v092-browser.json',JSON.stringify({checks,errors},null,2));await browser.close();}
 console.log(`${checks.length} v0.9.2 browser migration checks PASS`);

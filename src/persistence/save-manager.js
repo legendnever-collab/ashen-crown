@@ -88,13 +88,19 @@ export function validate(s){
 // Exported for the migration tests: the economy as a schema-10 save's economy reads in schema 11.
 export function arms081View(e){const c=structuredClone(e);arms081(c);return c;}
 function arms081(e){for(const g of e.gear||[]){if('level' in g){g.star=g.level===1?2:1;g.exp=g.level===1?30:0;delete g.level;}}for(const slots of Object.values(e.equipped||{}))if(slots&&!Object.hasOwn(slots,'treasure'))slots.treasure=null;for(const r of e.rewardPending||[])delete r.level;}
+// v2.0.0 / v2.3.0: a battle in progress reopens in its mission's camp (a won battle's result screen in the aftermath, its
+// choices and camp talk still ahead), because the big maps differ from the saved positions.
+function reopenInCamp(s){const c=structuredClone(s.skirmish?.campaign||s.campaign),mid=s.skirmish?.returnMission??s.missionId,fresh=newGame(s.initialSeed??20261014,c,MISSIONS[mid]?.skirmish?1:mid);
+  const won=s.screen==='result'&&s.outcome==='victory'&&!s.practice&&!s.skirmish&&c.completed?.includes(mid);if(won)fresh.practice=false;enterHub(fresh,won?{story:false,aftermath:true}:{story:false});return fresh;}
+// A camp state of a big-map mission takes the new map's troops and places the heroes on it.
+function relocateCamp(s){const fresh=newGame(s.initialSeed??20261014,structuredClone(s.campaign),s.missionId),allies=s.units.filter(u=>u.team==='ally');for(const u of allies){const f=fresh.units.find(v=>v.id===u.id);if(f){u.x=f.x;u.y=f.y;}}const free=[...deployZoneOf(fresh)].map(k=>k.split(',').map(Number));for(const u of allies)if(!fresh.units.some(v=>v.id===u.id)){const t=free.find(([x,y])=>!allies.some(o=>o!==u&&o.x===x&&o.y===y)&&!fresh.units.some(o=>o.x===x&&o.y===y));if(t){u.x=t[0];u.y=t[1];}}for(const u of allies)delete u.recoveryPhase;s.units=[...allies,...fresh.units.filter(u=>u.team!=='ally')];s.missionState=fresh.missionState;s.missionStart=fresh.missionStart;s.turn=1;s.phase=fresh.phase;s.enemyQueue=[];s.enemyIndex=0;delete s.reinforced;s.burning={};delete s.stageStart;}
 function reform200(s){
  const battle=['battle','result','deployment'].includes(s.screen)||!!s.skirmish;
- if(battle){const c=structuredClone(s.skirmish?.campaign||s.campaign),mid=s.skirmish?.returnMission??s.missionId,fresh=newGame(s.initialSeed??20261014,c,MISSIONS[mid]?.skirmish?1:mid);
-  // a won battle's result screen reopens in that mission's aftermath (its choices and camp talk still ahead)
-  const won=s.screen==='result'&&s.outcome==='victory'&&!s.practice&&!s.skirmish&&c.completed?.includes(mid);if(won)fresh.practice=false;enterHub(fresh,won?{story:false,aftermath:true}:{story:false});fresh.migrated200='battle';s=fresh;}
- // ACT I is on new maps: a camp state of M01–M06 takes the new map's troops and places the heroes on it
- if(!battle&&MISSIONS[s.missionId]?.v200){const fresh=newGame(s.initialSeed??20261014,structuredClone(s.campaign),s.missionId),allies=s.units.filter(u=>u.team==='ally');for(const u of allies){const f=fresh.units.find(v=>v.id===u.id);if(f){u.x=f.x;u.y=f.y;}}const free=[...deployZoneOf(fresh)].map(k=>k.split(',').map(Number));for(const u of allies)if(!fresh.units.some(v=>v.id===u.id)){const t=free.find(([x,y])=>!allies.some(o=>o!==u&&o.x===x&&o.y===y)&&!fresh.units.some(o=>o.x===x&&o.y===y));if(t){u.x=t[0];u.y=t[1];}}for(const u of allies)delete u.recoveryPhase;s.units=[...allies,...fresh.units.filter(u=>u.team!=='ally')];s.missionState=fresh.missionState;s.missionStart=fresh.missionStart;s.turn=1;s.phase=fresh.phase;s.enemyQueue=[];s.enemyIndex=0;delete s.reinforced;s.burning={};delete s.stageStart;}
+ if(battle){s=reopenInCamp(s);s.migrated200='battle';}
+ // (reopenInCamp: a won battle's result screen reopens in that mission's aftermath)
+
+ // ACT I is on new maps (v2.3.0: and ACT II M07–M10): a camp state takes the new map's troops and places the heroes on it
+ if(!battle&&(MISSIONS[s.missionId]?.v200||MISSIONS[s.missionId]?.v230))relocateCamp(s);
  const c=s.campaign;c.difficulty??='normal';
  for(const rec of c.heroes||[]){if(!rec||rec.stats||!UNIT_CLASS8[rec.id])continue;rec.cls=UNIT_CLASS8[rec.id];rec.stats=statsAt(rec.id,rec.level||1,rec.classTier||1);delete rec.hp;deriveUnit(rec);rec.hp=rec.maxHP;}
  for(const u of s.units||[]){if(u.team!=='ally')continue;const rec=(c.heroes||[]).find(h=>h.id===u.id);if(rec?.stats){u.cls=rec.cls;u.stats=structuredClone(rec.stats);}else if(UNIT_CLASS8[u.id]&&!u.stats){u.cls=UNIT_CLASS8[u.id];u.stats=statsAt(u.id,u.level||1,u.classTier||1);}const down=u.hp!=null&&u.hp<=0;delete u.hp;deriveUnit(u);u.hp=down?0:u.maxHP;}
@@ -103,6 +109,10 @@ function reform200(s){
   for(const [hero,slots] of Object.entries(e.equipped))for(const [slot,gid] of Object.entries(slots)){if(!gid)continue;const g=e.gear.find(a=>a.id===gid);if(!g||!GEAR[g.type]?.heroes.includes(hero))slots[slot]=null;}
   for(const [hero,type] of Object.entries(START_TREASURES)){if(e.gear.some(g=>g.type===type))continue;const id=`g${e.next++}`;e.gear.push({id,type,exp:0,star:1});if(e.equipped[hero]&&!e.equipped[hero].treasure)e.equipped[hero].treasure=id;}}
  s.schema=20;s.version='2.0.0';delete s.stageStart;if(s.frontier&&c.frontier)for(const id of c.roster||[])if(!s.frontier.members.includes(id)){s.frontier.members.push(id);s.frontier.affiliation[id]='affiliated';}
+ return s;}
+function reform230(s){const m=MISSIONS[s.missionId];
+ if(!s.skirmish&&m?.v230){if(['battle','result','deployment'].includes(s.screen)){s=reopenInCamp(s);s.migrated230='battle';}else relocateCamp(s);}
+ s.schema=22;s.version='2.3.0';if(s.stageStart&&MISSIONS[s.stageStart.missionId]?.v230)delete s.stageStart;else if(s.stageStart)s.stageStart=migrate(s.stageStart);
  return s;}
 export function migrate(s){
  if(s?.schema===0){s.schema=1;s.feedback=s.feedback||[];}
@@ -145,6 +155,9 @@ export function migrate(s){
  // v2.1 (D-118): the officers a save already has stay as hires (paid for, kept); the five are together from the start (no
  // walk-and-talk joining); the v2.0.0 duel challenge leaves no record (duels are events now). Battles keep going.
  if(s?.schema===20){s.schema=21;s.version='2.1.0';for(const t of [s,s.stageStart].filter(Boolean)){tavern210(t);delete t.challenges;delete t.lastChallenge;for(const u of t.units||[])delete u.duelled;}}
+ // v2.3.0 (D-129): ACT II M07–M10 are on big maps. A battle of those missions in progress reopens in its camp; a camp state
+ // there takes the new map's troops (as v2.0.0 did for ACT I). Requests and every other mission keep going.
+ if(s?.schema===21)s=reform230(s);
  if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');
  // v0.6.1: a save of the current schema made by an earlier build of it (e.g. v0.6.0) is now this version.
  if(s?.schema===SCHEMA&&s.version!==VERSION){s.version=VERSION;if(s.stageStart?.version)s.stageStart.version=VERSION;}

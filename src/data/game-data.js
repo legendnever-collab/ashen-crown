@@ -1,6 +1,6 @@
 import {NEW_HEROES} from './mercs-v210.js';
-export const VERSION = '2.2.1';
-export const SCHEMA = 21;
+export const VERSION = '2.3.0';
+export const SCHEMA = 22;
 export const WIDTH = 12, HEIGHT = 10;
 // v0.4 benchmark pass: physical cut (fraction), evade (%), fire multiplier and per-class
 // movement live together so the tap readout can describe each tile in one line.

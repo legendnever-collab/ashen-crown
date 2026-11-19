@@ -14,8 +14,9 @@ function battle(order='hold',extra){const s=newGame(21,camp(extra),8);s.screen='
 const turn=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);};
 const finish=(s)=>(st,o,r)=>{st.outcome=o;st.reason=r;};
 
-test('M08 data: 16×16 canyon, six-hero sortie, level 9, Baldrick and two soldiers on the upper choke, two rockfall devices, three villagers',()=>{
- const m=MISSIONS[8];assert.deepEqual([m.width,m.height],[16,16]);assert.ok(m.map.every(r=>r.length===16));assert.equal(m.deployLimit,6);assert.equal(m.level,9);
+test('M08 data (v2.3.0 big map): 22×20, north canyon and the rear village to the south, six-hero sortie, level 9, Baldrick and two soldiers on the upper choke, two rockfall devices on the cliff ledges, three villagers, 12 + 14 mercenaries',()=>{
+ const m=MISSIONS[8];assert.deepEqual([m.width,m.height],[22,20]);assert.ok(m.map.every(r=>r.length===22));assert.equal(m.enemies.length,12);assert.equal(m.waves.reduce((n,w)=>n+w.units.length,0),14);assert.equal(m.breachRow,12);
+ for(const o of m.objects)assert.equal(m.map[o.y][o.x],'m','a device sits on a cliff ledge');for(const v of m.civilians)assert.ok(v.y>=14,'the village lies south of the breach line');assert.equal(m.deployLimit,6);assert.equal(m.level,9);
  assert.deepEqual(m.allies.map(a=>a.id),['baldrick','ic1','ic2']);assert.equal(m.objects.filter(o=>o.kind==='rockfall').length,2);assert.equal(m.civilians.length,3);
  const zone=m.deployZone();for(const p of m.deployments.recommended)assert.ok(zone.has(p.join(',')),`preset ${p}`);
  assert.ok(m.waves.some(w=>w.turn===7&&w.units.some(u=>u.id==='boss')),'the captain arrives on TURN 7');
@@ -34,7 +35,7 @@ test('hold: villagers cannot be rescued and leave on TURN 6; rescue: they can be
 });
 
 test('rockfall: one use per device, damage to enemies in its zone only, allies untouched',()=>{
- const s=battle();const rf=findUnit(s,'rf1'),m=s.units.find(u=>u.id==='m3'),bal=findUnit(s,'baldrick'),kai=findUnit(s,'kai');m.x=6;m.y=4;const hp=m.hp,bhp=bal.hp;kai.x=4;kai.y=6;
+ const s=battle();const rf=findUnit(s,'rf1'),m=s.units.find(u=>u.id==='m3'),bal=findUnit(s,'baldrick'),kai=findUnit(s,'kai');m.x=7;m.y=4;const hp=m.hp,bhp=bal.hp;kai.x=5;kai.y=8; /* v2.3.0: rf1 on the west ledge (5,7), its zone x 6–10, rows 2–6 */
  assert.ok(validTarget(s,kai,rf,'search'));assert.ok(performAction(s,'kai','search','rf1').ok);assert.equal(m.hp,Math.max(0,hp-18));assert.equal(bal.hp,bhp);assert.deepEqual(s.missionState.rockfall,['rf1']);
  assert.equal(validTarget(s,findUnit(s,'eric'),rf,'search'),false,'used devices stay down');assert.ok(s.narrative.events.includes('8:rockfall'));
 });
