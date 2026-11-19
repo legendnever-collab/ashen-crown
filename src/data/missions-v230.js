@@ -49,9 +49,9 @@ export const V230_MISSIONS={
   objective:'TURN 10까지 협곡 사수 또는 TURN 7에 오는 용병단장 격파 (북쪽 적이 협곡 아래 들판(12번째 줄)으로 넘어오면 패배)',
   brief:'위쪽 목은 발드릭의 병사가 지킵니다. 양쪽 벼랑 턱의 낙석 장치(한 번씩)를 작동하면 협곡 안의 적에게 큰 피해를 줍니다. 출전 전에 사령부 명령(협곡 사수 / 후위 마을 구출조)을 정합니다. 후위 마을은 협곡 아래 남쪽 들판에 있습니다. TURN 3 북쪽 2진, TURN 6 남쪽 습격조, TURN 7 용병단장과 호위병 도착(TURN 8까지 입구 사수).'},
  9:{zoneArea:[3,12,8,16],par:10,turnLimit:12,
-  enemies:[hunt23('h1',7,9),hunt23('h2',13,13),hunt23('h4',17,2),bs23('m1',11,5),bs23('m2',16,9),bs23('m3',19,6),bs23('m4',23,9),bs23('m5',14,16),bs23('m6',4,5),bs23('m7',21,13),bs23('m8',18,0),
+  enemies:[hunt23('h1',12,3),hunt23('h2',22,13),hunt23('h4',19,2),bs23('m1',11,5),bs23('m2',21,9),bs23('m3',19,6),bs23('m4',23,9),bs23('m5',14,16),bs23('m6',4,5),bs23('m7',21,13),bs23('m8',18,0),
    ba23('a1',6,8),ba23('a2',13,2),ba23('a3',19,12),ba23('a4',24,8)],
-  civilians:[{id:'v1',name:'청백 깃발 대표',look:'councillor',x:12,y:5,hp:30,def:3,res:3},{id:'v2',name:'주황 깃발 대표',look:'councillor',x:21,y:8,hp:30,def:3,res:3},{id:'v3',name:'항구 의원',look:'councillor',x:11,y:12,hp:30,def:3,res:3}],
+  civilians:[{id:'v1',name:'청백 깃발 대표',look:'councillor',x:10,y:8,hp:30,def:3,res:3},{id:'v2',name:'주황 깃발 대표',look:'councillor',x:16,y:12,hp:30,def:3,res:3},{id:'v3',name:'항구 의원',look:'councillor',x:7,y:10,hp:30,def:3,res:3}], // along the legion's way up from the docks
   allies:{dario_blade:[23,10,{post:{x:22,y:8},leash:3}],vg1:[3,13,{post:{x:3,y:12},leash:2}],vg2:[4,16,{post:{x:3,y:15},leash:2}]},
   waves:[{turn:3,story:'9:harbor',units:[bs23('s1',1,15),bs23('s2',2,16),bs23('s4',5,17)]},
    {turn:5,story:'9:alley',units:[u2300('boss','그림자 자객 우두머리','captain',25,5,{hp:60,atk:18,def:6,res:5,spd:11,mov:4,movementProfile:'rogue',hunter:true}),hunt23('h3',25,7),bs23('s3',25,12),bs23('s5',24,16),ba23('a5',25,9)]}],

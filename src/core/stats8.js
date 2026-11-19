@@ -56,7 +56,12 @@ export const difficultyOf=s=>DIFFICULTY[s?.campaign?.difficulty]?s.campaign.diff
 // (the stat push walled M03–M05 for the test player); its extra level and ×1.1 stats start from a Lv 11 sortie (ACT II) and
 // are full from Lv 19 (the designed +2 / ×1.15 left the M15 chase at 2 of 20).
 export const HARD_FROM=11,HARD_FULL_AT=19;
-export function difficultyPush(s){const d=DIFFICULTY[difficultyOf(s)],mid=s?.missionId??1,base=mid>=BASE_FROM&&mid<100?(BASE_MUL_AT[mid]??BASE_MUL):1;if(!d.levels&&d.mul===1)return {levels:0,mul:base};const avg=s?.levelPlan?.avg??sortieAverage(s)??1,h=Math.max(0,Math.min(1,(avg-HARD_FROM)/(HARD_FULL_AT-HARD_FROM)));return {levels:Math.round(d.levels*h),mul:base*(1+(d.mul-1)*h)};}
+// v2.3.0 (D-129), the 어려움 re-measure: ACT II (M07–M14) was as easy as 보통 for the test player (the push grows in from Lv 11),
+// so there the full +1 level and ×1.1 apply; the M15 chase fell to 1 of 23 (the clerks outran a legion facing guards a level
+// up), and the guardians' trials M17 and M18 to 5 of 19 and 0 of 9 — there 어려움 keeps 보통's numbers and is harder only by
+// the sharper AI, the bigger waves and the single potion.
+export const HARD_SHARE={7:1,8:1,9:1,10:1,11:1,12:1,13:1,14:1,15:0,17:0,18:0};
+export function difficultyPush(s){const d=DIFFICULTY[difficultyOf(s)],mid=s?.missionId??1,base=mid>=BASE_FROM&&mid<100?(BASE_MUL_AT[mid]??BASE_MUL):1;if(!d.levels&&d.mul===1)return {levels:0,mul:base};const avg=s?.levelPlan?.avg??sortieAverage(s)??1,h=HARD_SHARE[mid]??Math.max(0,Math.min(1,(avg-HARD_FROM)/(HARD_FULL_AT-HARD_FROM)));return {levels:Math.round(d.levels*h),mul:base*(1+(d.mul-1)*h)};}
 // The sortie's average level (deployed heroes and officers).
 export function sortieAverage(s){const out=(s.units||[]).filter(u=>u.team==='ally'&&!u.benched&&u.hp>0);if(!out.length)return null;return out.reduce((a,u)=>a+(u.level||1),0)/out.length;}
 const authoredLevel=(s,m)=>m?.level||Math.max(1,s?.missionId||1);

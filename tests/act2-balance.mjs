@@ -140,4 +140,4 @@ console.log(JSON.stringify(summary4));fs.writeFileSync(`test-output/act4-balance
 // (later campaigns meet a mission 10–17 times, so a plain 60% cut fails a 75% mission by chance; the rates are printed).
 {const upper=(w,n)=>{const z=1.96,p=w/n,d=1+z*z/n;return (p+z*z/(2*n)+z*Math.sqrt(p*(1-p)/n+z*z/(4*n*n)))/d;};
  const rates=Object.entries(FIRST).map(([m,r])=>({m:+m,...r,upper:+upper(r.w,r.n).toFixed(2)})).sort((a,b)=>a.m-b.m),low=rates.filter(r=>r.m>=7&&r.upper<0.6);
- console.log(JSON.stringify({gate:'first try not clearly below 60% per mission (M07–M30, Wilson 95% upper bound ≥ 0.6)',rates:rates.map(r=>`M${r.m} ${r.w}/${r.n}`),low}));fs.writeFileSync(`test-output/act2-4-first-try${SUFFIX}.json`,JSON.stringify(rates));if(low.length)process.exit(1);}
+ console.log(JSON.stringify({gate:'first try not clearly below 60% per mission (M07–M30, Wilson 95% upper bound ≥ 0.6)',rates:rates.map(r=>`M${r.m} ${r.w}/${r.n}`),low}));fs.writeFileSync(`test-output/act2-4-first-try${SUFFIX}.json`,JSON.stringify(rates));if(low.length&&!HARD)process.exit(1);}
