@@ -57,3 +57,8 @@ test('shipped room and chest WebPs equal the hash-verified import log',()=>{
  for(const r of all)assert.equal(sha(`${{room:'rooms',chest:'chests',hub:'hubs',prop:'props'}[r.kind]}/${r.webp}`),r.webp_sha256,r.webp);
  for(const id of Object.keys(ROOM_LAYOUTS))assert.ok(last.has(`${id}.webp`),id);
 });
+
+test('v2.2.0 (art pack I part A): the village tavern keeps its keeper behind the bar and its chests where the painting leaves floor',()=>{
+ const r=paintedRoom('village','tavern','inn-1');assert.equal(r.art,'int_village_tavern');assert.deepEqual([r.npcs[0].id,r.npcs[0].x,r.npcs[0].y],['tavernkeeper',3,2]);
+ assert.deepEqual(r.buildings.map(b=>[b.chestId,b.x,b.y]),[['a',1,6],['b',10,3]]);assert.equal(r.mask[3],'######....##');
+ const north=paintedRoom('castletown','tavern','inn-1');if(north)assert.deepEqual([north.npcs[0].x,north.npcs[0].y],[5,5],'other taverns keep the keeper where it was');});

@@ -3,11 +3,11 @@
 // after the win the betrayed banner (two ways) → Mission 26 → M26 (the duel modal on TURN 2, Erik's 설득 beside Baldrick at
 // resolve 3 → he yields and joins) → Baldrick in the legion with ①–④, the camp below the pass → Dario's ④ in the menu.
 // 1440×900 and 390×844 touch. Screenshots: docs/v0.10.1/screenshots/act4b.
-import {standBeside} from './duel-helper.mjs';import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterWarCouncil} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
+import {waitDuelScene} from './duel-helper.mjs';import {standBeside} from './duel-helper.mjs';import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterWarCouncil} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {startBattle,beginEnemyPhase,advanceEnemy,nextMission,newGame} from '../src/core/game.js';
 import {enterHub} from '../src/core/frontier.js';import {chooseBanner25} from '../src/core/mission-rules-v0101.js';import {drain} from './campaign-policy.mjs';
-const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v2.1.0.html').href,shots='docs/v0.10.1/screenshots/act4b';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
+const url=pathToFileURL(process.cwd()+'/releases/Ashen_Crown_v2.2.0.html').href,shots='docs/v0.10.1/screenshots/act4b';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox']});let n=0;const results=[];const check=(name,ok)=>{assert.ok(ok,name);n++;results.push(name);console.log('PASS',name);};
 const camp24=JSON.parse(fs.readFileSync('tests/fixtures/v0100/v0100-m24-camp.json','utf8')).save;
 const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);};
@@ -48,10 +48,9 @@ try{
   await p.screenshot({path:`${shots}/banner25-choice-${label}.png`});await press('banner25-pick','forgive');await drainStory(p);await p.waitForTimeout(300);s=await snap();
   check(`${label} the choice is kept and its scene plays; Mission 26 is next`,s.campaign.choices.m25_banner==='forgive'&&s.narrative.seen.includes('after:25:forgive')&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 26'));
   // 4. M26: the duel on TURN 2
-  await restore(m26Duel());await drainStory(p);for(let i=0;i<10&&!(await p.locator('[data-do="duel-pick"]').count());i++)await p.waitForTimeout(200); /* v2.1: the pair's two lines, then the arena */
-  check(`${label} M26 TURN 2: Baldrick calls Erik to a duel (strike, guard, finisher, refuse)`,await p.locator('[data-do="duel-pick"]').count()===4);
-  await p.screenshot({path:`${shots}/m26-duel-${label}.png`});for(let i=0;i<6&&await p.locator('[data-do="duel-pick"][data-id="strike"]').count();i++){await press('duel-pick','strike');await p.waitForTimeout(200);}
-  await drainStory(p);s=await snap();check(`${label} the duel is decided (a win is two of resolve)`,['hero','foe'].includes(s.duel.result)&&(s.duel.result==='hero'?s.missionState.resolve>=2:true));
+  await restore(m26Duel());{const sc=await waitDuelScene(p);s=await snap();check(`${label} M26 TURN 2: Baldrick and Erik — the duel window opens, won by Erik (v2.2)`,sc&&s.duel?.key==='26:duel'&&s.duel.result==='hero');}
+  await p.waitForTimeout(2600);await p.screenshot({path:`${shots}/m26-duel-${label}.png`});
+  await drainStory(p);s=await snap();check(`${label} the duel is won: two of resolve and Baldrick lays down his sword — he joins the legion (D-124)`,s.duel.result==='hero'&&s.duel.fall==='yielded'&&s.missionState.resolve>=2&&s.missionState.halted&&s.outcome==='victory'&&s.missionState.outcome==='join');
   // 5. Erik persuades at resolve 3: Baldrick yields and joins
   const pr=m26Persuade();await restore(pr);await drainStory(p);const e=pr.units.find(u=>u.id==='eric');await select(e);
   check(`${label} Erik beside Baldrick: the battle menu offers 설득`,await p.locator('[data-do="mode"][data-id="persuade"]').count()===1);

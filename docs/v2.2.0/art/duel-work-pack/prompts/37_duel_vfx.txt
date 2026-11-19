@@ -1,0 +1,21 @@
+Paint the DUEL EFFECTS SHEET for Ashen Crown: one PNG, exactly 2048x2048, a 4x4 grid of 512x512 cells, TRANSPARENT background (real alpha; the effects are drawn over the scene with additive light), no grid lines, no labels. Follow references/layout_vfx.png. Each effect centred in its cell, filling most of it, soft glowing edges fading to full transparency well inside the cell border.
+Cell 01: slash arc, white-silver (a thick crescent swoosh).
+Cell 02: slash arc, gold (heroic).
+Cell 03: slash arc, violet (dark magic).
+Cell 04: spark burst (metal on metal, orange-white).
+Cell 05: impact ring with flying shards.
+Cell 06: dust puff (from a stomp or a landing).
+Cell 07: horizontal speed lines (a dash).
+Cell 08: swirling embers and ash.
+Cell 09: shield-block flash (a bright round flare).
+Cell 10: violet arcane bolt with trail.
+Cell 11: golden holy light burst (rays).
+Cell 12: grey smoke burst (a vanish).
+Cell 13: ground crack with debris.
+Cell 14: a rising column of golden light (level-up glow, no text).
+Cell 15: small star twinkles.
+Cell 16: wind streaks (curving).
+Painted, not vector: brush-textured light, like hand-animated anime/painterly effects, matching the warm painterly look of style_aren_neutral.png. No text, letters, numbers, runes, emblems or logos anywhere; no UI, no frame, no watermark, no signature.
+
+Attach: layout_vfx.png, style_aren_neutral.png.
+Output file name: duel_vfx.png

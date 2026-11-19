@@ -29,16 +29,20 @@ test('M26 data: 18×14 lion\'s pass, level 19, sortie of seven, TURN 12; Baldric
  assert.deepEqual(m.formation.bearers,['f1','f2']);
  for(const k of ['26:intro','26:duel','26:duel:hero','26:duel:foe','26:waver','26:thea','26:riders','26:broken','26:yield:join','26:yield:cooperate','26:end','pre:26','after:26','after:26:join','after:26:cooperate','after:26:withdraw','after:26:thea','npc:26:preparation:thea','npc:26:aftermath:baldrick','world:lionpass','skirmish:117:intro','awaken:dario'])assert.ok(STORY[k]?.length,k);
 });
-test('a won duel is two of resolve; Erik (once a turn) and Thea (once) add one; at four he yields — and joins when he halted at M13',()=>{
+test('v2.2 (D-124): the won duel ends it — Baldrick lays down his sword at once and joins when he halted at M13',()=>{
  const s=battle('halted');calm(s);enemyPhase(s);assert.equal(s.turn,2);standBeside(s,'eric','boss');assert.ok(s.duel&&!s.duel.result,'the duel opens on TURN 2 with Erik beside him (v2.1 event)');
- while(!s.duel.result){s.duel.picks.length;duelPick(s,'strike');}const won=s.duel.result==='hero';
- if(!won){s.duel.result='hero';}s.missionState.duelCounted=false;
- const e=beside(s,'eric');assert.ok(performAction(s,'eric','persuade','boss').ok);assert.equal(s.missionState.resolve,3,'duel 2 + Erik 1');assert.ok(!performAction(s,'eric','persuade','boss').ok,'once a turn');
- const t=beside(s,'thea');assert.ok(performAction(s,'thea','persuade','boss').ok);assert.equal(s.outcome,'victory');assert.equal(s.missionState.outcome,'join');assert.deepEqual(s.missionState.sources,['duel','eric','thea']);
+ assert.ok(duelPick(s,'strike'));assert.equal(s.duel.result,'hero');assert.equal(s.duel.fall,'yielded');
+ assert.ok(s.missionState.halted);assert.equal(s.outcome,'victory',s.reason);assert.equal(s.missionState.outcome,'join');assert.deepEqual(s.missionState.sources,['duel']);
  assert.ok(s.campaign.roster.includes('baldrick'),'the ninth hero');const rec=s.campaign.heroes.find(h=>h.id==='baldrick');assert.equal(rec.level,19);assert.equal(rec.classTier,3);
- assert.equal(s.campaign.flags.mission_26_baldrick,'join');assert.ok(FEATS[26].test(s,s.campaign.flags));assert.equal(e.id,'eric');assert.equal(t.id,'thea');
- assert.equal(yieldOutcome26({flags:{mission_13_baldrick:'held'}}),'cooperate');assert.equal(yieldOutcome26({flags:{mission_13_baldrick:'broken'}}),'cooperate');
+ assert.equal(s.campaign.flags.mission_26_baldrick,'join');
  const back=deserialize(serialize(s));assert.ok(back.campaign.roster.includes('baldrick'));
+});
+test('without a duel, persuasion still adds up: Erik (once a turn) and Thea (once) add one; at four he yields',()=>{
+ const s=battle('halted');calm(s);s.missionState.resolve=2;
+ const e=beside(s,'eric');assert.ok(performAction(s,'eric','persuade','boss').ok);assert.equal(s.missionState.resolve,3,'Erik 1');assert.ok(!performAction(s,'eric','persuade','boss').ok,'once a turn');
+ const t=beside(s,'thea');assert.ok(performAction(s,'thea','persuade','boss').ok);assert.equal(s.outcome,'victory');assert.equal(s.missionState.outcome,'join');assert.deepEqual(s.missionState.sources,['eric','thea']);
+ assert.ok(s.campaign.roster.includes('baldrick'));assert.ok(FEATS[26].test(s,s.campaign.flags));assert.equal(e.id,'eric');assert.equal(t.id,'thea');
+ assert.equal(yieldOutcome26({flags:{mission_13_baldrick:'held'}}),'cooperate');assert.equal(yieldOutcome26({flags:{mission_13_baldrick:'broken'}}),'cooperate');
 });
 test('without the M13 halt he rides beside the legion (Iron Crown +1); broken at half HP with both bearers down from TURN 4 he withdraws; Erik falling loses',()=>{
  const c=battle('held'),i0=ensureTrust(c.campaign).iron;calm(c);c.missionState.resolve=3;const e=beside(c,'eric');assert.ok(performAction(c,'eric','persuade','boss').ok);assert.equal(c.outcome,'victory');assert.equal(c.missionState.outcome,'cooperate');

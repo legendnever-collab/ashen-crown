@@ -44,12 +44,12 @@ test('harvest: a harvester beside an unsearched stone drains MP near it; searchi
  k.mp=10;enemyPhase(s);assert.equal(k.mp,10,'no drain once searched');
 });
 
-test('the duel opens from TURN 3 when Erik stands beside the captain (v2.1 event), pauses the battle, and the loser starts 30% down; it survives a save',()=>{
+test('the duel opens from TURN 3 when Erik stands beside the captain (v2.1 event), pauses the battle; v2.2: Erik always wins, gains a level and the captain leaves the field (struck down, D-124); it survives a save',()=>{
  const s=battle();beginEnemyPhase(s);while(s.phase==='enemy')advanceEnemy(s);drain(s);beginEnemyPhase(s);while(s.phase==='enemy')advanceEnemy(s);
  assert.equal(s.turn,3);assert.ok(!duelOpen(s),'v2.1: not until Erik stands beside him');standBeside(s,'eric','cap');assert.ok(duelOpen(s),'duel open');assert.ok(!performAction(s,'eric','wait').ok,'battle waits');
  const back=deserialize(serialize(s));assert.ok(duelOpen(back));
- const cap=findUnit(s,'cap'),eric=findUnit(s,'eric'),hp=[cap.hp,eric.hp];let n=0;while(duelOpen(s)&&n++<5)duelPick(s,'strike'); /* v2.0.0: up to five rounds, three to win */
- assert.ok(['hero','foe'].includes(s.duel.result));const loser=s.duel.result==='hero'?cap:eric;assert.equal(loser.hp,Math.max(1,(loser===cap?hp[0]:hp[1])-Math.ceil(loser.maxHP*.3)));
+ const cap=findUnit(s,'cap'),eric=findUnit(s,'eric'),hp=[cap.hp,eric.hp],lv=eric.level;assert.equal(duelPick(s,'skip'),false,'no stepping back');assert.ok(duelPick(s,'strike'));assert.ok(!duelOpen(s));
+ assert.equal(s.duel.result,'hero');assert.equal(cap.hp,0,'the beaten captain falls');assert.equal(s.duel.fall,'down');assert.equal(eric.level,lv+1);assert.equal(eric.hp,eric.maxHP,'a level heals');assert.deepEqual([s.duel.levelFrom,s.duel.levelTo],[lv,lv+1]);deserialize(serialize(s));
 });
 
 test('returners appear on TURN 2; alive at the victory they rejoin with their own record and their banner trusts the legion more',()=>{

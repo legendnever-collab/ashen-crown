@@ -1,0 +1,60 @@
+order,part,kind,id,expression,file,size,references,prompt_file
+1,A,room,int_village_tavern,,int_village_tavern.jpg,1536x1024,"layout_int_village_tavern_v2.png, rejected_int_village_tavern.jpg, approved_int_capital_tavern.jpg, approved_int_north_inn.jpg, approved_int_port_tavern.jpg, approved_int_village_house.jpg, scale_reference_interior.png, style_aren_neutral.png",prompts/01_int_village_tavern.txt
+2,B,duel,eric,,duel_eric.png,2048x1024,"ref_bust_eric.png, ref_sprite_eric.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/02_duel_eric.txt
+3,B,duel,elina,,duel_elina.png,2048x1024,"ref_bust_elina.png, ref_sprite_elina.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/03_duel_elina.txt
+4,B,duel,kai,,duel_kai.png,2048x1024,"ref_bust_kai.png, ref_sprite_kai.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/04_duel_kai.txt
+5,B,duel,lia,,duel_lia.png,2048x1024,"ref_bust_lia.png, ref_sprite_lia.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/05_duel_lia.txt
+6,B,duel,sain,,duel_sain.png,2048x1024,"ref_bust_sain.png, ref_sprite_sain.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/06_duel_sain.txt
+7,B,duel,thea,,duel_thea.png,2048x1024,"ref_bust_thea.png, ref_sprite_thea.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/07_duel_thea.txt
+8,C,duel,eric_t3,,duel_eric_t3.png,2048x1024,"ref_bust_eric_t3.png, ref_sprite_eric_t3.png, ref_bust_eric.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/08_duel_eric_t3.txt
+9,C,duel,elina_t3,,duel_elina_t3.png,2048x1024,"ref_bust_elina_t3.png, ref_sprite_elina_t3.png, ref_bust_elina.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/09_duel_elina_t3.txt
+10,C,duel,kai_t3,,duel_kai_t3.png,2048x1024,"ref_bust_kai_t3.png, ref_sprite_kai_t3.png, ref_bust_kai.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/10_duel_kai_t3.txt
+11,C,duel,lia_t3,,duel_lia_t3.png,2048x1024,"ref_bust_lia_t3.png, ref_sprite_lia_t3.png, ref_bust_lia.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/11_duel_lia_t3.txt
+12,C,duel,thea_t3,,duel_thea_t3.png,2048x1024,"ref_bust_thea_t3.png, ref_sprite_thea_t3.png, ref_bust_thea.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/12_duel_thea_t3.txt
+13,D,duel,garr,,duel_garr.png,2048x1024,"ref_bust_garr.png, ref_sprite_garr.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/13_duel_garr.txt
+14,D,duel,baldrick,,duel_baldrick.png,2048x1024,"ref_bust_baldrick.png, ref_sprite_baldrick.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/14_duel_baldrick.txt
+15,D,duel,chief,,duel_chief.png,2048x1024,"ref_bust_pursuerCaptain.png, ref_sprite_assassin.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/15_duel_chief.txt
+16,D,duel,oswin,,duel_oswin.png,2048x1024,"ref_sprite_lordA.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/16_duel_oswin.txt
+17,D,duel,brennan,,duel_brennan.png,2048x1024,"ref_sprite_lordB.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/17_duel_brennan.txt
+18,D,duel,abbot,,duel_abbot.png,2048x1024,"ref_sprite_abbot.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/18_duel_abbot.txt
+19,D,duel,captain16,,duel_captain16.png,2048x1024,"ref_bust_captain16_iron.png, ref_sprite_greyCaptain.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/19_duel_captain16.txt
+20,E,duel,logger,,duel_logger.png,2048x1024,"ref_bust_deserterCaptain.png, ref_sprite_forester.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/20_duel_logger.txt
+21,E,duel,overseer,,duel_overseer.png,2048x1024,"ref_bust_executor.png, ref_sprite_ritualKnight.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/21_duel_overseer.txt
+22,E,duel,greyMaster,,duel_greyMaster.png,2048x1024,"ref_bust_greyMaster.png, ref_sprite_greyCaptain.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/22_duel_greyMaster.txt
+23,E,duel,riteCommander,,duel_riteCommander.png,2048x1024,"ref_bust_executor.png, ref_sprite_ritualKnight.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/23_duel_riteCommander.txt
+24,E,duel,hardliner,,duel_hardliner.png,2048x1024,"ref_sprite_ironInfantry.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/24_duel_hardliner.txt
+25,E,duel,bellard,,duel_bellard.png,2048x1024,"ref_bust_bellard.png, ref_sprite_bellard.png, layout_duel_sheet.png, style_aren_neutral.png",prompts/25_duel_bellard.txt
+26,F,key,finisher_eric,,finisher_eric.jpg,1920x1080,"ref_bust_eric.png, ref_sprite_eric.png, layout_finisher.png, style_aren_neutral.png",prompts/26_finisher_eric.txt
+27,F,key,finisher_elina,,finisher_elina.jpg,1920x1080,"ref_bust_elina.png, ref_sprite_elina.png, layout_finisher.png, style_aren_neutral.png",prompts/27_finisher_elina.txt
+28,F,key,finisher_kai,,finisher_kai.jpg,1920x1080,"ref_bust_kai.png, ref_sprite_kai.png, layout_finisher.png, style_aren_neutral.png",prompts/28_finisher_kai.txt
+29,F,key,finisher_lia,,finisher_lia.jpg,1920x1080,"ref_bust_lia.png, ref_sprite_lia.png, layout_finisher.png, style_aren_neutral.png",prompts/29_finisher_lia.txt
+30,F,key,finisher_sain,,finisher_sain.jpg,1920x1080,"ref_bust_sain.png, ref_sprite_sain.png, layout_finisher.png, style_aren_neutral.png",prompts/30_finisher_sain.txt
+31,F,key,finisher_thea,,finisher_thea.jpg,1920x1080,"ref_bust_thea.png, ref_sprite_thea.png, layout_finisher.png, style_aren_neutral.png",prompts/31_finisher_thea.txt
+32,G,backdrop,duelbg_village,,duelbg_village.jpg,1920x1080,"layout_duel_stage.png, approved_hub_village_raid.jpg, ref_duel_screen.png, style_aren_neutral.png",prompts/32_duelbg_village.txt
+33,G,backdrop,duelbg_road,,duelbg_road.jpg,1920x1080,"layout_duel_stage.png, approved_hub_forest.jpg, ref_duel_screen.png, style_aren_neutral.png",prompts/33_duelbg_road.txt
+34,G,backdrop,duelbg_fortress,,duelbg_fortress.jpg,1920x1080,"layout_duel_stage.png, approved_hub_fortress.jpg, ref_duel_screen.png, style_aren_neutral.png",prompts/34_duelbg_fortress.txt
+35,G,backdrop,duelbg_rite,,duelbg_rite.jpg,1920x1080,"layout_duel_stage.png, approved_hub_capital.jpg, ref_duel_screen.png, style_aren_neutral.png",prompts/35_duelbg_rite.txt
+36,G,backdrop,duelbg_crown,,duelbg_crown.jpg,1920x1080,"layout_duel_stage.png, approved_hub_capital.jpg, ref_duel_screen.png, style_aren_neutral.png",prompts/36_duelbg_crown.txt
+37,G,vfx,duel_vfx,,duel_vfx.png,2048x2048,"layout_vfx.png, style_aren_neutral.png",prompts/37_duel_vfx.txt
+38,H,bust,bram,neutral,bust_bram_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/38_bust_bram_neutral.txt
+39,H,bust,bram,determined,bust_bram_determined.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/39_bust_bram_determined.txt
+40,H,bust,bram,concerned,bust_bram_concerned.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/40_bust_bram_concerned.txt
+41,H,bust,noa,neutral,bust_noa_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/41_bust_noa_neutral.txt
+42,H,bust,noa,determined,bust_noa_determined.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/42_bust_noa_determined.txt
+43,H,bust,noa,concerned,bust_noa_concerned.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/43_bust_noa_concerned.txt
+44,H,bust,marta,neutral,bust_marta_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/44_bust_marta_neutral.txt
+45,H,bust,marta,determined,bust_marta_determined.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/45_bust_marta_determined.txt
+46,H,bust,marta,concerned,bust_marta_concerned.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/46_bust_marta_concerned.txt
+47,H,bust,rowell,neutral,bust_rowell_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/47_bust_rowell_neutral.txt
+48,H,bust,rowell,determined,bust_rowell_determined.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/48_bust_rowell_determined.txt
+49,H,bust,rowell,concerned,bust_rowell_concerned.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/49_bust_rowell_concerned.txt
+50,H,bust,adel,neutral,bust_adel_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/50_bust_adel_neutral.txt
+51,H,bust,adel,determined,bust_adel_determined.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/51_bust_adel_determined.txt
+52,H,bust,adel,concerned,bust_adel_concerned.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/52_bust_adel_concerned.txt
+53,I,bust,sera,neutral,bust_sera_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/53_bust_sera_neutral.txt
+54,I,bust,orin,neutral,bust_orin_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/54_bust_orin_neutral.txt
+55,I,bust,celine,neutral,bust_celine_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/55_bust_celine_neutral.txt
+56,I,bust,ren,neutral,bust_ren_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/56_bust_ren_neutral.txt
+57,I,bust,silva,neutral,bust_silva_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_garr.png, ref_bust_eric.png, rejected_busts_H1.jpg",prompts/57_bust_silva_neutral.txt
+58,I,icons,icons_P,,icons_P.png,1024x1024,"layout_icons_P.png, approved_icons_D.png, approved_icons_H.png, rejected_icons_H1.jpg, style_aren_neutral.png",prompts/58_icons_P.txt
+59,I,icons,icons_Q,,icons_Q.png,1024x1024,"layout_icons_Q.png, approved_icons_D.png, approved_icons_H.png, rejected_icons_H1.jpg, style_aren_neutral.png",prompts/59_icons_Q.txt

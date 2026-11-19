@@ -13,8 +13,11 @@ export const DUEL_ROUNDS=5,DUEL_TO_WIN=3;
 const DUEL_BEATS={strike:'finisher',finisher:'guard',guard:'strike'};
 export const DUEL_CUT=.3;
 // A hook set by core/game.js (treasure claim), kept here to avoid a circular import.
-let onDuelWon=null;
+let onDuelWon=null,onDuelFall=null;
 export const setDuelWon=fn=>{onDuelWon=fn;};
+// v2.2.0 play-test (D-124): after the duel the beaten lead leaves the field — captured where the mission takes prisoners,
+// struck down otherwise, or, for the story's recurring foes, through their own mission rule (withdrawal, yielding, a phase).
+export const setDuelFall=fn=>{onDuelFall=fn;};
 // v2.1 (D-118): a battle may hold more than one duel event (M10's two lords); a decided duel gives way to the next one.
 export function startDuel(s,heroId,foeId,key){const h=findUnit(s,heroId),f=findUnit(s,foeId);if(s.screen!=='battle'||duelOpen(s)||!h||!f||!alive(h)||!alive(f)||h.benched||f.benched)return false;
  s.duel={hero:heroId,foe:foeId,key,round:0,wins:[0,0],picks:[],result:null};s.log.push(`일기토 · ${h.name} 대 ${f.name}`);return true;}
@@ -24,12 +27,28 @@ export function duelNature(s,f){const st=f?.stats;if(!st)return f?.kind==='capta
 export const NATURE_KO={bold:'공격적이다 — 노리기를 즐긴다',careful:'신중하다 — 막기를 즐긴다',seasoned:'노련하다 — 수를 읽기 어렵다'};
 // The foe's pick leans on its nature: a strong foe likes the finisher, a careful one the guard (then a roll).
 function foePick(s,f){const r=roll(s),n=duelNature(s,f);const bias=n==='bold'?[.35,.2,.45]:n==='careful'?[.3,.45,.25]:[.34,.33,.33];return r<bias[0]?'strike':r<bias[0]+bias[1]?'guard':'finisher';}
-export function duelPick(s,pick){const d=s.duel;if(!duelOpen(s)||!DUEL_PICKS[pick]&&pick!=='skip')return false;const h=findUnit(s,d.hero),f=findUnit(s,d.foe);
- if(pick==='skip'){d.result='skipped';s.log.push('일기토를 거절했습니다. 전투가 그대로 이어집니다.');return true;}
+export function duelPick(s,pick){const d=s.duel;if(!duelOpen(s)||!DUEL_PICKS[pick]&&pick!=='skip')return false;
+ if(pick==='skip'){if(!duelSkippable(d))return false;d.result='skipped';s.log.push('에릭이 물러섭니다. 아렌이 앞으로 나섭니다.');return true;}
+ return duelWin(s);}
+// The v2.0.0 arena's exchange (kept for reference; v2.2.0 decides every duel through duelWin).
+export function duelExchange(s,pick){const d=s.duel;if(!duelOpen(s)||!DUEL_PICKS[pick])return false;const h=findUnit(s,d.hero),f=findUnit(s,d.foe);
  const fp=foePick(s,f);let win;if(pick===fp){const a=power(s,h),b=power(s,f);win=a===b?roll(s)<.5:a>b;}else win=DUEL_BEATS[pick]===fp;
  d.picks.push([pick,fp,win?1:0]);d.wins[win?0:1]++;d.round++;
  s.log.push(`${d.round}합 · ${h.name} ${DUEL_PICKS[pick]} / ${f.name} ${DUEL_PICKS[fp]} → ${win?h.name:f.name}`);
  if(d.wins[0]>=DUEL_TO_WIN||d.wins[1]>=DUEL_TO_WIN||d.round>=DUEL_ROUNDS){d.result=d.wins[0]>d.wins[1]?'hero':'foe';if(d.result==='hero'&&f.carries&&onDuelWon)onDuelWon(s,f);const loser=d.result==='hero'?f:h;loser.hp=Math.max(1,loser.hp-Math.ceil(loser.maxHP*DUEL_CUT));
   s.feedback.push({type:'guard',id:loser.id,text:'일기토 패배'});s.log.push(`일기토 승자 · ${(d.result==='hero'?h:f).name}. ${loser.name}의 HP가 30% 깎였습니다.`);}
  return true;}
+// v2.2.0 (D-123, docs/v2.2.0/DUEL_SCENE_DESIGN.md): a duel that happens is won by our hero — the scene plays three
+// exchanges (the picks below, for the record), the hero gains one level and the beaten lead leaves the field (D-124). M29 alone keeps its story choice: Erik may step back for Aren's last words.
+import {awardXP} from './rules.js';
+import {BALANCE} from '../data/game-data.js';
+export const DUEL_SCRIPT=[['strike','strike',1],['guard','strike',1],['finisher','guard',1]];
+export const duelSkippable=d=>d?.key==='29:duel';
+export function duelWin(s){const d=s.duel;if(!duelOpen(s))return false;const h=findUnit(s,d.hero),f=findUnit(s,d.foe);
+ d.picks=DUEL_SCRIPT.map(p=>[...p]);d.round=DUEL_SCRIPT.length;d.wins=[DUEL_SCRIPT.length,0];d.result='hero';
+ for(const [i,[a,b]] of DUEL_SCRIPT.entries())s.log.push(`${i+1}합 · ${h.name} ${DUEL_PICKS[a]} / ${f.name} ${DUEL_PICKS[b]} → ${h.name}`);
+ if(f.carries&&onDuelWon)onDuelWon(s,f);
+ const lv=h.level,xp=h.xp;h.xp=Math.max(h.xp,BALANCE.xpLevel-1);awardXP(s,h,1,'일기토 승리');if(h.level===lv+1)h.xp=Math.min(xp,BALANCE.xpLevel-1);
+ d.levelFrom=lv;d.levelTo=h.level;
+ s.log.push(`일기토 승자 · ${h.name}. ${h.name} LV ${lv} → ${h.level}.`);d.fall=onDuelFall?onDuelFall(s,h,f):'down';return true;}
 export function validDuel(s,d){return !!d&&typeof d==='object'&&typeof d.hero==='string'&&typeof d.foe==='string'&&!!findUnit(s,d.hero)&&!!findUnit(s,d.foe)&&typeof d.key==='string'&&d.key.length<40&&Number.isInteger(d.round)&&d.round>=0&&d.round<=DUEL_ROUNDS&&Array.isArray(d.wins)&&d.wins.length===2&&d.wins.every(n=>Number.isInteger(n)&&n>=0&&n<=DUEL_TO_WIN)&&Array.isArray(d.picks)&&d.picks.length===d.round&&d.picks.every(p=>Array.isArray(p)&&p.length===3&&DUEL_PICKS[p[0]]&&DUEL_PICKS[p[1]]&&[0,1].includes(p[2]))&&[null,'hero','foe','skipped'].includes(d.result);}

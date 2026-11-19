@@ -21,7 +21,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  await cmd(old,'npc','advisor');await drainStory(old);if(await old.locator('[data-do="advisor-operation"]').count())await cmd(old,'advisor-operation');await drainStory(old);await cmd(old,'deploy');await cmd(old,'start-battle');await drainStory(old);
  const battle=await snapshot(old),battleText=await backup(old);check('Shipped v0.10.0 battle checkpoint generated',battle.screen==='battle'&&battle.stageStart.schema===16);
  // 2. Restore each into v0.10.0.
- const p=await ctx.newPage();p.on('pageerror',e=>errors.push(`v0101: ${e.message}`));await p.goto(pathToFileURL(path.resolve('releases/Ashen_Crown_v2.1.0.html')).href);await p.waitForFunction(()=>!!window.AshenCrown);if(await p.locator('[data-do="new"]').count()){await cmd(p,'new');}await drainStory(p);
+ const p=await ctx.newPage();p.on('pageerror',e=>errors.push(`v0101: ${e.message}`));await p.goto(pathToFileURL(path.resolve('releases/Ashen_Crown_v2.2.0.html')).href);await p.waitForFunction(()=>!!window.AshenCrown);if(await p.locator('[data-do="new"]').count()){await cmd(p,'new');}await drainStory(p);
  const restore=async text=>{await drainStory(p);await cmd(p,'menu');await cmd(p,'backup');await p.locator('#backup-text').fill(text);await cmd(p,'restore');await p.waitForFunction(()=>!AshenCrown.view().busy);await p.waitForTimeout(300);};
  await restore(villageText);let s=await snapshot(p);
  check('v0.10.0 village save opens in the painted village (schema 18, gold kept, legal position)',s.schema===21&&s.screen==='exploration'&&s.frontier.hub==='village'&&s.economy.gold===village.economy.gold&&sameHeroes(s.campaign.heroes,village.campaign.heroes));
@@ -37,7 +37,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  await restore(fixture('m24-battle').save);s=await snapshot(p);check('v0.10.0 Mission 24 battle reopens in the camp before it (v2.0.0)',reopened(s,24));
  /* v2.0.0: depart again from the camp */for(const a of ['warroom','deploy','start-battle','confirm-battle']){if(await p.locator(`[data-do="${a}"]`).count()){await cmd(p,a);await drainStory(p);}}await cmd(p,'open-unit-menu');await cmd(p,'submenu','skills');const menu=await p.locator('#unit-popover').textContent();
  check('Erik of a v0.10.0 save keeps ② and ③ and shows ④',menu.includes('②')&&menu.includes('③')&&menu.includes('④'));await cmd(p,'close-unit-menu');
- await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===21&&s.version==='2.1.0'&&s.missionId===24);
+ await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===21&&s.version==='2.2.0'&&s.missionId===24);
  check('No runtime errors in either build',errors.length===0);await ctx.close();
 }finally{fs.mkdirSync('test-output',{recursive:true});fs.writeFileSync('test-output/migration-v0100-browser.json',JSON.stringify({checks,errors},null,2));await browser.close();}
 console.log(`${checks.length} v0.10.0 browser migration checks PASS`);

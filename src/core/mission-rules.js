@@ -108,12 +108,14 @@ const M5={
   let dest=null;for(const p of cells){if(at(s,p.x,p.y)&&!(p.x===u.x&&p.y===u.y))continue;const d=Math.min(...goals.map(g=>distance(p,g)))+p.c*.01;if(!dest||d<dest.d)dest={...p,d};}
   return {x:dest.x,y:dest.y,target:null,reason:lion&&formationIntact(s)?'사자 대형 유지':rider?'보급 마차로 돌진':'전진'};
  },
+ // v2.2.0 (D-124): beaten in the duel, Baldrick withdraws as if the formation had broken.
+ duelFall(s,h,f){return f.id==='boss'?'withdrawn':null;},
  checkOutcome(s,finish){
   const wagons=wagonsOf(s),saved=wagons.filter(alive).length,boss=findUnit(s,'boss'),m=missionOf(s);
   if(!saved)return finish(s,'defeat','보급 마차를 모두 잃었습니다.');
   const answer=s.campaign.choices?.m05_erik_answer;
   const withdraw=mode=>{s.missionState.withdrew=mode;boss.withdrawn=true;enqueueStory(s,`5:withdraw:${mode}`);if(answer)enqueueStory(s,`5:farewell:${answer}`);};
-  if(!formationIntact(s)&&boss.hp<=lionFloor(boss)){withdraw('broken');return finish(s,'victory',`사자 대형 붕괴 · 발드릭 퇴각 · 마차 ${saved}/2.`);}
+  if(!formationIntact(s)&&boss.hp<=lionFloor(boss)||s.duel?.key==='duel:5:baldrick'&&s.duel.result==='hero'){withdraw('broken');return finish(s,'victory',`사자 대형 붕괴 · 발드릭 퇴각 · 마차 ${saved}/2.`);}
   if(s.turn>m.turnLimit){withdraw('held');return finish(s,'victory',`TURN ${m.turnLimit}까지 이동로 사수 · 마차 ${saved}/2 · 발드릭이 시한 초과로 퇴각.`);}
  },
  beforeCommit(s){setStoryFlag(s,'mission_05_baldrick_withdrew',s.missionState.withdrew);setStoryFlag(s,'mission_05_wagons_saved',wagonsOf(s).filter(alive).length);},

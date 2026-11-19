@@ -46,13 +46,17 @@ function derivedGrowth(cls){const c=CLASSES8[cls]||CLASSES8.infantry,g=c.growth;
 // stays as weak next to the line troops as it was authored, at any level.
 function refAt(cls,L){const c=CLASSES8[cls]||CLASSES8.infantry,st={};for(const k of STAT_KEYS)st[k]=(c.main.includes(k)?8:5)+c.growth[k]*(Math.max(1,L)-1);return derivedFrom(CLASSES8[cls]?cls:'infantry',st,L);}
 export const isBossRank=u=>!!u&&(u.id==='boss'||u.id==='boss2'||['captain','lion'].includes(u.kind)||!!u.leader||!!u.commander||!!u.boss);
+// v2.2.0 play-test (D-124): "난이도는 너무 쉬워지니 조금 더 올려줘" — from M02 on, every enemy's stats carry a base ×BASE_MUL on
+// both difficulties (the first battle stays as it is: M01 ≥ 95% on 보통, D-120; the village requests 120+ stay as they are);
+// 어려움 adds its level ramp on top.
+export const BASE_MUL=1.08,BASE_FROM=2,BASE_MUL_AT={3:1.01,4:1.03,15:1,16:1,22:1}; // M03's timed retreat and M04's long assault are the sharpest; they get less. M15 too: its record-box carriers race for the gate (first try fell 78% → 47% at ×1.08). M16 keeps its strength: the returning Thea (TURN 2) must be able to survive (she was at 8/112 HP after the enemy phase before; ×1.08 kills her and she never comes back). M22 likewise: its heralds must stay standing (first try 88% → 53% at ×1.08)
 export const DIFFICULTY={normal:{ko:'보통',levels:0,mul:1,potions:2,waves:1},hard:{ko:'어려움',levels:1,mul:1.1,potions:1,waves:1.25}};
 export const difficultyOf=s=>DIFFICULTY[s?.campaign?.difficulty]?s.campaign.difficulty:'normal';
 // 어려움 grows in with the legion (D-116): through ACT I it is 보통's numbers with the sharper AI, bigger waves and one potion
 // (the stat push walled M03–M05 for the test player); its extra level and ×1.1 stats start from a Lv 11 sortie (ACT II) and
 // are full from Lv 19 (the designed +2 / ×1.15 left the M15 chase at 2 of 20).
 export const HARD_FROM=11,HARD_FULL_AT=19;
-export function difficultyPush(s){const d=DIFFICULTY[difficultyOf(s)];if(!d.levels&&d.mul===1)return {levels:0,mul:1};const avg=s?.levelPlan?.avg??sortieAverage(s)??1,h=Math.max(0,Math.min(1,(avg-HARD_FROM)/(HARD_FULL_AT-HARD_FROM)));return {levels:Math.round(d.levels*h),mul:1+(d.mul-1)*h};}
+export function difficultyPush(s){const d=DIFFICULTY[difficultyOf(s)],mid=s?.missionId??1,base=mid>=BASE_FROM&&mid<100?(BASE_MUL_AT[mid]??BASE_MUL):1;if(!d.levels&&d.mul===1)return {levels:0,mul:base};const avg=s?.levelPlan?.avg??sortieAverage(s)??1,h=Math.max(0,Math.min(1,(avg-HARD_FROM)/(HARD_FULL_AT-HARD_FROM)));return {levels:Math.round(d.levels*h),mul:base*(1+(d.mul-1)*h)};}
 // The sortie's average level (deployed heroes and officers).
 export function sortieAverage(s){const out=(s.units||[]).filter(u=>u.team==='ally'&&!u.benched&&u.hp>0);if(!out.length)return null;return out.reduce((a,u)=>a+(u.level||1),0)/out.length;}
 const authoredLevel=(s,m)=>m?.level||Math.max(1,s?.missionId||1);

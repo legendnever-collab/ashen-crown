@@ -100,6 +100,9 @@ export const M26={
   if(u.kind==='bearer'&&b&&alive(b)){const keep=within101(reachable,(x,y)=>Math.abs(x-b.x)+Math.abs(y-b.y)<=2);return strike101(s,u,keep.size?keep:reachable,foes,goalOf101(b));}
   return null;},
  persuade(s,u,t){const st=s.missionState;countDuel26(s);if(st.halted)return;if(u.id==='eric'){st.persuadedTurn=s.turn;remember(s,'m26_persuade');addResolve26(s,'eric');}else if(u.id==='thea'){st.thea=true;remember(s,'m26_thea');enqueueStory(s,'26:thea');addResolve26(s,'thea');}s.feedback.push({type:'guard',id:u.id,text:'설득'});},
+ // v2.2.0 (D-124): beaten in single combat, the Black Lion lays down his sword — the duel's resolve, then his yielding
+ // (join or ride beside the legion, by the campaign as when persuaded).
+ duelFall(s,h,f){if(f.id!=='boss')return null;const st=s.missionState;countDuel26(s);if(!st.halted){st.halted=true;for(const u of s.units.filter(u=>u.team==='enemy'&&alive(u))){u.benched=true;u.withdrawn=true;}enqueueStory(s,yieldOutcome26(s.campaign)==='join'?'26:yield:join':'26:yield:cooperate');}return 'yielded';},
  // Baldrick never falls below half his HP here; with both bearers down from TURN 4, at that floor he withdraws alive (broken).
  afterDamage(s,v){if(v.id==='boss'&&v.hp<floor26(v)){v.hp=floor26(v);s.log.push('발드릭은 쓰러지지 않습니다. 사자는 무릎을 꿇지 않습니다.');}},
  checkOutcome(s,finish){const m=missionOf(s),st=s.missionState,e=findUnit(s,'eric');countDuel26(s);

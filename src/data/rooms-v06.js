@@ -45,9 +45,9 @@ export const ROOM_LAYOUTS={
  int_village_house:{name:'민가',chests:[['a',1,4]],mask:['###.########','#.........##','##.........#','#..........#','#..........#']},
  int_village_forge:{name:'대장간',npc:[6,4],mask:['#####....###','#.........##','#..........#','#...####...#','#..........#']},
  int_village_shop:{name:'도구점',npc:[5,3],mask:['####.....###','##.........#','#...####...#','#..........#','#..........#']},
- // v2.1.0 (art pack H1 part F, imported 2026-11-18, D-121): the village tavern — bar along the back wall, the hearth on the
- // right, two round tables mid-floor; the keeper stands at (5,5). Mask authored over the painting.
- int_village_tavern:{name:'마을 주점',chests:[['a',1,4],['b',10,2]],mask:['############','#...####...#','##..####...#','#..........#','#..........#']},
+ // v2.2.0 (art pack I part A, imported 2026-11-18, D-123): the village tavern redone — the bar across the left with the keeper
+ // behind it at (3,2), the stone fireplace at the back right, a round table and a trestle table. Mask authored over the painting.
+ int_village_tavern:{name:'마을 주점',chests:[['a',1,6],['b',10,3]],npc:[3,2,2],mask:['######..####','######....##','#......##..#','#.##.......#','##........##']},
  int_village_barracks:{name:'민병 병영',chests:[['a',1,4],['b',10,2]],mask:['###..#######','#...####...#','##..####...#','#.........##','#..........#']},
  int_village_hall:{name:'촌장 회관',chests:[['a',10,4]],mask:['##########.#','########...#','#.........##','#..........#','#..........#']},
  int_village_store:{name:'보급 창고',chests:[['a',10,4],['b',3,4]],mask:['######.#####','#..........#','#..#......##','#..........#','#..........#']},

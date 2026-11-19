@@ -1,0 +1,6 @@
+Paint a DUEL BACKDROP for Ashen Crown (M10 · M13 · M16 · M25): one JPEG (quality 92-95), exactly 1920x1080, the stage behind a one-on-one duel. Follow references/layout_duel_stage.png: a wide side view at eye level, sky and far background in the top half, a midground band, and a flat, open, evenly lit STAGE FLOOR across the lower third where two fighters will be drawn by the game (feet around y=900, at x≈480 and x≈1440). Setting: a fortress courtyard of grey stone at stormy dusk: battlements, burning braziers, torn plain banners (no marks), a flagstone yard. Paint NO people and NO animals. Keep the centre of the stage clear and slightly darker at the edges (a natural vignette in the painting is fine) so the fighters read clearly. Dramatic, cinematic light.
+Painting style: match the attached approved hub painting and style_aren_neutral.png — hand-painted fantasy illustration, painterly cel shading, rich but earthy colours.
+No text, letters, numbers, runes, emblems or logos anywhere; no UI, no frame, no watermark, no signature.
+
+Attach: layout_duel_stage.png, approved_hub_fortress.jpg, ref_duel_screen.png, style_aren_neutral.png.
+Output file name: duelbg_fortress.jpg

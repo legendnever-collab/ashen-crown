@@ -1,3 +1,12 @@
+# v2.2.0 — 일기토 장면과 새 주점
+- Merged 2026-11-19 on the user's word ("그림까지 넣은뒤 병합해줘", D-124) with art pack I complete. Design docs/v2.2.0/DUEL_SCENE_DESIGN.md (D-122); RC D-123.
+- Duels are always won by our hero (core/duel.js duelWin): three scripted exchanges, +1 level (awardXP, so HP/MP refill), the foe's treasure claimed. No choice and no stepping back — except M29, which keeps the story choice to leave the duel to Aren's last words (the 「제안」 fate).
+- The beaten foe leaves the field (D-124; core/game.js setDuelFall, mission rule duelFall): struck down (M01 Garr counts as defeated; M16, M18–M21, M25), captured where the mission has a capture rule (M09, M10, M12), Baldrick withdraws at M05/M13 (victory) and lays down his sword at M26 (victory; joins or rides beside by the M13 flag), Bellard turns to phase 2 at M29.
+- Difficulty (D-124; core/stats8.js): enemy stats ×1.08 from M02 on both difficulties, on top of the sortie push; M03 ×1.01, M04 ×1.03; M15, M16 and M22 unchanged (a box race, the returning Thea, the heralds).
+- The duel window (ui/duel-scene.js): a 16:9 stage with the pair's busts (VS), three exchanges, a slow-motion finisher, the foe on one knee and LEVEL UP; ~9.4 s; skip by button or Esc/Enter/Space; reduced effects drop shake and flash; a taller cropped stage on a phone held upright. Drawn with art pack I B–G (ASHEN_DUEL: 24 duel_<id> sheets, six finisher_<hero>, five duelbg_<stage>, duel_vfx with glowing effects; scripts/import-duel-art-v220.py).
+- Art pack I part A: the village tavern repainted, with its own mask, chests at (1,6)/(10,3) and the keeper behind the bar. Parts H/I: 20 painted busts of the hires and Adel, icon sheets P/Q (14 icons; the tavern, request board and elite hires show theirs).
+- Version 2.2.0; schema 21 unchanged.
+
 # v2.1.0 — 주점과 세계지도: duel events, the five alone, taverns and hires, the world map, small villages and requests
 - Merged 2026-11-18 on the user's word ("이미지 적용해주고 병합해줘", D-121) after the play-test fixes (D-120) and art pack H1 A–C/F.
 - Play-test (D-120): the town walk is one tile per 210 ms with a gliding walker (was 100/75 ms); M01 ≥ 95% on 보통 (looters atk 8, villagers HP 36, east reinforcement TURN 7; act1-balance gates M01 at 95%); on the battlefield only armour and cloth take the side's colour, heads and skin keep the painting.

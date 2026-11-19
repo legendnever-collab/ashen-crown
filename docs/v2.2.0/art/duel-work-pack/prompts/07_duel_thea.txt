@@ -1,0 +1,17 @@
+Paint a DUEL ACTION SHEET of Thea (테아), one of the legion's heroes for Ashen Crown's one-on-one duel scene: one PNG, exactly 2048x1024, transparent background (or flat pure #00FF00), a 4x2 grid of 512x512 cells, no grid lines, no labels. Follow references/layout_duel_sheet.png for which pose goes in which cell.
+Character (match the attached references exactly — face, hair, costume, colours, weapon): a young woman cavalry knight on foot: auburn ponytail, steel armour with a thick grey fur collar, a blue cloak, a long lance.
+Every pose shows the whole body, FACING SCREEN RIGHT (they stand on the left of the duel stage), feet on the line at y=480 of the cell, the same height and proportions in all eight cells (about 380-420 px from feet to top of head; weapons may reach the cell edges but not past them). Strong dynamic action-illustration poses with motion in the cloth and hair, like the key frames of a finely drawn animated fight. Lighting: dramatic, from torches and a dusk sky behind — warm rim light on the edges.
+Cell 1: READY — combat stance, weapon drawn, eyes on the foe.
+Cell 2: DASH — lunging forward low and fast, cloak and hair streaming back, one foot off the ground.
+Cell 3: STRIKE — the attack at full extension (swing, thrust, shot or spell released).
+Cell 4: BIND — weapons locked against the foe's (blade on blade / staff on staff), leaning in, straining, teeth set.
+Cell 5: GUARD — blocking or parrying a blow coming from the front, braced.
+Cell 6: RECOIL — knocked back off balance by a hit, one arm out, grimacing (no blood, no wounds shown).
+Cell 7: FINISHER — Breaking Charge — a full-body lance thrust delivered running, the lance tip flashing, ground cracking under her front boot, cloak streaming.
+Cell 8: END — a victory pose — weapon lowered or raised, breathing hard, cloak settling, a proud, relieved look.
+Draw only the character and their own weapon (spell light, smoke or sparks that belong to the pose may be included close to the body). No opponent, no floor, no shadow, no background.
+Painting style: match the attached approved art (style_aren_neutral.png and the attached busts) — semi-realistic hand-painted fantasy illustration for a classic tactical RPG: confident inked contour lines, painterly cel shading with soft gradients, strong warm rim light, rich saturated but slightly earthy colours, detailed metal, leather and cloth textures, mature expressive faces. NOT flat vector art, NOT chibi, NOT a western cartoon, NOT photo-real, NOT 3D render. Original world: do not copy any existing game's characters, costumes, emblems, logos or poses.
+No text, letters, numbers, runes, emblems or logos anywhere; no UI, no frame, no watermark, no signature.
+
+Attach: ref_bust_thea.png, ref_sprite_thea.png, layout_duel_sheet.png, style_aren_neutral.png.
+Output file name: duel_thea.png

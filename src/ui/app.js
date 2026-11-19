@@ -45,7 +45,8 @@ import {endingArt,ENDING_ART} from './ending-art.js';
 import {paintedURL} from '../render/bust.js';
 import {recordOf,signatureDeed,RECORD_KO} from '../core/records.js';
 import {TOGETHER} from '../core/command.js';
-import {duelOpen,duelPick,DUEL_PICKS,DUEL_ROUNDS,DUEL_TO_WIN,duelNature,NATURE_KO} from '../core/duel.js';
+import {duelOpen,duelPick,duelWin,duelSkippable} from '../core/duel.js';
+import {playDuelScene,finishDuelScene,duelSceneOpen} from './duel-scene.js';
 import {setCommand,commandsFor} from '../core/command.js';
 import {chooseDeserters,chooseOrder} from '../core/mission-rules-v06.js';
 import {chooseStance} from '../core/mission-rules-v061.js';
@@ -184,7 +185,8 @@ if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','z
  case 'banner25-pick':{if(!needsBanner25()||!chooseBanner25(state,id))break;closeModal();enqueueStory(state,`after:25:${id}`);openStory(state);commit();break;}
  case 'plan20-pick':{if(!needsPlan20()||!choosePlan20(state,id))break;closeModal();enqueueStory(state,`after:20:${id}`);enqueueStory(state,'after:20:kai');enqueueStory(state,`after:20:baldrick:${state.campaign.flags.mission_13_baldrick==='halted'?'halted':'envoy'}`);enqueueStory(state,'after:20:next');openStory(state);commit();break;}
  case 'stones16-pick':{if(!needsStones16()||!chooseStones16(state,id))break;closeModal();enqueueStory(state,`after:16:${id}`);enqueueStory(state,'after:16:next');openStory(state);commit();break;}
- case 'duel-pick':{const d=state.duel,key=d?.key;if(!duelPick(state,id))break;if(d.result){closeModal();rulesOf(state)?.afterDuel?.(state);if(d.result!=='skipped'&&STORY[`${key}:${d.result}`])enqueueStory(state,`${key}:${d.result}`);if(d.result!=='skipped'&&key.startsWith('duel:'))toast(d.result==='hero'?'일기토 승리!':'일기토 패배…');openStory(state);}else showDuel();commit();break;}
+ case 'duel-pick':{const d=state.duel,key=d?.key;if(!duelOpen(state))break;if(id!=='skip'){closeModal();runDuel();break;}if(!duelPick(state,'skip'))break;closeModal();rulesOf(state)?.afterDuel?.(state);openStory(state);commit();break;}
+ case 'duel-scene-skip':finishDuelScene();break;
  case 'aren-command':{const list=commandsFor(state),i=list.indexOf(state.command);if(setCommand(state,i<0?list[0]:i+1<list.length?list[i+1]:null))commit();break;}
  case 'records12-pick':{if(!needsRecords12()||!chooseRecords(state,id))break;closeModal();enqueueStory(state,`after:12:${id}`);enqueueStory(state,`after:12:ines:${state.campaign.roster?.includes('ines')?'joined':'parted'}`);openStory(state);commit();break;}
  case 'order-pick':{if(!needsOrder()||state.screen!=='deployment'||!chooseOrder(state,id))break;closeModal();enqueueStory(state,`8:order:${id}`);openStory(state);commit();break;}
@@ -284,7 +286,7 @@ canvas.addEventListener('pointerup',async e=>{touches.delete(e.pointerId);if(pin
  }
 });
 canvas.addEventListener('pointercancel',()=>{pointer=null;pinch=null;pinchUsed=false;touches.clear();});
-document.addEventListener('keydown',e=>{if(['TEXTAREA','INPUT','SELECT'].includes(document.activeElement?.tagName))return;if($('#modal-root').children.length){if(e.key==='Escape')closeModal();return;}if(state.narrative.active){if(['Enter',' '].includes(e.key)){e.preventDefault();dispatch('story-next');}return;}if(state.screen==='exploration'){const directions={w:[0,-1],ArrowUp:[0,-1],s:[0,1],ArrowDown:[0,1],a:[-1,0],ArrowLeft:[-1,0],d:[1,0],ArrowRight:[1,0]};if(directions[e.key.toLowerCase()]||directions[e.key]){e.preventDefault();if(!e.repeat)heldMovement.press('key:'+e.code,directions[e.key.toLowerCase()]||directions[e.key],performance.now());}else if(['e','Enter',' '].includes(e.key)){e.preventDefault();dispatch('interact');}else if(e.key==='Escape')dispatch('menu');return;}const actions={'1':['mode','move'],'2':['mode','attack'],'3':['mode','skill'],'4':['mode','rescue'],z:['undo'],w:['wait'],e:['end-phase'],Tab:['next'],Escape:['cancel']};const a=actions[e.key]||actions[e.key.toLowerCase()];if(a&&state.screen==='battle'){e.preventDefault();dispatch(...a);}});
+document.addEventListener('keydown',e=>{if(['TEXTAREA','INPUT','SELECT'].includes(document.activeElement?.tagName))return;if(duelSceneOpen()){if(['Escape','Enter',' '].includes(e.key)){e.preventDefault();finishDuelScene();}return;}if($('#modal-root').children.length){if(e.key==='Escape')closeModal();return;}if(state.narrative.active){if(['Enter',' '].includes(e.key)){e.preventDefault();dispatch('story-next');}return;}if(state.screen==='exploration'){const directions={w:[0,-1],ArrowUp:[0,-1],s:[0,1],ArrowDown:[0,1],a:[-1,0],ArrowLeft:[-1,0],d:[1,0],ArrowRight:[1,0]};if(directions[e.key.toLowerCase()]||directions[e.key]){e.preventDefault();if(!e.repeat)heldMovement.press('key:'+e.code,directions[e.key.toLowerCase()]||directions[e.key],performance.now());}else if(['e','Enter',' '].includes(e.key)){e.preventDefault();dispatch('interact');}else if(e.key==='Escape')dispatch('menu');return;}const actions={'1':['mode','move'],'2':['mode','attack'],'3':['mode','skill'],'4':['mode','rescue'],z:['undo'],w:['wait'],e:['end-phase'],Tab:['next'],Escape:['cancel']};const a=actions[e.key]||actions[e.key.toLowerCase()];if(a&&state.screen==='battle'){e.preventDefault();dispatch(...a);}});
 render();if(loaded.warning)toast(loaded.warning);if(state.screen==='battle'&&state.phase==='enemy')enemyLoop();
 // Read-only diagnostics for QA and reproducibility. No state injection or win shortcut.
 window.AshenCrown=Object.freeze({version:VERSION,audio:()=>audio.diagnostics(),snapshot:()=>structuredClone(state),view:()=>({hubCamera:structuredClone(hubCamera.current),camera:structuredClone(renderer.camera),selected:ui.selected,mode:ui.mode,busy:ui.busy||frontierWalking,zoom:renderer.zoom,tileResolution:TILE,nativeTileResolution:NATIVE_TILE,nativeSpriteResolution:NATIVE_SPRITE,portraitResolution:PORTRAIT_SIZE,ranges:renderer.ranges?.()||[],drawnRanges:renderer.drawnRanges||0,preview:ui.preview??null,phaseConfirm:ui.phaseConfirm,menu:ui.menu,pendingMove:ui.pendingMove?structuredClone(ui.pendingMove):null,movement:ui.movement,reduced:ui.reduced,animation:renderer.diagnostics()}),tileCenter:(x,y)=>renderer.tileCenter(x,y)});
@@ -413,16 +415,18 @@ function showStones16(){if(!needsStones16())return;modal('잊힌 전장의 결�
 // 일기토 (M16, D-079 §7): three exchanges; the modal reopens after each one until the duel is decided.
 // v2.0.0 「잿빛 결투장」 (REFORM_DESIGN §7, D-115): our own arena — an ash-covered ring inside both sides' banners, the two
 // champions facing each other, the words in a band below (not the 조조전 stone layout, §13). Up to five exchanges, first to three.
-const DUEL_BG=typeof ASHEN_DUEL_BG!=='undefined'?ASHEN_DUEL_BG:null;
-const DUEL_TAUNT={bold:'덤벼라. 한 번에 끝내 주마!',careful:'서두르지 마라. 빈틈은 곧 보인다.',seasoned:'이 칼을 몇 번이나 들었는지 아느냐.'};
-function showDuel(){const d=state.duel;if(!duelOpen(state))return;const h=findUnit(state,d.hero),f=findUnit(state,d.foe),last=d.picks.at(-1),nature=duelNature(state,f);
- const line=last?(last[2]?`${esc(h.name)}의 ${DUEL_PICKS[last[0]]}! ${esc(f.name)}의 ${DUEL_PICKS[last[1]]}을(를) 꺾었다.`:`${esc(f.name)}의 ${DUEL_PICKS[last[1]]}! ${esc(h.name)}의 ${DUEL_PICKS[last[0]]}이(가) 밀렸다.`):esc(DUEL_TAUNT[nature]);
- modal('잿빛 결투장',`<div class="duel-arena${DUEL_BG?' painted':''}"${DUEL_BG?` style="background-image:url('${DUEL_BG}')"`:''}><div class="arena-banners"><i class="b-legion"></i><i class="b-foe"></i><i class="b-legion"></i><i class="b-foe"></i></div>
- <div class="arena-ring"><div class="arena-fighter left">${portrait(h,'card-sprite')}<b>${esc(h.name)}</b></div><div class="arena-score"><span>${d.wins[0]}</span><small>일기토 · ${d.round+1}합 / 최대 ${DUEL_ROUNDS}합</small><span>${d.wins[1]}</span></div><div class="arena-fighter right">${portrait(f,'card-sprite')}<b>${esc(f.name)}</b></div></div>
- <div class="arena-band"><span class="arena-speaker">${last?'':esc(f.name)}</span><p>${line}</p></div>
- <p class="arena-hint">상대는 ${esc(NATURE_KO[nature])} · 베기는 노리기를, 노리기는 막기를, 막기는 베기를 이깁니다 · 같은 수면 무력·민첩·운이 정합니다 · 먼저 ${DUEL_TO_WIN}합을 이기면 승리${f.carries&&GEAR[f.carries]?` · 이기면 「${esc(GEAR[f.carries].name)}」을(를) 얻습니다`:''}</p></div>`,
- frontierButton('duel-pick','<b>베기</b>','strike',false,'primary')+frontierButton('duel-pick','<b>막기</b>','guard',false,'primary')+frontierButton('duel-pick','<b>노리기</b>','finisher',false,'primary')+(d.round===0?frontierButton('duel-pick',d.key==='29:duel'?'아렌에게 맡긴다 — 아렌의 마지막 말':'물러선다 — 그대로 싸운다','skip'):''));paintPortraits();}
-function offerDuel(){if(state.screen!=='battle'||!duelOpen(state)||state.narrative.active||state.narrative.queue?.length||$('#modal-root').children.length)return;showDuel();}
+// v2.2.0 (D-123): a duel that happens is won — the state is decided at once (core/duel.js duelWin, saved), then the duel
+// window plays the fight (ui/duel-scene.js) and the story goes on when it closes. M29 alone first asks who steps forward.
+function showDuel(){const d=state.duel;if(!duelOpen(state))return;const h=findUnit(state,d.hero),f=findUnit(state,d.foe);
+ if(duelSkippable(d)){modal('일기토',`<div class="duel-choice">${portrait(h,'card-sprite')}<p><b>${esc(h.name)}</b>이(가) ${esc(f.name)} 앞에 섰습니다. 누가 나설까요?</p>${portrait(f,'card-sprite')}</div>`,
+  frontierButton('duel-pick','<b>에릭이 나선다</b> — 일기토','strike',false,'primary')+frontierButton('duel-pick','아렌에게 맡긴다 — 아렌의 마지막 말','skip'));paintPortraits();return;}
+ runDuel();}
+function runDuel(){const d=state.duel;if(!duelOpen(state))return;const key=d.key,h=findUnit(state,d.hero),f=findUnit(state,d.foe);if(!duelWin(state))return;
+ rulesOf(state)?.afterDuel?.(state);if(STORY[`${key}:hero`])enqueueStory(state,`${key}:hero`);commit();
+ const done=()=>{toast(`일기토 승리! ${h.name} LV ${d.levelFrom} → ${d.levelTo}`);openStory(state);commit();};
+ if(typeof document==='undefined'){done();return;}
+ playDuelScene({hero:{unit:h,name:h.name,nameHTML:esc(h.name)},foe:{unit:f,name:f.name,nameHTML:esc(f.name)},key,missionId:state.missionId,levelFrom:d.levelFrom,levelTo:d.levelTo,reduced:!!ui.reduced,onDone:done});}
+function offerDuel(){if(state.screen!=='battle'||!duelOpen(state)||duelSceneOpen()||state.narrative.active||state.narrative.queue?.length||$('#modal-root').children.length)return;showDuel();}
 // v0.10.0: allied orders for an allied unit that takes them.
 function showAllyOrders(t){const now=t.order||'free';modal(`동맹군 지시 · ${t.name}`,`<p>${esc(t.name)}에게 지시합니다. 지시는 바꿀 때까지 이어집니다. 지금: <b>「${ALLY_ORDERS[now]}」</b></p>`,
  frontierButton('ally-order','<b>따르라</b> — 가장 가까운 장수 곁 2칸 안에서 싸운다',`${t.id}|follow`,now==='follow','primary')+frontierButton('ally-order','<b>지켜라</b> — 지금 이 칸을 지키며 닿는 적만 친다',`${t.id}|hold`,false,'primary')+frontierButton('ally-order','<b>자유</b> — 스스로 판단해 싸운다',`${t.id}|free`,now==='free','primary')+'<button data-do="close-modal">닫기</button>');}

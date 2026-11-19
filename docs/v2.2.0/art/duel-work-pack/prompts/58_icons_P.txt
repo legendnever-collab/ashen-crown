@@ -1,0 +1,16 @@
+Paint icon sheet P for Ashen Crown: one 1024x1024 PNG, a 4x4 grid of 256x256 cells, transparent background (or flat pure #00FF00), no grid lines, no labels. Follow references/layout_icons_P.png for which icon goes in which cell. Match the finish, light and scale of the attached approved_icons_D.png and approved_icons_H.png exactly (the same painter's hand).
+
+Cell 01: Aren's Shield Crest (아렌의 방패 문장): an old round steel shield boss, dented and scratched, with a strip of ash-grey cloth tied through it (no emblem, no letters). A treasure: give it a soft glow so it reads as special.
+Cell 02: The Teacher's Tome (스승의 마도서): a worn leather-bound spellbook with brass corners, a faint violet glow leaking between the pages. A treasure: give it a soft glow so it reads as special.
+Cell 03: Garr's Iron Ring (가르의 쇠가락지): a thick, crude iron ring with a scratched surface, resting on a scrap of red cloth. A treasure: give it a soft glow so it reads as special.
+Cell 04: The Runner's Map Case (도주 대장의 지도통): a leather map tube with a shoulder strap, a rolled map peeking out of the open end. A treasure: give it a soft glow so it reads as special.
+Cell 05: The Pursuer's Greaves (추격 지휘관의 각반): a pair of leather-and-iron greaves splashed with dried mud. A treasure: give it a soft glow so it reads as special.
+Cell 06: The Quartermaster's Seal (병참관의 인장): a small brass seal stamp with a dark wooden handle, its stamp face plain and blank. A treasure: give it a soft glow so it reads as special.
+Cells 07–16: leave empty.
+
+Painted game-item art in the same hand as the attached approved busts and chests: soft painterly rendering with visible but controlled brushwork, warm key light from the upper left, gentle rim light, rich but slightly muted Western medieval frontier colors, a subtle darker outline so the shape reads on dark UI. Objects in three-quarter view, centered, filling about 80% of their cell, every object fully inside its cell with an even margin. Each icon must still be recognisable at 40×40 px: one clear silhouette, strong value contrast, no tiny clutter. No text, letters, numbers, runes, emblems, crests, holy symbols or logos anywhere. No hands or people except the small abstract silhouettes named in a few skill icons.
+Attach: layout_icons_P.png, approved_icons_D.png, approved_icons_H.png, style_aren_neutral.png.
+IMPORTANT: the first attempt came back as flat vector icons (rejected — see rejected_icons_H1.jpg). Paint them like the attached approved icon sheets (approved_icons_D.png, approved_icons_H.png): painted objects with volume, texture, highlights and a soft shadow.
+
+Attach: layout_icons_P.png, approved_icons_D.png, approved_icons_H.png, rejected_icons_H1.jpg, style_aren_neutral.png.
+Output file name: icons_P.png

@@ -1,0 +1,9 @@
+Paint the FINISHING-BLOW KEY ART of Elina (엘리나) for Ashen Crown's duel scene: one JPEG (quality 92-95), exactly 1920x1080, a full-frame cinematic illustration shown for one heartbeat at the climax of every duel Elina wins. Follow references/layout_finisher.png.
+The hero (match the attached references; base look): a young woman ranger: a long red braid, green hooded cloak over brown leathers, a longbow and a long hunting knife (in a duel she fights with both).
+The moment: Point-blank Shot — she slides under the foe's swing and looses a glowing charged arrow at a step's distance, the bowstring snapping, wind ripping her cloak.
+Composition: a low, dramatic camera angle; the hero large on the left two-thirds, the whole figure or from the knees up, face visible and fierce; the opponent on the right is ONLY a dark backlit silhouette (no face, no costume detail, no colours) so the same picture works against any foe; a burst of light, sparks and speed lines at the impact point; dust and embers in the air; a dark dusk background softened by motion blur. It should feel like a frozen frame of a finely drawn action film.
+Painting style: match the attached approved art (style_aren_neutral.png and the attached busts) — semi-realistic hand-painted fantasy illustration for a classic tactical RPG: confident inked contour lines, painterly cel shading with soft gradients, strong warm rim light, rich saturated but slightly earthy colours, detailed metal, leather and cloth textures, mature expressive faces. NOT flat vector art, NOT chibi, NOT a western cartoon, NOT photo-real, NOT 3D render. Original world: do not copy any existing game's characters, costumes, emblems, logos or poses.
+No text, letters, numbers, runes, emblems or logos anywhere; no UI, no frame, no watermark, no signature.
+
+Attach: ref_bust_elina.png, ref_sprite_elina.png, layout_finisher.png, style_aren_neutral.png.
+Output file name: finisher_elina.jpg
