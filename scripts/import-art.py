@@ -70,3 +70,9 @@ def main(pack):
     print(f"{len(log)} assets: {sum(l[4] for l in log)} bytes ({sum(1 for l in log if l[0]=='bust')} busts, {sum(1 for l in log if l[0]!='bust')} sheets)")
 
 if __name__ == '__main__': main(sys.argv[1])
+
+# v2.2.1 (D-125): the large paintings are kept as AVIF. Convert what this import just wrote (resolution unchanged,
+# each image checked by SSIM against the WebP it replaces; see scripts/convert-art-avif.py).
+if __name__ == '__main__':
+    import subprocess as _sp, sys as _sys, os as _os
+    _sp.run([_sys.executable, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'convert-art-avif.py'), 'portraits', 'sprites'], check=True)

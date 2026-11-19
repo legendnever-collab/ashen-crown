@@ -28,7 +28,7 @@ export const CLASSES8={
   base:{hp:18,hpLv:1.5,wpn:2,foc:6,arm:.5,ward:2,staff:12,mov:4,range:[1,1],profile:'infantry'},
   growth:{str:.4,int:.9,wil:1.4,con:.6,agi:.6,luk:.5},main:['wil','int'],weapons:['staff','tome'],armor:'robe'},
  rogue:{ko:'도적',en:'Rogue',tiers:[T('도적','Cutpurse'),T('그림자','Shade'),T('밤까마귀','Nightcrow')],
-  base:{hp:19,hpLv:2,wpn:3,foc:0,arm:.5,ward:1.6,staff:0,mov:5,range:[1,1],profile:'rogue'},
+  base:{hp:19,hpLv:2,wpn:3,foc:0,arm:.5,ward:1.6,staff:0,mov:4,range:[1,1],profile:'rogue'}, /* v2.2.1 play-test (D-126): MOV 5 → 4 — rogues still cross every terrain at cost 1 and ignore zones of control, and boots add one */
   growth:{str:1.1,int:.3,wil:.3,con:.6,agi:1.3,luk:.8},main:['agi','luk'],weapons:['dagger'],armor:'light'},
  shield:{ko:'방패병',en:'Shield',tiers:[T('방패병','Shieldhand'),T('철벽병','Ironwall'),T('결계수호자','Wardkeeper')],
   base:{hp:14,hpLv:3,wpn:4,foc:0,arm:2,ward:.4,staff:0,mov:3,range:[1,1],profile:'infantry'},

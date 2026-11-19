@@ -18,7 +18,7 @@ test('fixtures are genuine v0.10.2 schema-18 saves after ACT IV part 3, with the
  const c=raw('m28-camp').campaign;assert.ok(c.completed.includes(28));assert.equal(c.choices.m28_confession,'all');assert.equal(c.choices.act3_choice,'council');assert.ok(c.roster.includes('baldrick'));assert.equal(raw('m28-camp').frontier.hub,'capital');assert.equal(c.ending,undefined);});
 
 test('the v0.10.2 lower city loads as schema 19 with every asset kept',()=>{
- const before=raw('m28-camp'),s=load('m28-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,21);assert.equal(s.version,VERSION);assert.equal(VERSION,'2.2.0');assert.equal(s.frontier.hub,'capital');
+ const before=raw('m28-camp'),s=load('m28-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,21);assert.equal(s.version,VERSION);assert.equal(VERSION,'2.2.1');assert.equal(s.frontier.hub,'capital');
  for(const k of ['completed','flags','choices','promotions','factionTrust','trustLog','roster','feats','departed','economy','heroes','bonds','tacticalMemory','records'])keptV200(s.campaign,before.campaign,k);
  assert.deepEqual(econV200(s.economy),econV200(before.economy));const back=deserialize(serialize(s));assert.deepEqual(econV200(back.campaign.economy),econV200(before.campaign.economy));
 });

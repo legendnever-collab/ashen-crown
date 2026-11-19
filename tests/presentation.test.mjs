@@ -1,6 +1,7 @@
 // v0.5.0 Phase F: art hash verification, class-action flourishes, music scenes for hubs, the
 // world map, the promotion rite and trials.
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import crypto from 'node:crypto';
+import {artSha} from './art-file.mjs';
 import {SCORE,musicScene} from '../src/audio/score.js';
 import {presentationPlan} from '../src/render/animation.js';
 import {newGame,performAction,startBattle} from '../src/core/game.js';
@@ -10,7 +11,7 @@ import {startSkirmish} from '../src/core/skirmish.js';
 import {actOneCamp} from './skirmish-policy.mjs';
 import {drain} from './campaign-policy.mjs';
 
-const root=new URL('../src/assets/',import.meta.url),sha=p=>crypto.createHash('sha256').update(fs.readFileSync(new URL(p,root))).digest('hex');
+const root=new URL('../src/assets/',import.meta.url),sha=p=>artSha(...p.split('/')); /* v2.2.1: the WebP the import wrote, through the AVIF conversion log (tests/art-file.mjs) */
 function lastRows(file){const [head,...rows]=fs.readFileSync(new URL(file,root),'utf8').trim().split('\n');const cols=head.split(',');const out=new Map();for(const r of rows){const v=r.split(','),o=Object.fromEntries(cols.map((c,i)=>[c,v[i]]));out.set(o.webp,o);}return [...out.values()];}
 
 test('shipped painted art equals the hash-verified imports (busts, sheets, hubs, world map, icons)',()=>{

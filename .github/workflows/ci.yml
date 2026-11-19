@@ -19,6 +19,8 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
+      # v2.2.1 (D-125): build first; the HTML is committed only when a release candidate is packaged.
+      - run: npm run build
       - run: npm test
       - run: npm run test:balance
       - run: npm run test:campaign-balance
@@ -27,8 +29,7 @@ jobs:
       - run: npm run test:act1-balance
       - run: npm run test:class-balance
       - run: npm run test:act2-balance
-      - run: npm run build
-      - run: git diff --exit-code -- index.html releases/Ashen_Crown_v0.8.0.html
+      # Skips until the version is packaged; then the committed HTML must equal a clean rebuild.
       - run: python scripts/verify-release.py
       - uses: actions/upload-artifact@v4
         if: always()
@@ -67,6 +68,11 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      # D-125: earlier builds the migration suites play, from their GitHub Releases when they are no longer in the tree.
+      - run: node scripts/fetch-releases.mjs ${{ matrix.suites }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/download-artifact@v4
         if: matrix.suite_group == 'tactical'
         with:

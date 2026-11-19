@@ -7,7 +7,7 @@ root = Path(__file__).resolve().parent.parent
 # under GitHub's 100 MB file limit now that painted hubs make every screenshot ~2 MB.
 def packaged(p):
     rel=p.relative_to(root).parts
-    if any(part in {'.git','node_modules','test-output','__pycache__'} for part in rel) or p.suffix=='.zip' or 'SHA256SUMS' in p.name: return False
+    if any(part in {'.git','node_modules','test-output','__pycache__','build'} for part in rel) or p.suffix=='.zip' or 'SHA256SUMS' in p.name: return False
     if len(rel)>=3 and rel[0]=='docs' and rel[2]=='screenshots': return False
     # D-087 (v0.9.1 fixes): the reference images of the art work packs (docs/*/art/*/references) are left out as well —
     # each pack's generator script rebuilds them from src/assets, and they stay in git (ZIP 100.1 MB -> under the limit).
@@ -18,6 +18,12 @@ def packaged(p):
     return True
 version = json.loads((root / 'package.json').read_text())['version']
 release = root / 'releases'
+# v2.2.1 (D-125): development builds stay in build/ (ignored by git). Packaging a release candidate builds once more and
+# copies that build to index.html and releases/Ashen_Crown_v<version>.html — the only time the 60 MB file is committed.
+import subprocess, shutil
+subprocess.run(['node', 'scripts/build.mjs'], cwd=root, check=True, stdout=subprocess.DEVNULL)
+shutil.copyfile(root / 'build' / 'Ashen_Crown.html', release / f'Ashen_Crown_v{version}.html')
+shutil.copyfile(root / 'build' / 'Ashen_Crown.html', root / 'index.html')
 source = release / f'Ashen_Crown_v{version}_Source.zip'
 files = [p for p in root.rglob('*') if p.is_file() and packaged(p)]
 with zipfile.ZipFile(source, 'w', zipfile.ZIP_DEFLATED) as archive:

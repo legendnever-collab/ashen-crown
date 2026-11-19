@@ -61,10 +61,11 @@ export class BattleRenderer{
   if(s.screen==='battle'){for(const r of s.runes||[]){rect(c,'rgba(150,104,232,.32)',r.x*TILE+2,r.y*TILE+2,60,60);c.strokeStyle='rgba(206,170,255,.85)';c.lineWidth=2;c.strokeRect(r.x*TILE+8,r.y*TILE+8,48,48);}
    for(const a of s.units)if(a.team==='ally'&&alive(a)&&(a.bulwark||a.overwatch)){c.lineWidth=2;c.setLineDash([5,4]);c.strokeStyle=a.bulwark?'rgba(240,200,90,.9)':'rgba(236,98,82,.75)';
     for(let ty=a.y-a.range[1];ty<=a.y+a.range[1];ty++)for(let tx=a.x-a.range[1];tx<=a.x+a.range[1];tx++){const d=Math.abs(tx-a.x)+Math.abs(ty-a.y);if(a.bulwark?d===1:d>=a.range[0]&&d<=a.range[1])c.strokeRect(tx*TILE+4,ty*TILE+4,56,56);}c.setLineDash([]);}}
+  const rangeTop=[]; // v2.2.1 play-test (D-126): the same tiles are drawn again above houses and trees (after the drawables)
   if(s.screen==='battle'&&s.phase==='player'&&selected&&alive(selected)&&(!selected.acted||ui.mode==='move'&&canMove(s,selected))&&!ui.busy){
-   if(ui.mode==='move'&&canMove(s,selected))for(const {x:tx,y:ty} of this.ranges()){this.drawnRanges++;rect(c,RANGE_STYLE.move.fill,tx*TILE+1,ty*TILE+1,60,60);rect(c,RANGE_STYLE.move.border,tx*TILE+1,ty*TILE+1,60,2);}
-   else if(isClassMode(ui.mode))for(const {x:tx,y:ty} of this.ranges()){this.drawnRanges++;rect(c,ui.mode==='recall'?RANGE_STYLE.support.fill:'rgba(150,104,232,.5)',tx*TILE+1,ty*TILE+1,60,60);}
-   else if(['attack','skill','rescue','capture'].includes(ui.mode))for(let ty=0;ty<HEIGHT;ty++)for(let tx=0;tx<WIDTH;tx++){const dummy={x:tx,y:ty,hp:1,team:ui.mode==='skill'&&['sain','eric'].includes(selected.id)?'ally':ui.mode==='rescue'?'civilian':ui.mode==='search'?'object':'enemy',id:ui.mode==='capture'?'boss':'preview'};if(validTarget(s,selected,dummy,ui.mode)){this.drawnRanges++;rect(c,ui.mode==='rescue'||selected.id==='sain'&&ui.mode==='skill'?RANGE_STYLE.support.fill:RANGE_STYLE.attack.fill,tx*TILE+1,ty*TILE+1,60,60);}}
+   if(ui.mode==='move'&&canMove(s,selected))for(const {x:tx,y:ty} of this.ranges()){this.drawnRanges++;rect(c,RANGE_STYLE.move.fill,tx*TILE+1,ty*TILE+1,60,60);rect(c,RANGE_STYLE.move.border,tx*TILE+1,ty*TILE+1,60,2);rangeTop.push([tx,ty,RANGE_STYLE.move.fill,RANGE_STYLE.move.border]);}
+   else if(isClassMode(ui.mode))for(const {x:tx,y:ty} of this.ranges()){this.drawnRanges++;const fill=ui.mode==='recall'?RANGE_STYLE.support.fill:'rgba(150,104,232,.5)';rect(c,fill,tx*TILE+1,ty*TILE+1,60,60);rangeTop.push([tx,ty,fill,ui.mode==='recall'?RANGE_STYLE.support.border:'#d8bcff']);}
+   else if(['attack','skill','rescue','capture'].includes(ui.mode))for(let ty=0;ty<HEIGHT;ty++)for(let tx=0;tx<WIDTH;tx++){const dummy={x:tx,y:ty,hp:1,team:ui.mode==='skill'&&['sain','eric'].includes(selected.id)?'ally':ui.mode==='rescue'?'civilian':ui.mode==='search'?'object':'enemy',id:ui.mode==='capture'?'boss':'preview'};if(validTarget(s,selected,dummy,ui.mode)){this.drawnRanges++;const sup=ui.mode==='rescue'||selected.id==='sain'&&ui.mode==='skill',st=sup?RANGE_STYLE.support:RANGE_STYLE.attack;rect(c,st.fill,tx*TILE+1,ty*TILE+1,60,60);rangeTop.push([tx,ty,st.fill,st.border]);}}
   }
   // v0.8.0: a tile-targeted skill or throw shows the cells it will cover while its forecast is open.
   if(s.screen==='battle'&&ui.menu==='forecast'&&typeof ui.preview==='string'&&/^\d+,\d+$/.test(ui.preview)&&selected&&tileTarget(ui.mode)&&ui.mode!=='arcane'){const f=forecastClass(s,selected,ui.preview,ui.mode);for(const cell of f.cells||[]){rect(c,'rgba(240,138,58,.30)',cell.x*TILE+2,cell.y*TILE+2,60,60);c.strokeStyle='rgba(255,200,140,.9)';c.lineWidth=2;c.strokeRect(cell.x*TILE+4,cell.y*TILE+4,56,56);}}
@@ -100,6 +101,10 @@ export class BattleRenderer{
    }});
   }
   drawables.sort((a,b)=>a.key-b.key);for(const d of drawables)d.draw();
+  // v2.2.1 play-test (D-126): houses, walls and trees are drawn after the ground and hid the move and attack tiles under
+  // them. Each range tile is drawn again on top: a light wash and a bright border; a tile with someone on it gets the
+  // border only, so the figure stays clear.
+  for(const [tx,ty,fill,border] of rangeTop){if(!s.units.some(u=>alive(u)&&!u.benched&&u.x===tx&&u.y===ty)){c.save();c.globalAlpha=.45;rect(c,fill,tx*TILE+1,ty*TILE+1,60,60);c.restore();}c.strokeStyle=border;c.lineWidth=2;c.strokeRect(tx*TILE+3,ty*TILE+3,58,58);}
   // v0.7 M11 night (D-068): tiles outside every light are covered in dark blue; lit tiles get a faint warm glow.
   if(missionOf(s).night){const src=lightSources(s);for(let ty=0;ty<HEIGHT;ty++)for(let tx=0;tx<WIDTH;tx++){const d=Math.min(...src.map(p=>Math.abs(p.x-tx)+Math.abs(p.y-ty)-p.r));
    rect(c,d<=0?'rgba(255,186,96,.08)':d===1?'rgba(10,14,34,.44)':'rgba(6,8,26,.64)',tx*TILE,ty*TILE,TILE,TILE);}}

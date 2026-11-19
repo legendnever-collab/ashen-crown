@@ -1,0 +1,6 @@
+{
+ "v2.2.0 WebP 1440": "1761 ms for 394 images (median of 3)",
+ "v2.2.0 WebP 390": "1778 ms for 394 images (median of 3)",
+ "v2.2.1 AVIF 1440": "1565 ms for 394 images (median of 3)",
+ "v2.2.1 AVIF 390": "1551 ms for 394 images (median of 3)"
+}

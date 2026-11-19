@@ -1,0 +1,21 @@
+name: Archive old builds
+# v2.2.1 (D-125): run by hand (Actions → Archive old builds → Run workflow). Creates a GitHub Release for every earlier
+# version in releases/ARCHIVE.json (tag v<version> at the commit that packaged it) with its HTML, Source.zip, test report
+# and checksums. Safe to run again: existing releases only get the files they are missing.
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  archive:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Create the archive releases
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/archive-releases.mjs

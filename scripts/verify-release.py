@@ -7,7 +7,7 @@ root=Path(__file__).resolve().parent.parent
 # under GitHub's 100 MB file limit now that painted hubs make every screenshot ~2 MB.
 def packaged(p):
     rel=p.relative_to(root).parts
-    if any(part in {'.git','node_modules','test-output','__pycache__'} for part in rel) or p.suffix=='.zip' or 'SHA256SUMS' in p.name: return False
+    if any(part in {'.git','node_modules','test-output','__pycache__','build'} for part in rel) or p.suffix=='.zip' or 'SHA256SUMS' in p.name: return False
     if len(rel)>=3 and rel[0]=='docs' and rel[2]=='screenshots': return False
     # D-087 (v0.9.1 fixes): the reference images of the art work packs (docs/*/art/*/references) are left out as well —
     # each pack's generator script rebuilds them from src/assets, and they stay in git (ZIP 100.1 MB -> under the limit).
@@ -18,6 +18,11 @@ def packaged(p):
     return True
 version=json.loads((root/'package.json').read_text())['version']
 release=root/'releases'
+# v2.2.1 (D-125): until a release candidate is packaged its HTML is not in git (builds stay in build/). Then there is
+# nothing to verify yet; once releases/Ashen_Crown_v<version>.html is tracked, every check below must pass.
+import sys
+if not subprocess.run(['git','ls-files','--error-unmatch',f'releases/Ashen_Crown_v{version}.html'],cwd=root,capture_output=True).returncode==0:
+    print(f'v{version} is not packaged yet (releases/Ashen_Crown_v{version}.html is not in git): release verification skipped.');sys.exit(0)
 manifest={}
 for line in (release/f'Ashen_Crown_v{version}_SHA256SUMS').read_text().splitlines():
     digest,name=line.split('  ',1)
@@ -36,8 +41,9 @@ with tempfile.TemporaryDirectory() as tmp:
         archive.extractall(tmp)
     source=Path(tmp)/'ashen-crown'
     subprocess.run(['node','scripts/build.mjs'],cwd=source,check=True)
-    assert (source/'releases'/f'Ashen_Crown_v{version}.html').read_bytes()==(release/f'Ashen_Crown_v{version}.html').read_bytes()
-    assert (source/'index.html').read_bytes()==(root/'index.html').read_bytes(), 'index.html rebuild differs'
+    built=(source/'build'/'Ashen_Crown.html').read_bytes()
+    assert built==(release/f'Ashen_Crown_v{version}.html').read_bytes(), 'release HTML rebuild differs'
+    assert built==(root/'index.html').read_bytes(), 'index.html rebuild differs'
     tested=subprocess.run(['npm','test'],cwd=source,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
     if tested.returncode:
         print(tested.stdout)

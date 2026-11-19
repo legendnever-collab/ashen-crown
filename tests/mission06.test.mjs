@@ -66,8 +66,8 @@ test('M06 records choice: a reported ledger brings the inspector and the matchin
  const kept=battle({m04_records_choice:'kept'});assert.ok(!kept.units.some(u=>u.id==='i1'));assert.ok(kept.narrative.events.includes('6:intro:kept'));
  const camp=newGame(6006,campaign({m04_records_choice:'reported'}),6);enterHub(camp);assert.ok(camp.narrative.events.includes('pre:6:order:reported'));
 });
-test('M06 AI: seal guards stay by their stone, the beacon never moves, pursuers chase refugees',()=>{
- const s=battle();for(const id of ['k1','k2','k3','k4']){const p=planEnemy(s,findUnit(s,id)),stone=findUnit(s,id<'k3'?'seal1':'seal2');assert.ok(distance(p,stone)<=2,id);}
+test('M06 AI: seal guards hold their posts beside the stones (v2.2.1 D-126: MOV 0), the beacon never moves, pursuers chase refugees',()=>{
+ const s=battle();for(const id of ['k1','k2','k3','k4']){const g=findUnit(s,id),p=planEnemy(s,g),stone=findUnit(s,id<'k3'?'seal1':'seal2');assert.equal(g.mov,0,id);assert.deepEqual([p.x,p.y],[g.x,g.y],id);assert.ok(distance(p,stone)<=3,id);}
  const b=findUnit(s,'beacon'),bp=planEnemy(s,b);assert.deepEqual([bp.x,bp.y],[b.x,b.y]);
  s.turn=4;endTurn(s);const r1=findUnit(s,'r1');assert.ok(r1&&alive(r1));assert.match(planEnemy(s,r1).reason,/피난민/);
 });
