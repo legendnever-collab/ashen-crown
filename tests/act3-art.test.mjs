@@ -2,13 +2,13 @@
 // forest, the M16 duel captains, the awakened guardian statue and the painted props are picked by the game.
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
 // the build registers the painted portraits as ASHEN_PORTRAITS {id:{expression:dataURL}}; the file names are enough here
-const P={};for(const f of fs.readdirSync('src/assets/portraits')){const m=/^bust_(.+)_(neutral|concerned|determined|sad)\.webp$/.exec(f);if(m)(P[m[1]]??={})[m[2]]='x';}
+const P={};for(const f of fs.readdirSync('src/assets/portraits')){const m=/^bust_(.+)_(neutral|concerned|determined|sad)\.(webp|avif)$/.exec(f);if(m)(P[m[1]]??={})[m[2]]='x';}
 globalThis.ASHEN_PORTRAITS=P;
 const {bustKey}=await import('../src/render/bust.js');const {hdCastFor,spriteIdFor}=await import('../src/render/hd-world.js');
 const {CAST}=await import('../src/render/hd-art.js');const {wardTreeProp}=await import('../src/render/prop-art.js');
 const {HUBS}=await import('../src/data/frontier-data.js');const {roomId,ROOM_LAYOUTS}=await import('../src/data/rooms-v06.js');
 const roomsOf=hubs=>hubs.flatMap(hub=>[...HUBS[hub].places.filter(p=>p.action==='enter').map(p=>[hub,p.interior,p.buildingId]),[hub,'weapon',undefined],[hub,'item',undefined]]);
-const sprites=new Set(fs.readdirSync('src/assets/sprites').map(f=>f.replace(/^sprite_|\.webp$/g,'')));
+const sprites=new Set(fs.readdirSync('src/assets/sprites').map(f=>f.replace(/^sprite_|\.(webp|avif)$/g,'')));
 const props=new Set(fs.readdirSync('src/assets/props').map(f=>f.replace('.webp','')));
 
 test('tier 3 heroes and the recruits at tier 2 use their pack F2 busts and sheets; below that the earlier looks',()=>{

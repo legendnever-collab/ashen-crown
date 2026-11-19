@@ -2,6 +2,7 @@
 // keeps the doorway, every floor tile, every chest and the shopkeeper reachable; chest ids, interior kinds and
 // rewards are those of the v0.4 templates; the shipped WebPs equal the hash-verified import log.
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import crypto from 'node:crypto';
+import {artSha} from './art-file.mjs';
 import {HUBS,INTERIORS} from '../src/data/frontier-data.js';
 import {ROOM_LAYOUTS,paintedRoom,roomId,chestStyle,CHEST_STYLES} from '../src/data/rooms-v06.js';
 import {newGame} from '../src/core/game.js';
@@ -51,7 +52,7 @@ test('night hubs dim the same room; a v0.5 save standing on an old template tile
 });
 
 test('shipped room and chest WebPs equal the hash-verified import log',()=>{
- const root=new URL('../src/assets/',import.meta.url),sha=p=>crypto.createHash('sha256').update(fs.readFileSync(new URL(p,root))).digest('hex');
+ const root=new URL('../src/assets/',import.meta.url),sha=p=>artSha(...p.split('/')); /* v2.2.1: rooms and hubs are AVIF now — checked through the conversion log */
  const [head,...rows]=fs.readFileSync(new URL('room-art-import-log.csv',root),'utf8').trim().split('\n'),cols=head.split(','),last=new Map();for(const r of rows){const o=Object.fromEntries(cols.map((c,i)=>[c,r.split(',')[i]]));last.set(o.webp,o);}
  const all=[...last.values()];assert.equal(all.filter(r=>r.kind==='room').length,48);assert.equal(all.filter(r=>r.kind==='chest').length,64);assert.equal(all.filter(r=>r.kind==='hub').length,8); /* v2.1.0 pack H1 F: the village tavern, 갈대 나루, 돌우물 마을 */assert.equal(all.filter(r=>r.kind==='prop').length,18);for(const id of ['ram','ladder','memory','memory_read'])assert.ok(all.some(r=>r.kind==='prop'&&r.id===id),`${id} (pack G3)`);for(const id of ['tent_iron','tent_free','tent_flame','tent_taken'])assert.ok(all.some(r=>r.kind==='prop'&&r.id===id),`${id} (pack G1)`);for(const id of ['anchorStone','anchorStone_broken'])assert.ok(all.some(r=>r.kind==='prop'&&r.id===id),`${id} (pack F4)`);
  for(const r of all)assert.equal(sha(`${{room:'rooms',chest:'chests',hub:'hubs',prop:'props'}[r.kind]}/${r.webp}`),r.webp_sha256,r.webp);

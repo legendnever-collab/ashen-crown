@@ -22,3 +22,9 @@ def main():
         wr = csv.writer(f); wr.writerow(['id', 'png', 'png_bytes', 'png_sha256', 'webp', 'webp_bytes', 'webp_sha256']); wr.writerow(['arena', r['file'], len(data), sha, 'arena.webp', len(w), hashlib.sha256(w).hexdigest()])
 if __name__ == '__main__':
     main()
+
+# v2.2.1 (D-125): the large paintings are kept as AVIF. Convert what this import just wrote (resolution unchanged,
+# each image checked by SSIM against the WebP it replaces; see scripts/convert-art-avif.py).
+if __name__ == '__main__':
+    import subprocess as _sp, sys as _sys, os as _os
+    _sp.run([_sys.executable, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'convert-art-avif.py'), 'duel'], check=True)

@@ -21,7 +21,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  await cmd(old,'npc','advisor');await drainStory(old);if(await old.locator('[data-do="advisor-operation"]').count())await cmd(old,'advisor-operation');await drainStory(old);await cmd(old,'deploy');await cmd(old,'start-battle');await drainStory(old);
  const battle=await snapshot(old),battleText=await backup(old);check('Shipped v0.9.1 battle checkpoint generated',battle.screen==='battle'&&battle.stageStart.schema===13);
  // 2. Restore each into v0.9.2.
- const p=await ctx.newPage();p.on('pageerror',e=>errors.push(`v092: ${e.message}`));await p.goto(pathToFileURL(path.resolve('releases/Ashen_Crown_v2.2.0.html')).href);await p.waitForFunction(()=>!!window.AshenCrown);if(await p.locator('[data-do="new"]').count()){await cmd(p,'new');}await drainStory(p);
+ const p=await ctx.newPage();p.on('pageerror',e=>errors.push(`v092: ${e.message}`));await p.goto(pathToFileURL(path.resolve('build/Ashen_Crown.html')).href);await p.waitForFunction(()=>!!window.AshenCrown);if(await p.locator('[data-do="new"]').count()){await cmd(p,'new');}await drainStory(p);
  const restore=async text=>{await drainStory(p);await cmd(p,'menu');await cmd(p,'backup');await p.locator('#backup-text').fill(text);await cmd(p,'restore');await p.waitForFunction(()=>!AshenCrown.view().busy);await p.waitForTimeout(300);};
  await restore(villageText);let s=await snapshot(p);
  check('v0.9.1 village save opens in the painted village (schema 18, gold kept, legal position)',s.schema===21&&s.screen==='exploration'&&s.frontier.hub==='village'&&s.economy.gold===village.economy.gold&&sameHeroes(s.campaign.heroes,village.campaign.heroes));

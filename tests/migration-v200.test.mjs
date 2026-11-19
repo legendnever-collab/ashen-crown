@@ -19,7 +19,7 @@ const load=name=>deserialize(fixture(name).save);
 test('fixtures are genuine v1.0.0 schema-19 saves',()=>{for(const n of ['m02-camp','m05-battle','m30-ending']){const f=fixture(n);assert.equal(f.version,'1.0.0');assert.equal(f.schema,19);assert.equal(raw(n).schema,19);}});
 
 test('the camp before M02 loads as the current schema on the new 28×14 forest road, every asset kept, the start treasures added',()=>{
- const before=raw('m02-camp'),s=load('m02-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,21);assert.equal(s.version,VERSION);assert.equal(VERSION,'2.2.0');
+ const before=raw('m02-camp'),s=load('m02-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,21);assert.equal(s.version,VERSION);assert.equal(VERSION,'2.2.1');
  assert.equal(s.screen,'exploration');assert.equal(s.missionId,2);assert.equal(s.campaign.difficulty,'normal');
  for(const k of ['completed','flags','choices','heroes','roster'])keptV200(s.campaign,before.campaign,k);keptV200(s.campaign,before.campaign,'economy');
  assert.deepEqual(OFFICER_IDS.filter(id=>s.campaign.roster.includes(id)),[],'v2.1: no officer joins by itself — they are tavern hires');
