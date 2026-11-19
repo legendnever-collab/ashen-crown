@@ -25,7 +25,7 @@ try{for(const [width,height,touch] of [[1440,900,false],[390,844,true]]){const l
  const snap=()=>p.evaluate(()=>AshenCrown.snapshot());
  const restore=async text=>{await drainStory(p);await click('[data-do="menu"]');await click('[data-do="backup"]');await p.locator('#backup-text').fill(text);await click('[data-do="restore"]');await p.waitForFunction(()=>!AshenCrown.view().busy);await p.waitForTimeout(300);await drainStory(p);};
  await p.goto(pathToFileURL(path.resolve('build/Ashen_Crown.html')).href);await p.waitForFunction(()=>!!window.AshenCrown);
- check(`${label} the page is v2.1.0`,await p.evaluate(()=>AshenCrown.version)==='2.2.0');
+ check(`${label} the page is the current version`,await p.evaluate(()=>AshenCrown.version)==='2.2.1');
  await click('[data-do="new"]');await drainStory(p);let s=await snap();
  check(`${label} a new campaign is the five alone (no officers in the legion or the camp)`,s.campaign.roster.length===0&&s.units.filter(u=>u.team==='ally').map(u=>u.id).join()==='eric,elina,lia,sain,kai'&&!(await p.evaluate(()=>AshenCrown.view().hubNpcs||[])).some?.(id=>['bram','noa','marta'].includes(id)));
  // Play-test (D-120): the town pace — holding a direction for ~1 s walks at most five tiles (one per 210 ms; it was ten).
