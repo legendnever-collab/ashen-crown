@@ -36,7 +36,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  check('A v0.6.1 campaign reaches the pilgrim village for Mission 11',s.missionId===11&&s.frontier.hub==='pilgrim'&&!s.practice);
  await p.screenshot({path:'test-output/migration-v061-pilgrim.png'});
  await restore(fixture('m10-battle').save);s=await snapshot(p);check('v0.6.1 Mission 10 battle reopens in the camp before it (v2.0.0)',reopened(s,10));
- await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===21&&s.version==='2.2.0'&&s.missionId===10);
+ await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===21&&s.version==='2.2.1'&&s.missionId===10);
  check('No runtime errors in either build',errors.length===0);await ctx.close();
 }finally{fs.mkdirSync('test-output',{recursive:true});fs.writeFileSync('test-output/migration-v061-browser.json',JSON.stringify({checks,errors},null,2));await browser.close();}
 console.log(`${checks.length} v0.6.1 browser migration checks PASS`);
