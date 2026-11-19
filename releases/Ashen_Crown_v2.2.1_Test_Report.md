@@ -1,6 +1,6 @@
 # Ashen Crown v2.2.1 「용량 관리」 — Test Report
-Updated 2026-11-19 KST. **Release candidate on feature/v2.2.1-size; not merged before the user plays it and approves it.**
-- Decisions: D-125 (size) and D-126 (the play-test feedback of 18:03). Plan: docs/v2.2.1/SIZE_PLAN.md.
+Updated 2026-11-19 KST. **Merged on the user's approval (2026-11-19 22:53 「병합해」, D-127).**
+- Decisions: D-125 (size), D-126 (the play-test feedback of 18:03) and D-127 (approval and merge). Plan: docs/v2.2.1/SIZE_PLAN.md.
 - HTML SHA256: see `releases/Ashen_Crown_v2.2.1_SHA256SUMS` (`index.html` is identical).
 
 ## What changed
