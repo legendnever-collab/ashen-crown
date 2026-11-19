@@ -44,6 +44,7 @@ Updated 2026-11-19 KST. **Merged on the user's word** ("그림까지 넣은뒤 �
 - **Test changes made during this run:**
   - **v210-e2e** waits for the LEVEL UP banner itself instead of a fixed 8 s. With the painted art the two screenshots taken during the window took long enough that the 9.4 s window had closed.
   - **economy-balance**: in the M03 timed retreat, Lia sets the ward instead of Erik. The test player finishes M03 on its last turn, and spending Erik's first move lost it by one turn (supplies M3: 4/10 in the RC, 2/10 with ×1.08; Lia warding: 9/10).
+  - **mobile-dock** closes any story lines left open after the reload before it taps 연습. The duel is the last action of the M01 winning trace, and Garr falling wins the battle. The game decides the duel before the window plays, so on CI's slower runner the loop stopped at the victory with the duel's lines still open. It failed once in CI (the 연습 tap was covered) and passed locally with 88 checks after the change.
 - **v210-e2e: 46 checks PASS at 1440 and 390** (screenshots docs/v2.2.0/screenshots/duel-scene-*.png, now with the painted art):
   - Erik beside Garr opens the duel window;
   - Erik gains a level, Garr falls and leaves the field, and no choice is offered;
