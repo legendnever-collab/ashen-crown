@@ -49,7 +49,7 @@ export const isBossRank=u=>!!u&&(u.id==='boss'||u.id==='boss2'||['captain','lion
 // v2.2.0 play-test (D-124): "난이도는 너무 쉬워지니 조금 더 올려줘" — from M02 on, every enemy's stats carry a base ×BASE_MUL on
 // both difficulties (the first battle stays as it is: M01 ≥ 95% on 보통, D-120; the village requests 120+ stay as they are);
 // 어려움 adds its level ramp on top.
-export const BASE_MUL=1.08,BASE_FROM=2,BASE_MUL_AT={3:1.01,4:1.03,15:1,16:1}; // M03's timed retreat and M04's long assault are the sharpest; they get less. M15 too: its record-box carriers race for the gate (first try fell 78% → 47% at ×1.08). M16 keeps its strength: the returning Thea (TURN 2) must be able to survive (she was at 8/112 HP after the enemy phase before; ×1.08 kills her and she never comes back)
+export const BASE_MUL=1.08,BASE_FROM=2,BASE_MUL_AT={3:1.01,4:1.03,15:1,16:1,22:1}; // M03's timed retreat and M04's long assault are the sharpest; they get less. M15 too: its record-box carriers race for the gate (first try fell 78% → 47% at ×1.08). M16 keeps its strength: the returning Thea (TURN 2) must be able to survive (she was at 8/112 HP after the enemy phase before; ×1.08 kills her and she never comes back). M22 likewise: its heralds must stay standing (first try 88% → 53% at ×1.08)
 export const DIFFICULTY={normal:{ko:'보통',levels:0,mul:1,potions:2,waves:1},hard:{ko:'어려움',levels:1,mul:1.1,potions:1,waves:1.25}};
 export const difficultyOf=s=>DIFFICULTY[s?.campaign?.difficulty]?s.campaign.difficulty:'normal';
 // 어려움 grows in with the legion (D-116): through ACT I it is 보통's numbers with the sharper AI, bigger waves and one potion
