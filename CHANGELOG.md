@@ -1,6 +1,6 @@
 # v2.2.1 — 용량 관리 (release candidate)
 - D-125, on the user's word (2026-11-19 16:09). Plan docs/v2.2.1/SIZE_PLAN.md.
-- Paintings as AVIF: 406 portraits, duel images, map sprites (q60), rooms, hubs and world (q65), same resolution, each SSIM-checked against the WebP it replaced (scripts/convert-art-avif.py, src/assets/avif-conversion-log.csv); the import scripts convert new art. 63.7 → 45.8 MiB.
+- Paintings as AVIF: 382 portraits, duel images, map sprites (q60), rooms, hubs and world (q65), same resolution, each SSIM-checked against the WebP it replaced (scripts/convert-art-avif.py, src/assets/avif-conversion-log.csv); the 24 class sheets stay WebP (their magenta sash is recoloured by threshold); the import scripts convert new art. 63.7 → 46.5 MiB.
 - Size budget: build/size-report.json; warn above 80 MiB, fail above 90 MiB (scripts/size-budget.mjs).
 - Builds go to build/Ashen_Crown.html (git-ignored); index.html and the release HTML are committed only by scripts/package.py; verify-release.py skips until packaged; CI builds first.
 - A notice when the browser cannot open AVIF.

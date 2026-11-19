@@ -1,0 +1,70 @@
+# v2.2.1 matrix, 2026-11-19 KST, on build/Ashen_Crown.html SHA256 7bad5ee6… (the build packaging produces; checked by rebuilding).
+# Exit codes copied in order from test-output/run-summary-A/B/C.log. A and B ran in parallel on 2 cores; C reran three suites one at a time after fixes:
+#  http — scripts/serve.mjs: a comment added in this version hid the port declaration (fixed); migration-v050, v200 — they still expected version 2.2.0 (now 2.2.1).
+balance: exits 0; PASS lines in the last run 0
+e2e: exits 0; PASS lines in the last run 72
+mobile: exits 0; PASS lines in the last run 88
+tactical: exits 0; PASS lines in the last run 27
+http: exits 1 -> 0; PASS lines in the last run 0
+post-move: exits 0; PASS lines in the last run 0
+restart: exits 0; PASS lines in the last run 22
+campaign: exits 0; PASS lines in the last run 204
+campaign-balance: exits 0; PASS lines in the last run 0
+frontier: exits 0; PASS lines in the last run 90
+economy-balance: exits 0; PASS lines in the last run 0
+migration-v02: exits 0; PASS lines in the last run 16
+renaissance: exits 0; PASS lines in the last run 141
+performance: exits 0; PASS lines in the last run 0
+quality: exits 0; PASS lines in the last run 98
+migration-v031: exits 0; PASS lines in the last run 11
+journey: exits 0; PASS lines in the last run 176
+migration-v032: exits 0; PASS lines in the last run 9
+act1: exits 0; PASS lines in the last run 113
+m05-balance: exits 0; PASS lines in the last run 0
+m06-balance: exits 0; PASS lines in the last run 0
+mobile-command: exits 0; PASS lines in the last run 24
+migration-v033: exits 0; PASS lines in the last run 11
+act1-balance: exits 0; PASS lines in the last run 0
+class: exits 0; PASS lines in the last run 30
+legion: exits 0; PASS lines in the last run 19
+world: exits 0; PASS lines in the last run 32
+migration-v040: exits 0; PASS lines in the last run 12
+class-balance: exits 0; PASS lines in the last run 0
+act2: exits 0; PASS lines in the last run 28
+act2-hubs: exits 0; PASS lines in the last run 315
+act2-campaign: exits 0; PASS lines in the last run 24
+hub-doors: exits 0; PASS lines in the last run 0
+migration-v050: exits 1 -> 0; PASS lines in the last run 12
+act2b-campaign: exits 0; PASS lines in the last run 22
+migration-v060: exits 0; PASS lines in the last run 12
+act2c-campaign: exits 0; PASS lines in the last run 26
+migration-v061: exits 0; PASS lines in the last run 12
+act2d-campaign: exits 0; PASS lines in the last run 30
+migration-v070: exits 0; PASS lines in the last run 12
+audio-mute: exits 0; PASS lines in the last run 20
+tactics: exits 0; PASS lines in the last run 26
+migration-v071: exits 0; PASS lines in the last run 12
+arms: exits 0; PASS lines in the last run 42
+migration-v080: exits 0; PASS lines in the last run 14
+act3: exits 0; PASS lines in the last run 36
+migration-v081: exits 0; PASS lines in the last run 14
+item-art: exits 0; PASS lines in the last run 18
+act3b: exits 0; PASS lines in the last run 48
+feedback-v091: exits 0; PASS lines in the last run 5
+migration-v090: exits 0; PASS lines in the last run 14
+act3c: exits 0; PASS lines in the last run 50
+migration-v091: exits 0; PASS lines in the last run 13
+act3d: exits 0; PASS lines in the last run 44
+migration-v092: exits 0; PASS lines in the last run 13
+act4a: exits 0; PASS lines in the last run 30
+migration-v093: exits 0; PASS lines in the last run 13
+act4b: exits 0; PASS lines in the last run 32
+act4c: exits 0; PASS lines in the last run 34
+migration-v0100: exits 0; PASS lines in the last run 13
+migration-v0101: exits 0; PASS lines in the last run 13
+act4d: exits 0; PASS lines in the last run 38
+migration-v0102: exits 0; PASS lines in the last run 13
+v200: exits 1 -> 0; PASS lines in the last run 18
+act2-balance: exits 0; PASS lines in the last run 0
+v210: exits 0; PASS lines in the last run 46
+# suites 66; final exit non-zero: none; never run: none; PASS lines (last runs) 2307
