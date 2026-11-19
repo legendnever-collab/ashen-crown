@@ -2,7 +2,7 @@
 // chosen from the battle menu and the map) → the summit camp (world card) → M14 with three leaders → the summit won →
 // a recruit's scene and the ACT II completion card; the 생포 button now appears outside M02 (M10 mediation).
 // 1440×900 and 390×844 touch. Screenshots: docs/v0.7.1/screenshots/act2d-campaign.
-import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterWarCouncil} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
+import {terrainAt} from '../src/core/rules.js';import {launchTestBrowser} from './browser-helper.mjs';import {drainStory,enterWarCouncil} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {newGame,startBattle,beginEnemyPhase,advanceEnemy} from '../src/core/game.js';import {findUnit} from '../src/core/rules.js';import {chooseStance} from '../src/core/mission-rules-v061.js';import {drain} from './campaign-policy.mjs';
 const url=pathToFileURL(process.cwd()+'/build/Ashen_Crown.html').href,shots='docs/v0.7.1/screenshots/act2d-campaign';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
@@ -12,7 +12,7 @@ const at=(m,extra={})=>{const c=structuredClone(base.campaign);for(let i=13;i<m;
 const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);};
 function m13Persuade(){const s=at(13);s.screen='deployment';startBattle(s);drain(s);const boss=findUnit(s,'boss'),eric=findUnit(s,'eric');eric.x=boss.x;eric.y=boss.y+1;s.missionState.resolve=5;return s;}
 function m14Won(){const s=at(14,{flags:{mission_13_baldrick:'halted'},trust:{iron:1,free:2,flame:2}});s.screen='deployment';startBattle(s);drain(s);for(let i=0;i<14&&!s.outcome;i++){for(const e of s.units.filter(u=>u.team==='enemy'))e.hp=0;enemyPhase(s);}return s;}
-function m10Capture(){const c=structuredClone(base.campaign);c.completed=c.completed.filter(i=>i<10);delete c.choices.m10_stance;const s=newGame(20261027,c,10);s.economy=structuredClone(base.economy);s.screen='deployment';chooseStance(s,'mediate');startBattle(s);drain(s);const lord=findUnit(s,'boss'),eric=findUnit(s,'eric');lord.hp=Math.floor(lord.maxHP/2);eric.x=lord.x;eric.y=lord.y+1;if(s.units.some(u=>u!==eric&&u.hp>0&&u.x===eric.x&&u.y===eric.y))eric.y=lord.y-1;return s;}
+function m10Capture(){const c=structuredClone(base.campaign);c.completed=c.completed.filter(i=>i<10);delete c.choices.m10_stance;const s=newGame(20261027,c,10);s.economy=structuredClone(base.economy);s.screen='deployment';chooseStance(s,'mediate');startBattle(s);drain(s);const lord=findUnit(s,'boss'),eric=findUnit(s,'eric');lord.hp=Math.floor(lord.maxHP/2);/* v2.3.0: the first free passable tile beside the lord (the M10 big map has walls and water) */const spot=[[0,1],[0,-1],[1,0],[-1,0]].map(([dx,dy])=>({x:lord.x+dx,y:lord.y+dy})).find(t=>Number.isFinite(terrainAt(t.x,t.y,s)?.cost)&&!s.units.some(u=>u!==eric&&u.hp>0&&u.x===t.x&&u.y===t.y));eric.x=spot.x;eric.y=spot.y;return s;}
 try{
  for(const [label,viewport,touch] of [['1440',{width:1440,height:900},false],['390',{width:390,height:844},true]]){
   const ctx=await b.newContext({viewport,hasTouch:touch,isMobile:touch,deviceScaleFactor:touch?2:1});await ctx.setOffline(true);const p=await ctx.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
