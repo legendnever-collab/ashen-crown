@@ -1,6 +1,6 @@
 # ACT I balance report (M01→M06, legal policy)
 
-Executed 2026-11-19 09:16 UTC with `node tests/act1-balance.mjs 30 20261014` — 30 seeds, rules API only, no shopping, no state edits.
+Executed 2026-11-19 10:31 UTC with `node tests/act1-balance.mjs 30 20261014` — 30 seeds, rules API only, no shopping, no state edits.
 
 **Full ACT I clears: 20/30 (67%)** · gate: M01 ≥ 95%, every other mission ≥ 60% of the runs that reach it (band 60–85% on 보통, M02 cannot be lost)
 

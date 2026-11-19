@@ -1,14 +1,14 @@
-# v2.2.1 matrix, 2026-11-19 KST, on build/Ashen_Crown.html SHA256 7bad5ee6… (the build packaging produces; checked by rebuilding).
-# Exit codes copied in order from test-output/run-summary-A/B/C.log. A and B ran in parallel on 2 cores; C reran three suites one at a time after fixes:
-#  http — scripts/serve.mjs: a comment added in this version hid the port declaration (fixed); migration-v050, v200 — they still expected version 2.2.0 (now 2.2.1).
+# v2.2.1 final matrix, 2026-11-19 KST, on build/Ashen_Crown.html SHA256 d43f373f… (rebuilt after the run: identical; the build packaging copies).
+# Exit codes copied in order from test-output/run-summary-A/B/C.log. A and B ran in parallel on 2 cores; C reran act4d alone
+# (a 30 s locator timeout under the parallel load; unchanged, it passed alone).
 balance: exits 0; PASS lines in the last run 0
-e2e: exits 0; PASS lines in the last run 72
-mobile: exits 0; PASS lines in the last run 88
+e2e: exits 0; PASS lines in the last run 78
+mobile: exits 0; PASS lines in the last run 90
 tactical: exits 0; PASS lines in the last run 27
-http: exits 1 -> 0; PASS lines in the last run 0
+http: exits 0; PASS lines in the last run 0
 post-move: exits 0; PASS lines in the last run 0
 restart: exits 0; PASS lines in the last run 22
-campaign: exits 0; PASS lines in the last run 204
+campaign: exits 0; PASS lines in the last run 212
 campaign-balance: exits 0; PASS lines in the last run 0
 frontier: exits 0; PASS lines in the last run 90
 economy-balance: exits 0; PASS lines in the last run 0
@@ -34,7 +34,7 @@ act2: exits 0; PASS lines in the last run 28
 act2-hubs: exits 0; PASS lines in the last run 315
 act2-campaign: exits 0; PASS lines in the last run 24
 hub-doors: exits 0; PASS lines in the last run 0
-migration-v050: exits 1 -> 0; PASS lines in the last run 12
+migration-v050: exits 0; PASS lines in the last run 12
 act2b-campaign: exits 0; PASS lines in the last run 22
 migration-v060: exits 0; PASS lines in the last run 12
 act2c-campaign: exits 0; PASS lines in the last run 26
@@ -62,9 +62,9 @@ act4b: exits 0; PASS lines in the last run 32
 act4c: exits 0; PASS lines in the last run 34
 migration-v0100: exits 0; PASS lines in the last run 13
 migration-v0101: exits 0; PASS lines in the last run 13
-act4d: exits 0; PASS lines in the last run 38
+act4d: exits 1 -> 0; PASS lines in the last run 38
 migration-v0102: exits 0; PASS lines in the last run 13
-v200: exits 1 -> 0; PASS lines in the last run 18
+v200: exits 0; PASS lines in the last run 18
 act2-balance: exits 0; PASS lines in the last run 0
 v210: exits 0; PASS lines in the last run 46
-# suites 66; final exit non-zero: none; never run: none; PASS lines (last runs) 2307
+# suites 66; final exit non-zero: none; never run: none; PASS lines (last runs) 2323
