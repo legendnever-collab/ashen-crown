@@ -16,7 +16,7 @@ test('heals restore half of the old amount, at least 1',()=>{
  assert.equal(healAmount(s,{healPow:30}),15);assert.equal(healAmount(s,{healPow:31}),16);assert.equal(healAmount(s,{healPow:1}),1);assert.equal(healAmount(s,{healPow:0}),1);
  assert.equal(healAmount(s,{healPow:20,heal:6}),13);
 });
-test('M06: the four royal seal guards hold their posts; M03 and M04 a little under the old strength',()=>{
+test('M06: the four royal seal guards hold their posts; enemy strength retuned for M03, M04, M06, M15 and M17',()=>{
  const k=V200_MISSIONS[6].enemies.filter(e=>/^k[1-4]$/.test(e.id));assert.equal(k.length,4);for(const e of k)assert.equal(e.mov,0,e.id);
- assert.equal(BASE_MUL,1.08);assert.deepEqual(BASE_MUL_AT,{3:.95,4:.96,15:1,16:1,22:1});
+ assert.equal(BASE_MUL,1.08);assert.deepEqual(BASE_MUL_AT,{3:.95,4:.97,6:1.02,15:.95,16:1,17:.97,22:1});
 });
