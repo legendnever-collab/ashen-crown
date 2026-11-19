@@ -1,0 +1,20 @@
+{
+  "bytes": 48036542,
+  "MiB": 45.81,
+  "status": "ok",
+  "parts": {
+    "ASHEN_DUEL": 6069960,
+    "ASHEN_DUEL_BG": 25,
+    "ASHEN_ENDINGS": 23,
+    "ASHEN_PROPS": 102090,
+    "ASHEN_ROOMS": 9667030,
+    "ASHEN_ITEMS": 1090772,
+    "ASHEN_CHESTS": 405471,
+    "ASHEN_WORLD": 569330,
+    "ASHEN_HUBS": 6610458,
+    "ASHEN_SPRITES": 4837917,
+    "ASHEN_PORTRAITS": 16693077,
+    "fonts": 162726,
+    "code": 1827663
+  }
+}
