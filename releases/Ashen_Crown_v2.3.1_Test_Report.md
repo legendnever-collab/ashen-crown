@@ -1,5 +1,5 @@
 # Ashen Crown v2.3.1 「ACT II 큰 맵 (2부)와 작은 마을」 — Test Report
-Updated 2026-11-20 KST. **Release candidate on feature/v2.3.1-act2 — not merged before the user plays and approves it.**
+Updated 2026-11-20 KST. **Merged (PR #34; approved by the user 2026-11-21 07:55, D-133; CI green on 7029fb8).**
 - Decisions: D-128 (design), D-130 (v2.3.0 approved; v2.3.1 requested), D-131 (this implementation), D-132 (art pack J imported). Notes: docs/v2.3.1/RELEASE_NOTES.md.
 - HTML SHA256: see `releases/Ashen_Crown_v2.3.1_SHA256SUMS` (`index.html` is identical). Build dadb500a…, 48.1 MiB with art pack J (budget: warn 80, fail 90).
 

@@ -1,5 +1,5 @@
 # v2.3.1 — ACT II 큰 맵 (2부)와 작은 마을
-- Release candidate on feature/v2.3.1-act2 (D-131; asked for with the v2.3.0 merge, D-130). Notes docs/v2.3.1/RELEASE_NOTES.md. Not merged before the user plays and approves it.
+- Merged (PR #34; approved 2026-11-21 07:55, D-133). Built under D-131 (asked for with the v2.3.0 merge, D-130). Notes docs/v2.3.1/RELEASE_NOTES.md.
 - ACT II M11–M14 on big maps (src/data/missions-v231.js): M11 switchback 24×20 (five braziers, pilgrims +10 HP, TURN 14), M12 cloister 24×20 (14 guards, five on the bell, TURN 16), M13 pincer 28×18, M14 escape south 24×18. Rules, story and duels unchanged.
 - The war council's terrain and intel follow the big maps (M07–M14).
 - ACT II villages 서리목 (M08) and 소금항 (M09): six requests and two bounties (missions 125–130), taverns, shops; the ice-bridge discount at the north shops.
