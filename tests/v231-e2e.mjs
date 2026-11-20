@@ -36,8 +36,7 @@ try{
    await ctx.close();ctx=ctx2;p=p2;}
   await restore(rb);
   s=await p.evaluate(()=>AshenCrown.snapshot());check(`${label} the blizzard request opens with 군나르 and the wolves`,s.missionId===125&&s.units.some(u=>u.id==='gunnarc')&&s.units.filter(u=>u.look==='wolf').length>=4);
-  if(label==='1440'){await press('reset-camera');await p.waitForTimeout(3200);await p.screenshot({path:`${shots}/request-blizzard.png`});
-   }});}
+  if(label==='1440'){await press('reset-camera');await p.waitForTimeout(3200);await p.screenshot({path:`${shots}/request-blizzard.png`});}
   check(`${label} no runtime errors`,errors.length===0);if(errors.length)console.log(errors);await ctx.close();
  }
  fs.writeFileSync('test-output/v231-e2e.json',JSON.stringify({checks:n},null,1));console.log(`v231 e2e: ${n} checks passed`);
