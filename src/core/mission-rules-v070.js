@@ -18,6 +18,8 @@ const arrivedOf=s=>pilgrimsOf(s).filter(p=>p.rescued).length;
 const lostPilgrims=s=>pilgrimsOf(s).filter(p=>p.hp<=0).length;
 const braziersOf=s=>s.units.filter(u=>u.kind==='brazier');
 const litCount=s=>braziersOf(s).filter(b=>b.lit).length;
+// v2.3.1 (D-131): the big map has five braziers (the small map had three); counts follow the mission's objects.
+const brazierTotal=s=>(missionOf(s).objects||[]).filter(o=>o.kind==='brazier').length;
 // The road to the sanctuary (pilgrims keep to it); occupants are ignored here, a unit in the way stops the walk.
 function roadRoute(s,p){const m=missionOf(s),start=key(p.x,p.y),prev=new Map([[start,null]]),q=[{x:p.x,y:p.y}];let goal=null;
  while(q.length){const c=q.shift();if(c.y<=m.sanctuaryRow&&key(c.x,c.y)!==start){goal=c;break;}
@@ -49,24 +51,24 @@ function escortPlan(s,u,reachable,label){const flock=pilgrimsOf(s).filter(alive)
 export const M11={
  init(s){s.missionState={waves:[],lit:[]};if(!s.practice)ensureTrust(s.campaign);},
  clearLabel:'성화의 행렬 호위',
- validState(m){return !!m&&typeof m==='object'&&Array.isArray(m.waves)&&m.waves.every(n=>Number.isInteger(n)&&n>0)&&Array.isArray(m.lit)&&m.lit.every(id=>['br1','br2','br3'].includes(id))&&new Set(m.lit).size===m.lit.length;},
- status(s){const m=missionOf(s);return `성소 도착 ${arrivedOf(s)}/${m.arriveGoal}${lostPilgrims(s)?` · 잃은 순례자 ${lostPilgrims(s)}`:''} · 화로 ${litCount(s)}/3 · ${s.turn>m.turnLimit?'새벽':`새벽까지 ${Math.max(0,m.turnLimit+1-s.turn)}턴`}`;},
- optional(s){const f=s.campaign.flags;return `순례자 ${f.mission_11_arrived??arrivedOf(s)}/4 성소 도착 · 화로 ${f.mission_11_braziers??litCount(s)}/3`;},
+ validState(m){return !!m&&typeof m==='object'&&Array.isArray(m.waves)&&m.waves.every(n=>Number.isInteger(n)&&n>0)&&Array.isArray(m.lit)&&m.lit.every(id=>/^br[1-5]$/.test(id))&&new Set(m.lit).size===m.lit.length;},
+ status(s){const m=missionOf(s);return `성소 도착 ${arrivedOf(s)}/${m.arriveGoal}${lostPilgrims(s)?` · 잃은 순례자 ${lostPilgrims(s)}`:''} · 화로 ${litCount(s)}/${brazierTotal(s)} · ${s.turn>m.turnLimit?'새벽':`새벽까지 ${Math.max(0,m.turnLimit+1-s.turn)}턴`}`;},
+ optional(s){const f=s.campaign.flags;return `순례자 ${f.mission_11_arrived??arrivedOf(s)}/4 성소 도착 · 화로 ${f.mission_11_braziers??litCount(s)}/${brazierTotal(s)}`;},
  onTurnStart(s){act2Waves(s);healLitPilgrims(s);if(s.turn>=2)marchPilgrims(s);},
  beforeEnemyPhase(){},
  planAllied(s,u,reachable){return escortPlan(s,u,reachable,u.id==='ines_warden'?'성역 호위':'행렬 호위');},
  search(s,u,t){if(t.kind!=='brazier')return false;t.lit=true;t.inert=true;s.missionState.lit.push(t.id);remember(s,`m11_brazier_${u.id}`);
-  s.feedback.push({type:'rescue',id:t.id,text:'LIGHT'});s.log.push(`${u.name}: ${t.name}에 불을 붙였습니다. 반경 ${missionOf(s).night.radius}칸이 밝아집니다. (${litCount(s)}/3)`);enqueueStory(s,'11:lit');return true;},
+  s.feedback.push({type:'rescue',id:t.id,text:'LIGHT'});s.log.push(`${u.name}: ${t.name}에 불을 붙였습니다. 반경 ${missionOf(s).night.radius}칸이 밝아집니다. (${litCount(s)}/${brazierTotal(s)})`);enqueueStory(s,'11:lit');return true;},
  afterDamage(s,v){if(v.team==='civilian'&&v.hp<=0)enqueueStory(s,'11:lost');},
- checkOutcome(s,finish){const m=missionOf(s),tail=` · 화로 ${litCount(s)}/3`;
+ checkOutcome(s,finish){const m=missionOf(s),tail=` · 화로 ${litCount(s)}/${brazierTotal(s)}`;
   if(lostPilgrims(s)>=2)return finish(s,'defeat','순례자를 두 명 이상 잃었습니다.');
   if(arrivedOf(s)>=m.arriveGoal)return finish(s,'victory',`순례자 ${arrivedOf(s)}/4 성소 도착${tail}.`);
   if(s.turn>m.turnLimit)return finish(s,'victory',`새벽까지 행렬을 지켰습니다 · 순례자 ${4-lostPilgrims(s)}/4 무사${tail}.`);
  },
- beforeCommit(s){setStoryFlag(s,'mission_11_arrived',arrivedOf(s));setStoryFlag(s,'mission_11_safe',4-lostPilgrims(s));setStoryFlag(s,'mission_11_braziers',litCount(s));},
+ beforeCommit(s){setStoryFlag(s,'mission_11_arrived',arrivedOf(s));setStoryFlag(s,'mission_11_safe',4-lostPilgrims(s));setStoryFlag(s,'mission_11_braziers',litCount(s));setStoryFlag(s,'mission_11_braziers_all',litCount(s)===brazierTotal(s));},
  // Sacred Flame trust (PROPOSED): every pilgrim through the sanctuary gate +1. The Order is met from here on.
  afterVictory(s){if(s.practice)return;setStoryFlag(s,'act2_flame_met');if(arrivedOf(s)===4)adjustTrust(s.campaign,'flame',1,'M11 · 순례자 모두를 성소까지 지켰다');},
- rewardContext(s){return {pilgrims:arrivedOf(s),braziers:litCount(s)};}
+ rewardContext(s){return {pilgrims:arrivedOf(s),braziers:litCount(s),braziersAll:litCount(s)===brazierTotal(s)};}
 };
 // Lucien's offer in the camp after M11 (PROPOSED trust): the refugees swear the flame oath and enter the sanctuary (+1)
 // or the legion keeps caring for them (no change).
@@ -86,7 +88,8 @@ const faceToward=(g,h)=>{const dx=h.x-g.x,dy=h.y-g.y;g.facing=Math.abs(dx)>=Math
 function ringBell(s,why){const st=s.missionState;if(st.alarmTurn!==null)return;st.alert=2;st.alarmTurn=s.turn;st.burnTurn=s.turn+missionOf(s).burnDelay;
  for(const g of sentries(s))if(alive(g)){g.awake=true;g.mov=g.alertMov??3;}
  for(const w of missionOf(s).waves.filter(w=>w.alarm&&!st.waves.includes(w.turn))){st.waves.push(w.turn);spawnWave(s,w.units);if(w.story)enqueueStory(s,w.story);}
- s.log.push(`종이 울립니다! (${why}) 경비가 모두 깨어나고 숙소에서 셋이 나옵니다. TURN ${st.burnTurn}에 원장이 기록을 태웁니다.`);enqueueStory(s,'12:alarm');}
+ const n=missionOf(s).waves.filter(w=>w.alarm).reduce((a,w)=>a+w.units.length,0);
+ s.log.push(`종이 울립니다! (${why}) 경비가 모두 깨어나고 숙소에서 ${n}명이 나옵니다. TURN ${st.burnTurn}에 원장이 기록을 태웁니다.`);enqueueStory(s,'12:alarm');}
 function spotted(s,{g,h}){const st=s.missionState;faceToward(g,h);
  if(st.alert>=1)return ringBell(s,`${g.name}이(가) ${h.name}을(를) 보았습니다`);st.alert=1;
  s.log.push(`${g.name}: "…누구냐?" ${h.name}의 그림자를 보았습니다. 수도원이 의심합니다 (감시 3칸).`);enqueueStory(s,'12:suspicion');}

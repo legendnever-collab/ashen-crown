@@ -780,5 +780,5 @@ export const LAST_MISSION=Math.max(...Object.keys(MISSIONS).map(Number).filter(i
 // v2.0.0 전장 개편 (D-115): ACT I M01–M06 on big maps with new directions (missions-v200.js).
 import {applyV200} from './missions-v200.js';
 applyV200(MISSIONS);
-import {applyV230} from './missions-v230.js';
-applyV230(MISSIONS);
+import {applyV230} from './missions-v230.js';import {applyV231} from './missions-v231.js';
+applyV230(MISSIONS);applyV231(MISSIONS);

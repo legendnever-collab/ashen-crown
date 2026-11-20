@@ -105,7 +105,7 @@ export const FEATS={
  8:featDef(8,'mirrorCuirass','구출 명령으로 주민 3명을 모두 구하고 용병단장을 쓰러뜨린다',(s,bf)=>!!bf.mission_08_captain_defeated&&bf.mission_08_villagers_saved===3),
  9:featDef(9,'elixir','자객 우두머리를 생포하고 대표 3명을 모두 피신시킨다',(s,bf)=>!!bf.mission_09_assassin_captured&&bf.mission_09_delegates_saved===3),
  10:featDef(10,'clearCharm','TURN 8 안에 전쟁을 끝낸다',(s)=>s.turn<=8),
- 11:featDef(11,'flameReliquary','화로 3개를 모두 밝히고 순례자 4명이 모두 성소에 닿는다',(s,bf)=>bf.mission_11_braziers===3&&bf.mission_11_arrived===4),
+ 11:featDef(11,'flameReliquary','길가 화로를 모두 밝히고 순례자 4명이 모두 성소에 닿는다',(s,bf)=>(bf.mission_11_braziers_all??bf.mission_11_braziers===3)&&bf.mission_11_arrived===4), // v2.3.1: five braziers on the big map
  12:featDef(12,'manaRing','종이 울리기 전에 기록을 확보하고 원장을 생포한다',(s,bf)=>!!bf.mission_12_quiet&&!!bf.mission_12_abbot_captured),
  13:featDef(13,'lionEpaulette','발드릭을 말로 멈추고 피난민 4명을 모두 지킨다',(s,bf)=>bf.mission_13_baldrick==='halted'&&bf.mission_13_refugees===4),
  14:featDef(14,'allianceSeal','지도자와 호위 모두 살아서 TURN 10 안에 빠져나간다',(s,bf)=>(bf.mission_14_escort||0)>=6&&s.turn<=10),

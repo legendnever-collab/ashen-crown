@@ -13,7 +13,7 @@ try{
  for(const [label,viewport] of [['1440',{width:1440,height:900}],['390',{width:390,height:844,isMobile:true,hasTouch:true}]]){
   const ctx=await b.newContext({viewport});await ctx.setOffline(true);const p=await ctx.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
   const press=async a=>{await p.locator(`[data-do="${a}"]`).first().click();await p.waitForTimeout(250);};
-  await p.goto(url);await p.waitForFunction(()=>!!window.AshenCrown);check(`${label} the page is v2.3.0`,await p.evaluate(()=>AshenCrown.version)==='2.3.0');
+  await p.goto(url);await p.waitForFunction(()=>!!window.AshenCrown);check(`${label} the page is v2.3.0`,await p.evaluate(()=>AshenCrown.version)==='2.3.1');
   await press('new');if(await p.locator('[data-do="difficulty-pick"]').count())await p.locator('[data-do="difficulty-pick"][data-id="normal"]').click();await drainStory(p);
   for(const id of [7,8,9,10]){
    await press('menu');await press('backup');await p.fill('#backup-text',backupText(battle(id)));await press('restore');await drainStory(p);await p.waitForTimeout(400);

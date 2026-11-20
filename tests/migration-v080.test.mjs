@@ -16,12 +16,12 @@ const load=name=>deserialize(fixture(name).save);
 test('fixtures are genuine v0.8.0 schema-10 saves with a +1 sword',()=>{for(const n of ['m14-camp','m14-battle']){const f=fixture(n);assert.equal(f.version,'0.8.0');assert.equal(f.schema,10);assert.ok(raw(n).campaign.economy.gear.some(g=>g.type==='ironBlade'&&g.level===1));}});
 
 test('the v0.8.0 summit camp loads as schema 11: +1 → ★2 with the same stats, a treasure slot for all, every other asset kept',()=>{
- const before=raw('m14-camp'),s=load('m14-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,22);assert.equal(s.version,VERSION);assert.equal(s.frontier.hub,'summit');
+ const before=raw('m14-camp'),s=load('m14-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,23);assert.equal(s.version,VERSION);assert.equal(s.frontier.hub,'summit');
  for(const k of ['completed','flags','choices','promotions','factionTrust','trustLog','roster'])keptV200(s.campaign,before.campaign,k);
  assert.deepEqual(econV200(s.campaign.economy),econV200(arms081View(before.campaign.economy)));assert.deepEqual(s.campaign.feats,[]);
  const sword=s.campaign.economy.gear.find(g=>g.type==='ironBlade');assert.deepEqual([sword.star,sword.exp],[2,30]);assert.ok(s.campaign.economy.gear.filter(g=>g.type!=='ironBlade').every(g=>g.star===1&&g.exp===0));
  {const starts=s.campaign.economy.gear.filter(g=>['arenCrest','teacherTome'].includes(g.type)).map(g=>g.id);for(const slots of Object.values(s.campaign.economy.equipped))assert.ok(slots.treasure===null||starts.includes(slots.treasure),'only the v2.0.0 start treasures are worn');}
- assert.equal(deserialize(serialize(s)).schema,22);
+ assert.equal(deserialize(serialize(s)).schema,23);
 });
 
 test('the same Erik hits as hard as in v0.8.0: ★2 = the old +1',()=>{const s=load('m14-camp'),eric=findUnit(s,'eric'),e=s.campaign.economy;e.equipped.eric.treasure=null;s.economy.equipped.eric.treasure=null; /* v2.0.0: leave the start treasure out of the comparison */const own=e.equipped.eric.weapon&&e.gear.find(g=>g.id===e.equipped.eric.weapon);if(own?.type==='ironBlade')assert.equal(effectiveStats(s,eric).atk,eric.atk+3);});

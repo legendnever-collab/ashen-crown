@@ -1,6 +1,6 @@
 import {GEAR,TOOLS} from '../data/frontier-data.js';
 // Supplement existing first-clear Gold, never replace or repeat it.
-export function supplementalRewards(missionId,{rescued=0,captured=false,seal=false,orders=false,broken=false,wagons=0,refugees=0,beacon=false,convoy=0,captured7=false,villagers=0,captain8=false,delegates=0,captured9=false,villagers10=0,mediated=false,pilgrims=0,braziers=0,silent12=false,abbot12=false,halted13=false,refugees13=0,escort14=0,boxes15=0,calm15=false,echoes16=0,sworn17=0,trees18=0,remembered19=0,cabinets20=0,residents20=0,keepers18=0,anchors21=0,heralds22=0,leaders23=0,inside24=0,leadersHalf25=false,baldrick26=null,ramHalf27=false,arenStood28=false,rites29=0,heartHalf30=false}={}){
+export function supplementalRewards(missionId,{braziersAll,rescued=0,captured=false,seal=false,orders=false,broken=false,wagons=0,refugees=0,beacon=false,convoy=0,captured7=false,villagers=0,captain8=false,delegates=0,captured9=false,villagers10=0,mediated=false,pilgrims=0,braziers=0,silent12=false,abbot12=false,halted13=false,refugees13=0,escort14=0,boxes15=0,calm15=false,echoes16=0,sworn17=0,trees18=0,remembered19=0,cabinets20=0,residents20=0,keepers18=0,anchors21=0,heralds22=0,leaders23=0,inside24=0,leadersHalf25=false,baldrick26=null,ramHalf27=false,arenStood28=false,rites29=0,heartHalf30=false}={}){
  const reward=(suffix,kind,type,amount=1,optional=false)=>({id:`v032:m${missionId}:${suffix}`,missionId,kind,type,amount,optional});
  if(missionId===1)return [reward('supply','item','medium'),...(rescued===2?[reward('rescue','item','ward',1,true)]:[])];
  if(missionId===2)return [reward('supply','item','ether'),...(captured?[reward('capture','gold',null,30,true)]:[])];
@@ -17,9 +17,9 @@ export function supplementalRewards(missionId,{rescued=0,captured=false,seal=fal
  const v61=(suffix,kind,type,amount=1,optional=false)=>({...reward(suffix,kind,type,amount,optional),id:`v061:m${missionId}:${suffix}`});
  if(missionId===9)return [v61('supply-hp','item','medium'),v61('supply-mp','item','ether'),...(delegates===3?[v61('all-delegates','gear','longbow',1,true)]:[]),...(captured9?[v61('assassin','item','ward',1,true)]:[])];
  if(missionId===10)return [v61('supply-hp','item','medium'),v61('supply-mp','item','ether'),...(villagers10===3?[v61('all-villagers','gold',null,80,true)]:[]),...(mediated?[v61('truce','gear','travelCloak',1,true)]:[])];
- // v0.7.0 (PROPOSED, D-068): M11 every pilgrim through → a mercy staff, all three braziers lit → 70 gold; M12 the ledger secured before the bell → balanced daggers, the abbot taken alive → a ward.
+ // v0.7.0 (PROPOSED, D-068): M11 every pilgrim through → a mercy staff, all three braziers lit → 70 gold (v2.3.1: all five on the big map); M12 the ledger secured before the bell → balanced daggers, the abbot taken alive → a ward.
  const v7=(suffix,kind,type,amount=1,optional=false)=>({...reward(suffix,kind,type,amount,optional),id:`v070:m${missionId}:${suffix}`});
- if(missionId===11)return [v7('supply-hp','item','medium'),v7('supply-mp','item','ether'),...(pilgrims===4?[v7('all-pilgrims','gear','mercyStaff',1,true)]:[]),...(braziers===3?[v7('braziers','gold',null,70,true)]:[])];
+ if(missionId===11)return [v7('supply-hp','item','medium'),v7('supply-mp','item','ether'),...(pilgrims===4?[v7('all-pilgrims','gear','mercyStaff',1,true)]:[]),...((braziersAll??braziers===3)?[v7('braziers','gold',null,70,true)]:[])];
  if(missionId===12)return [v7('supply-hp','item','medium'),v7('supply-mp','item','ether'),...(silent12?[v7('silent','gear','daggers',1,true)]:[]),...(abbot12?[v7('abbot','item','ward',1,true)]:[])];
  // v0.7.1 (PROPOSED, D-071): M13 every refugee safe → a heavy shield, Baldrick halted → 80 gold; M14 every loyal leader and guard out alive → a focus charm.
  const v71=(suffix,kind,type,amount=1,optional=false)=>({...reward(suffix,kind,type,amount,optional),id:`v071:m${missionId}:${suffix}`});

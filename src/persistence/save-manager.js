@@ -114,6 +114,10 @@ function reform230(s){const m=MISSIONS[s.missionId];
  if(!s.skirmish&&m?.v230){if(['battle','result','deployment'].includes(s.screen)){s=reopenInCamp(s);s.migrated230='battle';}else relocateCamp(s);}
  s.schema=22;s.version='2.3.0';if(s.stageStart&&MISSIONS[s.stageStart.missionId]?.v230)delete s.stageStart;else if(s.stageStart)s.stageStart=migrate(s.stageStart);
  return s;}
+function reform231(s){const m=MISSIONS[s.missionId];
+ if(!s.skirmish&&m?.v231){if(['battle','result','deployment'].includes(s.screen)){s=reopenInCamp(s);s.migrated231='battle';}else relocateCamp(s);}
+ s.schema=23;s.version='2.3.1';if(s.stageStart&&MISSIONS[s.stageStart.missionId]?.v231)delete s.stageStart;else if(s.stageStart)s.stageStart=migrate(s.stageStart);
+ return s;}
 export function migrate(s){
  if(s?.schema===0){s.schema=1;s.feedback=s.feedback||[];}
  if(s?.schema===1){s.schema=2;s.version='0.2.0';s.missionId=1;s.practice=false;s.narrative=narrativeState();const c=s.campaign;c.completed=c.clears>0?[1]:[];c.flags=c.clears>0?{mission_01_completed:true}:{};c.bonds={};c.tacticalMemory={};for(const u of [...s.units,...(c.heroes||[])])if(u.team==='ally'||HEROES.some(h=>h.id===u.id)){u.appearanceTier=u.id==='eric'&&u.level>=5?2:1;const h=HEROES.find(h=>h.id===u.id);if(h){u.name=h.name;u.ko=h.ko;}}if(s.stageStart)s.stageStart=migrate(s.stageStart);}
@@ -158,6 +162,8 @@ export function migrate(s){
  // v2.3.0 (D-129): ACT II M07–M10 are on big maps. A battle of those missions in progress reopens in its camp; a camp state
  // there takes the new map's troops (as v2.0.0 did for ACT I). Requests and every other mission keep going.
  if(s?.schema===21)s=reform230(s);
+ // v2.3.1 (D-131): ACT II M11–M14 follow on big maps, the same way.
+ if(s?.schema===22)s=reform231(s);
  if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');
  // v0.6.1: a save of the current schema made by an earlier build of it (e.g. v0.6.0) is now this version.
  if(s?.schema===SCHEMA&&s.version!==VERSION){s.version=VERSION;if(s.stageStart?.version)s.stageStart.version=VERSION;}

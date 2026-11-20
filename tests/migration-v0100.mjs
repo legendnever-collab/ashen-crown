@@ -24,20 +24,20 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  const p=await ctx.newPage();p.on('pageerror',e=>errors.push(`v0101: ${e.message}`));await p.goto(pathToFileURL(path.resolve('build/Ashen_Crown.html')).href);await p.waitForFunction(()=>!!window.AshenCrown);if(await p.locator('[data-do="new"]').count()){await cmd(p,'new');}await drainStory(p);
  const restore=async text=>{await drainStory(p);await cmd(p,'menu');await cmd(p,'backup');await p.locator('#backup-text').fill(text);await cmd(p,'restore');await p.waitForFunction(()=>!AshenCrown.view().busy);await p.waitForTimeout(300);};
  await restore(villageText);let s=await snapshot(p);
- check('v0.10.0 village save opens in the painted village (schema 18, gold kept, legal position)',s.schema===22&&s.screen==='exploration'&&s.frontier.hub==='village'&&s.economy.gold===village.economy.gold&&sameHeroes(s.campaign.heroes,village.campaign.heroes));
+ check('v0.10.0 village save opens in the painted village (schema 18, gold kept, legal position)',s.schema===23&&s.screen==='exploration'&&s.frontier.hub==='village'&&s.economy.gold===village.economy.gold&&sameHeroes(s.campaign.heroes,village.campaign.heroes));
  check('Imported village save does not replay the world-map intro',!s.narrative.active?.key?.startsWith('world:'));
  await restore(battleText);s=await snapshot(p);check('v0.10.0 battle reopens in the camp before it (v2.0.0)',reopened(s));
  for(const a of ['warroom','deploy','start-battle']){await cmd(p,a);await drainStory(p);}await p.waitForFunction(()=>!AshenCrown.view().busy);s=await snapshot(p);check('The reopened v0.10.0 battle departs again from the camp',s.screen==='battle'&&s.turn===1);
  // 3. Source-built fixtures: the v0.10.0 end-of-content camp (the Ashen Village after M24) and a mid-M24 battle.
  const done=fixture('m24-camp'),before=JSON.parse(JSON.parse(done.save).data);await restore(done.save);s=await snapshot(p);
- check('v0.10.0 Ashen Village save (after M24) opens with every asset kept and the roster intact',s.schema===22&&s.frontier.hub==='village_raid'&&JSON.stringify(econV200(s.campaign.economy))===JSON.stringify(econV200(before.campaign.economy))&&sameRoster(s.campaign.roster,before.campaign.roster)&&JSON.stringify(s.campaign.factionTrust)===JSON.stringify(before.campaign.factionTrust)&&s.campaign.choices.m18_truth==='tell');
+ check('v0.10.0 Ashen Village save (after M24) opens with every asset kept and the roster intact',s.schema===23&&s.frontier.hub==='village_raid'&&JSON.stringify(econV200(s.campaign.economy))===JSON.stringify(econV200(before.campaign.economy))&&sameRoster(s.campaign.roster,before.campaign.roster)&&JSON.stringify(s.campaign.factionTrust)===JSON.stringify(before.campaign.factionTrust)&&s.campaign.choices.m18_truth==='tell');
  for(let i=0;i<3&&await p.locator('#modal-root .modal').count();i++){await cmd(p,'close-modal');await drainStory(p);}
  await p.screenshot({path:'test-output/migration-v0100-camp.png'});check('The migrated camp now goes on to Mission 25',(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 25'));
  await cmd(p,'legion');const legion=await p.locator('#modal-root').textContent();check('The legion panel opens with every hero of the v0.10.0 roster',['에릭','엘리나','리아','세인','카이'].every(n=>legion.includes(n)));await cmd(p,'close-modal');
  await restore(fixture('m24-battle').save);s=await snapshot(p);check('v0.10.0 Mission 24 battle reopens in the camp before it (v2.0.0)',reopened(s,24));
  /* v2.0.0: depart again from the camp */for(const a of ['warroom','deploy','start-battle','confirm-battle']){if(await p.locator(`[data-do="${a}"]`).count()){await cmd(p,a);await drainStory(p);}}await cmd(p,'open-unit-menu');await cmd(p,'submenu','skills');const menu=await p.locator('#unit-popover').textContent();
  check('Erik of a v0.10.0 save keeps ② and ③ and shows ④',menu.includes('②')&&menu.includes('③')&&menu.includes('④'));await cmd(p,'close-unit-menu');
- await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===22&&s.version==='2.3.0'&&s.missionId===24);
+ await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===23&&s.version==='2.3.1'&&s.missionId===24);
  check('No runtime errors in either build',errors.length===0);await ctx.close();
 }finally{fs.mkdirSync('test-output',{recursive:true});fs.writeFileSync('test-output/migration-v0100-browser.json',JSON.stringify({checks,errors},null,2));await browser.close();}
 console.log(`${checks.length} v0.10.0 browser migration checks PASS`);
