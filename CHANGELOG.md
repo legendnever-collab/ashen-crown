@@ -1,3 +1,13 @@
+# v2.3.0 — ACT II 큰 맵 (1부)
+- Merged (PR #33; approved 2026-11-20 18:02, D-130). Design approved 2026-11-20 06:21 (D-129). Notes docs/v2.3.0/RELEASE_NOTES.md; design docs/v2.3.0/ACT2_MAPS_DESIGN.md (D-128).
+- ACT II M07–M10 on big maps (src/data/missions-v230.js): M07 convoy east 30×14 (16+6, TURN limit 20), M08 two fronts 22×20 (12+14), M09 street fight from the SW docks 26×20 (15+8), M10 march east among three sides 30×18 (24+8). Objectives, rules, story and duels unchanged.
+- The M07 wagons follow the road network to the gate (convoyDistance; one sideways step to an equal lane).
+- 어려움 re-measured (ASHEN_DIFFICULTY=hard for act1-balance / act2-balance): the M06 stage-start record with the inspector's wave was refused on 어려움 (fixed); full +1 level ×1.1 in ACT II; 보통's numbers at M15, M17 and M18 (core/stats8.js HARD_SHARE). M19–M22 on 어려움 left for a later pass.
+- scripts/archive-releases.mjs: a tag on the default branch when GitHub refuses one on an older commit; goes on past failures.
+- Schema 22 (imports 0–21): M07–M10 battle, result and deployment saves reopen in camp; camp positions on new walls are moved.
+- Tests: tests/v230-e2e.mjs (the four maps at 1440 and 390, the 어려움 M06 save), tests/difficulty-hard.test.mjs, start positions on the big maps (renaissance).
+- Version 2.3.0.
+
 # v2.2.1 — 용량 관리
 - D-125, on the user's word (2026-11-19 16:09); play-test changes D-126; merged on the user's approval (2026-11-19 22:53, D-127). Plan docs/v2.2.1/SIZE_PLAN.md.
 - Paintings as AVIF: 382 portraits, duel images, map sprites (q60), rooms, hubs and world (q65), same resolution, each SSIM-checked against the WebP it replaced (scripts/convert-art-avif.py, src/assets/avif-conversion-log.csv); the 24 class sheets stay WebP (their magenta sash is recoloured by threshold); the import scripts convert new art. 63.7 → 46.5 MiB.

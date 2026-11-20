@@ -14,18 +14,28 @@ export function act2Waves(s){const m=missionOf(s),st=s.missionState;for(const w 
 const convoyOf=s=>s.units.filter(u=>u.kind==='wagon');
 const throughOf=s=>convoyOf(s).filter(w=>w.rescued).length;
 const intactOf=s=>convoyOf(s).filter(w=>w.rescued||w.hp>0).length;
-const ROADWAY=['r','i'];
-// Each living wagon (front first) drives up to two tiles north on the road (one with an enemy beside it),
-// and a unit in the way blocks it (it may step across to the other road lane). y ≤ 1 is the gate.
-function moveConvoy(s){const map=missionOf(s).map;
- for(const w of convoyOf(s).filter(alive).sort((a,b)=>a.y-b.y||a.x-b.x)){
+const ROADWAY=['r','i','t'];
+// v2.3.0 (D-129): the big M07 road runs east, crosses the ice and climbs north to the gate in the north-east, so a wagon
+// follows the road by its distance to the gate (mission.convoyGate) instead of heading straight north. Without
+// convoyGate the gate is the top two rows (the v0.6 map). Distances are counted over road tiles only.
+const gateOf=m=>m.convoyGate||m.map.flatMap((r,y)=>y<=1?r.map((t,x)=>ROADWAY.includes(t)?[x,y]:null).filter(Boolean):[]);
+function roadDist(m){const d=new Map(),q=[];for(const [x,y] of gateOf(m)){d.set(`${x},${y}`,0);q.push([x,y]);}
+ while(q.length){const [x,y]=q.shift(),k=d.get(`${x},${y}`);for(const [dx,dy] of [[0,-1],[1,0],[-1,0],[0,1]]){const nx=x+dx,ny=y+dy,key=`${nx},${ny}`;if(d.has(key)||!ROADWAY.includes(m.map[ny]?.[nx]))continue;d.set(key,k+1);q.push([nx,ny]);}}
+ return d;}
+export const convoyDistance=(s,p)=>roadDist(missionOf(s)).get(`${p.x},${p.y}`)??Infinity;
+// Each living wagon (the one nearest the gate first) drives up to two tiles along the road toward the gate (one with an
+// enemy beside it); a unit in the way blocks it, though it may step across once to the other lane (same distance).
+function moveConvoy(s){const m=missionOf(s),dist=roadDist(m),gate=new Set(gateOf(m).map(([x,y])=>`${x},${y}`)),D=p=>dist.get(`${p.x},${p.y}`)??Infinity;
+ for(const w of convoyOf(s).filter(u=>alive(u)&&!u.rescued).sort((a,b)=>D(a)-D(b)||a.y-b.y||a.x-b.x)){
   const pressed=s.units.some(e=>e.team==='enemy'&&alive(e)&&distance(e,w)===1),from={x:w.x,y:w.y},path=[];let side=false;
-  for(let step=0;step<(pressed?1:2)&&w.y>1;step++){let moved=false;
-   for(const [dx,dy] of [[0,-1],...(side?[]:[[1,0],[-1,0]])]){const x=w.x+dx,y=w.y+dy;if(!ROADWAY.includes(map[y]?.[x])||at(s,x,y))continue;if(dx){side=true;}w.x=x;w.y=y;path.push({x,y});moved=true;break;}
+  for(let step=0;step<(pressed?1:2)&&!gate.has(`${w.x},${w.y}`);step++){let moved=false;
+   const here=D(w),opts=[[0,-1],[1,0],[-1,0],[0,1]].map(([dx,dy])=>({x:w.x+dx,y:w.y+dy})).filter(p=>Number.isFinite(D(p))&&!at(s,p.x,p.y));
+   const fwd=opts.filter(p=>D(p)<here).sort((a,b)=>D(a)-D(b))[0],lane=side?null:opts.find(p=>D(p)===here);
+   const next=fwd||lane;if(next){if(!fwd)side=true;w.x=next.x;w.y=next.y;path.push({x:next.x,y:next.y});moved=true;}
    if(!moved)break;}
   if(!path.length){s.log.push(`${w.name}: 길이 막혀 기다립니다.`);continue;}if(pressed)s.log.push(`${w.name}: 습격을 받으며 1칸 전진.`);
   s.feedback.push({type:'move',id:w.id,path:[from,...path]});
-  if(w.y<=1){w.rescued=true;s.feedback.push({type:'rescue',id:w.id,text:'GATE'});s.log.push(`${w.name}이(가) 성문을 넘었습니다. (${throughOf(s)}/3)`);enqueueStory(s,'7:through');}
+  if(gate.has(`${w.x},${w.y}`)){w.rescued=true;s.feedback.push({type:'rescue',id:w.id,text:'GATE'});s.log.push(`${w.name}이(가) 성문을 넘었습니다. (${throughOf(s)}/3)`);enqueueStory(s,'7:through');}
  }}
 // Thea's escort keeps to the nearest wagon still on the road (leash 2), and strikes anything that comes close.
 function escortPost(s,u){const wagons=convoyOf(s).filter(alive);if(!wagons.length){delete u.post;return;}const w=wagons.sort((a,b)=>distance(u,a)-distance(u,b))[0];u.post={x:w.x,y:w.y};u.leash=2;}
@@ -38,8 +48,8 @@ export const M7={
  optional(s){const f=s.campaign.flags;return `마차 ${f.mission_07_wagons_through??throughOf(s)}/3 통과${(f.mission_07_deserter_captured||s.missionState?.captured)?' · 탈영병 대장 생포':''}`;},
  onTurnStart(s){act2Waves(s);if(s.turn>=2)moveConvoy(s);},
  beforeEnemyPhase(){},
- // escorts keep beside the nearest wagon (leash 2) and never park on the road ahead of a wagon
- planAllied(s,u,reachable){escortPost(s,u);const post=u.post,map=missionOf(s).map,ahead=(x,y)=>ROADWAY.includes(map[y]?.[x])&&convoyOf(s).some(w=>alive(w)&&w.y>y&&Math.abs(w.x-x)<=1);
+ // escorts keep beside the nearest wagon (leash 2) and never park on the road just ahead of a wagon (v2.3.0: ahead = nearer the gate along the road)
+ planAllied(s,u,reachable){escortPost(s,u);const post=u.post,dist=roadDist(missionOf(s)),D=(x,y)=>dist.get(`${x},${y}`)??Infinity,ahead=(x,y)=>Number.isFinite(D(x,y))&&convoyOf(s).some(w=>alive(w)&&!w.rescued&&D(w.x,w.y)>D(x,y)&&distance(w,{x,y})<=3);
   const cells=[...reachable].map(([p,c])=>{const [x,y]=p.split(',').map(Number);return {x,y,c};}).filter(p=>(!post||distance(p,post)<=2)&&(!ahead(p.x,p.y)||p.x===u.x&&p.y===u.y));if(!cells.length)return {x:u.x,y:u.y,target:null,reason:'호위 대기'};
   let best=null;for(const p of cells)for(const t of s.units.filter(t=>alive(t)&&hostile(s,u,t))){const d=distance(p,t);if(d<u.range[0]||d>u.range[1])continue;const f=strikeStats(s,{...u,x:p.x,y:p.y},t),score=f.damage+(t.hp<=f.damage?30:0)-p.c*.3;if(!best||score>best.score)best={x:p.x,y:p.y,target:t.id,score,reason:`마차 호위 · ${t.name} 공격`};}
   if(best)return best;const goal=post||u;let dest=cells[0];for(const p of cells)if(distance(p,goal)+p.c*.01<distance(dest,goal)+dest.c*.01)dest=p;return {x:dest.x,y:dest.y,target:null,reason:'마차 곁 호위'};},

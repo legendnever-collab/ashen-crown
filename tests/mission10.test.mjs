@@ -16,9 +16,12 @@ const turn=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEn
 const beside=(s,u,t)=>{for(const [dx,dy] of [[0,1],[0,-1],[1,0],[-1,0]]){const x=t.x+dx,y=t.y+dy;if(!s.units.some(o=>o!==u&&alive(o)&&o.x===x&&o.y===y)&&MISSIONS[10].map[y]?.[x]&&!['x','w'].includes(MISSIONS[10].map[y][x])){u.x=x;u.y=y;return;}}};
 const capture=(s,id)=>{const t=findUnit(s,id),eric=findUnit(s,'eric');eric.acted=false;eric.moved=false;beside(s,eric,t);t.hp=Math.floor(t.maxHP/2);assert.ok(performAction(s,'eric','capture',id).ok,id);};
 
-test('M10 data: 18×16 field between two camps, level 10, two armies of eight with factions, three villagers, Dario as ally',()=>{
- const m=MISSIONS[10];assert.deepEqual([m.width,m.height],[18,16]);assert.ok(m.map.every(r=>r.length===18));assert.equal(m.level,10);assert.equal(m.deployLimit,6);
- assert.deepEqual(m.capture,['boss','boss2']);assert.equal(m.enemies.filter(e=>e.faction==='a').length,8);assert.equal(m.enemies.filter(e=>e.faction==='b').length,8);assert.equal(m.civilians.length,3);
+const findLord=(m,id)=>m.enemies.find(e=>e.id===id);
+test('M10 data (v2.3.0 big map): 30×18, the legion from the west, the village between Oswin\'s fort (north) and Brennan\'s (south), level 10, two armies of twelve with factions (+4 each in waves), three villagers, Dario as ally',()=>{
+ const m=MISSIONS[10];assert.deepEqual([m.width,m.height],[30,18]);assert.ok(m.map.every(r=>r.length===30));assert.equal(m.turnLimit,14);
+ assert.ok([...m.deployZone()].every(k=>+k.split(',')[0]<=4),'the legion enters from the west');assert.ok(findLord(m,'boss').y<findLord(m,'boss2').y,'Oswin north, Brennan south');
+ for(const side of ['a','b'])assert.equal(m.waves.flatMap(w=>w.units).filter(u=>u.faction===side).length,4);assert.equal(m.level,10);assert.equal(m.deployLimit,6);
+ assert.deepEqual(m.capture,['boss','boss2']);assert.equal(m.enemies.filter(e=>e.faction==='a').length,12);assert.equal(m.enemies.filter(e=>e.faction==='b').length,12);assert.equal(m.civilians.length,3);
  const zone=m.deployZone();for(const p of m.deployments.recommended)assert.ok(zone.has(p.join(',')),`preset ${p}`);
  for(const k of ['10:stance','10:stance:a','10:stance:b','10:stance:mediate','10:intro','10:turn2','10:reinforce','10:village','10:capture:a','10:capture:b','10:mediate:fail','10:truce','10:encounter','10:boss','10:boss2','10:end','pre:10','after:10','after:10:a','after:10:b','after:10:mediate','after:10:failed','after:10:dario:joined','after:10:dario:parted','npc:10:aftermath:dario:joined','npc:10:aftermath:dario:parted'])assert.ok(STORY[k]?.length,k);
 });
@@ -43,7 +46,7 @@ test('mediation: the two armies are hostile to each other; a captured lord\'s ar
 test('mediation fails when a lord falls; the fight still ends when both are down; turn limit is a defeat',()=>{
  let s=battle('mediate');const a=findUnit(s,'boss');a.hp=1;const eric=findUnit(s,'eric');beside(s,eric,a);eric.atk=99;performAction(s,'eric','attack','boss');
  assert.ok(a.hp<=0&&s.missionState.failed);assert.ok(s.narrative.events.includes('10:mediate:fail'));capture(s,'boss2');assert.equal(s.outcome,'victory');assert.match(s.reason,/중재 실패/);
- s=battle('mediate');s.turn=13;rulesOf(s).checkOutcome(s,(st,o,r)=>{st.outcome=o;st.reason=r;});assert.equal(s.outcome,'defeat');
+ s=battle('mediate');s.turn=15;rulesOf(s).checkOutcome(s,(st,o,r)=>{st.outcome=o;st.reason=r;});assert.equal(s.outcome,'defeat');
 });
 
 test('support: the supported lord does not fall below half HP; the rival lord down wins',()=>{

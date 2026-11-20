@@ -23,20 +23,20 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  const p=await ctx.newPage();p.on('pageerror',e=>errors.push(`v071: ${e.message}`));await p.goto(pathToFileURL(path.resolve('build/Ashen_Crown.html')).href);await p.waitForFunction(()=>!!window.AshenCrown);if(await p.locator('[data-do="new"]').count()){await cmd(p,'new');}await drainStory(p);
  const restore=async text=>{await drainStory(p);await cmd(p,'menu');await cmd(p,'backup');await p.locator('#backup-text').fill(text);await cmd(p,'restore');await p.waitForFunction(()=>!AshenCrown.view().busy);await p.waitForTimeout(300);};
  await restore(villageText);let s=await snapshot(p);
- check('v0.7.0 village save opens in the painted village (schema 10, gold kept, legal position)',s.schema===21&&s.screen==='exploration'&&s.frontier.hub==='village'&&s.economy.gold===village.economy.gold&&sameHeroes(s.campaign.heroes,village.campaign.heroes));
+ check('v0.7.0 village save opens in the painted village (schema 10, gold kept, legal position)',s.schema===22&&s.screen==='exploration'&&s.frontier.hub==='village'&&s.economy.gold===village.economy.gold&&sameHeroes(s.campaign.heroes,village.campaign.heroes));
  check('Imported village save does not replay the world-map intro',!s.narrative.active?.key?.startsWith('world:'));
  await restore(battleText);s=await snapshot(p);check('v0.7.0 battle reopens in the camp before it (v2.0.0)',reopened(s));
  for(const a of ['warroom','deploy','start-battle']){await cmd(p,a);await drainStory(p);}await p.waitForFunction(()=>!AshenCrown.view().busy);s=await snapshot(p);check('The reopened v0.7.0 battle departs again from the camp',s.screen==='battle'&&s.turn===1);
  // 3. Source-built fixtures: the v0.7.0 end-of-content camp (refugee camp after M12, Ines joined) and a mid-M12 battle.
  const done=fixture('m12-camp'),before=JSON.parse(JSON.parse(done.save).data);await restore(done.save);s=await snapshot(p);
- check('v0.7.0 refugee-camp save opens with every asset kept and Thea, Dario and Ines in the legion',s.schema===21&&s.frontier.hub==='refuge'&&s.frontier.phase==='aftermath'&&JSON.stringify(econV200(s.campaign.economy))===JSON.stringify(econV200(arms081View(before.campaign.economy)))&&['thea','dario','ines'].every(id=>s.campaign.roster.includes(id))&&JSON.stringify(s.campaign.factionTrust)===JSON.stringify(before.campaign.factionTrust));
+ check('v0.7.0 refugee-camp save opens with every asset kept and Thea, Dario and Ines in the legion',s.schema===22&&s.frontier.hub==='refuge'&&s.frontier.phase==='aftermath'&&JSON.stringify(econV200(s.campaign.economy))===JSON.stringify(econV200(arms081View(before.campaign.economy)))&&['thea','dario','ines'].every(id=>s.campaign.roster.includes(id))&&JSON.stringify(s.campaign.factionTrust)===JSON.stringify(before.campaign.factionTrust));
  for(let i=0;i<3&&await p.locator('#modal-root .modal').count();i++){await cmd(p,'close-modal');await drainStory(p);}
  check('The migrated camp now offers Mission 13',(await p.locator('[data-do="next-mission"]').first().textContent().catch(()=>'')).includes('Mission 13'));
  await cmd(p,'next-mission');for(let i=0;i<8&&await p.locator('[data-do="story-next"]').count();i++)await cmd(p,'story-next');await drainStory(p);s=await snapshot(p);
  check('A v0.7.0 campaign reaches the refugee camp for Mission 13',s.missionId===13&&s.frontier.hub==='refuge'&&!s.practice);
  await p.screenshot({path:'test-output/migration-v070-refuge.png'});
  await restore(fixture('m12-battle').save);s=await snapshot(p);check('v0.7.0 Mission 12 battle reopens in the camp before it (v2.0.0)',reopened(s,12));
- await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===21&&s.version==='2.2.1'&&s.missionId===12);
+ await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===22&&s.version==='2.3.0'&&s.missionId===12);
  check('No runtime errors in either build',errors.length===0);await ctx.close();
 }finally{fs.mkdirSync('test-output',{recursive:true});fs.writeFileSync('test-output/migration-v070-browser.json',JSON.stringify({checks,errors},null,2));await browser.close();}
 console.log(`${checks.length} v0.7.0 browser migration checks PASS`);

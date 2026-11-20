@@ -2,11 +2,13 @@
 // no state edits; story choices alternate by seed. Writes test-output/act1-balance.{json,md}.
 // Usage: node tests/act1-balance.mjs [seeds=30] [firstSeed=20261014]
 import fs from 'node:fs';import {newGame,startBattle,nextMission} from '../src/core/game.js';import {playBattle} from './player-policy.mjs';import {playCampaignBattle} from './campaign-policy.mjs';
+// v2.3.0 (D-129): ASHEN_DIFFICULTY=hard plays the same campaigns on 어려움 (writes *-hard files; the 보통 gate is a report there).
+const HARD=process.env.ASHEN_DIFFICULTY==='hard',SUFFIX=HARD?'-hard':'';const hard=s=>{if(HARD)s.campaign.difficulty='hard';return s;};
 import {serialize,deserialize} from '../src/persistence/save-manager.js';import {introStory} from '../src/core/narrative.js';import {MISSIONS} from '../src/data/missions.js';
 const N=+process.argv[2]||30,first=+process.argv[3]||20261014,runs=[];
 const allies=s=>s.units.filter(u=>u.team==='ally'&&!u.benched);
 for(let seed=first;seed<first+N;seed++){
- const run={seed,missions:[]};let s=newGame(seed);
+ const run={seed,missions:[]};let s=newGame(seed);if(HARD)s.campaign.difficulty='hard';
  for(let id=1;id<=6;id++){
   if(id>1){s=nextMission(s);if(!s)break;}
   if(id===5)s.campaign.choices.m05_erik_answer=seed%2?'present':'acknowledged';
@@ -36,8 +38,8 @@ const md=[`# ACT I balance report (M01→M06, legal policy)`,'',`Executed ${new 
  '## Losses','',...(table.some(t=>t.losses.length)?table.filter(t=>t.losses.length).map(t=>`- M0${t.id}: ${t.losses.length} — ${[...new Set(t.losses)].join(', ')}`):['- none']),'',
  '## Levels after ACT I (completed runs)','','| Hero | Min | Avg | Max |','|---|---|---|---|',...heroes.map(h=>{const l=done.map(r=>r.finalLevels[h]).filter(Number.isFinite);return `| ${h} | ${l.length?Math.min(...l):'—'} | ${avg(l)} | ${l.length?Math.max(...l):'—'} |`;}),'',
  `Final gold (completed runs): ${range(done.map(r=>r.finalGold))}, avg ${avg(done.map(r=>r.finalGold))}.`,''].join('\n');
-fs.mkdirSync('test-output',{recursive:true});fs.writeFileSync('test-output/act1-balance.json',JSON.stringify({seeds:N,first,table,runs},null,1));fs.writeFileSync('test-output/act1-balance.md',md);console.log(md);
+fs.mkdirSync('test-output',{recursive:true});fs.writeFileSync(`test-output/act1-balance${SUFFIX}.json`,JSON.stringify({seeds:N,first,table,runs},null,1));fs.writeFileSync(`test-output/act1-balance${SUFFIX}.md`,md);console.log(md);
 // v2.0.0 (D-115): the gate is the ACT I band on 보통 — every mission won in at least 60% of the runs that reach it (M02
 // cannot be lost); the 85% top of the band is a target the report shows, not a failure.
 // v2.1 play-test (D-120): the first battle must be won in at least 95% of the runs (the user's bar for M01).
-const low=table.filter(t=>t.played&&t.winRate<(t.id===1?95:60));if(low.length){console.error('below the ACT I band:',low.map(t=>`M0${t.id} ${t.winRate}%`).join(', '));process.exit(1);}
+const low=table.filter(t=>t.played&&t.winRate<(t.id===1?95:60));if(low.length&&!HARD){console.error('below the ACT I band:',low.map(t=>`M0${t.id} ${t.winRate}%`).join(', '));process.exit(1);}

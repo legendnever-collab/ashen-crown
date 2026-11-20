@@ -17,8 +17,9 @@ const turn=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEn
 const finish=s=>(st,o,r)=>{st.outcome=o;st.reason=r;};
 const next=(s,u,t)=>{u.x=t.x;u.y=t.y+1;if(s.units.some(o=>o!==u&&o.x===u.x&&o.y===u.y))u.y=t.y-1;};
 
-test('M09 data: 18×14 Velmar market, six-hero sortie, level 9, three delegates, Dario and two harbour guards as allies, rooftops',()=>{
- const m=MISSIONS[9];assert.deepEqual([m.width,m.height],[18,14]);assert.ok(m.map.every(r=>r.length===18));assert.equal(m.deployLimit,6);assert.equal(m.level,9);
+test('M09 data (v2.3.0 big map): 26×20 Velmar from the south-west docks to the council hall north-east, six-hero sortie, level 9, three delegates, Dario and two harbour guards as allies, rooftops, 15 + 8',()=>{
+ const m=MISSIONS[9];assert.deepEqual([m.width,m.height],[26,20]);assert.ok(m.map.every(r=>r.length===26));assert.equal(m.enemies.length,15);assert.equal(m.waves.reduce((n,w)=>n+w.units.length,0),8);assert.equal(m.turnLimit,12);
+ assert.ok([...m.deployZone()].every(k=>{const [x,y]=k.split(',').map(Number);return x<=8&&y>=12;}),'the legion lands in the south-west');assert.equal(m.map[2][22],'k','the council hall floor in the north-east');assert.equal(m.deployLimit,6);assert.equal(m.level,9);
  assert.equal(m.civilians.length,3);assert.ok(m.civilians.every(c=>c.look==='councillor'));assert.deepEqual(m.allies.map(a=>a.look),['dario','guard','guard']);
  assert.ok(m.map.some(r=>r.includes('o'))&&m.map.some(r=>r.includes('l')),'rooftops and alleys');assert.equal(m.capture,'boss');
  const zone=m.deployZone();for(const p of m.deployments.recommended)assert.ok(zone.has(p.join(',')),`preset ${p}`);
@@ -40,11 +41,11 @@ test('delegates: a hero beside one brings them into the hall; assassins hunt del
  assert.equal(findUnit(s,'boss'),undefined,'the leader is not on the board before TURN 5');s.turn=5;rulesOf(s).onTurnStart(s);assert.ok(findUnit(s,'boss')?.hunter,'he arrives with the TURN 5 wave');assert.ok(s.narrative.events.includes('9:alley'));
 });
 
-test('outcome: two delegates lost is a defeat; the leader captured below half HP wins; holding to TURN 10 wins',()=>{
+test('outcome: two delegates lost is a defeat; the leader captured below half HP wins; holding to the turn limit (v2.3.0: TURN 12) wins',()=>{
  let s=battle();for(const id of ['v1','v2'])findUnit(s,id).hp=0;rulesOf(s).checkOutcome(s,finish(s));assert.equal(s.outcome,'defeat');
  s=battle();s.turn=5;rulesOf(s).onTurnStart(s);const boss=findUnit(s,'boss'),eric=findUnit(s,'eric');next(s,eric,boss);assert.equal(validTarget(s,eric,boss,'capture'),false,'full HP');boss.hp=Math.floor(boss.maxHP/2);
  assert.ok(validTarget(s,eric,boss,'capture'));assert.ok(performAction(s,'eric','capture','boss').ok);assert.ok(boss.captured&&s.missionState.captured&&s.campaign.flags.mission_09_assassin_captured);checkOutcome(s);assert.equal(s.outcome,'victory');assert.match(s.reason,/생포/);
- s=battle();rulesOf(s).checkOutcome(s,finish(s));assert.equal(s.outcome,null,'no early victory before the leader arrives');s.turn=11;rulesOf(s).checkOutcome(s,finish(s));assert.equal(s.outcome,'victory');
+ s=battle();rulesOf(s).checkOutcome(s,finish(s));assert.equal(s.outcome,null,'no early victory before the leader arrives');s.turn=13;rulesOf(s).checkOutcome(s,finish(s));assert.equal(s.outcome,'victory');
 });
 
 test('Free Lords trust: every delegate safe +1; a lost delegate leaves it; the captured leader opens the ledger scene; practice changes nothing',()=>{
