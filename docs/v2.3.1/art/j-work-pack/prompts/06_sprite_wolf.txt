@@ -1,0 +1,11 @@
+Using the attached portrait (or description) as the costume and color reference, draw a creature as a small full-body battle-map figure for a classic tactical RPG, in the same painted style simplified for small size (clean dark outline, readable silhouette). Match the cell layout and baseline of the attached ref_sprite_ironInfantry.png exactly; the wolf is about as long as a soldier is tall.
+Camera: classic top-down three-quarter SRPG map view (looking down about 45 degrees, no isometric rotation).
+ONE sprite sheet, PNG, exactly 1024x768, a 4-column x 3-row grid of 256x256 cells, transparent background (or flat pure green #00FF00), no grid lines, no text:
+- Row 1: facing DOWN (toward the camera)
+- Row 2: facing RIGHT (side view; the game mirrors it for left)
+- Row 3: facing UP (back view)
+- Column 1: standing idle · Column 2: walking step A (left foot forward) · Column 3: walking step B (right foot forward) · Column 4: attack pose with the weapon swung or thrust in the facing direction.
+Every frame: same scale, centered horizontally in its cell, FEET (or hooves) ON THE SAME BASELINE 16 px above the cell bottom, the whole figure including the weapon inside the cell, consistent colors in all 12 frames.
+Character: a lean, hungry grey wolf of a snowbound northern forest — thick grey-brown winter fur, pale belly, yellow eyes, a ragged ear, hackles raised. Columns 2–3: a loping trot; column 4: a snapping lunge forward with jaws open (no blood). SIDE COLOUR (important): the wolf wears one thin rope collar painted in shades of PURE MAGENTA only (#FF00FF midtone, #B000B0 shadow, #FF80FF highlight); nothing else may be magenta or pink — fur, eyes and nose keep natural colours. The game replaces the magenta with red for a foe. Original design: a natural wolf, not a monster, no armour, no emblem. Do not imitate the sprites of any existing game.
+
+Attach: ref_sprite_ironInfantry.png, style_aren_neutral.png, ref_wolf_ingame.png (the game's stand-in drawing, for pose and colour only).

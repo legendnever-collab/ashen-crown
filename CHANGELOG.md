@@ -1,3 +1,14 @@
+# v2.3.1 — ACT II 큰 맵 (2부)와 작은 마을
+- Merged (PR #34; approved 2026-11-21 07:55, D-133). Built under D-131 (asked for with the v2.3.0 merge, D-130). Notes docs/v2.3.1/RELEASE_NOTES.md.
+- ACT II M11–M14 on big maps (src/data/missions-v231.js): M11 switchback 24×20 (five braziers, pilgrims +10 HP, TURN 14), M12 cloister 24×20 (14 guards, five on the bell, TURN 16), M13 pincer 28×18, M14 escape south 24×18. Rules, story and duels unchanged.
+- The war council's terrain and intel follow the big maps (M07–M14).
+- ACT II villages 서리목 (M08) and 소금항 (M09): six requests and two bounties (missions 125–130), taverns, shops; the ice-bridge discount at the north shops.
+- 군나르 joins from 「눈보라 속 도끼잡이」: infantry, snow costs him 1. The wolves are drawn by the game until art pack J.
+- 어려움: M11 at 보통's numbers. M15 ×0.88 (보통).
+- Schema 23 (imports 0–22): M11–M14 battle saves reopen in camp.
+- Art pack J (docs/v2.3.1/art/j-work-pack, 7 images) returned and imported (D-132): 군나르's busts, 서리목 and 소금항, the wolf's sheet (collar tinted by side) and portrait. Tests: tests/villages-v231.test.mjs, tests/v231-e2e.mjs; act2-balance takes ASHEN_DUMP for camp dumps.
+- Version 2.3.1.
+
 # v2.3.0 — ACT II 큰 맵 (1부)
 - Merged (PR #33; approved 2026-11-20 18:02, D-130). Design approved 2026-11-20 06:21 (D-129). Notes docs/v2.3.0/RELEASE_NOTES.md; design docs/v2.3.0/ACT2_MAPS_DESIGN.md (D-128).
 - ACT II M07–M10 on big maps (src/data/missions-v230.js): M07 convoy east 30×14 (16+6, TURN limit 20), M08 two fronts 22×20 (12+14), M09 street fight from the SW docks 26×20 (15+8), M10 march east among three sides 30×18 (24+8). Objectives, rules, story and duels unchanged.

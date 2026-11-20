@@ -17,7 +17,10 @@
 작업 단계별 커밋. npm test, balance, browser regression, campaign E2E, migration, offline, documentation audit. 실제 검증만 완료 표시. 모든 PR의 documentation checklist: README, CHANGELOG, CURRENT_STATUS, NEXT_TASKS, ROADMAP, Story Bible review, Decision Log review, tests/evidence, artifacts.
 
 
-## Current v2.3.0 entry (ACT II 큰 맵 1부 — merged, D-129/D-130)
+## Current v2.3.1 entry (ACT II 큰 맵 2부와 작은 마을 — merged, D-131–D-133)
+feature/v2.3.1-act2. src/data/missions-v231.js: ROWS2310 and V231_MISSIONS for M11–M14 (with `council` lines), applyV231 after applyV230 (m.v231). M11's escort "ahead" is the pilgrim's road route (mission-rules-v070 roadAhead); brazier counts follow the mission. Villages: data/villages-v210.js VILLAGES.frost/saltport and REQUESTS (village may be a list; requestVillages), missions 125–130 in missions.js (MISSION_RULES SK), economy discountAt/shopPrice, tavern wanderersAt(c,town). 군나르: mercs-v210 (NEW_HEROES, RESCUED, MERC_*), rules terrainCost (snow 1), stats8 growthOf. Wolves: look 'wolf' drawn by pixel-renderer drawWolf and bust paintWolfBust. Schema 23 (reform231). Art pack J: scripts/make-v231-j-art-pack.py → docs/v2.3.1/art/j-work-pack. Tuning: ASHEN_DUMP=11,14 node tests/act2-balance.mjs writes camps to test-output/camps for one-mission replays.
+
+## v2.3.0 entry (ACT II 큰 맵 1부 — merged, D-129/D-130)
 feature/v2.3.0-act2. src/data/missions-v230.js: ROWS2300 (from scripts/make-act2-maps.py) and V230_MISSIONS for M07–M10; applyV230(MISSIONS) runs after applyV200 in missions.js and sets map/size/units/objects/waves/deployZone/deployments plus m.v230. Top-level names in that module carry 23/2300 suffixes (the bundler concatenates modules). mission-rules-v06: the M07 convoy moves by road distance from m.convoyGate (convoyDistance). save-manager: schema 22, reform230 (v230 battle/result/deployment → reopenInCamp; else relocateCamp), stage-start ceiling counts 어려움's start-wave extras. core/stats8.js HARD_SHARE overrides the 어려움 growth by mission (ACT II full; M15/M17/M18 none). Balance suites take ASHEN_DIFFICULTY=hard (output *-hard). Browser suite v230 (npm run test:v230; CI group act4). The archived builds stay until every releases/ARCHIVE.json version has a Release (the user reruns Actions → Archive old builds after merge).
 
 ## v2.2.1 entry (용량 관리 — merged, D-125–D-127)

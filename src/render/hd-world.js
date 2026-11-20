@@ -47,7 +47,7 @@ const ENEMY_LOOK={9:{spear:'mercSpear',archer:'archer',assassin:'assassin',capta
 const STAGE_LOOK={oswin:'lordA',brennan:'lordB',councilor:'councillor',teacher:'liaTeacher',sup:'greyMaster',bellard:'bellard'}; // v0.9.2: the teacher, the old superior, Bellard
 // v2.0.0 부장: in camps and scenes an officer wears their class's figure (pack H1's tier sheet when it is in, else a close one).
 const OFFICER_LOOK={bram:['spear','ironSpear'],noa:['archer','archer'],marta:['shield','bearer'],rowell:['cavalry','cavalry'],
- sera:['spear','ironSpear'],orin:['mage','councillor'],celine:['healer','pilgrim'],ren:['rogue','grayCloak'],silva:['archer','forester'],adel:['spear','mercSpear']}; /* v2.1: the hires and the rescued hero */
+ sera:['spear','ironSpear'],orin:['mage','councillor'],celine:['healer','pilgrim'],ren:['rogue','grayCloak'],silva:['archer','forester'],adel:['spear','mercSpear'],gunnar:['infantry','ironInfantry']}; /* v2.1: the hires and the rescued hero */
 export function hdCastFor(u,missionId=1){
  if(OFFICER_LOOK[u?.id]&&u.team!=='enemy'){const [cls,temp]=OFFICER_LOOK[u.id],t=Math.max(1,Math.min(3,u.classTier||1));return SPRITES?.[`class_${cls}_${t}`]?`class_${cls}_${t}`:temp;}
  if(u.look&&CAST[u.look])return u.look; // v0.6: mission data may name a look (allied escorts, Baldrick, ACT II troops)
@@ -62,6 +62,7 @@ export function hdCastFor(u,missionId=1){
  if(missionId===6&&u.team==='enemy'&&/^g\d/.test(u.id))return 'fortGuard';
  if(missionId===6&&u.id==='i1')return 'inspector';
  if(u.id==='adelc')return SPRITES?.class_spear_1?'class_spear_1':'mercSpear'; // v2.1: the besieged spearknight before he joins
+ if(u.id==='gunnarc')return 'ironInfantry'; // v2.3.1: the axeman of 서리목 before he joins (a painted soldier; the class sheet's magenta needs the side tint)
  if(u.team==='civilian'){const n=String(u.name||'');return /Mira|미라/.test(n)?'mira':/Tomas|토마스/.test(n)?'farmer':CAST[u.id]?u.id:'refugee';}
  if(u.burns)return 'torch';
  if(missionId===4&&/^r\d/.test(u.id))return 'storeman';
@@ -110,9 +111,10 @@ function keepFaces(g,orig,w,h){const cell=Math.round(w/4),tinted=g.getImageData(
   for(let y=minY;y<=maxY;y++){const row=(cy*cell+y)*w;for(let x=0;x<cell;x++){const i=(row+cx*cell+x)*4;if(o[i+3]<=20)continue;if(y<=head||skinTone(o[i],o[i+1],o[i+2])){p[i]=o[i];p[i+1]=o[i+1];p[i+2]=o[i+2];}}}}
  g.putImageData(tinted,0,0);}
 export function tintSheet(sheet,color,mask=false){let byColor=tintCache.get(sheet);if(!byColor){byColor=new Map();tintCache.set(sheet,byColor);}let out=byColor.get(color);if(out)return out;
- try{out=document.createElement('canvas');out.width=sheet.width||sheet.naturalWidth;out.height=sheet.height||sheet.naturalHeight;const g=out.getContext('2d',{willReadFrequently:mask});g.drawImage(sheet,0,0);
-  if(mask){const d=g.getImageData(0,0,out.width,out.height),p=d.data,[cr,cg,cb]=[1,3,5].map(i=>parseInt(color.slice(i,i+2),16));for(let i=0;i<p.length;i+=4){const r=p[i],gg=p[i+1],b=p[i+2];if(p[i+3]>20&&r>120&&b>120&&gg<Math.min(r,b)*.55){const k=(r+b)/2/255;p[i]=cr*k;p[i+1]=cg*k;p[i+2]=cb*k;}}g.putImageData(d,0,0);}
-  {const orig=g.getImageData(0,0,out.width,out.height);g.globalCompositeOperation='color';g.globalAlpha=.5;g.fillStyle=color;g.fillRect(0,0,out.width,out.height);g.globalAlpha=1;g.globalCompositeOperation='destination-in';g.drawImage(sheet,0,0);g.globalCompositeOperation='source-over';
+ try{out=document.createElement('canvas');out.width=sheet.width||sheet.naturalWidth;out.height=sheet.height||sheet.naturalHeight;const g=out.getContext('2d',{willReadFrequently:!!mask});g.drawImage(sheet,0,0);
+  if(mask){const d=g.getImageData(0,0,out.width,out.height),p=d.data,[cr,cg,cb]=[1,3,5].map(i=>parseInt(color.slice(i,i+2),16));for(let i=0;i<p.length;i+=4){const r=p[i],gg=p[i+1],b=p[i+2];if(p[i+3]>20&&(mask==='only'?r-gg>40&&b-gg>40:r>120&&b>120&&gg<Math.min(r,b)*.55)){const k=(r+b)/2/255;p[i]=cr*k;p[i+1]=cg*k;p[i+2]=cb*k;}}g.putImageData(d,0,0);}
+  /* v2.3.1 (D-132): mask 'only' recolours just the magenta mark (the wolf's collar); its fur keeps its own colour */
+  if(mask!=='only'){const orig=g.getImageData(0,0,out.width,out.height);g.globalCompositeOperation='color';g.globalAlpha=.5;g.fillStyle=color;g.fillRect(0,0,out.width,out.height);g.globalAlpha=1;g.globalCompositeOperation='destination-in';g.drawImage(sheet,0,0);g.globalCompositeOperation='source-over';
    keepFaces(g,orig,out.width,out.height);}}
  catch(e){out=sheet;}byColor.set(color,out);return out;}
 function drawPaintedFigure(c,img,x,footY,{facing,frame,pose,alpha,tint,mask}){const sheet=tint?tintSheet(walkSheet(img),tint,mask):walkSheet(img),cell=img.naturalWidth/4,{row,col,mirror}=paintedFrame(facing,frame,pose),D=PAINTED_CELL,lean=pose==='attack'?{left:[-4,0],right:[4,0],up:[0,-4],down:[0,3]}[facing]:[0,0];

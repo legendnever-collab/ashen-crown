@@ -8,7 +8,9 @@ const HARD=process.env.ASHEN_DIFFICULTY==='hard',SUFFIX=HARD?'-hard':'';const ha
 // v2.0.0 (D-116): like a player, a lost battle is fought again from its camp (up to three tries, a different roll each time),
 // so the chain keeps its campaigns; the gate reads the first try of every mission (FIRST).
 const FIRST={};
-function fightCamp(camp,prep=s=>{s.screen='deployment';},play=s=>playCampaignBattle(s)){let s,p;for(let t=0;t<3;t++){s=structuredClone(camp);s.rng=s.initialSeed=(s.rng+t*7919)>>>0;prep(s);startBattle(s);try{p=play(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
+// ASHEN_DUMP=11,12 writes the camp before those missions to test-output/camps (for tuning one mission at a time).
+const DUMP=new Set((process.env.ASHEN_DUMP||'').split(',').filter(Boolean).map(Number));
+function fightCamp(camp,prep=s=>{s.screen='deployment';},play=s=>playCampaignBattle(s)){if(DUMP.has(camp.missionId)){fs.mkdirSync('test-output/camps',{recursive:true});fs.writeFileSync(`test-output/camps/m${camp.missionId}-${camp.initialSeed}.json`,serialize(camp));}let s,p;for(let t=0;t<3;t++){s=structuredClone(camp);s.rng=s.initialSeed=(s.rng+t*7919)>>>0;prep(s);startBattle(s);try{p=play(s);}catch(e){p={outcome:'ERR '+e.message};}deserialize(serialize(s));
  if(t===0){const r=FIRST[s.missionId]??={w:0,n:0};r.n++;if(s.outcome==='victory')r.w++;}if(s.outcome==='victory')break;}return [s,p];}
 const fight=(prev,prep,play)=>fightCamp(nextMission(prev),prep,play);
 const N=+process.argv[2]||30,start=+process.argv[3]||20261014,out=[],out3=[],trials=[];

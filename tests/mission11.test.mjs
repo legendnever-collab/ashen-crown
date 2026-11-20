@@ -1,4 +1,4 @@
-// v0.7.0 — M11 The Flame Procession: four pilgrims walk the night road to the sanctuary, three roadside braziers light
+// v0.7.0 — M11 The Flame Procession (v2.3.1: the big switchback map, five braziers): four pilgrims walk the night road to the sanctuary, roadside braziers light
 // it (search), light changes hit chances and lets pilgrims walk two tiles; Ines's Sanctuary; the Sacred Flame's trust.
 import test from 'node:test';import assert from 'node:assert/strict';
 import {MISSIONS} from '../src/data/missions.js';
@@ -19,11 +19,12 @@ const turn=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEn
 const finish=s=>(st,o,r)=>{st.outcome=o;st.reason=r;};
 const clearEnemies=s=>{for(const e of s.units.filter(u=>u.team==='enemy'))e.hp=0;};
 
-test('M11 data: 18×14 night valley, six-hero sortie, level 10, four pilgrims on the road, three braziers, Ines and two flame knights',()=>{
- const m=MISSIONS[11];assert.deepEqual([m.width,m.height],[18,14]);assert.ok(m.map.every(r=>r.length===18));assert.equal(m.deployLimit,6);assert.equal(m.level,10);
+test('M11 data: 24×20 mountain switchback (v2.3.1), six-hero sortie, level 10, four pilgrims on the road, five braziers, Ines and two flame knights',()=>{
+ const m=MISSIONS[11];assert.deepEqual([m.width,m.height],[24,20]);assert.ok(m.map.every(r=>r.length===24));assert.equal(m.sanctuaryRow,2);assert.equal(m.turnLimit,14);assert.equal(m.deployLimit,6);assert.equal(m.level,10);
  assert.equal(m.civilians.length,4);assert.ok(m.civilians.every(c=>c.look==='pilgrim'&&m.map[c.y][c.x]==='r'));assert.deepEqual(m.allies.map(a=>a.look),['ines','flameKnight','flameKnight']);
- assert.deepEqual(m.objects.map(o=>o.kind),['brazier','brazier','brazier']);assert.equal(m.night.radius,2);assert.ok(m.escortOnly,'pilgrims walk; no instant rescue');
- assert.ok(m.map[0].includes('z')&&m.map[1].includes('z'),'sanctuary floor at the top');
+ assert.deepEqual(m.objects.map(o=>o.kind),Array(5).fill('brazier'));assert.equal(m.night.radius,2);assert.ok(m.escortOnly,'pilgrims walk; no instant rescue');
+ assert.ok(m.map[0].includes('z')&&m.map[2].includes('z'),'sanctuary floor at the top');
+ assert.equal(m.enemies.length,8);assert.equal(m.waves.reduce((n,w)=>n+w.units.length,0),9);
  const zone=m.deployZone();for(const p of [...m.deployments.recommended,...m.deployments.assault,...m.deployments.defense])assert.ok(zone.has(p.join(',')),`preset ${p}`);
  for(const k of ['11:intro','11:turn2','11:lit','11:arrive','11:lost','11:wave','11:flank','11:captain','11:encounter','11:boss','11:end','pre:11','after:11','after:11:sain','after:11:oath','after:11:legion','world:pilgrim','npc:11:preparation:advisor','npc:11:aftermath:advisor','npc:11:preparation:ines','npc:11:preparation:thea','npc:11:aftermath:dario'])assert.ok(STORY[k]?.length,k);
  assert.equal(STORY['world:pilgrim'].at(-1).world.card.region,'성화령');
@@ -36,10 +37,10 @@ test('M10 → M11: the legion goes south to the pilgrim village; recruits stand 
 });
 
 test('light: sanctuary tiles are lit, the road is dark until a brazier burns; a lit brazier lights radius 2',()=>{
- const s=battle(),m=MISSIONS[11];assert.ok(litAt(s,8,1)&&litAt(s,8,3));assert.ok(!litAt(s,8,9)&&!litAt(s,8,4));
+ const s=battle(),m=MISSIONS[11];assert.ok(litAt(s,6,2)&&litAt(s,6,4));assert.ok(!litAt(s,4,11)&&!litAt(s,6,5));
  const br=findUnit(s,'br1'),kai=findUnit(s,'kai');kai.x=br.x;kai.y=br.y+1;assert.ok(validTarget(s,kai,br,'search'));assert.ok(performAction(s,'kai','search','br1').ok);drain(s);
  assert.ok(br.lit&&br.inert&&alive(br),'a lit brazier stays on the map');assert.deepEqual(s.missionState.lit,['br1']);assert.ok(!validTarget(s,findUnit(s,'elina'),br,'search'));
- assert.ok(litAt(s,8,10)&&litAt(s,8,9)&&litAt(s,7,12)&&!litAt(s,8,13),'Manhattan radius 2 around (7,10)');
+ assert.ok(litAt(s,4,12)&&litAt(s,4,11)&&litAt(s,4,13)&&litAt(s,5,12)&&!litAt(s,4,14),'Manhattan radius 2 around (3,12)');
 });
 
 test('light: a legion attacker in light aims +10; any target outside the light is −15 (floor 40)',()=>{
@@ -51,22 +52,22 @@ test('light: a legion attacker in light aims +10; any target outside the light i
 });
 
 test('march: from TURN 2 pilgrims walk the road — 1 tile in the dark, 2 in light, none with an enemy beside them, a hero blocks',()=>{
- let s=battle();clearEnemies(s);const p1=findUnit(s,'p1');turn(s);assert.equal(s.turn,2);assert.deepEqual([p1.x,p1.y],[8,9],'dark: one tile');
- s=battle();clearEnemies(s);findUnit(s,'br1').lit=true;const q=findUnit(s,'p1');turn(s);assert.deepEqual([q.x,q.y],[8,8],'light: two tiles');
- s=battle();clearEnemies(s);const r=findUnit(s,'p1'),raider=findUnit(s,'r1');raider.hp=30;raider.x=9;raider.y=10;raider.mov=0;raider.atk=0;for(const a of s.units.filter(u=>u.team==='allied'))a.level=1; /* v2.0.0: no shield push from the escort */turn(s);assert.deepEqual([r.x,r.y],[8,10],'an enemy beside: stop');
- s=battle();clearEnemies(s);const w=findUnit(s,'p1'),eric=findUnit(s,'eric');eric.x=8;eric.y=9;turn(s);assert.deepEqual([w.x,w.y],[8,10],'a hero on the road blocks it');
+ let s=battle();clearEnemies(s);const p1=findUnit(s,'p1');turn(s);assert.equal(s.turn,2);assert.deepEqual([p1.x,p1.y],[4,12],'dark: one tile');
+ s=battle();clearEnemies(s);findUnit(s,'br1').lit=true;const q=findUnit(s,'p1');turn(s);assert.deepEqual([q.x,q.y],[4,11],'light: two tiles');
+ s=battle();clearEnemies(s);const r=findUnit(s,'p1'),raider=findUnit(s,'r1');raider.hp=30;raider.x=5;raider.y=13;raider.mov=0;raider.atk=0;for(const a of s.units.filter(u=>u.team==='allied'))a.level=1; /* v2.0.0: no shield push from the escort */turn(s);assert.deepEqual([r.x,r.y],[4,13],'an enemy beside: stop');
+ s=battle();clearEnemies(s);const w=findUnit(s,'p1'),eric=findUnit(s,'eric');eric.x=4;eric.y=12;turn(s);assert.deepEqual([w.x,w.y],[4,13],'a hero on the road blocks it');
 });
 
 test('pilgrims in light heal 5 at the start of the player phase; braziers stay lit; the sanctuary takes them in',()=>{
- const s=battle();clearEnemies(s);const p=findUnit(s,'p2');p.hp=10;findUnit(s,'br1').lit=true;turn(s);assert.equal(p.hp,15);
- const a=findUnit(s,'p1');a.x=8;a.y=2;turn(s);assert.ok(a.rescued,'reached the sanctuary row');assert.ok(s.log.some(l=>l.includes('성소에 들어섰습니다')));
+ const s=battle();clearEnemies(s);const p=findUnit(s,'p1');p.hp=10;findUnit(s,'br1').lit=true;turn(s);assert.equal(p.hp,15);
+ const a=findUnit(s,'p4');a.x=6;a.y=3;turn(s);assert.ok(a.rescued,'reached the sanctuary row');assert.ok(s.log.some(l=>l.includes('성소에 들어섰습니다')));
 });
 
-test('M11 outcome: three pilgrims in the sanctuary win; two lost lose; dawn (after TURN 12) wins; rescue is not an action here',()=>{
+test('M11 outcome: three pilgrims in the sanctuary win; two lost lose; dawn (after TURN 14) wins; rescue is not an action here',()=>{
  let s=battle();const [a,b,c,d]=['p1','p2','p3','p4'].map(id=>findUnit(s,id));const eric=findUnit(s,'eric');eric.x=a.x+1;eric.y=a.y;assert.ok(!validTarget(s,eric,a,'rescue'));
  a.rescued=b.rescued=true;rulesOf(s).checkOutcome(s,finish(s));assert.ok(!s.outcome,'two are not enough');c.rescued=true;rulesOf(s).checkOutcome(s,finish(s));assert.equal(s.outcome,'victory');
  s=battle();findUnit(s,'p1').hp=0;findUnit(s,'p2').hp=0;rulesOf(s).checkOutcome(s,finish(s));assert.equal(s.outcome,'defeat');
- s=battle();s.turn=13;findUnit(s,'p1').hp=0;rulesOf(s).checkOutcome(s,finish(s));assert.equal(s.outcome,'victory');assert.match(s.reason,/새벽/);
+ s=battle();s.turn=15;findUnit(s,'p1').hp=0;rulesOf(s).checkOutcome(s,finish(s));assert.equal(s.outcome,'victory');assert.match(s.reason,/새벽/);
 });
 
 test('Sanctuary: legion units beside Ines (the escort or the recruit) are covered (cut 2 → ×0.85, 4 after her oath → ×0.7; her too)',()=>{

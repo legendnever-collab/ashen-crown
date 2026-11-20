@@ -17,8 +17,9 @@ const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){adv
 const finish=(st,o,r)=>{st.outcome=o;st.reason=r;};
 const beside=(s,u,t)=>{u.x=t.x;u.y=t.y+1;};
 
-test('M13 data: 18×14 refugee camp, level 11, Baldrick with three lion bearers, four refugees, resolve threshold 6; story keys',()=>{
- const m=MISSIONS[13];assert.deepEqual([m.width,m.height],[18,14]);assert.equal(m.level,11);assert.equal(m.deployLimit,6);assert.deepEqual(m.formation.bearers,['f1','f2','f3']);assert.deepEqual(m.persuade,{target:'boss',threshold:6});assert.equal(m.civilians.length,4);
+
+test('M13 data: 28×18 refugee camp (v2.3.1), level 11, Baldrick with three lion bearers, four refugees, resolve threshold 6; story keys',()=>{
+ const m=MISSIONS[13];assert.deepEqual([m.width,m.height],[28,18]);assert.equal(m.enemies.length,18);assert.equal(m.waves.reduce((n,w)=>n+w.units.length,0),8);assert.equal(m.level,11);assert.equal(m.deployLimit,6);assert.deepEqual(m.formation.bearers,['f1','f2','f3']);assert.deepEqual(m.persuade,{target:'boss',threshold:6});assert.equal(m.civilians.length,4);
  const zone=m.deployZone();for(const p of Object.values(m.deployments).flat())assert.ok(zone.has(p.join(',')),`preset ${p}`);
  for(const k of ['13:intro','13:turn2','13:cavalry','13:reinforce','13:persuade','13:thea','13:waver','13:halt','13:lost','13:encounter','13:end','pre:13','after:13','after:13:halted','after:13:broken','after:13:held','npc:13:preparation:advisor','npc:13:aftermath:advisor','npc:13:preparation:thea'])assert.ok(STORY[k]?.length,k);
  assert.equal(hubFor(13,'preparation'),'refuge');assert.equal(hubFor(13,'aftermath'),'summit');assert.equal(hubFor(14,'preparation'),'summit');

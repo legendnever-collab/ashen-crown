@@ -2,7 +2,7 @@
 // minimap, every unit inside the map; a v2.2.1 (schema 21) save made in a v0.6 small-map battle of M09 reopens in camp;
 // a battle on 어려움 at M06 with the inspector's wave saves and restores. Screenshots in docs/v2.3.0/screenshots.
 import {launchTestBrowser} from './browser-helper.mjs';import {drainStory} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
-import {serialize,checksum} from '../src/persistence/save-manager.js';import {newGame,startBattle} from '../src/core/game.js';
+import {serialize,checksum} from '../src/persistence/save-manager.js';import {VERSION} from '../src/data/game-data.js';import {newGame,startBattle} from '../src/core/game.js';
 const url=pathToFileURL(process.cwd()+'/build/Ashen_Crown.html').href,shots='docs/v2.3.0/screenshots';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox','--disable-gpu']});let n=0;const check=(name,ok)=>{assert.ok(ok,name);n++;console.log('PASS',name);};
 const camp=(id,extra={})=>({heroes:null,results:[],clears:id-1,completed:Array.from({length:id-1},(_,i)=>i+1),flags:{act1_completed:id>6},choices:{m06_oath:'comrades',m04_records_choice:'reported',m07_deserters:'legion',m08_order:'hold',m10_stance:'mediate'},roster:id>8?['thea']:[],...extra});
@@ -13,7 +13,7 @@ try{
  for(const [label,viewport] of [['1440',{width:1440,height:900}],['390',{width:390,height:844,isMobile:true,hasTouch:true}]]){
   const ctx=await b.newContext({viewport});await ctx.setOffline(true);const p=await ctx.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
   const press=async a=>{await p.locator(`[data-do="${a}"]`).first().click();await p.waitForTimeout(250);};
-  await p.goto(url);await p.waitForFunction(()=>!!window.AshenCrown);check(`${label} the page is v2.3.0`,await p.evaluate(()=>AshenCrown.version)==='2.3.0');
+  await p.goto(url);await p.waitForFunction(()=>!!window.AshenCrown);check(`${label} the page is the current version`,await p.evaluate(()=>AshenCrown.version)===VERSION);
   await press('new');if(await p.locator('[data-do="difficulty-pick"]').count())await p.locator('[data-do="difficulty-pick"][data-id="normal"]').click();await drainStory(p);
   for(const id of [7,8,9,10]){
    await press('menu');await press('backup');await p.fill('#backup-text',backupText(battle(id)));await press('restore');await drainStory(p);await p.waitForTimeout(400);

@@ -6,6 +6,7 @@ import {strikePreview,ironFoes} from '../src/core/tactics.js';
 import {moveUnit,performAction,canAct,beginEnemyPhase,advanceEnemy} from '../src/core/game.js';
 import {openStory,advanceStory} from '../src/core/narrative.js';
 import {duelOpen,duelPick} from '../src/core/duel.js';
+import {roadAhead} from '../src/core/mission-rules-v070.js';
 // v0.4 missions: path distance (walls respected, units ignored) toward open evidence, then the boss.
 // v0.6 ACT II: M07 escorts the convoy (deserters near a wagon, else the wagons); M08 holds the canyon (northern
 // mercenaries); with the rescue order Sain and Kai head for the rear village from TURN 4.
@@ -158,9 +159,9 @@ export function campaignAction(s,u,capture=true){
   else if(f.heal!==undefined)score=hostile(s,a,t)?-1000:s.missionId===3&&missionOf(s).safe&&!civ.length&&t.hp>t.maxHP*.45?-1000:t.team==='civilian'&&t.hp<=t.maxHP/2?900:f.heal>=10?80+f.heal:0; // v2.0.0 M03: the long walk out comes first
   else if(f.guard===true)score=s.missionId===3&&missionOf(s).safe?-1000:0;
   else score=strikeScore(s,u,t,f,capture);
-  score-=c*.5;if(s.missionId===24)score-=block24(s,x,y);if(s.missionId===27)score-=block27(s,x,y);if(s.missionId===11&&missionOf(s).map[y][x]==='r'&&s.units.some(p=>p.team==='civilian'&&alive(p)&&p.x===x&&p.y>y))score-=80;if(s.missionId===12&&watchRisk(s,x,y)&&!(mode==='attack'&&f.after===0))score-=900;if(!best||score>best.score)best={id:u.id,x,y,mode,target:t.id,score};}
+  score-=c*.5;if(s.missionId===24)score-=block24(s,x,y);if(s.missionId===27)score-=block27(s,x,y);if(s.missionId===11&&missionOf(s).map[y][x]==='r'&&roadAhead(s,x,y))score-=1500; /* v2.3.1: never stand on a pilgrim's way, not even to light a brazier */if(s.missionId===12&&watchRisk(s,x,y)&&!(mode==='attack'&&f.after===0))score-=900;if(!best||score>best.score)best={id:u.id,x,y,mode,target:t.id,score};}
   let score;
-  if(goalDistance)score=200-(goalDistance.get(`${x},${y}`)??100)*12-c*.1-(s.missionId===7&&['r','i'].includes(missionOf(s).map[y][x])&&s.units.some(w=>w.kind==='wagon'&&alive(w)&&Math.abs(w.x-x)<=1&&w.y>y)?60:0)-(s.missionId===11&&missionOf(s).map[y][x]==='r'&&s.units.some(p=>p.team==='civilian'&&alive(p)&&p.x===x&&p.y>y)?80:0)-(s.missionId===12&&watchRisk(s,x,y)?900:0);
+  if(goalDistance)score=200-(goalDistance.get(`${x},${y}`)??100)*12-c*.1-(s.missionId===7&&['r','i'].includes(missionOf(s).map[y][x])&&s.units.some(w=>w.kind==='wagon'&&alive(w)&&Math.abs(w.x-x)<=1&&w.y>y)?60:0)-(s.missionId===11&&missionOf(s).map[y][x]==='r'&&roadAhead(s,x,y)?80:0)-(s.missionId===12&&watchRisk(s,x,y)?900:0);
   else if(s.missionId===3&&(!civ.length||civ.every(v=>!v.rescued&&s.units.some(h=>h.team==='ally'&&alive(h)&&distance(h,v)===1)&&missionOf(s).safe)))score=200-(exitDistance.get(`${x},${y}`)??100)*15-(missionOf(s).safe?0:y*3)-c*.1;
   else{const targets=civ.length?civ:s.units.filter(t=>t.id==='boss'&&alive(t));const near=targets.reduce((n,t)=>Math.min(n,distance(a,t)),100);score=80-near*8-c*.1;}
   if(s.missionId===24)score-=block24(s,x,y);if(s.missionId===27)score-=block27(s,x,y);

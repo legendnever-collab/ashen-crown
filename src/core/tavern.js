@@ -1,7 +1,7 @@
 // v2.1 주점 「인재 확보」 (D-118, TAVERN_WORLD_DESIGN §4, §7): every town's tavern lists the hires who wait there. A hire is
 // paid once (economy op 'hire') and stays to the ending: they join at the legion's average level −1 (at least 1) and
 // promote at once to that level's tier. The stonewell tavern takes in a wanderer from the ash village after each story win.
-import {MERCS,WANDERERS,TAVERN_HUBS,HIRE_LINES} from '../data/mercs-v210.js';
+import {MERCS,WANDERERS,WANDERERS_FROST,TAVERN_HUBS,HIRE_LINES} from '../data/mercs-v210.js';
 import {heroDef} from '../data/game-data.js';
 import {joinRoster} from './roster.js';
 import {transact,ensureEconomy} from './economy.js';
@@ -11,12 +11,13 @@ import {syncFrontier} from './frontier.js';
 export const townOfHub=hub=>Object.entries(TAVERN_HUBS).find(([,hubs])=>hubs.includes(hub))?.[0]||null;
 const storyWins=c=>(c?.completed||[]).filter(id=>id<=30);
 // The wanderers who have moved to stonewell: one per story win after M04 (the village opens with M04), never one hired.
-export function wanderersAt(c){const after=storyWins(c).filter(id=>id>=4).length,left=WANDERERS.filter(id=>!c?.roster?.includes(id));return left.slice(0,Math.max(0,after));}
+export function wanderersAt(c,town='stonewell'){const from=town==='frost'?8:4,list=town==='frost'?WANDERERS_FROST:WANDERERS,after=storyWins(c).filter(id=>id>=from).length,left=list.filter(id=>!c?.roster?.includes(id));return left.slice(0,Math.max(0,after));}
+// v2.3.1 (D-131): the 서리목 tavern takes in 세라 or 오린 (not yet hired) one per story win from M08 on.
 // The hires waiting in this town's tavern (not yet in the legion).
 export function mercsAt(s,town){const c=s.campaign,done=new Set(storyWins(c)),roster=c?.roster||[];
  const here=Object.entries(MERCS).filter(([id,m])=>m.town===town&&(m.from===0||done.has(m.from))&&!roster.includes(id)).map(([id])=>id);
- if(town==='stonewell')for(const id of wanderersAt(c))if(!here.includes(id))here.push(id);
- return here.map(id=>({id,...MERCS[id],price:MERCS[id].price,name:heroDef(id)?.name||id,wandering:town==='stonewell'&&MERCS[id].town!=='stonewell'}));}
+ if(town==='stonewell'||town==='frost')for(const id of wanderersAt(c,town))if(!here.includes(id))here.push(id);
+ return here.map(id=>({id,...MERCS[id],price:MERCS[id].price,name:heroDef(id)?.name||id,wandering:(town==='stonewell'||town==='frost')&&MERCS[id].town!==town}));}
 export const inTavern=s=>s?.screen==='exploration'&&!s.practice&&!s.narrative?.active&&s.frontier?.interior==='tavern';
 export const tavernTown=s=>inTavern(s)?townOfHub(s.frontier.hub):null;
 // The level a hire joins at: the legion's average level −1 (at least 1).

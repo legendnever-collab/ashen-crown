@@ -1,4 +1,5 @@
 # v2.3.0 (D-129): draws the ACT II big maps (M07–M10) as terrain rows; the rows are copied into src/data/missions-v230.js.
+# v2.3.1 (D-131): M11–M14 as well.
 # Usage: python3 scripts/make-act2-maps.py <out.json>   (legend: src/data/game-data.js TERRAIN)
 import json,sys
 def grid(w,h,c): return [[c]*w for _ in range(h)]
@@ -59,6 +60,69 @@ rect(g,27,0,29,17,'s');rect(g,29,0,29,17,'w')
 rect(g,2,2,5,4,'f');rect(g,2,13,5,15,'f');rect(g,9,4,11,5,'f');rect(g,9,12,11,13,'f');rect(g,25,4,26,5,'f');rect(g,25,12,26,13,'f')
 rect(g,7,0,9,1,'m');rect(g,7,16,9,17,'m');rect(g,1,8,1,9,'h')
 maps[10]=g
+# ---- M11 성화의 행렬: a switchback road from the south-west foot up to the sanctuary (top left), five braziers ----
+W,H=24,20;g=grid(W,H,'g')
+rect(g,0,0,W-1,0,'x');rect(g,3,0,9,2,'z');rect(g,0,1,2,1,'m');rect(g,10,1,23,1,'m')
+# up the foot path, east to the first bend, up, back west, up to the sanctuary (row 2): 17 tiles for the leading pilgrim
+road=[(4,y) for y in range(19,10,-1)]+[(x,11) for x in range(5,9)]+[(8,y) for y in range(10,6,-1)]+[(x,7) for x in range(7,5,-1)]+[(6,y) for y in range(6,2,-1)]
+put(g,road,'r')
+rect(g,0,2,2,8,'m');rect(g,11,2,14,4,'m');rect(g,16,2,23,3,'m');rect(g,20,4,23,6,'m')    # slopes
+rect(g,8,3,9,5,'f');rect(g,1,10,2,13,'f');rect(g,12,6,15,9,'f');rect(g,17,10,21,13,'f');rect(g,7,13,9,15,'f');rect(g,13,15,16,17,'f');rect(g,19,16,23,19,'f')
+rect(g,16,5,18,7,'f');rect(g,0,16,1,19,'f');rect(g,11,12,12,13,'m');rect(g,6,9,8,9,'f')
+put(g,road,'r')
+maps[11]=g
+# ---- M12 침묵의 수도원: outer wall, cloister ring, courtyard, three record rooms to the north; the side gate SE ----
+maps[12]=[list(r) for r in [
+"xxxxxxxxxxxxxxxxxxxxxxxx",
+"xkkkkkxxxkkkkkxxxkkkkkxx",
+"xkkkkkxxxkkkkkxxxkkkkkxx",
+"xxxkxxxxxxxkkxxxxxxkxxxx",
+"xkkkkkkkkkkkkkkkkkkkkkkx",
+"xkkkkkkkkkkkkkkkkkkkkkkx",
+"xkkxxxkxxxxggxxxxkxxxkkx",
+"xkkxggggggggggggggggxkkx",
+"xkkkggggggggggggggggkkkx",
+"xkkxggggggggggggggggxkkx",
+"xkkkggggggggggggggggkkkx",
+"xkkxggggggggggggggggxkkx",
+"xkkxxxkxxxxggxxxxkxxxkkx",
+"xkkkkkkkkkkkkkkkkkkkkkkx",
+"xkkkkkkkkkkkkkkkkkkkkkkx",
+"xxxxxxxxxxxxxxxxxxxkxxxx",
+"gggfffggggggggggggrrrggg",
+"ggffggggggggggggggrrrggf",
+"gfffgggggggggggggrrrrgff",
+"ffffggggggggggggrrrrrgff"]]
+# ---- M13 검은 사자의 결단: the lion's host from the north road, the refugee camp low in the middle, hills east and west ----
+W,H=28,18;g=grid(W,H,'g')
+rect(g,12,0,15,0,'r');rect(g,13,1,14,10,'r')
+rect(g,0,0,4,1,'m');rect(g,23,0,27,1,'m');rect(g,0,5,2,9,'m');rect(g,25,5,27,9,'m')   # hills the cavalry comes down
+rect(g,5,0,9,2,'f');rect(g,18,0,22,2,'f');rect(g,3,3,5,4,'f');rect(g,22,3,24,4,'f');rect(g,6,6,8,7,'f');rect(g,19,6,21,7,'f')
+rect(g,9,4,10,5,'x');rect(g,17,4,18,5,'x');rect(g,4,10,5,11,'x');rect(g,22,10,23,11,'x')                       # ruins (cover)
+rect(g,10,11,17,16,'v');rect(g,13,13,14,14,'h');rect(g,9,12,9,15,'v');rect(g,18,12,18,15,'v')                 # refugee camp
+rect(g,0,15,3,17,'f');rect(g,24,15,27,17,'f');rect(g,6,14,7,16,'f');rect(g,20,14,21,16,'f')
+rect(g,11,10,16,10,'r');rect(g,0,12,8,12,'r');rect(g,19,12,27,12,'r')
+maps[13]=g
+# ---- M14 부서진 동맹: the council hall at the top, the square, the houses, the south gate, out to the bottom row ----
+maps[14]=[list(r) for r in [
+"xxxxxxxxxxxxxxxxxxxxxxxx",
+"xxxxxkkkkkkkkkkkkkkxxxxx",
+"xxxxxkkkkkkkkkkkkkkxxxxx",
+"xxxxxkkkkkkkkkkkkkkxxxxx",
+"lllllxkkkkkkkkkkkkxlllll",
+"lxxlrrrrrrrrrrrrrrrrlxxl",
+"lxxlrrggggggggggggrrlxxl",
+"llllrgggggfggfgggggrllll",
+"lxxlrggggggggggggggrlxxl",
+"lxxlrrrrrrrrrrrrrrrrlxxl",
+"llllggxxxggggggxxxggllll",
+"lxxlggxxxggrrggxxxgglxxl",
+"xxxxxxxxxxrrrrxxxxxxxxxx",
+"ggffgggggrrrrrrgggggffgg",
+"gfffgggggrrrrrrggggfffgg",
+"ggfgggggrrrrrrrrgggggfgg",
+"gggggggrrrrrrrrrrggggggg",
+"ggggggrrrrrrrrrrrrgggggg"]]
 json.dump({k:rows(v) for k,v in maps.items()},open(sys.argv[1],'w'),indent=0)
 for k,v in maps.items():
     print(f'M{k:02d} {len(v[0])}x{len(v)}');print('\n'.join(rows(v)));print()
