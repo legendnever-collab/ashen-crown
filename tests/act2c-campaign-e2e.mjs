@@ -28,7 +28,7 @@ try{
   await drainStory(p);let s=await snap();
   check(`${label} pilgrim village hub for M11 with Ines, Thea and Dario`,s.missionId===11&&s.frontier.hub==='pilgrim'&&s.screen==='exploration'&&s.narrative.seen.includes('pre:11'));await p.screenshot({path:`${shots}/pilgrim-m11-${label}.png`});
   await enterWarCouncil(p,touch);await press('deploy');await press('start-battle');await drainStory(p);s=await snap();
-  check(`${label} M11 battle: four pilgrims on the road, three dark braziers, Ines and two flame knights`,s.screen==='battle'&&s.units.filter(u=>u.team==='civilian').length===4&&s.units.filter(u=>u.kind==='brazier'&&!u.lit).length===3&&s.units.filter(u=>u.team==='allied').length===3);
+  check(`${label} M11 battle: four pilgrims on the road, five dark braziers (v2.3.1), Ines and two flame knights`,s.screen==='battle'&&s.units.filter(u=>u.team==='civilian').length===4&&s.units.filter(u=>u.kind==='brazier'&&!u.lit).length===5&&s.units.filter(u=>u.team==='allied').length===3);
   check(`${label} M11 status shows the sanctuary goal and braziers`,(await p.locator('body').textContent()).includes('화로 0/3'));
   await p.waitForTimeout(600);await p.screenshot({path:`${shots}/m11-battle-${label}.png`});
   // M11 camp: Lucien's offer
