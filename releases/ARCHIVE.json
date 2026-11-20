@@ -1,5 +1,5 @@
 {
- "about": "D-125: earlier builds archived as GitHub Releases (tag v<version> at the commit that packaged the HTML). scripts/archive-releases.mjs creates them (Actions \u2192 \"Archive old builds\" \u2192 Run workflow); scripts/fetch-releases.mjs downloads what a test suite needs.",
+ "about": "D-125: earlier builds archived as GitHub Releases (tag v<version> at the commit that packaged the HTML). scripts/archive-releases.mjs creates them (Actions \u2192 \"Archive old builds\" \u2192 Run workflow); scripts/fetch-releases.mjs downloads what a test suite needs. D-134 (v2.4.0): the builds of the versions released on GitHub leave the tree (their test reports and checksums stay); fetched copies are ignored by .gitignore.",
  "versions": [
   {
    "version": "0.1.0",
@@ -626,6 +626,75 @@
     "Ashen_Crown_v2.2.0_SHA256SUMS": {
      "bytes": 286,
      "sha256": "af3d307b006d42b5af11e926783eeb1697e36017ae074671024efddc8fe63ccd"
+    }
+   }
+  },
+  {
+   "version": "2.2.1",
+   "tag": "v2.2.1",
+   "commit": "c075c474e89a9c75eedd63dba5478765e0769bbb",
+   "files": {
+    "Ashen_Crown_v2.2.1.html": {
+     "bytes": 48737537,
+     "sha256": "d43f373f9b1c3eeed9a14168cd09b33873a476e4d758e69eac0f531dbbaf87dd"
+    },
+    "Ashen_Crown_v2.2.1_Source.zip": {
+     "bytes": 60762231,
+     "sha256": "9ce405ad6e74322b421e08e39c11e923008baec9c2a86db5ecd10cc18097d882"
+    },
+    "Ashen_Crown_v2.2.1_Test_Report.md": {
+     "bytes": 5507,
+     "sha256": "36f2461ef8ba2ded833dfbaebc077a180c872706238f81fedb80e9ae21dcd070"
+    },
+    "Ashen_Crown_v2.2.1_SHA256SUMS": {
+     "bytes": 286,
+     "sha256": "a57be0925c60ea548d41beafb312996be42558e599784ad0f6639407023ece30"
+    }
+   }
+  },
+  {
+   "version": "2.3.0",
+   "tag": "v2.3.0",
+   "commit": "c5272002dde5526ccc517773caa3dbac520963b5",
+   "files": {
+    "Ashen_Crown_v2.3.0.html": {
+     "bytes": 48754618,
+     "sha256": "8f2e259a79dbe0e597d1789f25b24df7a59ca7102776fbe7f89a3de7cc0ce91f"
+    },
+    "Ashen_Crown_v2.3.0_Source.zip": {
+     "bytes": 60839345,
+     "sha256": "e9cc05cea02b3dad9d2092a1661a079ba029a86e65c96914705822c657829cba"
+    },
+    "Ashen_Crown_v2.3.0_Test_Report.md": {
+     "bytes": 5592,
+     "sha256": "e5d44e96ca22266ee7d1571f07c8f9b36da8fb8fcc81582145038fedd71c0529"
+    },
+    "Ashen_Crown_v2.3.0_SHA256SUMS": {
+     "bytes": 286,
+     "sha256": "9eb0420ef8a15c90b9a042e7a8ebc149e63ebdbe977c8655b30b3d1fc2c9b549"
+    }
+   }
+  },
+  {
+   "version": "2.3.1",
+   "tag": "v2.3.1",
+   "commit": "7ac27ee9d9300bf430e445c0398c855d6e7f9725",
+   "files": {
+    "Ashen_Crown_v2.3.1.html": {
+     "bytes": 50388496,
+     "sha256": "dadb500a3832ccced5b39d41393323bc2c80ec4c60ae6d2dda5326dc55aa427b"
+    },
+    "Ashen_Crown_v2.3.1_Source.zip": {
+     "bytes": 62140072,
+     "sha256": "4e72d9a4b443bca8a304252e2bf78b035aed60b3dd9d7653f55e9aa3356655ba"
+    },
+    "Ashen_Crown_v2.3.1_Test_Report.md": {
+     "bytes": 5763,
+     "sha256": "5702f74184ff0b4a66158bfb6c00fcc055128da4e99210741256c6943d300fbc"
+    },
+    "Ashen_Crown_v2.3.1_SHA256SUMS": {
+     "bytes": 286,
+     "sha256": "cc3f28e011f10a58b84554d80ef0c7d7810f17083f6af8aa99b2a69d67d1236c"
     }
    }
   }

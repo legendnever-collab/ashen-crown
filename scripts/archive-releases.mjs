@@ -15,9 +15,11 @@ const notes=(v,where)=>`Archived build of Ashen Crown ${v.tag} (D-125): moved ou
 for(const v of versions){
  if(only.size&&!only.has(v.version))continue;
  try{
+  let have=null;try{have=JSON.parse(gh('api',`repos/${repo}/releases/tags/${v.tag}`)).assets.map(a=>a.name);}catch{have=null;}
+  // D-134 (v2.4.0): a release that already holds every file is left alone — its builds have left the tree
+  if(have&&Object.keys(v.files).every(n=>have.includes(n))){console.log(`${v.tag}: release complete`);continue;}
   const paths=Object.entries(v.files).map(([name,meta])=>{const p=`releases/${name}`,b=fs.readFileSync(p);
    if(crypto.createHash('sha256').update(b).digest('hex')!==meta.sha256)throw Error(`${name}: SHA256 differs from ARCHIVE.json`);return p;});
-  let have=null;try{have=JSON.parse(gh('api',`repos/${repo}/releases/tags/${v.tag}`)).assets.map(a=>a.name);}catch{have=null;}
   if(have===null){
    const create=(target,where)=>gh('release','create',v.tag,...paths,'--repo',repo,...(target?['--target',target]:[]),'--title',`Ashen Crown ${v.tag}`,'--notes',notes(v,where));
    try{create(v.commit,'');console.log(`${v.tag}: release created with ${paths.length} files (tag at ${v.commit.slice(0,7)})`);}
