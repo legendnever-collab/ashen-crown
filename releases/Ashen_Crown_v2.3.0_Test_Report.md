@@ -1,5 +1,5 @@
 # Ashen Crown v2.3.0 「ACT II 큰 맵 (1부)」 — Test Report
-Updated 2026-11-20 KST. **Release candidate on feature/v2.3.0-act2 — not merged before the user plays and approves it.**
+Updated 2026-11-20 KST. **Merged (PR #33; approved by the user 2026-11-20 18:02, D-130; CI 9/9 on 0738faa).**
 - Decisions: D-128 (design), D-129 (approval 2026-11-20 06:21 「개발 진행해줘」 with the recommended answers, and this implementation). Notes: docs/v2.3.0/RELEASE_NOTES.md.
 - HTML SHA256: see `releases/Ashen_Crown_v2.3.0_SHA256SUMS` (`index.html` is identical). Build 8f2e259a…, 46.5 MiB (budget: warn 80, fail 90).
 

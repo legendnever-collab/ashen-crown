@@ -17,7 +17,7 @@
 작업 단계별 커밋. npm test, balance, browser regression, campaign E2E, migration, offline, documentation audit. 실제 검증만 완료 표시. 모든 PR의 documentation checklist: README, CHANGELOG, CURRENT_STATUS, NEXT_TASKS, ROADMAP, Story Bible review, Decision Log review, tests/evidence, artifacts.
 
 
-## Current v2.3.0 entry (ACT II 큰 맵 1부 — release candidate, D-129)
+## Current v2.3.0 entry (ACT II 큰 맵 1부 — merged, D-129/D-130)
 feature/v2.3.0-act2. src/data/missions-v230.js: ROWS2300 (from scripts/make-act2-maps.py) and V230_MISSIONS for M07–M10; applyV230(MISSIONS) runs after applyV200 in missions.js and sets map/size/units/objects/waves/deployZone/deployments plus m.v230. Top-level names in that module carry 23/2300 suffixes (the bundler concatenates modules). mission-rules-v06: the M07 convoy moves by road distance from m.convoyGate (convoyDistance). save-manager: schema 22, reform230 (v230 battle/result/deployment → reopenInCamp; else relocateCamp), stage-start ceiling counts 어려움's start-wave extras. core/stats8.js HARD_SHARE overrides the 어려움 growth by mission (ACT II full; M15/M17/M18 none). Balance suites take ASHEN_DIFFICULTY=hard (output *-hard). Browser suite v230 (npm run test:v230; CI group act4). The archived builds stay until every releases/ARCHIVE.json version has a Release (the user reruns Actions → Archive old builds after merge).
 
 ## v2.2.1 entry (용량 관리 — merged, D-125–D-127)
