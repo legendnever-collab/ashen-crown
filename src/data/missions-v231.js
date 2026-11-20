@@ -27,20 +27,20 @@ const mask231=(id,x,y)=>({id,name:'가면 습격대',kind:'bandit',x,y,hp:34,atk
 const mbow231=(id,x,y)=>({id,name:'가면 습격대',kind:'archer',x,y,hp:28,atk:16,def:4,res:4,spd:9,mov:4,range:[2,3],movementProfile:'rogue',look:'maskedRaider',masked:true});
 export const V231_MISSIONS={
  11:{zoneArea:[0,13,9,19],par:12,turnLimit:14,sanctuaryRow:2,night:{radius:2,fixed:[[4,2],[5,2],[6,2],[7,2],[8,2]]},
-  enemies:[raid231('r1',19,10),raid231('r2',21,17),raid231('r3',15,5),raid231('r4',17,8),raid231('r5',20,11),raid231('r6',11,5),
+  enemies:[raid231('r1',22,10),raid231('r2',22,17),raid231('r3',15,5),raid231('r4',21,7),raid231('r5',23,13),raid231('r6',11,5),
    rbow231('a1',12,3),rbow231('a3',17,6)], // the raiders wait in the woods east of the road; the foot of the road is quiet until TURN 3
-  civilians:[{id:'p1',name:'순례자 노사제',look:'pilgrim',kind:'pilgrim',x:4,y:13,hp:26,def:3,res:4},{id:'p2',name:'순례자',look:'pilgrim',kind:'pilgrim',x:4,y:14,hp:26,def:3,res:3},
-   {id:'p3',name:'순례자 어머니',look:'pilgrim',kind:'pilgrim',x:4,y:15,hp:26,def:3,res:3},{id:'p4',name:'순례자 소년',look:'pilgrim',kind:'pilgrim',x:4,y:16,hp:24,def:2,res:3}],
+  // v2.3.1: the pilgrims walk a longer road past more raiders — +10 HP each (they were 26/24 on the small map)
+  civilians:[{id:'p1',name:'순례자 노사제',look:'pilgrim',kind:'pilgrim',x:4,y:13,hp:36,def:3,res:4},{id:'p2',name:'순례자',look:'pilgrim',kind:'pilgrim',x:4,y:14,hp:36,def:3,res:3},
+   {id:'p3',name:'순례자 어머니',look:'pilgrim',kind:'pilgrim',x:4,y:15,hp:36,def:3,res:3},{id:'p4',name:'순례자 소년',look:'pilgrim',kind:'pilgrim',x:4,y:16,hp:34,def:2,res:3}],
   allies:{ines_warden:[5,14],fk1:[3,15],fk2:[5,16]},
   objects:[['br1','길가 화로','brazier',3,12],['br2','길가 화로','brazier',9,12],['br3','길가 화로','brazier',9,8],['br4','길가 화로','brazier',5,8],['br5','길가 화로','brazier',7,4]],
   waves:[{turn:4,story:'11:wave',units:[raid231('r9',2,19),raid231('r10',12,19)]},
-   {turn:5,story:'11:flank',units:[raid231('r12',0,10),raid231('r13',23,9),rbow231('a5',0,14),rbow231('a6',23,12)]},
-   {turn:7,story:'11:captain',units:[{id:'boss',name:'재 약탈단 두목',kind:'captain',x:16,y:4,hp:72,atk:19,def:8,res:5,spd:9,mov:4,range:[1,1],movementProfile:'rogue',look:'ashRaider'},raid231('r14',18,4),raid231('r15',11,8),raid231('r16',3,3)]},
-   {turn:9,units:[raid231('r11',15,2),raid231('r17',23,7)]}],
+   {turn:5,story:'11:flank',units:[raid231('r12',0,10),raid231('r13',23,9),rbow231('a6',23,12)]},
+   {turn:7,story:'11:captain',units:[{id:'boss',name:'재 약탈단 두목',kind:'captain',x:16,y:4,hp:72,atk:19,def:8,res:5,spd:9,mov:4,range:[1,1],movementProfile:'rogue',look:'ashRaider'},raid231('r14',18,4),raid231('r15',11,8),raid231('r16',3,3)]}],
   deploy:[[5,13],[3,13],[5,15],[3,14],[5,17],[3,16],[6,14],[2,15],[6,16],[3,17],[5,18],[3,18]],
   objective:'순례자 4명 중 3명을 성소(맨 위)까지 호위 또는 TURN 14 새벽까지 버팀 · 순례자 2명 이상 잃으면 패배',
-  brief:'순례자는 TURN 2부터 산길을 따라 성소로 걷습니다. 기슭에서 오른쪽으로 꺾어 오르고, 다시 왼쪽으로 돌아 꼭대기 성소에 닿습니다. 빛 안에서는 2칸, 어둠에서는 1칸. 적이 곁에 붙거나 장수가 길을 막으면 멈춥니다. 굽이마다 있는 길가 화로 5개에 인접해 조사하면 불이 켜져 반경 2칸이 밝아집니다. 빛 안의 아군은 명중 +10, 빛 밖의 대상을 노리면 명중 −15. 빛 안의 순례자는 아군 턴마다 HP +5. TURN 4 아래쪽 기슭, TURN 5 양옆, TURN 7 북동쪽 비탈에 두목, TURN 9 위쪽 비탈.',
-  council:{terrain:'Mountain Path · 산길(순례자만 걷는 길, 굽이 둘) / 평지 / 숲(이동 2) / 비탈(산) / 성소 바닥(맨 위, 턴 시작 HP 회복)',intel:'재 약탈단 6 · 궁수 2가 산길 동쪽 숲과 비탈에. TURN 4 아래 기슭 2, TURN 5 양옆 4, TURN 7 북동쪽 비탈에 두목 + 3, TURN 9 위쪽 비탈 2. 동맹: 이네스(곁의 아군 피해 −2)와 성화 기사 2.',plan:'길가 화로 5개를 켜서(인접 조사) 산길을 밝히세요. 빛 안의 순례자는 2칸씩 걷고 HP +5. 길 위에 서지 말고 길 옆을 지키세요. 순례자 3명 성소 도착 또는 TURN 14 새벽까지 버팀. 2명을 잃으면 실패.'}},
+  brief:'순례자는 TURN 2부터 산길을 따라 성소로 걷습니다. 기슭에서 오른쪽으로 꺾어 오르고, 다시 왼쪽으로 돌아 꼭대기 성소에 닿습니다. 빛 안에서는 2칸, 어둠에서는 1칸. 적이 곁에 붙거나 장수가 길을 막으면 멈춥니다. 굽이마다 있는 길가 화로 5개에 인접해 조사하면 불이 켜져 반경 2칸이 밝아집니다. 빛 안의 아군은 명중 +10, 빛 밖의 대상을 노리면 명중 −15. 빛 안의 순례자는 아군 턴마다 HP +5. TURN 4 아래쪽 기슭, TURN 5 양옆, TURN 7 북동쪽 비탈에 두목.',
+  council:{terrain:'Mountain Path · 산길(순례자만 걷는 길, 굽이 둘) / 평지 / 숲(이동 2) / 비탈(산) / 성소 바닥(맨 위, 턴 시작 HP 회복)',intel:'재 약탈단 6 · 궁수 2가 산길 동쪽 숲과 비탈에. TURN 4 아래 기슭 2, TURN 5 양옆 3, TURN 7 북동쪽 비탈에 두목 + 3. 동맹: 이네스(곁의 아군 피해 −2)와 성화 기사 2.',plan:'길가 화로 5개를 켜서(인접 조사) 산길을 밝히세요. 빛 안의 순례자는 2칸씩 걷고 HP +5. 길 위에 서지 말고 길 옆을 지키세요. 순례자 3명 성소 도착 또는 TURN 14 새벽까지 버팀. 2명을 잃으면 실패.'}},
  12:{zoneArea:[14,16,23,19],par:12,turnLimit:16,
   enemies:[watch231('g1',8,9,'down',['down','left','up','right']),watch231('g2',12,13,'left',['left','right']),watch231('g3',6,14,'right',['right','up']),watch231('g4',21,10,'down',['down','up']),
    watch231('g5',2,10,'up',['up','down']),watch231('g6',17,14,'right',['right','up']),watch231('g7',15,9,'left',['left','up','right','down']),watch231('g8',11,8,'up',['up','down']),
@@ -64,14 +64,14 @@ export const V231_MISSIONS={
   brief:'에릭이 발드릭 곁에서 "설득"하면 결단이 1 오릅니다(턴마다 1번). 테아가 출전했다면 한 번 말을 건넬 수 있습니다. ACT I–II의 선택과, TURN 4부터 적 턴 동안 피난민이 다치지 않을 때마다(최대 2)도 결단이 오릅니다. 6이면 발드릭이 군을 멈춥니다. 발드릭은 TURN 5 전에는 대형이 무너져도 물러서지 않습니다. 사자 기수 곁의 적은 DEF+2·명중+10, 발드릭은 고립된 장수를 노립니다(피해+4). 사자군 본대는 북쪽 길로 내려오고, TURN 3 동서 언덕에서 기병, TURN 5 북쪽 증원.',
   council:{terrain:'Refugee Camp · 천막(마을, 회복) / 길 / 숲 / 폐허(벽) / 동서 언덕(산)',intel:'발드릭(쓰러지지 않음, HP 50%까지) · 사자 기수 3(곁의 적 DEF+2·명중+10) · 창병 10 · 궁수 4. TURN 3 동서 언덕에서 기병 4, TURN 5 북쪽 창병 4. TURN 4부터 병사들이 천막을 노립니다.'}},
  14:{zoneArea:[4,5,19,8],par:9,turnLimit:12,exitRow:17,
-  enemies:[mask231('k1',0,5),mask231('k2',23,5),mask231('k3',0,10),mask231('k4',23,10),mask231('k7',4,16),mask231('k9',19,16),mask231('k5',2,7),mbow231('k10',20,11)],
+  enemies:[mask231('k1',0,5),mask231('k2',23,5),mask231('k3',0,10),mask231('k4',23,10),mask231('k7',4,16),mask231('k9',19,16),mask231('k5',2,7)],
   allies:{cassian:[8,2],leonora:[12,2],lucien:[16,2],ig1:[7,1],ig2:[9,1],fg1:[11,1],fg2:[13,1],lg1:[15,1],lg2:[17,1]},
   waves:[{turn:2,story:'14:raid',units:[mask231('k11',0,7),mask231('k12',23,7),mbow231('k13',0,4)]},
    {turn:4,units:[mask231('k15',3,17),mask231('k16',20,17),mask231('k17',0,13)]},
-   {turn:6,story:'14:exit',units:[mask231('k19',5,16),mask231('k20',18,16),mask231('k23',0,11),mask231('k24',23,11)]}],
+   {turn:6,story:'14:exit',units:[mask231('k19',5,16),mask231('k20',18,16),mask231('k23',0,11)]}],
   deploy:[[10,6],[14,6],[6,6],[18,6],[10,7],[14,7],[6,7],[18,7],[9,8],[15,8],[11,8],[13,8]], // beside the leaders' way down (columns 8, 12, 16)
   brief:'회담장에서 출발해 광장과 집들 사이를 지나 남문 밖 길로 빠져나갑니다(맨 아랫줄이 출구). 카시안·레오노라·루시안과 호위병이 동맹군으로 남쪽 출구로 물러납니다. 가면 습격대는 지도자를 노리고 양옆 골목과 남쪽에서 계속 들어옵니다. TURN 4에 군단을 가장 믿지 않는 깃발(신뢰가 가장 낮은 세력)이 군단에 칼을 돌립니다: 그 지도자는 전장을 떠나고 호위병은 적이 됩니다.',
-  council:{terrain:'Velmar Old Town · 회담장(성채 바닥) / 광장 / 골목(이동 1, 회피 +5) / 집(벽) / 남문 · 맨 아랫줄 출구',intel:'가면 습격대 8 (지도자를 노림, 숲을 가볍게 이동). TURN 2 양옆 골목 3, TURN 4 남쪽 3, TURN 6 남쪽 · 양옆 4. 동맹: 카시안·레오노라·루시안과 호위병 각 2. TURN 4에 신뢰가 가장 낮은 깃발이 등을 돌립니다.'}}
+  council:{terrain:'Velmar Old Town · 회담장(성채 바닥) / 광장 / 골목(이동 1, 회피 +5) / 집(벽) / 남문 · 맨 아랫줄 출구',intel:'가면 습격대 7 (지도자를 노림, 숲을 가볍게 이동). TURN 2 양옆 골목 3, TURN 4 남쪽 3, TURN 6 남쪽 · 왼쪽 3. 동맹: 카시안·레오노라·루시안과 호위병 각 2. TURN 4에 신뢰가 가장 낮은 깃발이 등을 돌립니다.'}}
 };
 // Applied after applyV230; same shape as the v2.3.0 maps.
 export function applyV231(MISSIONS){
