@@ -25,7 +25,7 @@ ASSETS = os.path.join(ROOT, 'src', 'assets')
 LOG = os.path.join(ASSETS, 'avif-conversion-log.csv')
 PLAN = {'portraits': (60, 0.975), 'duel': (60, 0.975), 'sprites': (60, 0.975),
         'rooms': (65, 0.97), 'hubs': (65, 0.97), 'world': (65, 0.97)}
-KEEP_WEBP = lambda name: name.startswith('sprite_class_')  # magenta-marked side-colour sheets
+KEEP_WEBP = lambda name: name.startswith('sprite_class_') or name == 'sprite_wolf.webp'  # magenta-marked side-colour sheets (v2.3.1: the wolf's collar)
 FIELDS = ['folder', 'webp', 'webp_sha256', 'avif', 'quality', 'avif_bytes', 'avif_sha256', 'ssim']
 
 def lum(im):

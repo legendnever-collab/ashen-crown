@@ -64,3 +64,16 @@ test('every ACT II request battle is winnable by the test policy; the bounties o
  assert.ok(requestsAt(s,'frost').find(r=>r.id==='bountyNorth').done);s.campaign.completed.push(10);assert.ok(!requestsAt(s,'frost').find(r=>r.id==='bountyNorth').done);
  assert.ok(!requestsAt(s,'frost').some(r=>r.id==='bounty'),'the ACT I bounty stays in the ACT I villages');assert.deepEqual(Object.keys(REQUESTS).filter(id=>REQUESTS[id].mission>=125).map(id=>REQUESTS[id].mission),[125,126,127,128,129,130]);
 });
+
+test('art pack J (D-132): 군나르\'s three busts, the two villages and the wolf come from hash-verified masters; the wolf sheet keeps its magenta collar as WebP',async()=>{
+ const {artFile,imageSize}=await import('./art-file.mjs');const {ART_HUBS}=await import('../src/data/hubs-v05.js');const {battleFigure}=await import('../src/render/class-figure.js');
+ const log=fs.readFileSync('src/assets/art-import-log.csv','utf8').trim().split(/\r?\n/).map(l=>l.split(','));
+ for(const e of ['neutral','concerned','determined'])assert.ok(log.some(r=>r[0]==='bust'&&r[1]==='gunnar'&&r[2]===e),e);
+ assert.ok(log.some(r=>r[0]==='bust'&&r[1]==='wolf')&&log.some(r=>r[0]==='sprite'&&r[1]==='wolf'));
+ for(const e of ['neutral','concerned','determined']){const a=artFile('portraits',`bust_gunnar_${e}.webp`);assert.equal(a.format,'avif');assert.deepEqual(imageSize(a.bytes),[720,880]);}
+ const sheet=artFile('sprites','sprite_wolf.webp');assert.equal(sheet.format,'webp','the collar is recoloured by threshold, like the class sheets');assert.deepEqual(imageSize(sheet.bytes),[512,384]);
+ const hubs=fs.readFileSync('src/assets/room-art-import-log.csv','utf8');for(const id of ['hub_frost','hub_saltport']){assert.ok(hubs.includes(`hub,${id},`),id);assert.deepEqual(imageSize(artFile('hubs',`${id}.webp`).bytes),[1536,1024]);}
+ assert.equal(ART_HUBS.frost.art,'hub_frost');assert.equal(ART_HUBS.saltport.art,'hub_saltport');
+ // the battle figure: the wolf's own sheet with only the collar in the side colour (seen in tests/v231-e2e.mjs)
+ assert.match(fs.readFileSync('src/render/class-figure.js','utf8'),/u\.look==='wolf'&&hasSpriteSheet\('wolf'\)\)\{[^}]*mask:'only'\}/);assert.equal(typeof battleFigure,'function');
+});

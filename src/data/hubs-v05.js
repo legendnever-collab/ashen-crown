@@ -243,7 +243,7 @@ const smallVillage=(name,elder,folk,guard,art)=>({...HV5_VILLAGE,name,kind:'vill
  npcs:[['elder',elder,22,9],['refugee',folk,7,8],['guard',guard,12,14],['requests','의뢰 게시판 · 촌장 회관',19,8,{service:'requests',reach:1}]]});
 HV5_SPECS.reed=smallVillage('Reed Ferry · 갈대 나루','나루 촌장','뱃사공','나루 경비','hub_reed');
 HV5_SPECS.stonewell=smallVillage('Stonewell · 돌우물 마을','돌우물 촌장','우물지기','길목 파수','hub_stonewell');
-// v2.3.1 (D-131): the ACT II villages stand on the small villages' paintings (same layout) until art pack J paints them.
-HV5_SPECS.frost=smallVillage('Frostneck · 서리목 마을','서리목 촌장','나무꾼','눈길 파수','hub_stonewell');
-HV5_SPECS.saltport=smallVillage('Saltport · 소금항','소금항 촌장','염전 일꾼','포구 파수','hub_reed');
+// v2.3.1 (D-131/D-132): the ACT II villages, painted on the small villages' footprint in art pack J part B.
+HV5_SPECS.frost=smallVillage('Frostneck · 서리목 마을','서리목 촌장','나무꾼','눈길 파수','hub_frost');
+HV5_SPECS.saltport=smallVillage('Saltport · 소금항','소금항 촌장','염전 일꾼','포구 파수','hub_saltport');
 export const ART_HUBS=Object.fromEntries(Object.entries(HV5_SPECS).map(([id,spec])=>[id,hv5Build(id,spec)]));

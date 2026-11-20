@@ -13,6 +13,8 @@ export const TEMP_CLASS_SHEETS={infantry:['ironInfantry','guard','flameKnight'],
 const OWN_FIGURE=new Set(['bellard','king','aren','cassian','leonora','lucien','harvester','guardianStatue','clerk','child','advisor']);
 export const unitTier=u=>u?.team==='ally'?Math.max(1,Math.min(3,u.classTier||1)):(u?.level||1)>=16?3:(u?.level||1)>=8?2:1;
 export function battleFigure(u,missionId){const cls=classKeyOf(u),own=hdCastFor(u,missionId);
+ // v2.3.1 (art pack J part C, D-132): the wolves' own sheet, its collar marked magenta for the side colour
+ if(u.look==='wolf'&&hasSpriteSheet('wolf')){const side=u.neutral?'neutral':u.team==='allied'?'allied':u.team==='enemy'?'enemy':'ally';return {cast:'wolf',tint:SIDE_COLOR[side],mask:'only'};}
  if(!cls||OWN_FIGURE.has(own)||OWN_FIGURE.has(u.look)||u.team==='civilian'||u.team==='object'||u.team==='commander'||u.remnant||u.memory28)return {cast:own,tint:null,mask:false};
  const t=unitTier(u),h1=hasSpriteSheet(`class_${cls}_${t}`);const side=u.neutral?'neutral':u.team==='allied'?'allied':u.team==='enemy'?'enemy':'ally';
  const color=side==='allied'&&LOOK_FACTION[u.look]?FACTION_COLOR[LOOK_FACTION[u.look]]:SIDE_COLOR[side];

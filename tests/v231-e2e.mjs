@@ -16,7 +16,8 @@ try{
  for(const [label,viewport] of [['1440',{width:1440,height:900}],['390',{width:390,height:844,isMobile:true,hasTouch:true}]]){
   let ctx=await b.newContext({viewport});await ctx.setOffline(true);let p=await ctx.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
   const press=async a=>{await p.locator(`[data-do="${a}"]`).first().click();await p.waitForTimeout(250);};
-  const restore=async s=>{await press('menu');await press('backup');await p.fill('#backup-text',backupText(s));await press('restore');await drainStory(p);await p.waitForTimeout(400);};
+  const restore=async s=>{await press('menu');await press('backup');await p.fill('#backup-text',backupText(s));await press('restore');await drainStory(p);await p.waitForTimeout(400);
+   for(let i=0;i<3&&await p.locator('.modal [data-do="close-modal"]:visible').count();i++){await p.locator('.modal [data-do="close-modal"]:visible').first().click();await p.waitForTimeout(250);}}; // the fixture camp still holds Dario's joining card
   await p.goto(url);await p.waitForFunction(()=>!!window.AshenCrown);check(`${label} the page is v${VERSION}`,await p.evaluate(()=>AshenCrown.version)===VERSION);
   await press('new');if(await p.locator('[data-do="difficulty-pick"]').count())await p.locator('[data-do="difficulty-pick"][data-id="normal"]').click();await drainStory(p);
   for(const id of [11,12,13,14]){
@@ -29,6 +30,8 @@ try{
   const village=deserialize(fixture);travelTo(village,'frost');await restore(village);
   let s=await p.evaluate(()=>AshenCrown.snapshot());check(`${label} 서리목 opens with its request board`,s.screen==='exploration'&&s.frontier.hub==='frost');
   if(label==='1440')await p.screenshot({path:`${shots}/frost-village.png`});
+  // 소금항 (art pack J part B): the salt pans and the quay
+  {const port=deserialize(fixture);travelTo(port,'saltport');await restore(port);const t=await p.evaluate(()=>AshenCrown.snapshot());check(`${label} 소금항 opens with its painting`,t.screen==='exploration'&&t.frontier.hub==='saltport');if(label==='1440')await p.screenshot({path:`${shots}/saltport-village.png`});}
   // 「눈보라 속 도끼잡이」: 군나르 in the ruin, the wolves on the snow
   const req=deserialize(fixture);travelTo(req,'frost');const rb=startRequest(req,'blizzard',['eric','elina','lia','sain','kai','thea']);
   {const ctx2=await b.newContext({viewport});await ctx2.setOffline(true);const p2=await ctx2.newPage();p2.on('pageerror',e=>errors.push(e.message));await p2.goto(url);await p2.waitForFunction(()=>!!window.AshenCrown);

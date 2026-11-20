@@ -70,7 +70,7 @@ export function bustKey(u,missionId=1){
  if(LORD_LOOK[u.id])return 'cast:'+LORD_LOOK[u.id];
  // D-094: extras reuse an existing painted face — a look with a painted map sheet but no bust borrows the nearest painted bust.
  if(u.look&&!PAINTED?.[u.look]&&BUST_REUSE[u.look]&&PAINTED?.[BUST_REUSE[u.look]])return BUST_REUSE[u.look];
- if(u.look==='wolf')return 'wolf'; // v2.3.1: a drawn wolf's head until art pack J part C
+ if(u.look==='wolf')return 'wolf'; // v2.3.1: the wolf's portrait (art pack J part C, D-132); a drawn head if it is missing
  if(u.look)return PAINTED?.[u.look]?u.look:'cast:'+u.look;
  if(u.team==='commander')return 'aren';
  if(u.team==='civilian')return 'refugee';
