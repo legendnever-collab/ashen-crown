@@ -6,7 +6,7 @@
 - 군나르 joins from 「눈보라 속 도끼잡이」: infantry, snow costs him 1. The wolves are drawn by the game until art pack J.
 - 어려움: M11 at 보통's numbers. M15 ×0.88 (보통).
 - Schema 23 (imports 0–22): M11–M14 battle saves reopen in camp.
-- Art pack J work order (docs/v2.3.1/art/j-work-pack, 7 images). Tests: tests/villages-v231.test.mjs, tests/v231-e2e.mjs; act2-balance takes ASHEN_DUMP for camp dumps.
+- Art pack J (docs/v2.3.1/art/j-work-pack, 7 images) returned and imported (D-132): 군나르's busts, 서리목 and 소금항, the wolf's sheet (collar tinted by side) and portrait. Tests: tests/villages-v231.test.mjs, tests/v231-e2e.mjs; act2-balance takes ASHEN_DUMP for camp dumps.
 - Version 2.3.1.
 
 # v2.3.0 — ACT II 큰 맵 (1부)
