@@ -17,7 +17,10 @@
 작업 단계별 커밋. npm test, balance, browser regression, campaign E2E, migration, offline, documentation audit. 실제 검증만 완료 표시. 모든 PR의 documentation checklist: README, CHANGELOG, CURRENT_STATUS, NEXT_TASKS, ROADMAP, Story Bible review, Decision Log review, tests/evidence, artifacts.
 
 
-## Current v2.3.1 entry (ACT II 큰 맵 2부와 작은 마을 — merged, D-131–D-133)
+## Current v2.4.0 entry (ACT III 큰 맵 1부 — release candidate, D-134/D-135)
+feature/v2.4.0. src/data/missions-v240.js: ROWS2400 (scripts/make-act3-maps.py) and V240_MISSIONS for M15–M18; applyV240 after applyV231 (m.v240). Troops are copies of each mission's own units by id (U240(template,id,x,y,extra)); allies/civilians are moved by id (a new id copies the first of its list, e.g. M18 f7/f8). ACT3_COUNTS (stones16 4, statues17 6, keepers18 8) feeds mission-rules-v090/v091 (ids, status lines), battle-rewards and the arms-v081 feats. m.rearY holds the M17/M18 captains back until TURN 6. m.council lines may be functions of the state (core/frontier councilInfo). stats8: BASE_MUL_AT 15 .94, 18 .92; HARD_SHARE 16 0. save-manager: schema 24, reform240. Tuning: act2-balance with ASHEN_DUMP=15,16,17,18 → test-output/camps, then test-output/tune.mjs <id> <tries> '<js>' [hard]. Repository (D-134): released builds are out of the tree and ignored; fetch with scripts/fetch-releases.mjs.
+
+## v2.3.1 entry (ACT II 큰 맵 2부와 작은 마을 — merged, D-131–D-133)
 feature/v2.3.1-act2. src/data/missions-v231.js: ROWS2310 and V231_MISSIONS for M11–M14 (with `council` lines), applyV231 after applyV230 (m.v231). M11's escort "ahead" is the pilgrim's road route (mission-rules-v070 roadAhead); brazier counts follow the mission. Villages: data/villages-v210.js VILLAGES.frost/saltport and REQUESTS (village may be a list; requestVillages), missions 125–130 in missions.js (MISSION_RULES SK), economy discountAt/shopPrice, tavern wanderersAt(c,town). 군나르: mercs-v210 (NEW_HEROES, RESCUED, MERC_*), rules terrainCost (snow 1), stats8 growthOf. Wolves: look 'wolf' drawn by pixel-renderer drawWolf and bust paintWolfBust. Schema 23 (reform231). Art pack J: scripts/make-v231-j-art-pack.py → docs/v2.3.1/art/j-work-pack. Tuning: ASHEN_DUMP=11,14 node tests/act2-balance.mjs writes camps to test-output/camps for one-mission replays.
 
 ## v2.3.0 entry (ACT II 큰 맵 1부 — merged, D-129/D-130)
