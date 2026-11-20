@@ -24,7 +24,7 @@ test('M11 data: 24×20 mountain switchback (v2.3.1), six-hero sortie, level 10, 
  assert.equal(m.civilians.length,4);assert.ok(m.civilians.every(c=>c.look==='pilgrim'&&m.map[c.y][c.x]==='r'));assert.deepEqual(m.allies.map(a=>a.look),['ines','flameKnight','flameKnight']);
  assert.deepEqual(m.objects.map(o=>o.kind),Array(5).fill('brazier'));assert.equal(m.night.radius,2);assert.ok(m.escortOnly,'pilgrims walk; no instant rescue');
  assert.ok(m.map[0].includes('z')&&m.map[2].includes('z'),'sanctuary floor at the top');
- assert.equal(m.enemies.length,12);assert.equal(m.waves.reduce((n,w)=>n+w.units.length,0),12);
+ assert.equal(m.enemies.length,8);assert.equal(m.waves.reduce((n,w)=>n+w.units.length,0),12);
  const zone=m.deployZone();for(const p of [...m.deployments.recommended,...m.deployments.assault,...m.deployments.defense])assert.ok(zone.has(p.join(',')),`preset ${p}`);
  for(const k of ['11:intro','11:turn2','11:lit','11:arrive','11:lost','11:wave','11:flank','11:captain','11:encounter','11:boss','11:end','pre:11','after:11','after:11:sain','after:11:oath','after:11:legion','world:pilgrim','npc:11:preparation:advisor','npc:11:aftermath:advisor','npc:11:preparation:ines','npc:11:preparation:thea','npc:11:aftermath:dario'])assert.ok(STORY[k]?.length,k);
  assert.equal(STORY['world:pilgrim'].at(-1).world.card.region,'성화령');

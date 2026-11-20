@@ -774,11 +774,54 @@ req(124,{title:'현상금: 떠돌이 산적',en:'Bounty: Roving Bandits',
  enemies:[bandit('b1',3,0),bandit('b2',12,0),bandit('b3',7,1),archerB('a1',1,2),archerB('a2',14,2),unit('boss','떠돌이 두목','captain',8,0,{hp:40,atk:15,def:6,spd:6,mov:4})],
  deployments:{recommended:[[7,10],[8,10],[6,11],[9,11],[5,10],[10,10],[7,11],[8,11]]},deployZone:reqZone(9,11),limit:6,goal:{type:'rout'},
  objective:'TURN 6까지 떠돌이 산적 6명 격파',brief:'현상금이 걸린 떠돌이 산적 무리입니다. 본편 작전을 하나 마칠 때마다 새 무리가 나타납니다.'});
+// v2.3.1 의뢰 (D-128 §3, D-131; maps and numbers PROPOSED): the ACT II villages' short battles. 서리목: 「눈보라 속 도끼잡이」 (군나르
+// joins when he lives), 「굶주린 늑대 떼」, the deserter bounty. 소금항: 「밀수선 단속」, 「등대 지키기」, the pirate bounty.
+const wolf=(id,x,y,s={})=>unit(id,'굶주린 늑대','bandit',x,y,{hp:26,atk:13,def:3,res:2,spd:9,mov:5,movementProfile:'rogue',look:'wolf',...s});
+const deserterN=(id,x,y,s={})=>unit(id,'북부 탈영병','bandit',x,y,{hp:32,atk:15,def:6,spd:6,mov:4,movementProfile:'rogue',...s}),dArcher=(id,x,y)=>unit(id,'탈영 궁수','archer',x,y,{hp:26,atk:14,def:3,spd:7,mov:3});
+const smuggler=(id,x,y,s={})=>unit(id,'밀수꾼','bandit',x,y,{hp:30,atk:15,def:5,spd:7,mov:4,...s}),pirate=(id,x,y,s={})=>unit(id,'해적','bandit',x,y,{hp:32,atk:16,def:5,spd:7,mov:4,...s}),pArcher=(id,x,y)=>unit(id,'해적 궁수','archer',x,y,{hp:26,atk:15,def:3,spd:7,mov:3});
+const req2=(id,m)=>skirmish(id,'request',null,{level:10,threatTurn:1,deployLimit:8,...m});
+req2(125,{title:'눈보라 속 도끼잡이',en:'The Axeman in the Blizzard',
+ rows:['nnnnffnnnnnffnnn','nfnnnnnnnnnnnnfn','nnnnnnrrrrnnnnnn','nnfnnrrnnrrnnfnn','nnnnrnnxxnnrnnnn','nnnrnnxnnxnnrnnn','nnnrnnxnnxnnrnnn','nnnnrnnxxnnrnnnn','nnfnnrrnnrrnnfnn','nnnnnnrrrrnnnnnn','nnnnnnnnnnnnnnnn','nnnnnnnnnnnnnnnn'],
+ civilians:[{id:'gunnarc',name:'군나르',kind:'knight',x:7,y:5,hp:48,def:8,res:4}],
+ enemies:[wolf('w1',4,4),wolf('w2',11,4),wolf('w3',4,7),wolf('w4',11,7),deserterN('d1',7,2),deserterN('d2',8,9),dArcher('a1',2,2),dArcher('a2',13,2),unit('boss','탈영병 우두머리','captain',8,1,{hp:48,atk:17,def:7,spd:6,mov:4})],
+ waves:[{turn:3,units:[wolf('w5',0,6),wolf('w6',15,6)]}],
+ deployments:{recommended:[[7,11],[6,11],[8,11],[5,10],[9,10],[4,11],[10,11],[7,10]]},deployZone:reqZone(10,11),limit:7,escortOnly:true,
+ goal:{type:'survive',turn:7,protect:['gunnarc']},
+ objective:'TURN 7이 끝날 때까지 도끼잡이 군나르 지키기',brief:'무너진 사냥 오두막 터에서 도끼잡이 군나르가 늑대 떼와 탈영병에게 둘러싸였습니다. 남쪽 눈밭에서 뚫고 들어가 TURN 7까지 그를 지키세요. 늑대는 빠르고, TURN 3에 양옆에서 둘이 더 옵니다. 군나르가 살아남으면 군단에 합류합니다.'});
+req2(126,{title:'굶주린 늑대 떼',en:'The Hungry Pack',
+ rows:['ffnnnffnnnnffnnf','fnnnnnnnnnnnnnnf','nnnffnnnnnnffnnn','nnnffnnrrnnffnnn','nnnnnnrrrrnnnnnn','nnfnnrrvvrrnnfnn','nnfnnrrvvrrnnfnn','nnnnnnrrrrnnnnnn','nnnnnnnrrnnnnnnn','nnnnnnnnnnnnnnnn','gggggggggggggggg','gggggggggggggggg'],
+ enemies:[wolf('w1',2,1),wolf('w2',6,1),wolf('w3',9,1),wolf('w4',13,1),wolf('w5',1,4),wolf('w6',14,4),wolf('w7',4,2,{hp:34,atk:15,name:'우두머리 늑대'}),wolf('w8',11,2)],
+ deployments:{recommended:[[7,10],[8,10],[6,11],[9,11],[5,10],[10,10],[7,11],[8,11]]},deployZone:reqZone(9,11),limit:7,goal:{type:'rout'},
+ objective:'TURN 7까지 늑대 8마리 격파',brief:'마을 울타리까지 내려온 늑대 떼입니다. 늑대는 빠르게 달려들고 숲을 가볍게 지나갑니다. 마을 칸(지붕)에 서면 회복합니다.'});
+req2(127,{title:'밀수선 단속',en:'The Smugglers\' Dock',
+ rows:['wwwwwwwwwwwwwwww','wwwbbwwwwwwbbwww','gggbbgggggggbbgg','ggrrrrrrrrrrrrgg','ggrggvvggvvggrgg','ggrggvvggvvggrgg','ggrrrrrrrrrrrrgg','gfgggggrrgggggfg','ggggggrrrrgggggg','gggggggggggggggg','gggggggggggggggg','gggggggggggggggg'],
+ enemies:[smuggler('s1',3,2),smuggler('s2',12,2),smuggler('s3',4,1),smuggler('s4',11,1),smuggler('s5',6,3),smuggler('s6',9,3),smuggler('s7',2,5),smuggler('s8',13,5),pArcher('a1',7,2),unit('boss','밀수 선장','captain',8,2,{hp:46,atk:16,def:7,spd:6,mov:4})],
+ deployments:{recommended:[[7,10],[8,10],[6,11],[9,11],[5,10],[10,10],[7,11],[8,11]]},deployZone:reqZone(9,11),limit:8,goal:{type:'rout'},
+ objective:'TURN 8까지 밀수꾼 10명 격파',brief:'부두 두 곳에 배를 댄 밀수꾼들입니다. 선장은 부두 가운데에서 버팁니다. 창고(마을 칸)에 서면 회복합니다.'});
+req2(128,{title:'등대 지키기',en:'Keeping the Lighthouse',
+ rows:['wwwwwwwwwwwwwwww','wwwwwwwwwwwwwwww','wwgggggggggggwww','wggggggmmggggggw','wgggggmmmmgggggw','ggggggmmmmgggggg','ggrrrrrrrrrrrrgg','ggrggggggggggrgg','grrggfggggfggrrg','rrggggggggggggrr','gggggggggggggggg','gggggggggggggggg'],
+ civilians:[{id:'lamp',name:'등대 불',kind:'beacon',x:7,y:4,hp:60,def:6,res:4}],
+ enemies:[pirate('p1',2,2),pirate('p2',12,2),pirate('p3',1,4),pirate('p4',14,4),pArcher('a1',3,3),pArcher('a2',12,3),pirate('p5',0,9),pirate('p6',15,9)],
+ waves:[{turn:3,units:[pirate('w1',0,5),pirate('w2',15,5)]},{turn:5,units:[pirate('w3',0,8),pArcher('w4',15,8)]}],
+ deployments:{recommended:[[7,6],[8,6],[6,7],[9,7],[5,6],[10,6],[7,7],[8,7]]},deployZone:reqZone(6,7,4,11),limit:8,escortOnly:true,
+ goal:{type:'survive',turn:6,protect:['lamp']},
+ objective:'TURN 6이 끝날 때까지 등대 불 지키기',brief:'해적이 등대 불을 끄고 배를 암초로 꾀려 합니다. 바위 언덕 위 등대를 둘러싸고 TURN 6까지 버티세요. TURN 3과 TURN 5에 양쪽 해안에서 더 옵니다.'});
+req2(129,{title:'현상금: 북부 탈영병',en:'Bounty: Northern Deserters',
+ rows:['nnnnnnnnnnnnnnnn','nfnnnnnffnnnnnfn','nnnnnnnnnnnnnnnn','nnnnrrrrrrrrnnnn','nnnrnnnnnnnnrnnn','nnnrnnffffnnrnnn','nnnrnnnnnnnnrnnn','nnnnrrrrrrrrnnnn','nnnnnnnnnnnnnnnn','nnnnnnnnnnnnnnnn','gggggggggggggggg','gggggggggggggggg'],
+ enemies:[deserterN('d1',3,0),deserterN('d2',12,0),deserterN('d3',7,1),dArcher('a1',1,2),dArcher('a2',14,2),unit('boss','탈영병 두목','captain',8,0,{hp:44,atk:16,def:7,spd:6,mov:4})],
+ deployments:{recommended:[[7,10],[8,10],[6,11],[9,11],[5,10],[10,10],[7,11],[8,11]]},deployZone:reqZone(9,11),limit:6,goal:{type:'rout'},
+ objective:'TURN 6까지 탈영병 6명 격파',brief:'현상금이 걸린 북부 탈영병 무리입니다. 눈밭은 이동 2칸이 들지만 탈영병은 1칸으로 다닙니다. 본편 작전을 하나 마칠 때마다 새 무리가 나타납니다.'});
+req2(130,{title:'현상금: 항구 해적',en:'Bounty: Harbor Pirates',
+ rows:['wwwwwwwwwwwwwwww','wwwwwwbbbbwwwwww','gggggggbbggggggg','ggggrrrrrrrrgggg','gggrggvvvvggrggg','gggrggvvvvggrggg','ggggrrrrrrrrgggg','gfggggggggggggfg','gggggggggggggggg','gggggggggggggggg','gggggggggggggggg','gggggggggggggggg'],
+ enemies:[pirate('p1',4,3),pirate('p2',11,3),pirate('p3',7,2),pArcher('a1',3,2),pArcher('a2',12,2),unit('boss','해적 두목','captain',8,2,{hp:44,atk:16,def:7,spd:6,mov:4})],
+ deployments:{recommended:[[7,10],[8,10],[6,11],[9,11],[5,10],[10,10],[7,11],[8,11]]},deployZone:reqZone(9,11),limit:6,goal:{type:'rout'},
+ objective:'TURN 6까지 해적 6명 격파',brief:'현상금이 걸린 해적 무리입니다. 본편 작전을 하나 마칠 때마다 새 배가 들어옵니다.'});
 export const isSkirmish=id=>!!MISSIONS[id]?.skirmish;
 export const LAST_MISSION=Math.max(...Object.keys(MISSIONS).map(Number).filter(id=>!MISSIONS[id].skirmish));
 
 // v2.0.0 전장 개편 (D-115): ACT I M01–M06 on big maps with new directions (missions-v200.js).
 import {applyV200} from './missions-v200.js';
 applyV200(MISSIONS);
-import {applyV230} from './missions-v230.js';import {applyV231} from './missions-v231.js';
+import {applyV230} from './missions-v230.js';
+import {applyV231} from './missions-v231.js';
 applyV230(MISSIONS);applyV231(MISSIONS);

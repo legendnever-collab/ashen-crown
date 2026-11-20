@@ -16,7 +16,7 @@ import {revisitTowns,canTravel} from '../core/frontier.js';
 import {hubFor} from '../data/hubs-v05.js';
 import {itemIcon} from './item-art.js';
 
-const SKILL_KO={'Brace':'방진','Aimed Shot':'조준 사격','Shield Oath':'방패의 맹세','Charge':'돌격','Fire Bolt':'화염탄','Heal':'치유','Quick Strike':'기습','Last Post':'마지막 초소'};
+const SKILL_KO={'Brace':'방진','Aimed Shot':'조준 사격','Shield Oath':'방패의 맹세','Charge':'돌격','Fire Bolt':'화염탄','Heal':'치유','Quick Strike':'기습','Last Post':'마지막 초소','Blizzard Charge':'눈보라 돌격'};
 const statLine=id=>{const st=HERO_STATS[id]||{};return Object.entries(STAT_KO).map(([k,ko])=>`${ko} ${st[k]??'—'}`).join(' · ');};
 export function tavernHTML(s,esc,portrait){const town=tavernTown(s);if(!town)return '<p>주점 안에서 이용할 수 있습니다.</p>';const list=mercsAt(s,town),gold=s.economy?.gold??0,lv=hireLevel(s.campaign),first=!Array.isArray(s.campaign.heroes);
  const card=m=>{const h=heroDef(m.id),cls=CLASSES8[UNIT_CLASS8[m.id]],lore=HERO_LORE[m.id];return `<article class="merc-card ${m.elite?'elite':''}"><div class="merc-head">${portrait({...h,team:'ally',classTier:1},'card-sprite')}<div><h3>${esc(h.name)} ${m.elite?`<span class="merc-elite">${paintedIcon('eliteHire',18,'merc-icon')}엘리트</span>`:''}${m.wandering?'<span class="merc-wander">떠돌이</span>':''}</h3><p class="muted">${esc(cls?.ko||'')} · 고용하면 LV ${lv}</p></div></div>

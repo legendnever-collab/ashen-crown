@@ -70,6 +70,7 @@ export function bustKey(u,missionId=1){
  if(LORD_LOOK[u.id])return 'cast:'+LORD_LOOK[u.id];
  // D-094: extras reuse an existing painted face — a look with a painted map sheet but no bust borrows the nearest painted bust.
  if(u.look&&!PAINTED?.[u.look]&&BUST_REUSE[u.look]&&PAINTED?.[BUST_REUSE[u.look]])return BUST_REUSE[u.look];
+ if(u.look==='wolf')return 'wolf'; // v2.3.1: a drawn wolf's head until art pack J part C
  if(u.look)return PAINTED?.[u.look]?u.look:'cast:'+u.look;
  if(u.team==='commander')return 'aren';
  if(u.team==='civilian')return 'refugee';
@@ -269,7 +270,13 @@ function bQuiver(c){c.save();c.translate(64,262);c.rotate(-.5);c.fillStyle='#5a3
 function bHoodDown(c,col){c.save();bEll(c,188,286,74,24);c.fillStyle=bLin(c,0,262,0,312,[[0,bLight(col,.12)],[1,bDark(col,.4)]]);c.fill();c.strokeStyle=bA(bDark(col,.6),.7);c.lineWidth=1.5;for(let i=0;i<5;i++){c.beginPath();c.moveTo(126+i*30,278);c.quadraticCurveTo(132+i*30,292,128+i*30,306);c.stroke();}c.restore();}
 
 // ---------- composition ----------
-function paintBust(c,key,expr){const sp=bustSpecOf(key),g=bGeom(sp),sk=bSkin(sp),rng=bRng(bSeed(key)),hair=bHairDef(sp);
+function paintWolfBust(c){const g=c.createLinearGradient(0,60,0,420);g.addColorStop(0,'#8a8d93');g.addColorStop(1,'#55585e');c.fillStyle=g;
+ c.beginPath();c.moveTo(70,420);c.quadraticCurveTo(60,300,110,230);c.lineTo(95,95);c.lineTo(150,170);c.quadraticCurveTo(180,150,210,170);c.lineTo(265,95);c.lineTo(250,230);c.quadraticCurveTo(300,300,290,420);c.closePath();c.fill();
+ c.fillStyle='#b9b6ad';c.beginPath();c.moveTo(130,300);c.quadraticCurveTo(180,380,230,300);c.quadraticCurveTo(205,265,180,262);c.quadraticCurveTo(155,265,130,300);c.fill();
+ c.fillStyle='#3c3e43';c.beginPath();c.moveTo(105,110);c.lineTo(140,170);c.lineTo(120,175);c.closePath();c.fill();c.beginPath();c.moveTo(255,110);c.lineTo(220,170);c.lineTo(240,175);c.closePath();c.fill();
+ c.fillStyle='#e8c050';c.beginPath();c.ellipse(145,225,13,8,-.2,0,Math.PI*2);c.ellipse(215,225,13,8,.2,0,Math.PI*2);c.fill();c.fillStyle='#16151a';c.beginPath();c.ellipse(145,225,4,7,0,0,Math.PI*2);c.ellipse(215,225,4,7,0,0,Math.PI*2);c.fill();
+ c.beginPath();c.ellipse(180,300,16,10,0,0,Math.PI*2);c.fill();c.strokeStyle='#2a2a2e';c.lineWidth=3;c.beginPath();c.moveTo(180,310);c.lineTo(180,325);c.moveTo(160,330);c.quadraticCurveTo(180,342,200,330);c.stroke();}
+function paintBust(c,key,expr){if(key==='wolf')return paintWolfBust(c);const sp=bustSpecOf(key),g=bGeom(sp),sk=bSkin(sp),rng=bRng(bSeed(key)),hair=bHairDef(sp);
  c.save();if(sp.face==='f'){c.translate(188,0);c.scale(.92,1);c.translate(-188,0);}
  if(sp.hood)bHoodBack(c,sp);bBackHair(c,sp);if(sp.quiver)bQuiver(c);bNeck(c,sk,g);bOutfit(c,sp,rng,sk);if(sp.hoodDown)bHoodDown(c,sp.hoodDown);if(sp.outfit==='leather'&&sp.hoodDown){bEll(c,188,292,10,8);c.fillStyle=sp.trim;c.fill();}
  c.restore();c.save();c.translate(186,270);c.scale(1.1,1.1);c.translate(-186,-262);

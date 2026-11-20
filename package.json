@@ -74,7 +74,8 @@
     "test:migration-v0102": "node tests/migration-v0102.mjs",
     "test:v200": "node tests/v200-e2e.mjs",
     "test:v210": "node tests/v210-e2e.mjs",
-    "test:v230": "node tests/v230-e2e.mjs"
+    "test:v230": "node tests/v230-e2e.mjs",
+    "test:v231": "node tests/v231-e2e.mjs"
   },
   "devDependencies": {
     "playwright": "1.58.2"

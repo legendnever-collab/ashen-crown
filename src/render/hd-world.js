@@ -47,7 +47,7 @@ const ENEMY_LOOK={9:{spear:'mercSpear',archer:'archer',assassin:'assassin',capta
 const STAGE_LOOK={oswin:'lordA',brennan:'lordB',councilor:'councillor',teacher:'liaTeacher',sup:'greyMaster',bellard:'bellard'}; // v0.9.2: the teacher, the old superior, Bellard
 // v2.0.0 부장: in camps and scenes an officer wears their class's figure (pack H1's tier sheet when it is in, else a close one).
 const OFFICER_LOOK={bram:['spear','ironSpear'],noa:['archer','archer'],marta:['shield','bearer'],rowell:['cavalry','cavalry'],
- sera:['spear','ironSpear'],orin:['mage','councillor'],celine:['healer','pilgrim'],ren:['rogue','grayCloak'],silva:['archer','forester'],adel:['spear','mercSpear']}; /* v2.1: the hires and the rescued hero */
+ sera:['spear','ironSpear'],orin:['mage','councillor'],celine:['healer','pilgrim'],ren:['rogue','grayCloak'],silva:['archer','forester'],adel:['spear','mercSpear'],gunnar:['infantry','ironInfantry']}; /* v2.1: the hires and the rescued hero */
 export function hdCastFor(u,missionId=1){
  if(OFFICER_LOOK[u?.id]&&u.team!=='enemy'){const [cls,temp]=OFFICER_LOOK[u.id],t=Math.max(1,Math.min(3,u.classTier||1));return SPRITES?.[`class_${cls}_${t}`]?`class_${cls}_${t}`:temp;}
  if(u.look&&CAST[u.look])return u.look; // v0.6: mission data may name a look (allied escorts, Baldrick, ACT II troops)
@@ -62,6 +62,7 @@ export function hdCastFor(u,missionId=1){
  if(missionId===6&&u.team==='enemy'&&/^g\d/.test(u.id))return 'fortGuard';
  if(missionId===6&&u.id==='i1')return 'inspector';
  if(u.id==='adelc')return SPRITES?.class_spear_1?'class_spear_1':'mercSpear'; // v2.1: the besieged spearknight before he joins
+ if(u.id==='gunnarc')return 'ironInfantry'; // v2.3.1: the axeman of 서리목 before he joins (a painted soldier; the class sheet's magenta needs the side tint)
  if(u.team==='civilian'){const n=String(u.name||'');return /Mira|미라/.test(n)?'mira':/Tomas|토마스/.test(n)?'farmer':CAST[u.id]?u.id:'refugee';}
  if(u.burns)return 'torch';
  if(missionId===4&&/^r\d/.test(u.id))return 'storeman';

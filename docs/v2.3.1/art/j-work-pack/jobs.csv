@@ -1,0 +1,8 @@
+order,part,kind,id,expression,file,size,references,prompt_file
+1,A,bust,gunnar,neutral,bust_gunnar_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_dario.png",prompts/01_bust_gunnar_neutral.txt
+2,A,bust,gunnar,concerned,bust_gunnar_concerned.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_dario.png",prompts/02_bust_gunnar_concerned.txt
+3,A,bust,gunnar,determined,bust_gunnar_determined.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_dario.png",prompts/03_bust_gunnar_determined.txt
+4,B,hub,hub_frost,,hub_frost.jpg,1536x1024,"layout_hub_village.png, approved_hub_village_day.jpg, approved_hub_stonewell.jpg, approved_hub_capital.jpg, scale_reference.png, sprite_eric_sheet.png",prompts/04_hub_frost.txt
+5,B,hub,hub_saltport,,hub_saltport.jpg,1536x1024,"layout_hub_village.png, approved_hub_village_day.jpg, approved_hub_reed.jpg, approved_hub_capital.jpg, scale_reference.png, sprite_eric_sheet.png",prompts/05_hub_saltport.txt
+6,C,sprite,wolf,,sprite_wolf.png,1024x768,"ref_sprite_ironInfantry.png, style_aren_neutral.png, ref_wolf_ingame.png",prompts/06_sprite_wolf.txt
+7,C,bust,wolf,neutral,bust_wolf_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_wolf_ingame.png",prompts/07_bust_wolf_neutral.txt

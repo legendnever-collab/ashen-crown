@@ -57,7 +57,7 @@ test("Velmar's rare-goods shelf: one specialty of another town at +25%, bought o
 });
 
 test('revisiting a town: from the M09 camp to Ironhold and back; heroes stay in camp, no council there, the save keeps the visit',()=>{
- const s=hubAt(9,8);assert.deepEqual(revisitTowns(s).map(t=>t.hub),['village_raid','castletown','reed','stonewell'],'v2.1: the small villages opened by M04');assert.ok(!travelTo(s,'velmar'),'not the camp itself');
+ const s=hubAt(9,8);assert.deepEqual(revisitTowns(s).map(t=>t.hub),['village_raid','castletown','reed','stonewell','frost'],'v2.1: the small villages opened by M04 (v2.3.1: 서리목 by M08)');assert.ok(!travelTo(s,'velmar'),'not the camp itself');
  assert.ok(travelTo(s,'castletown'));assert.equal(s.frontier.hub,'castletown');assert.equal(s.frontier.revisit,'velmar');
  const h=currentHub(s);assert.ok(!h.npcs.some(n=>['aren','lia','advisor','eric','thea'].includes(n.id)));assert.ok(h.npcs.some(n=>n.id==='elder'));assert.ok(!h.places.some(p=>p.action==='enter'&&p.interior!=='tavern'),'no generic rooms (no chests) on a revisit — only the tavern (v2.1)');
  assert.ok(!openCouncil(s));assert.equal(shelfState(s,'plateCuirass').state,'sale','armor unlocked by M08, bought on the way back');assert.ok(tx(s,'buy-gear','plateCuirass','eric').ok);

@@ -2,7 +2,7 @@
 // skirmishes (missions 120–124) fought by the sortie the legion picks; a win pays the reward into the legion's purse and,
 // for the besieged spearknight, brings Adel into the legion. Requests without a battle trade items or gold at the board.
 // The bounty opens again after every story mission won.
-import {REQUESTS,VILLAGES} from '../data/villages-v210.js';
+import {REQUESTS,VILLAGES,requestVillages} from '../data/villages-v210.js';
 import {MISSIONS} from '../data/missions.js';
 import {newGame,startBattle,deployLimit} from './game.js';
 import {findUnit} from './rules.js';
@@ -20,11 +20,11 @@ export const requestKey=(c,id)=>REQUESTS[id]?.repeat?`${id}:${winsOf(c).length}`
 export function requestState(s,id){const r=REQUESTS[id],c=s.campaign,e=ensureEconomy(s);if(!r)return null;
  const done=(e.requests||[]).includes(requestKey(c,id)),rescued=r.rescue&&c.roster?.includes(r.rescue);
  return {id,...r,done:done||!!rescued,again:r.repeat&&!done&&(e.requests||[]).some(k=>k.startsWith(`${id}:`))};}
-export function requestsAt(s,v){return Object.keys(REQUESTS).filter(id=>REQUESTS[id].village===v||REQUESTS[id].village==='both'&&VILLAGES[v]).map(id=>requestState(s,id));}
-export function canStartRequest(s,id){const v=atVillage(s),r=REQUESTS[id];if(!v||!r||r.kind!=='battle')return false;if(r.village!==v&&r.village!=='both')return false;
+export function requestsAt(s,v){return Object.keys(REQUESTS).filter(id=>requestVillages(REQUESTS[id]).includes(v)).map(id=>requestState(s,id));}
+export function canStartRequest(s,id){const v=atVillage(s),r=REQUESTS[id];if(!v||!r||r.kind!=='battle')return false;if(!requestVillages(r).includes(v))return false;
  return Array.isArray(s.campaign?.heroes)&&!requestState(s,id).done;}
 // A request without a battle: hand over items or gold at the board (economy op 'request-pay').
-export function payRequest(s,id){const v=atVillage(s),r=REQUESTS[id];if(!v||!r||r.kind!=='pay'||r.village!==v)return {ok:false,error:'이 마을의 의뢰가 아닙니다.'};
+export function payRequest(s,id){const v=atVillage(s),r=REQUESTS[id];if(!v||!r||r.kind!=='pay'||!requestVillages(r).includes(v))return {ok:false,error:'이 마을의 의뢰가 아닙니다.'};
  const e=ensureEconomy(s);return transact(s,{op:'request-pay',id,token:`tx:${e.nonce}`});}
 // Builds the request battle with the chosen sortie (ids, Erik first if there is room). Returns the battle state or null.
 export function startRequest(camp,id,sortie=[]){if(!canStartRequest(camp,id))return null;const r=REQUESTS[id],mid=r.mission,m=MISSIONS[mid];

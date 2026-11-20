@@ -26,6 +26,9 @@ function roadRoute(s,p){const m=missionOf(s),start=key(p.x,p.y),prev=new Map([[s
   for(const [dx,dy] of [[0,-1],[-1,0],[1,0],[0,1]]){const x=c.x+dx,y=c.y+dy,k=key(x,y);if(prev.has(k)||!m.road.includes(m.map[y]?.[x]))continue;prev.set(k,key(c.x,c.y));q.push({x,y});}}
  if(!goal)return [];const path=[];let k=key(goal.x,goal.y);while(k&&k!==start){const [x,y]=k.split(',').map(Number);path.unshift({x,y});k=prev.get(k);}return path;}
 const blocker=(s,x,y)=>s.units.find(u=>alive(u)&&u.x===x&&u.y===y);
+// v2.3.1 (D-131): on the switchback a tile is ahead of a pilgrim when it lies on that pilgrim's way to the sanctuary
+// (the small map's road ran straight up, so "ahead" was "higher up").
+export function roadAhead(s,x,y){return pilgrimsOf(s).some(p=>alive(p)&&!p.rescued&&roadRoute(s,p).some(c=>c.x===x&&c.y===y));}
 function marchPilgrims(s){const m=missionOf(s);
  for(const p of pilgrimsOf(s).filter(alive).sort((a,b)=>a.y-b.y||a.x-b.x)){
   if(s.units.some(e=>e.team==='enemy'&&alive(e)&&distance(e,p)===1)){s.log.push(`${p.name}: 적이 곁에 있어 멈춰 섭니다.`);continue;}
@@ -40,7 +43,7 @@ function healLitPilgrims(s){for(const p of pilgrimsOf(s).filter(alive)){if(!litA
 // Escorts keep beside the nearest pilgrim still on the road (leash 2), never park on the road ahead of one, and strike
 // whatever comes close.
 function escortPlan(s,u,reachable,label){const flock=pilgrimsOf(s).filter(alive),m=missionOf(s);
- const post=flock.length?flock.sort((a,b)=>distance(u,a)-distance(u,b))[0]:null,ahead=(x,y)=>m.road.includes(m.map[y]?.[x])&&flock.some(p=>p.x===x&&p.y>y);
+ const post=flock.length?flock.sort((a,b)=>distance(u,a)-distance(u,b))[0]:null,ahead=(x,y)=>m.road.includes(m.map[y]?.[x])&&roadAhead(s,x,y);
  const cells=[...reachable].map(([k,c])=>{const [x,y]=k.split(',').map(Number);return {x,y,c};}).filter(p=>(!post||distance(p,post)<=2)&&(!ahead(p.x,p.y)||p.x===u.x&&p.y===u.y));
  if(!cells.length)return {x:u.x,y:u.y,target:null,reason:`${label} 대기`};
  let best=null;for(const p of cells)for(const t of s.units.filter(t=>alive(t)&&hostile(s,u,t))){const d=distance(p,t);if(d<u.range[0]||d>u.range[1])continue;
