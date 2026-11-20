@@ -12,6 +12,8 @@ import {RECRUIT_OF} from './mission-rules-v071.js';
 import {joinRoster,recruitRecord} from './roster.js';
 import {startDuel} from './duel.js';
 import {TERRAIN_COSTS} from '../data/game-data.js';
+import {ACT3_COUNTS} from '../data/missions-v240.js';
+const STONE_IDS=Array.from({length:ACT3_COUNTS.stones16},(_,i)=>`st${i+1}`); // v2.4.0: four ward stones on the big map
 
 // A strike or, failing that, a step toward the goal — scored like the M14 planners. targets: units this enemy may hit.
 function strikeOrApproach(s,u,reachable,targets,goal,bonus=()=>0){let best=null;
@@ -81,10 +83,10 @@ export const M16={
   for(const a of s.units.filter(u=>RETURNERS[u.id])){const id=RETURNERS[a.id];if(!back.includes(id)){a.benched=true;a.withdrawn=true;continue;}
    const rec=c.departed?.[id]||recruitRecord(id,13),keep=['level','maxHP','maxMP','atk','def','mag','res','spd','mov','range','movementProfile','classTier','stats','cls','healPow','critBase'];for(const k of keep)if(rec[k]!==undefined)a[k]=structuredClone(rec[k]);a.noScale=true; /* v2.0.0: a named hero keeps the record, not the sortie scale */a.hp=a.maxHP;a.mp=a.maxMP;a.benched=true;a.kind=id==='thea'?'cavalry':id==='ines'?'soldier':'soldier';}},
  clearLabel:'잊힌 전장의 수확자 격파',
- validState(m){return !!m&&typeof m==='object'&&Array.isArray(m.waves)&&m.waves.every(n=>Number.isInteger(n)&&n>0)&&Array.isArray(m.searched)&&m.searched.every(id=>['st1','st2','st3'].includes(id))&&new Set(m.searched).size===m.searched.length&&Array.isArray(m.clear)&&m.clear.length===m.searched.length&&m.clear.every(c=>Array.isArray(c)&&c.length===3&&c.every(Number.isInteger))&&Number.isInteger(m.harvested)&&m.harvested>=0&&!!FACTIONS[m.banner]&&Array.isArray(m.returning)&&m.returning.every(id=>['thea','dario','ines'].includes(id))&&typeof m.duelDone==='boolean';},
+ validState(m){return !!m&&typeof m==='object'&&Array.isArray(m.waves)&&m.waves.every(n=>Number.isInteger(n)&&n>0)&&Array.isArray(m.searched)&&m.searched.every(id=>STONE_IDS.includes(id))&&new Set(m.searched).size===m.searched.length&&Array.isArray(m.clear)&&m.clear.length===m.searched.length&&m.clear.every(c=>Array.isArray(c)&&c.length===3&&c.every(Number.isInteger))&&Number.isInteger(m.harvested)&&m.harvested>=0&&!!FACTIONS[m.banner]&&Array.isArray(m.returning)&&m.returning.every(id=>['thea','dario','ines'].includes(id))&&typeof m.duelDone==='boolean';},
  status(s){const m=missionOf(s),st=s.missionState,down=harvesters16(s).filter(h=>!alive(h)).length,back=st.returning.map(id=>s.units.find(u=>RETURNERS[u.id]===id)).filter(u=>u&&!u.benched);
-  return `수확자 격파 ${down}/2 · 결계석 조사 ${st.searched.length}/3${back.length?` · 돌아온 동료 ${back.filter(u=>u.hp>0).length}/${back.length}`:''} · 안개 · ${Math.max(0,m.turnLimit+1-s.turn)}턴 남음`;},
- optional(s){const f=s.campaign.flags;return `결계석 ${f.mission_16_echoes??s.missionState?.searched.length??0}/3 · 일기토 ${({hero:'승리',foe:'패배',skipped:'거절'})[f.mission_16_duel]||'—'}`;},
+  return `수확자 격파 ${down}/2 · 결계석 조사 ${st.searched.length}/${STONE_IDS.length}${back.length?` · 돌아온 동료 ${back.filter(u=>u.hp>0).length}/${back.length}`:''} · 안개 · ${Math.max(0,m.turnLimit+1-s.turn)}턴 남음`;},
+ optional(s){const f=s.campaign.flags;return `결계석 ${f.mission_16_echoes??s.missionState?.searched.length??0}/${STONE_IDS.length} · 일기토 ${({hero:'승리',foe:'패배',skipped:'거절'})[f.mission_16_duel]||'—'}`;},
  onTurnStart(s){const m=missionOf(s),st=s.missionState;act2Waves(s);
   if(s.turn===m.returnTurn)for(const a of s.units.filter(u=>RETURNERS[u.id]&&st.returning.includes(RETURNERS[u.id])&&u.benched&&!u.withdrawn&&u.hp>0)){a.benched=false;a.moved=false;a.acted=false;if(s.units.some(o=>o!==a&&alive(o)&&o.x===a.x&&o.y===a.y)){for(let y=m.height-1;y>=0;y--){const t=terrainAt(0,y,s);if(Number.isFinite(t?.cost)&&!s.units.some(o=>alive(o)&&o.x===0&&o.y===y)){a.x=0;a.y=y;break;}}}
    s.feedback.push({type:'spawn',id:a.id,text:'돌아옴'});s.log.push(`${a.name}이(가) 안개 속에서 나타났습니다. 군단 곁에서 싸웁니다.`);enqueueStory(s,`16:return:${RETURNERS[a.id]}`);}
@@ -103,7 +105,7 @@ export const M16={
   enqueueStory(s,t.id==='st3'&&u.id==='elina'?'16:echo:st3:elina':`16:echo:${t.id}`);return true;},
  afterDamage(s,v){if(RETURNERS[v.id]&&v.hp<=0)enqueueStory(s,`16:fallen:${RETURNERS[v.id]}`);},
  checkOutcome(s,finish){const m=missionOf(s);
-  if(harvesters16(s).every(h=>!alive(h)))return finish(s,'victory',`기억 수확자 격파 · 결계석 ${s.missionState.searched.length}/3 조사.`);
+  if(harvesters16(s).every(h=>!alive(h)))return finish(s,'victory',`기억 수확자 격파 · 결계석 ${s.missionState.searched.length}/${STONE_IDS.length} 조사.`);
   if(s.turn>m.turnLimit)return finish(s,'defeat',`제한 ${m.turnLimit}턴 안에 수확자를 막지 못했습니다.`);},
  beforeCommit(s){const st=s.missionState;setStoryFlag(s,'mission_16_echoes',st.searched.length);setStoryFlag(s,'mission_16_duel',s.duel?.result||'none');
   for(const id of st.returning){const a=s.units.find(u=>RETURNERS[u.id]===id);setStoryFlag(s,`mission_16_return_${id}`,a&&a.hp>0&&!a.benched?'joined':'lost');}},

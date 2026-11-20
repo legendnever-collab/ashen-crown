@@ -2,6 +2,7 @@
 // hidden objective (숨은 전과) per mission, supply carriers, the towns the legion can revisit and the cut-in lines.
 // Names, slots, heroes and prices come from catalog-v08.js; this file adds the numbers the rules use.
 import {CATALOG_GEAR,CATALOG_TREASURES} from './catalog-v08.js';
+import {ACT3_COUNTS} from './missions-v240.js';
 // Gear growth (조조전식): EXP to reach each star (index = star − 1). Normal gear ★1–3, treasures ★1–5.
 export const STAR_EXP={gear:[0,30,80],treasure:[0,30,80,150,240]};
 // 단련 (forge tempering) price for a full star, by tier (I keeps the v0.3 +1 price of 40 for ★1→★2).
@@ -111,9 +112,9 @@ export const FEATS={
  14:featDef(14,'allianceSeal','지도자와 호위 모두 살아서 TURN 10 안에 빠져나간다',(s,bf)=>(bf.mission_14_escort||0)>=6&&s.turn<=10),
  // v0.9.0 ACT III (D-079, PROPOSED)
  15:featDef(15,'archivistLens','기록 상자 셋을 모두 확보하고 왕도 경비대의 경고를 한 번도 받지 않는다',(s,bf)=>bf.mission_15_boxes===3&&bf.mission_15_watch==='calm'),
- 16:featDef(16,'mistLantern','결계석 셋을 모두 조사하고 아무도 쓰러지지 않는다',(s,bf,fell)=>bf.mission_16_echoes===3&&!fell),
- 17:featDef(17,'oathBadge','수호 석상 넷을 모두 맹세로 깨우고 서고를 한 번도 밟히지 않는다',(s,bf)=>bf.mission_17_sworn===4&&bf.mission_17_archive==='clean'),
- 18:featDef(18,'groveLeaf','결계 고목 셋과 숲지기 여섯을 모두 지킨다',(s,bf)=>bf.mission_18_trees===3&&bf.mission_18_keepers===6),
+ 16:featDef(16,'mistLantern','결계석 넷을 모두 조사하고 아무도 쓰러지지 않는다',(s,bf,fell)=>bf.mission_16_echoes===ACT3_COUNTS.stones16&&!fell),
+ 17:featDef(17,'oathBadge','수호 석상 여섯을 모두 맹세로 깨우고 서고를 한 번도 밟히지 않는다',(s,bf)=>bf.mission_17_sworn===ACT3_COUNTS.statues17&&bf.mission_17_archive==='clean'),
+ 18:featDef(18,'groveLeaf','결계 고목 셋과 숲지기 여덟을 모두 지킨다',(s,bf)=>bf.mission_18_trees===3&&bf.mission_18_keepers===ACT3_COUNTS.keepers18),
  // v0.9.2 (D-089, PROPOSED)
  19:featDef(19,'teacherQuill','의식진 넷을 모두 끄고 포로 누구도 이름을 잊지 않는다',(s,bf)=>bf.mission_19_unsealed===4&&bf.mission_19_remembered===4),
  20:featDef(20,'greyLedger','서가 셋을 모두 조사하고 주민 여섯을 모두 대피시킨다',(s,bf)=>bf.mission_20_cabinets===3&&bf.mission_20_residents===6),

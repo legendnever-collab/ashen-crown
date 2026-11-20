@@ -17,9 +17,9 @@ const load=name=>deserialize(fixture(name).save);
 test('fixtures are genuine v0.7.1 schema-9 saves',()=>{for(const n of ['m14-camp','m14-battle']){const f=fixture(n);assert.equal(f.version,'0.7.1');assert.equal(f.schema,9);assert.equal(raw(n).version,'0.7.1');}});
 
 test('the v0.7.1 end-of-content camp (summit after M14, ACT II complete) loads as schema 10 with every asset kept',()=>{
- const before=raw('m14-camp'),s=load('m14-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,23);assert.equal(s.version,VERSION);assert.equal(s.frontier.hub,'summit');
+ const before=raw('m14-camp'),s=load('m14-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,24);assert.equal(s.version,VERSION);assert.equal(s.frontier.hub,'summit');
  for(const k of ['completed','flags','choices','promotions','factionTrust','trustLog','roster'])keptV200(s.campaign,before.campaign,k);assert.deepEqual(econV200(s.campaign.economy),econV200(arms081View(before.campaign.economy)),'economy');
- assert.ok(s.campaign.flags.act2_completed);assert.equal(deserialize(serialize(s)).schema,23);
+ assert.ok(s.campaign.flags.act2_completed);assert.equal(deserialize(serialize(s)).schema,24);
 });
 
 test('the heroes of that save know their new skills; every tool is on sale; the bag holds eight',()=>{

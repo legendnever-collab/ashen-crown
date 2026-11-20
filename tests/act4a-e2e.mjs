@@ -31,7 +31,7 @@ try{
   await p.goto(url);await press('new');await drainStory(p);
   // 1. the real v0.9.3 lower city offers Mission 23; the ACT IV card; the alliance camp
   await restore(camp22);await drainStory(p);await closeModals();let s=await snap();
-  check(`${label} the v0.9.3 lower city (ACT III complete) offers Mission 23`,s.schema===23&&s.frontier.hub==='capital'&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 23'));
+  check(`${label} the v0.9.3 lower city (ACT III complete) offers Mission 23`,s.schema===24&&s.frontier.hub==='capital'&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 23'));
   await press('next-mission');await p.waitForTimeout(400);let cardSeen=false;for(let i=0;i<40;i++){const t=await body();if(t.includes('ACT IV · 잿빛 왕관')){cardSeen=true;await p.screenshot({path:`${shots}/act4-card-${label}.png`});break;}if(!(await snap()).narrative.active)break;await p.keyboard.press('Enter').catch(()=>{});await p.waitForTimeout(150);}
   await drainStory(p);await closeModals();s=await snap();
   check(`${label} ACT IV opens with its world card and the alliance camp`,(cardSeen||s.narrative.seen.includes('world:alliance'))&&s.frontier.hub==='summit'&&s.missionId===23);
