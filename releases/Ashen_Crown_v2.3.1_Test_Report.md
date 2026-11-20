@@ -1,7 +1,7 @@
 # Ashen Crown v2.3.1 「ACT II 큰 맵 (2부)와 작은 마을」 — Test Report
 Updated 2026-11-20 KST. **Release candidate on feature/v2.3.1-act2 — not merged before the user plays and approves it.**
-- Decisions: D-128 (design), D-130 (v2.3.0 approved; v2.3.1 requested), D-131 (this implementation). Notes: docs/v2.3.1/RELEASE_NOTES.md.
-- HTML SHA256: see `releases/Ashen_Crown_v2.3.1_SHA256SUMS` (`index.html` is identical). Build 152785ad…, 46.5 MiB (budget: warn 80, fail 90).
+- Decisions: D-128 (design), D-130 (v2.3.0 approved; v2.3.1 requested), D-131 (this implementation), D-132 (art pack J imported). Notes: docs/v2.3.1/RELEASE_NOTES.md.
+- HTML SHA256: see `releases/Ashen_Crown_v2.3.1_SHA256SUMS` (`index.html` is identical). Build dadb500a…, 48.1 MiB with art pack J (budget: warn 80, fail 90).
 
 ## What changed
 - **ACT II M11–M14 on big maps** (src/data/missions-v231.js):
@@ -24,24 +24,34 @@ Updated 2026-11-20 KST. **Release candidate on feature/v2.3.1-act2 — not merge
 - **Wolves:** drawn by the game until art pack J part C.
 - **Balance:** 어려움 keeps 보통's numbers at M11. M15's enemy strength drops from ×0.95 to ×0.88.
 - **Saves:** schema 23 (imports 0–22). M11–M14 battle saves reopen in camp.
-- **Art pack J work order:** docs/v2.3.1/art/j-work-pack, 7 images.
+- **Art pack J (D-132):** the user returned the three parts (7 images, every master matched manifest and SHA256SUMS). Imported with scripts/import-art-pack-j.py:
+  - 군나르's busts: the unrequested magenta band is painted in the legion's blue.
+  - 서리목 and 소금항: used as delivered; overlaid on the walk mask they line up like the approved 갈대 나루.
+  - The wolf's sheet: scaled 1.25×, kept WebP, only the collar tinted by side. A tint bug (a string passed to willReadFrequently threw and left the collar magenta) is fixed.
+  - The wolf's portrait.
+  - The drawn wolf and wolf head remain only as fallbacks.
 
-## Results on this build (152785ad…, confirmed by a rebuild after the run)
-- **Unit tests, before packaging: 553 PASS / 1 FAIL / 16 skipped** (docs/v2.3.1/evidence/unit-results.txt).
+## Results on this build (dadb500a…, with art pack J; confirmed by a rebuild after the run)
+- **Unit tests, before the first packaging: 553 PASS / 1 FAIL / 16 skipped.** On the packaged build with art pack J: **555 PASS / 0 FAIL / 16 skipped** (docs/v2.3.1/evidence/unit-results.txt).
   - The one failure is the documentation link check: README links to the v2.3.1 release files, which only packaging creates.
-  - **After packaging: 554 PASS / 0 FAIL / 16 skipped.** scripts/verify-release.py passes (manifests, ZIP, byte-identical rebuild, unit tests).
+  - scripts/verify-release.py passes (manifests, ZIP, byte-identical rebuild, unit tests).
   - New tests:
-    - tests/villages-v231.test.mjs: the villages open; 군나르 joins; the discount; the salt cart and the taverns; every new request is won within three tries; the bounties.
+    - tests/villages-v231.test.mjs: the villages open; 군나르 joins; the discount; the salt cart and the taverns; every new request is won within three tries; the bounties; art pack J's files and logs.
     - difficulty-hard: the push for M11.
     - renaissance: start positions on M07–M14 and the request map sizes.
     - mission11–14: updated for the big maps.
-- **Browser and balance matrix, 68 suites (with the new v231): every suite's final exit is 0** (docs/v2.3.1/evidence/browser-run-summary.log; 2,370 `PASS` lines).
-  - Seven suites failed in the parallel run, each for one of these reasons:
-    - stale counts for the new content: act2c-campaign (five braziers, fourteen guards); migration-v080 and migration-v081 (the revisit lists now include the two new villages);
+- **Browser and balance matrix, 68 suites: every suite's final exit is 0** (docs/v2.3.1/evidence/browser-run-summary.log; 2,372 `PASS` lines).
+  - This is the second full run, on the build with art pack J.
+  - **act4d** failed in the parallel run: it timed out reading the page. It passed when rerun alone on the same build (38 checks).
+  - **The first full run** (before the art) had seven suites that failed in parallel. Each passed when rerun alone:
+    - stale counts for the new content: act2c-campaign, migration-v080 and migration-v081;
     - a syntax slip in the new v231 suite;
-    - click timeouts under parallel load: quality, migration-v040 and migration-v0102.
-  - After the fixes, each of the seven passed when rerun alone on the same build.
-- **v231 suite (24 checks):** at 1440 and 390, M11–M14 open on 24×20, 24×20, 28×18 and 24×18 with the minimap; 서리목 opens with its board; the blizzard request opens with 군나르 and the wolves. Screenshots are in docs/v2.3.1/screenshots.
+    - click timeouts: quality, migration-v040 and migration-v0102.
+- **v231 suite (26 checks):** at 1440 and 390:
+  - M11–M14 open on 24×20, 24×20, 28×18 and 24×18 with the minimap;
+  - 서리목 and 소금항 open with their paintings;
+  - the blizzard request opens with 군나르 and the wolves (red collars).
+  - Screenshots: docs/v2.3.1/screenshots.
 
 ## Balance (test player, campaign policy)
 
@@ -74,5 +84,4 @@ Updated 2026-11-20 KST. **Release candidate on feature/v2.3.1-act2 — not merge
 
 ## Not done in this version
 - **The archived builds stay in the tree:** 11 of 28 ARCHIVE.json versions have a Release, and the archive workflow has not been rerun.
-- **Art pack J has not been drawn:** only the work order exists.
 - **Not tested here:** native phones, Safari/WebKit and Firefox.
