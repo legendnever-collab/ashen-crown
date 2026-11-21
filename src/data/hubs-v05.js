@@ -246,7 +246,7 @@ HV5_SPECS.stonewell=smallVillage('Stonewell · 돌우물 마을','돌우물 촌�
 // v2.3.1 (D-131/D-132): the ACT II villages, painted on the small villages' footprint in art pack J part B.
 HV5_SPECS.frost=smallVillage('Frostneck · 서리목 마을','서리목 촌장','나무꾼','눈길 파수','hub_frost');
 HV5_SPECS.saltport=smallVillage('Saltport · 소금항','소금항 촌장','염전 일꾼','포구 파수','hub_saltport');
-// v2.4.1 (D-135): the ACT III villages borrow the small-village paintings with the same walk layout until art pack K
-HV5_SPECS.lamp=smallVillage('Lampvale · 등불골','등불골 촌장','등불지기','묘지 파수','hub_stonewell');
-HV5_SPECS.moss=smallVillage('Mossbridge · 이끼다리','이끼다리 촌장','약초꾼','숲길 파수','hub_reed');
+// v2.4.1 (D-135): the ACT III villages, painted by art pack K on the small-village footprint (D-139)
+HV5_SPECS.lamp=smallVillage('Lampvale · 등불골','등불골 촌장','등불지기','묘지 파수','hub_lamp');
+HV5_SPECS.moss=smallVillage('Mossbridge · 이끼다리','이끼다리 촌장','약초꾼','숲길 파수','hub_moss');
 export const ART_HUBS=Object.fromEntries(Object.entries(HV5_SPECS).map(([id,spec])=>[id,hv5Build(id,spec)]));

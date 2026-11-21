@@ -1,7 +1,7 @@
 # Ashen Crown v2.4.1 — ACT III 큰 맵 (2부)와 작은 마을
 The full four-act, 30-mission campaign (v1.0.0) on the v2.0 battle system (eight classes, six stats, big maps for ACT I, ACT II and ACT III), with taverns and hires, the world map, small villages, duels in their own window (v2.1–v2.2), AVIF paintings under a size budget (v2.2.1) 어려움 re-measured (v2.3.0) the ACT II villages with the rescued 군나르 (v2.3.1) the first four ACT III big maps (v2.4.0) and the rest with the ACT III villages and the rescued 마렌 (v2.4.1).
 
-**v2.4.1 is a release candidate (D-137); v2.4.0 was merged on 2026-11-21 (D-136, D-138).** Release candidates are never merged before the user plays and approves them. Earlier builds are GitHub Releases (releases/ARCHIVE.json; D-134).
+**v2.4.1 was merged on 2026-11-21 (D-140), with art pack K (D-139).** Release candidates are never merged before the user plays and approves them. Earlier builds are GitHub Releases (releases/ARCHIVE.json; D-134).
 
 - [Standalone HTML](releases/Ashen_Crown_v2.4.1.html)
 - [Source ZIP](releases/Ashen_Crown_v2.4.1_Source.zip)

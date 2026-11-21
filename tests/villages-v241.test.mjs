@@ -67,3 +67,11 @@ test('every ACT III request battle is winnable by the test policy; the bounties 
  assert.ok(requestsAt(s,'lamp').find(r=>r.id==='bountyCapital').done);s.campaign.completed.push(20);assert.ok(!requestsAt(s,'lamp').find(r=>r.id==='bountyCapital').done);
  assert.deepEqual(Object.keys(REQUESTS).filter(id=>REQUESTS[id].mission>=131).map(id=>REQUESTS[id].mission),[131,132,133,134,135,136]);
 });
+
+test('art pack K (D-139): 마렌\'s three busts and the two villages come from hash-verified masters, as AVIF',async()=>{
+ const {artFile,imageSize}=await import('./art-file.mjs');const {ART_HUBS}=await import('../src/data/hubs-v05.js');
+ const log=fs.readFileSync('src/assets/art-import-log.csv','utf8').trim().split(/\r?\n/).map(l=>l.split(','));
+ for(const e of ['neutral','concerned','determined']){assert.ok(log.some(r=>r[0]==='bust'&&r[1]==='maren'&&r[2]===e),e);const a=artFile('portraits',`bust_maren_${e}.webp`);assert.equal(a.format,'avif');assert.deepEqual(imageSize(a.bytes),[720,880]);}
+ const hubs=fs.readFileSync('src/assets/room-art-import-log.csv','utf8');for(const id of ['hub_lamp','hub_moss']){assert.ok(hubs.includes(`hub,${id},`),id);assert.deepEqual(imageSize(artFile('hubs',`${id}.webp`).bytes),[1536,1024]);}
+ assert.equal(ART_HUBS.lamp.art,'hub_lamp');assert.equal(ART_HUBS.moss.art,'hub_moss');
+});

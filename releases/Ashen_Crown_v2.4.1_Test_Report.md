@@ -1,5 +1,5 @@
 # Ashen Crown v2.4.1 「ACT III 큰 맵 (2부)와 왕도 둘레의 작은 마을」 — Test Report
-Updated 2026-11-21 KST. **Release candidate — not merged before the user plays and approves it.**
+Updated 2026-11-21 KST. **Merged (PR #39; approved by the user 2026-11-21 15:01 with art pack K, D-140).**
 - Decisions: D-135 (the v2.4 design), D-137 (this implementation), D-138 (v2.4.0 merged). Notes: docs/v2.4.1/RELEASE_NOTES.md.
 - HTML SHA256: see `releases/Ashen_Crown_v2.4.1_SHA256SUMS` (`index.html` is identical).
 
@@ -17,8 +17,8 @@ Updated 2026-11-21 KST. **Release candidate — not merged before the user plays
   - m.captainBox keeps each captain inside a box until his turn; m.arriveCols places M22's arrivals.
   - The "all" hidden objectives and rewards follow M20's new counts.
 - **ACT III villages:** 등불골 opens with M16 and 이끼다리 with M18 (requests, tavern, shops). Requests 131–136 with two bounties; the 이끼다리 bridge discount at 왕도 하층가, 이끼다리 and 등불골 (discounts are read from the request data); the 등불골 tavern's wanderers (세라, 오린, 셀린).
-- **마렌** joins from 「잿빛 안개 속 약초꾼」: rogue; swamp costs her 1; she grows like a hero; camp lines, 열전 and epilogue lines. Borrowed art (Elina's bust; the 돌우물 and 갈대 나루 paintings) until art pack K.
-- **Art pack K work order:** docs/v2.4.1/art/k-work-pack (5 images), made by scripts/make-v241-k-art-pack.py.
+- **마렌** joins from 「잿빛 안개 속 약초꾼」: rogue; swamp costs her 1; she grows like a hero; camp lines, 열전 and epilogue lines. Her busts and the two villages come from art pack K (D-139).
+- **Art pack K (D-139):** work order docs/v2.4.1/art/k-work-pack (scripts/make-v241-k-art-pack.py); returned 5 images, all hash-verified, imported with scripts/import-art-pack-k.py as AVIF (SSIM 0.973–0.981; build 49.3 MiB). After the import: unit tests 561 PASS / 0 FAIL (the art test in villages-v241, counts in portraits, rooms and size-budget), v241 suite 26 checks, hub-doors (165/165 door tiles clear, 12/12 houses entered).
 - **어려움:** M19 half push, M20 and M22 at 보통's numbers.
 - **Saves:** schema 25 (imports 0–24). M19–M22 battle saves reopen in camp.
 - **Font:** two syllables added to the embedded font (scripts/font-subset.py).
@@ -58,6 +58,5 @@ Updated 2026-11-21 KST. **Release candidate — not merged before the user plays
 - **Open:** in the chain, 어려움 M19–M22 are still low (4/12, 4/9) and few campaigns reach M21–M23 (5, 3, 3); M23 went 0/3. To be measured with more seeds and tuned with the play-test.
 
 ## Not done in this version
-- **Art pack K** is a work order only; the game borrows art until it returns.
 - **Three builds stay in the tree:** v2.2.1, v2.3.0 and v2.3.1 (ARCHIVE.json); after the user reruns Actions → Archive old builds, the next version removes them.
 - **Not tested here:** native phones, Safari/WebKit and Firefox.

@@ -1,8 +1,8 @@
 # v2.4.1 — ACT III 큰 맵 (2부)와 왕도 둘레의 작은 마을
-- Release candidate (D-137); not merged before the user plays and approves it, and only after v2.4.0. Notes docs/v2.4.1/RELEASE_NOTES.md.
+- Merged (PR #39; approved 2026-11-21 15:01 with art pack K, D-140). Built under D-137. Notes docs/v2.4.1/RELEASE_NOTES.md.
 - ACT III M19–M22 on big maps (src/data/missions-v241.js): M19 rite vault 28×20 from the central gallery (10+4), M20 archive and lower city 28×22 (four cabinets, three clerks, eight residents, 10+6, ×0.82), M21 palace 24×24 with the anchors at the wing mouths (12+7, ×0.97), M22 square 28×22 with the daises in the middle (6+12). Rules, story, duels unchanged; m.captainBox replaces the captains' fixed rows; m.arriveCols for M22's arrivals.
 - ACT III villages 등불골 (M16) and 이끼다리 (M18): six requests and two bounties (missions 131–136), the 이끼다리 bridge discount at the capital, 이끼다리 and 등불골 (discounts now read from the request data), the 등불골 tavern's wanderers.
-- 마렌 joins from 「잿빛 안개 속 약초꾼」: rogue, swamp costs her 1, camp lines, 열전, epilogue lines. Borrowed art until art pack K (docs/v2.4.1/art/k-work-pack, 5 images; scripts/make-v241-k-art-pack.py).
+- 마렌 joins from 「잿빛 안개 속 약초꾼」: rogue, swamp costs her 1, camp lines, 열전, epilogue lines. Art pack K (docs/v2.4.1/art/k-work-pack, 5 images) returned and imported (D-139): 마렌's busts, 등불골 and 이끼다리 (scripts/import-art-pack-k.py).
 - 어려움: M19 half push, M20 and M22 at 보통's numbers.
 - Schema 25 (imports 0–24). Font glyphs extended (scripts/font-subset.py).
 - Tests: tests/villages-v241.test.mjs, tests/v241-e2e.mjs, mission19–22 on the big maps.
