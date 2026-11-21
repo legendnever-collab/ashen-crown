@@ -24,7 +24,7 @@ Updated 2026-11-21 KST. **Release candidate — not merged before the user plays
 - **Font:** two syllables added to the embedded font (scripts/font-subset.py).
 
 ## Results on this build
-- **Unit tests before packaging: 561 PASS / 0 FAIL / 16 skipped.** See docs/v2.4.1/evidence/unit-results.txt for the packaged build.
+- **Unit tests on the packaged build: 561 PASS / 0 FAIL / 16 skipped** (docs/v2.4.1/evidence/unit-results.txt; the 16 are pinned on the pre-v2.0 maps, D-115).
   - New: tests/villages-v241.test.mjs (villages open, 마렌 joins, the discount, the lamp oil and the tavern, every new request won within three tries, the bounties).
   - Updated: mission19–22 for the big maps; start positions on M07–M22 and the request map sizes (renaissance); the 어려움 push (difficulty-hard); strengths (playtest-d126); names, stats8 and hubs for 마렌 and the villages.
 - **Browser and balance matrix, 70 suites: every suite's final exit is 0** (docs/v2.4.1/evidence/browser-run-summary.log; 2,420 `PASS` lines).
@@ -48,7 +48,14 @@ Updated 2026-11-21 KST. **Release candidate — not merged before the user plays
   - **M21:** anchors at the far corners 0/13 (the king fell) → anchors at the wing mouths, 9+6 12/13; 14+10 6/26; 12+8 17/26; 12+7 ×0.95 22/26 (set to ×0.97).
   - **M22:** 12+16 0/12 (two heralds down by TURN 3) → daises in the middle: 6+11 11/12, 12+16 4/12, 7+12 15/24, 6+12 20/24.
 
-**어려움, first try** (act2-balance with ASHEN_DIFFICULTY=hard, 20 seeds): see the table below once the run ends.
+**어려움, first try** (act2-balance with ASHEN_DIFFICULTY=hard, 20 seeds):
+
+| | M15 | M16 | M17 | M18 | M19 | M20 | M21 | M22 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| First try | 9/14 | 8/13 | 9/12 | 7/12 | 4/12 | 4/9 | 2/5 | 2/3 |
+
+- Replaying the 보통 camps on 어려움: M19 5/15 at full push → 8/15 at half; M20 2/14 → 7/14 and M22 3/12 → 9/12 at 보통's numbers; M21 9/13.
+- **Open:** in the chain, 어려움 M19–M22 are still low (4/12, 4/9) and few campaigns reach M21–M23 (5, 3, 3); M23 went 0/3. To be measured with more seeds and tuned with the play-test.
 
 ## Not done in this version
 - **Art pack K** is a work order only; the game borrows art until it returns.
