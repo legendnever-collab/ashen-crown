@@ -1,6 +1,7 @@
 // v2.1 「주점과 세계지도」 in the browser (D-118): the five start alone; the tavern's 인재 확보 hires Bram; leaving the camp opens
 // the world map with the small villages M04 opened; the reed request board, the request sortie and its battle; a duel
 // event when Erik stands beside Garr (no challenge command); the sortie board on the deployment screen. 1440 and 390.
+import {VERSION} from '../src/data/game-data.js';
 import {waitDuelScene} from './duel-helper.mjs';import {launchTestBrowser} from './browser-helper.mjs';import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {pathToFileURL} from 'node:url';import {drainStory} from './story-helper.mjs';
 import {newGame,startBattle,nextMission} from '../src/core/game.js';import {enterHub,currentHub,enterInterior} from '../src/core/frontier.js';import {hire} from '../src/core/tavern.js';import {serialize} from '../src/persistence/save-manager.js';import {findUnit} from '../src/core/rules.js';
 import {playBattle} from './player-policy.mjs';import {playCampaignBattle,drain} from './campaign-policy.mjs';
@@ -25,7 +26,7 @@ try{for(const [width,height,touch] of [[1440,900,false],[390,844,true]]){const l
  const snap=()=>p.evaluate(()=>AshenCrown.snapshot());
  const restore=async text=>{await drainStory(p);await click('[data-do="menu"]');await click('[data-do="backup"]');await p.locator('#backup-text').fill(text);await click('[data-do="restore"]');await p.waitForFunction(()=>!AshenCrown.view().busy);await p.waitForTimeout(300);await drainStory(p);};
  await p.goto(pathToFileURL(path.resolve('build/Ashen_Crown.html')).href);await p.waitForFunction(()=>!!window.AshenCrown);
- check(`${label} the page is the current version`,await p.evaluate(()=>AshenCrown.version)==='2.4.1');
+ check(`${label} the page is the current version`,await p.evaluate(()=>AshenCrown.version)===VERSION);
  await click('[data-do="new"]');await drainStory(p);let s=await snap();
  check(`${label} a new campaign is the five alone (no officers in the legion or the camp)`,s.campaign.roster.length===0&&s.units.filter(u=>u.team==='ally').map(u=>u.id).join()==='eric,elina,lia,sain,kai'&&!(await p.evaluate(()=>AshenCrown.view().hubNpcs||[])).some?.(id=>['bram','noa','marta'].includes(id)));
  // Play-test (D-120): the town pace — holding a direction for ~1 s walks at most five tiles (one per 210 ms; it was ten).

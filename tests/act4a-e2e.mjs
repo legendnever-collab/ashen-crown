@@ -16,7 +16,7 @@ function m23Won(){const s=nextMission(ready());s.screen='deployment';startBattle
 function m24(){const s=m23Won();chooseLead23(s,'legion');const t=nextMission(s);t.screen='deployment';startBattle(t);drain(t);return t;}
 // M24 with six refugees in, two still outside, Erik beside the winch; Ines and Thea awakened for the ④ check.
 function m24Six(){const s=m24(),st=s.missionState;for(const u of s.units.filter(u=>u.team==='enemy'))u.hp=0;for(const id of ['p1','p2','p3','p4','p5','p6']){const r=s.units.find(u=>u.id===id);r.rescued=true;st.inside.push(id);}
- s.units.find(u=>u.id==='lever').locked=false;const e=s.units.find(u=>u.id==='eric');e.x=11;e.y=10;e.moved=e.acted=false;
+ s.units.find(u=>u.id==='lever').locked=false;const e=s.units.find(u=>u.id==='eric');e.x=11;e.y=19;e.moved=e.acted=false;
  for(const id of ['ines','thea']){const h=s.units.find(u=>u.id===id);if(h){h.classTier=3;h.mp=h.maxMP;}}
  s.units.filter(u=>u.team==='ally'&&!['eric'].includes(u.id)&&!u.benched).forEach((u,i)=>{u.x=3+i;u.y=12;});return deserialize(serialize(s));}
 try{
@@ -26,7 +26,7 @@ try{
   const restore=async s=>{await drainStory(p);if(await p.locator('#modal-root .modal').count())await press('close-modal');await press('menu');{const bk=p.locator('#modal-root [data-do="backup"]').first();touch?await bk.tap():await bk.click();await p.waitForTimeout(250);}await p.fill('#backup-text',typeof s==='string'?s:serialize(s));await press('restore');await p.waitForTimeout(400);};
   const snap=()=>p.evaluate(()=>AshenCrown.snapshot());const body=async()=>(await p.locator('body').textContent())||'';const modal=async()=>(await p.locator('#modal-root').textContent())||'';
   const closeModals=async()=>{for(let i=0;i<4&&await p.locator('#modal-root .modal').count();i++){await press('close-modal');await drainStory(p);}};
-  const tile=async(x,y)=>{await p.waitForTimeout(250);if(touch&&await p.locator('[data-do="reset-camera"]').isVisible()){const off=await p.evaluate(([x,y])=>{const c=window.AshenCrown.tileCenter(x,y),r=document.querySelector('#battle-map').getBoundingClientRect();return c.x<0||c.y<0||c.x>r.width||c.y>r.height;},[x,y]);if(off){await p.locator('[data-do="reset-camera"]').first().tap();await p.waitForTimeout(300);}}const pt=await p.evaluate(([x,y])=>{const c=window.AshenCrown.tileCenter(x,y),r=document.querySelector('#battle-map').getBoundingClientRect();return {x:c.x+r.x,y:c.y+r.y};},[x,y]);touch?await p.touchscreen.tap(pt.x,pt.y):await p.mouse.click(pt.x,pt.y);await p.waitForTimeout(250);};
+  const tile=async(x,y)=>{await p.waitForTimeout(250);if(await p.locator('[data-do="reset-camera"]').isVisible()){ /* v2.5.0: the big maps can sit off screen at 1440 too */const off=await p.evaluate(([x,y])=>{const c=window.AshenCrown.tileCenter(x,y),r=document.querySelector('#battle-map').getBoundingClientRect();return c.x<0||c.y<0||c.x>r.width||c.y>r.height;},[x,y]);if(off){touch?await p.locator('[data-do="reset-camera"]').first().tap():await p.locator('[data-do="reset-camera"]').first().click();await p.waitForTimeout(300);}}const pt=await p.evaluate(([x,y])=>{const c=window.AshenCrown.tileCenter(x,y),r=document.querySelector('#battle-map').getBoundingClientRect();return {x:c.x+r.x,y:c.y+r.y};},[x,y]);touch?await p.touchscreen.tap(pt.x,pt.y):await p.mouse.click(pt.x,pt.y);await p.waitForTimeout(250);};
   const select=async u=>{await p.waitForFunction(()=>!AshenCrown.view().busy,{},{timeout:30000});if(await p.locator('[data-do="close-unit-menu"]').count())await press('close-unit-menu');await tile(u.x,u.y);if((await p.evaluate(()=>AshenCrown.view().selected))!==u.id)await tile(u.x,u.y);if(!await p.locator('[data-do="submenu"][data-id="skills"]').count())await press('open-unit-menu');};
   await p.goto(url);await press('new');await drainStory(p);
   // 1. the real v0.9.3 lower city offers Mission 23; the ACT IV card; the alliance camp
@@ -58,7 +58,7 @@ try{
   await p.screenshot({path:`${shots}/m24-ash-${label}.png`});check(`${label} the ash tide is drawn over the northern rows (status: 재 4줄)`,(await body()).includes('재 4줄'));
   const six=m24Six();await restore(six);await drainStory(p);const e=six.units.find(u=>u.id==='eric');await select(e);
   check(`${label} beside the winch, with six inside, Erik may close the gate (관문 닫기)`,(await p.locator('#unit-popover').textContent()).includes('관문 닫기'));
-  await press('mode','search');await tile(11,9);if(await p.locator('[data-do="confirm"]').count())await press('confirm');await p.waitForTimeout(800);await drainStory(p);s=await snap();
+  await press('mode','search');await tile(12,19);if(await p.locator('[data-do="confirm"]').count())await press('confirm');await p.waitForTimeout(800);await drainStory(p);s=await snap();
   check(`${label} the gate shuts: victory, the turn and those left outside are kept`,s.outcome==='victory'&&s.missionState.closedTurn===s.turn&&s.campaign.flags.mission_24_left===2);
   await p.screenshot({path:`${shots}/m24-closed-${label}.png`});
   check(`${label} closing with people outside plays its scene`,s.narrative.seen.includes('24:closed:left')||s.narrative.events.includes('24:closed:left'));

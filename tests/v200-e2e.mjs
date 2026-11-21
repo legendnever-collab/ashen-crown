@@ -2,6 +2,7 @@
 // ACT I officers stand in the camp and wait on the bench (five go out of eight); the inventory has tabs and the start
 // treasures; the unit sheet shows the six stats; M01 is fought on the 22×16 map with the minimap; a v1.0.0 save made by
 // the shipped page and the finished v1.0.0 campaign open as v2.0.0.
+import {VERSION} from '../src/data/game-data.js';
 import {launchTestBrowser} from './browser-helper.mjs';import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {pathToFileURL} from 'node:url';import {drainStory} from './story-helper.mjs';
 const browser=await launchTestBrowser({headless:true,args:['--no-sandbox','--disable-gpu']}),checks=[],errors=[];const check=(name,ok)=>{assert.ok(ok,name);checks.push({name,status:'PASS'});console.log('PASS',name);};
 const shots='test-output/v200';fs.mkdirSync(shots,{recursive:true});
@@ -10,7 +11,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  const press=async(p,a,id)=>{await p.evaluate(([a,id])=>{const b=document.createElement('button');b.dataset.do=a;if(id)b.dataset.id=id;b.style.cssText='position:fixed;left:0;top:0;width:4px;height:4px;z-index:99999';document.body.append(b);b.click();b.remove();},[a,id]);await p.waitForTimeout(200);};
  const backup=async p=>{await cmd(p,'menu');await cmd(p,'backup');const text=await p.locator('#backup-text').inputValue();await cmd(p,'close-modal');return text;};
  const p=await ctx.newPage();p.__askDifficulty=true;p.on('pageerror',e=>errors.push(e.message));await p.goto(pathToFileURL(path.resolve('build/Ashen_Crown.html')).href);await p.waitForFunction(()=>!!window.AshenCrown);
- check('the page is the current version (the v2.0.0 systems)',await p.evaluate(()=>AshenCrown.version)==='2.4.1');
+ check('the page is the current version (the v2.0.0 systems)',await p.evaluate(()=>AshenCrown.version)===VERSION);
  // 1. Difficulty
  await cmd(p,'new');check('a new campaign asks for the difficulty first: 보통 · 어려움',await p.locator('[data-do="difficulty-pick"]').count()===2);await p.screenshot({path:`${shots}/difficulty.png`});
  await cmd(p,'difficulty-pick','hard');await drainStory(p);let s=await snapshot(p);check('어려움: the camp opens and the campaign keeps the choice',s.screen==='exploration'&&s.campaign.difficulty==='hard');
