@@ -1,3 +1,10 @@
+# v2.5.0 — ACT IV 큰 맵 (1부)
+- Release candidate (D-141; not merged). Notes docs/v2.5.0/RELEASE_NOTES.md.
+- ACT IV M23–M26 on big maps (src/data/missions-v250.js, scripts/make-act4-maps.py): M23 alliance camp 26×20 (8+16), M24 border 20×24 with the pass under the ash from the start (m.ashBase; 6+12), M25 summit field 30×20 (11+8), M26 Lion's Pass 22×24 without a fort tile (10+6); M25/M26 captains kept by m.captainBox.
+- 어려움: M19, M21, M23 at 보통's numbers; M24, M26 half push.
+- Schema 26 (imports 0–25). D-142: v2.2.1–v2.3.1 builds left the tree; v2.4.0/v2.4.1 in ARCHIVE.json.
+- Tests: tests/v250-e2e.mjs; mission23–26, awaken-v0100, act4a, renaissance, difficulty-hard on the big maps.
+
 # v2.4.1 — ACT III 큰 맵 (2부)와 왕도 둘레의 작은 마을
 - Merged (PR #39; approved 2026-11-21 15:01 with art pack K, D-140). Built under D-137. Notes docs/v2.4.1/RELEASE_NOTES.md.
 - ACT III M19–M22 on big maps (src/data/missions-v241.js): M19 rite vault 28×20 from the central gallery (10+4), M20 archive and lower city 28×22 (four cabinets, three clerks, eight residents, 10+6, ×0.82), M21 palace 24×24 with the anchors at the wing mouths (12+7, ×0.97), M22 square 28×22 with the daises in the middle (6+12). Rules, story, duels unchanged; m.captainBox replaces the captains' fixed rows; m.arriveCols for M22's arrivals.

@@ -1,4 +1,5 @@
 # Current Status
+Updated 2026-11-21 KST: **v2.5.0 「ACT IV 큰 맵 1부」 release candidate** on feature/v2.5.0 (D-141, D-142): M23–M26 on big maps (enemy counts at the design's cap), 어려움 M19–M26 re-measured, schema 26; v2.2.1–v2.3.1 builds left the tree. The user plays and approves before the merge; after it, Actions → Archive old builds for v2.4.0/v2.4.1.
 Updated 2026-11-21 KST: **v2.4.1 merged** with art pack K (D-139, D-140): ACT III big maps complete (M15–M22), 등불골 · 이끼다리, 마렌. Next only on the user's word: 어려움 M19–M23 (low in the chain), ACT IV big maps (M23–M30).
 Updated 2026-11-21 KST: **v2.4.1 「ACT III 큰 맵 2부와 작은 마을」 release candidate** on feature/v2.4.1 (D-137): M19–M22 big maps, 등불골 · 이끼다리 with six requests and two bounties, 마렌 (rogue), the art pack K work order, 어려움 M19–M22, schema 25. v2.4.0 is merged (PR #38 cleanup first, then PR #35 → e7f2d75; D-138). Notes docs/v2.4.1/RELEASE_NOTES.md.
 Updated 2026-11-21 KST: **v2.4.0 「ACT III 큰 맵 1부」 merged** (PR #35, D-134/D-135, approved D-136 「병합만 해줘」). Next, only on the user's word: the user reruns Actions → Archive old builds (v2.2.1–v2.3.1); v2.4.1 (M19–M22, 등불골 · 이끼다리, 마렌, art pack K, 어려움 M19–M22).
