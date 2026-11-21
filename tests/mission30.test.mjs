@@ -19,11 +19,11 @@ const camp=(extra={},flags={},choices={})=>({heroes:null,results:[],clears:29,co
  choices:{act3_choice:'council',m23_lead:'legion',m25_banner:'forgive',m28_confession:'eric',m29_bellard:'trial',m21_king:'promise',m20_plan:'keep',m17_oath:'leave',m16_stones:'leave',...choices},factionTrust:{iron:2,free:3,flame:1},factionsMet:['iron','free','flame'],roster:['thea','dario','ines'],...extra});
 const battle=(extra,flags,choices)=>{const s=newGame(100,camp(extra,flags,choices),30);s.screen='deployment';startBattle(s);drain(s);return s;};
 const enemyPhase=s=>{beginEnemyPhase(s);for(let i=0;s.phase==='enemy'&&!s.outcome&&i<200;i++){advanceEnemy(s);drain(s);}drain(s);};
-const sturdy=s=>{for(const u of s.units.filter(u=>u.team==='ally'||u.id==='heart'))u.hp=u.maxHP=999;};
+const sturdy=s=>{for(const u of s.units.filter(u=>u.team==='ally'||u.id==='heart')){u.hp=u.maxHP=999;u.def=999;}}; /* v2.5.1: on the big map a level-up mid-phase resets max HP, so the heroes hold by armour */
 const won=(extra,flags,choices)=>{const s=battle(extra,flags,choices);for(let i=0;!s.outcome&&i<12;i++){sturdy(s);enemyPhase(s);}assert.equal(s.outcome,'victory');return s;};
 
-test('M30 data: 18×12 square at dawn, level 21, sortie of eight, hold to TURN 8; the heart stone, all three banners; scenes',()=>{
- const m=MISSIONS[30];assert.deepEqual([m.width,m.height],[18,12]);assert.equal(m.level,21);assert.equal(m.deployLimit,8);assert.equal(m.holdTurn,8);
+test('M30 data: 30×18 courtyard at dawn (v2.5.1 big map, five breaches), level 21, sortie of eight, hold to TURN 8; the heart stone, all three banners; scenes',()=>{
+ const m=MISSIONS[30];assert.deepEqual([m.width,m.height],[30,18]);assert.ok(m.v251);assert.equal(m.level,21);assert.equal(m.deployLimit,8);assert.equal(m.holdTurn,8);
  for(const k of ['30:intro','30:tide','30:last','30:heart:lost','30:end','pre:30','after:30','ending:A','ending:B','ending:C','npc:30:preparation:lia','npc:30:aftermath:refugee'])assert.ok(STORY[k]?.length,k);
  const s=battle();assert.equal(deployLimit(s),8);for(const id of ['ib1','fb1','lb1'])assert.ok(canOrderAlly(s,findUnit(s,id)),id);assert.ok(findUnit(s,'bk').absent,'Baldrick withdrew at M26');assert.ok(!supportable(findUnit(s,'heart')));
  const c=battle({},{mission_26_baldrick:'cooperate'});assert.ok(alive(findUnit(c,'bk')));

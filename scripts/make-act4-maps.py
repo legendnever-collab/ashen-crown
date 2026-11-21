@@ -61,6 +61,39 @@ rect(g,4,20,17,23,'g');rect(g,10,20,11,23,'r');rect(g,13,15,14,19,'g')          
 for (x0,y0,x1,y1) in [(4,5,5,6),(16,5,17,6),(3,10,3,11),(7,8,7,9),(12,16,12,17),(5,21,6,22),(15,21,16,22)]: rect(g,x0,y0,x1,y1,'f')
 put(g,[(8,9),(8,10),(13,8),(13,9)],'g');put(g,[(14,10),(14,11)],'g')                       # side slopes (the riders' way down)
 maps[26]=g
+# ---- v2.5.1: M27 왕도의 성문 — two fronts below the wall: the straight ram road up the west to the gate (8–9, 5); the east
+# field below the three ladders (20, 24, 28); a ridge between the fronts; the city behind the rampart (row 4).
+W,H=32,22;g=grid(W,H,'g')
+rect(g,0,0,W-1,3,'k')
+for (x0,y0) in [(1,0),(5,1),(12,0),(16,1),(22,0),(27,1)]: rect(g,x0,y0,x0+2,y0,'l')
+rect(g,0,4,W-1,4,'q');rect(g,0,5,W-1,5,'x');put(g,[(8,5),(9,5)],'k');put(g,[(20,5),(24,5),(28,5)],'q')      # rampart, wall, gate, ladders
+rect(g,8,6,9,21,'r')                                                                       # the ram road
+rect(g,13,9,15,14,'m');put(g,[(14,9),(14,14)],'g')                                         # the ridge between the fronts
+for (x0,y0,x1,y1) in [(1,8,2,9),(4,13,5,14),(0,19,1,21),(17,7,18,8),(30,8,31,10),(21,12,22,13),(27,14,28,15),(30,19,31,21),(16,18,17,19),(11,16,11,17)]: rect(g,x0,y0,x1,y1,'f')
+put(g,[(3,10),(12,11),(19,16),(26,10)],'x')                                                # rubble
+maps[27]=g
+# ---- M28 잿빛 밤의 진실: the palace of memory — the legion and young Aren in the great hall; the oath fragment in the west
+# wing, the king's in the east wing, the order's in the north wing; the night gate to the south.
+W,H=26,22;g=grid(W,H,'x')
+rect(g,9,9,16,17,'k');rect(g,9,1,16,7,'k');rect(g,11,8,14,8,'k');rect(g,1,6,7,16,'k');rect(g,8,11,8,13,'k');rect(g,18,6,24,16,'k');rect(g,17,11,17,13,'k')
+rect(g,11,18,14,21,'k');rect(g,12,18,13,21,'r')
+put(g,[(10,10),(15,10),(10,16),(15,16),(3,7),(5,14),(20,7),(22,14),(10,3),(15,3),(4,11),(21,11)],'x')                # pillars
+maps[28]=g
+# ---- M29 왕관의 심장: the heart chamber — Bellard's dais in the middle; the rite points on the ring round it (by the M22 path);
+# four doors in the outer wall (north, west, east, south); the banners and the legion come in by the south door.
+W,H=26,24;g=grid(W,H,'k')
+rect(g,0,0,W-1,0,'x');rect(g,0,H-1,W-1,H-1,'x');rect(g,0,0,0,H-1,'x');rect(g,W-1,0,W-1,H-1,'x')
+put(g,[(12,0),(13,0),(0,15),(0,16),(25,15),(25,16),(12,23),(13,23)],'k')                   # the four doors
+rect(g,12,7,13,10,'z');rect(g,11,8,14,9,'z')                                               # the dais
+put(g,[(7,9),(18,9),(5,5),(20,5),(5,19),(20,19),(9,4),(16,4),(7,15),(18,15),(1,1),(24,1)],'x')                   # pillars
+maps[29]=g
+# ---- M30 왕관 없는 새벽: the dawn courtyard — the ward heart in the south middle; the ash comes over the whole north edge and
+# through the five breaches in the broken wall (row 6); the three banners hold the west, the middle and the east.
+W,H=30,18;g=grid(W,H,'g')
+rect(g,0,0,1,1,'f');rect(g,28,0,29,1,'f');put(g,[(8,2),(21,2),(5,4),(24,4)],'x');rect(g,14,0,15,5,'r')
+rect(g,0,6,W-1,6,'x');put(g,[(3,6),(4,6),(9,6),(10,6),(14,6),(15,6),(19,6),(20,6),(25,6),(26,6)],'g')            # the broken wall, five breaches
+rect(g,0,7,W-1,17,'k');put(g,[(6,9),(23,9),(10,12),(19,12),(3,14),(26,14)],'x');rect(g,0,17,8,17,'x');rect(g,21,17,29,17,'x')
+maps[30]=g
 json.dump({k:rows(v) for k,v in maps.items()},open(sys.argv[1] if len(sys.argv)>1 else '/dev/stdout','w'),indent=1,ensure_ascii=False)
 if len(sys.argv)>1:
     for k,v in maps.items(): print(k,len(v[0]),'x',len(v));print('\n'.join(rows(v)))

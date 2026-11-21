@@ -130,6 +130,10 @@ function reform250(s){const m=MISSIONS[s.missionId];
  if(!s.skirmish&&m?.v250){if(['battle','result','deployment'].includes(s.screen)){s=reopenInCamp(s);s.migrated250='battle';}else relocateCamp(s);}
  s.schema=26;s.version='2.5.0';if(s.stageStart&&MISSIONS[s.stageStart.missionId]?.v250)delete s.stageStart;else if(s.stageStart)s.stageStart=migrate(s.stageStart);
  return s;}
+function reform251(s){const m=MISSIONS[s.missionId];
+ if(!s.skirmish&&m?.v251){if(['battle','result','deployment'].includes(s.screen)){s=reopenInCamp(s);s.migrated251='battle';}else relocateCamp(s);}
+ s.schema=27;s.version='2.5.1';if(s.stageStart&&MISSIONS[s.stageStart.missionId]?.v251)delete s.stageStart;else if(s.stageStart)s.stageStart=migrate(s.stageStart);
+ return s;}
 export function migrate(s){
  if(s?.schema===0){s.schema=1;s.feedback=s.feedback||[];}
  if(s?.schema===1){s.schema=2;s.version='0.2.0';s.missionId=1;s.practice=false;s.narrative=narrativeState();const c=s.campaign;c.completed=c.clears>0?[1]:[];c.flags=c.clears>0?{mission_01_completed:true}:{};c.bonds={};c.tacticalMemory={};for(const u of [...s.units,...(c.heroes||[])])if(u.team==='ally'||HEROES.some(h=>h.id===u.id)){u.appearanceTier=u.id==='eric'&&u.level>=5?2:1;const h=HEROES.find(h=>h.id===u.id);if(h){u.name=h.name;u.ko=h.ko;}}if(s.stageStart)s.stageStart=migrate(s.stageStart);}
@@ -182,6 +186,8 @@ export function migrate(s){
  if(s?.schema===24)s=reform241(s);
  // v2.5.0 (D-141): ACT IV M23–M26 on big maps, the same way.
  if(s?.schema===25)s=reform250(s);
+ // v2.5.1 (D-141): ACT IV M27–M30 on big maps, the same way.
+ if(s?.schema===26)s=reform251(s);
  if(s?.schema>SCHEMA)throw Error('더 최신 버전의 저장입니다.');
  // v0.6.1: a save of the current schema made by an earlier build of it (e.g. v0.6.0) is now this version.
  if(s?.schema===SCHEMA&&s.version!==VERSION){s.version=VERSION;if(s.stageStart?.version)s.stageStart.version=VERSION;}
