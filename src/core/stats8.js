@@ -61,7 +61,7 @@ export const HARD_FROM=11,HARD_FULL_AT=19;
 // up), and the guardians' trials M17 and M18 to 5 of 19 and 0 of 9 — there 어려움 keeps 보통's numbers and is harder only by
 // the sharper AI, the bigger waves and the single potion.
 // v2.3.1 (D-131): the M11 switchback is the exception in ACT II — with the full push the pilgrims fell in 23 of 23.
-export const HARD_SHARE={7:1,8:1,9:1,10:1,11:0,12:1,13:1,14:1,15:0,16:0,17:0,18:0}; // v2.4.0 (D-135): M16's big map at full push first-tried 1 of 13 on 어려움 (보통's numbers: 10 of 16)
+export const HARD_SHARE={7:1,8:1,9:1,10:1,11:0,12:1,13:1,14:1,15:0,16:0,17:0,18:0,19:.5,20:0,22:0}; // v2.4.0 (D-135): M16's big map at full push first-tried 1 of 13 on 어려움 (보통's numbers: 10 of 16). v2.4.1: M19 half (5/15 → 8/15), M20 and M22 보통's numbers (2/14 → 7/14, 3/12 → 9/12); M21 grows in by level (9/13)
 export function difficultyPush(s){const d=DIFFICULTY[difficultyOf(s)],mid=s?.missionId??1,base=mid>=BASE_FROM&&mid<100?(BASE_MUL_AT[mid]??BASE_MUL):1;if(!d.levels&&d.mul===1)return {levels:0,mul:base};const avg=s?.levelPlan?.avg??sortieAverage(s)??1,h=HARD_SHARE[mid]??Math.max(0,Math.min(1,(avg-HARD_FROM)/(HARD_FULL_AT-HARD_FROM)));return {levels:Math.round(d.levels*h),mul:base*(1+(d.mul-1)*h)};}
 // The sortie's average level (deployed heroes and officers).
 export function sortieAverage(s){const out=(s.units||[]).filter(u=>u.team==='ally'&&!u.benched&&u.hp>0);if(!out.length)return null;return out.reduce((a,u)=>a+(u.level||1),0)/out.length;}

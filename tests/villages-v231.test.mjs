@@ -62,7 +62,7 @@ test('every ACT II request battle is winnable by the test policy; the bounties o
   assert.ok(won,`${id} won within three tries`);}
  const s=camp();const k=s.campaign.completed.filter(id=>id<=30).length;s.economy.requests=[...(s.economy.requests||[]),`bountyNorth:${k}`];travelTo(s,'frost');
  assert.ok(requestsAt(s,'frost').find(r=>r.id==='bountyNorth').done);s.campaign.completed.push(10);assert.ok(!requestsAt(s,'frost').find(r=>r.id==='bountyNorth').done);
- assert.ok(!requestsAt(s,'frost').some(r=>r.id==='bounty'),'the ACT I bounty stays in the ACT I villages');assert.deepEqual(Object.keys(REQUESTS).filter(id=>REQUESTS[id].mission>=125).map(id=>REQUESTS[id].mission),[125,126,127,128,129,130]);
+ assert.ok(!requestsAt(s,'frost').some(r=>r.id==='bounty'),'the ACT I bounty stays in the ACT I villages');assert.deepEqual(Object.keys(REQUESTS).filter(id=>REQUESTS[id].mission>=125&&REQUESTS[id].mission<=130).map(id=>REQUESTS[id].mission),[125,126,127,128,129,130]);
 });
 
 test('art pack J (D-132): 군나르\'s three busts, the two villages and the wolf come from hash-verified masters; the wolf sheet keeps its magenta collar as WebP',async()=>{

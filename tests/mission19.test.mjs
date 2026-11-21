@@ -30,7 +30,7 @@ test('from TURN 3 a lit circle with a ritualist near takes one memory a turn; Li
  enemyPhase(s);assert.equal(s.turn,2);assert.deepEqual(Object.values(st.memory),[3,3,3,3],'nothing before TURN 3');
  const lia=findUnit(s,'lia'),rc2=findUnit(s,'rc2');lia.x=rc2.x;lia.y=rc2.y+2;assert.equal(circleState(s,rc2),'lia');
  enemyPhase(s);assert.equal(s.turn,3);assert.equal(st.memory.p1,2,'rc1 draws');assert.equal(st.memory.p2,3,'Lia stalls rc2');assert.equal(st.memory.p3,3,'no ritualist near rc3');
- s.runes=[{x:4,y:6,until:9}];lia.x=14;lia.y=2;assert.equal(circleState(s,findUnit(s,'rc1')),'runes');enemyPhase(s);assert.equal(st.memory.p1,2,'the runes stall rc1');assert.equal(st.memory.p2,2,'rc2 draws again');
+ s.runes=[{x:7,y:6,until:9}];lia.x=14;lia.y=2;assert.equal(circleState(s,findUnit(s,'rc1')),'runes');enemyPhase(s);assert.equal(st.memory.p1,2,'the runes stall rc1');assert.equal(st.memory.p2,2,'rc2 draws again');
  s.runes=[];findUnit(s,'r2').hp=0;enemyPhase(s);enemyPhase(s);assert.equal(st.memory.p1,0);assert.equal(st.memory.p2,2,'its ritualist is down');assert.deepEqual(st.forgotten,['p1']);assert.ok(findUnit(s,'p1').forgotten);assert.ok(alive(findUnit(s,'p1')),'forgotten, not dead');
  assert.ok(s.narrative.seen.includes('19:forgot')||s.narrative.events.includes('19:forgot'));
  assert.ok(!s.outcome);st.memory.p3=1;const r3=findUnit(s,'r3');r3.hp=r3.maxHP;enemyPhase(s);assert.equal(s.outcome,'defeat','two captives forgotten');assert.match(s.reason,/이름을 잊었/);

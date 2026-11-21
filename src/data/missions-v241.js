@@ -11,7 +11,7 @@ export const ROWS2410={
  19:["xxxxxxxxxxxxkkkkxxxxxxxxxxxx","xxxxxxxxxxxxkkkkxxxxxxxxxxxx","xxkkkkkkkkkkkkkkkkkkkkkkkkxx","xxkkkkkkkkkkkkkkkkkkkkkkkkxx","xxxxxkxxxxxkkkkkkxxxxxkxxxxx","xxkkkkkkkxxkkkkkkxxkkkkkkkxx","xxkkkkkkkxxkkkkkkxxkkkkkkkxx","xxkkkkkkkkkkkkkkkkkkkkkkkkxx","xxkkkkkkkxxkxkkxkxxkkkkkkkxx","xxkkkkkkkxxkkkkkkxxkkkkkkkxx","xwwwwbwwwwwwwbbwwwwwwwbwwwwx","xwwwwbwwwwwwwbbwwwwwwwbwwwwx","xxkkkkkkkxxkkkkkkxxkkkkkkkxx","xxkkkkkkkxxkxkkxkxxkkkkkkkxx","xxkkkkkkkkkkkkkkkkkkkkkkkkxx","xxkkkkkkkxxkkkkkkxxkkkkkkkxx","xxkkkkkkkxxkkkkkkxxkkkkkkkxx","xxxxxxxxxxxkkkkkkxxxxxxxxxxx","xxxxxxxxxxxkzzzzkxxxxxxxxxxx","xxxxxxxxxxxxxxxxxxxxxxxxxxxx"],
  20:["xxxxxxxxxxxxxxxxxxxxxxxxxxxx","xkkkkkkkkxkkkkkkkkxkkkkkkkkx","xkkkkkkkkxkkkkkkkkxkkkkkkkkx","xkkkkkkkkxkkkkkkkkxkkkkkkkkx","xkkkkkkkkkkkkkkkkkkkkkkkkkkx","xkkkkkkkkkkkkkkkkkkkkkkkkkkx","xxxxxxkxxxxxxkkxxxxxxkxxxxxx","xxxxxxkxxxxxxkkxxxxxxkxxxxxx","rrrrrrrrrrrrrrrrrrrrrrrrrrrr","rrrrrrrrrrrrrrrrrrrrrrrrrrrr","wwwwwwwbwwwwwwwwwwwwbwwwwwww","wwwwwwwbwwwwwwwwwwwwbwwwwwww","rrrrrrrrrrrrrrrrrrrrrrrrrrrr","lllllllllllllrrlllllllllllll","llvvllvvllvvlrrlvvllvvllvvll","llvvllvvllvvlrrlvvllvvllvvll","lllllllllllllrrlllllllllllll","lllllllllllllrrlllllllllllll","llvvllvvllvvlrrlvvllvvllvvll","llvvllvvllvvlrrlvvllvvllvvll","lllllllllllllrrlllllllllllll","xxxxxxxxxxxxxrrxxxxxxxxxxxxx"],
  21:["xxxxxxxxxxkkkkxxxxxxxxxx","xkkkkkkxxxkkkkxxxkkkkkkx","xkkkkkkxxxkkkkxxxkkkkkkx","xkkkkkkxxxkkkkxxxkkkkkkx","xkkkkkkxxxkkkkxxxkkkkkkx","xkkkkkkkkkkkkkkkkkkkkkkx","xkkkkkkkkkkkkkkkkkkkkkkx","xxxxxkkkkkkkkkkkkkkxxxxx","xxxxxkkkxkkkkkkxkkkxxxxx","xxxxxkkkkkkkkkkkkkkxxxxx","xxxxxkkkkkzzzzkkkkkxxxxx","kkkkkkkkkkzzzzkkkkkkkkkk","kkkkkkkkkkzzzzkkkkkkkkkk","xxxxxkkkkkzzzzkkkkkxxxxx","xxxxxkkkkkkkkkkkkkkxxxxx","xxxxxkkkxkkkkkkxkkkxxxxx","xxxxxkkkkkkkkkkkkkkxxxxx","xkkkkkkkkkkkkkkkkkkkkkkx","xkkkkkkkkkkkkkkkkkkkkkkx","xkkkkkkxxxkkkkxxxkkkkkkx","xkkkkkkxxxkkkkxxxkkkkkkx","xkkkkkkxxxkkkkxxxkkkkkkx","xkkkkkkxxxkkkkxxxkkkkkkx","xxxxxxxxxxkkkkxxxxxxxxxx"],
- 22:["xxxxxxxxxxxxrrrrxxxxxxxxxxxx","lvvvlllvvvllrrrrllvvvllvvvll","lvvvlllvvvllrrrrllvvvllvvvll","llllllllllllrrrrllllllllllll","llllllkkkkkkkkkkkkkkkkllllll","lvvvllkkkkkkkkkkkkkkkklvvvll","lvvvllkkkkkkkkkkkkkkkklvvvll","llllllkkkzkkkkkkkkzkkkllllll","llllllkkkkkkkkkkkkkkkkllllll","rrrrrrkkkkkkkkkkkkkkkkrrrrrr","rrrrrrkkkkkkkkkkkkkkkkrrrrrr","llllllkkkkkkkkkkkkkkkkllllll","llllllkkkkkkkzzkkkkkkkllllll","lvvvllkkkkkkkkkkkkkkkklvvvll","lvvvllkkkkkkkkkkkkkkkklvvvll","llllllkkkkkkkkkkkkkkkkllllll","llllllllllllrrrrllllllllllll","lvvvllllllllrrrrlllllllvvvll","lvvvlllvvvllrrrrllvvvllvvvll","lllllllvvvllrrrrllvvvlllllll","llllllllllllrrrrllllllllllll","xxxxxxxxxxxxrrrrxxxxxxxxxxxx"]
+ 22:["xxxxxxxxxxxxrrrrxxxxxxxxxxxx","lvvvlllvvvllrrrrllvvvllvvvll","lvvvlllvvvllrrrrllvvvllvvvll","llllllllllllrrrrllllllllllll","llllllkkkkkkkkkkkkkkkkllllll","lvvvllkkkkkkkkkkkkkkkklvvvll","lvvvllkkkkkkkkkkkkkkkklvvvll","llllllkkkkkkkkkkkkkkkkllllll","llllllkkkkkkkkkkkkkkkkllllll","rrrrrrkkkkkkkkkkkkkkkkrrrrrr","rrrrrrkkkzkkkkkkkkzkkkrrrrrr","llllllkkkkkkkkkkkkkkkkllllll","llllllkkkkkkkkkkkkkkkkllllll","lvvvllkkkkkkkzzkkkkkkklvvvll","lvvvllkkkkkkkkkkkkkkkklvvvll","llllllkkkkkkkkkkkkkkkkllllll","llllllllllllrrrrllllllllllll","lvvvllllllllrrrrlllllllvvvll","lvvvlllvvvllrrrrllvvvllvvvll","lllllllvvvllrrrrllvvvlllllll","llllllllllllrrrrllllllllllll","xxxxxxxxxxxxrrrrxxxxxxxxxxxx"]
 };
 const g2410=rows=>rows.map(r=>r.split(''));
 const open2410=(rows,x,y)=>!!rows[y]&&!'xw'.includes(rows[y][x]??'x');
@@ -56,19 +56,18 @@ export const V241_MISSIONS={
   brief:'왕관의 심장 궁. 국왕은 한가운데 옥좌 단에서 움직이지 못합니다. 의식 기사들이 국왕을 노립니다. 고정석 넷은 궁의 네 날개가 큰 방과 만나는 곳에 하나씩 있습니다. 고정석 곁에서 「고정석 깨기」 — 에릭·테아·다리오·이네스는 한 번에, 다른 장수는 두 번. 고정석을 하나 깰 때마다 국왕 HP +10. 결계 맥동: 홀수 턴은 바깥 고리(국왕에게서 5–6칸), 짝수 턴은 안쪽 고리(2–3칸) — 그 칸에서 아군 턴을 마친 장수는 MP −3. TURN 2 의식 기사단장이 에릭에게 일기토를 청합니다.',
   council:{terrain:"Crown's Heart · 큰 방(성채 바닥) / 옥좌 단(가운데, 성소) / 네 날개(날개 어귀에 고정석) / 기둥 · 벽 / 남쪽 방(군단) · 북쪽 방 · 동서 통로",intel:'의식 기사단장(TURN 4까지 북쪽 방) · 의식 기사 5(날개마다 하나, 북쪽 방에 하나) · 의식사 2 · 회색 망토 4. TURN 3 북쪽에서 기사 3, TURN 5 동서 통로에서 회색 망토 2, TURN 7 북쪽에서 2.'}},
  22:{zoneArea:[6,4,21,15],par:10,turnLimit:12,captainBox:[10,0,17,3],arriveCols:[12,15],
-  enemies:[U241('gc','gc',13,1),U241('k1','k1',12,2),U241('k2','k2',15,2),U241('g1','g1',4,3),U241('g2','g2',23,3),U241('g3','g3',14,3),
-   U241('k1','k4',12,3),U241('g1','g8',8,2),U241('g1','g9',19,3),U241('k1','k5',15,1),U241('g1','g10',11,1),U241('g1','g11',20,2)],
-  civilians:{hr:[9,7],hp:[18,7],hk:[13,12]},
+  enemies:[U241('gc','gc',13,1),U241('k1','k1',12,2),U241('k2','k2',15,2),U241('g1','g1',4,3),U241('g2','g2',23,3),U241('g3','g3',14,3)], // the old six (twelve felled two heralds by TURN 3 every time)
+  civilians:{hr:[9,10],hp:[18,10],hk:[13,13]},
   allies:{bi1:[12,21],bi2:[13,21],bf1:[14,21],bf2:[15,21],bl1:[12,20],bl2:[15,20],rthea:[13,20],rdario:[14,20],rines:[13,19]},
   waves:[{turn:2,units:[U241('g6','g6',0,9),U241('g7','g7',27,9)]},
-   {turn:3,story:'22:betrayer',units:[U241('b1','b1',0,9),U241('b2','b2',27,9),U241('b1','b6',0,10),U241('b1','b7',27,10)]},
-   {turn:4,units:[U241('g4','g4',13,0),U241('k3','k3',14,0),U241('g4','g12',12,0)]},
-   {turn:5,units:[U241('b3','b3',0,9),U241('a1','a1',27,9),U241('b3','b8',0,10),U241('a1','a2',27,10)]},
+   {turn:3,story:'22:betrayer',units:[U241('b1','b1',0,9),U241('b2','b2',27,9),U241('b1','b6',0,10)]},
+   {turn:4,units:[U241('g4','g4',13,0),U241('k3','k3',14,0)]},
+   {turn:5,units:[U241('b3','b3',0,9),U241('a1','a1',27,9)]},
    {turn:7,units:[U241('b4','b4',0,9),U241('b5','b5',27,9),U241('g5','g5',13,0)]}],
   deploy:[[13,9],[14,9],[11,10],[16,10],[12,11],[15,11],[10,8],[17,8],[9,9],[18,9],[13,10],[14,10]],
   objective:'세 낭독(기록·계획서·국왕의 말)을 모두 마치기 · TURN 12 안에 (전령 2명이 쓰러지면 패배)',
   brief:'하층가 광장. 전령 셋이 단(서쪽 · 동쪽 · 남쪽) 위에서 TURN 2부터 턴마다 한 번씩, 네 번 읽습니다. TURN 1에는 광장의 사람들이 길을 막아 적이 전령을 노리지 못합니다. 지난 턴 시작 뒤 다친 전령은 그 턴을 읽지 못합니다. 쓰러진 전령의 단에 장수가 서면 대신 읽습니다. 재상부는 북쪽 성문에서, 배신한 깃발은 동서 길에서 옵니다. 신뢰가 「동맹」인 깃발은 TURN 2 남쪽 길로 기사 둘을 보냅니다.',
-  council:{terrain:'Lower City Square · 광장(성채 바닥) / 낭독 단 셋(성소) / 골목 · 집 / 북쪽 성문 · 동서 길 · 남쪽 길',intel:'재상부 근위대장(TURN 5까지 북쪽 성문) · 의식 기사 4 · 회색 망토 7. TURN 2 동서 길에서 회색 망토 2, TURN 3 배신한 깃발 4, TURN 4 북쪽 성문에서 3, TURN 5 동서 4, TURN 7 3.'}}
+  council:{terrain:'Lower City Square · 광장(성채 바닥) / 낭독 단 셋(성소) / 골목 · 집 / 북쪽 성문 · 동서 길 · 남쪽 길',intel:'재상부 근위대장(TURN 5까지 북쪽 성문) · 의식 기사 2 · 회색 망토 3. TURN 2 동서 길에서 회색 망토 2, TURN 3 배신한 깃발 3, TURN 4 북쪽 성문에서 2, TURN 5 동서 2, TURN 7 3.'}}
 };
 // Applied after applyV240; the same shape as the M15–M18 maps.
 export function applyV241(MISSIONS){

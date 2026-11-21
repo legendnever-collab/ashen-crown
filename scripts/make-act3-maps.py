@@ -106,7 +106,7 @@ maps[21]=g
 W,H=28,22;g=grid(W,H,'l')
 rect(g,0,0,W-1,0,'x');rect(g,12,0,15,0,'r')                                  # north gate
 rect(g,6,4,21,15,'k')                                                         # the square
-put(g,[(9,7),(18,7),(13,12),(14,12)],'z')                                     # daises (records W, plan E, the king's words S)
+put(g,[(9,10),(18,10),(13,13),(14,13)],'z')                                   # daises (records W, plan E, the king's words S)
 rect(g,0,9,5,10,'r');rect(g,22,9,27,10,'r')                                  # east and west roads
 rect(g,12,1,15,3,'r');rect(g,12,16,15,21,'r')                                 # north and south streets
 for (x0,y0) in [(1,1),(1,5),(1,13),(1,17),(23,1),(23,5),(23,13),(23,17),(7,18),(18,18),(7,1),(18,1)]: rect(g,x0,y0,x0+2,y0+1,'v')
