@@ -117,7 +117,7 @@ export const FEATS={
  18:featDef(18,'groveLeaf','결계 고목 셋과 숲지기 여덟을 모두 지킨다',(s,bf)=>bf.mission_18_trees===3&&bf.mission_18_keepers===ACT3_COUNTS.keepers18),
  // v0.9.2 (D-089, PROPOSED)
  19:featDef(19,'teacherQuill','의식진 넷을 모두 끄고 포로 누구도 이름을 잊지 않는다',(s,bf)=>bf.mission_19_unsealed===4&&bf.mission_19_remembered===4),
- 20:featDef(20,'greyLedger','서가 셋을 모두 조사하고 주민 여섯을 모두 대피시킨다',(s,bf)=>bf.mission_20_cabinets===3&&bf.mission_20_residents===6),
+ 20:featDef(20,'greyLedger','서가 넷을 모두 조사하고 주민 여덟을 모두 대피시킨다',(s,bf)=>bf.mission_20_cabinets===ACT3_COUNTS.cabinets20&&bf.mission_20_residents===ACT3_COUNTS.residents20),
  // v0.9.3 (D-093, PROPOSED)
  21:featDef(21,'kingsSignet','고정석 넷을 모두 깨고 국왕의 HP를 절반 아래로 떨어뜨리지 않는다',(s,bf)=>bf.mission_21_anchors===4&&bf.mission_21_king_half===true),
  22:featDef(22,'heraldHorn','전령 셋이 모두 선 채로 TURN 8 안에 세 낭독을 마친다',(s,bf)=>bf.mission_22_heralds===3&&s.turn<=8),

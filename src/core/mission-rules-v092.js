@@ -9,6 +9,9 @@ import {alive,distance,findUnit,hostile,strikeStats,key,terrainAt} from './rules
 import {enqueueStory,setStoryFlag,remember} from './narrative.js';
 import {FACTIONS} from './factions.js';
 import {act2Waves} from './mission-rules-v06.js';
+import {ACT3_COUNTS} from '../data/missions-v240.js';
+// v2.4.1 (D-135): on the big maps a captain keeps inside the mission's captainBox until his turn (else the old top rows)
+const inBox92=(s,dflt)=>{const b=missionOf(s).captainBox;return b?(x,y)=>x>=b[0]&&x<=b[2]&&y>=b[1]&&y<=b[3]:dflt;};
 import {startDuel} from './duel.js';
 
 function strike92(s,u,reachable,targets,goal,bonus=()=>0){let best=null;
@@ -46,7 +49,7 @@ export const M19={
  // dais until TURN 5. Knights and cloaks hunt the legion (the default AI).
  planEnemy(s,u,reachable){const foes=foes92(s,u);
   if(u.kind==='ritualist'){const c=findUnit(s,u.circle);if(c&&!s.missionState.unsealed.includes(c.id)){const near=within(reachable,(x,y)=>distance({x,y},c)<=1);return strike92(s,u,near.size?near:reachable,foes,null);}return strike92(s,u,reachable,foes,foes[0]?{x:foes[0].x,y:foes[0].y,name:foes[0].name}:null);}
-  if(u.id==='ov'&&s.turn<5)return strike92(s,u,within(reachable,(x,y)=>y<=3),foes,null);
+  if(u.id==='ov'&&s.turn<5)return strike92(s,u,within(reachable,inBox92(s,(x,y)=>y<=3)),foes,null);
   return null;},
  search(s,u,t){if(t.kind!=='ritualCircle')return false;const st=s.missionState;t.inert=true;st.unsealed.push(t.id);remember(s,`m19_unseal_${u.id}`);
   const p=findUnit(s,t.captive);if(p&&!p.forgotten)p.freed=true;s.feedback.push({type:'rescue',id:t.id,text:'봉인 해제'});
@@ -65,7 +68,8 @@ export function chooseTeacher19(s,id){const c=s.campaign;if(!TEACHER19[id]||s.pr
 // ---------- M20 The Crown's Shadow ----------
 export const cabinets20=s=>s.units.filter(u=>u.kind==='cabinet');
 export const residents20=s=>s.units.filter(u=>u.kind==='resident');
-const CABINETS=['cb1','cb2','cb3'],RESIDENTS=['h1','h2','h3','h4','h5','h6'];
+// v2.4.1: four cabinets and eight residents on the big map
+const CABINETS=Array.from({length:ACT3_COUNTS.cabinets20},(_,i)=>`cb${i+1}`),RESIDENTS=Array.from({length:ACT3_COUNTS.residents20},(_,i)=>`h${i+1}`);
 const houseAt=(s,x,y)=>terrainAt(x,y,s)?.name==='Village';
 // The fire is kept in missionState.fire (cells "x,y") and mirrored into s.burning each turn, so the board draws it and heroes
 // standing in it take the usual burn; residents in a burning house take fireDamage each turn (it can kill).
@@ -82,7 +86,7 @@ export const M20={
   &&['evacuated','lost'].every(k=>Array.isArray(m[k])&&m[k].every(id=>RESIDENTS.includes(id))&&new Set(m[k]).size===m[k].length)&&!m.evacuated.some(id=>m.lost.includes(id))
   &&Array.isArray(m.fire)&&m.fire.length<=60&&m.fire.every(k=>/^\d{1,2},\d{1,2}$/.test(k))&&new Set(m.fire).size===m.fire.length&&typeof m.duelDone==='boolean';},
  status(s){const m=missionOf(s),st=s.missionState,lit=Object.keys(st.lit).length;return `계획서 ${st.searched.length}/${m.plan} 확보${lit?` · 불붙은 서가 ${lit}`:''}${st.burned.length?` · 탄 서가 ${st.burned.length}`:''} · 대피 ${st.evacuated.length}/${m.needed}${st.lost.length?` · 잃은 주민 ${st.lost.length}`:''} · ${Math.max(0,m.turnLimit+1-s.turn)}턴 남음`;},
- optional(s){const f=s.campaign.flags,st=s.missionState;return `서가 ${f.mission_20_cabinets??st?.searched.length??0}/3 · 대피한 주민 ${f.mission_20_residents??st?.evacuated.length??0}/6 · 일기토 ${({hero:'승리',foe:'패배',skipped:'거절'})[f.mission_20_duel]||'—'}`;},
+ optional(s){const f=s.campaign.flags,st=s.missionState;return `서가 ${f.mission_20_cabinets??st?.searched.length??0}/${CABINETS.length} · 대피한 주민 ${f.mission_20_residents??st?.evacuated.length??0}/${RESIDENTS.length} · 일기토 ${({hero:'승리',foe:'패배',skipped:'거절'})[f.mission_20_duel]||'—'}`;},
  onTurnStart(s){const m=missionOf(s),st=s.missionState,prev=s.turn-1;act2Waves(s);banner20(s);
   if(s.turn===1)return;
   // the archive: a cabinet lit at the end of the enemy phase before last burns now; then clerks beside a cabinet light it
@@ -99,19 +103,19 @@ export const M20={
  planEnemy(s,u,reachable){const foes=foes92(s,u),st=s.missionState;
   if(u.clerk){const left=cabinets20(s).filter(o=>!o.inert);if(!left.length)return {x:u.x,y:u.y,target:null,reason:'문서고를 지킴'};const mine=findUnit(s,u.cabinet),cb=mine&&!mine.inert?mine:[...left].sort((a,b)=>distance(u,a)-distance(u,b))[0];
    if(distance(u,cb)===1)return {x:u.x,y:u.y,target:null,reason:'서가에 불을 붙임'};let best=null;for(const [k,c] of reachable){const [x,y]=k.split(',').map(Number),d=distance({x,y},cb);if(!best||d<best.d||d===best.d&&c<best.c)best={x,y,d,c};}return {x:best.x,y:best.y,target:null,reason:`${cb.name} 쪽으로`};}
-  if(u.id==='sup'&&s.turn<5)return strike92(s,u,within(reachable,(x,y)=>y<=4),foes,null);
+  if(u.id==='sup'&&s.turn<5)return strike92(s,u,within(reachable,inBox92(s,(x,y)=>y<=4)),foes,null);
   if(u.scav){const folk=s.turn>=missionOf(s).threatTurn?residents20(s).filter(alive):[];const goal=[...folk,...foes].sort((a,b)=>distance(u,a)-distance(u,b))[0];return strike92(s,u,reachable,[...foes,...folk],goal?{x:goal.x,y:goal.y,name:goal.name}:null,t=>t.kind==='resident'?6:0);}
   const near=[...foes].sort((a,b)=>distance(u,a)-distance(u,b))[0];return strike92(s,u,reachable,foes,near?{x:near.x,y:near.y,name:near.name}:null);},
  search(s,u,t){if(t.kind!=='cabinet')return false;const st=s.missionState;t.inert=true;st.searched.push(t.id);const wasLit=!!st.lit[t.id];delete st.lit[t.id];remember(s,`m20_archive_${u.id}`);
-  s.feedback.push({type:'rescue',id:t.id,text:'계획서'});s.log.push(`${u.name}이(가) 서가에서 계획서 묶음을 꺼냈습니다${wasLit?' (불길을 끄고)':''} (${st.searched.length}/3).`);
+  s.feedback.push({type:'rescue',id:t.id,text:'계획서'});s.log.push(`${u.name}이(가) 서가에서 계획서 묶음을 꺼냈습니다${wasLit?' (불길을 끄고)':''} (${st.searched.length}/${CABINETS.length}).`);
   if(st.searched.length===1)enqueueStory(s,'20:plan');else if(st.searched.length===missionOf(s).plan)enqueueStory(s,'20:plan2');return true;},
- onAction(s,u,mode,t){if(mode!=='rescue'||t?.kind!=='resident')return;const st=s.missionState;if(!st.evacuated.includes(t.id))st.evacuated.push(t.id);remember(s,`m20_evacuate_${u.id}`);s.log.push(`${t.name}이(가) 다리 건너로 대피했습니다 (${st.evacuated.length}/6).`);if(st.evacuated.length===1)enqueueStory(s,'20:evacuate');},
+ onAction(s,u,mode,t){if(mode!=='rescue'||t?.kind!=='resident')return;const st=s.missionState;if(!st.evacuated.includes(t.id))st.evacuated.push(t.id);remember(s,`m20_evacuate_${u.id}`);s.log.push(`${t.name}이(가) 다리 건너로 대피했습니다 (${st.evacuated.length}/${RESIDENTS.length}).`);if(st.evacuated.length===1)enqueueStory(s,'20:evacuate');},
  afterDamage(s,v){const st=s.missionState;if(v.kind==='resident'&&v.hp<=0&&!st.lost.includes(v.id)){st.lost.push(v.id);s.log.push(`${v.name}을(를) 잃었습니다.`);if(st.lost.length===1)enqueueStory(s,'20:lost');}
   if(v.id==='sup'&&v.hp<=0&&!st.yielded){st.yielded=true;enqueueStory(s,'20:yield');}},
  checkOutcome(s,finish){const m=missionOf(s),st=s.missionState;
   if(st.burned.length>=2)return finish(s,'defeat','서가 두 곳이 불타 계획서를 잃었습니다.');
   if(st.lost.length>=3)return finish(s,'defeat','하층가 주민 세 명을 잃었습니다.');
-  if(st.searched.length>=m.plan&&st.evacuated.length>=m.needed)return finish(s,'victory',`계획서 확보 (서가 ${st.searched.length}/3) · 주민 ${st.evacuated.length}/6 대피.`);
+  if(st.searched.length>=m.plan&&st.evacuated.length>=m.needed)return finish(s,'victory',`계획서 확보 (서가 ${st.searched.length}/${CABINETS.length}) · 주민 ${st.evacuated.length}/${RESIDENTS.length} 대피.`);
   if(s.turn>m.turnLimit)return finish(s,'defeat',`제한 ${m.turnLimit}턴 안에 계획서와 주민을 모두 지키지 못했습니다.`);},
  beforeCommit(s){const st=s.missionState;setStoryFlag(s,'mission_20_cabinets',st.searched.length);setStoryFlag(s,'mission_20_residents',st.evacuated.length);setStoryFlag(s,'mission_20_duel',s.duel?.result||'none');},
  rewardContext(s){return {cabinets20:s.missionState.searched.length,residents20:s.missionState.evacuated.length};}

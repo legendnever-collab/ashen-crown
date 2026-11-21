@@ -65,6 +65,53 @@ for (x0,y0,x1,y1) in [(0,0,1,1),(24,0,25,1),(0,20,1,21),(24,20,25,21),(16,2,17,3
 put(g,[(3,4),(22,4),(4,17),(21,17)],'v')                                     # the keepers' huts
 rect(g,10,8,15,13,'g')
 maps[18]=g
+# ---- v2.4.1 (D-135): M19–M22 ----
+# M19 금지된 의식: down the stair at the top into a vault of four chambers (a circle each) round a water channel; the
+# overseer and Lia's teacher in the bottom chamber.
+W,H=28,20;g=grid(W,H,'x')
+rect(g,12,0,15,1,'k')                                                         # the stair down (the legion's way in)
+rect(g,2,2,25,3,'k')                                                          # the upper hall
+for (x0,y0,x1,y1) in [(2,5,8,9),(19,5,25,9),(2,12,8,16),(19,12,25,16)]: rect(g,x0,y0,x1,y1,'k')   # four chambers
+rect(g,5,4,5,4,'k');rect(g,22,4,22,4,'k');rect(g,9,7,10,7,'k');rect(g,17,7,18,7,'k')              # doors up and in
+rect(g,11,4,16,17,'k');rect(g,9,14,10,14,'k');rect(g,17,14,18,14,'k')       # the central gallery and the lower doors
+rect(g,1,10,26,11,'w');put(g,[(13,10),(14,10),(13,11),(14,11),(5,10),(5,11),(22,10),(22,11)],'b')   # the channel, three bridges
+rect(g,2,10,8,11,'w');rect(g,19,10,25,11,'w');put(g,[(5,10),(5,11),(22,10),(22,11)],'b')
+rect(g,11,17,16,18,'k');rect(g,12,18,15,18,'z')                               # the bottom chamber (overseer, teacher)
+put(g,[(12,8),(15,8),(12,13),(15,13)],'x')                                    # pillars
+maps[19]=g
+# M20 왕관의 그림자: the chancellery archive to the north, the canal with two bridges, the burning lower city to the south
+# (houses in pairs so the fire leaps rather than sweeps), the south gate where the banner's soldiers come in.
+W,H=28,22;g=grid(W,H,'l')
+rect(g,0,0,W-1,0,'x');rect(g,0,0,0,7,'x');rect(g,W-1,0,W-1,7,'x')
+rect(g,1,1,26,5,'k');rect(g,1,6,26,7,'x');put(g,[(6,6),(6,7),(13,6),(14,6),(13,7),(14,7),(21,6),(21,7)],'k')   # archive, its doors
+rect(g,9,1,9,3,'x');rect(g,18,1,18,3,'x')                                     # stacks dividing the halls
+rect(g,0,8,27,9,'r')                                                          # the archive street (the legion's start)
+rect(g,0,10,27,11,'w');put(g,[(7,10),(7,11),(20,10),(20,11)],'b')            # the canal, two bridges
+rect(g,0,12,27,12,'r');rect(g,13,12,14,21,'r')
+for (x0,y0) in [(2,14),(6,14),(10,14),(16,14),(20,14),(24,14),(2,18),(6,18),(10,18),(16,18),(20,18),(24,18)]: rect(g,x0,y0,x0+1,y0+1,'v')
+rect(g,0,21,12,21,'x');rect(g,15,21,27,21,'x')                                # the south wall, the gate at 13–14
+maps[20]=g
+# M21 마지막 국왕: the palace of the crown's heart. The throne dais in the middle, four wings to the corners with an anchor
+# stone at each end; in from the south hall.
+W,H=24,24;g=grid(W,H,'x')
+rect(g,5,5,18,18,'k');rect(g,10,10,13,13,'z')                                # the great hall, the throne dais
+for (x0,y0,x1,y1) in [(1,1,6,6),(17,1,22,6),(1,17,6,22),(17,17,22,22)]: rect(g,x0,y0,x1,y1,'k')   # the four wings
+rect(g,5,5,6,6,'k');rect(g,17,5,18,6,'k');rect(g,5,17,6,18,'k');rect(g,17,17,18,18,'k')
+for (x,y) in [(8,8),(15,8),(8,15),(15,15)]: put(g,[(x,y)],'x')               # pillars
+rect(g,10,19,13,23,'k');rect(g,10,0,13,4,'k')                                 # south hall (the legion), north hall (reinforcements)
+rect(g,0,11,4,12,'k');rect(g,19,11,23,12,'k')                                 # side passages
+maps[21]=g
+# M22 잿빛 선택: the lower-city square with the three daises; the chancellery's north gate, the east and west roads, the
+# south street where the allied banners come in.
+W,H=28,22;g=grid(W,H,'l')
+rect(g,0,0,W-1,0,'x');rect(g,12,0,15,0,'r')                                  # north gate
+rect(g,6,4,21,15,'k')                                                         # the square
+put(g,[(9,7),(18,7),(13,12),(14,12)],'z')                                     # daises (records W, plan E, the king's words S)
+rect(g,0,9,5,10,'r');rect(g,22,9,27,10,'r')                                  # east and west roads
+rect(g,12,1,15,3,'r');rect(g,12,16,15,21,'r')                                 # north and south streets
+for (x0,y0) in [(1,1),(1,5),(1,13),(1,17),(23,1),(23,5),(23,13),(23,17),(7,18),(18,18),(7,1),(18,1)]: rect(g,x0,y0,x0+2,y0+1,'v')
+rect(g,0,21,11,21,'x');rect(g,16,21,27,21,'x')
+maps[22]=g
 json.dump({k:rows(v) for k,v in maps.items()},open(sys.argv[1] if len(sys.argv)>1 else '/dev/stdout','w'),indent=1,ensure_ascii=False)
 if len(sys.argv)>1:
     for k,v in maps.items(): print(k,len(v[0]),'x',len(v));print('\n'.join(rows(v)))
