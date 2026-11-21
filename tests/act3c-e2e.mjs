@@ -28,7 +28,7 @@ try{
   const restore=async s=>{await drainStory(p);if(await p.locator('#modal-root .modal').count())await press('close-modal');await press('menu');await press('backup');await p.fill('#backup-text',typeof s==='string'?s:serialize(s));await press('restore');await p.waitForTimeout(400);};
   const snap=()=>p.evaluate(()=>AshenCrown.snapshot());const body=async()=>(await p.locator('body').textContent())||'';const modal=async()=>(await p.locator('#modal-root').textContent())||'';
   const closeModals=async()=>{for(let i=0;i<4&&await p.locator('#modal-root .modal').count();i++){await press('close-modal');await drainStory(p);}};
-  const tile=async(x,y)=>{await p.waitForTimeout(250);if(touch&&await p.locator('[data-do="reset-camera"]').isVisible()){const off=await p.evaluate(([x,y])=>{const c=window.AshenCrown.tileCenter(x,y),r=document.querySelector('#battle-map').getBoundingClientRect();return c.x<0||c.y<0||c.x>r.width||c.y>r.height;},[x,y]);if(off){await p.locator('[data-do="reset-camera"]').first().tap();await p.waitForTimeout(300);}}const pt=await p.evaluate(([x,y])=>{const c=window.AshenCrown.tileCenter(x,y),r=document.querySelector('#battle-map').getBoundingClientRect();return {x:c.x+r.x,y:c.y+r.y};},[x,y]);touch?await p.touchscreen.tap(pt.x,pt.y):await p.mouse.click(pt.x,pt.y);await p.waitForTimeout(250);};
+  const tile=async(x,y)=>{await p.waitForTimeout(250);if(await p.locator('[data-do="reset-camera"]').isVisible()){ /* v2.4.1: the big maps can sit off screen at 1440 too */const off=await p.evaluate(([x,y])=>{const c=window.AshenCrown.tileCenter(x,y),r=document.querySelector('#battle-map').getBoundingClientRect();return c.x<0||c.y<0||c.x>r.width||c.y>r.height;},[x,y]);if(off){touch?await p.locator('[data-do="reset-camera"]').first().tap():await p.locator('[data-do="reset-camera"]').first().click();await p.waitForTimeout(300);}}const pt=await p.evaluate(([x,y])=>{const c=window.AshenCrown.tileCenter(x,y),r=document.querySelector('#battle-map').getBoundingClientRect();return {x:c.x+r.x,y:c.y+r.y};},[x,y]);touch?await p.touchscreen.tap(pt.x,pt.y):await p.mouse.click(pt.x,pt.y);await p.waitForTimeout(250);};
   const select=async u=>{await p.waitForFunction(()=>!AshenCrown.view().busy,{},{timeout:30000});if(await p.locator('[data-do="close-unit-menu"]').count())await press('close-unit-menu');await tile(u.x,u.y);if((await p.evaluate(()=>AshenCrown.view().selected))!==u.id)await tile(u.x,u.y);if(!await p.locator('[data-do="submenu"][data-id="skills"]').count())await press('open-unit-menu');};
   await p.goto(url);await press('new');await drainStory(p);
   // 1. the real v0.9.1 forest camp offers Mission 19; going on brings the legion back to the capital's lower city
@@ -66,14 +66,14 @@ try{
   await p.screenshot({path:`${shots}/little-ward-${label}.png`});
   // 4. M20: the archive and the burning lower city; Kai's ④ with two taps
   await restore(m20());await drainStory(p);s=await snap();
-  check(`${label} M20: three cabinets, six residents, the lower city on fire, grey cloaks in the shadows`,s.missionId===20&&s.units.filter(u=>u.kind==='cabinet').length===3&&s.units.filter(u=>u.kind==='resident').length===6&&Object.keys(s.burning||{}).length>=2&&s.units.filter(u=>u.shade).length>=4);
+  check(`${label} M20: four cabinets, eight residents (v2.4.1 big map), the lower city on fire, grey cloaks in the shadows`,s.missionId===20&&s.units.filter(u=>u.kind==='cabinet').length===4&&s.units.filter(u=>u.kind==='resident').length===8&&Object.keys(s.burning||{}).length>=2&&s.units.filter(u=>u.shade).length>=4);
   check(`${label} the objective panel shows the plan and the evacuation`,(await body()).includes('계획서 0/2')&&(await body()).includes('대피 0/4'));
   await p.screenshot({path:`${shots}/m20-night-${label}.png`});
-  const d=deserialize(serialize(s)),kai=d.units.find(u=>u.id==='kai');kai.classTier=3;kai.mp=kai.maxMP;const foe=d.units.find(u=>u.id==='g5'),mate=d.units.find(u=>u.team==='ally'&&!u.benched&&u.id!=='kai');kai.x=4;kai.y=6;foe.x=4;foe.y=8;mate.x=6;mate.y=6;await restore(d);await drainStory(p);
-  await select(kai);await press('submenu','skills');await press('mode','shadowDance');await tile(4,8);await tile(6,6);await p.waitForTimeout(300);
+  const d=deserialize(serialize(s)),kai=d.units.find(u=>u.id==='kai');kai.classTier=3;kai.mp=kai.maxMP;const foe=d.units.find(u=>u.id==='g5'),mate=d.units.find(u=>u.team==='ally'&&!u.benched&&u.id!=='kai');kai.x=4;kai.y=12;foe.x=4;foe.y=14;mate.x=6;mate.y=12;await restore(d);await drainStory(p);
+  await select(kai);await press('submenu','skills');await press('mode','shadowDance');await tile(4,14);await tile(6,12);await p.waitForTimeout(300);
   check(`${label} Shadow Dance: two taps pick the pair and show the forecast`,(await p.locator('#unit-popover').textContent()).includes('행동 불가'));
-  await tile(6,6);await p.waitForTimeout(700);await drainStory(p);s=await snap();const g5=s.units.find(u=>u.id==='g5');
-  check(`${label} the two trade places and the cloak is held for the next enemy phase`,g5.x===6&&g5.y===6&&g5.dazed===s.turn&&s.ultimates?.includes('kai'));
+  await tile(6,12);await p.waitForTimeout(700);await drainStory(p);s=await snap();const g5=s.units.find(u=>u.id==='g5');
+  check(`${label} the two trade places and the cloak is held for the next enemy phase`,g5.x===6&&g5.y===12&&g5.dazed===s.turn&&s.ultimates?.includes('kai'));
   await p.screenshot({path:`${shots}/shadow-dance-${label}.png`});
   // 5. M20 won: the superior, then the plan; the end of v0.9.2
   await restore(m20Won());await drainStory(p);for(let i=0;i<3&&!(await p.locator('[data-do="superior20-pick"]').count());i++){await closeModals();await press('next-mission');await p.waitForTimeout(300);}

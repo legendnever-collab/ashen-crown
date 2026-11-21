@@ -1,6 +1,6 @@
 import {ACT2_HUB_SPECS} from './hubs-v06.js';
 // v2.1 (D-118): the hubs whose inn-1 is a tavern (주점 · 인재 확보).
-const TAVERN_SPECS=new Set(['village','village_raid','castletown','velmar','pilgrim','capital','forest','reed','stonewell','frost','saltport']);
+const TAVERN_SPECS=new Set(['village','village_raid','castletown','velmar','pilgrim','capital','forest','reed','stonewell','frost','saltport','lamp','moss']);
 // v0.5.0 painted interlude hubs (D-052). Each hub is one 1536×1024 painting = 24×16 tiles of 64 px.
 // mask: '.' walkable, '#' solid (authored over the painting). Doors use the same five building ids in
 // every camp-type hub so chest records and saved interiors stay valid when the legion moves on.
@@ -246,4 +246,7 @@ HV5_SPECS.stonewell=smallVillage('Stonewell · 돌우물 마을','돌우물 촌�
 // v2.3.1 (D-131/D-132): the ACT II villages, painted on the small villages' footprint in art pack J part B.
 HV5_SPECS.frost=smallVillage('Frostneck · 서리목 마을','서리목 촌장','나무꾼','눈길 파수','hub_frost');
 HV5_SPECS.saltport=smallVillage('Saltport · 소금항','소금항 촌장','염전 일꾼','포구 파수','hub_saltport');
+// v2.4.1 (D-135): the ACT III villages, painted by art pack K on the small-village footprint (D-139)
+HV5_SPECS.lamp=smallVillage('Lampvale · 등불골','등불골 촌장','등불지기','묘지 파수','hub_lamp');
+HV5_SPECS.moss=smallVillage('Mossbridge · 이끼다리','이끼다리 촌장','약초꾼','숲길 파수','hub_moss');
 export const ART_HUBS=Object.fromEntries(Object.entries(HV5_SPECS).map(([id,spec])=>[id,hv5Build(id,spec)]));

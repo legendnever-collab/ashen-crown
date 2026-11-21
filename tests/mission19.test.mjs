@@ -15,10 +15,10 @@ export const camp19=(extra={})=>({heroes:null,results:[],clears:18,completed:[..
 const battle=(extra)=>{const s=newGame(81,camp19(extra),19);s.screen='deployment';startBattle(s);drain(s);return s;};
 const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);};
 // every enemy gone except `keep`; the heroes parked on the bottom row (made unbreakable: the board starts at Lv 1)
-const only=(s,...keep)=>{for(const u of s.units.filter(u=>u.team==='enemy'&&!keep.includes(u.id)))u.hp=0;s.units.filter(u=>u.team==='ally').forEach((u,i)=>{u.x=1+i;u.y=12;u.maxHP=u.hp=999;u.def=u.res=99;});};
+const only=(s,...keep)=>{for(const u of s.units.filter(u=>u.team==='enemy'&&!keep.includes(u.id)))u.hp=0;s.units.filter(u=>u.team==='ally').forEach((u,i)=>{u.x=2+i;u.y=2; /* v2.4.1: the upper hall of the big map */u.maxHP=u.hp=999;u.def=u.res=99;});};
 
-test('M19 data: 18×14 rite hall, level 16, sortie of seven, four circles each with a captive, the teacher on the dais, TURN 14',()=>{
- const m=MISSIONS[19];assert.deepEqual([m.width,m.height],[18,14]);assert.equal(m.level,16);assert.equal(m.deployLimit,7);assert.equal(m.turnLimit,14);
+test('M19 data: 28×20 rite vault (v2.4.1 big map), level 16, sortie of seven, four circles each with a captive, the teacher on the dais, TURN 14',()=>{
+ const m=MISSIONS[19];assert.deepEqual([m.width,m.height],[28,20]);assert.equal(m.level,16);assert.equal(m.deployLimit,7);assert.equal(m.turnLimit,14);
  assert.equal(m.objects.filter(o=>o.kind==='ritualCircle').length,4);assert.equal(m.civilians.filter(c=>c.kind==='captive').length,4);assert.ok(m.civilians.some(c=>c.id==='teacher'));
  for(const o of m.objects){const p=m.civilians.find(c=>c.id===o.captive);assert.ok(p,o.id);assert.equal(Math.abs(p.x-o.x)+Math.abs(p.y-o.y),1);assert.ok(m.enemies.some(r=>r.kind==='ritualist'&&r.circle===o.id),o.id);}
  for(const k of ['19:intro','19:drain','19:stall','19:forgot','19:forgot2','19:unseal','19:unseal:lia','19:unseal3','19:reinforce','19:end','pre:19','after:19','after:19:take','after:19:leave','after:19:lia','world:capital:return','npc:19:preparation:elder','npc:19:aftermath:lia','npc:19:aftermath:advisor'])assert.ok(STORY[k]?.length,k);
@@ -30,7 +30,7 @@ test('from TURN 3 a lit circle with a ritualist near takes one memory a turn; Li
  enemyPhase(s);assert.equal(s.turn,2);assert.deepEqual(Object.values(st.memory),[3,3,3,3],'nothing before TURN 3');
  const lia=findUnit(s,'lia'),rc2=findUnit(s,'rc2');lia.x=rc2.x;lia.y=rc2.y+2;assert.equal(circleState(s,rc2),'lia');
  enemyPhase(s);assert.equal(s.turn,3);assert.equal(st.memory.p1,2,'rc1 draws');assert.equal(st.memory.p2,3,'Lia stalls rc2');assert.equal(st.memory.p3,3,'no ritualist near rc3');
- s.runes=[{x:4,y:3,until:9}];lia.x=1;lia.y=12;assert.equal(circleState(s,findUnit(s,'rc1')),'runes');enemyPhase(s);assert.equal(st.memory.p1,2,'the runes stall rc1');assert.equal(st.memory.p2,2,'rc2 draws again');
+ s.runes=[{x:7,y:6,until:9}];lia.x=14;lia.y=2;assert.equal(circleState(s,findUnit(s,'rc1')),'runes');enemyPhase(s);assert.equal(st.memory.p1,2,'the runes stall rc1');assert.equal(st.memory.p2,2,'rc2 draws again');
  s.runes=[];findUnit(s,'r2').hp=0;enemyPhase(s);enemyPhase(s);assert.equal(st.memory.p1,0);assert.equal(st.memory.p2,2,'its ritualist is down');assert.deepEqual(st.forgotten,['p1']);assert.ok(findUnit(s,'p1').forgotten);assert.ok(alive(findUnit(s,'p1')),'forgotten, not dead');
  assert.ok(s.narrative.seen.includes('19:forgot')||s.narrative.events.includes('19:forgot'));
  assert.ok(!s.outcome);st.memory.p3=1;const r3=findUnit(s,'r3');r3.hp=r3.maxHP;enemyPhase(s);assert.equal(s.outcome,'defeat','two captives forgotten');assert.match(s.reason,/이름을 잊었/);

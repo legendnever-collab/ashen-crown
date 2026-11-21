@@ -20,8 +20,8 @@ const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){adv
 const quiet=(s,...keep)=>{for(const u of s.units.filter(u=>u.team==='enemy'&&!keep.includes(u.id)))u.hp=0;s.units.filter(u=>u.team==='ally').forEach((u,i)=>{u.x=3+i;u.y=12;u.maxHP=u.hp=999;u.def=u.res=99;});};
 const place=(u,x,y)=>{u.x=x;u.y=y;u.moved=false;u.acted=false;};
 
-test('M21 data: 18×14 crown\'s heart, level 17, sortie of seven, the king on the dais, four anchor stones, TURN 12; scenes',()=>{
- const m=MISSIONS[21];assert.deepEqual([m.width,m.height],[18,14]);assert.equal(m.level,17);assert.equal(m.deployLimit,7);assert.equal(m.turnLimit,12);
+test('M21 data: 24×24 crown\'s heart (v2.4.1 big map), level 17, sortie of seven, the king on the dais, four anchor stones, TURN 12; scenes',()=>{
+ const m=MISSIONS[21];assert.deepEqual([m.width,m.height],[24,24]);assert.equal(m.level,17);assert.equal(m.deployLimit,7);assert.equal(m.turnLimit,12);
  const king=m.civilians.find(c=>c.id==='king');assert.equal(m.map[king.y][king.x],'z');assert.equal(m.objects.filter(o=>o.kind==='anchorStone').length,4);
  assert.deepEqual(m.pulseOuter,[5,6]);assert.deepEqual(m.pulseInner,[2,3]);assert.equal(m.pulseMP,3);assert.equal(m.duelTurn,2);
  for(const k of ['21:intro','21:duel','21:duel:hero','21:duel:foe','21:pulse','21:pulse:inner','21:crack','21:anchor','21:anchor2','21:anchor3','21:anchor4','21:king:low','21:commander','21:reinforce','21:end','pre:21','after:21','after:21:notyet','after:21:promise','after:21:aren','npc:21:preparation:aren','npc:21:aftermath:advisor'])assert.ok(STORY[k]?.length,k);
@@ -29,34 +29,34 @@ test('M21 data: 18×14 crown\'s heart, level 17, sortie of seven, the king on th
 test('the king cannot be rescued or moved; Erik is challenged on TURN 2',()=>{
  const s=battle(),king=findUnit(s,'king'),e=findUnit(s,'eric');assert.ok(king.noRescue);place(e,8,6);assert.ok(!validTarget(s,e,king,'rescue'));
  quiet(s,'rc');s.duel=null;s.missionState.duelDone=false;enemyPhase(s);assert.equal(s.turn,2);standBeside(s,'eric','rc');assert.equal(s.duel?.foe,'rc');assert.equal(s.duel.hero,'eric');
- assert.equal(king.x,8);assert.equal(king.y,5);
+ assert.equal(king.x,12);assert.equal(king.y,12);
 });
 test('anchor stones: Erik breaks one at one blow and the king gets 10 HP; Elina needs two',()=>{
  const s=battle();quiet(s);const st=s.missionState,king=findUnit(s,'king'),e=findUnit(s,'eric'),el=findUnit(s,'elina');king.hp=100;
- assert.ok(HEAVY21.includes('eric')&&!HEAVY21.includes('elina'));place(e,3,2);const r=performAction(s,'eric','search','as1');assert.ok(r.ok,r.error);
+ assert.ok(HEAVY21.includes('eric')&&!HEAVY21.includes('elina'));place(e,7,6);const r=performAction(s,'eric','search','as1');assert.ok(r.ok,r.error);
  assert.deepEqual(st.broken,['as1']);assert.equal(king.hp,110);assert.ok(findUnit(s,'as1').inert);
- place(el,14,2);assert.ok(performAction(s,'elina','search','as2').ok);assert.deepEqual(st.broken,['as1']);assert.equal(st.progress.as2,1);assert.ok(findUnit(s,'as2').cracked);
+ place(el,16,6);assert.ok(performAction(s,'elina','search','as2').ok);assert.deepEqual(st.broken,['as1']);assert.equal(st.progress.as2,1);assert.ok(findUnit(s,'as2').cracked);
  el.acted=false;assert.ok(performAction(s,'elina','search','as2').ok);assert.deepEqual(st.broken,['as1','as2']);assert.equal(king.hp,120);
  assert.ok(!validTarget(s,el,findUnit(s,'as2'),'search'),'a broken stone cannot be searched again');
 });
 test('the ward pulse: the outer ring on odd turns, the inner on even turns; ending the player phase there costs 3 MP',()=>{
  const s=battle();quiet(s);const king=findUnit(s,'king'),lia=findUnit(s,'lia'),sain=findUnit(s,'sain');assert.equal(pulseRing21(s),'outer');
  const outer=pulseCells21(s);assert.ok(outer.length>20);assert.ok(outer.every(c=>{const d=distance(c,king);return d>=5&&d<=6;}));
- const c=outer[0];place(lia,c.x,c.y);lia.mp=10;place(sain,8,8);sain.mp=10;enemyPhase(s);assert.equal(lia.mp,7,'on the ring');assert.equal(sain.mp,10,'off the ring (distance 3, the inner ring pulses on even turns)');
+ const c=outer[0];place(lia,c.x,c.y);lia.mp=10;place(sain,12,9);sain.mp=10;enemyPhase(s);assert.equal(lia.mp,7,'on the ring');assert.equal(sain.mp,10,'off the ring (distance 3, the inner ring pulses on even turns)');
  assert.equal(pulseRing21(s),'inner');assert.ok(pulseCells21(s).every(c=>{const d=distance(c,king);return d>=2&&d<=3;}));
  sain.mp=10;enemyPhase(s);assert.equal(sain.mp,7,'the inner ring pulses on TURN 2');
 });
 test('rite knights go for the king; the king falling is a defeat',()=>{
- const s=battle();quiet(s,'k1');const king=findUnit(s,'king'),k=findUnit(s,'k1');k.hp=k.maxHP;place(k,8,3);king.hp=1;enemyPhase(s);
+ const s=battle();quiet(s,'k1');const king=findUnit(s,'king'),k=findUnit(s,'k1');k.hp=k.maxHP;place(k,12,9);king.hp=1;enemyPhase(s);
  assert.equal(s.outcome,'defeat');assert.match(s.reason,/국왕/);
 });
 test('victory by the four stones, or by holding the king to the end of TURN 12',()=>{
- const s=battle();quiet(s);const st=s.missionState,e=findUnit(s,'eric');for(const [id,x,y] of [['as1',3,2],['as2',14,2],['as3',3,9],['as4',14,9]]){place(e,x,y);assert.ok(performAction(s,'eric','search',id).ok,id);if(s.outcome)break;}
+ const s=battle();quiet(s);const st=s.missionState,e=findUnit(s,'eric');for(const [id,x,y] of [['as1',7,6],['as2',16,6],['as3',7,17],['as4',16,17]]){place(e,x,y);assert.ok(performAction(s,'eric','search',id).ok,id);if(s.outcome)break;}
  assert.equal(s.outcome,'victory');assert.deepEqual(st.broken.length,4);
  const t=battle();quiet(t);while(!t.outcome&&t.turn<20){for(const u of t.units.filter(u=>u.team==='enemy'))u.hp=0;enemyPhase(t);}assert.equal(t.outcome,'victory');assert.match(t.reason,/TURN 12까지/);assert.equal(t.turn,13);
 });
 test('after M21: Aren awakens (「함께 정한다」 from then on), the king\'s request is fixed once chosen; reward, feat, save',()=>{
- const s=battle();quiet(s);const e=findUnit(s,'eric');for(const [id,x,y] of [['as1',3,2],['as2',14,2],['as3',3,9],['as4',14,9]]){place(e,x,y);performAction(s,'eric','search',id);}
+ const s=battle();quiet(s);const e=findUnit(s,'eric');for(const [id,x,y] of [['as1',7,6],['as2',16,6],['as3',7,17],['as4',16,17]]){place(e,x,y);performAction(s,'eric','search',id);}
  assert.equal(s.outcome,'victory');assert.equal(s.campaign.flags.aren_awakened,true);assert.equal(s.campaign.flags.mission_21_anchors,4);
  assert.ok(chooseKing21(s,'promise'));assert.ok(!chooseKing21(s,'notyet'));assert.equal(s.campaign.choices.m21_king,'promise');assert.deepEqual(Object.keys(KING21),['notyet','promise']);
  const p=newGame(91,{...camp21(),completed:[...camp21().completed]},21);p.practice=true;assert.ok(!chooseKing21(p,'notyet'));

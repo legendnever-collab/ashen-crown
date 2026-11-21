@@ -17,11 +17,11 @@ import {drain} from './campaign-policy.mjs';
 const camp22=(extra={})=>({heroes:null,results:[],clears:21,completed:[...Array(21).keys()].map(i=>i+1),flags:{act1_completed:true,act2_completed:true,mission_14_betrayer:'iron',mission_13_baldrick:'halted',aren_awakened:true},choices:{m15_records:'keep',m16_stones:'leave',m17_oath:'take',m18_truth:'tell',m19_teacher:'take',m20_superior:'trial',m20_plan:'keep',m21_king:'notyet'},factionTrust:{iron:-1,free:3,flame:1},factionsMet:['iron','free','flame'],roster:['thea','dario','ines'],...extra});
 const battle=(extra)=>{const s=newGame(92,camp22(extra),22);s.screen='deployment';startBattle(s);drain(s);return s;};
 const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);};
-const quiet=s=>{for(const u of s.units.filter(u=>u.team==='enemy'))u.hp=0;s.units.filter(u=>u.team==='ally').forEach((u,i)=>{u.x=3+i;u.y=10;u.maxHP=u.hp=999;u.def=u.res=99;});};
+const quiet=s=>{for(const u of s.units.filter(u=>u.team==='enemy'))u.hp=0;s.units.filter(u=>u.team==='ally').forEach((u,i)=>{u.x=3+i;u.y=8;u.maxHP=u.hp=999;u.def=u.res=99;});};
 const turn=s=>{quiet(s);enemyPhase(s);};
 
-test('M22 data: 18×14 square, level 17, sortie of seven, three heralds on three daises, four readings from TURN 2, TURN 12; scenes',()=>{
- const m=MISSIONS[22];assert.deepEqual([m.width,m.height],[18,14]);assert.equal(m.level,17);assert.equal(m.deployLimit,7);assert.equal(m.turnLimit,12);
+test('M22 data: 28×22 square (v2.4.1 big map), level 17, sortie of seven, three heralds on three daises, four readings from TURN 2, TURN 12; scenes',()=>{
+ const m=MISSIONS[22];assert.deepEqual([m.width,m.height],[28,22]);assert.equal(m.level,17);assert.equal(m.deployLimit,7);assert.equal(m.turnLimit,12);
  const h=m.civilians.filter(c=>c.kind==='herald');assert.equal(h.length,3);for(const c of h)assert.equal(m.map[c.y][c.x],'z',c.id);assert.equal(m.readTurn,2);assert.equal(m.reads,4);
  for(const k of ['22:intro','22:reading','22:betrayer','22:support:iron','22:support:free','22:support:flame','22:return:thea','22:return:dario','22:return:ines','22:read:hr','22:read:hp','22:read:hk','22:fallen','22:fallen2','22:end','pre:22','after:22','after:22:king','after:22:council','after:22:oath','after:22:end','npc:22:preparation:aren','npc:22:aftermath:advisor'])assert.ok(STORY[k]?.length,k);
 });
@@ -37,7 +37,7 @@ test('a herald hurt since the last turn start loses that turn; a hero on a falle
  quiet(t);l2.x=h2.x;l2.y=h2.y;enemyPhase(t);assert.equal(tt.read.hp,1,'Lia reads for the fallen herald');
 });
 test('two heralds down is a defeat; TURN 12 without the readings is a defeat',()=>{
- const s=battle();turn(s);assert.equal(s.turn,2,'TURN 1 the crowd shields the heralds');quiet(s);for(const id of ['hr','hp']){const h=findUnit(s,id);h.hp=1;}const g=s.units.find(u=>u.id==='g1');g.hp=g.maxHP;g.x=5;g.y=3;const g2=s.units.find(u=>u.id==='g2');g2.hp=g2.maxHP;g2.x=12;g2.y=3;enemyPhase(s);
+ const s=battle();turn(s);assert.equal(s.turn,2,'TURN 1 the crowd shields the heralds');quiet(s);for(const id of ['hr','hp']){const h=findUnit(s,id);h.hp=1;}const g=s.units.find(u=>u.id==='g1');g.hp=g.maxHP;g.x=9;g.y=9;const g2=s.units.find(u=>u.id==='g2');g2.hp=g2.maxHP;g2.x=18;g2.y=9;enemyPhase(s);
  assert.equal(s.outcome,'defeat');assert.match(s.reason,/전령 두 명/);
  const t=battle();t.missionState.fallen.push('hk');findUnit(t,'hk').hp=0;quiet(t);for(const id of HERALDS)t.missionState.read[id]=0;while(!t.outcome&&t.turn<20){quiet(t);t.missionState.hurt=['hr'];enemyPhase(t);}assert.equal(t.outcome,'defeat');assert.match(t.reason,/12턴/);
 });

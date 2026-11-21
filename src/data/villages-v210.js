@@ -6,7 +6,10 @@ export const VILLAGES={
  stonewell:{name:'돌우물 마을',opens:4,site:{x:1288,y:335},note:'국경 길가의 돌우물 마을'},
  // v2.3.1 (D-128 §3, D-131; PROPOSED): ACT II — the canyon (M08) opens 서리목 마을, Velmar (M09) opens 소금항.
  frost:{name:'서리목 마을',opens:8,site:{x:655,y:340},note:'협곡 아래 눈 덮인 나무꾼 마을'},
- saltport:{name:'소금항',opens:9,site:{x:305,y:600},note:'벨마르 남쪽 염전과 고깃배 포구'}
+ saltport:{name:'소금항',opens:9,site:{x:305,y:600},note:'벨마르 남쪽 염전과 고깃배 포구'},
+ // v2.4.1 (D-135 §3; PROPOSED): ACT III — the forgotten battlefield (M16) opens 등불골, the unburning forest (M18) opens 이끼다리.
+ lamp:{name:'등불골',opens:16,site:{x:552,y:488},note:'잊힌 전장 서쪽, 옛 전사자 묘지를 지키는 등불지기 마을'},
+ moss:{name:'이끼다리',opens:18,site:{x:985,y:592},note:'불타지 않는 숲 동쪽, 이끼 낀 돌다리 둘레의 약초꾼 · 사냥꾼 마을'}
 };
 // Requests. battle: a short skirmish (MISSIONS[mission], kind 'request'); pay: no battle, hand over items or gold.
 // repeat: a bounty that opens again after each story mission won. rescue: who joins when it is done.
@@ -30,6 +33,18 @@ Object.assign(REQUESTS,{
  saltcart:{village:'saltport',title:'소금 수레 나르기',kind:'pay',pay:{items:{medium:1}},reward:{gold:150,items:{smoke:1}},text:'염전 일꾼이 수레에 깔려 다쳤소. 회복약 하나만 나눠 주면 소금 판 값으로 사례하리다.'},
  bountyNorth:{village:['frost'],title:'현상금: 북부 탈영병',kind:'battle',mission:129,reward:{gold:200},repeat:true,text:'북부 길에 탈영병 무리가 또 나타났소. 본편 작전을 하나 마칠 때마다 새 무리가 내려오오.'},
  bountyPort:{village:['saltport'],title:'현상금: 항구 해적',kind:'battle',mission:130,reward:{gold:200},repeat:true,text:'항구를 노리는 해적에게 현상금이 걸렸소. 본편 작전을 하나 마칠 때마다 새 배가 들어오오.'}
+});
+// v2.4.1 (D-135): the ACT III villages. 이끼다리's 「잿빛 안개 속 약초꾼」 brings 마렌; 「이끼다리 보수」 takes 10% off the shops
+// round the capital (왕도 하층가, 이끼다리, 등불골); 등불골's 「등유 나르기」 takes an ether. Each village has its own bounty.
+Object.assign(REQUESTS,{
+ robbers:{village:'lamp',title:'무덤 도굴꾼',kind:'battle',mission:131,reward:{gold:320},text:'옛 전사자 묘지를 파헤치는 도굴꾼들이 있소. 이름 없는 무덤이라도 누군가의 무덤이오. 열 명을 모두 쫓아 주시오.'},
+ lanterns:{village:'lamp',title:'안개 속 등불',kind:'battle',mission:132,reward:{gold:300,items:{antidote:1}},text:'묘지 등불 셋이 꺼지면 길 잃은 사람이 늪으로 빠지오. 회색 망토 잔당이 등불을 노리니, 날이 밝을 때까지 지켜 주시오.'},
+ lampoil:{village:'lamp',title:'등유 나르기',kind:'pay',pay:{items:{ether:1}},reward:{gold:150,items:{ward:1}},text:'등불 기름이 떨어졌소. 에테르 한 병이면 등유 대신 한 달은 버티오. 사례는 하리다.'},
+ herbalist:{village:'moss',title:'잿빛 안개 속 약초꾼',kind:'battle',mission:133,reward:{gold:250},rescue:'maren',text:'숲길을 아는 사냥꾼이 벌목대 소식을 알리러 나왔다가 숲 가장자리에서 둘러싸였소. 그 사람이 없으면 숲지기들은 길을 잃소. 구해 주시오!'},
+ mossbridge:{village:'moss',title:'이끼다리 보수',kind:'pay',pay:{gold:300},reward:{discount:{hubs:['capital','moss','lamp'],pct:10}},text:'왕도로 가는 돌다리가 내려앉았소. 보수비를 보태 주면 왕도 둘레 상인들이 군단에는 값을 깎아 주겠다고 하오.'},
+ loggers:{village:'moss',title:'벌목꾼 몰아내기',kind:'battle',mission:134,reward:{gold:300,items:{medium:1}},text:'숲 가장자리 고목을 베려는 벌목꾼들이 또 왔소. 열 명이오. 숲 안쪽으로 들어가기 전에 몰아내 주시오.'},
+ bountyCapital:{village:['lamp'],title:'현상금: 회색 망토 잔당',kind:'battle',mission:135,reward:{gold:220},repeat:true,text:'흩어진 회색 망토 잔당에게 현상금이 걸렸소. 본편 작전을 하나 마칠 때마다 새 무리가 나타나오.'},
+ bountyForest:{village:['moss'],title:'현상금: 재상부 밀정',kind:'battle',mission:136,reward:{gold:220},repeat:true,text:'숲길을 엿보는 재상부 밀정에게 현상금이 걸렸소. 본편 작전을 하나 마칠 때마다 새 무리가 들어오오.'}
 });
 export const REQUEST_IDS=Object.keys(REQUESTS);
 // A request's villages (one id, or a list for a bounty shared by two villages).

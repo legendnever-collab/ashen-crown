@@ -68,9 +68,12 @@ export const SITES=[
  {id:'stonewell',name:'돌우물 마을',icon:'village',x:1288,y:335,region:'east',hub:'stonewell',small:true,opens:4},
  // v2.3.1 작은 마을 (D-131): the canyon (M08) opens 서리목, Velmar (M09) opens 소금항
  {id:'frost',name:'서리목 마을',icon:'village',x:655,y:340,region:'north',hub:'frost',small:true,opens:8},
- {id:'saltport',name:'소금항',icon:'village',x:305,y:600,region:'west',hub:'saltport',small:true,opens:9}
+ {id:'saltport',name:'소금항',icon:'village',x:305,y:600,region:'west',hub:'saltport',small:true,opens:9},
+ // v2.4.1 작은 마을 (D-135): the forgotten battlefield (M16) opens 등불골, the unburning forest (M18) opens 이끼다리
+ {id:'lamp',name:'등불골',icon:'village',x:552,y:488,region:'center',hub:'lamp',small:true,opens:16},
+ {id:'moss',name:'이끼다리',icon:'village',x:985,y:592,region:'center',hub:'moss',small:true,opens:18}
 ];
-export const HUB_SITE={village:'village',village_raid:'village',camp:'garrison',bivouac:'bivouac',fortress:'fortress',oathcamp:'oathcamp',castletown:'stronghold',march:'canyon',velmar:'freecity',pilgrim:'pilgrimvillage',refuge:'refugecamp',summit:'waystation',capital:'capital',fieldcamp:'oldfield',keep:'guardkeep',forest:'unburning',reed:'reed',stonewell:'stonewell',frost:'frost',saltport:'saltport'};
+export const HUB_SITE={village:'village',village_raid:'village',camp:'garrison',bivouac:'bivouac',fortress:'fortress',oathcamp:'oathcamp',castletown:'stronghold',march:'canyon',velmar:'freecity',pilgrim:'pilgrimvillage',refuge:'refugecamp',summit:'waystation',capital:'capital',fieldcamp:'oldfield',keep:'guardkeep',forest:'unburning',reed:'reed',stonewell:'stonewell',frost:'frost',saltport:'saltport',lamp:'lamp',moss:'moss'};
 // ACT I march order (W1): village → garrison → forest → bridge → bivouac → fortress → ridge → gate → oath camp.
 export const ACT1_ROUTE=['village','garrison','forest','bridge','bivouac','fortress','ridge','gate','oathcamp'];
 // ACT II first half (D-055 §6): oath camp → Ironhold's castle town → the grey canyon → Velmar. Drawn from v0.6 Phase F.

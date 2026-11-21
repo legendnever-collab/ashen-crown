@@ -14,6 +14,8 @@ import {RECRUIT_OF} from './mission-rules-v071.js';
 import {returningRecruits,rejoinRoster} from './mission-rules-v090.js';
 import {recruitRecord} from './roster.js';
 import {startDuel} from './duel.js';
+// v2.4.1 (D-135): on the big maps a captain keeps inside the mission's captainBox until his turn (else the old top rows)
+const inBox93=(s,dflt)=>{const b=missionOf(s).captainBox;return b?(x,y)=>x>=b[0]&&x<=b[2]&&y>=b[1]&&y<=b[3]:dflt;};
 
 function strike93(s,u,reachable,targets,goal,bonus=()=>0){let best=null;
  for(const [k,c] of reachable){const [x,y]=k.split(',').map(Number),a={...u,x,y};for(const t of targets){const d=distance(a,t);if(d<u.range[0]||d>u.range[1])continue;const f=strikeStats(s,a,t),score=f.damage+bonus(t)+(t.hp<=f.damage?30:0)-c*.3;if(!best||score>best.score)best={x,y,target:t.id,score,reason:`공격 · ${t.name}`};}}
@@ -51,7 +53,7 @@ export const M21={
  // Rite knights go for the king (the commander keeps to the dais until TURN 4); ritualists keep near the throne and strike
  // whoever comes near; grey cloaks hunt the legion (the default AI).
  planEnemy(s,u,reachable){const foes=foes93(s,u),king=findUnit(s,'king'),kingIn=king&&alive(king)?[king]:[];
-  if(u.id==='rc'&&s.turn<4)return strike93(s,u,within93(reachable,(x,y)=>y<=3),foes,null);
+  if(u.id==='rc'&&s.turn<4)return strike93(s,u,within93(reachable,inBox93(s,(x,y)=>y<=3)),foes,null);
   if(u.kind==='spear'||u.id==='rc')return strike93(s,u,reachable,[...foes,...kingIn],goalOf93(king),t=>t.id==='king'?10:0);
   if(u.kind==='ritualist'){const near=king?within93(reachable,(x,y)=>distance({x,y},king)<=3):reachable;return strike93(s,u,near.size?near:reachable,foes,goalOf93(nearest93(u,foes)));}
   return null;},
@@ -83,7 +85,7 @@ export function supportBanners22(c){if(!c)return [];const t=ensureTrust(c),bad=c
 // Who reads on a herald's dais this turn: the herald, or (once the herald has fallen) a hero standing on the dais.
 export function reader22(s,h){if(alive(h))return h;return s.units.find(u=>u.team==='ally'&&alive(u)&&!u.benched&&u.x===h.x&&u.y===h.y)||null;}
 function bannerLooks22(s){const f=s.missionState.banner;for(const u of s.units.filter(u=>u.scav&&!u.bannered)){u.look=scavengerLook16(f,u.scav);u.name=`${FACTIONS[f]?.name||'배신한 깃발'} ${u.scav==='archer'?'궁병':'병사'}`;u.faction=null;u.bannered=true;}}
-function arrive22(s,a,text){a.benched=false;a.moved=false;a.acted=false;const m=missionOf(s);if(s.units.some(o=>o!==a&&alive(o)&&!o.benched&&o.x===a.x&&o.y===a.y)){for(let y=m.height-1;y>=0;y--){let done=false;for(let x=6;x<=11;x++){const t=terrainAt(x,y,s);if(Number.isFinite(t?.cost)&&!s.units.some(o=>o!==a&&alive(o)&&!o.benched&&o.x===x&&o.y===y)){a.x=x;a.y=y;done=true;break;}}if(done)break;}}
+function arrive22(s,a,text){a.benched=false;a.moved=false;a.acted=false;const m=missionOf(s);if(s.units.some(o=>o!==a&&alive(o)&&!o.benched&&o.x===a.x&&o.y===a.y)){const [ax0,ax1]=m.arriveCols||[6,11];for(let y=m.height-1;y>=0;y--){let done=false;for(let x=ax0;x<=ax1;x++){const t=terrainAt(x,y,s);if(Number.isFinite(t?.cost)&&!s.units.some(o=>o!==a&&alive(o)&&!o.benched&&o.x===x&&o.y===y)){a.x=x;a.y=y;done=true;break;}}if(done)break;}}
  s.feedback.push({type:'spawn',id:a.id,text});}
 export const M22={
  init(s){const c=s.campaign,f=c.flags?.mission_14_betrayer||'iron',support=s.practice?[]:supportBanners22(c),back=s.practice?[]:returningRecruits(c);
@@ -112,7 +114,7 @@ export const M22={
  beforeEnemyPhase(){},
  // The chancellery and the betraying banner go for the heralds (the guard captain keeps to the north until TURN 5).
  planEnemy(s,u,reachable){const foes=foes93(s,u),readers=s.turn<2?[]:heralds22(s).filter(alive),goal=nearest93(u,readers.length?readers:foes); /* TURN 1: the crowd stands between them and the heralds */
-  if(u.id==='gc'&&s.turn<5)return strike93(s,u,within93(reachable,(x,y)=>y<=4),[...foes,...readers],null,t=>t.kind==='herald'?8:0);
+  if(u.id==='gc'&&s.turn<5)return strike93(s,u,within93(reachable,inBox93(s,(x,y)=>y<=4)),[...foes,...readers],null,t=>t.kind==='herald'?8:0);
   return strike93(s,u,reachable,[...foes,...readers],goalOf93(goal),t=>t.kind==='herald'?(u.movementProfile==='rogue'?14:10):0);},
  afterDamage(s,v){const st=s.missionState;if(v.kind==='herald'||v.team==='ally'&&heralds22(s).some(h=>!alive(h)&&h.x===v.x&&h.y===v.y)){if(!st.hurt.includes(v.id)&&v.hp>0)st.hurt.push(v.id);}
   if(v.kind==='herald'&&v.hp<=0&&!st.fallen.includes(v.id)){st.fallen.push(v.id);s.log.push(`${v.name}이(가) 쓰러졌습니다. 그 단에 장수가 서면 대신 읽을 수 있습니다.`);enqueueStory(s,st.fallen.length===1?'22:fallen':'22:fallen2');}

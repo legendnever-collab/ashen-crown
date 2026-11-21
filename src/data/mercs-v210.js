@@ -20,10 +20,12 @@ export const MERCS={
 export const WANDERERS=['bram','noa','marta'];
 // v2.3.1 (D-131): the 서리목 tavern takes in a wanderer from the ACT II taverns the same way — 세라 or 오린, not yet hired.
 export const WANDERERS_FROST=['sera','orin'];
+// v2.4.1 (D-135): the 등불골 tavern takes in 세라, 오린 or 셀린 (not yet hired) one per story win from M16 on.
+export const WANDERERS_LAMP=['sera','orin','celine'];
 // Rescued heroes (§7, one per ACT; ACT I first): joined by a request, not hired. Tavern towns → their hubs:
-export const RESCUED={adel:{request:'besieged',town:'stonewell'},gunnar:{request:'blizzard',town:'frost'}}; // v2.3.1: 군나르 (ACT II)
-export const TAVERN_HUBS={ash:['village','village_raid'],reed:['reed'],stonewell:['stonewell'],frost:['frost'],castletown:['castletown'],velmar:['velmar','saltport'],pilgrim:['pilgrim'],capital:['capital'],forest:['forest']};
-export const TOWN_NAME={ash:'잿빛 마을',reed:'갈대 나루',stonewell:'돌우물 마을',castletown:'철관성 성하 마을',velmar:'벨마르',frost:'서리목 마을',pilgrim:'순례자 마을',capital:'왕도 하층가',forest:'숲 마을'};
+export const RESCUED={adel:{request:'besieged',town:'stonewell'},gunnar:{request:'blizzard',town:'frost'},maren:{request:'herbalist',town:'moss'}}; // v2.3.1: 군나르 (ACT II); v2.4.1: 마렌 (ACT III)
+export const TAVERN_HUBS={ash:['village','village_raid'],reed:['reed'],stonewell:['stonewell'],frost:['frost'],lamp:['lamp'],moss:['moss'],castletown:['castletown'],velmar:['velmar','saltport'],pilgrim:['pilgrim'],capital:['capital'],forest:['forest']};
+export const TOWN_NAME={ash:'잿빛 마을',reed:'갈대 나루',stonewell:'돌우물 마을',castletown:'철관성 성하 마을',velmar:'벨마르',frost:'서리목 마을',lamp:'등불골',moss:'이끼다리',pilgrim:'순례자 마을',capital:'왕도 하층가',forest:'숲 마을'};
 
 // New characters' records (same fields as game-data RECRUIT_HEROES; the six stats in classes8 decide the numbers).
 export const NEW_HEROES=[
@@ -33,17 +35,18 @@ export const NEW_HEROES=[
  {id:'ren',name:'렌',ko:'렌',officer:true,elite:true,className:'Cutpurse',role:'Rogue',level:1,hp:30,mp:10,atk:15,def:5,mag:3,res:4,spd:11,mov:5,range:[1,1],skill:'Quick Strike',cost:3,talent:'Archive Gate',color:'#5a5470',growth:{mp:1},description:'왕도 서고의 문지기였던 정보원. 누가 어느 상자를 열었는지 다 기억한다. 엘리트 용병. 기습: 측면 공격.',clue:'',goal:''},
  {id:'silva',name:'실바',ko:'실바',officer:true,className:'Bowhand',role:'Ranged',level:1,hp:31,mp:12,atk:16,def:4,mag:3,res:5,spd:9,mov:4,range:[2,3],skill:'Aimed Shot',cost:3,talent:'Forest Keeper',color:'#4f7a46',growth:{mp:2},description:'불타지 않는 숲의 숲지기. 숲에 들어온 사람의 발소리로 이름을 맞힌다. 조준 사격: 명중 +18, 피해 ×1.15.',clue:'',goal:''},
  {id:'gunnar',name:'군나르',ko:'군나르',officer:true,rescued:true,className:'Axeman',role:'Infantry',level:1,hp:42,mp:10,atk:17,def:8,mag:2,res:4,spd:5,mov:4,range:[1,1],skill:'Blizzard Charge',cost:3,talent:'Snowbound',color:'#6f8fa8',growth:{mp:1},description:'철왕관 북부 수비대의 도끼잡이. 탈영병을 쫓다 눈보라에 낙오해 서리목 마을 사람들을 지켜 왔다. 눈보라 돌격: 받아치기(다음 아군 턴까지 반격 ×1.5) · 눈밭 이동 비용 1.',clue:'',goal:''},
+ {id:'maren',name:'마렌',ko:'마렌',officer:true,rescued:true,className:'Pathfinder',role:'Rogue',level:1,hp:31,mp:10,atk:15,def:5,mag:3,res:5,spd:10,mov:4,range:[1,1],skill:'Moss Step',cost:3,talent:'Forest Path',color:'#5b7a52',growth:{mp:1},description:'불타지 않는 숲의 길잡이 사냥꾼. 숲지기들이 해마다 기억을 조금씩 잃는 동안, 숲길을 대신 기억해 사람들을 이끌어 왔다. 이끼 걸음: 기습(측면 공격) · 늪도 1칸으로 다닌다.',clue:'',goal:''},
  {id:'adel',name:'아델',ko:'아델',officer:true,rescued:true,className:'Spearhand',role:'Spear',level:1,hp:41,mp:10,atk:16,def:9,mag:3,res:5,spd:5,mov:4,range:[1,1],skill:'Last Post',cost:3,talent:'Last Post',color:'#9a6b3c',growth:{mp:1},description:'무너진 국경 초소의 마지막 창기사. 초소가 버려진 뒤에도 길가 마을을 지켰다. 마지막 초소: 근접 공격 ×1.1, 다음 아군 턴까지 반격 ×1.5.',clue:'',goal:''}
 ];
 export const NEW_STATS={
  sera:{str:9,int:3,wil:5,con:8,agi:5,luk:4},orin:{str:3,int:9,wil:7,con:4,agi:5,luk:5},celine:{str:3,int:6,wil:9,con:5,agi:6,luk:6},
- ren:{str:7,int:4,wil:3,con:5,agi:11,luk:10},silva:{str:8,int:3,wil:4,con:5,agi:9,luk:7},adel:{str:9,int:3,wil:6,con:9,agi:5,luk:5},gunnar:{str:10,int:2,wil:5,con:9,agi:5,luk:5}
+ ren:{str:7,int:4,wil:3,con:5,agi:11,luk:10},silva:{str:8,int:3,wil:4,con:5,agi:9,luk:7},adel:{str:9,int:3,wil:6,con:9,agi:5,luk:5},gunnar:{str:10,int:2,wil:5,con:9,agi:5,luk:5},maren:{str:7,int:4,wil:5,con:5,agi:10,luk:8}
 };
-export const NEW_CLASS={sera:'spear',orin:'mage',celine:'healer',ren:'rogue',silva:'archer',adel:'spear',gunnar:'infantry'};
+export const NEW_CLASS={sera:'spear',orin:'mage',celine:'healer',ren:'rogue',silva:'archer',adel:'spear',gunnar:'infantry',maren:'rogue'};
 // Elite hires are one grade stronger in their main stats (§4).
 export const ELITE_BONUS=2;
 // Busts until art pack H1 (v2) returns (D-094 manner: a painted figure of the same calling).
-export const MERC_BUST={sera:'captain16_iron',orin:'merchant',celine:'captain16_flame',ren:'pursuerCaptain',silva:'forestElder',adel:'captain16_free',gunnar:'dario'}; // v2.3.1: 군나르 borrowed Dario's bust until art pack J; his own painting is used once present (D-132)
+export const MERC_BUST={sera:'captain16_iron',orin:'merchant',celine:'captain16_flame',ren:'pursuerCaptain',silva:'forestElder',adel:'captain16_free',gunnar:'dario',maren:'elina'}; // v2.4.1: 마렌 borrowed Elina's bust until art pack K; her own painting is used once present (D-139). v2.3.1: 군나르 borrowed Dario's bust until art pack J; his own painting is used once present (D-132)
 
 // Camp lines (§4: the same way as the v2.0.0 officers; one of three by mission).
 export const MERC_TALK={
@@ -67,7 +70,10 @@ export const MERC_TALK={
   [['adel','마지막 초소란 건 없다. 내가 서 있는 곳이 초소다.','determined']]],
  gunnar:[[['gunnar','눈보라는 사흘이면 그친다. 그 사흘을 버티는 게 일이지. 서리목에서 배운 거다.']],
   [['gunnar','그 탈영병 대장… 같은 막사에서 자던 놈이다. 도망친 놈을 쫓던 내가, 결국 같이 길을 잃었지.','sad'],['eric','그래도 마을을 지켰잖아요.'],['gunnar','지킨 게 아니라 떠나지 못한 거다. …뭐, 결과는 같군.']],
-  [['gunnar','도끼는 나무를 패라고 있는 거다. 사람을 패야 하는 날이 오면, 적어도 누굴 위해서인지는 알고 싶다.','determined']]]
+  [['gunnar','도끼는 나무를 패라고 있는 거다. 사람을 패야 하는 날이 오면, 적어도 누굴 위해서인지는 알고 싶다.','determined']]],
+ maren:[[['maren','숲길은 해마다 조금씩 바뀌어. 숲지기들이 잊는 만큼, 내가 기억하면 돼.']],
+  [['maren','삼촌은 나를 알아봐. 아직은. 내년에도 알아볼지는… 모르겠어.','sad'],['eric','그래서 같이 온 거예요?'],['maren','그래서 같이 온 거야. 잊는 이유를 끝까지 보고 싶어서.']],
+  [['maren','이끼는 밟아도 다시 일어나. 나도 그래.','determined']]]
 };
 // 열전 (§4): observed facts only; chapters show from the mission after they joined.
 export const MERC_LORE={
@@ -84,7 +90,9 @@ export const MERC_LORE={
  adel:{title:'마지막 초소',traits:['끈기','과묵함','의리'],likes:'새벽 경계, 잘 닦은 창날',dislikes:'버려진 길',quote:'내가 서 있는 곳이 초소다.',
   bio:'무너진 국경 초소의 마지막 창기사. 초소가 버려진 뒤에도 길가의 돌우물 마을을 지키다 산적에게 포위되었고, 군단이 구해 냈다.',chapters:[],bonds:[['eric','늦지 않게 온 젊은 방패.'],['bram','같은 창을 쥔 늙은 자경단장.']]},
  gunnar:{title:'서리목의 도끼',traits:['우직함','과묵함','책임감'],likes:'마른 장작, 그친 눈보라',dislikes:'버리고 가는 사람',quote:'그 사흘을 버티는 게 일이다.',
-  bio:'철왕관 북부 수비대의 도끼잡이. 탈영병을 쫓다 눈보라에 낙오해 협곡 아래 서리목 마을에 머물며 마을 사람들을 지켰다. 늑대와 탈영병에게 둘러싸였을 때 군단이 구해 냈다. 탈영병 대장과 같은 부대 출신이다.',chapters:[],bonds:[['thea','같은 북부 수비대의 기병.'],['dario','도끼와 칼, 같은 보병.']]}
+  bio:'철왕관 북부 수비대의 도끼잡이. 탈영병을 쫓다 눈보라에 낙오해 협곡 아래 서리목 마을에 머물며 마을 사람들을 지켰다. 늑대와 탈영병에게 둘러싸였을 때 군단이 구해 냈다. 탈영병 대장과 같은 부대 출신이다.',chapters:[],bonds:[['thea','같은 북부 수비대의 기병.'],['dario','도끼와 칼, 같은 보병.']]},
+ maren:{title:'이끼다리의 길잡이',traits:['기억력','민첩함','고집'],likes:'새벽 숲길, 이끼 낀 돌',dislikes:'잊어도 된다는 말',quote:'잊는 만큼 내가 기억하면 돼.',
+  bio:'불타지 않는 숲의 길잡이 사냥꾼. 숲지기 장로의 조카로, 숲지기들이 해마다 기억을 조금씩 잃는 동안 숲길을 대신 기억해 사람들을 이끌었다. 벌목대 소식을 이끼다리에 알리러 나왔다가 포위되었고, 군단이 구해 냈다.',chapters:[],bonds:[['kai','그림자 길을 아는 같은 도적.'],['silva','같은 숲에서 자란 숲지기.']]}
 };
 // One epilogue line by ending (§4).
 export const MERC_EPILOGUE={
@@ -94,7 +102,8 @@ export const MERC_EPILOGUE={
  ren:{A:'렌은 왕도 서고의 문을 다시 지킨다. 이번엔 누가 문을 열었는지 모두에게 말한다.',B:'렌은 지역의 기록을 서로 바꿔 보게 하는 일을 맡았다. 지운 기록은 이제 없다.',C:'렌은 서약의 기록을 지키는 문지기가 되었다.'},
  silva:{A:'실바는 왕실 사냥터를 맡았지만 숲으로 돌아가는 날이 더 많다.',B:'실바는 불타지 않는 숲으로 돌아갔다. 이제 숲에는 다시 사람이 산다.',C:'실바는 숲길을 지키며 서약한 사람들을 숲 너머로 안내한다.'},
  adel:{A:'아델은 새 왕관의 국경 초소를 다시 세웠다. 첫 보초는 그 자신이었다.',B:'아델은 돌우물 마을의 자경단장이 되었다. 길이 있는 한 지킬 사람도 있다.',C:'아델은 서약한 길가 마을들을 돌며 초소 대신 사람을 세웠다.'},
- gunnar:{A:'군나르는 새 왕관의 북부 수비대로 돌아갔다. 눈보라가 오면 서리목에 먼저 들른다.',B:'군나르는 서리목 마을에 남아 나무를 팼다. 마을 사람들은 그를 도끼잡이 촌장이라 부른다.',C:'군나르는 서약한 북부 마을들을 돌며 겨울을 나는 법을 가르쳤다.'}
+ gunnar:{A:'군나르는 새 왕관의 북부 수비대로 돌아갔다. 눈보라가 오면 서리목에 먼저 들른다.',B:'군나르는 서리목 마을에 남아 나무를 팼다. 마을 사람들은 그를 도끼잡이 촌장이라 부른다.',C:'군나르는 서약한 북부 마을들을 돌며 겨울을 나는 법을 가르쳤다.'},
+ maren:{A:'마렌은 새 왕관의 숲길 안내를 맡았다. 지도에 없는 길은 그녀가 기억한다.',B:'마렌은 불타지 않는 숲으로 돌아가 숲지기들 곁에 남았다. 잊는 사람이 줄었다.',C:'마렌은 서약한 사람들을 숲 너머로 이끄는 길잡이가 되었다.'}
 };
 // What the tavern keeper says when a hire is made (§4).
 export const HIRE_LINES={

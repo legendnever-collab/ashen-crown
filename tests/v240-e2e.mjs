@@ -25,7 +25,7 @@ try{
   }
   // a v2.3.1 save in the middle of an M17 battle (the small map) reopens in the keep's camp
   {const old=battle(17);old.turn=3;await restore(backupText(old,23));const s=await p.evaluate(()=>AshenCrown.snapshot());
-   check(`${label} a v2.3.1 save of an M17 battle reopens in its camp (the map changed)`,s.screen==='exploration'&&s.missionId===17&&s.schema===24);}
+   check(`${label} a v2.3.1 save of an M17 battle reopens in its camp (the map changed)`,s.screen==='exploration'&&s.missionId===17&&s.schema===25);}
   check(`${label} no runtime errors`,errors.length===0);if(errors.length)console.log(errors);await ctx.close();
  }
  fs.writeFileSync('test-output/v240-e2e.json',JSON.stringify({checks:n},null,1));console.log(`v240 e2e: ${n} checks passed`);
