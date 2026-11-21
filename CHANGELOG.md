@@ -1,5 +1,5 @@
 # v2.4.0 — ACT III 큰 맵 (1부)
-- Release candidate (D-134, D-135); not merged before the user plays and approves it. Design approved 2026-11-21 with the recommended answers (docs/v2.4.0/ACT3_MAPS_DESIGN.md, D-135). Notes docs/v2.4.0/RELEASE_NOTES.md.
+- Merged (PR #35; approved 2026-11-21 10:37 「병합만 해줘」, D-136). Built under D-134, D-135. Design approved 2026-11-21 with the recommended answers (docs/v2.4.0/ACT3_MAPS_DESIGN.md, D-135). Notes docs/v2.4.0/RELEASE_NOTES.md.
 - ACT III M15–M18 on big maps (src/data/missions-v240.js, maps from scripts/make-act3-maps.py): M15 chase from the canal 28×20 (16+6, TURN 14), M16 west → east through the fog 30×18 (17+8, four ward stones, TURN 16), M17 keep defence from three sides 26×22 (11+9, six statues), M18 the ward in the middle 26×22 (6+9, eight forest-keepers). Objectives, rules, story, duels unchanged; troops copied from each mission's own by id. The "all" hidden objectives and rewards follow the new counts (data ACT3_COUNTS); M17/M18 captains wait behind m.rearY; council lines may be functions (M16 names the returning recruits).
 - Strength: M15 ×0.94 (was ×0.88), M18 ×0.92; 어려움 at 보통's numbers for M16 too (HARD_SHARE).
 - Schema 24 (imports 0–23): M15–M18 battle saves reopen in camp (reform240).

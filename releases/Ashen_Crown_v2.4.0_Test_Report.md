@@ -1,5 +1,5 @@
 # Ashen Crown v2.4.0 「ACT III 큰 맵 (1부)」 — Test Report
-Updated 2026-11-21 KST. **Release candidate — not merged before the user plays and approves it.**
+Updated 2026-11-21 KST. **Merged (PR #35; approved by the user 2026-11-21 10:37, D-136).**
 - Decisions: D-134 (the released builds leave the tree), D-135 (the v2.4 design approved with the recommended answers; this implementation). Notes: docs/v2.4.0/RELEASE_NOTES.md; design docs/v2.4.0/ACT3_MAPS_DESIGN.md.
 - HTML SHA256: see `releases/Ashen_Crown_v2.4.0_SHA256SUMS` (`index.html` is identical).
 
