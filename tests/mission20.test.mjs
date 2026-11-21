@@ -22,7 +22,7 @@ test('M20 data: 28×22 archive and lower city (v2.4.1 big map), level 16, sortie
  const m=MISSIONS[20];assert.deepEqual([m.width,m.height],[28,22]);assert.equal(m.level,16);assert.equal(m.deployLimit,7);assert.equal(m.turnLimit,13);
  assert.equal(m.objects.filter(o=>o.kind==='cabinet').length,4);const folk=m.civilians.filter(c=>c.kind==='resident');assert.equal(folk.length,8);for(const r of folk)assert.equal(m.map[r.y][r.x],'v',r.id);
  for(const w of m.fires)for(const [x,y] of w.cells)assert.equal(m.map[y][x],'v',`${x},${y}`);assert.equal(m.plan,2);assert.equal(m.needed,4);
- assert.ok(m.enemies.filter(e=>e.shade).length>=4,'grey cloaks in the shadows');assert.equal(m.enemies.filter(e=>e.clerk).length,4);
+ assert.ok(m.enemies.filter(e=>e.shade).length>=4,'grey cloaks in the shadows');assert.equal(m.enemies.filter(e=>e.clerk).length,3); /* v2.4.1: the fourth cabinet has no clerk */
  for(const k of ['20:intro','20:torch','20:burned','20:plan','20:plan2','20:evacuate','20:lost','20:gate','20:duel','20:duel:hero','20:duel:foe','20:yield','20:end','pre:20','after:20','after:20:release','after:20:trial','after:20:send','after:20:keep','after:20:kai','after:20:baldrick:halted','after:20:baldrick:envoy','after:20:next','npc:20:preparation:kai','npc:20:aftermath:advisor'])assert.ok(STORY[k]?.length,k);
 });
 
@@ -30,8 +30,8 @@ test('the fire starts in two houses, spreads through the houses it touches each 
  const s=battle();quiet(s);const st=s.missionState,m=MISSIONS[20];
  assert.deepEqual(st.fire.sort(),['25,18','3,19']);assert.equal(s.burning['3,19'],2);
  enemyPhase(s);assert.ok(st.fire.includes('2,19')&&st.fire.includes('3,18'),'spread');assert.ok(!st.fire.includes('4,19'),'alleys do not burn');
- const h2=findUnit(s,'h2');enemyPhase(s);assert.ok(st.fire.includes('2,18'));assert.ok(st.fire.includes('7,14')&&st.fire.includes('16,18'),'the TURN 3 leaps');
- enemyPhase(s);enemyPhase(s);assert.ok(st.fire.includes('6,15'),'through the house to h2');assert.equal(h2.hp,h2.maxHP-m.fireDamage); /* v2.4.1: the fire reaches h2's corner of the house on TURN 5 */
+ const h2=findUnit(s,'h2');enemyPhase(s);assert.ok(st.fire.includes('2,18'));assert.ok(st.fire.includes('7,18')&&st.fire.includes('16,18'),'the TURN 3 leaps');
+ st.fire.push('6,15');enemyPhase(s);assert.equal(h2.hp,h2.maxHP-m.fireDamage,'a resident in a burning house is hurt'); /* v2.4.1: the residents' houses burn only from TURN 7 on the big map */
  assert.ok(validTarget(s,{...findUnit(s,'sain'),x:5,y:15},h2,'rescue'));
  deserialize(serialize(s));
 });
@@ -51,7 +51,7 @@ test('two cabinets searched and four residents evacuated win; three residents lo
  for(const [id,hero] of [['cb1','lia'],['cb3','kai']]){const c=findUnit(s,id),h=findUnit(s,hero);h.x=c.x;h.y=c.y+1;h.moved=true;assert.ok(performAction(s,hero,'search',id).ok);}assert.ok(!s.outcome,'the residents still wait');
  const free=[[0,8],[3,8],[9,8],[10,9]];for(const [i,[id,hero]] of [['h1','eric'],['h2','sain'],['h3','elina'],['h4','dario']].entries()){const r=findUnit(s,id),h=findUnit(s,hero);[h.x,h.y]=[r.x,r.y-1];if(id==='h2'){h.x=r.x+1;h.y=r.y;}if(id==='h4'){h.x=r.x-1;h.y=r.y;}h.moved=true;assert.ok(performAction(s,hero,'rescue',id).ok,id);assert.ok(!alive(r),'left the board');}
  assert.equal(s.outcome,'victory');assert.equal(s.campaign.flags.mission_20_cabinets,2);assert.equal(s.campaign.flags.mission_20_residents,4);
- const s2=battle();quiet(s2);for(const id of ['h1','h2','h3']){const r=findUnit(s2,id);r.hp=1;}const g=s2.units.find(u=>u.id==='g5');g.hp=0;s2.missionState.fire.push('2,14','6,15','11,14');enemyPhase(s2);assert.equal(s2.outcome,'defeat');assert.match(s2.reason,/세 명을 잃었/);
+ const s2=battle();quiet(s2);for(const id of ['h1','h2','h3']){const r=findUnit(s2,id);r.hp=1;}const g=s2.units.find(u=>u.id==='g5');g.hp=0;s2.missionState.fire.push('2,14','6,15','7,14');enemyPhase(s2);assert.equal(s2.outcome,'defeat');assert.match(s2.reason,/세 명을 잃었/);
 });
 
 test('Kai\'s old superior challenges him at TURN 2; M20 rewards, feat, carrier and the two camp choices (superior, then the plan)',()=>{

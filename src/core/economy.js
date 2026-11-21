@@ -34,7 +34,8 @@ export function validateEconomy(e){if(e?.hired!=null&&(!Array.isArray(e.hired)||
 }
 // Stale confirmation tokens never apply twice, even after a reload.
 // v2.3.1 (D-131): after 「얼음 다리 수리」 (서리목) the north shops — 철관성 성하 마을 and 서리목 — take 10% off tools and gear.
-export function discountAt(s){const e=s.economy||{},hub=s.frontier?.hub;return (e.requests||[]).includes('icebridge')&&['castletown','frost'].includes(hub)?.9:1;}
+// v2.4.1: any paid request with a discount (얼음 다리 수리: the north; 이끼다리 보수: round the capital) applies in its towns
+export function discountAt(s){const e=s.economy||{},hub=s.frontier?.hub;for(const [id,r] of Object.entries(REQUESTS)){const d=r.reward?.discount;if(d&&(e.requests||[]).includes(id)&&d.hubs.includes(hub))return 1-d.pct/100;}return 1;}
 export const shopPrice=(s,p)=>Math.round(p*discountAt(s));
 export function transact(s,request){
  if(s.practice)return {ok:false,error:'연습에서는 정식 자산 거래를 할 수 없습니다.'};

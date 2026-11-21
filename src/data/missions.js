@@ -816,6 +816,49 @@ req2(130,{title:'현상금: 항구 해적',en:'Bounty: Harbor Pirates',
  enemies:[pirate('p1',4,3),pirate('p2',11,3),pirate('p3',7,2),pArcher('a1',3,2),pArcher('a2',12,2),unit('boss','해적 두목','captain',8,2,{hp:44,atk:16,def:7,spd:6,mov:4})],
  deployments:{recommended:[[7,10],[8,10],[6,11],[9,11],[5,10],[10,10],[7,11],[8,11]]},deployZone:reqZone(9,11),limit:6,goal:{type:'rout'},
  objective:'TURN 6까지 해적 6명 격파',brief:'현상금이 걸린 해적 무리입니다. 본편 작전을 하나 마칠 때마다 새 배가 들어옵니다.'});
+// v2.4.1 의뢰 (D-135 §3; maps and numbers PROPOSED): the ACT III villages' short battles. 등불골: 「무덤 도굴꾼」, 「안개 속 등불」,
+// the grey-cloak bounty. 이끼다리: 「잿빛 안개 속 약초꾼」 (마렌 joins when she lives), 「벌목꾼 몰아내기」, the spy bounty.
+const robber=(id,x,y,s={})=>unit(id,'도굴꾼','bandit',x,y,{hp:34,atk:16,def:6,spd:7,mov:4,...s}),rArcher=(id,x,y)=>unit(id,'도굴꾼 궁수','archer',x,y,{hp:28,atk:15,def:4,spd:7,mov:3});
+const remnant=(id,x,y,s={})=>unit(id,'회색 망토 잔당','bandit',x,y,{hp:34,atk:17,def:6,spd:9,mov:4,movementProfile:'rogue',look:'grayCloak',...s});
+const logger=(id,x,y,s={})=>unit(id,'벌목꾼','spear',x,y,{hp:38,atk:17,def:8,spd:6,mov:3,look:'mercSpear',...s}),torch=(id,x,y)=>unit(id,'횃불잡이','archer',x,y,{hp:28,atk:15,def:4,spd:7,mov:3,look:'mercSpear'});
+const spy=(id,x,y,s={})=>unit(id,'재상부 밀정','bandit',x,y,{hp:32,atk:17,def:5,spd:10,mov:4,movementProfile:'rogue',look:'grayCloak',...s});
+const req3=(id,m)=>skirmish(id,'request',null,{level:16,threatTurn:1,deployLimit:8,...m});
+req3(131,{title:'무덤 도굴꾼',en:'The Grave Robbers',
+ rows:['ggvggvggggvggvgg','gggggggrrggggggg','gvggvgrrrrgvggvg','ggggggrggrgggggg','gvggvrrggrrvggvg','gggggrggggrggggg','ggffggggggggffgg','gggggggrrggggggg','gggggggrrggggggg','gggggggrrggggggg','gggggggggggggggg','gggggggggggggggg'],
+ enemies:[robber('r1',2,1),robber('r2',13,1),robber('r3',5,2),robber('r4',10,2),robber('r5',1,4),robber('r6',14,4),robber('r7',7,3),rArcher('a1',4,0),rArcher('a2',11,0),unit('boss','도굴꾼 두목','captain',8,1,{hp:48,atk:17,def:7,spd:6,mov:4})],
+ deployments:{recommended:[[7,10],[8,10],[6,11],[9,11],[5,10],[10,10],[7,11],[8,11]]},deployZone:reqZone(9,11),limit:8,goal:{type:'rout'},
+ objective:'TURN 8까지 도굴꾼 10명 격파',brief:'잊힌 전장 옛 묘지를 파헤치는 도굴꾼들입니다. 무덤 사이(마을 칸)에 서면 회복합니다. 두목은 묘지 한가운데에서 버팁니다.'});
+req3(132,{title:'안개 속 등불',en:'Lanterns in the Mist',
+ rows:['ffggggggggggggff','fggggggggggggggf','ggggrrrrrrrrgggg','gggrgggggggrrggg','ggrgggvggvgggrgg','ggrggggggggggrgg','ggrrggggggggrrgg','gggrrrrrrrrrrggg','gggggggggggggggg','ffggggggggggggff','gggggggggggggggg','gggggggggggggggg'],
+ civilians:[{id:'lan1',name:'묘지 등불',kind:'beacon',x:3,y:4,hp:50,def:6,res:4},{id:'lan2',name:'묘지 등불',kind:'beacon',x:12,y:4,hp:50,def:6,res:4},{id:'lan3',name:'묘지 등불',kind:'beacon',x:8,y:7,hp:50,def:6,res:4}],
+ enemies:[remnant('g1',1,1),remnant('g2',14,1),remnant('g3',0,5),remnant('g4',15,5),remnant('g5',6,0),remnant('g6',9,0)],
+ waves:[{turn:3,units:[remnant('g7',0,9),remnant('g8',15,9)]},{turn:5,units:[remnant('g9',0,2),remnant('g10',15,2)]}],
+ deployments:{recommended:[[7,6],[8,6],[6,5],[9,5],[4,5],[11,5],[7,8],[8,8]]},deployZone:reqZone(5,8,3,12),limit:8,escortOnly:true,
+ goal:{type:'survive',turn:6,protect:['lan1','lan2','lan3']},
+ objective:'TURN 6이 끝날 때까지 묘지 등불 셋 지키기',brief:'회색 망토 잔당이 묘지 등불 셋을 끄려 합니다. 등불 하나라도 꺼지면 실패입니다. 잔당은 빠르고, TURN 3과 TURN 5에 양옆에서 더 옵니다.'});
+req3(133,{title:'잿빛 안개 속 약초꾼',en:'The Herbalist in the Ash Mist',
+ rows:['ffffffggffffffff','fffggggggggggfff','ffggssggggssggff','fgggsgggggggsggf','fggggggxxggggggf','ggggggxggxgggggg','ggggggxggxgggggg','fggggggxxggggggf','fggsggggggggsggf','ffgsssggggsssgff','gggggggggggggggg','gggggggggggggggg'],
+ civilians:[{id:'marenc',name:'마렌',kind:'knight',look:'forester',x:7,y:5,hp:44,def:7,res:6}],
+ enemies:[logger('l1',4,4),logger('l2',11,4),logger('l3',4,7),logger('l4',11,7),logger('l5',7,2),torch('t1',2,1),torch('t2',13,1),unit('boss','벌목대 반장','captain',8,1,{hp:50,atk:18,def:8,spd:6,mov:3})],
+ waves:[{turn:3,units:[logger('l6',0,5),logger('l7',15,5)]}],
+ deployments:{recommended:[[7,11],[6,11],[8,11],[5,10],[9,10],[4,11],[10,11],[7,10]]},deployZone:reqZone(10,11),limit:7,escortOnly:true,
+ goal:{type:'survive',turn:7,protect:['marenc']},
+ objective:'TURN 7이 끝날 때까지 길잡이 마렌 지키기',brief:'숲 가장자리 무너진 사냥 망루 터에서 길잡이 마렌이 벌목대에게 둘러싸였습니다. 남쪽에서 뚫고 들어가 TURN 7까지 그녀를 지키세요. 늪(이동 3)은 피해 가세요. TURN 3에 양옆에서 둘이 더 옵니다. 마렌이 살아남으면 군단에 합류합니다.'});
+req3(134,{title:'벌목꾼 몰아내기',en:'Driving off the Loggers',
+ rows:['ffffffffffffffff','ffggffffffffggff','fggggffffffggggf','ggggggfggfgggggg','gggrrrrrrrrrrggg','ggrggggssggggrgg','ggrggggssggggrgg','gggrrrrrrrrrrggg','gggggggggggggggg','ggffggggggggffgg','gggggggggggggggg','gggggggggggggggg'],
+ enemies:[logger('l1',2,2),logger('l2',13,2),logger('l3',4,3),logger('l4',11,3),logger('l5',7,4),logger('l6',8,4),logger('l7',1,5),logger('l8',14,5),torch('t1',6,1),unit('boss','벌목대 십장','captain',9,1,{hp:50,atk:18,def:8,spd:6,mov:3})],
+ deployments:{recommended:[[7,10],[8,10],[6,11],[9,11],[5,10],[10,10],[7,11],[8,11]]},deployZone:reqZone(9,11),limit:8,goal:{type:'rout'},
+ objective:'TURN 8까지 벌목꾼 10명 격파',brief:'숲 가장자리 고목을 베려는 벌목꾼들입니다. 벌목꾼은 창을 들어 기병에 강합니다. 가운데 늪은 이동 3이 듭니다.'});
+req3(135,{title:'현상금: 회색 망토 잔당',en:'Bounty: Grey Cloak Remnants',
+ rows:['gggggggggggggggg','gvggggvggvggggvg','gggggggggggggggg','ggggrrrrrrrrgggg','gggrggggggggrggg','gggrggffffggrggg','gggrggggggggrggg','ggggrrrrrrrrgggg','gggggggggggggggg','gggggggggggggggg','gggggggggggggggg','gggggggggggggggg'],
+ enemies:[remnant('g1',3,0),remnant('g2',12,0),remnant('g3',7,1),remnant('g4',1,2),remnant('g5',14,2),unit('boss','잔당 두목','captain',8,0,{hp:46,atk:18,def:7,spd:8,mov:4,movementProfile:'rogue',look:'grayCloak'})],
+ deployments:{recommended:[[7,10],[8,10],[6,11],[9,11],[5,10],[10,10],[7,11],[8,11]]},deployZone:reqZone(9,11),limit:6,goal:{type:'rout'},
+ objective:'TURN 6까지 회색 망토 잔당 6명 격파',brief:'현상금이 걸린 회색 망토 잔당입니다. 숲과 산을 가볍게 다닙니다. 본편 작전을 하나 마칠 때마다 새 무리가 나타납니다.'});
+req3(136,{title:'현상금: 재상부 밀정',en:'Bounty: Chancellery Spies',
+ rows:['ffffffffffffffff','ffggggffffggggff','fggggggffggggggf','ggggrrrrrrrrgggg','gggrggssssggrggg','gggrggssssggrggg','ggggrrrrrrrrgggg','gggggggggggggggg','gggggggggggggggg','gggggggggggggggg','gggggggggggggggg','gggggggggggggggg'],
+ enemies:[spy('s1',3,1),spy('s2',12,1),spy('s3',7,2),spy('s4',1,3),spy('s5',14,3),unit('boss','밀정 우두머리','captain',8,1,{hp:46,atk:18,def:7,spd:9,mov:4,movementProfile:'rogue',look:'grayCloak'})],
+ deployments:{recommended:[[7,10],[8,10],[6,11],[9,11],[5,10],[10,10],[7,11],[8,11]]},deployZone:reqZone(9,11),limit:6,goal:{type:'rout'},
+ objective:'TURN 6까지 재상부 밀정 6명 격파',brief:'현상금이 걸린 재상부 밀정입니다. 숲길을 엿보다 들키면 흩어집니다. 본편 작전을 하나 마칠 때마다 새 무리가 들어옵니다.'});
 export const isSkirmish=id=>!!MISSIONS[id]?.skirmish;
 export const LAST_MISSION=Math.max(...Object.keys(MISSIONS).map(Number).filter(id=>!MISSIONS[id].skirmish));
 

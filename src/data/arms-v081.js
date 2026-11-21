@@ -151,7 +151,10 @@ export const TOWNS=[
  {hub:'stonewell',name:'돌우물 마을',site:'stonewell',small:true,reached:(m,c)=>!!c?.completed?.includes(4)},
  // v2.3.1 (D-131): the ACT II small villages
  {hub:'frost',name:'서리목 마을',site:'frost',small:true,reached:(m,c)=>!!c?.completed?.includes(8)},
- {hub:'saltport',name:'소금항',site:'saltport',small:true,reached:(m,c)=>!!c?.completed?.includes(9)}
+ {hub:'saltport',name:'소금항',site:'saltport',small:true,reached:(m,c)=>!!c?.completed?.includes(9)},
+ // v2.4.1 (D-135): the ACT III small villages
+ {hub:'lamp',name:'등불골',site:'lamp',small:true,reached:(m,c)=>!!c?.completed?.includes(16)},
+ {hub:'moss',name:'이끼다리',site:'moss',small:true,reached:(m,c)=>!!c?.completed?.includes(18)}
 ];
 // Townsfolk on a revisit: a short word on how the town is doing (PROPOSED wording; no new facts about the crown or factions).
 export const REVISIT_LINES={
@@ -164,6 +167,9 @@ export const REVISIT_LINES={
  reed:{elder:['성채가 조용해진 뒤로 나루가 살아났소. 의뢰 게시판도 한번 보시오.','주점에 국경 기병 하나가 일거리를 찾고 있소. 말 다루는 솜씨가 보통이 아니더군.'],refugee:['배가 다시 떠요. 산적만 없으면 강은 순하답니다.'],guard:['나루 경비라 해 봐야 셋이오. 군단이 지나가면 한숨 돌리지.']},
 // v2.3.1 (D-131, PROPOSED): 서리목 and 소금항
  frost:{elder:['서리목이오. 협곡 아래라 겨울이 일찍 오고 늦게 가지.','의뢰 게시판을 보시오. 눈 녹기 전에 해결할 일이 많소.'],refugee:['도끼잡이 아저씨가 없었으면 우린 벌써 떠났을 거예요.'],guard:['눈길 파수는 발자국부터 봅니다. 늑대인지 사람인지.']},
+// v2.4.1 (D-135, PROPOSED): 등불골 and 이끼다리
+ lamp:{elder:['등불골이오. 잊힌 전장의 무덤마다 등불을 거는 게 우리 일이지.','의뢰 게시판을 보시오. 묘지를 노리는 자들이 아직 있소.'],refugee:['밤에 등불이 꺼지면 길을 잃어요. 그래서 다들 번갈아 깨어 있어요.'],guard:['묘지 파수는 발소리를 셉니다. 산 사람인지 아닌지.']},
+ moss:{elder:['이끼다리요. 돌다리 하나로 숲과 왕도를 오가지.','의뢰 게시판에 숲 가장자리 일이 많소. 숲 안쪽은 숲지기들 몫이고.'],refugee:['약초는 이슬 마르기 전에 캐야 향이 남아요.'],guard:['숲길 파수는 발자국보다 꺾인 가지를 봅니다.']},
  saltport:{elder:['소금항이오. 벨마르 사람들이 먹는 소금은 다 여기서 나가지.','의뢰 게시판에 붙은 일들, 바닷바람만큼 거칠다오.'],refugee:['염전 일은 해 뜨기 전에 끝내야 해요. 해가 뜨면 소금이 마르거든요.'],guard:['포구 파수는 바다만 봅니다. 해적은 늘 바다에서 오니까요.']},
  stonewell:{elder:['돌우물 마을이오. 길가 마을이라 별의별 손님이 다 지나가지.','의뢰 게시판에 붙은 일들, 군단이라면 해낼 수 있을 거요.'],refugee:['우물이 무너져서 물 길으러 멀리 가요.'],guard:['길목 파수는 밤이 길어요. 그래도 군단 깃발을 보면 마음이 놓여요.']},
  pilgrim:{elder:['순례길이 다시 열렸소. 성화가 꺼지지 않은 건 그날 덕이오.','대장간에서 성물도 다룬다오. 성화 교단의 손을 거친 물건이지.'],refugee:['밤에도 화로가 켜져 있어서 이제는 덜 무서워요.'],guard:['대성당 쪽은 아직 출입이 엄합니다. 마을 안은 편히 다니십시오.']}
