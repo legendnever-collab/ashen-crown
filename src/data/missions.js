@@ -869,4 +869,5 @@ import {applyV230} from './missions-v230.js';
 import {applyV231} from './missions-v231.js';
 import {applyV240} from './missions-v240.js';
 import {applyV241} from './missions-v241.js';
-applyV230(MISSIONS);applyV231(MISSIONS);applyV240(MISSIONS);applyV241(MISSIONS);
+import {applyV250} from './missions-v250.js';
+applyV230(MISSIONS);applyV231(MISSIONS);applyV240(MISSIONS);applyV241(MISSIONS);applyV250(MISSIONS);

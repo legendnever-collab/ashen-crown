@@ -95,13 +95,14 @@ function lever24(s){const l=findUnit(s,'lever');if(l)l.locked=!gateOpen24(s);}
 export const M24={
  init(s){s.missionState={waves:[],ash:0,inside:[],lost:[],ashLost:[],closedTurn:null};for(const r of refugees24(s))r.noRescue=true;lever24(s);},
  clearLabel:'최후의 국경에서 관문을 닫음',
- validState(m){const ids=['p1','p2','p3','p4','p5','p6','p7','p8'];return !!m&&typeof m==='object'&&Array.isArray(m.waves)&&m.waves.every(n=>Number.isInteger(n)&&n>0)&&Number.isInteger(m.ash)&&m.ash>=0&&m.ash<=8
+ validState(m){const ids=['p1','p2','p3','p4','p5','p6','p7','p8'];return !!m&&typeof m==='object'&&Array.isArray(m.waves)&&m.waves.every(n=>Number.isInteger(n)&&n>0)&&Number.isInteger(m.ash)&&m.ash>=0&&m.ash<=40
   &&idList(m.inside,id=>ids.includes(id),8)&&idList(m.lost,id=>ids.includes(id),8)&&idList(m.ashLost,id=>m.lost.includes(id),8)&&m.inside.every(id=>!m.lost.includes(id))&&(m.closedTurn===null||Number.isInteger(m.closedTurn)&&m.closedTurn>=1);},
  status(s){const m=missionOf(s),st=s.missionState,out=refugees24(s).filter(alive).length;
   return `관문 안 ${st.inside.length}/8 (필요 ${m.needInside}) · 밖 ${out} · 쓰러짐 ${st.lost.length}/${m.lostLimit} · 재 ${st.ash}줄 · ${gateOpen24(s)?'관문을 닫을 수 있음':'관문 열림'} · ${Math.max(0,m.turnLimit+1-s.turn)}턴 남음`;},
  optional(s){const f=s.campaign.flags,st=s.missionState;return `관문 안 ${f.mission_24_inside??st?.inside.length??0}/8 · 관문을 닫은 턴 ${f.mission_24_gate_turn??st?.closedTurn??'—'}`;},
  onTurnStart(s){const m=missionOf(s),st=s.missionState;act2Waves(s);
-  if(s.turn>=m.ashTurn&&st.ash<m.ashRows){st.ash=Math.min(m.ashRows,s.turn-m.ashTurn+1);s.log.push(`재의 조수가 밀려옵니다 (북쪽 ${st.ash}줄).`);if(st.ash===1)enqueueStory(s,'24:ash');if(st.ash===5)enqueueStory(s,'24:ash5');}
+  const base=m.ashBase|0; // v2.5.0 (D-141): on the big map the pass above the slope is under the ash when the tide starts
+  if(s.turn>=m.ashTurn&&st.ash<m.ashRows){st.ash=Math.min(m.ashRows,base+s.turn-m.ashTurn+1);s.log.push(`재의 조수가 밀려옵니다 (북쪽 ${st.ash}줄).`);if(st.ash===base+1)enqueueStory(s,'24:ash');if(st.ash===base+5)enqueueStory(s,'24:ash5');}
   lever24(s);},
  // End of the player phase: the refugees walk, then the ash bites whoever stands in it (the ash beasts are at home there).
  beforeEnemyPhase(s){const m=missionOf(s),st=s.missionState;walkRefugees24(s);let n=0;

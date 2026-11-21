@@ -17,10 +17,10 @@ const camp=(extra={})=>({heroes:null,results:[],clears:24,completed:[...Array(24
  choices:{act3_choice:'council',m23_lead:'legion'},factionTrust:{iron:-1,free:3,flame:2},factionsMet:['iron','free','flame'],roster:['thea','dario','ines'],...extra});
 const battle=extra=>{const s=newGame(100,camp(extra),25);s.screen='deployment';startBattle(s);drain(s);return s;};
 const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);};
-const quiet=s=>{for(const u of s.units.filter(u=>u.camp==='north'))u.hp=0;s.units.filter(u=>u.team==='ally').forEach((u,i)=>{u.x=4+i;u.y=12;});};
+const quiet=s=>{for(const u of s.units.filter(u=>u.camp==='north'))u.hp=0;s.units.filter(u=>u.team==='ally').forEach((u,i)=>{u.x=4+i;u.y=17;});};
 
-test('M25 data: 18×14 summit field, level 19, sortie of seven, TURN 12; a north camp of hardliners, west and east camps with a leader each; scenes',()=>{
- const m=MISSIONS[25];assert.deepEqual([m.width,m.height],[18,14]);assert.equal(m.level,19);assert.equal(m.deployLimit,7);assert.equal(m.turnLimit,12);
+test('M25 data: 30×20 summit field (v2.5.0 big map), level 19, sortie of seven, TURN 12; a north camp of hardliners, west and east camps with a leader each; scenes',()=>{
+ const m=MISSIONS[25];assert.deepEqual([m.width,m.height],[30,20]);assert.ok(m.v250);assert.deepEqual(m.captainBox,[9,0,20,4]);assert.equal(m.level,19);assert.equal(m.deployLimit,7);assert.equal(m.turnLimit,12);
  assert.ok(m.enemies.every(u=>u.camp==='north'));assert.deepEqual(m.allies.filter(a=>a.leader).map(a=>[a.id,a.camp]),[['lw','west'],['le','east']]);
  for(const k of ['25:intro','25:reason:iron','25:reason:free','25:reason:flame','25:allied','25:neutral','25:flank','25:riders','25:captain:down','25:leader:down','25:end','pre:25','after:25','after:25:forgive','after:25:lower','npc:25:preparation:aren','npc:25:aftermath:guard','world:banners'])assert.ok(STORY[k]?.length,k);
 });

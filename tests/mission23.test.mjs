@@ -18,21 +18,21 @@ export const camp23=(extra={})=>({heroes:null,results:[],clears:22,completed:[..
 const battle=(extra)=>{const s=newGame(100,camp23(extra),23);s.screen='deployment';startBattle(s);drain(s);return s;};
 const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);};
 // Clear the field: every enemy down (waves too, as they come), the heroes out of the way in the south.
-const quiet=(s,keep=[])=>{for(const u of s.units.filter(u=>u.team==='enemy'&&!keep.includes(u.id)))u.hp=0;s.units.filter(u=>u.team==='ally').forEach((u,i)=>{u.x=2+i;u.y=12;u.maxHP=u.hp=999;u.def=u.res=99;});};
+const quiet=(s,keep=[])=>{for(const u of s.units.filter(u=>u.team==='enemy'&&!keep.includes(u.id)))u.hp=0;s.units.filter(u=>u.team==='ally').forEach((u,i)=>{u.x=2+i;u.y=16;u.maxHP=u.hp=999;u.def=u.res=99;});};
 const turn=(s,keep)=>{quiet(s,keep);enemyPhase(s);};
 
-test('M23 data: 18×14 alliance camp, level 18, sortie of seven, TURN 10; three tents, three orderable leaders and guards; scenes',()=>{
- const m=MISSIONS[23];assert.deepEqual([m.width,m.height],[18,14]);assert.equal(m.level,18);assert.equal(m.deployLimit,7);assert.equal(m.turnLimit,10);assert.equal(m.siegeTurns,2);
+test('M23 data: 26×20 alliance camp (v2.5.0 big map), level 18, sortie of seven, TURN 10; three tents, three orderable leaders and guards; scenes',()=>{
+ const m=MISSIONS[23];assert.deepEqual([m.width,m.height],[26,20]);assert.ok(m.v250);assert.equal(m.level,18);assert.equal(m.deployLimit,7);assert.equal(m.turnLimit,10);assert.equal(m.siegeTurns,2);
  assert.deepEqual(m.objects.map(o=>[o.id,o.kind,o.faction]),[['ti','tent','iron'],['tf','tent','free'],['tl','tent','flame']]);
  assert.deepEqual(m.allies.filter(a=>a.leader).map(a=>a.id),Object.keys(LEADERS23));assert.ok(m.allies.every(a=>a.orderable));assert.ok(m.waves.some(w=>w.units.some(u=>u.id==='rk')&&w.turn===4),'the raid captain comes on TURN 4');
  for(const k of ['23:intro','23:flank','23:south','23:siege','23:tent:iron','23:tent:free','23:tent:flame','23:tent2','23:captain','23:captain:down','23:fallen:cassian','23:fallen:leonora','23:fallen:lucien','23:end','pre:23','after:23','after:23:legion','after:23:banners','npc:23:preparation:aren','npc:23:aftermath:advisor','world:alliance'])assert.ok(STORY[k]?.length,k);
 });
 test('an enemy that ends two enemy phases in a row beside a tent takes it; one that steps away clears the mark',()=>{
  const s=battle(),st=s.missionState,tent=findUnit(s,'tl'),k=findUnit(s,'k1');assert.deepEqual(st.siege,{ti:0,tf:0,tl:0});
- Object.assign(k,{x:7,y:10,mov:0,hp:999,maxHP:999,def:99,res:99,atk:0});assert.equal(distance(k,tent),1);
+ Object.assign(k,{x:tent.x-1,y:tent.y,mov:0,hp:999,maxHP:999,def:99,res:99,atk:0});assert.equal(distance(k,tent),1);
  turn(s,['k1']);assert.equal(s.turn,2);assert.equal(st.siege.tl,1);assert.deepEqual(besiegers23(s,tent).map(u=>u.id),['k1']);assert.ok(!tent.inert);
  turn(s,['k1']);assert.equal(s.turn,3);assert.ok(tent.inert,'taken');assert.deepEqual(st.fallenTents,['tl']);assert.ok(!s.outcome);assert.ok(s.narrative.events.includes('23:tent:flame'));
- const t=battle(),g=findUnit(t,'k1');Object.assign(g,{x:5,y:4,mov:0,hp:999,maxHP:999,def:99,res:99,atk:0});turn(t,['k1']);assert.equal(t.missionState.siege.ti,1);g.x=1;g.y=10;turn(t,['k1']);assert.equal(t.missionState.siege.ti,0);
+ const t=battle(),g=findUnit(t,'k1');Object.assign(g,{x:8,y:7,mov:0,hp:999,maxHP:999,def:99,res:99,atk:0});turn(t,['k1']);assert.equal(t.missionState.siege.ti,1);g.x=1;g.y=9;turn(t,['k1']);assert.equal(t.missionState.siege.ti,0);
 });
 test('two tents taken is a defeat; the raid captain falling is a victory; TURN 10 ending is a victory',()=>{
  const s=battle();s.missionState.fallenTents=['ti','tf'];turn(s);assert.equal(s.outcome,'defeat');assert.match(s.reason,/천막 두 곳/);
@@ -50,7 +50,7 @@ test('allied orders: tap an orderable allied unit in the player phase — 따르
  assert.deepEqual(Object.keys(ALLY_ORDERS),['follow','hold','free']);
  const s=battle(),c=findUnit(s,'cassian');assert.ok(canOrderAlly(s,c));assert.ok(!canOrderAlly(s,findUnit(s,'k1')),'not an enemy');assert.ok(!canOrderAlly(s,findUnit(s,'eric')),'not a hero');assert.ok(!setAllyOrder(s,'cassian','charge'));
  assert.ok(setAllyOrder(s,'cassian','hold'));assert.deepEqual(c.orderPost,{x:c.x,y:c.y});const post={x:c.x,y:c.y};
- const l=findUnit(s,'leonora');assert.ok(setAllyOrder(s,'leonora','follow'));quiet(s);const e=findUnit(s,'eric');e.x=12;e.y=9;
+ const l=findUnit(s,'leonora');assert.ok(setAllyOrder(s,'leonora','follow'));quiet(s);const e=findUnit(s,'eric');e.x=14;e.y=9;
  enemyPhase(s);assert.deepEqual({x:c.x,y:c.y},post,'지켜라: stays');const near=s.units.filter(h=>h.team==='ally'&&alive(h)).sort((a,b)=>distance(l,a)-distance(l,b))[0];assert.ok(distance(l,near)<=2,'따르라: beside a hero');
  const back=deserialize(serialize(s));assert.equal(findUnit(back,'cassian').order,'hold');assert.deepEqual(findUnit(back,'cassian').orderPost,post);assert.equal(findUnit(back,'leonora').order,'follow');
  const bad=structuredClone(s);findUnit(bad,'cassian').order='charge';assert.throws(()=>serialize(bad));const bad2=structuredClone(s);findUnit(bad2,'k1').order='hold';assert.throws(()=>serialize(bad2));

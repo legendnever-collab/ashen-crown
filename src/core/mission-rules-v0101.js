@@ -20,6 +20,8 @@ function strike101(s,u,reachable,targets,goal,bonus=()=>0){let best=null;
 const within101=(reachable,ok)=>new Map([...reachable].filter(([k])=>{const [x,y]=k.split(',').map(Number);return ok(x,y);}));
 const nearest101=(u,list)=>[...list].sort((a,b)=>distance(u,a)-distance(u,b))[0];
 const goalOf101=t=>t?{x:t.x,y:t.y,name:t.name}:null;
+// v2.5.0 (D-141): on the big maps the captain's box comes from the mission (m.captainBox); the small maps kept rows 0–3
+const inBox101=(s,dflt)=>{const b=missionOf(s).captainBox;return b?(x,y)=>x>=b[0]&&x<=b[2]&&y>=b[1]&&y<=b[3]:dflt;};
 
 // ---------- M25 The Banners of the Three Houses ----------
 export const BANNERS=['iron','free','flame'];
@@ -54,7 +56,7 @@ export const M25={
   if(u.neutral){const foes=s.units.filter(t=>alive(t)&&t.camp==='north'),keep=within101(reachable,(x,y)=>!u.post||Math.abs(x-u.post.x)+Math.abs(y-u.post.y)<=(u.leader?1:3));
    const near=foes.filter(t=>u.post&&distance(t,u.post)<=6);return strike101(s,u,keep.size?keep:reachable,foes,goalOf101(nearest101(u,near))||goalOf101(u.post&&{...u.post,name:'진영'}));}
   if(u.camp==='north'){const foes=s.units.filter(t=>alive(t)&&hostile(s,u,t)),bonus=t=>t.leader?10:0;
-   if(u.id==='hc'&&s.turn<5)return strike101(s,u,within101(reachable,(x,y)=>y<=3),foes,null,bonus);
+   if(u.id==='hc'&&s.turn<5)return strike101(s,u,within101(reachable,inBox101(s,(x,y)=>y<=3)),foes,null,bonus);
    return strike101(s,u,reachable,foes,goalOf101(nearest101(u,leaders.length?leaders:foes)),bonus);}
   return null;},
  afterDamage(s,v){const st=s.missionState;if(v.id==='hc'&&v.hp<=0&&!st.captain){st.captain=true;enqueueStory(s,'25:captain:down');}
@@ -96,7 +98,7 @@ export const M26={
  afterDuel(s){countDuel26(s);}, // v2.0.0: the resolve shows the moment the duel ends
  // Baldrick keeps to the north until the duel turn, then rides at Erik; his riders hunt the legion; the bearers stay by him.
  planEnemy(s,u,reachable){const foes=s.units.filter(t=>alive(t)&&hostile(s,u,t)),e=findUnit(s,'eric'),b=baldrickOf26(s);
-  if(u.id==='boss'){if(s.turn<missionOf(s).duelTurn)return strike101(s,u,within101(reachable,(x,y)=>y<=3),foes,null);return strike101(s,u,reachable,foes,goalOf101(e&&alive(e)&&!e.benched?e:nearest101(u,foes)),t=>t.id==='eric'?8:0);}
+  if(u.id==='boss'){if(s.turn<missionOf(s).duelTurn)return strike101(s,u,within101(reachable,inBox101(s,(x,y)=>y<=3)),foes,null);return strike101(s,u,reachable,foes,goalOf101(e&&alive(e)&&!e.benched?e:nearest101(u,foes)),t=>t.id==='eric'?8:0);}
   if(u.kind==='bearer'&&b&&alive(b)){const keep=within101(reachable,(x,y)=>Math.abs(x-b.x)+Math.abs(y-b.y)<=2);return strike101(s,u,keep.size?keep:reachable,foes,goalOf101(b));}
   return null;},
  persuade(s,u,t){const st=s.missionState;countDuel26(s);if(st.halted)return;if(u.id==='eric'){st.persuadedTurn=s.turn;remember(s,'m26_persuade');addResolve26(s,'eric');}else if(u.id==='thea'){st.thea=true;remember(s,'m26_thea');enqueueStory(s,'26:thea');addResolve26(s,'thea');}s.feedback.push({type:'guard',id:u.id,text:'설득'});},
