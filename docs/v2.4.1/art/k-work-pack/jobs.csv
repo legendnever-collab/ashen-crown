@@ -1,0 +1,6 @@
+order,part,kind,id,expression,file,size,references,prompt_file
+1,A,bust,maren,neutral,bust_maren_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_elina.png, ref_bust_kai.png",prompts/01_bust_maren_neutral.txt
+2,A,bust,maren,concerned,bust_maren_concerned.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_elina.png, ref_bust_kai.png",prompts/02_bust_maren_concerned.txt
+3,A,bust,maren,determined,bust_maren_determined.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_elina.png, ref_bust_kai.png",prompts/03_bust_maren_determined.txt
+4,B,hub,hub_lamp,,hub_lamp.jpg,1536x1024,"layout_hub_village.png, approved_hub_village_day.jpg, approved_hub_stonewell.jpg, approved_hub_capital.jpg, scale_reference.png, sprite_eric_sheet.png",prompts/04_hub_lamp.txt
+5,B,hub,hub_moss,,hub_moss.jpg,1536x1024,"layout_hub_village.png, approved_hub_village_day.jpg, approved_hub_reed.jpg, approved_hub_capital.jpg, scale_reference.png, sprite_eric_sheet.png",prompts/05_hub_moss.txt

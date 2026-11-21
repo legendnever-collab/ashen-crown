@@ -33,9 +33,9 @@ test('the king cannot be rescued or moved; Erik is challenged on TURN 2',()=>{
 });
 test('anchor stones: Erik breaks one at one blow and the king gets 10 HP; Elina needs two',()=>{
  const s=battle();quiet(s);const st=s.missionState,king=findUnit(s,'king'),e=findUnit(s,'eric'),el=findUnit(s,'elina');king.hp=100;
- assert.ok(HEAVY21.includes('eric')&&!HEAVY21.includes('elina'));place(e,3,2);const r=performAction(s,'eric','search','as1');assert.ok(r.ok,r.error);
+ assert.ok(HEAVY21.includes('eric')&&!HEAVY21.includes('elina'));place(e,7,6);const r=performAction(s,'eric','search','as1');assert.ok(r.ok,r.error);
  assert.deepEqual(st.broken,['as1']);assert.equal(king.hp,110);assert.ok(findUnit(s,'as1').inert);
- place(el,20,2);assert.ok(performAction(s,'elina','search','as2').ok);assert.deepEqual(st.broken,['as1']);assert.equal(st.progress.as2,1);assert.ok(findUnit(s,'as2').cracked);
+ place(el,16,6);assert.ok(performAction(s,'elina','search','as2').ok);assert.deepEqual(st.broken,['as1']);assert.equal(st.progress.as2,1);assert.ok(findUnit(s,'as2').cracked);
  el.acted=false;assert.ok(performAction(s,'elina','search','as2').ok);assert.deepEqual(st.broken,['as1','as2']);assert.equal(king.hp,120);
  assert.ok(!validTarget(s,el,findUnit(s,'as2'),'search'),'a broken stone cannot be searched again');
 });
@@ -51,12 +51,12 @@ test('rite knights go for the king; the king falling is a defeat',()=>{
  assert.equal(s.outcome,'defeat');assert.match(s.reason,/국왕/);
 });
 test('victory by the four stones, or by holding the king to the end of TURN 12',()=>{
- const s=battle();quiet(s);const st=s.missionState,e=findUnit(s,'eric');for(const [id,x,y] of [['as1',3,2],['as2',20,2],['as3',3,21],['as4',20,21]]){place(e,x,y);assert.ok(performAction(s,'eric','search',id).ok,id);if(s.outcome)break;}
+ const s=battle();quiet(s);const st=s.missionState,e=findUnit(s,'eric');for(const [id,x,y] of [['as1',7,6],['as2',16,6],['as3',7,17],['as4',16,17]]){place(e,x,y);assert.ok(performAction(s,'eric','search',id).ok,id);if(s.outcome)break;}
  assert.equal(s.outcome,'victory');assert.deepEqual(st.broken.length,4);
  const t=battle();quiet(t);while(!t.outcome&&t.turn<20){for(const u of t.units.filter(u=>u.team==='enemy'))u.hp=0;enemyPhase(t);}assert.equal(t.outcome,'victory');assert.match(t.reason,/TURN 12까지/);assert.equal(t.turn,13);
 });
 test('after M21: Aren awakens (「함께 정한다」 from then on), the king\'s request is fixed once chosen; reward, feat, save',()=>{
- const s=battle();quiet(s);const e=findUnit(s,'eric');for(const [id,x,y] of [['as1',3,2],['as2',20,2],['as3',3,21],['as4',20,21]]){place(e,x,y);performAction(s,'eric','search',id);}
+ const s=battle();quiet(s);const e=findUnit(s,'eric');for(const [id,x,y] of [['as1',7,6],['as2',16,6],['as3',7,17],['as4',16,17]]){place(e,x,y);performAction(s,'eric','search',id);}
  assert.equal(s.outcome,'victory');assert.equal(s.campaign.flags.aren_awakened,true);assert.equal(s.campaign.flags.mission_21_anchors,4);
  assert.ok(chooseKing21(s,'promise'));assert.ok(!chooseKing21(s,'notyet'));assert.equal(s.campaign.choices.m21_king,'promise');assert.deepEqual(Object.keys(KING21),['notyet','promise']);
  const p=newGame(91,{...camp21(),completed:[...camp21().completed]},21);p.practice=true;assert.ok(!chooseKing21(p,'notyet'));
