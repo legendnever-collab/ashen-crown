@@ -53,8 +53,8 @@ try{
   await press('aren-command');s=await snap();check(`${label} the command button moves on to none, then 「지켜라」`,s.command===null);await press('aren-command');s=await snap();check(`${label} … and 「지켜라」`,s.command==='hold');
   await press('aren-command');s=await snap();check(`${label} … and back to 「나아가라」`,s.command==='advance');
   await press('start-battle');await drainStory(p);s=await snap();
-  check(`${label} M17 battle: seven heroes, four sleeping statues, the archive`,s.screen==='battle'&&s.units.filter(u=>u.team==='ally'&&!u.benched).length===7&&s.units.filter(u=>u.kind==='statue'&&u.team==='object').length===4);
-  check(`${label} the objective panel shows the statues and the turns left`,(await body()).includes('맹세한 석상 0/4'));
+  check(`${label} M17 battle: seven heroes, six sleeping statues (v2.4.0 big map), the archive`,s.screen==='battle'&&s.units.filter(u=>u.team==='ally'&&!u.benched).length===7&&s.units.filter(u=>u.kind==='statue'&&u.team==='object').length===6);
+  check(`${label} the objective panel shows the statues and the turns left`,(await body()).includes('맹세한 석상 0/6'));
   const prep=deserialize(serialize(await snap()));const hero=prep.units.find(u=>u.id==='eric'),st=prep.units.find(u=>u.id==='st1');hero.x=st.x+1;hero.y=st.y;await restore(prep);await drainStory(p);
   await select(hero);check(`${label} a hero beside a statue may swear (맹세)`,(await p.locator('#unit-popover').textContent()).includes('맹세'));
   await press('mode','search');await tile(st.x,st.y);if(await p.locator('[data-do="confirm"]').count())await press('confirm');await p.waitForTimeout(600);await drainStory(p);s=await snap();
@@ -66,7 +66,7 @@ try{
   await p.screenshot({path:`${shots}/oath17-choice-${label}.png`});
   await press('oath17-pick','take');await drainStory(p);s=await snap();check(`${label} the book goes with the legion; Erik's word follows`,s.campaign.choices.m17_oath==='take'&&s.narrative.seen.includes('after:17:take')&&s.narrative.seen.includes('after:17:eric'));
   // 5. M18 in the rain
-  await restore(m18());await drainStory(p);s=await snap();check(`${label} M18: rain, three ward trees, six forest-keepers`,s.missionId===18&&s.units.filter(u=>u.kind==='wardTree'&&u.hp>0).length===3&&s.units.filter(u=>u.kind==='forester').length===6);
+  await restore(m18());await drainStory(p);s=await snap();check(`${label} M18: rain, three ward trees, eight forest-keepers (v2.4.0 big map)`,s.missionId===18&&s.units.filter(u=>u.kind==='wardTree'&&u.hp>0).length===3&&s.units.filter(u=>u.kind==='forester').length===8);
   check(`${label} the objective panel shows the trees, the keepers and the rain`,(await body()).includes('결계 고목 3/3')&&(await body()).includes('비'));
   const f=deserialize(serialize(s)),kai=f.units.find(u=>u.id==='kai'&&!u.benched)||f.units.find(u=>u.team==='ally'&&!u.benched),fo=f.units.find(u=>u.id==='f3');kai.x=fo.x+1;kai.y=fo.y;await restore(f);await drainStory(p);
   await select(kai);await press('mode','rescue');await tile(fo.x,fo.y);if(await p.locator('[data-do="confirm"]').count())await press('confirm');await p.waitForTimeout(600);await drainStory(p);s=await snap();
