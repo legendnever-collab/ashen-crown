@@ -21,7 +21,7 @@ try{const ctx=await browser.newContext();await ctx.setOffline(true);
  // 2. Restore each into v0.4.0 through the visible backup dialog.
  const p=await ctx.newPage();p.on('pageerror',e=>errors.push(`v040: ${e.message}`));await p.goto(pathToFileURL(path.resolve('build/Ashen_Crown.html')).href);
  const restore=async text=>{await cmd(p,'menu');await cmd(p,'backup');await p.locator('#backup-text').fill(text);await cmd(p,'restore');await p.waitForFunction(()=>!AshenCrown.view().busy);};
- await restore(villageText);let s=await snapshot(p);check('v0.3.3 village save imports as schema 10 in the same place',s.schema===25&&s.screen==='exploration'&&s.frontier.x===village.frontier.x&&s.frontier.y===village.frontier.y&&s.economy.gold===village.economy.gold);
+ await restore(villageText);let s=await snapshot(p);check('v0.3.3 village save imports as schema 10 in the same place',s.schema===26&&s.screen==='exploration'&&s.frontier.x===village.frontier.x&&s.frontier.y===village.frontier.y&&s.economy.gold===village.economy.gold);
  await restore(battleText);s=await snapshot(p);check('v0.3.3 battle reopens in the camp before it (v2.0.0)',reopened(s));
  for(const a of ['warroom','deploy','start-battle']){await cmd(p,a);await drainStory(p);}await p.waitForFunction(()=>!AshenCrown.view().busy);s=await snapshot(p);check('The reopened v0.3.3 battle departs again from the camp',s.screen==='battle'&&s.turn===1);
  // 3. The source-built fixtures: mid-M02 battle and the M03 aftermath camp with purchases.
@@ -29,6 +29,6 @@ try{const ctx=await browser.newContext();await ctx.setOffline(true);
  await restore(fixture('m03-aftermath'));s=await snapshot(p);check('v0.3.3 M03 aftermath keeps gear, items and gold',s.missionId===3&&s.frontier.phase==='aftermath'&&s.economy.equipped.eric.weapon==='g2'&&s.economy.items.medium===3&&s.economy.gold===475);
  await cmd(p,'npc','advisor');await drainStory(p);await cmd(p,'close-modal').catch(()=>{});check('v0.3.3 aftermath offers the Mission 4 departure',(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 4'));
  await cmd(p,'next-mission');await drainStory(p);s=await snapshot(p);check('Migrated campaign moves on to Mission 04 with its purse',s.missionId===4&&s.economy.gold>=475&&s.campaign.completed.join()==='1,2,3');
- await p.reload();await p.waitForFunction(()=>!AshenCrown.view().busy);s=await snapshot(p);check('Migrated M04 camp is saved as the current version and reloads',s.schema===25&&s.missionId===4);
+ await p.reload();await p.waitForFunction(()=>!AshenCrown.view().busy);s=await snapshot(p);check('Migrated M04 camp is saved as the current version and reloads',s.schema===26&&s.missionId===4);
  check('No runtime errors in either build',errors.length===0);await ctx.close();
 }finally{fs.mkdirSync('test-output',{recursive:true});fs.writeFileSync('test-output/migration-v033.json',JSON.stringify({checks,errors},null,2));await browser.close();}

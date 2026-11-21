@@ -17,7 +17,10 @@
 작업 단계별 커밋. npm test, balance, browser regression, campaign E2E, migration, offline, documentation audit. 실제 검증만 완료 표시. 모든 PR의 documentation checklist: README, CHANGELOG, CURRENT_STATUS, NEXT_TASKS, ROADMAP, Story Bible review, Decision Log review, tests/evidence, artifacts.
 
 
-## Current v2.4.1 entry (ACT III 큰 맵 2부와 작은 마을 — merged, D-137–D-140; art pack K via scripts/import-art-pack-k.py)
+## Current v2.5.0 entry (ACT IV 큰 맵 1부 — release candidate, D-141/D-142)
+feature/v2.5.0 (from main 1e8e36b). src/data/missions-v250.js: ROWS2500 (scripts/make-act4-maps.py) and V250_MISSIONS for M23–M26 (applyV250 after applyV241, m.v250); objects, allies and civilians are moved by id (an unknown id throws). M24: m.ashBase rows of the pass are under the ash when the tide starts (mission-rules-v0100 onTurnStart; validState ash ≤ 40), gate (9–10,18), insideRow 19, ashRows 18. M25/M26: m.captainBox (mission-rules-v0101 inBox101) replaces "y ≤ 3". No fort tile ('t') in the lion camp — a fort heals and Baldrick must stay at half HP. Enemy counts at the design's cap (M23 8+16, M24 6+12, M25 11+8, M26 10+6). stats8 HARD_SHARE 19 0, 23 0, 24 .5, 26 .5. Schema 26 (reform250). D-142: v2.2.1–v2.3.1 builds out of the tree; v2.4.0 (914eee8) and v2.4.1 (ea92d5a) in ARCHIVE.json and .gitignore.
+
+## v2.4.1 entry (ACT III 큰 맵 2부와 작은 마을 — merged, D-137–D-140; art pack K via scripts/import-art-pack-k.py)
 feature/v2.4.1 (from feature/v2.4.0). src/data/missions-v241.js: ROWS2410 and V241_MISSIONS for M19–M22 (applyV241 after applyV240, m.v241); m.captainBox keeps a captain inside a box until his turn (mission-rules-v092/v093 inBox92/inBox93), m.arriveCols for M22's arrivals. ACT3_COUNTS adds cabinets20 4 and residents20 8 (M20's fourth cabinet has no clerk). Villages: villages-v210 VILLAGES.lamp/moss and REQUESTS robbers, lanterns, lampoil, herbalist, mossbridge, loggers, bountyCapital, bountyForest (missions 131–136); economy discountAt reads reward.discount from REQUESTS; tavern WANDER_TOWNS (lamp: 세라 · 오린 · 셀린 from M16). 마렌: mercs-v210 (NEW_HEROES, RESCUED, MERC_*), rules terrainCost (swamp 1), stats8 growthOf, hd-world. Art pack K: scripts/make-v241-k-art-pack.py → docs/v2.4.1/art/k-work-pack. stats8 BASE_MUL_AT 20 .82, 21 .97; HARD_SHARE 19 .5, 20 0, 22 0. Schema 25 (reform241).
 
 ## v2.4.0 entry (ACT III 큰 맵 1부 — merged, D-134–D-136)

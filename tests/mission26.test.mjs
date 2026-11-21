@@ -24,8 +24,8 @@ const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){adv
 const beside=(s,id)=>{const b=findUnit(s,'boss'),u=findUnit(s,id);for(const [dx,dy] of [[0,1],[1,0],[-1,0],[0,-1]]){const x=b.x+dx,y=b.y+dy;if(!s.units.some(o=>alive(o)&&o.x===x&&o.y===y)){u.x=x;u.y=y;u.moved=u.acted=false;u.benched=false;return u;}}throw Error('no room');};
 const calm=s=>{for(const u of s.units.filter(u=>u.team==='enemy'&&u.id!=='boss'))u.hp=0;const b=findUnit(s,'boss');b.atk=0;b.mov=0;for(const u of s.units.filter(u=>u.team==='ally'))u.hp=u.maxHP=999;};
 
-test('M26 data: 18×14 lion\'s pass, level 19, sortie of seven, TURN 12; Baldrick with two bearers; duel on TURN 2; scenes',()=>{
- const m=MISSIONS[26];assert.deepEqual([m.width,m.height],[18,14]);assert.equal(m.level,19);assert.equal(m.deployLimit,7);assert.equal(m.turnLimit,12);assert.equal(m.persuade.threshold,4);assert.equal(m.duelTurn,2);
+test('M26 data: 22×24 lion\'s pass (v2.5.0 big map), level 19, sortie of seven, TURN 12; Baldrick with two bearers; duel on TURN 2; scenes',()=>{
+ const m=MISSIONS[26];assert.deepEqual([m.width,m.height],[22,24]);assert.ok(m.v250);assert.deepEqual(m.captainBox,[4,0,17,4]);assert.equal(m.level,19);assert.equal(m.deployLimit,7);assert.equal(m.turnLimit,12);assert.equal(m.persuade.threshold,4);assert.equal(m.duelTurn,2);
  assert.deepEqual(m.formation.bearers,['f1','f2']);
  for(const k of ['26:intro','26:duel','26:duel:hero','26:duel:foe','26:waver','26:thea','26:riders','26:broken','26:yield:join','26:yield:cooperate','26:end','pre:26','after:26','after:26:join','after:26:cooperate','after:26:withdraw','after:26:thea','npc:26:preparation:thea','npc:26:aftermath:baldrick','world:lionpass','skirmish:117:intro','awaken:dario'])assert.ok(STORY[k]?.length,k);
 });

@@ -2,6 +2,7 @@
 // ACT I officers stand in the camp and wait on the bench (five go out of eight); the inventory has tabs and the start
 // treasures; the unit sheet shows the six stats; M01 is fought on the 22×16 map with the minimap; a v1.0.0 save made by
 // the shipped page and the finished v1.0.0 campaign open as v2.0.0.
+import {VERSION} from '../src/data/game-data.js';
 import {launchTestBrowser} from './browser-helper.mjs';import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {pathToFileURL} from 'node:url';import {drainStory} from './story-helper.mjs';
 const browser=await launchTestBrowser({headless:true,args:['--no-sandbox','--disable-gpu']}),checks=[],errors=[];const check=(name,ok)=>{assert.ok(ok,name);checks.push({name,status:'PASS'});console.log('PASS',name);};
 const shots='test-output/v200';fs.mkdirSync(shots,{recursive:true});
@@ -10,7 +11,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  const press=async(p,a,id)=>{await p.evaluate(([a,id])=>{const b=document.createElement('button');b.dataset.do=a;if(id)b.dataset.id=id;b.style.cssText='position:fixed;left:0;top:0;width:4px;height:4px;z-index:99999';document.body.append(b);b.click();b.remove();},[a,id]);await p.waitForTimeout(200);};
  const backup=async p=>{await cmd(p,'menu');await cmd(p,'backup');const text=await p.locator('#backup-text').inputValue();await cmd(p,'close-modal');return text;};
  const p=await ctx.newPage();p.__askDifficulty=true;p.on('pageerror',e=>errors.push(e.message));await p.goto(pathToFileURL(path.resolve('build/Ashen_Crown.html')).href);await p.waitForFunction(()=>!!window.AshenCrown);
- check('the page is the current version (the v2.0.0 systems)',await p.evaluate(()=>AshenCrown.version)==='2.4.1');
+ check('the page is the current version (the v2.0.0 systems)',await p.evaluate(()=>AshenCrown.version)===VERSION);
  // 1. Difficulty
  await cmd(p,'new');check('a new campaign asks for the difficulty first: 보통 · 어려움',await p.locator('[data-do="difficulty-pick"]').count()===2);await p.screenshot({path:`${shots}/difficulty.png`});
  await cmd(p,'difficulty-pick','hard');await drainStory(p);let s=await snapshot(p);check('어려움: the camp opens and the campaign keeps the choice',s.screen==='exploration'&&s.campaign.difficulty==='hard');
@@ -33,12 +34,12 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  await cmd(old,'new');await drainStory(old);const village=await snapshot(old),villageText=await backup(old);check('the shipped v1.0.0 village save is schema 19',village.schema===19&&village.screen==='exploration');
  await cmd(old,'npc','advisor');await drainStory(old);if(await old.locator('[data-do="advisor-operation"]').count())await cmd(old,'advisor-operation');await drainStory(old);await cmd(old,'deploy');await cmd(old,'start-battle');await drainStory(old);const battleText=await backup(old);
  const restore=async text=>{await drainStory(p);await cmd(p,'menu');await cmd(p,'backup');await p.locator('#backup-text').fill(text);await cmd(p,'restore');await p.waitForFunction(()=>!AshenCrown.view().busy);await p.waitForTimeout(300);};
- await restore(villageText);s=await snapshot(p);check('the v1.0.0 village opens as the current schema in camp, the start treasures added (no officers: tavern hires)',s.schema===25&&s.version==='2.4.1'&&s.screen==='exploration'&&!s.campaign.roster.includes('bram')&&s.campaign.economy.gear.some(g=>g.type==='arenCrest'));
- await restore(battleText);s=await snapshot(p);check('the v1.0.0 M01 battle reopens in the camp before M01 (the village is a new map)',s.schema===25&&s.screen==='exploration'&&s.missionId===1&&!s.stageStart);
+ await restore(villageText);s=await snapshot(p);check('the v1.0.0 village opens as the current schema in camp, the start treasures added (no officers: tavern hires)',s.schema===26&&s.version==='2.5.0'&&s.screen==='exploration'&&!s.campaign.roster.includes('bram')&&s.campaign.economy.gear.some(g=>g.type==='arenCrest'));
+ await restore(battleText);s=await snapshot(p);check('the v1.0.0 M01 battle reopens in the camp before M01 (the village is a new map)',s.schema===26&&s.screen==='exploration'&&s.missionId===1&&!s.stageStart);
  const ending=JSON.parse(fs.readFileSync('tests/fixtures/v100/v100-m30-ending.json','utf8')).save;await restore(ending);s=await snapshot(p);
- check('the finished v1.0.0 campaign (ending B) opens in camp with thirty missions and nine heroes',s.schema===25&&s.screen==='exploration'&&s.campaign.completed.length===30&&s.campaign.choices.ending==='B'&&s.campaign.roster.join()==='thea,dario,ines,baldrick');
+ check('the finished v1.0.0 campaign (ending B) opens in camp with thirty missions and nine heroes',s.schema===26&&s.screen==='exploration'&&s.campaign.completed.length===30&&s.campaign.choices.ending==='B'&&s.campaign.roster.join()==='thea,dario,ines,baldrick');
  await p.screenshot({path:`${shots}/v100-ending-camp.png`});
- await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('the migrated save reloads as v2.0.0',s.schema===25&&s.version==='2.4.1'&&s.campaign.completed.length===30);
+ await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('the migrated save reloads as v2.0.0',s.schema===26&&s.version==='2.5.0'&&s.campaign.completed.length===30);
  check('no runtime errors in either build',errors.length===0);await ctx.close();
 }finally{fs.mkdirSync('test-output',{recursive:true});fs.writeFileSync('test-output/v200-e2e.json',JSON.stringify({checks,errors},null,2));await browser.close();}
 console.log(`${checks.length} v2.0.0 browser checks PASS`);

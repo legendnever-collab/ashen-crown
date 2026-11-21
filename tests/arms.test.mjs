@@ -140,7 +140,7 @@ test('cut-ins: a hero critical hit and a ③ skill carry one line; enemies never
 });
 
 test('schema 11: stars, treasure slot, hidden objectives and battle flags round-trip; damaged records are rejected; treasures are never sold or tempered',()=>{
- assert.equal(SCHEMA,25);const s=hubAt(9,8);assert.ok(tx(s,'buy-gear','twinSabers').ok===false||true);own(s,'herbPouch');s.campaign.feats=[1];
+ assert.equal(SCHEMA,26);const s=hubAt(9,8);assert.ok(tx(s,'buy-gear','twinSabers').ok===false||true);own(s,'herbPouch');s.campaign.feats=[1];
  const blade=s.economy.gear.at(-1);assert.equal(tx(s,'sell-gear',blade.id).ok,false);assert.equal(tx(s,'upgrade',blade.id).ok,false);assert.ok(tx(s,'equip',blade.id,'eric','treasure').ok);
  const again=deserialize(serialize(s));assert.equal(again.economy.equipped.eric.treasure,blade.id);assert.deepEqual(again.campaign.feats,[1]);
  for(const bad of [x=>{x.economy.gear.at(-1).star=3;},x=>{x.economy.gear.push({...x.economy.gear.at(-1),id:`g${x.economy.next++}`});},x=>{x.campaign.feats=[1,1];},x=>{x.economy.gear.at(-1).level=0;},x=>{delete x.economy.equipped.eric.treasure;}]){const c=structuredClone(s);bad(c);assert.throws(()=>serialize(c));}
