@@ -824,4 +824,5 @@ import {applyV200} from './missions-v200.js';
 applyV200(MISSIONS);
 import {applyV230} from './missions-v230.js';
 import {applyV231} from './missions-v231.js';
-applyV230(MISSIONS);applyV231(MISSIONS);
+import {applyV240} from './missions-v240.js';
+applyV230(MISSIONS);applyV231(MISSIONS);applyV240(MISSIONS);

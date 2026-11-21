@@ -1,3 +1,12 @@
+# v2.4.0 — ACT III 큰 맵 (1부)
+- Merged (PR #35; approved 2026-11-21 10:37 「병합만 해줘」, D-136). Built under D-134, D-135. Design approved 2026-11-21 with the recommended answers (docs/v2.4.0/ACT3_MAPS_DESIGN.md, D-135). Notes docs/v2.4.0/RELEASE_NOTES.md.
+- ACT III M15–M18 on big maps (src/data/missions-v240.js, maps from scripts/make-act3-maps.py): M15 chase from the canal 28×20 (16+6, TURN 14), M16 west → east through the fog 30×18 (17+8, four ward stones, TURN 16), M17 keep defence from three sides 26×22 (11+9, six statues), M18 the ward in the middle 26×22 (6+9, eight forest-keepers). Objectives, rules, story, duels unchanged; troops copied from each mission's own by id. The "all" hidden objectives and rewards follow the new counts (data ACT3_COUNTS); M17/M18 captains wait behind m.rearY; council lines may be functions (M16 names the returning recruits).
+- Strength: M15 ×0.94 (was ×0.88), M18 ×0.92; 어려움 at 보통's numbers for M16 too (HARD_SHARE).
+- Schema 24 (imports 0–23): M15–M18 battle saves reopen in camp (reform240).
+- Repository (D-134): the builds of the 28 versions released on GitHub (56 files, 1.8 GiB) leave the tree; .gitignore lists every ARCHIVE.json build; v2.2.1–v2.3.1 join ARCHIVE.json; scripts/archive-releases.mjs skips complete releases.
+- Tests: tests/v240-e2e.mjs; mission15–18 tests on the new maps; start positions M07–M18.
+- Version 2.4.0.
+
 # v2.3.1 — ACT II 큰 맵 (2부)와 작은 마을
 - Merged (PR #34; approved 2026-11-21 07:55, D-133). Built under D-131 (asked for with the v2.3.0 merge, D-130). Notes docs/v2.3.1/RELEASE_NOTES.md.
 - ACT II M11–M14 on big maps (src/data/missions-v231.js): M11 switchback 24×20 (five braziers, pilgrims +10 HP, TURN 14), M12 cloister 24×20 (14 guards, five on the bell, TURN 16), M13 pincer 28×18, M14 escape south 24×18. Rules, story and duels unchanged.

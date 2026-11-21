@@ -17,11 +17,11 @@ const nm=a=>(a||[]).map(({name,...h})=>h); // D-060 rewrote display names in Han
 test('fixtures are genuine v0.5.0 schema-8 saves',()=>{for(const n of ['act1-complete','m06-battle']){const f=fixture(n);assert.equal(f.version,'0.5.0');assert.equal(f.schema,8);assert.equal(raw(n).campaign.roster,undefined);}});
 
 test('ACT I complete camp (oath chosen, Eric promoted) loads as schema 9 with every asset kept',()=>{
- const before=raw('act1-complete'),s=load('act1-complete');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,23);assert.equal(s.version,VERSION);
+ const before=raw('act1-complete'),s=load('act1-complete');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,24);assert.equal(s.version,VERSION);
  assert.equal(s.screen,'exploration');assert.equal(s.frontier.hub,'oathcamp');assert.equal(s.frontier.phase,'aftermath');assert.deepEqual(s.campaign.roster.filter(id=>!OFFICER_IDS.includes(id)),[]);assert.deepEqual(s.campaign.roster.filter(id=>OFFICER_IDS.includes(id)),[],'v2.1: no officer joins by itself (tavern hires)');
  for(const k of ['completed','economy','flags','choices','promotions','tacticalMemory'])k==='economy'?assert.deepEqual(econV200(s.campaign[k]),econV200(arms081View(before.campaign[k])),k):assert.deepEqual(s.campaign[k],before.campaign[k],k);
  keptV200(s.campaign,before.campaign,'heroes'); /* v2.0.0: the six stats are added and the numbers recomputed */assert.equal(s.campaign.heroes.find(h=>h.id==='eric').classTier,2);
- assert.ok(act1Complete(s));assert.equal(deserialize(serialize(s)).schema,23);
+ assert.ok(act1Complete(s));assert.equal(deserialize(serialize(s)).schema,24);
 });
 
 test('a v0.5.0 ACT I save continues into ACT II: Mission 7 in the castle town, trust from the ACT I choices',()=>{

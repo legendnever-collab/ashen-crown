@@ -31,7 +31,7 @@ try{
   await p.goto(url);await press('new');await drainStory(p);
   // 1. the real v0.10.0 Ashen Village offers Mission 25; the world card; the summit field
   await restore(camp24);await drainStory(p);await closeModals();let s=await snap();
-  check(`${label} the v0.10.0 Ashen Village (after M24) offers Mission 25`,s.schema===23&&s.frontier.hub==='village_raid'&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 25'));
+  check(`${label} the v0.10.0 Ashen Village (after M24) offers Mission 25`,s.schema===24&&s.frontier.hub==='village_raid'&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 25'));
   await press('next-mission');await p.waitForTimeout(400);let card=false;for(let i=0;i<40;i++){if((await body()).includes('세 깃발의 땅')){card=true;await p.screenshot({path:`${shots}/banners-card-${label}.png`});break;}if(!(await snap()).narrative.active)break;await p.keyboard.press('Enter').catch(()=>{});await p.waitForTimeout(150);}
   await drainStory(p);await closeModals();s=await snap();check(`${label} the world card of the three banners and the summit camp`,(card||s.narrative.seen.includes('world:banners'))&&s.frontier.hub==='summit'&&s.missionId===25);
   await enterWarCouncil(p,touch);await press('deploy');await p.waitForTimeout(300);await press('start-battle');await drainStory(p);s=await snap();

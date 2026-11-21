@@ -43,10 +43,10 @@ test('recruits promote at join level + 5 once ACT II is over: trials 111–113, 
 });
 
 test('④ Blockade: enemies starting inside the cross cannot leave it that enemy phase and are shot when they move; once a battle',()=>{
- const s=board(17,16);const el=findUnit(s,'elina'),g=findUnit(s,'gcap');g.x=8;g.y=11;el.x=8;el.y=7;g.mov=4;el.maxMP=el.mp=50;
- const r=performAction(s,'elina','blockade',{x:8,y:11});assert.ok(r.ok,r.error);assert.equal(s.blockade.cells.length,5);assert.deepEqual(s.ultimates,['elina']);
+ const s=board(17,16);const el=findUnit(s,'elina'),g=findUnit(s,'gcap');g.x=12;g.y=15;el.x=12;el.y=11;g.mov=4;el.maxMP=el.mp=50; // v2.4.0: M17's big map — the road below the keep
+ const r=performAction(s,'elina','blockade',{x:12,y:15});assert.ok(r.ok,r.error);assert.equal(s.blockade.cells.length,5);assert.deepEqual(s.ultimates,['elina']);
  const hp=g.hp;enemyPhase(s);assert.ok(s.blockade.cells.some(([x,y])=>x===g.x&&y===g.y),'stayed inside the cross');assert.ok(g.hp<=hp);
- el.acted=false;assert.ok(!performAction(s,'elina','blockade',{x:8,y:10}).ok,'once a battle');
+ el.acted=false;assert.ok(!performAction(s,'elina','blockade',{x:12,y:14}).ok,'once a battle');
  const back=deserialize(serialize(s));assert.deepEqual(back.ultimates,['elina']);
 });
 

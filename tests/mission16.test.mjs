@@ -18,10 +18,10 @@ const camp=(extra={})=>({heroes:null,results:[],clears:15,completed:[1,2,3,4,5,6
 const battle=(extra)=>{const s=newGame(62,camp(extra),16);s.screen='deployment';startBattle(s);drain(s);return s;};
 const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);if(duelOpen(s))duelPick(s,'skip');drain(s);};
 
-test('M16 data: 18×14 field in fog, level 14, sortie of seven, two harvesters by their stones, three stones, three possible returners',()=>{
+test('M16 data: 30×18 field in fog (v2.4.0 big map), level 14, sortie of seven, two harvesters by their stones, four stones, three possible returners',()=>{
  const m=MISSIONS[16];assert.equal(m.weather,'fog');assert.equal(m.level,14);assert.equal(m.deployLimit,7);
  for(const h of m.enemies.filter(e=>e.kind==='harvester')){const st=m.objects.find(o=>o.id===h.stone);assert.ok(Math.abs(st.x-h.x)+Math.abs(st.y-h.y)<=1);}
- assert.equal(m.objects.filter(o=>o.kind==='wardStone').length,3);assert.deepEqual(m.allies.map(a=>a.id),['rthea','rdario','rines']);
+ assert.deepEqual([m.width,m.height],[30,18]);assert.equal(m.objects.filter(o=>o.kind==='wardStone').length,4);assert.deepEqual(m.allies.map(a=>a.id),['rthea','rdario','rines']);
  for(const k of ['16:intro','16:duel','16:duel:hero','16:duel:foe','16:harvest','16:echo:st1','16:echo:st3:elina','16:end','pre:16','after:16','after:16:break','after:16:leave','after:16:return:thea','after:16:next'])assert.ok(STORY[k]?.length,k);
 });
 
@@ -39,8 +39,8 @@ test('fog: bows and spells reach one tile less (not on cleared tiles, not with t
 });
 
 test('harvest: a harvester beside an unsearched stone drains MP near it; searching the stone clears the fog and stops it',()=>{
- const s=battle();const st=findUnit(s,'st1'),k=findUnit(s,'kai');k.x=st.x+1;k.y=st.y+1;k.mp=10;k.maxHP=k.hp=999;k.def=99;enemyPhase(s);assert.equal(k.mp,7,'MP −3 at the turn start');
- k.x=st.x;k.y=st.y+1;k.acted=false;const r=performAction(s,'kai','search','st1');assert.ok(r.ok,r.error);drain(s);assert.ok(st.inert);assert.deepEqual(s.missionState.clear[0],[st.x,st.y,2]);
+ const s=battle();const st=findUnit(s,'st3'),k=findUnit(s,'kai');k.x=st.x-1;k.y=st.y+1;/* v2.4.0: the harvesters stand by st3 and st4 */k.mp=10;k.maxHP=k.hp=999;k.def=99;enemyPhase(s);assert.equal(k.mp,7,'MP −3 at the turn start');
+ k.x=st.x;k.y=st.y+1;k.acted=false;const r=performAction(s,'kai','search','st3');assert.ok(r.ok,r.error);drain(s);assert.ok(st.inert);assert.deepEqual(s.missionState.clear[0],[st.x,st.y,2]);
  k.mp=10;enemyPhase(s);assert.equal(k.mp,10,'no drain once searched');
 });
 
