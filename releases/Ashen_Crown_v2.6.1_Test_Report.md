@@ -22,8 +22,13 @@ Updated 2026-11-23 KST. **Release candidate** on feature/v2.6.1 (not merged), bu
 - **Balance, 보통** (node tests/act2-balance.mjs 30): every mission at or above the 60% gate (the gate's low list is empty). Lowest: M15 21/29, M26 18/24, M23 19/24, M21 21/26. ACT I: M03 27/30, M04 26/30, M06 27/30; M01, M02, M05 30/30.
 - **Balance, 어려움** (report): M26 1/12 with the half push → none (14/24 from saved camps; 5/24 with the half push). Lowest otherwise: M23 8/17, M24 8/14, M14 18/29, M22 14/19.
 - Full lines: docs/v2.6.1/evidence/balance-chains.txt.
-- **Unit tests:** BROWSER_UNIT_RESULTS
-- **Browser suites run here:** BROWSER_SUITE_RESULTS
+- **Unit tests on the packaged build: 584 PASS / 0 FAIL / 16 skipped** (docs/v2.6.1/evidence/unit-results.txt; the 16 skipped are pinned on the pre-v2.0 maps, D-115).
+  - New: tests/v261.test.mjs (the sortie 6–8 by map size and never fewer than before; the EXP text; the town rumours once, not after the hero joined, silent elsewhere; the music intensity clamp; every story choice and the person menu drawn alike); the fire test in tests/act1-v200.test.mjs (no flames on grass; always in a forest; 20% of the hit; never below 1 HP).
+  - Re-pinned: the sortie limits (act2-engine, migration-v060/v090/v092/v0100), the awakening board (the eighth hero parks beside M17's statues), the 어려움 table (difficulty-hard); tests that travel to a town and act there drain the new rumour first (arms, migration-v080, tavern-v210, villages-v231/v241/v251 and the v231/v241/v251 browser suites); rules.js's spell fire renamed lightSpellFire (bundle-names found it clashing with M20's lightFire).
+- **Browser suites run here (24): every final exit is 0** (docs/v2.6.1/evidence/browser-run-summary.log): v261 15, e2e 85, v252 42, act1 113, tactics 26, mobile 90, class 30, quality 98, frontier 90, journey 176, world 32, v210 46, v231 26, v241 26, v251 28, audio-mute 20, v260 13, act3 36, act3b 48, act3c 50, act3d 44, act4a 30, act2-campaign 24, v200 18 checks; balance (M01 30/30) regenerated the winning trace e2e replays.
+  - v210 first failed: its sortie-board check expected M02's old five out of six; with M02's six the board now holds seven (Bram and Noa hired) and sends six, and it passed. act3b/act3d now expect eight in M17/M21.
+  - **v261 suite** (1440×900, 390×844): a press on the minimap's north-east corner moves the camera there; a 400 px left-button drag pans the view; the full-screen button is in the top bar (and turns into 「창 모드」 where headless Chromium allows full screen); the tavern keeper's menu draws 대화 and 인재 확보 alike; no runtime errors. Screenshots: docs/v2.6.1/screenshots (M27's mixed line-up, a line of heroes, the duel sizes, the keeper's menu).
+- **The other browser suites:** run by CI on the PR.
 
 ## Not done in this version
 - **Not tested here:** native phones, Safari/WebKit and Firefox; full screen was checked only where headless Chromium allows it (the button and its label).
