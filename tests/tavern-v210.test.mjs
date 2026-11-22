@@ -20,6 +20,8 @@ import {growthOf} from '../src/core/stats8.js';
 import {playBattle} from './player-policy.mjs';
 import {playCampaignBattle,drain} from './campaign-policy.mjs';
 import {standBeside} from './duel-helper.mjs';
+// v2.6.1: a town with someone worth meeting opens a short rumour the first time; the flows here go on after it
+const travelDrained=(s,h)=>{const r=travelTo(s,h);drain(s);return r;};
 
 const tavernOf=(s)=>{const d=currentHub(s).places.find(p=>p.interior==='tavern');s.frontier.x=d.x;s.frontier.y=d.y;s.frontier.facing='up';assert.ok(enterInterior(s,d.buildingId),'enter the tavern');return s;};
 function campAfter(n,seed=20261014){let s=newGame(seed);s.screen='deployment';startBattle(s);playBattle(s);assert.equal(s.outcome,'victory','M01');
@@ -35,35 +37,35 @@ test('a new campaign is the five alone; the ash village tavern holds Bram, Noa a
  const r=hire(s,'bram');assert.equal(r.ok,false);assert.match(r.error,/첫 전투/);assert.deepEqual(s.campaign.roster,[]);});
 
 test('hiring: one fee, the legion\'s average level −1, kept to the ending; never twice, never without the gold; the save keeps it',()=>{
- const s=campAfter(1);assert.ok(travelTo(s,'village_raid')||s.frontier.hub==='village_raid');tavernOf(s);const gold=s.economy.gold,lv=hireLevel(s.campaign);
+ const s=campAfter(1);assert.ok(travelDrained(s,'village_raid')||s.frontier.hub==='village_raid');tavernOf(s);const gold=s.economy.gold,lv=hireLevel(s.campaign);
  const r=hire(s,'noa');assert.ok(r.ok,r.error);assert.equal(s.economy.gold,gold-200);assert.ok(s.campaign.roster.includes('noa'));assert.equal(s.campaign.heroes.find(h=>h.id==='noa').level,lv);
  assert.deepEqual(s.economy.hired,['noa']);assert.equal(hire(s,'noa').ok,false,'once');assert.ok(!mercsAt(s,'ash').some(m=>m.id==='noa'));
  s.economy.gold=50;s.campaign.economy.gold=50;assert.match(hire(s,'marta').error,/부족/);
- const back=deserialize(serialize(s));assert.ok(back.campaign.roster.includes('noa'));assert.equal(back.schema,SCHEMA);assert.equal(SCHEMA,27);assert.equal(VERSION,'2.6.0');
+ const back=deserialize(serialize(s));assert.ok(back.campaign.roster.includes('noa'));assert.equal(back.schema,SCHEMA);assert.equal(SCHEMA,27);assert.equal(VERSION,'2.6.1');
  assert.ok(STORY['officer:noa:0'],'camp talk');assert.deepEqual(loreChapters('noa',back.campaign).open.map(c=>c.after).filter(a=>a<=1),[],'chapters start after the hire');});
 
 test('M04 opens 갈대 나루 and 돌우물 마을 on the world map; Rowell waits at the reed tavern as an elite hire; a wanderer moves to stonewell',()=>{
  const s=camp4();assert.deepEqual(revisitTowns(s).map(t=>t.hub).filter(h=>['reed','stonewell'].includes(h)),['reed','stonewell']);
- assert.ok(travelTo(s,'reed'));assert.equal(s.frontier.hub,'reed');assert.ok(currentHub(s).npcs.some(n=>n.service==='requests'),'the request board');
+ assert.ok(travelDrained(s,'reed'));assert.equal(s.frontier.hub,'reed');assert.ok(currentHub(s).npcs.some(n=>n.service==='requests'),'the request board');
  tavernOf(s);const m=mercsAt(s,'reed');assert.deepEqual(m.map(x=>x.id),['rowell']);assert.ok(m[0].elite);assert.equal(m[0].price,450);assert.equal(HERO_STATS.rowell.str,10,'elite: +2 main');
- assert.ok(exitInterior(s,true));assert.ok(travelTo(s,'stonewell'));assert.deepEqual(wanderersAt(s.campaign),['bram']);tavernOf(s);assert.deepEqual(mercsAt(s,'stonewell').map(x=>[x.id,x.wandering]),[['bram',true]]);
+ assert.ok(exitInterior(s,true));assert.ok(travelDrained(s,'stonewell'));assert.deepEqual(wanderersAt(s.campaign),['bram']);tavernOf(s);assert.deepEqual(mercsAt(s,'stonewell').map(x=>[x.id,x.wandering]),[['bram',true]]);
  assert.ok(deserialize(serialize(s)).frontier.hub==='stonewell','the visit survives a save');});
 
 test('a battle request: the chosen sortie fights, a win pays once and is marked done; a loss changes nothing',()=>{
- const s=camp4();travelTo(s,'reed');const gold=s.economy.gold;assert.deepEqual(requestsAt(s,'reed').map(r=>r.id),['ferry','barge','herbs','bounty']);
+ const s=camp4();travelDrained(s,'reed');const gold=s.economy.gold;assert.deepEqual(requestsAt(s,'reed').map(r=>r.id),['ferry','barge','herbs','bounty']);
  const b=startRequest(s,'ferry',['eric','lia','kai']);assert.equal(b.missionId,120);assert.deepEqual(b.units.filter(u=>u.team==='ally'&&!u.benched).map(u=>u.id).sort(),['eric','kai','lia']);
  const lost=structuredClone(b);lost.outcome='defeat';const l=returnToCamp(lost);assert.equal(l.frontier.hub,'reed');assert.equal(l.economy.gold,gold);assert.ok(!requestsAt(l,'reed').find(r=>r.id==='ferry').done);
  drain(b);playCampaignBattle(b);assert.equal(b.outcome,'victory');const c=returnToCamp(b);assert.equal(c.frontier.hub,'reed','back at the board');assert.ok(c.economy.gold>=gold+180);assert.ok(requestsAt(c,'reed').find(r=>r.id==='ferry').done);
  assert.equal(startRequest(c,'ferry',['eric']),null,'done once');deserialize(serialize(c));});
 
 test('the besieged spearknight: hold six turns and Adel joins the legion (hero growth, his own 열전 and epilogue line)',()=>{
- const s=camp4();travelTo(s,'stonewell');const b=startRequest(s,'besieged',['eric','elina','lia','sain','kai']);assert.ok(b.units.some(u=>u.id==='adelc'&&u.team==='civilian'));
+ const s=camp4();travelDrained(s,'stonewell');const b=startRequest(s,'besieged',['eric','elina','lia','sain','kai']);assert.ok(b.units.some(u=>u.id==='adelc'&&u.team==='civilian'));
  drain(b);playCampaignBattle(b);assert.equal(b.outcome,'victory',b.reason);const c=returnToCamp(b);assert.deepEqual(c.requestResult.joined,'adel');assert.ok(c.campaign.roster.includes('adel'));
  assert.equal(heroDef('adel').name,'아델');assert.ok(HERO_LORE.adel.bio.includes('초소'));assert.ok(growthOf({id:'adel',cls:'spear'}).str>growthOf({id:'bram',cls:'spear'}).str,'grows like a hero');
  assert.ok(requestsAt(c,'stonewell').find(r=>r.id==='besieged').done);deserialize(serialize(c));});
 
 test('requests without a battle trade at the board; the bounty opens again after each story mission',()=>{
- const s=camp4();travelTo(s,'reed');s.economy.items.herb=0;s.campaign.economy.items.herb=0;assert.equal(payRequest(s,'herbs').ok,false,'needs two herbs');
+ const s=camp4();travelDrained(s,'reed');s.economy.items.herb=0;s.campaign.economy.items.herb=0;assert.equal(payRequest(s,'herbs').ok,false,'needs two herbs');
  s.economy.items={herb:2};s.campaign.economy.items={herb:2};const gold=s.economy.gold;const r=payRequest(s,'herbs');assert.ok(r.ok,r.error);assert.equal(s.economy.gold,gold+100);assert.equal(s.economy.items.herb,0);assert.equal(s.economy.items.antidote,1);
  assert.equal(payRequest(s,'herbs').ok,false,'once');
  const k=s.campaign.completed.filter(id=>id<=30).length;assert.ok(requestsAt(s,'reed').find(r=>r.id==='bounty').done===false);

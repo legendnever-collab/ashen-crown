@@ -9,6 +9,8 @@ import {findUnit} from '../src/core/rules.js';
 import {effectiveStats} from '../src/core/economy.js';
 import {revisitTowns,travelTo} from '../src/core/frontier.js';
 import {playCampaignBattle,drain} from './campaign-policy.mjs';
+// v2.6.1: a town with someone worth meeting opens a short rumour the first time; the flows here go on after it
+const travelDrained=(s,h)=>{const r=travelTo(s,h);drain(s);return r;};
 const fixture=name=>JSON.parse(fs.readFileSync(new URL(`./fixtures/v080/v080-${name}.json`,import.meta.url),'utf8'));
 const raw=name=>JSON.parse(JSON.parse(fixture(name).save).data);
 const load=name=>deserialize(fixture(name).save);
@@ -27,7 +29,7 @@ test('the v0.8.0 summit camp loads as schema 11: +1 → ★2 with the same stats
 test('the same Erik hits as hard as in v0.8.0: ★2 = the old +1',()=>{const s=load('m14-camp'),eric=findUnit(s,'eric'),e=s.campaign.economy;e.equipped.eric.treasure=null;s.economy.equipped.eric.treasure=null; /* v2.0.0: leave the start treasure out of the comparison */const own=e.equipped.eric.weapon&&e.gear.find(g=>g.id===e.equipped.eric.weapon);if(own?.type==='ironBlade')assert.equal(effectiveStats(s,eric).atk,eric.atk+3);});
 
 test('from the summit camp the legion can revisit the four towns and buy what they now sell',()=>{
- const s=load('m14-camp');assert.deepEqual(revisitTowns(s).map(t=>t.hub),['village_raid','castletown','velmar','pilgrim','reed','stonewell','frost','saltport']);assert.ok(travelTo(s,'pilgrim'));assert.equal(s.frontier.revisit,'summit');assert.equal(deserialize(serialize(s)).frontier.hub,'pilgrim');
+ const s=load('m14-camp');assert.deepEqual(revisitTowns(s).map(t=>t.hub),['village_raid','castletown','velmar','pilgrim','reed','stonewell','frost','saltport']);assert.ok(travelDrained(s,'pilgrim'));assert.equal(s.frontier.revisit,'summit');assert.equal(deserialize(serialize(s)).frontier.hub,'pilgrim');
 });
 
 test('the v0.8.0 mid-M14 battle reopens in camp (v2.0.0) and is won again',()=>{

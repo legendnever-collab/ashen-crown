@@ -1,3 +1,15 @@
+# v2.6.1 — 한 칸에 한 사람 (마이너 업데이트)
+- Release candidate (D-155), built on v2.6.0 (merged); merge only on the user's approval. Notes docs/v2.6.1/RELEASE_NOTES.md.
+- Figures: every painted figure is measured once (alpha box, head to foot; hd-world.js figureBox) and drawn FIGURE_HEIGHT 54 px tall per 64 px tile with the feet on the tile's lower edge; the duel window does the same (DS_FIGURE 320, DS_TALL for anyone the story calls huge — empty for now).
+- Music (WebAudio score in code): instruments panned, a harmony voice and the bass fifth on alternate passes, a resting pass in towns, slight human timing; battle intensity 0–1 (foes within 3, the most wounded hero, the turn limit, the enemy phase) thins or thickens drums and bass (audio-engine setIntensity, app battleIntensity).
+- EXP text shows the amount only (the gap still counts).
+- Fire: a fire spell leaves flames only in a forest (always; not at the water's edge or in rain) for two turns; a unit there takes 20% of the igniting hit at the start of its side's turn, never below 1 HP (rules.js catchesFire/lightSpellFire, s.burnHeat).
+- Big maps: a press or drag on the minimap moves the camera there; a drag on the field pans (renderer lookAt/dragBy). A full-screen button in the top bar.
+- Choices: every story choice and the town person's menu draw their options alike.
+- Town rumours: the first walk into 돌우물 · 서리목 · 이끼다리 · 봉화둔덕 · 등불골 · 사자샘 brings one of the five's hint about the hero or wanderers there (src/data/hints-v261.js, flag hint_<hub>; not once the hero has joined).
+- Sortie by map size: ≤450 tiles 6, ≤560 7, else 8 (never fewer than before; game.js sortieBySize).
+- 어려움 M26 without the level push (1/12 in the chain; 14/24 from saved camps). Tests: v261, v261-e2e; sortie and travel pins updated.
+
 # v2.6.0 — 지형과 성장
 - Release candidate (D-152, D-153), built on the v2.5.2 candidate; merge only on the user's approval. Design docs/v2.6.0/TERRAIN_XP_DESIGN.md, notes docs/v2.6.0/RELEASE_NOTES.md.
 - Forest: foot soldiers stop on entering (STOP_TERRAIN, rules.js stopsAt/pathCost), rogues 1, cavalry cannot enter; cavalry desert 2. AI pursuit, deployment, the bench, joining heroes and waves use the mover's own costs. Maps: M13 two forest-edge tiles, M05 third rider (src/data/missions-v260.js).

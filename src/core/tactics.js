@@ -2,7 +2,7 @@
 // They share the promotion actions' plumbing (validClassTarget / classTargetCells / forecastClass / tileTarget), so the
 // screen code treats them like the v0.5 class actions. Damage goes through game.js (strike callback) so guards, criticals,
 // mission hooks and feedback stay the same as a normal attack.
-import {fireMul,distance,key,alive,at,findUnit,terrainAt,hostile,strikeStats,roll,sideOf,weatherOf,supportable} from './rules.js';
+import {lightSpellFire,fireMul,distance,key,alive,at,findUnit,terrainAt,hostile,strikeStats,roll,sideOf,weatherOf,supportable} from './rules.js';
 import {missionOf} from '../data/missions.js';
 import {TOOLS} from '../data/frontier-data.js';
 import {skillByMode,knowsMode,NEW_SKILL_MODES,ULTIMATE_MODES} from '../data/skills.js';
@@ -170,7 +170,7 @@ export function applyTactic(s,u,target,mode,strike){
  if(mode==='ironBreak'){const p=tileOf8(target),path=ironPath(s,u,p),foes=ironFoes(s,u,p),from={x:u.x,y:u.y};s.feedback.push({type:'class',action:mode,id:u.id,text:k.ko,cells:[...path,p]});for(const t of foes)hitOn(t,{noCounter:true});
   u.x=p.x;u.y=p.y;s.feedback.push({type:'move',id:u.id,path:[from,...path,p]});u.moved=false;u.strikeMove=s.turn;u.moveLeft=3;s.log.push(`${u.name}: 철의 돌파. ${distance(from,p)}칸을 꿰뚫고 적 ${foes.length}명을 쳤습니다. 3칸 더 움직일 수 있습니다.`);return out;}
  if(mode==='dawnPrayer'){const f=fallenAllies(s)[0],spot=besideSpot(s,u);f.x=spot.x;f.y=spot.y;f.hp=Math.ceil(f.maxHP/3);delete f.status;f.moved=true;f.acted=true;f.raised=true;s.feedback.push({type:'heal',id:f.id,text:`일어섬 +${f.hp}`,toHP:f.hp});s.log.push(`${u.name}: 새벽의 기도. ${f.name}이(가) 다시 일어섭니다 (HP ${f.hp}).`);return out;}
- if(mode==='flameBurst'){const p=tileOf8(target),cells=cross(s,p);s.feedback.push({type:'class',action:mode,id:u.id,text:k.ko,cells});for(const t of foesIn(s,u,cells))hitOn(t,{noCounter:true});for(const c of cells)igniteCell(s,c);s.log.push(`${u.name}: 화염진.`);return out;}
+ if(mode==='flameBurst'){const p=tileOf8(target),cells=cross(s,p);s.feedback.push({type:'class',action:mode,id:u.id,text:k.ko,cells});const hp0=new Map(s.units.map(x=>[x.id,x.hp]));for(const t of foesIn(s,u,cells))hitOn(t,{noCounter:true});const hit=Math.max(0,...s.units.map(x=>(hp0.get(x.id)??x.hp)-x.hp));for(const c of cells)igniteCell(s,c,hit);s.log.push(`${u.name}: 화염진.`);return out;}
  if(mode==='whirlwind'){for(const e of s.units.filter(e=>alive(e)&&hostile(s,u,e)&&distance(u,e)===1))hitOn(e,{noCounter:true});s.log.push(`${u.name}: 회전 베기.`);return out;}
  if(mode==='rallyCry'){for(const a of s.units.filter(a=>a.team==='ally'&&alive(a)&&distance(a,u)<=2)){a.rally=s.turn+1;s.feedback.push({type:'guard',id:a.id,text:'MOV +1'});}s.log.push(`${u.name}: 기병의 함성. 곁의 아군 MOV +1 · 명중 +10.`);return out;}
  if(mode==='pilgrimLantern'){for(const a of s.units.filter(a=>a.team==='ally'&&alive(a)&&distance(a,u)<=1)){cure(s,a);a.immuneUntil=s.turn;}s.log.push(`${u.name}: 순례자의 등불. 곁의 아군 상태이상 해제.`);return out;}
@@ -188,7 +188,7 @@ export function applyTactic(s,u,target,mode,strike){
  if(!STRIKE[mode]?.noCounter)out.counter=t;return out;
 }
 const rollChance=(s,c)=>roll(s)*100<c;
-function igniteCell(s,c){const t=terrainAt(c.x,c.y,s);if(!t||fireMul(s,c.x,c.y)<1.25||weatherOf(s)==='rain')return;s.burning??={};const k=key(c.x,c.y);if(!s.burning[k]){s.burning[k]=2;s.feedback.push({type:'ignite',at:{x:c.x,y:c.y},text:'FIRE'});}}
+function igniteCell(s,c,hit){if(lightSpellFire(s,c.x,c.y,hit))s.feedback.push({type:'ignite',at:{x:c.x,y:c.y},text:'FIRE'});} // v2.6.1: forests only (game.js lightSpellFire)
 
 // Enemy weapons that leave a status on a hit (ACT II; numbers PROPOSED).
 export function enemyStatusOnHit(u){if(u?.team!=='enemy')return null;const look=u.look||u.kind;

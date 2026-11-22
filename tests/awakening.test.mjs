@@ -19,7 +19,7 @@ function camp(done,level=14,extra={}){const s=newGame(91,{heroes:null,results:[]
 const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);};
 const board=(id=18,done=17)=>{const c=camp(done);const s=newGame(5,c.campaign,id);for(const u of s.units.filter(u=>u.team==='ally')){u.classTier=['thea','dario','ines'].includes(u.id)?2:3;}s.screen='deployment';startBattle(s);drain(s);for(const u of s.units.filter(u=>u.team==='enemy'))if(!['lcap','gcap'].includes(u.id))u.hp=0;
  // park the heroes on the bottom row so the tests can place them freely
- s.units.filter(u=>u.team==='ally').forEach((u,i)=>{u.x=i;u.y=13;});return s;};
+ let px=0;s.units.filter(u=>u.team==='ally').forEach(u=>{while(s.units.some(o=>o.team!=='ally'&&alive(o)&&o.x===px&&o.y===13))px++;u.x=px++;u.y=13;});return s;}; // v2.6.1: eight now take the field; skip M17's statues on that row
 
 test('awakening conditions: Lv 14, tier 2 and the hero\'s own mission (Elina M16, Erik M17, Sain M18; v0.9.2 Lia M19, Kai M20); trials 106–109, 114 (v0.10.0: Ines M23 · 115, Thea M24 · 116)',()=>{
  const c=camp(16);let st=promotionStatus(c,'elina');assert.equal(st.next.tier,3);assert.ok(st.eligible,JSON.stringify(st.checks));assert.equal(trialMissionOf(c,'elina'),106);

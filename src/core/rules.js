@@ -26,6 +26,11 @@ export function terrainCost(s,u,x,y){const type=missionOf(s).map[y]?.[x];if(!typ
 // touching deep water) damps fire to ×0.5 and wins over forest; elsewhere the terrain's own fire value (forest ×1.5)
 const WET260=new Set(['s','b','i']);
 export function waterEdge(s,x,y){const m=missionOf(s).map;if(WET260.has(m[y]?.[x]))return true;return [[0,-1],[-1,0],[1,0],[0,1]].some(([dx,dy])=>m[y+dy]?.[x+dx]==='w');}
+// v2.6.1 (the user's request 2026-11-22 22:33): fire stays only in a forest — always there (not in the rain, not at the water's
+// edge), never on open ground. Whoever stands in it at the start of their side's turn takes 20% of the hit that lit it (FIRE_HEAT).
+export const FIRE_HEAT=.2;
+export function catchesFire(s,x,y){return missionOf(s).map[y]?.[x]==='f'&&fireMul(s,x,y)>=1.25&&weatherOf(s)!=='rain';}
+export function lightSpellFire(s,x,y,hit){if(!catchesFire(s,x,y))return false;s.burning??={};s.burnHeat??={};const k=key(x,y),fresh=!s.burning[k];s.burning[k]=2;s.burnHeat[k]=Math.max(s.burnHeat[k]||0,Math.max(1,Math.round((hit||0)*FIRE_HEAT)));return fresh;}
 // the forecast's fire note: 「🔥 숲 +50%」, 「🔥 물가 −50%」 (empty when fire is not involved or the ground is neutral)
 export function fireNote(s,f,t){if(!f?.magic||!t||f.terrainMul===1||f.terrainMul==null)return '';const pct=Math.round(Math.abs(f.terrainMul-1)*100);return `🔥 ${f.waterEdge?'물가':terrainAt(t.x,t.y,s)?.ko||''} ${f.terrainMul>1?'+':'−'}${pct}%`;}
 export function fireMul(s,x,y){const t=terrainAt(x,y,s),f=t?.fire??1;return waterEdge(s,x,y)?Math.min(f,.5):f;}
@@ -198,7 +203,7 @@ export function battleFoeLevel(s){const foes=(s?.units||[]).filter(u=>u.team==='
 export function xpScale(s,u,foeLevel=null){const lv=foeLevel??battleFoeLevel(s);if(!Number.isFinite(lv))return 1;return gapScale(lv-u.level);}
 export function awardXP(s,u,amount,reason,foeLevel=null){
  if(u.team!=='ally'||!amount)return;const scale=xpScale(s,u,foeLevel);amount=Math.max(1,Math.round(amount*scale*(1+fx(s,u,'sage')/100))); // v0.8.1 Sage Notebook
- u.xp+=amount;u.earnedXP+=amount;u.highlights.push(reason);const foe=foeLevel??battleFoeLevel(s),gap=Number.isFinite(foe)?Math.round(foe-u.level):0;s.feedback.push({type:'xp',id:u.id,text:`+${amount} EXP${scale!==1?` (레벨 차 ${gap>0?'+':''}${gap})`:''}`,scale,gap}); // v2.6.0: the gap shows when it changed the EXP
+ u.xp+=amount;u.earnedXP+=amount;u.highlights.push(reason);const foe=foeLevel??battleFoeLevel(s),gap=Number.isFinite(foe)?Math.round(foe-u.level):0;s.feedback.push({type:'xp',id:u.id,text:`+${amount} EXP`,scale,gap}); // v2.6.1 (the user's request 2026-11-22 22:33): the gap is not shown — too much information
  let leveled=false;while(u.xp>=BALANCE.xpLevel){leveled=true;u.xp-=BALANCE.xpLevel;u.level++;let changes;if(u.stats){changes=levelUpStats(u)||{};const mp=(heroDef(u.id)?.growth?.mp||0)+(classGrowth(u).mp||0);if(mp){u.maxMP+=mp;u.mp=Math.min(u.maxMP,u.mp+mp);changes.mp=mp;}}else{const g={...heroDef(u.id).growth};for(const [k,v]of Object.entries(classGrowth(u)))g[k]=(g[k]||0)+v;changes={...g};for(const [stat,n] of Object.entries(g)){if(stat==='hp'){u.maxHP+=n;u.hp=Math.min(u.maxHP,u.hp+n);}else if(stat==='mp'){u.maxMP+=n;u.mp=Math.min(u.maxMP,u.mp+n);}else u[stat]+=n;}}if(u.id==='eric'&&u.level>=5)u.appearanceTier=2;u.growthHistory.push({level:u.level,changes});s.feedback.push({type:'level',id:u.id,text:`LEVEL ${u.level}`,toHP:u.hp});s.log.push(`${u.name} → LV ${u.level}. 성장이 새로운 힘으로 이어집니다.`);}
  if(leveled){u.hp=u.maxHP;u.mp=u.maxMP;s.log.push(`${u.name}: 레벨업으로 HP/MP 전부 회복.`);}
 }

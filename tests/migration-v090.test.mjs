@@ -24,7 +24,7 @@ test('the v0.9.0 field camp loads as schema 13 with every asset kept',()=>{
 });
 
 test('ACT III goes on from the field camp: M17 at the guardians\' keep, seven heroes, 「지켜라」 and 「나아가라」',()=>{
- const s=load('m16-camp');const n=nextMission(s);assert.equal(n.missionId,17);assert.equal(n.practice,false);assert.equal(deployLimit(n),7);assert.deepEqual(commandsFor(n),['hold','advance']);assert.equal(n.command,'advance');
+ const s=load('m16-camp');const n=nextMission(s);assert.equal(n.missionId,17);assert.equal(n.practice,false);assert.equal(deployLimit(n),8); // v2.6.1: M17 takes eightassert.deepEqual(commandsFor(n),['hold','advance']);assert.equal(n.command,'advance');
  enterHub(n);assert.equal(n.frontier.hub,'keep');assert.ok(n.narrative.queue.includes('world:keep')||n.narrative.active?.key==='world:keep');
  const back=deserialize(serialize(n));assert.equal(back.missionId,17);
  const el=s.campaign.heroes.find(h=>h.id==='elina');const st=promotionStatus(s,'elina');assert.equal(st.next?.tier??(el.classTier||1)+1,(el.classTier||1)+1,'Elina\'s next step is read from her own tier');

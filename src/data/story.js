@@ -31,6 +31,7 @@ import {STORY_V05} from './story-v05.js';
 import {STORY_WORLD} from './story-world.js';
 import {LAST_MISSION} from './missions.js';
 import {REVISIT_LINES} from './arms-v081.js';
+import {TOWN_HINTS} from './hints-v261.js';
 import {NEW_HEROES,MERC_TALK} from './mercs-v210.js';
 import {DUEL_EVENTS,DUEL_SPEAKERS} from './duel-events-v210.js';
 Object.assign(FRONTIER_SCENES,FRONTIER_V04);Object.assign(ADVISOR_BRIEFINGS,ADVISOR_V04,ADVISOR_V06,ADVISOR_V061,ADVISOR_V070,ADVISOR_V071,ADVISOR_V090,ADVISOR_V091,ADVISOR_V092,ADVISOR_V093,ADVISOR_V0100,ADVISOR_V0101,ADVISOR_V0102,ADVISOR_V100);Object.assign(NPC_TALK,NPC_TALK_V061,NPC_TALK_V070,NPC_TALK_V071,NPC_TALK_V090,NPC_TALK_V091,NPC_TALK_V092,NPC_TALK_V093,NPC_TALK_V0100,NPC_TALK_V0101,NPC_TALK_V0102,NPC_TALK_V100);Object.assign(ADVISOR_AFTER,ADVISOR_AFTER_V061,ADVISOR_AFTER_V070,ADVISOR_AFTER_V071,ADVISOR_AFTER_V090,ADVISOR_AFTER_V091,ADVISOR_AFTER_V092,ADVISOR_AFTER_V093,ADVISOR_AFTER_V0100,ADVISOR_AFTER_V0101,ADVISOR_AFTER_V0102,ADVISOR_AFTER_V100);
@@ -125,4 +126,5 @@ for(const [hub,talks]of Object.entries(REVISIT_LINES))for(const [id,lines]of Obj
 for(const [id,name] of Object.entries({...Object.fromEntries(NEW_HEROES.map(h=>[h.id,h.name])),...DUEL_SPEAKERS}))SPEAKERS[id]??={id,name,ko:name,officer:!DUEL_SPEAKERS[id]};
 for(const [id,talks]of Object.entries(MERC_TALK))talks.forEach((lines,i)=>{STORY[`officer:${id}:${i}`]=lines.map(([speaker,text,expression])=>({...line(speaker,text,expression),inPlace:true,actors:['eric',id],focus:speaker==='eric'?0:1}));});
 for(const evs of Object.values(DUEL_EVENTS))for(const ev of evs)if(ev.lines)STORY[ev.key]=ev.lines.map(([speaker,text,expression])=>line(speaker,text,expression));
-
+// v2.6.1: a party member's word about the town's rumour, the first time the legion walks in (frontier.js travelTo)
+for(const [hub,h] of Object.entries(TOWN_HINTS))STORY[`hint:${hub}`]=h.lines.map(([speaker,text,expression])=>({...line(speaker,text,expression),inPlace:true,actors:['eric',speaker],focus:1}));

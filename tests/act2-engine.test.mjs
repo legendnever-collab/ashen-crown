@@ -19,9 +19,9 @@ const battle=(seed=11,campaign=null,id=1)=>{const s=newGame(seed,campaign,id);s.
 // A 12×10 board copy of mission 1 we can repaint for terrain checks (restored after each use).
 function withTile(s,x,y,type,fn){const m=MISSIONS[s.missionId].map,old=m[y][x];m[y][x]=type;try{return fn();}finally{m[y][x]=old;}}
 
-test('schema 9 → v2.0.0: ACT I parties are the five heroes in the field and the officers earned so far on the bench, sortie limit 5',()=>{
+test('schema 9 → v2.0.0: ACT I parties are the five heroes in the field and the officers earned so far on the bench, sortie 6–7 by the map (v2.6.1)',()=>{
  assert.equal(SCHEMA,27);
- for(const id of [1,2,3,4,5,6]){const s=newGame(7,null,id),allies=s.units.filter(u=>u.team==='ally'),officers=[]; /* v2.1 (D-118): a fresh campaign is the five alone; officers are tavern hires */assert.deepEqual(allies.map(u=>u.id),[...HEROES.map(h=>h.id),...officers]);assert.equal(deployLimit(s),5);assert.ok(s.units.every(u=>u.team!=='allied'));assert.deepEqual(s.campaign.roster,officers);assert.deepEqual(allies.filter(u=>u.benched).map(u=>u.id),officers);}
+ for(const id of [1,2,3,4,5,6]){const s=newGame(7,null,id),allies=s.units.filter(u=>u.team==='ally'),officers=[]; /* v2.1 (D-118): a fresh campaign is the five alone; officers are tavern hires */assert.deepEqual(allies.map(u=>u.id),[...HEROES.map(h=>h.id),...officers]);assert.equal(deployLimit(s),[6,6,7,7,6,7][id-1]);assert.ok(s.units.every(u=>u.team!=='allied'));assert.deepEqual(s.campaign.roster,officers);assert.deepEqual(allies.filter(u=>u.benched).map(u=>u.id),officers);}
 });
 
 test('schema 8 saves migrate (v2.0.0: the ACT I officers join, no trust yet); round trip holds',()=>{
@@ -37,13 +37,14 @@ test('a recruit joins at a level, gets slots and a hub place, and fields only wi
  assert.ok(joinRoster(camp,'thea',8));assert.ok(!joinRoster(camp,'thea',8),'joins once');assert.ok(!joinRoster(camp,'nobody'));
  assert.deepEqual(camp.campaign.roster.filter(id=>!OFFICER_IDS.includes(id)),['thea']);assert.ok(camp.economy.equipped.thea&&camp.campaign.economy.equipped.thea);assert.ok(camp.frontier.members.includes('thea'));validateFrontier(camp.frontier);
  assert.deepEqual(partyIds(camp.campaign).filter(id=>!OFFICER_IDS.includes(id)),['eric','elina','lia','sain','kai','thea']);
- // ACT I mission (limit 5): Thea starts in reserve and cannot be added until someone else stays back.
- const s=newGame(4,camp.campaign,6);s.screen='deployment';const thea=findUnit(s,'thea');
- assert.equal(thea.level,8);assert.ok(thea.benched);assert.equal(s.units.filter(u=>u.team==='ally'&&!u.benched).length,5);
- assert.ok(!setSortie(s,'thea',true));assert.ok(setSortie(s,'kai',false));assert.ok(setSortie(s,'thea',true));assert.ok(!thea.benched);
- assert.ok(startBattle(s));validate(s);assert.equal(deserialize(serialize(s)).units.filter(u=>u.team==='ally'&&!OFFICER_IDS.includes(u.id)).length,6);
- // A mission with a six-hero sortie fields her from the start.
- const m=MISSIONS[6],had=m.deployLimit;m.deployLimit=6;try{const t=newGame(4,camp.campaign,6);assert.equal(deployLimit(t),6);assert.ok(t.units.filter(u=>u.team==='ally'&&!OFFICER_IDS.includes(u.id)).every(u=>!u.benched));const spot=findUnit(t,'thea');assert.ok(spot.x>=0&&spot.y>=0);assert.ok(!t.units.some(o=>o!==spot&&alive(o)&&o.x===spot.x&&o.y===spot.y));}finally{if(had===undefined)delete m.deployLimit;else m.deployLimit=had;}
+ // v2.6.1: an ACT I mission takes six or seven. With Dario too (seven heroes), M01's sortie of six leaves the last to join in reserve until someone stays back.
+ assert.ok(joinRoster(camp,'dario',8));
+ const s=newGame(4,camp.campaign,1);s.screen='deployment';const thea=findUnit(s,'thea'),dario=findUnit(s,'dario');assert.equal(deployLimit(s),6);
+ assert.equal(thea.level,8);assert.ok(!thea.benched);assert.ok(dario.benched);assert.equal(s.units.filter(u=>u.team==='ally'&&!u.benched).length,6);
+ assert.ok(!setSortie(s,'dario',true));assert.ok(setSortie(s,'kai',false));assert.ok(setSortie(s,'dario',true));assert.ok(!dario.benched);
+ assert.ok(startBattle(s));validate(s);assert.equal(deserialize(serialize(s)).units.filter(u=>u.team==='ally'&&!OFFICER_IDS.includes(u.id)).length,7);
+ // M06 takes seven: all seven from the start, each on a free tile.
+ {const t=newGame(4,camp.campaign,6);assert.equal(deployLimit(t),7);assert.ok(t.units.filter(u=>u.team==='ally'&&!OFFICER_IDS.includes(u.id)).every(u=>!u.benched));for(const id of ['thea','dario']){const spot=findUnit(t,id);assert.ok(spot.x>=0&&spot.y>=0);assert.ok(!t.units.some(o=>o!==spot&&alive(o)&&o.x===spot.x&&o.y===spot.y));}}
 });
 
 test('sides: heroes and allied troops are one side; rival enemy factions fight each other unless in truce',()=>{

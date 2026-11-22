@@ -4,7 +4,7 @@
 // Art pack I: duel_<id> action sheets (4×2 cells of 512: ready, dash, strike, bind, guard, recoil, finisher, end),
 // finisher_<hero> key art and duelbg_<stage> backdrops in ASHEN_DUEL. Until they arrive the map figure is drawn large and
 // the dsBackdrop is painted here.
-import {drawHDFigure,hdCastFor} from '../render/hd-world.js';
+import {drawHDFigure,hdCastFor,figureBox} from '../render/hd-world.js';
 import {drawBust,BUST_W,BUST_H} from '../render/bust.js';
 
 const DS_ART=typeof ASHEN_DUEL!=='undefined'?ASHEN_DUEL:{};
@@ -41,10 +41,14 @@ function dsBackdrop(stage){const art=dsImage(`duelbg_${stage}`);if(art)return ar
  g.strokeStyle='rgba(0,0,0,.25)';for(let i=0;i<40;i++){g.beginPath();const y=DS_FLOOR+r()*(DS_H-DS_FLOOR);g.moveTo(r()*DS_W,y);g.lineTo(r()*DS_W,y+r()*4);g.stroke();}
  const vg=g.createRadialGradient(DS_W/2,DS_H*.55,DS_H*.3,DS_W/2,DS_H*.55,DS_W*.75);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.6)');g.fillStyle=vg;g.fillRect(0,0,DS_W,DS_H);
  dsBackdrops.set(stage,cv);return cv;}
+// v2.6.1 (the user's request 2026-11-22 22:33: 「일기토를 할 때에도 캐릭터별 크기 차이가 있어」): each duel sheet is measured
+// (its first pose, head to foot) and drawn DS_FIGURE tall with the feet on the floor line. Someone the story calls very tall or
+// huge may stand taller (DS_TALL, by duelist id); nobody in the story is described so yet, so the list is empty.
+const DS_FIGURE=320,DS_TALL={};
 // One fighter. A painted duel sheet when pack I has delivered it; otherwise the map figure, large, posed by tilt and squash.
 function dsFighter(c,f,pose,x,t,facing,glow){const sheet=dsImage(f.sheet);c.save();
  if(glow){c.shadowColor=glow;c.shadowBlur=28;}
- if(sheet){const i=DS_POSES.indexOf(pose),cw=sheet.naturalWidth/4,ch=sheet.naturalHeight/2,sx=(i%4)*cw,sy=Math.floor(i/4)*ch,size=430;c.drawImage(sheet,sx,sy,cw,ch,x-size/2,DS_FLOOR+18-size*480/512,size,size);c.restore();return;}
+ if(sheet){const i=DS_POSES.indexOf(pose),cw=sheet.naturalWidth/4,ch=sheet.naturalHeight/2,sx=(i%4)*cw,sy=Math.floor(i/4)*ch,box=figureBox(sheet,0,0,cw,ch,'duel'),size=box?Math.max(300,Math.min(600,DS_FIGURE*(DS_TALL[f.id]||1)/box.height)):430,foot=box?box.bottom:480/512;c.drawImage(sheet,sx,sy,cw,ch,x-size/2,DS_FLOOR+18-size*foot,size,size);c.restore();return;}
  const lean={dash:.16,strike:.1,bind:.12,guard:-.06,recoil:-.22,finisher:.18}[pose]||0,dir=facing==='right'?1:-1,kneel=pose==='end'&&f.foe;
  c.translate(x,DS_FLOOR+18);c.rotate(lean*dir+(kneel?-.12*dir:0));if(kneel)c.scale(1,.72);if(pose==='finisher')c.scale(1.08,1.08);
  const frame=pose==='dash'?1+Math.floor(t/90)%4:0,p=['strike','bind','finisher'].includes(pose)?'attack':'idle';

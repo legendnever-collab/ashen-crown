@@ -4,6 +4,9 @@
 import {launchTestBrowser} from './browser-helper.mjs';import {drainStory} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,deserialize,checksum} from '../src/persistence/save-manager.js';import {newGame,startBattle} from '../src/core/game.js';import {VERSION,SCHEMA} from '../src/data/game-data.js';
 import {travelTo} from '../src/core/frontier.js';import {startRequest} from '../src/core/villages.js';
+import {drain} from './campaign-policy.mjs';
+// v2.6.1: a town with someone worth meeting opens a short rumour the first time; the flows here go on after it
+const travelDrained=(s,h)=>{const r=travelTo(s,h);drain(s);return r;};
 const url=pathToFileURL(process.cwd()+'/build/Ashen_Crown.html').href,shots='docs/v2.5.1/screenshots';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox','--disable-gpu']});let n=0;const check=(name,ok)=>{assert.ok(ok,name);n++;console.log('PASS',name);};
 const camp=(id,extra={})=>({heroes:null,results:[],clears:id-1,completed:Array.from({length:id-1},(_,i)=>i+1),flags:{act1_completed:true,act2_free_met:true,act2_flame_met:true,act2_completed:true,act3_completed:true,aren_awakened:true,mission_14_betrayer:'iron',mission_13_baldrick:'halted',mission_25_betrayer:'iron',mission_26_baldrick:'joined'},choices:{m06_oath:'comrades',m04_records_choice:'kept',m07_deserters:'legion',m08_order:'hold',m10_stance:'mediate',m11_oath:'oath',m12_records:'return',m15_records:'keep',m16_stones:'leave',m17_oath:'take',m18_truth:'tell',m19_teacher:'take',m20_superior:'trial',m20_plan:'keep',m21_king:'promise',act3_choice:'council',m23_lead:'legion',m25_banner:'forgive',m28_confession:'all'},factionsMet:['iron','free','flame'],factionTrust:{iron:1,free:3,flame:3},roster:['thea','dario','ines','baldrick'],...extra});
@@ -30,12 +33,12 @@ try{
    for(let i=0;i<3&&await p.locator('.modal [data-do="close-modal"]:visible').count();i++){await p.locator('.modal [data-do="close-modal"]:visible').first().click();await p.waitForTimeout(250);}
    const t=await p.evaluate(()=>AshenCrown.snapshot());check(`${label} a v2.5.0 save of an M28 battle reopens in its camp (the map changed)`,t.screen==='exploration'&&t.missionId===28&&t.schema===SCHEMA);}
   // 봉화둔덕: a camp after M24–M26 travels there (the borrowed border-garrison painting until art pack L)
-  const village=deserialize(fixture);travelTo(village,'beacon');await restore(village);
+  const village=deserialize(fixture);travelDrained(village,'beacon');await restore(village);
   let s=await p.evaluate(()=>AshenCrown.snapshot());check(`${label} 봉화둔덕 opens`,s.screen==='exploration'&&s.frontier.hub==='beacon');
   if(label==='1440')await p.screenshot({path:`${shots}/beacon-village.png`});
-  {const lion=deserialize(fixture);travelTo(lion,'lionspring');await restore(lion);const t=await p.evaluate(()=>AshenCrown.snapshot());check(`${label} 사자샘 opens`,t.screen==='exploration'&&t.frontier.hub==='lionspring');if(label==='1440')await p.screenshot({path:`${shots}/lionspring-village.png`});}
+  {const lion=deserialize(fixture);travelDrained(lion,'lionspring');await restore(lion);const t=await p.evaluate(()=>AshenCrown.snapshot());check(`${label} 사자샘 opens`,t.screen==='exploration'&&t.frontier.hub==='lionspring');if(label==='1440')await p.screenshot({path:`${shots}/lionspring-village.png`});}
   // 「재 속의 약사」: 루카 in the ruined monastery, the ash beasts round him
-  const req=deserialize(fixture);travelTo(req,'beacon');const rb=startRequest(req,'apothecary',['eric','elina','lia','sain','kai','thea']);
+  const req=deserialize(fixture);travelDrained(req,'beacon');const rb=startRequest(req,'apothecary',['eric','elina','lia','sain','kai','thea']);
   {const ctx2=await b.newContext({viewport});await ctx2.setOffline(true);const p2=await ctx2.newPage();p2.on('pageerror',e=>errors.push(e.message));await p2.goto(url);await p2.waitForFunction(()=>!!window.AshenCrown);
    await p2.locator('[data-do="new"]').first().click();await p2.waitForTimeout(250);if(await p2.locator('[data-do="difficulty-pick"]').count())await p2.locator('[data-do="difficulty-pick"][data-id="normal"]').click();await drainStory(p2);
    await ctx.close();ctx=ctx2;p=p2;}

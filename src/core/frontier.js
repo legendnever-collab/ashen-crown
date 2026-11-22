@@ -21,6 +21,7 @@ import {OFFICER_IDS} from './stats8.js';
 import {ALL_HEROES,heroDef} from '../data/game-data.js';
 import {paintedRoom} from '../data/rooms-v06.js';
 import {TOWNS} from '../data/arms-v081.js';
+import {TOWN_HINTS} from '../data/hints-v261.js';
 export {hubFor};
 export function frontierState(missionId=1){const hub=hubFor(missionId),[x,y]=HUBS[hub].spawn;return {actorId:'eric',campaignEntry:'advisor',advisorPending:false,hub,x,y,facing:'down',visited:Object.fromEntries(Object.keys(HUBS).map(id=>[id,['square']])),events:[],affiliation:{eric:'affiliated',elina:'affiliated',lia:'affiliated',sain:'affiliated',kai:'affiliated'} /* v2.1 (D-118): the five are together from the first story; no walk-and-talk joining */,members:['eric','elina','lia','sain','kai'],phase:'preparation',pendingRecruit:null,ready:{equipment:false,items:false,formation:false,objective:false}};}
 export function ensureFrontier(s){if(!s.frontier)s.frontier=structuredClone(s.campaign.frontier||frontierState(s.missionId));for(const id of s.campaign.roster||[])if(!s.frontier.members.includes(id)){s.frontier.members.push(id);s.frontier.affiliation[id]='affiliated';}ensureEconomy(s);return s.frontier;}
@@ -47,7 +48,9 @@ const townCache=new Map();function townView(h){if(!townCache.has(h)){townCache.s
 // The towns on the world map's revisit list at this story moment (never the camp the story is in).
 export function revisitTowns(s){const f=s.frontier;if(!f||s.practice)return [];const home=f.revisit||hubFor(s.missionId,f.phase);return TOWNS.filter(t=>t.reached(s.missionId,s.campaign)&&t.hub!==home&&HUBS[t.hub]).map(t=>({...t,here:f.hub===t.hub}));}
 export function canTravel(s){const f=s.frontier;return s.screen==='exploration'&&!s.narrative?.active&&!!f&&!f.interior&&!s.practice;}
-export function travelTo(s,hub){const f=s.frontier;if(!canTravel(s)||!revisitTowns(s).some(t=>t.hub===hub)||f.hub===hub)return false;f.revisit??=f.hub;f.hub=hub;[f.x,f.y]=HUBS[hub].spawn;f.facing='down';visitPlaces(s);syncFrontier(s);return true;}
+export function travelTo(s,hub){const f=s.frontier;if(!canTravel(s)||!revisitTowns(s).some(t=>t.hub===hub)||f.hub===hub)return false;f.revisit??=f.hub;f.hub=hub;[f.x,f.y]=HUBS[hub].spawn;f.facing='down';visitPlaces(s);syncFrontier(s);townHint(s,hub);return true;}
+// v2.6.1 (the user's request 2026-11-22 22:33): the first walk into a town with someone worth meeting brings a rumour
+function townHint(s,hub){const h=TOWN_HINTS[hub],c=s.campaign;if(!h||s.practice||c.flags?.[`hint_${hub}`]||(h.hero&&c.roster?.includes(h.hero))||!h.lines.every(([who])=>['eric','elina','lia','sain','kai'].includes(who)||c.roster?.includes(who)))return false; /* the speakers must be with the legion (the five always are) */setStoryFlag(s,`hint_${hub}`,true);if(enqueueStory(s,`hint:${hub}`))openStory(s);return true;}
 export function returnFromTown(s){const f=s.frontier;if(!canTravel(s)||!f.revisit)return false;f.hub=f.revisit;delete f.revisit;[f.x,f.y]=HUBS[f.hub].spawn;f.facing='down';visitPlaces(s);syncFrontier(s);return true;}
 export function enterInterior(s,kind){const f=s.frontier;if(s.screen!=='exploration'||s.narrative.active||f.interior)return false;
  const door=!INTERIORS[kind]?interactions(s).find(n=>n.action==='enter'&&n.buildingId===kind):null;

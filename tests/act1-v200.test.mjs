@@ -80,10 +80,14 @@ test('the northern wave arrives on turn 3 at the sortie\'s level',()=>{const s=b
 
 test('the villagers are safe from attack until turn 6 (v2.0.0: one turn more on the big map)',()=>{const s=only(battle(),'b3'),b=position(s,'b3',16,6);s.turn=5;assert.notEqual(planEnemy(s,b).target,'c1');s.turn=6;assert.equal(planEnemy(s,b).target,'c1');});
 
-test('Fire Bolt sets grass alight for two turns; fire hurts but never kills',()=>{const s=battle(31),l=position(s,'lia',3,4),t=position(s,'b1',3,5);t.hp=t.maxHP;assert.equal(terrainAt(3,5,s).name,'Grass');for(const u of s.units)if(u.team==='enemy'&&u.id!=='b1'){u.hold=1;u.atk=1;}
- let hit=false;for(let i=0;i<20&&!hit;i++){l.acted=false;l.mp=l.maxMP;s.rng=1000+i;const before=t.hp;performAction(s,'lia','skill','b1');hit=t.hp<before;if(!alive(t))break;}
- assert.ok(hit);assert.equal(s.burning['3,5'],2);t.hp=t.maxHP;const hp=t.hp;beginEnemyPhase(s);assert.ok(t.hp<hp);while(s.phase==='enemy')advanceEnemy(s);assert.equal(s.burning['3,5'],1);
- const e=position(s,'eric',3,5);t.hold=1;t.x=3;t.y=13;e.hp=2;beginEnemyPhase(s);while(s.phase==='enemy')advanceEnemy(s);assert.equal(s.burning?.['3,5'],undefined);assert.ok(e.hp>=1);assert.ok(deserialize(serialize(s)));});
+// v2.6.1 (the user's request 2026-11-22 22:33): fire stays only in a forest — always there — and burns for 20% of the hit that lit it
+test('Fire Bolt leaves no fire on grass; in a forest it always does, burning 20% of the hit at the start of a turn, never killing',()=>{
+ const fire=(tx,ty)=>{const s=battle(31),l=position(s,'lia',tx+2,ty),t=position(s,'b1',tx,ty);t.hp=t.maxHP;for(const u of s.units)if(u.team==='enemy'&&u.id!=='b1'){u.hold=1;u.atk=1;}
+  let dealt=0;for(let i=0;i<20&&!dealt;i++){l.acted=false;l.mp=l.maxMP;s.rng=1000+i;const before=t.hp;performAction(s,'lia','skill','b1');dealt=before-t.hp;if(!alive(t))break;}return {s,t,dealt};};
+ {const {s,dealt}=fire(3,5);assert.equal(terrainAt(3,5,s).name,'Grass');assert.ok(dealt>0);assert.equal(s.burning?.['3,5'],undefined,'no fire on grass');}
+ const {s,t,dealt}=fire(2,4);assert.equal(terrainAt(2,4,s).name,'Forest');assert.ok(dealt>0);assert.equal(s.burning['2,4'],2,'a forest always catches');assert.ok(Math.abs(s.burnHeat['2,4']-dealt*.2)<=1.5,`20% of the hit (${s.burnHeat['2,4']} for ${dealt})`);
+ t.hp=t.maxHP;const hp=t.hp;beginEnemyPhase(s);assert.equal(hp-t.hp,s.burnHeat['2,4'],'the foe standing in it burns at the start of its turn');while(s.phase==='enemy')advanceEnemy(s);assert.equal(s.burning['2,4'],1);
+ const e=position(s,'eric',2,4);t.hold=1;t.x=3;t.y=13;e.hp=1;beginEnemyPhase(s);while(s.phase==='enemy')advanceEnemy(s);assert.equal(s.burning?.['2,4'],undefined);assert.equal(s.burnHeat?.['2,4'],undefined);assert.ok(e.hp>=1,'fire never kills');assert.ok(deserialize(serialize(s)));});
 
 test('victory needs both villagers and Garr; a fallen villager is a defeat',()=>{const s=battle();findUnit(s,'boss').hp=0;assert.equal(checkOutcome(s),null);findUnit(s,'c1').rescued=true;findUnit(s,'c2').rescued=true;assert.equal(checkOutcome(s),'victory');
  const d=battle();findUnit(d,'c1').hp=0;assert.equal(checkOutcome(d),'defeat');});

@@ -543,3 +543,5 @@
 .purchase-layout .stat-delta{display:inline-block;width:50%;line-height:1.6}
 @media(max-width:720px){.purchase-layout{display:block;overflow:auto}.purchase-layout>article,.purchase-layout>.purchase-roster{overflow:visible;margin-bottom:8px}}
 .purchase-layout small.stars,.modal p small.stars{display:inline;margin:0 0 0 6px;gap:0}
+/* v2.6.1: the battle minimap takes presses (the camera goes there) */
+#battle-minimap{pointer-events:auto;cursor:pointer;touch-action:none}

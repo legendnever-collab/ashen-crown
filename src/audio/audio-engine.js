@@ -5,8 +5,13 @@ import {SCORE} from './score.js';
 const hz=p=>440*2**((p-69)/12);
 const MUSIC=.5,SFX=.6,WET=.32/(.45*MUSIC); // output levels; WET keeps the v0.4 reverb mix at the default BGM .45
 const TRIADS={M:[0,4,7],m:[0,3,7],'7':[0,4,7,10],sus:[0,5,7]};
+// v2.6.1 (the user's request 2026-11-22 22:33: 「BGM에도 조금 더 신경을 쓰자 … 몰입감」): instruments sit apart in the stereo field;
+// every pass of a piece is a little different (a harmony voice under the tune on alternate passes, a quiet pass now and then,
+// a walking bass, slight human timing); battle music follows the fight's intensity (setIntensity, 0–1).
+const PAN={harp:-.35,pluck:.3,celesta:.25,strings:-.15,horn:.12,flute:-.05,lowpad:0,pad:0,softpad:0,bass:0};
+let hum=20261122;const jitter=()=>{hum=(hum*1664525+1013904223)>>>0;return hum/4294967296;};
 export class AudioEngine{
- constructor(storage){this.storage=storage;this.prefs={music:.45,sfx:.45,muted:false,paused:false};try{Object.assign(this.prefs,JSON.parse(storage.getItem('ashen-crown:audio:v1')||'{}'));}catch{}for(const k of ['music','sfx'])this.prefs[k]=Number.isFinite(this.prefs[k])?Math.max(0,Math.min(1,this.prefs[k])):.45;this.scene='title';this.tracks=new Map();this.notes=0;this.transitions=0;this.status='상호작용 후 활성화';this.nextAt=0;this.pos=new Map();}
+ constructor(storage){this.storage=storage;this.intensity=.5;this.prefs={music:.45,sfx:.45,muted:false,paused:false};try{Object.assign(this.prefs,JSON.parse(storage.getItem('ashen-crown:audio:v1')||'{}'));}catch{}for(const k of ['music','sfx'])this.prefs[k]=Number.isFinite(this.prefs[k])?Math.max(0,Math.min(1,this.prefs[k])):.45;this.scene='title';this.tracks=new Map();this.notes=0;this.transitions=0;this.status='상호작용 후 활성화';this.nextAt=0;this.pos=new Map();}
  async activate(){try{if(!this.ctx){const C=globalThis.AudioContext||globalThis.webkitAudioContext;if(!C){this.status='오디오 미지원';return false;}this.ctx=new C();this.build();this.updateGains();this.nextAt=this.ctx.currentTime+.08;this.timer=setInterval(()=>this.schedule(),60);}if(this.ctx.state==='suspended')await this.ctx.resume();this.status='재생 준비';this.select(this.scene,true);return true;}catch{this.status='오디오 없이 계속';return false;}}
  build(){const c=this.ctx;this.comp=c.createDynamicsCompressor();this.comp.threshold.value=-20;this.comp.knee.value=18;this.comp.ratio.value=3;this.comp.attack.value=.02;this.comp.release.value=.3;this.comp.connect(c.destination);
   this.master=c.createGain();this.tone_=c.createBiquadFilter();this.tone_.type='lowpass';this.tone_.frequency.value=7200;this.master.connect(this.tone_);this.tone_.connect(this.comp);
@@ -24,8 +29,8 @@ export class AudioEngine{
  // ---- voices -------------------------------------------------------------------------
  env(g,at,a,peak,hold,release){g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(peak,at+a);g.gain.setTargetAtTime(peak*.7,at+a,hold*.4+.01);g.gain.setTargetAtTime(0,at+a+hold,release/3);}
  osc(type,freq,at,end,dest,detune=0){const o=this.ctx.createOscillator();o.type=type;o.frequency.value=freq;o.detune.value=detune;o.connect(dest);o.start(at);o.stop(end);o.onended=()=>o.disconnect();return o;}
- voice(kind,pitch,at,dur,vel,dest){if(!pitch||!this.ctx)return;const c=this.ctx,f=hz(pitch),g=c.createGain(),lp=c.createBiquadFilter();lp.type='lowpass';lp.connect(g);g.connect(dest);this.notes++;
-  const end=at+dur+2;const done=()=>{try{g.disconnect();lp.disconnect();}catch{}};setTimeout(done,(end-c.currentTime+.5)*1000);
+ voice(kind,pitch,at,dur,vel,dest){if(!pitch||!this.ctx)return;const c=this.ctx,f=hz(pitch),g=c.createGain(),lp=c.createBiquadFilter();lp.type='lowpass';lp.connect(g);const pan=PAN[kind]&&c.createStereoPanner?c.createStereoPanner():null;if(pan){pan.pan.value=PAN[kind];g.connect(pan);pan.connect(dest);}else g.connect(dest);this.notes++; /* v2.6.1: each instrument has its place in the stereo field */
+  const end=at+dur+2;const done=()=>{try{g.disconnect();lp.disconnect();pan?.disconnect();}catch{}};setTimeout(done,(end-c.currentTime+.5)*1000);
   if(kind==='flute'){lp.frequency.value=2600;this.env(g,at,.08,.16*vel,dur,.35);const o=this.osc('sine',f,at,end,lp);this.osc('triangle',f*2,at,end,lp).detune.value=4;const lfo=c.createOscillator(),lg=c.createGain();lfo.frequency.value=5.2;lg.gain.value=f*.006;lfo.connect(lg);lg.connect(o.frequency);lfo.start(at+.25);lfo.stop(end);}
   else if(kind==='horn'){lp.frequency.setValueAtTime(700,at);lp.frequency.linearRampToValueAtTime(1700,at+.12);lp.frequency.setTargetAtTime(1100,at+.2,.3);this.env(g,at,.07,.12*vel,dur,.3);this.osc('sawtooth',f,at,end,lp,-5);this.osc('triangle',f,at,end,lp,5);}
   else if(kind==='strings'||kind==='lowpad'){lp.frequency.value=kind==='lowpad'?700:1500;this.env(g,at,kind==='lowpad'?.35:.16,.055*vel,dur,.6);for(const d of [-9,0,8])this.osc('sawtooth',f,at,end,lp,d);}
@@ -38,13 +43,20 @@ export class AudioEngine{
   const len=Math.floor(c.sampleRate*.2),b=c.createBuffer(1,len,c.sampleRate),d=b.getChannelData(0);let seed=99;for(let i=0;i<len;i++){seed=(seed*1664525+1013904223)>>>0;d[i]=(seed/4294967296*2-1)*(1-i/len);}const src=c.createBufferSource(),bp=c.createBiquadFilter(),g=c.createGain();src.buffer=b;bp.type=kind==='snare'?'bandpass':'highpass';bp.frequency.value=kind==='snare'?1800:6500;g.gain.setValueAtTime((kind==='snare'?.13:.05)*vel,at);g.gain.exponentialRampToValueAtTime(.001,at+(kind==='snare'?.18:.06));src.connect(bp);bp.connect(g);g.connect(dest);src.start(at);src.stop(at+.2);src.onended=()=>{src.disconnect();bp.disconnect();g.disconnect();};}
  // ---- sequencer ----------------------------------------------------------------------
  tick(id,t,eighth,dest){const sc=SCORE[id],p=this.pos.get(id),bar=Math.floor(p.eighth/8)%sc.chords.length,step=p.eighth%8,ch=sc.chords[bar],tones=TRIADS[ch.q].map(i=>i+ch.root);
-  if(p.left<=0){const [n,d]=sc.melody[p.mi%sc.melody.length];if(n)this.voice(sc.lead,n,t,d*eighth*.92,1,dest);p.left=d;p.mi++;}p.left--;
+  const pass=Math.floor(p.mi/sc.melody.length),battle=!!sc.drums&&['battle','heavy'].includes(sc.drums),hot=battle?this.intensity:.5,breathe=!battle&&pass%4===3; /* v2.6.1 */
+  if(p.left<=0){const [n,d]=sc.melody[p.mi%sc.melody.length];const tt=t+(jitter()-.5)*.014,vel=.88+jitter()*.16;
+   if(n&&!breathe){this.voice(sc.lead,n,tt,d*eighth*.92,vel,dest);
+    if(pass%2===1&&d>=2){const below=[...tones,...tones.map(x=>x+12),...tones.map(x=>x-12)].map(x=>x+Math.floor(n/12)*12).filter(x=>x<n-2&&x>=n-9).sort((a,b)=>b-a)[0];if(below)this.voice(sc.lead==='horn'||sc.lead==='strings'?'strings':'softpad',below,tt+.01,d*eighth*.9,.5,dest);}}
+   p.left=d;p.mi++;}p.left--;
   if(step===0&&sc.pad)for(const [k,i]of tones.slice(0,3).entries())this.voice(sc.pad,48+i+(k?12:0)+(i<5?12:0),t,eighth*7.6,1,dest);
-  if(step%4===0)this.voice('bass',36+ch.root,t,eighth*3.6,step?0.7:1,dest);
+  if(step%4===0)this.voice('bass',36+ch.root+(step&&pass%2?7:0),t,eighth*3.6,step?0.7:1,dest); /* v2.6.1: the fifth on the off half-bar every other pass */
+  if(battle&&hot>.7&&step%4===2)this.voice('bass',48+ch.root,t,eighth*1.6,.55,dest);
   if(sc.arp==='harp'&&step%2===0)this.voice('harp',60+tones[(step/2)%3]+(step>=4?12:0),t,eighth*2,.8,dest);
   if(sc.arp==='pluck'&&step%2===1)this.voice('pluck',60+tones[(step>>1)%3],t,eighth,.7,dest);
   if(sc.arp==='ostinato')this.voice('pluck',48+ch.root+(step%2?12:0),t,eighth*.9,.65,dest);
-  const dr=sc.drums;if(dr==='battle'){if(step===0||step===4)this.drum('timp',t,dest,step?0.7:1);if(step===2||step===6)this.drum('snare',t,dest,.7);if(step%2)this.drum('hat',t,dest,.6);}
+  const dr=sc.drums;if(battle&&hot<.3&&step%4!==0){p.eighth++;return;} /* v2.6.1: a quiet field thins the drums to the downbeats */
+  if(battle&&hot>.75&&step===7)this.drum('timp',t,dest,.55);
+  if(dr==='battle'){if(step===0||step===4)this.drum('timp',t,dest,step?0.7:1);if(step===2||step===6)this.drum('snare',t,dest,.7);if(step%2)this.drum('hat',t,dest,.6);}
   else if(dr==='heavy'){if(step%4===0)this.drum('timp',t,dest,1);if(step===3||step===7)this.drum('kick',t,dest,.7);if(step===4)this.drum('snare',t,dest,.8);}
   else if(dr==='march'){if(step===0)this.drum('kick',t,dest,.8);if(step===4)this.drum('snare',t,dest,.5);if(step===6||step===7)this.drum('snare',t,dest,.25);}
   else if(dr==='heart'){if(step===0||step===1)this.drum('kick',t,dest,step?0.4:.65);}
@@ -54,5 +66,6 @@ export class AudioEngine{
   while(this.nextAt<now+.25){const t=this.nextAt,eighth=60/SCORE[this.scene].tempo/2;for(const [id,dest]of this.tracks){if(id!==this.scene&&dest.gain.value<.01)continue;this.tick(id,t,60/SCORE[id].tempo/2,dest);}this.nextAt+=eighth;}}
  effect(kind){if(!this.ctx||this.ctx.state!=='running')return;const now=this.ctx.currentTime;if(kind==='heal'){[72,76,79].forEach((p,i)=>this.voice('celesta',p,now+i*.06,.3,.9,this.sfxGain));return;}if(kind==='attack'){this.drum('snare',now,this.sfxGain,.8);this.voice('pluck',52,now,.12,.8,this.sfxGain);return;}if(kind==='hit'){this.drum('kick',now,this.sfxGain,.6);return;}if(kind==='death'){this.voice('lowpad',38,now,.5,1.2,this.sfxGain);return;}if(kind==='move'||kind==='miss'){this.drum('hat',now,this.sfxGain,kind==='move'?.5:.9);return;}if(kind==='ignite'){this.drum('snare',now,this.sfxGain,.5);this.voice('pluck',45,now,.2,.6,this.sfxGain);return;}if(kind==='guard'){this.voice('horn',55,now,.25,.8,this.sfxGain);return;}if(kind==='spawn'){this.drum('timp',now,this.sfxGain,.9);return;}if(kind==='rescue'){[67,72,76].forEach((p,i)=>this.voice('harp',p,now+i*.05,.3,.8,this.sfxGain));return;}this.voice('celesta',79,now,.2,.8,this.sfxGain);}
  stinger(outcome){if(!this.ctx)return;const t=this.ctx.currentTime+.05,notes=outcome==='victory'?[62,66,69,74]:[62,60,57,50];notes.forEach((p,i)=>{this.voice('horn',p,t+i*.16,i===3?.9:.2,1,this.sfxGain);this.voice('harp',p+12,t+i*.16,.4,.7,this.sfxGain);});}
- diagnostics(){return {status:this.status,scene:this.scene,track:SCORE[this.scene].name,context:this.ctx?.state||'uninitialized',notes:this.notes,transitions:this.transitions,prefs:{...this.prefs},levels:this.levels(),original:true};}
+ setIntensity(v){this.intensity=Math.max(0,Math.min(1,Number.isFinite(v)?v:.5));}
+ diagnostics(){return {intensity:this.intensity??.5,status:this.status,scene:this.scene,track:SCORE[this.scene].name,context:this.ctx?.state||'uninitialized',notes:this.notes,transitions:this.transitions,prefs:{...this.prefs},levels:this.levels(),original:true};}
 }
