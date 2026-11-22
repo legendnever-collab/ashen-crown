@@ -2,7 +2,7 @@
 // minimap and every unit inside; the war council shows the big map's intel; a v2.4.1 (schema 25) save made during an M24
 // battle reopens in its camp. Screenshots in docs/v2.5.0/screenshots.
 import {launchTestBrowser} from './browser-helper.mjs';import {drainStory} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
-import {serialize,checksum} from '../src/persistence/save-manager.js';import {newGame,startBattle} from '../src/core/game.js';import {VERSION} from '../src/data/game-data.js';
+import {serialize,checksum} from '../src/persistence/save-manager.js';import {newGame,startBattle} from '../src/core/game.js';import {VERSION,SCHEMA} from '../src/data/game-data.js';
 const url=pathToFileURL(process.cwd()+'/build/Ashen_Crown.html').href,shots='docs/v2.5.0/screenshots';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox','--disable-gpu']});let n=0;const check=(name,ok)=>{assert.ok(ok,name);n++;console.log('PASS',name);};
 const camp=(id,extra={})=>({heroes:null,results:[],clears:id-1,completed:Array.from({length:id-1},(_,i)=>i+1),flags:{act1_completed:true,act2_free_met:true,act2_flame_met:true,act2_completed:true,act3_completed:true,aren_awakened:true,mission_14_betrayer:'iron',mission_13_baldrick:'halted',mission_25_betrayer:'iron'},choices:{m06_oath:'comrades',m04_records_choice:'kept',m07_deserters:'legion',m08_order:'hold',m10_stance:'mediate',m11_oath:'oath',m12_records:'return',m15_records:'keep',m16_stones:'leave',m17_oath:'leave',m18_truth:'tell',m19_teacher:'take',m20_superior:'trial',m20_plan:'keep',m21_king:'notyet',act3_choice:'council',m23_lead:'legion',m25_banner:'forgive'},factionsMet:['iron','free','flame'],factionTrust:{iron:1,free:3,flame:2},roster:['thea','dario','ines'],...extra});
@@ -25,7 +25,7 @@ try{
   }
   // a v2.4.1 save in the middle of an M24 battle (the small map) reopens in its camp
   {const old=battle(24);old.turn=3;await restore(backupText(old,25));const s=await p.evaluate(()=>AshenCrown.snapshot());
-   check(`${label} a v2.4.1 save of an M24 battle reopens in its camp (the map changed)`,s.screen==="exploration"&&s.missionId===24&&s.schema===26);}
+   check(`${label} a v2.4.1 save of an M24 battle reopens in its camp (the map changed)`,s.screen==="exploration"&&s.missionId===24&&s.schema===SCHEMA);}
   check(`${label} no runtime errors`,errors.length===0);if(errors.length)console.log(errors);await ctx.close();
  }
  fs.writeFileSync('test-output/v250-e2e.json',JSON.stringify({checks:n},null,1));console.log(`v250 e2e: ${n} checks passed`);

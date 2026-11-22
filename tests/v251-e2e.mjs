@@ -2,7 +2,7 @@
 // minimap and every unit inside; 봉화둔덕 and 사자샘 open from a camp after M26; 「재 속의 약사」 opens with 루카 on the field;
 // a v2.5.0 (schema 26) save made during an M28 battle reopens in its camp. Screenshots in docs/v2.5.1/screenshots.
 import {launchTestBrowser} from './browser-helper.mjs';import {drainStory} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
-import {serialize,deserialize,checksum} from '../src/persistence/save-manager.js';import {newGame,startBattle} from '../src/core/game.js';import {VERSION} from '../src/data/game-data.js';
+import {serialize,deserialize,checksum} from '../src/persistence/save-manager.js';import {newGame,startBattle} from '../src/core/game.js';import {VERSION,SCHEMA} from '../src/data/game-data.js';
 import {travelTo} from '../src/core/frontier.js';import {startRequest} from '../src/core/villages.js';
 const url=pathToFileURL(process.cwd()+'/build/Ashen_Crown.html').href,shots='docs/v2.5.1/screenshots';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox','--disable-gpu']});let n=0;const check=(name,ok)=>{assert.ok(ok,name);n++;console.log('PASS',name);};
@@ -28,7 +28,7 @@ try{
   // a v2.5.0 save in the middle of an M28 battle (the small map) reopens in its camp
   {const old=battle(28);old.turn=3;serialize(old);const o={...old,feedback:[],schema:26,version:'2.5.0'};const data=JSON.stringify(o);await press('menu');await press('backup');await p.fill('#backup-text',JSON.stringify({format:'AshenCrown',schema:26,checksum:checksum(data),data}));await press('restore');await drainStory(p);await p.waitForTimeout(400);
    for(let i=0;i<3&&await p.locator('.modal [data-do="close-modal"]:visible').count();i++){await p.locator('.modal [data-do="close-modal"]:visible').first().click();await p.waitForTimeout(250);}
-   const t=await p.evaluate(()=>AshenCrown.snapshot());check(`${label} a v2.5.0 save of an M28 battle reopens in its camp (the map changed)`,t.screen==='exploration'&&t.missionId===28&&t.schema===27);}
+   const t=await p.evaluate(()=>AshenCrown.snapshot());check(`${label} a v2.5.0 save of an M28 battle reopens in its camp (the map changed)`,t.screen==='exploration'&&t.missionId===28&&t.schema===SCHEMA);}
   // 봉화둔덕: a camp after M24–M26 travels there (the borrowed border-garrison painting until art pack L)
   const village=deserialize(fixture);travelTo(village,'beacon');await restore(village);
   let s=await p.evaluate(()=>AshenCrown.snapshot());check(`${label} 봉화둔덕 opens`,s.screen==='exploration'&&s.frontier.hub==='beacon');
