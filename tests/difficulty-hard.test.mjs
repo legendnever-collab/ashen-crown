@@ -12,9 +12,9 @@ test('every story mission on 어려움 starts, saves and loads (stage start incl
 });
 test('어려움 push by mission (D-129): full in ACT II, none in the M15 chase and the M17/M18 trials, growing in elsewhere',async()=>{
  const {difficultyPush,HARD_SHARE,BASE_MUL,BASE_MUL_AT}=await import('../src/core/stats8.js');const at=(missionId,avg,difficulty='hard')=>difficultyPush({missionId,campaign:{difficulty},levelPlan:{avg}});
- for(const id of [7,8,9,10,12,13,14]){const p=at(id,9);assert.equal(p.levels,1,`M${id}`);assert.ok(Math.abs(p.mul-(BASE_MUL_AT[id]??BASE_MUL)*1.1)<1e-9,`M${id}`);}
- for(const id of [11,15,16,17,18,19,20,21,22,23]){ /* v2.4.0: M16 too, on its big map; v2.4.1: M20, M22; v2.5.0: M19, M21, M23 */assert.deepEqual(at(id,18),at(id,18,'normal'),`M${id}`);}
- assert.deepEqual(HARD_SHARE,{7:1,8:1,9:1,10:1,11:0,12:1,13:1,14:1,15:0,16:0,17:0,18:0,19:0,20:0,21:0,22:0,23:0,24:.5,26:.5,27:.5,30:.5}); /* v2.4.1: the ACT III big maps; v2.5.0: M19 and ACT IV */
+ for(const id of [7,8,9,10,12,13]){ /* v2.6.0 (D-153): M14 joins the no-push list */const p=at(id,9);assert.equal(p.levels,1,`M${id}`);assert.ok(Math.abs(p.mul-(BASE_MUL_AT[id]??BASE_MUL)*1.1)<1e-9,`M${id}`);}
+ for(const id of [11,14,15,16,17,18,19,20,21,22,23]){ /* v2.4.0: M16 too, on its big map; v2.4.1: M20, M22; v2.5.0: M19, M21, M23 */assert.deepEqual(at(id,18),at(id,18,'normal'),`M${id}`);}
+ assert.deepEqual(HARD_SHARE,{7:1,8:1,9:1,10:1,11:0,12:1,13:1,14:0,15:0,16:0,17:0,18:0,19:0,20:0,21:0,22:0,23:0,24:.5,26:.5,27:.5,30:.5}); /* v2.4.1: the ACT III big maps; v2.5.0: M19 and ACT IV */
  assert.equal(at(25,19).levels,1);assert.ok(Math.abs(at(25,19).mul-(BASE_MUL_AT[25]??BASE_MUL)*1.1)<1e-9,'M25 full push');
  assert.equal(at(6,9).levels,0);assert.equal(at(21,19).levels,0); /* v2.5.0: M21 at 보통's numbers too */assert.equal(at(5,8).mul,BASE_MUL);
 });
