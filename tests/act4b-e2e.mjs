@@ -37,7 +37,7 @@ try{
   await enterWarCouncil(p,touch);await press('deploy');await p.waitForTimeout(300);await press('start-battle');await drainStory(p);s=await snap();
   // 2. M25: three camps by trust
   const st=s.missionState,allied=['lw','le'].filter(id=>s.units.find(u=>u.id===id).team==='allied'),neutral=['lw','le'].filter(id=>s.units.find(u=>u.id===id).neutral);
-  check(`${label} M25: the M14 betrayer holds the north camp; the other two camps stand by trust (allied ${allied.length}, neutral ${neutral.length})`,s.screen==='battle'&&st.camps.north===s.campaign.flags.mission_14_betrayer&&allied.length+neutral.length===2&&s.units.filter(u=>u.team==='ally'&&!u.benched).length===7);
+  check(`${label} M25: the M14 betrayer holds the north camp; the other two camps stand by trust (allied ${allied.length}, neutral ${neutral.length})`,s.screen==='battle'&&st.camps.north===s.campaign.flags.mission_14_betrayer&&allied.length+neutral.length===2&&s.units.filter(u=>u.team==='ally'&&!u.benched).length===Math.min(8,s.units.filter(u=>u.team==='ally').length)); // v2.6.1: M25 takes eight
   check(`${label} the objective panel names the camps and counts the leaders`,(await body()).includes('강경파 대장')&&(await body()).includes('지도자 2/2'));
   await press('reset-camera');await p.waitForTimeout(300);await p.screenshot({path:`${shots}/m25-field-${label}.png`});
   if(allied.length){const l=s.units.find(u=>u.id===allied[0]);await tile(l.x,l.y);await p.waitForTimeout(300);check(`${label} an allied leader takes orders`,(await modal()).includes('동맹군 지시'));await closeModals();}

@@ -53,7 +53,7 @@ try{
   await press('aren-command');s=await snap();check(`${label} the command button moves on to none, then 「지켜라」`,s.command===null);await press('aren-command');s=await snap();check(`${label} … and 「지켜라」`,s.command==='hold');
   await press('aren-command');s=await snap();check(`${label} … and back to 「나아가라」`,s.command==='advance');
   await press('start-battle');await drainStory(p);s=await snap();
-  check(`${label} M17 battle: seven heroes, six sleeping statues (v2.4.0 big map), the archive`,s.screen==='battle'&&s.units.filter(u=>u.team==='ally'&&!u.benched).length===7&&s.units.filter(u=>u.kind==='statue'&&u.team==='object').length===6);
+  check(`${label} M17 battle: eight heroes (v2.6.1), six sleeping statues (v2.4.0 big map), the archive`,s.screen==='battle'&&s.units.filter(u=>u.team==='ally'&&!u.benched).length===Math.min(8,s.units.filter(u=>u.team==='ally').length)&&s.units.filter(u=>u.kind==='statue'&&u.team==='object').length===6);
   check(`${label} the objective panel shows the statues and the turns left`,(await body()).includes('맹세한 석상 0/6'));
   const prep=deserialize(serialize(await snap()));const hero=prep.units.find(u=>u.id==='eric'),st=prep.units.find(u=>u.id==='st1');hero.x=st.x+1;hero.y=st.y;await restore(prep);await drainStory(p);
   await select(hero);check(`${label} a hero beside a statue may swear (맹세)`,(await p.locator('#unit-popover').textContent()).includes('맹세'));

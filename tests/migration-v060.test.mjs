@@ -21,10 +21,10 @@ test('the v0.6.0 end-of-content camp (canyon bivouac, Thea joined) loads as the 
  assert.equal(deserialize(serialize(s)).version,VERSION);
 });
 
-test('that camp continues to M09 in Velmar with Thea in the town and in the sortie of six',()=>{
+test('that camp continues to M09 in Velmar with Thea in the town and in the sortie (v2.6.1: up to seven)',()=>{
  const s=load('m08-camp');s.outcome='victory';const n=nextMission(s);assert.equal(n.missionId,9);assert.equal(n.practice,false);
  enterHub(n);assert.equal(n.frontier.hub,'velmar');assert.ok(n.narrative.events.includes('world:velmar'));assert.ok(currentHub(n).npcs.some(x=>x.id==='thea'));
- n.screen='deployment';const out=n.units.filter(u=>u.team==='ally'&&!u.benched);assert.equal(out.length,deployLimit(n));assert.ok(out.some(u=>u.id==='thea'));assert.ok(startBattle(n));
+ n.screen='deployment';const out=n.units.filter(u=>u.team==='ally'&&!u.benched);assert.equal(out.length,Math.min(deployLimit(n),n.units.filter(u=>u.team==='ally').length)); /* v2.6.1: M09 takes seven; this legion has six */assert.ok(out.some(u=>u.id==='thea'));assert.ok(startBattle(n));
 });
 
 test('the v0.6.0 mid-M08 battle reopens in camp (v2.0.0) and is won again',()=>{

@@ -118,10 +118,23 @@ export function tintSheet(sheet,color,mask=false){let byColor=tintCache.get(shee
   if(mask!=='only'){const orig=g.getImageData(0,0,out.width,out.height);g.globalCompositeOperation='color';g.globalAlpha=.5;g.fillStyle=color;g.fillRect(0,0,out.width,out.height);g.globalAlpha=1;g.globalCompositeOperation='destination-in';g.drawImage(sheet,0,0);g.globalCompositeOperation='source-over';
    keepFaces(g,orig,out.width,out.height);}}
  catch(e){out=sheet;}byColor.set(color,out);return out;}
-function drawPaintedFigure(c,img,x,footY,{facing,frame,pose,alpha,tint,mask}){const sheet=tint?tintSheet(walkSheet(img),tint,mask):walkSheet(img),cell=img.naturalWidth/4,{row,col,mirror}=paintedFrame(facing,frame,pose),D=PAINTED_CELL,lean=pose==='attack'?{left:[-4,0],right:[4,0],up:[0,-4],down:[0,3]}[facing]:[0,0];
+// v2.6.1 (the user's request 2026-11-22 22:33: 「캐릭터간 크기가 차이가 있어. 한 칸 안에 딱 들어오게」): every painted sheet is
+// measured once — the head-to-foot box of its first front frame — and drawn so that box is FIGURE_HEIGHT tall with the feet on
+// the foot point, whatever the painter's margins. On the battlefield (64-px tiles, feet 8 px above the tile's bottom) that is
+// one tile; hubs, rooms and scenes scale it as before. (It replaces the hand-set FIGURE_FIT of v0.6.)
+export const FIGURE_HEIGHT=54;
+const boxCache=new WeakMap();
+export function figureBox(img,sx,sy,cw,ch,key='front'){let m=boxCache.get(img);if(!m){m=new Map();boxCache.set(img,m);}if(m.has(key))return m.get(key);
+ let box=null;try{const g=document.createElement('canvas');g.width=Math.max(1,Math.round(cw));g.height=Math.max(1,Math.round(ch));const x=g.getContext('2d',{willReadFrequently:true});x.drawImage(img,sx,sy,cw,ch,0,0,g.width,g.height);const d=x.getImageData(0,0,g.width,g.height).data;let top=-1,bottom=-1;
+  for(let y=0;y<g.height&&top<0;y++)for(let i=0;i<g.width;i++)if(d[(y*g.width+i)*4+3]>40){top=y;break;}
+  for(let y=g.height-1;y>=0&&bottom<0;y--)for(let i=0;i<g.width;i++)if(d[(y*g.width+i)*4+3]>40){bottom=y+1;break;}
+  if(top>=0&&bottom>top)box={top:top/g.height,bottom:bottom/g.height,height:(bottom-top)/g.height};}catch(e){box=null;}
+ m.set(key,box);return box;}
+function drawPaintedFigure(c,img,x,footY,{facing,frame,pose,alpha,tint,mask}){const sheet=tint?tintSheet(walkSheet(img),tint,mask):walkSheet(img),cell=img.naturalWidth/4,{row,col,mirror}=paintedFrame(facing,frame,pose),lean=pose==='attack'?{left:[-4,0],right:[4,0],up:[0,-4],down:[0,3]}[facing]:[0,0];
+ const box=figureBox(img,0,0,cell,cell),D=box?Math.max(PAINTED_CELL*.7,Math.min(PAINTED_CELL*1.5,FIGURE_HEIGHT/box.height)):PAINTED_CELL,foot=box?box.bottom:120/128;
  c.save();c.globalAlpha*=alpha;c.imageSmoothingEnabled=true;c.imageSmoothingQuality='low';c.translate(x+lean[0],footY+lean[1]);
  if(pose==='death'){c.globalAlpha*=.45;c.translate(0,-8);c.rotate(-Math.PI/2);}if(mirror)c.scale(-1,1);
- c.drawImage(sheet,col*cell,row*cell,cell,cell,-D/2,-D*120/128,D,D);c.restore();}
+ c.drawImage(sheet,col*cell,row*cell,cell,cell,-D/2,-D*foot,D,D);c.restore();}
 // scale (v0.6, user feedback 2026-10-25): exploration hubs, rooms and staged dialogue draw figures 1.5× around the foot point; battle stays 1×.
 // v0.6 (user feedback 2026-10-25, D-061): the v0.4–v0.6 painted enemy and NPC sheets were drawn shorter than the heroes
 // (head-to-foot 84–99 px in a 128 cell vs 98–108 for heroes), so soldiers looked small beside the legion. Each listed
@@ -129,7 +142,7 @@ function drawPaintedFigure(c,img,x,footY,{facing,frame,pose,alpha,tint,mask}){co
 export const FIGURE_FIT={executor:1.3,baldrick:1.24,garr:1.22,guard:1.16,ironSpear:1.16,fortGuard:1.14,ironInfantry:1.13,lordA:1.13,lordB:1.13,
  archer:1.12,mercSpear:1.12,fortArcher:1.11,smith:1.11,pursuerCaptain:1.16,bearer:1.08,assassin:1.07,pursuer:1.07,cavalry:1.06,pursuerArcher:1.06,ironDeserter:1.05,deserterCaptain:1.08};
 export function drawHDFigure(c,castId,x,footY,{facing='down',frame=0,pose='idle',alpha=1,scale=1,fitted=false,tint=null,mask=false}={}){
- const fit=!fitted&&FIGURE_FIT[spriteIdFor(castId)];if(fit&&paintedSheet(castId))scale*=fit;
+ /* v2.6.1: painted sheets size themselves (figureBox); FIGURE_FIT is no longer applied */
  if(scale!==1){c.save();c.translate(x,footY);c.scale(scale,scale);c.translate(-x,-footY);drawHDFigure(c,castId,x,footY,{facing,frame,pose,alpha,fitted:true,tint,mask});c.restore();return;}
  const sheet=paintedSheet(castId);if(sheet){drawPaintedFigure(c,sheet,x,footY,{facing,frame,pose,alpha,tint,mask});return;}
  if(castId==='beacon'){drawBeacon(c,x,footY,pose==='death',alpha);return;}

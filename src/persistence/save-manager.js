@@ -65,6 +65,7 @@ export function validate(s){
  if(c.choices!=null&&(typeof c.choices!=='object'||Array.isArray(c.choices)||Object.values(c.choices).some(v=>typeof v!=='string'||v.length>40)))throw Error('선택 기록이 손상되었습니다.');
  if(rulesOf(s)&&!rulesOf(s).validState(s.missionState))throw Error('임무 진행 기록이 손상되었습니다.');
  if(s.burning!=null&&(typeof s.burning!=='object'||Array.isArray(s.burning)||Object.entries(s.burning).some(([k,v])=>!/^\d{1,2},\d{1,2}$/.test(k)||!Number.isInteger(v)||v<1||v>2)))throw Error('화염 기록이 손상되었습니다.');
+ if(s.burnHeat!=null&&(typeof s.burnHeat!=='object'||Array.isArray(s.burnHeat)||Object.entries(s.burnHeat).some(([k,v])=>!/^\d{1,2},\d{1,2}$/.test(k)||!Number.isInteger(v)||v<1||v>999)))throw Error('화염 기록이 손상되었습니다.'); // v2.6.1: a spell's fire burns for 20% of its hit
  if(s.units.some(u=>u.team==='ally'&&(![1,2,3].includes(u.appearanceTier)||['classTier','storyTier'].some(k=>u[k]!=null&&![1,2,3].includes(u[k])))))throw Error('외형 Tier가 손상되었습니다.');
  // v0.8.1: hidden objectives won (mission ids), this battle's flag record, the supply carrier's crate.
  if(c.feats!=null&&(!Array.isArray(c.feats)||c.feats.length>30||new Set(c.feats).size!==c.feats.length||c.feats.some(id=>!Number.isInteger(id)||id<1||id>30)))throw Error('숨은 전과 기록이 손상되었습니다.');

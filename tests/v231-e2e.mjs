@@ -5,6 +5,9 @@
 import {launchTestBrowser} from './browser-helper.mjs';import {drainStory} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,deserialize,checksum} from '../src/persistence/save-manager.js';import {newGame,startBattle} from '../src/core/game.js';import {VERSION} from '../src/data/game-data.js';
 import {travelTo} from '../src/core/frontier.js';import {startRequest} from '../src/core/villages.js';
+import {drain} from './campaign-policy.mjs';
+// v2.6.1: a town with someone worth meeting opens a short rumour the first time; the flows here go on after it
+const travelDrained=(s,h)=>{const r=travelTo(s,h);drain(s);return r;};
 const url=pathToFileURL(process.cwd()+'/build/Ashen_Crown.html').href,shots='docs/v2.3.1/screenshots';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox','--disable-gpu']});let n=0;const check=(name,ok)=>{assert.ok(ok,name);n++;console.log('PASS',name);};
 const camp=(id,extra={})=>({heroes:null,results:[],clears:id-1,completed:Array.from({length:id-1},(_,i)=>i+1),flags:{act1_completed:true,act2_free_met:true,act2_flame_met:id>11},choices:{m06_oath:'comrades',m04_records_choice:'kept',m07_deserters:'legion',m08_order:'hold',m10_stance:'mediate',m11_oath:'oath',m12_records:'return'},factionTrust:{iron:1,free:2,flame:2},roster:['thea','dario'],...extra});
@@ -27,13 +30,13 @@ try{
    if(label==='1440'){await press('reset-camera');await p.waitForTimeout(3200);await p.screenshot({path:`${shots}/m${id}-big-map.png`});}
   }
   // 서리목: a camp after M08–M09 travels there; the board lists the four requests
-  const village=deserialize(fixture);travelTo(village,'frost');await restore(village);
+  const village=deserialize(fixture);travelDrained(village,'frost');await restore(village);
   let s=await p.evaluate(()=>AshenCrown.snapshot());check(`${label} 서리목 opens with its request board`,s.screen==='exploration'&&s.frontier.hub==='frost');
   if(label==='1440')await p.screenshot({path:`${shots}/frost-village.png`});
   // 소금항 (art pack J part B): the salt pans and the quay
-  {const port=deserialize(fixture);travelTo(port,'saltport');await restore(port);const t=await p.evaluate(()=>AshenCrown.snapshot());check(`${label} 소금항 opens with its painting`,t.screen==='exploration'&&t.frontier.hub==='saltport');if(label==='1440')await p.screenshot({path:`${shots}/saltport-village.png`});}
+  {const port=deserialize(fixture);travelDrained(port,'saltport');await restore(port);const t=await p.evaluate(()=>AshenCrown.snapshot());check(`${label} 소금항 opens with its painting`,t.screen==='exploration'&&t.frontier.hub==='saltport');if(label==='1440')await p.screenshot({path:`${shots}/saltport-village.png`});}
   // 「눈보라 속 도끼잡이」: 군나르 in the ruin, the wolves on the snow
-  const req=deserialize(fixture);travelTo(req,'frost');const rb=startRequest(req,'blizzard',['eric','elina','lia','sain','kai','thea']);
+  const req=deserialize(fixture);travelDrained(req,'frost');const rb=startRequest(req,'blizzard',['eric','elina','lia','sain','kai','thea']);
   {const ctx2=await b.newContext({viewport});await ctx2.setOffline(true);const p2=await ctx2.newPage();p2.on('pageerror',e=>errors.push(e.message));await p2.goto(url);await p2.waitForFunction(()=>!!window.AshenCrown);
    await p2.locator('[data-do="new"]').first().click();await p2.waitForTimeout(250);if(await p2.locator('[data-do="difficulty-pick"]').count())await p2.locator('[data-do="difficulty-pick"][data-id="normal"]').click();await drainStory(p2);
    await ctx.close();ctx=ctx2;p=p2;}

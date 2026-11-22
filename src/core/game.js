@@ -4,7 +4,7 @@ import {VERSION,SCHEMA,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,DEPLOYMENTS,BALAN
 import {tallyKill,tallyRescue,tallyHeal,commitRecords} from './records.js';
 import {skillOf,ensureStats,deriveUnit,planLevels,scaleTroop,DIFFICULTY,difficultyOf,classKeyOf,isBossRank,OFFICER_IDS} from './stats8.js';
 import {TIER_ATTACK} from '../data/classes8.js';
-import {fireMul,pathCost,flank,terrainCost,distance,healAmount,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,forecast,strikeStats,guardFor,roll,awardXP,discover,terrainAt,counterBlocked,hostile,chargeBreaks,riposteBonus,sideOf,weatherOf,inWard,blockadeHolds} from './rules.js';
+import {lightSpellFire,fireMul,pathCost,flank,terrainCost,distance,healAmount,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,forecast,strikeStats,guardFor,roll,awardXP,discover,terrainAt,counterBlocked,hostile,chargeBreaks,riposteBonus,sideOf,weatherOf,inWard,blockadeHolds} from './rules.js';
 import {MISSIONS,missionOf,LAST_MISSION} from '../data/missions.js';
 import {checkDuelEvents} from './duel-events.js';
 import {rulesOf,objectUnit,searchEvidence} from './mission-rules.js';
@@ -33,7 +33,10 @@ export function newGame(seed=20261014,campaign=null,missionId=1){
 export const alliedUnit=a=>({...structuredClone(a),team:'allied',maxHP:a.hp,mp:0,maxMP:0,mag:a.mag||0,moved:false,acted:false});
 // Sortie size per mission (D-055 Q2: six from M07; M01–M06 field the five). Recruits beyond the limit start in reserve,
 // and any hero without an authored spot takes the first free tile of the deployment zone.
-export const deployLimit=s=>missionOf(s).deployLimit??5;
+// v2.6.1 (the user's request 2026-11-22 22:33: 「출전은 맵에 따라 6~8명」): the sortie is 6–8 by the map's size — up to 450 tiles 6,
+// up to 560 tiles 7, larger 8 — never fewer than the mission set before (ACT IV's eight stay eight)
+export const sortieBySize=m=>{const a=(m.width||0)*(m.height||0);return a<=450?6:a<=560?7:8;};
+export const deployLimit=s=>{const m=missionOf(s);return Math.min(8,Math.max(6,m.deployLimit??0,sortieBySize(m)));};
 function placeParty(s){const heroes=s.units.filter(u=>u.team==='ally');let out=heroes.length;for(const u of [...heroes].reverse().sort((a,b)=>OFFICER_IDS.includes(b.id)-OFFICER_IDS.includes(a.id))){if(out<=deployLimit(s))break; /* v2.0.0: officers wait on the bench before any named hero */if(SORTIE_LOCKED.includes(u.id))continue;u.benched=true;out--;}
  // v2.6.0 (D-152): a rider set down in a forest (it cannot stand there) takes a free deployment tile instead
  for(const u of heroes)if(u.x>=0&&u.y>=0&&!u.benched&&!Number.isFinite(terrainCost(s,u,u.x,u.y))){u.x=-1;u.y=-1;}
@@ -84,7 +87,7 @@ function damage(s,u,t,mode,counter=false,opts=null){
  victim.hp=Math.max(floor,victim.hp-dealt);rulesOf(s)?.afterDamage?.(s,victim);victim.hitThisTurn=true;gainGearExp(s,u,'strike');gainGearExp(s,victim,'hit');s.feedback.push({type:critical?'critical':'hit',id:victim.id,text:`${critical?'CRITICAL ':''}−${dealt}`,fromHP,toHP:victim.hp,damage:dealt});
  s.log.push(`${counter?'반격 · ':''}${u.name} → ${victim.name}: ${dealt} 피해${critical?' / Critical':''}${victim!==t?' / Guard':''}.`);
  if(victim!==t){remember(s,`guard_${victim.id}_${t.id}`);if(s.missionId===3&&t.id==='sain')enqueueStory(s,'3:guard');victim.guardTarget=null;victim.guardUsed=true;awardXP(s,victim,BALANCE.guardXP,'Guard로 동료 보호');discover(s,victim,"Guardian’s Oath");}
- if(mode==='skill'&&skillOf(u)==='fireBolt')ignite(s,victim);
+ if(mode==='skill'&&skillOf(u)==='fireBolt')ignite(s,victim,dealt);
  // v0.8: some ACT II enemy weapons leave a status on a hit (poison darts, staves, the abbot's silence, bewildering powder).
  const onHit=enemyStatusOnHit(u);if(onHit&&alive(victim)&&victim.team!==u.team)inflict(s,victim,onHit[0],onHit[1],undefined,u);
  // v0.8.1 Herb Pouch (treasure): once a battle, a hero knocked below half HP eats a herb from it.
@@ -298,9 +301,9 @@ function escortCivilians(s){for(const c of s.units.filter(u=>u.team==='civilian'
 // Units standing in fire at the start of their side's phase take 10% max HP (min 3), never lethal.
 // v2.6.0 (D-152): the level the EXP is measured against — the foe(s) struck; a non-enemy target (an allied unit, an object) falls back to the battle's average
 function foeLv(...foes){const l=foes.filter(f=>f&&f.team==='enemy'&&Number.isFinite(f.level)).map(f=>f.level);return l.length?l.reduce((a,b)=>a+b,0)/l.length:null;}
-function ignite(s,victim){const {x,y}=victim,t=terrainAt(x,y,s);if(!t||fireMul(s,x,y)<1.25||weatherOf(s)==='rain')return;s.burning??={};const k=key(x,y),fresh=!s.burning[k];s.burning[k]=2;if(fresh){s.feedback.push({type:'ignite',id:victim.id,text:'FIRE'});s.log.push(`${t.ko||t.name}에 불길이 번졌습니다. 2턴 동안 그 위의 유닛이 화상을 입습니다.`);}}
-function ageFires(s){if(!s.burning)return;for(const k of Object.keys(s.burning)){s.burning[k]--;if(s.burning[k]<=0)delete s.burning[k];}}
-function burnUnits(s,team){if(!s.burning)return;for(const u of s.units.filter(u=>u.team===team&&alive(u)&&s.burning[key(u.x,u.y)])){const n=Math.min(u.hp-1,Math.max(3,Math.floor(u.maxHP*.1)));if(n<=0)continue;const fromHP=u.hp;u.hp-=n;s.feedback.push({type:'hit',id:u.id,text:`🔥 −${n}`,fromHP,toHP:u.hp,damage:n});s.log.push(`${u.name}: 불길에 ${n} 피해.`);}}
+function ignite(s,victim,hit){const {x,y}=victim,t=terrainAt(x,y,s);if(lightSpellFire(s,x,y,hit)){s.feedback.push({type:'ignite',id:victim.id,text:'FIRE'});s.log.push(`${t.ko||t.name}에 불길이 번졌습니다. 2턴 동안 그 위에서 턴을 시작하면 화상(${s.burnHeat[key(x,y)]})을 입습니다.`);}}
+function ageFires(s){if(!s.burning)return;for(const k of Object.keys(s.burning)){s.burning[k]--;if(s.burning[k]<=0){delete s.burning[k];if(s.burnHeat)delete s.burnHeat[k];}}}
+function burnUnits(s,team){if(!s.burning)return;for(const u of s.units.filter(u=>u.team===team&&alive(u)&&s.burning[key(u.x,u.y)])){const heat=s.burnHeat?.[key(u.x,u.y)],n=Math.min(u.hp-1,heat??Math.max(3,Math.floor(u.maxHP*.1))); /* v2.6.1: a spell's fire burns for 20% of its hit; M20's burning houses keep their old burn */if(n<=0)continue;const fromHP=u.hp;u.hp-=n;s.feedback.push({type:'hit',id:u.id,text:`🔥 −${n}`,fromHP,toHP:u.hp,damage:n});s.log.push(`${u.name}: 불길에 ${n} 피해.`);}}
 // ---------- v0.8.0 「전술」 (D-073) ----------
 // The new skills and the targeted tools. Damage goes through damage() so guards, criticals and feedback are unchanged.
 function performTactic(s,u,mode,target){

@@ -1,0 +1,7 @@
+보통 (node tests/act2-balance.mjs 30, M01→M30, first try per mission; v2.6.1 rules — sortie 6–8, forest-only fire at 20%):
+{"gate":"first try not clearly below 60% per mission (M07–M30, Wilson 95% upper bound ≥ 0.6)","rates":["M1 30/30","M2 30/30","M3 27/30","M4 26/30","M5 30/30","M6 27/30","M7 28/29","M8 29/29","M9 29/29","M10 29/29","M11 28/29","M12 29/29","M13 29/29","M14 26/29","M15 21/29","M16 25/27","M17 25/26","M18 26/26","M19 26/26","M20 26/26","M21 21/26","M22 24/26","M23 19/24","M24 24/24","M25 24/24","M26 18/24","M27 23/23","M28 23/23","M29 20/23","M30 23/23"],"low":[]}
+
+어려움 (ASHEN_DIFFICULTY=hard, same, before the M26 change — HARD_SHARE 26 was .5):
+{"rates": ["M1 30/30", "M2 30/30", "M3 20/30", "M4 27/29", "M5 29/29", "M6 27/29", "M7 25/29", "M8 29/29", "M9 29/29", "M10 29/29", "M11 26/29", "M12 29/29", "M13 29/29", "M14 18/29", "M15 15/21", "M16 17/20", "M17 19/20", "M18 20/20", "M19 19/20", "M20 19/19", "M21 18/19", "M22 14/19", "M23 8/17", "M24 8/14", "M25 12/12", "M26 1/12", "M27 5/6", "M28 6/6", "M29 4/6", "M30 6/6"]}
+
+Tuning from the 24 camps saved before M26 on 어려움 (scratch replayer, first try): HARD_SHARE 26 .5 → 5/24, 0 → 14/24. Set to 0.

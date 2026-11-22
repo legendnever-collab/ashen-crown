@@ -25,6 +25,11 @@ export class BattleRenderer{
  focus(x,y){this.mapCamera.focus(x,y);this.pan={x:0,y:0};}
  zoomBy(n){this.zoom=Math.max(.35,Math.min(2.4,this.zoom*n));this.clampPan();}
  clampPan(){this.pan.x=Math.max(-this.w*.6,Math.min(this.w*.6,this.pan.x));this.pan.y=Math.max(-this.h*.6,Math.min(this.h*.6,this.pan.y));}
+ // v2.6.1 (the user's request 2026-11-22 22:33: 「맵이 커진 만큼 … 미니맵을 찍으면 가거나 드래그로 맵 화면을 움직이게」): a drag moves the
+ // camera's centre over the whole map (not a bounded offset), and the minimap sends it to the tile pointed at.
+ centerTile(){const cam=this.camera,tp=64*(cam.scale||1);return {x:(this.w/2-cam.x)/tp-.5,y:(this.h/2-cam.y)/tp-.5};}
+ lookAt(x,y){const m=missionOf(this.getState());this.mapCamera.target={x:Math.max(0,Math.min(m.width-1,x)),y:Math.max(0,Math.min(m.height-1,y))};this.pan={x:0,y:0};}
+ dragBy(dx,dy){const c=this.centerTile(),tp=64*(this.camera.scale||1);this.lookAt(c.x-dx/tp,c.y-dy/tp);this.mapCamera.current=null; /* no easing while the hand moves the map */}
  tileAt(px,py){const {scale,x,y}=this.camera;return {x:Math.floor((px-x)/scale/TILE),y:Math.floor((py-y)/scale/TILE)};}
  // Painted figures stand about one tile tall above their feet, so a tap on a unit's body may land on
  // the tile above it. Returns the unit whose drawn figure contains the screen point (front-most first).

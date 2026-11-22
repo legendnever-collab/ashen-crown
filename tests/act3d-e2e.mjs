@@ -34,7 +34,7 @@ try{
   const s21=nextMission(ready());enterHub(s21);await restore(s21);await drainStory(p);await closeModals();
   await enterWarCouncil(p,touch);await press('deploy');await p.waitForTimeout(300);await press('start-battle');await drainStory(p);s=await snap();
   // 2. M21: the king, four anchor stones, the pulsing ring
-  check(`${label} M21 battle: seven heroes, the king on the dais, four anchor stones`,s.screen==='battle'&&s.units.filter(u=>u.team==='ally'&&!u.benched).length===7&&s.units.find(u=>u.id==='king')?.x===12&&s.units.filter(u=>u.kind==='anchorStone'&&!u.inert).length===4);
+  check(`${label} M21 battle: eight heroes (v2.6.1), the king on the dais, four anchor stones`,s.screen==='battle'&&s.units.filter(u=>u.team==='ally'&&!u.benched).length===Math.min(8,s.units.filter(u=>u.team==='ally').length)&&s.units.find(u=>u.id==='king')?.x===12&&s.units.filter(u=>u.kind==='anchorStone'&&!u.inert).length===4);
   check(`${label} the objective panel shows the stones, the king's HP and the pulsing ring`,(await body()).includes('고정석 0/4')&&(await body()).includes('맥동 바깥 고리'));
   await press('reset-camera');await p.waitForTimeout(300);await p.screenshot({path:`${shots}/m21-heart-${label}.png`});
   const prep=deserialize(serialize(await snap()));for(const e of prep.units.filter(u=>u.team==='enemy'&&u.id!=='g1'))e.hp=0;const hero=prep.units.find(u=>u.id==='eric'),as1=prep.units.find(u=>u.id==='as1');hero.x=as1.x+1;hero.y=as1.y;hero.moved=hero.acted=false;

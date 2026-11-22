@@ -1,4 +1,6 @@
 # Current Status
+Updated 2026-11-23 KST: **v2.6.1 「한 칸에 한 사람」 minor-update release candidate** on feature/v2.6.1 (D-155): the user's ten requests of 2026-11-22 22:33 — figure sizes, BGM, EXP text, fire in forests, minimap/drag, full screen, equal choices, town rumours, duel sizes, sortie 6–8. Merge only on the user's approval. Next: the major update of 22:46 (docs/next/MAJOR_UPDATE_REQUESTS.md), design first.
+Updated 2026-11-22 22:09 KST: **v2.5.2 (PR #42 → ce2e701) and v2.6.0 (PR #43 → f447bca) merged** on the user's 「병합해줘」 (D-154).
 Updated 2026-11-22 KST (late): **v2.6.0 「지형과 성장」 release candidate** on feature/v2.6.0 (D-152 design, D-153 build and tuning), on top of the v2.5.2 candidate.
 Updated 2026-11-22 KST: **v2.5.2 small-update release candidate** on feature/v2.5.2 (D-148, D-149): town clicks walk and talk (menu beside service people) or open chests, a click during a walk replaces it, the purchase window fits the screen, doors matched to the paintings (and two capital doors unblocked), shops name classes only; v2.5.0 build out of the tree, v2.5.1 in ARCHIVE.json (D-151). Next major update recorded (D-150).
 Updated 2026-11-22 KST: **v2.5.1 merged** (PR #41 → 5e07847, D-147). All 30 missions on big maps; the v2.0 reform plan is complete. The user reruns Actions → Archive old builds for v2.5.0. Next only on the user's word.

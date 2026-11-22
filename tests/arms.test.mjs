@@ -15,6 +15,8 @@ import {MISSIONS} from '../src/data/missions.js';
 import {serialize,deserialize} from '../src/persistence/save-manager.js';
 import {SCHEMA} from '../src/data/game-data.js';
 import {drain} from './campaign-policy.mjs';
+// v2.6.1: a town with someone worth meeting opens a short rumour the first time; the flows here go on after it
+const travelDrained=(s,h)=>{const r=travelTo(s,h);drain(s);return r;};
 const camp=(extra={})=>({heroes:null,results:[],clears:0,completed:[],flags:{},choices:{},roster:[],...extra});
 const upTo=n=>Array.from({length:n},(_,i)=>i+1);
 const tx=(s,op,id,hero,slot)=>transact(s,{op,id,hero,slot,token:`tx:${s.economy.nonce}`});
@@ -57,14 +59,14 @@ test("Velmar's rare-goods shelf: one specialty of another town at +25%, bought o
 });
 
 test('revisiting a town: from the M09 camp to Ironhold and back; heroes stay in camp, no council there, the save keeps the visit',()=>{
- const s=hubAt(9,8);assert.deepEqual(revisitTowns(s).map(t=>t.hub),['village_raid','castletown','reed','stonewell','frost'],'v2.1: the small villages opened by M04 (v2.3.1: 서리목 by M08)');assert.ok(!travelTo(s,'velmar'),'not the camp itself');
- assert.ok(travelTo(s,'castletown'));assert.equal(s.frontier.hub,'castletown');assert.equal(s.frontier.revisit,'velmar');
+ const s=hubAt(9,8);assert.deepEqual(revisitTowns(s).map(t=>t.hub),['village_raid','castletown','reed','stonewell','frost'],'v2.1: the small villages opened by M04 (v2.3.1: 서리목 by M08)');assert.ok(!travelDrained(s,'velmar'),'not the camp itself');
+ assert.ok(travelDrained(s,'castletown'));assert.equal(s.frontier.hub,'castletown');assert.equal(s.frontier.revisit,'velmar');
  const h=currentHub(s);assert.ok(!h.npcs.some(n=>['aren','lia','advisor','eric','thea'].includes(n.id)));assert.ok(h.npcs.some(n=>n.id==='elder'));assert.ok(!h.places.some(p=>p.action==='enter'&&p.interior!=='tavern'),'no generic rooms (no chests) on a revisit — only the tavern (v2.1)');
  assert.ok(!openCouncil(s));assert.equal(shelfState(s,'plateCuirass').state,'sale','armor unlocked by M08, bought on the way back');assert.ok(tx(s,'buy-gear','plateCuirass','eric').ok);
  const e=h.npcs.find(n=>n.id==='elder');s.frontier.x=e.x;s.frontier.y=e.y+1;assert.ok(interactNPC(s,'elder'));assert.ok(s.narrative.active?.key.startsWith('revisit:castletown')||s.narrative.queue.some(k=>k.startsWith('revisit:castletown')));drain(s);
  const again=deserialize(serialize(s));assert.equal(again.frontier.hub,'castletown');assert.equal(again.frontier.revisit,'velmar');
  assert.ok(returnFromTown(s));assert.equal(s.frontier.hub,'velmar');assert.equal(s.frontier.revisit,undefined);
- assert.ok(travelTo(s,'village_raid'));enterHub(s,{story:false});assert.equal(s.frontier.hub,'velmar','the next story step brings the legion back');
+ assert.ok(travelDrained(s,'village_raid'));enterHub(s,{story:false});assert.equal(s.frontier.hub,'velmar','the next story step brings the legion back');
  for(const t of TOWNS)for(const id of ['elder','refugee','guard'])assert.ok(STORY[`revisit:${t.hub}:${id}`],`${t.hub} ${id}`);
 });
 

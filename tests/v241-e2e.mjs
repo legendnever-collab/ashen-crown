@@ -4,6 +4,9 @@
 import {launchTestBrowser} from './browser-helper.mjs';import {drainStory} from './story-helper.mjs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {serialize,deserialize,checksum} from '../src/persistence/save-manager.js';import {newGame,startBattle} from '../src/core/game.js';import {VERSION} from '../src/data/game-data.js';
 import {travelTo} from '../src/core/frontier.js';import {startRequest} from '../src/core/villages.js';
+import {drain} from './campaign-policy.mjs';
+// v2.6.1: a town with someone worth meeting opens a short rumour the first time; the flows here go on after it
+const travelDrained=(s,h)=>{const r=travelTo(s,h);drain(s);return r;};
 const url=pathToFileURL(process.cwd()+'/build/Ashen_Crown.html').href,shots='docs/v2.4.1/screenshots';fs.mkdirSync(shots,{recursive:true});fs.mkdirSync('test-output',{recursive:true});
 const b=await launchTestBrowser({headless:true,args:['--no-sandbox','--disable-gpu']});let n=0;const check=(name,ok)=>{assert.ok(ok,name);n++;console.log('PASS',name);};
 const camp=(id,extra={})=>({heroes:null,results:[],clears:id-1,completed:Array.from({length:id-1},(_,i)=>i+1),flags:{act1_completed:true,act2_free_met:true,act2_flame_met:true,act2_completed:true,mission_14_betrayer:'iron',mission_13_baldrick:'halted'},choices:{m06_oath:'comrades',m04_records_choice:'kept',m07_deserters:'legion',m08_order:'hold',m10_stance:'mediate',m11_oath:'oath',m12_records:'return',m15_records:'keep',m16_stones:'leave',m17_oath:'take',m18_truth:'tell',m19_teacher:'take',m20_superior:'trial',m20_plan:'keep',m21_king:'promise'},factionTrust:{iron:-1,free:3,flame:3},roster:['thea','dario','ines'],...extra});
@@ -26,12 +29,12 @@ try{
    if(label==='1440'){await press('reset-camera');await p.waitForTimeout(3200);await p.screenshot({path:`${shots}/m${id}-big-map.png`});}
   }
   // 등불골: a camp after M16–M18 travels there (the borrowed 돌우물 painting until art pack K)
-  const village=deserialize(fixture);travelTo(village,'lamp');await restore(village);
+  const village=deserialize(fixture);travelDrained(village,'lamp');await restore(village);
   let s=await p.evaluate(()=>AshenCrown.snapshot());check(`${label} 등불골 opens`,s.screen==='exploration'&&s.frontier.hub==='lamp');
   if(label==='1440')await p.screenshot({path:`${shots}/lamp-village.png`});
-  {const moss=deserialize(fixture);travelTo(moss,'moss');await restore(moss);const t=await p.evaluate(()=>AshenCrown.snapshot());check(`${label} 이끼다리 opens`,t.screen==='exploration'&&t.frontier.hub==='moss');if(label==='1440')await p.screenshot({path:`${shots}/moss-village.png`});}
+  {const moss=deserialize(fixture);travelDrained(moss,'moss');await restore(moss);const t=await p.evaluate(()=>AshenCrown.snapshot());check(`${label} 이끼다리 opens`,t.screen==='exploration'&&t.frontier.hub==='moss');if(label==='1440')await p.screenshot({path:`${shots}/moss-village.png`});}
   // 「잿빛 안개 속 약초꾼」: 마렌 in the ruined watchtower, the loggers round her
-  const req=deserialize(fixture);travelTo(req,'moss');const rb=startRequest(req,'herbalist',['eric','elina','lia','sain','kai','thea']);
+  const req=deserialize(fixture);travelDrained(req,'moss');const rb=startRequest(req,'herbalist',['eric','elina','lia','sain','kai','thea']);
   {const ctx2=await b.newContext({viewport});await ctx2.setOffline(true);const p2=await ctx2.newPage();p2.on('pageerror',e=>errors.push(e.message));await p2.goto(url);await p2.waitForFunction(()=>!!window.AshenCrown);
    await p2.locator('[data-do="new"]').first().click();await p2.waitForTimeout(250);if(await p2.locator('[data-do="difficulty-pick"]').count())await p2.locator('[data-do="difficulty-pick"][data-id="normal"]').click();await drainStory(p2);
    await ctx.close();ctx=ctx2;p=p2;}
