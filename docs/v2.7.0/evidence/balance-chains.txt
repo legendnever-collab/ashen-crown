@@ -1,0 +1,9 @@
+보통 (node tests/act2-balance.mjs 30, M01→M30, first try per mission; v2.7.0):
+{"gate":"first try not clearly below 60% per mission (M07–M30, Wilson 95% upper bound ≥ 0.6)","rates":["M1 30/30","M2 30/30","M3 27/30","M4 27/30","M5 30/30","M6 26/30","M7 27/29","M8 29/29","M9 29/29","M10 29/29","M11 28/29","M12 29/29","M13 29/29","M14 29/29","M15 28/29","M16 24/29","M17 27/27","M18 27/27","M19 27/27","M20 27/27","M21 26/27","M22 24/27","M23 26/27","M24 26/27","M25 26/26","M26 20/26","M27 24/26","M28 26/26","M29 25/26","M30 26/26"],"low":[]}
+
+어려움 (ASHEN_DIFFICULTY=hard, same):
+{"rates": ["M1 29/30", "M2 30/30", "M3 17/30", "M4 29/30", "M5 30/30", "M6 15/30", "M7 15/22", "M8 22/22", "M9 22/22", "M10 22/22", "M11 19/22", "M12 22/22", "M13 22/22", "M14 17/22", "M15 20/21", "M16 15/21", "M17 19/19", "M18 19/19", "M19 17/19", "M20 18/18", "M21 16/18", "M22 14/18", "M23 13/17", "M24 13/17", "M25 16/16", "M26 11/16", "M27 12/15", "M28 13/15", "M29 12/14", "M30 12/13"]}
+
+M06 from the 30 camps saved before it (v2.6.0 chain), first try, refugees through / fallen per run:
+v2.6.1 map and rules: 27 won (boss), through 1/4 in 29 runs and 2/4 in 1, first through at TURN 13–17, 2–3 fallen each run
+v2.7.0 map, strength x1.02: 60/60 won; x1.6 30/30; x1.75 55/60; x1.8 26/30 (through 3:15 2:10 1:4 0:1 runs; fallen 0:15 1:6 2:7 3:1 4:1; first through TURN 7:21 8:7 10:1); x1.85 39/60; x2.0 8/30. Set x1.8.
