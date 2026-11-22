@@ -21,7 +21,7 @@ test('the six painting folders are AVIF (the 24 magenta-marked class sheets and 
    const b=fs.readFileSync(`src/assets/${folder}/${f}`);assert.ok(isAvif(b),f);assert.equal(crypto.createHash('sha256').update(b).digest('hex'),c.avif_sha256,f);
    assert.ok(+c.ssim>=floor,`${f}: SSIM ${c.ssim} under ${floor}`);assert.ok(+c.quality>=60&&+c.quality<=80,f);assert.ok(imageSize(b)[0]>0,f);}
  }
- assert.equal(CONVERSIONS.length,393); // v2.3.1 pack J: 군나르 ×3, the wolf's bust, 서리목, 소금항; v2.4.1 pack K: 마렌 ×3, 등불골, 이끼다리
+ assert.equal(CONVERSIONS.length,398); // v2.3.1 pack J: 군나르 ×3, the wolf's bust, 서리목, 소금항; v2.4.1 pack K: 마렌 ×3, 등불골, 이끼다리; v2.5.1 pack L: 루카 ×3, 봉화둔덕, 사자샘
 });
 test('the AVIF notice: browsers that cannot open AVIF are told why the paintings are missing',()=>{
  const app=fs.readFileSync('src/ui/app.js','utf8');assert.match(app,/AVIF_NOTICE='[^']*iOS 16\.4[^']*'/);assert.match(app,/avifProbe\.src='data:image\/avif;base64,/);

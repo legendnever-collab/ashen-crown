@@ -1,8 +1,8 @@
-# tests 585
-# pass 569
+# tests 586
+# pass 570
 # fail 0
 # skipped 16
-# duration_ms 45209.157073
+# duration_ms 47884.204709
 ok 1 - M01 is 22×16 with the five heroes (v2.1: no officers at the start — tavern hires), the raiders and two villagers
 ok 2 - Dijkstra counts forest as 2 for infantry, 1 for the rogue and riders
 ok 3 - ruins, occupied tiles and the map edge cannot be entered
@@ -436,7 +436,7 @@ ok 430 - flips to the left near the right edge and never covers the unit
 ok 431 - clamped inside the field on phone sizes and map edges
 ok 432 - prefers a beside-the-unit slot that leaves a legal target visible
 ok 433 - painted portraits: 28 WebP files match the pack manifest and cover every id/expression
-ok 434 - art packs: 21 + 36 (v0.4.0), 25 tier-2 (v0.5.0) and 25 ACT II (v0.6.0 pack B), 18 ACT II part 2 (v0.9.1 pack D), 12 ACT III (v0.9.1 pack F1), 47 ACT III part 2 (pack F2), 22 ACT III part 3 (pack F3), 5 ACT III part 4 (pack F4: the last king), 10 ACT IV part 1 (pack G1: Ines and Thea awakened) and 5 ACT IV part 2 (pack G2: Dario awakened) and 24 class sheets (v2.1.0 pack H1 A–C) and 5 (v2.3.1 pack J A/C: 군나르, the wolf) and 3 (v2.4.1 pack K A: 마렌) assets imported from hash-verified PNG masters
+ok 434 - art packs: 21 + 36 (v0.4.0), 25 tier-2 (v0.5.0) and 25 ACT II (v0.6.0 pack B), 18 ACT II part 2 (v0.9.1 pack D), 12 ACT III (v0.9.1 pack F1), 47 ACT III part 2 (pack F2), 22 ACT III part 3 (pack F3), 5 ACT III part 4 (pack F4: the last king), 10 ACT IV part 1 (pack G1: Ines and Thea awakened) and 5 ACT IV part 2 (pack G2: Dario awakened) and 24 class sheets (v2.1.0 pack H1 A–C) and 5 (v2.3.1 pack J A/C: 군나르, the wolf) and 3 (v2.4.1 pack K A: 마렌) and 3 (v2.5.1 pack L A: 루카) assets imported from hash-verified PNG masters
 ok 435 - shipped painted art equals the hash-verified imports (busts, sheets, hubs, world map, icons)
 ok 436 - every score is original notation with whole bars; Phase F adds five variations
 ok 437 - music follows the hub, the world map, the promotion rite and trials
@@ -585,6 +585,7 @@ ok 579 - 「샘터 우물 보수」: 300 G at the board, then 10% off at 사자�
 ok 580 - 봉화둔덕: 「피난민 겨울나기」 takes two medium potions; the 사자샘 tavern takes in 실바, 셀린 or 오린 one per story win from M26
 ok 581 - every ACT IV request battle is winnable by the test policy; 「도망친 군마」 is won by bringing the three grooms back; the bounties open again
 ok 582 - the rescued heroes fight: 아델, 군나르, 마렌 and 루카 are on the field when they sortie; a v2.5.0 save is mended
-ok 583 - the yardstick is the sortie average: within ±2 of it every hero gets the full EXP
-ok 584 - far above the sortie learns less, far below learns faster, with floor and cap
-ok 585 - without a plan (old saves mid-camp) the mission level is still the fallback
+ok 583 - art pack L (D-146): 루카's three busts and the two villages come from hash-verified masters, as AVIF
+ok 584 - the yardstick is the sortie average: within ±2 of it every hero gets the full EXP
+ok 585 - far above the sortie learns less, far below learns faster, with floor and cap
+ok 586 - without a plan (old saves mid-camp) the mission level is still the fallback

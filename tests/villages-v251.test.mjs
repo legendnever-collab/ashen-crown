@@ -84,3 +84,11 @@ test('the rescued heroes fight: 아델, 군나르, 마렌 and 루카 are on the 
  travelTo(back,'lionspring');const r=startRequest(back,'passbandits',['eric','maren','elina','lia']);if(r.screen==='deployment')startBattle(r);drain(r);const m=findUnit(r,'maren');
  assert.ok(m&&!m.rescued&&!m.benched&&m.hp>0,'마렌 on the field');
 });
+
+test('art pack L (D-146): 루카\'s three busts and the two villages come from hash-verified masters, as AVIF',async()=>{
+ const {artFile,imageSize}=await import('./art-file.mjs');const {ART_HUBS}=await import('../src/data/hubs-v05.js');
+ const log=fs.readFileSync('src/assets/art-import-log.csv','utf8').trim().split(/\r?\n/).map(l=>l.split(','));
+ for(const e of ['neutral','concerned','determined']){assert.ok(log.some(r=>r[0]==='bust'&&r[1]==='luka'&&r[2]===e),e);const a=artFile('portraits',`bust_luka_${e}.webp`);assert.equal(a.format,'avif');assert.deepEqual(imageSize(a.bytes),[720,880]);}
+ const hubs=fs.readFileSync('src/assets/room-art-import-log.csv','utf8');for(const id of ['hub_beacon','hub_lionspring']){assert.ok(hubs.includes(`hub,${id},`),id);assert.deepEqual(imageSize(artFile('hubs',`${id}.webp`).bytes),[1536,1024]);}
+ assert.equal(ART_HUBS.beacon.art,'hub_beacon');assert.equal(ART_HUBS.lionspring.art,'hub_lionspring');
+});

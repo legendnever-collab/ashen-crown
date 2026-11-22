@@ -249,7 +249,7 @@ HV5_SPECS.saltport=smallVillage('Saltport · 소금항','소금항 촌장','염�
 // v2.4.1 (D-135): the ACT III villages, painted by art pack K on the small-village footprint (D-139)
 HV5_SPECS.lamp=smallVillage('Lampvale · 등불골','등불골 촌장','등불지기','묘지 파수','hub_lamp');
 HV5_SPECS.moss=smallVillage('Mossbridge · 이끼다리','이끼다리 촌장','약초꾼','숲길 파수','hub_moss');
-// v2.5.1 (D-141): the ACT IV villages borrow the border garrison's and 서리목's paintings until art pack L (D-094 way)
-HV5_SPECS.beacon=smallVillage('Beacon Mound · 봉화둔덕','봉화둔덕 촌장','피난민','봉화 파수','hub_garrison');
-HV5_SPECS.lionspring=smallVillage('Lionspring · 사자샘','사자샘 촌장','마부','고개 파수','hub_frost');
+// v2.5.1 (D-141): the ACT IV villages, painted in art pack L (D-146)
+HV5_SPECS.beacon=smallVillage('Beacon Mound · 봉화둔덕','봉화둔덕 촌장','피난민','봉화 파수','hub_beacon');
+HV5_SPECS.lionspring=smallVillage('Lionspring · 사자샘','사자샘 촌장','마부','고개 파수','hub_lionspring');
 export const ART_HUBS=Object.fromEntries(Object.entries(HV5_SPECS).map(([id,spec])=>[id,hv5Build(id,spec)]));

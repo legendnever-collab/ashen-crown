@@ -13,3 +13,4 @@ world exit=0
 v210 exit=0
 # reruns alone after the test fixes: act4c exit=0 (34 checks), v250 exit=0 (22), v251 exit=0 (28)
 # final: 12 suites exit 0
+# after art pack L (D-146), on the new build: v251 exit=0 (28 checks), hub-doors exit=0 (165/165 doors, 12/12 houses)

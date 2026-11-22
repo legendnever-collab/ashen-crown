@@ -1,7 +1,7 @@
 # v2.5.1 — ACT IV 큰 맵 (2부)와 마지막 작은 마을
 - Release candidate (D-145; not merged). Notes docs/v2.5.1/RELEASE_NOTES.md.
 - ACT IV M27–M30 on big maps (src/data/missions-v251.js): M27 royal gate 32×22 (13+15), M28 memory palace 26×22 (13+6), M29 heart chamber 26×24 (13+8), M30 dawn courtyard 30×18 (9+20). All 30 missions are on big maps.
-- 봉화둔덕 (M24) and 사자샘 (M26): requests 137–142 (「도망친 군마」 with the new rescue goal), the 사자샘 tavern; 루카 (healer, 「등불 손길」); art pack L work order.
+- 봉화둔덕 (M24) and 사자샘 (M26): requests 137–142 (「도망친 군마」 with the new rescue goal), the 사자샘 tavern; 루카 (healer, 「등불 손길」); art pack L (work order, returned and imported as AVIF, D-146).
 - Fix (D-144): 아델, 군나르 and 마렌 never appeared in battle (their records carried the battle flag "rescued"); old saves mended.
 - 어려움: M27 and M30 half push. Schema 27. v2.4.0/v2.4.1 builds left the tree; v2.5.0 in ARCHIVE.json.
 - Tests: tests/chain-from.mjs (tail runs from saved camps), tests/v251-e2e.mjs, tests/villages-v251.test.mjs; act4c on the big M27/M28.

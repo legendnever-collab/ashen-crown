@@ -49,7 +49,7 @@ export const NEW_CLASS={sera:'spear',orin:'mage',celine:'healer',ren:'rogue',sil
 // Elite hires are one grade stronger in their main stats (§4).
 export const ELITE_BONUS=2;
 // Busts until art pack H1 (v2) returns (D-094 manner: a painted figure of the same calling).
-export const MERC_BUST={sera:'captain16_iron',orin:'merchant',celine:'captain16_flame',ren:'pursuerCaptain',silva:'forestElder',adel:'captain16_free',gunnar:'dario',maren:'elina',luka:'sain'}; // v2.5.1: 루카 borrows Sain's bust until art pack L; // v2.4.1: 마렌 borrowed Elina's bust until art pack K; her own painting is used once present (D-139). v2.3.1: 군나르 borrowed Dario's bust until art pack J; his own painting is used once present (D-132)
+export const MERC_BUST={sera:'captain16_iron',orin:'merchant',celine:'captain16_flame',ren:'pursuerCaptain',silva:'forestElder',adel:'captain16_free',gunnar:'dario',maren:'elina',luka:'sain'}; // v2.5.1: 루카's own busts came with art pack L (D-146), Sain's is the fallback; // v2.4.1: 마렌 borrowed Elina's bust until art pack K; her own painting is used once present (D-139). v2.3.1: 군나르 borrowed Dario's bust until art pack J; his own painting is used once present (D-132)
 
 // Camp lines (§4: the same way as the v2.0.0 officers; one of three by mission).
 export const MERC_TALK={
