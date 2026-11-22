@@ -1,5 +1,5 @@
 import {NEW_HEROES} from './mercs-v210.js';
-export const VERSION = '2.5.1';
+export const VERSION = '2.5.2';
 export const SCHEMA = 27;
 export const WIDTH = 12, HEIGHT = 10;
 // v0.4 benchmark pass: physical cut (fraction), evade (%), fire multiplier and per-class

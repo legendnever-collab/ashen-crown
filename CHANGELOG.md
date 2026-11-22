@@ -1,5 +1,13 @@
+# v2.5.2 — 마을에서 누르면 바로 (작은 업데이트)
+- Release candidate (D-148, D-149); merge only on the user's approval. Notes docs/v2.5.2/RELEASE_NOTES.md.
+- Town clicks: a click on a person walks within reach and talks; service people open a small menu beside them (대화 · 인재 확보 / 거래 / 의뢰 게시판 · 닫기; src/data/npc-talk-v252.js); a click on a chest walks beside it and opens it; a click during a walk replaces it.
+- The gear purchase fits the screen (columns scroll on their own, the buy button stays visible); the shop and the purchase name classes only, never heroes (spoilers).
+- Doors laid over their paintings and moved where they stood on walls, pillars, chests, braziers or lamps (village hall on eleven hubs, forest and Saltport forges, camp/bivouac/oath-camp tents, pilgrim granary, the keep's gate a row lower); in the capital Ines and Baldrick no longer block the tavern's and the house's doors. tests/doors-v252.test.mjs, tests/v252-e2e.mjs.
+- D-151: the v2.5.0 build left the tree (its Release exists); v2.5.1 joins ARCHIVE.json. Schema 27 unchanged.
+- Recorded for later (D-150, docs/next/MAJOR_UPDATE_REQUESTS.md): terrain movement by class, fire magic by terrain, experience by level gap.
+
 # v2.5.1 — ACT IV 큰 맵 (2부)와 마지막 작은 마을
-- Release candidate (D-145; not merged). Notes docs/v2.5.1/RELEASE_NOTES.md.
+- Merged (PR #41; approved 2026-11-22 16:01, D-147). Built under D-145. Notes docs/v2.5.1/RELEASE_NOTES.md.
 - ACT IV M27–M30 on big maps (src/data/missions-v251.js): M27 royal gate 32×22 (13+15), M28 memory palace 26×22 (13+6), M29 heart chamber 26×24 (13+8), M30 dawn courtyard 30×18 (9+20). All 30 missions are on big maps.
 - 봉화둔덕 (M24) and 사자샘 (M26): requests 137–142 (「도망친 군마」 with the new rescue goal), the 사자샘 tavern; 루카 (healer, 「등불 손길」); art pack L (work order, returned and imported as AVIF, D-146).
 - Fix (D-144): 아델, 군나르 and 마렌 never appeared in battle (their records carried the battle flag "rescued"); old saves mended.
