@@ -11,8 +11,8 @@ function afterMission(n){let s=newGame(20261014);s.campaign.difficulty='normal';
  enterHub(s,{aftermath:true,story:false});drain(s);return s;}
 const inTavern=s=>{const d=currentHub(s).places.find(p=>p.interior==='tavern');Object.assign(s.frontier,{x:d.x,y:d.y,facing:'up'});if(!enterInterior(s,d.buildingId))throw Error('tavern');Object.assign(s.frontier,{x:3,y:4,facing:'up'}); /* v2.2: at the bar, where the keeper stands behind it */return s;};
 const atGate=s=>{const g=currentHub(s).places.find(p=>p.id==='gate'||p.id==='exit');Object.assign(s.frontier,{x:g.x,y:g.y,facing:'down'});return s;};
-const camp1=afterMission(1),tavernSave=serialize(inTavern(structuredClone(camp1)));camp1.campaign.economy.gold=Math.max(camp1.campaign.economy.gold,200);camp1.economy.gold=camp1.campaign.economy.gold;
-const sortieSave=(()=>{const t=inTavern(structuredClone(camp1));const r=hire(t,'bram');if(!r.ok)throw Error(r.error);const n=nextMission(t);n.screen='deployment';return serialize(n);})();
+const camp1=afterMission(1),tavernSave=serialize(inTavern(structuredClone(camp1)));camp1.campaign.economy.gold=Math.max(camp1.campaign.economy.gold,400);camp1.economy.gold=camp1.campaign.economy.gold;
+const sortieSave=(()=>{const t=inTavern(structuredClone(camp1));for(const id of ['bram','noa']){const r=hire(t,id);if(!r.ok)throw Error(r.error);} /* v2.6.1: M02 takes six, so a seventh shows the bench */const n=nextMission(t);n.screen='deployment';return serialize(n);})();
 const camp4=afterMission(4),gateSave=serialize(atGate(structuredClone(camp4)));
 const duel=(()=>{const s=newGame(20261014);s.campaign.difficulty='normal';s.screen='deployment';startBattle(s);drain(s);const g=findUnit(s,'boss'),e=findUnit(s,'eric');
  for(const t of [s,s.stageStart]){const gg=findUnit(t,'boss'),ee=findUnit(t,'eric');ee.x=gg.x;ee.y=gg.y+1;}for(const u of s.units.filter(u=>u.team==='enemy'&&u.id!=='boss'))for(const t of [s,s.stageStart]){const v=findUnit(t,u.id);v.x=Math.min(21,v.x+8);}return serialize(s);})();
@@ -59,11 +59,11 @@ try{for(const [width,height,touch] of [[1440,900,false],[390,844,true]]){const l
  await p.screenshot({path:`${shots}/duel-scene-vs-${label}.png`});await p.waitForTimeout(3000);await p.screenshot({path:`${shots}/duel-scene-clash-${label}.png`});
  await p.locator('#duel-scene .ds-level').waitFor({state:'visible',timeout:9000}).catch(()=>{});check(`${label} the window ends on LEVEL UP (LV ${lv0} → ${lv0+1})`,(await p.locator('#duel-scene .ds-level').isVisible().catch(()=>false))&&(await p.locator('#duel-scene .ds-level').innerText()).includes(`LV ${lv0} → ${lv0+1}`));
  await p.screenshot({path:`${shots}/duel-scene-level-${label}.png`});await drainStory(p);s=await snap();check(`${label} the window closes and the battle goes on; the pair's event is spent`,!(await p.locator('#duel-scene').count())&&s.screen==='battle'&&(s.duelEvents||[]).includes('duel:1:garr'));
- // 4. Sortie board on the deployment screen: six in the legion (Bram hired), five may go
- await restore(sortieSave);s=await snap();check(`${label} the M02 deployment holds six (Bram hired), five sent`,s.screen==='deployment'&&s.units.filter(u=>u.team==='ally').length===6&&s.units.filter(u=>u.team==='ally'&&!u.benched).length===5);
- await press('sortie-board');check(`${label} 출전 장수 lists all six`,await p.locator('[data-do="sortie-toggle"]').count()===6);await p.screenshot({path:`${shots}/sortie-board-${label}.png`});
+ // 4. Sortie board on the deployment screen: seven in the legion (Bram and Noa hired), six may go (v2.6.1)
+ await restore(sortieSave);s=await snap();check(`${label} the M02 deployment holds seven (Bram and Noa hired), six sent`,s.screen==='deployment'&&s.units.filter(u=>u.team==='ally').length===7&&s.units.filter(u=>u.team==='ally'&&!u.benched).length===6);
+ await press('sortie-board');check(`${label} 출전 장수 lists all seven`,await p.locator('[data-do="sortie-toggle"]').count()===7);await p.screenshot({path:`${shots}/sortie-board-${label}.png`});
  const benched=s.units.find(u=>u.team==='ally'&&u.benched).id,out=s.units.find(u=>u.team==='ally'&&!u.benched&&u.id!=='eric').id;
- await press('sortie-toggle',out);await press('sortie-toggle',benched);s=await snap();check(`${label} swapping who goes keeps five out`,s.units.filter(u=>u.team==='ally'&&!u.benched).length===5&&!s.units.find(u=>u.id===benched).benched&&s.units.find(u=>u.id===out).benched);
+ await press('sortie-toggle',out);await press('sortie-toggle',benched);s=await snap();check(`${label} swapping who goes keeps six out`,s.units.filter(u=>u.team==='ally'&&!u.benched).length===6&&!s.units.find(u=>u.id===benched).benched&&s.units.find(u=>u.id===out).benched);
  await press('sortie-toggle','eric');s=await snap();check(`${label} Erik always goes`,!s.units.find(u=>u.id==='eric').benched);
  await ctx.close();}
  check('no runtime errors',errors.length===0);
