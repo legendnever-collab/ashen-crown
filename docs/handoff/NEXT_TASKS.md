@@ -1,5 +1,5 @@
 # Next Tasks
-0c. v2.6.1 merged (D-156). Now: the design of the major update of 2026-11-22 22:46, approved by the user before building. The next version removes the v2.5.1/v2.5.2/v2.6.0 builds from the tree once their Releases exist.
+0c. v2.6.1 merged (D-156). The major update is proposed as v2.7.0 (docs/v2.7.0/MAJOR_UPDATE_DESIGN.md, D-157) — build only after the user approves it. The next version removes the v2.5.1/v2.5.2/v2.6.0 builds from the tree once their Releases exist.
 0b. v2.6.1 release candidate (D-155): merge only on the user's approval. Then design the major update of 2026-11-22 22:46 (docs/next/MAJOR_UPDATE_REQUESTS.md: M06 bottom-to-top with the villagers' walk and the dialogue in order, double attacks by a luck-like stat or an item, the request board and its giver, refined tavern clothes, the story–map–town review). The user's archive run for v2.5.1/v2.5.2 is still to come (no Release yet on 2026-11-23).
 0a. v2.5.2 and v2.6.0 are merged (D-154). The user reruns Actions → Archive old builds for v2.5.1 and v2.5.2; the next version removes those builds from the tree once their Releases exist.
 0. v2.5.1 merged (D-147). Open for the user's word: 어려움 M22 (1/9) and M26 (2/5); M27/M30 easy on 보통 at the cap; the next version removes the v2.5.0 build from the tree once its Release exists.
