@@ -529,6 +529,8 @@
    three columns share the height left under the title; each scrolls on its own if it must, the portrait is smaller, the
    stat comparison runs in two columns, and the buttons stay at the bottom of every modal that scrolls. */
 .modal>.row:not(:empty){position:sticky;bottom:-20px;z-index:2;background:#213b3f;padding:10px 0 4px;margin-bottom:-4px;box-shadow:0 -10px 12px -8px #213b3f}
+/* the sticky bar must not cover what is scrolled into view; on a short screen (a phone held sideways) it scrolls with the rest */
+.modal{scroll-padding-bottom:72px}@media (max-height:520px){.modal>.row:not(:empty){position:static;box-shadow:none;margin-bottom:0}.modal{scroll-padding-bottom:0}}
 .modal:has(.purchase-layout){display:flex;flex-direction:column;max-height:calc(100dvh - 40px);overflow:hidden;padding:16px 20px}
 .modal:has(.purchase-layout) .modal-title{flex:none;margin-bottom:6px}
 .modal:has(.purchase-layout)>.row{position:static;flex:none;margin-top:10px;box-shadow:none}
