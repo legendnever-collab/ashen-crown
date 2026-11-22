@@ -1,5 +1,13 @@
+# v2.5.1 — ACT IV 큰 맵 (2부)와 마지막 작은 마을
+- Release candidate (D-145; not merged). Notes docs/v2.5.1/RELEASE_NOTES.md.
+- ACT IV M27–M30 on big maps (src/data/missions-v251.js): M27 royal gate 32×22 (13+15), M28 memory palace 26×22 (13+6), M29 heart chamber 26×24 (13+8), M30 dawn courtyard 30×18 (9+20). All 30 missions are on big maps.
+- 봉화둔덕 (M24) and 사자샘 (M26): requests 137–142 (「도망친 군마」 with the new rescue goal), the 사자샘 tavern; 루카 (healer, 「등불 손길」); art pack L (work order, returned and imported as AVIF, D-146).
+- Fix (D-144): 아델, 군나르 and 마렌 never appeared in battle (their records carried the battle flag "rescued"); old saves mended.
+- 어려움: M27 and M30 half push. Schema 27. v2.4.0/v2.4.1 builds left the tree; v2.5.0 in ARCHIVE.json.
+- Tests: tests/chain-from.mjs (tail runs from saved camps), tests/v251-e2e.mjs, tests/villages-v251.test.mjs; act4c on the big M27/M28.
+
 # v2.5.0 — ACT IV 큰 맵 (1부)
-- Release candidate (D-141; not merged). Notes docs/v2.5.0/RELEASE_NOTES.md.
+- Merged (PR #40; approved 2026-11-21 19:00, D-143). Built under D-141. Notes docs/v2.5.0/RELEASE_NOTES.md.
 - ACT IV M23–M26 on big maps (src/data/missions-v250.js, scripts/make-act4-maps.py): M23 alliance camp 26×20 (8+16), M24 border 20×24 with the pass under the ash from the start (m.ashBase; 6+12), M25 summit field 30×20 (11+8), M26 Lion's Pass 22×24 without a fort tile (10+6); M25/M26 captains kept by m.captainBox.
 - 어려움: M19, M21, M23 at 보통's numbers; M24, M26 half push.
 - Schema 26 (imports 0–25). D-142: v2.2.1–v2.3.1 builds left the tree; v2.4.0/v2.4.1 in ARCHIVE.json.

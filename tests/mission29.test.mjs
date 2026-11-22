@@ -22,8 +22,8 @@ const enemyPhase=s=>{for(let i=0;duelOpen(s)&&i<3;i++)duelPick(s,'strike');begin
 const quiet=s=>{for(const u of s.units.filter(u=>u.team==='enemy'&&u.id!=='boss'))u.hp=0;};
 const strikeBoss=(s,n)=>{const b=findUnit(s,'boss');b.hp=Math.max(0,b.hp-n);M29.afterDamage(s,b);};
 
-test('M29 data: 18×14 crown heart, level 21, sortie of eight, TURN 14; Bellard, three rite points, scenes and talks',()=>{
- const m=MISSIONS[29];assert.deepEqual([m.width,m.height],[18,14]);assert.equal(m.level,21);assert.equal(m.deployLimit,8);assert.equal(m.turnLimit,14);assert.equal(m.needRites,2);assert.equal(m.duelTurn,2);
+test('M29 data: 26×24 crown heart (v2.5.1 big map), level 21, sortie of eight, TURN 14; Bellard, three rite points, scenes and talks',()=>{
+ const m=MISSIONS[29];assert.deepEqual([m.width,m.height],[26,24]);assert.ok(m.v251);assert.deepEqual(m.captainBox,[9,0,16,11]);assert.equal(m.level,21);assert.equal(m.deployLimit,8);assert.equal(m.turnLimit,14);assert.equal(m.needRites,2);assert.equal(m.duelTurn,2);
  for(const path of ['king','council','oath'])for(const [x,y] of m.rites29[path])assert.equal(m.map[y][x],'k',`${path} ${x},${y}`);
  for(const k of ['29:intro','29:path:king','29:path:council','29:path:oath','29:duel','29:duel:hero','29:duel:foe','29:words','29:crown','29:crown:words','29:fall','29:rite:broken','29:end','pre:29','after:29','after:29:trial','after:29:exile','after:29:offer','npc:29:preparation:aren','npc:29:aftermath:elder'])assert.ok(STORY[k]?.length,k);
  const s=battle();assert.equal(deployLimit(s),8);assert.equal(findUnit(s,'boss').look,'bellard');

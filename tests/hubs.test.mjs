@@ -32,7 +32,7 @@ test('painted hubs: 24×16 masks, every walkable tile reachable, NPCs/places/doo
 });
 
 test('every painted hub sells weapons and items and seats Lia at the war table',()=>{
- for(const [id,h] of Object.entries(ART_HUBS)){if(['reed','stonewell','frost','saltport','lamp','moss'].includes(id)){assert.ok(h.npcs.some(n=>n.service==='requests')&&h.places.some(p=>p.interior==='tavern'),`${id}: v2.1 small village — request board and tavern`);continue;}const kinds=new Set([...h.npcs.flatMap(n=>n.services||(n.service?[n.service]:[])),...h.places.filter(p=>['weapon','item'].includes(p.action)).map(p=>p.action)]);
+ for(const [id,h] of Object.entries(ART_HUBS)){if(['reed','stonewell','frost','saltport','lamp','moss','beacon','lionspring'].includes(id)){assert.ok(h.npcs.some(n=>n.service==='requests')&&h.places.some(p=>p.interior==='tavern'),`${id}: v2.1 small village — request board and tavern`);continue;}const kinds=new Set([...h.npcs.flatMap(n=>n.services||(n.service?[n.service]:[])),...h.places.filter(p=>['weapon','item'].includes(p.action)).map(p=>p.action)]);
   assert.ok(kinds.has('weapon')&&kinds.has('item'),`${id} services ${[...kinds]}`);
   assert.ok(h.npcs.some(n=>n.id==='advisor')&&h.npcs.some(n=>n.id==='lia')&&h.npcs.some(n=>n.id==='aren'),`${id} cast`);
   const s=newGame(9,null,id.startsWith('village')?1:id==='camp'?2:id==='bivouac'?4:id==='fortress'?5:6);enterHub(s,{aftermath:id==='oathcamp'||id==='village_raid',story:false});drain(s);

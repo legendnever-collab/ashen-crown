@@ -1,7 +1,7 @@
 // v2.1 주점 「인재 확보」 (D-118, TAVERN_WORLD_DESIGN §4, §7): every town's tavern lists the hires who wait there. A hire is
 // paid once (economy op 'hire') and stays to the ending: they join at the legion's average level −1 (at least 1) and
 // promote at once to that level's tier. The stonewell tavern takes in a wanderer from the ash village after each story win.
-import {MERCS,WANDERERS,WANDERERS_FROST,WANDERERS_LAMP,TAVERN_HUBS,HIRE_LINES} from '../data/mercs-v210.js';
+import {MERCS,WANDERERS,WANDERERS_FROST,WANDERERS_LAMP,WANDERERS_LION,TAVERN_HUBS,HIRE_LINES} from '../data/mercs-v210.js';
 import {heroDef} from '../data/game-data.js';
 import {joinRoster} from './roster.js';
 import {transact,ensureEconomy} from './economy.js';
@@ -12,7 +12,7 @@ export const townOfHub=hub=>Object.entries(TAVERN_HUBS).find(([,hubs])=>hubs.inc
 const storyWins=c=>(c?.completed||[]).filter(id=>id<=30);
 // The wanderers who have moved to stonewell: one per story win after M04 (the village opens with M04), never one hired.
 // v2.4.1: the 등불골 tavern from M16 on takes in 세라, 오린 or 셀린.
-const WANDER_TOWNS={stonewell:[4,WANDERERS],frost:[8,WANDERERS_FROST],lamp:[16,WANDERERS_LAMP]};
+const WANDER_TOWNS={stonewell:[4,WANDERERS],frost:[8,WANDERERS_FROST],lamp:[16,WANDERERS_LAMP],lionspring:[26,WANDERERS_LION]}; // v2.5.1: 사자샘 from M26
 export function wanderersAt(c,town='stonewell'){const [from,list]=WANDER_TOWNS[town]||WANDER_TOWNS.stonewell,after=storyWins(c).filter(id=>id>=from).length,left=list.filter(id=>!c?.roster?.includes(id));return left.slice(0,Math.max(0,after));}
 // v2.3.1 (D-131): the 서리목 tavern takes in 세라 or 오린 (not yet hired) one per story win from M08 on.
 // The hires waiting in this town's tavern (not yet in the legion).

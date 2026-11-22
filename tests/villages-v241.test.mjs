@@ -65,7 +65,7 @@ test('every ACT III request battle is winnable by the test policy; the bounties 
   assert.ok(won,`${id} won within three tries`);}
  const s=camp();const k=s.campaign.completed.filter(id=>id<=30).length;s.economy.requests=[...(s.economy.requests||[]),`bountyCapital:${k}`];travelTo(s,'lamp');
  assert.ok(requestsAt(s,'lamp').find(r=>r.id==='bountyCapital').done);s.campaign.completed.push(20);assert.ok(!requestsAt(s,'lamp').find(r=>r.id==='bountyCapital').done);
- assert.deepEqual(Object.keys(REQUESTS).filter(id=>REQUESTS[id].mission>=131).map(id=>REQUESTS[id].mission),[131,132,133,134,135,136]);
+ assert.deepEqual(Object.keys(REQUESTS).filter(id=>REQUESTS[id].mission>=131&&REQUESTS[id].mission<=136).map(id=>REQUESTS[id].mission),[131,132,133,134,135,136]);
 });
 
 test('art pack K (D-139): 마렌\'s three busts and the two villages come from hash-verified masters, as AVIF',async()=>{

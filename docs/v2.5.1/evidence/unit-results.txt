@@ -1,0 +1,591 @@
+# tests 586
+# pass 570
+# fail 0
+# skipped 16
+# duration_ms 47884.204709
+ok 1 - M01 is 22×16 with the five heroes (v2.1: no officers at the start — tavern hires), the raiders and two villagers
+ok 2 - Dijkstra counts forest as 2 for infantry, 1 for the rogue and riders
+ok 3 - ruins, occupied tiles and the map edge cannot be entered
+ok 4 - free deployment swaps inside the zone; presets give each hero a unique tile
+ok 5 - move once and undo before an irreversible action
+ok 6 - the ratio formula: magic against 마법 방어, steel against 방어, terrain apart; doubling both doubles the blow
+ok 7 - Hawk Eye: Elina shooting from a forest or a roof aims 12 better
+ok 8 - Unstable Mana: at half HP or less fire hits ×1.25 and costs 1 more
+ok 9 - Quick Strike flank needs a teammate on the opposite side
+ok 10 - the counter in the forecast is the defender's own blow, and counters never chain
+ok 11 - healing caps HP, scales with 의지 and gives more EXP for more healing
+ok 12 - growth: two levels add the class growth to the six stats and re-derive the numbers
+ok 13 - rescue requires adjacency and frees the villager's tile
+ok 14 - the northern wave arrives on turn 3 at the sortie's level
+ok 15 - the villagers are safe from attack until turn 6 (v2.0.0: one turn more on the big map)
+ok 16 - Fire Bolt sets grass alight for two turns; fire hurts but never kills
+ok 17 - victory needs both villagers and Garr; a fallen villager is a defeat
+ok 18 - every ACT I preset tile lies inside its mission's deployment zone and on open ground
+ok 19 - difficulty: 어려움 carries one potion and bigger waves (ACT I troops at 보통's numbers, D-116); a change in camp applies at the next battle start, and both saves validate
+ok 20 - 어려움: a wave brings a quarter more (copies, never commanders) and the battle still saves and reloads
+ok 21 - schema 9 → v2.0.0: ACT I parties are the five heroes in the field and the officers earned so far on the bench, sortie limit 5
+ok 22 - schema 8 saves migrate (v2.0.0: the ACT I officers join, no trust yet); round trip holds
+ok 23 - a recruit joins at a level, gets slots and a hub place, and fields only within the sortie limit
+ok 24 - sides: heroes and allied troops are one side; rival enemy factions fight each other unless in truce
+ok 25 - allied troops act first in the enemy phase, hold their post, strike in reach and are targeted by enemies
+ok 26 - ACT II terrain: snow, ice bridge, rooftop high ground, alley — by movement profile
+ok 27 - faction trust: seeded from ACT I, clamped −2…+3, shown as stages, validated
+ok 28 - ACT II hub plan and the west reveal; ACT I hub table unchanged
+ok 29 - every chest in every hub building has a style that fits its room
+ok 30 - recruit definitions are complete and never part of ACT I
+ok 31 - tier 3 heroes and the recruits at tier 2 use their pack F2 busts and sheets; below that the earlier looks
+ok 32 - the elder speaks with the last guardian's face at the keep (M17) and the forest elder's in the forest (M18); the village elder elsewhere
+ok 33 - the M16 duel captain wears the betraying banner's face; the painted hubs and the forest rooms
+ok 34 - an awakened guardian statue is the painted statue figure; sleeping statues and ward trees are painted props
+ok 35 - pack F3: the teacher, the old superior, the rite knight and the ritualist; the circles and the cabinets
+ok 36 - tile walk visits each waypoint, pauses, and never cuts a corner
+ok 37 - walk modes honor speed, instant mode and single tile paths
+ok 38 - weapon presentation is distinct for magic, archer, rogue, knight and bandit
+ok 39 - enemy walk finishes before attack; counter follows the first attack
+ok 40 - Fire Bolt has cast, flight, and explosion, with damage at impact
+ok 41 - heal and level HP are presented without attack or RNG
+ok 42 - weak effects and animation speed shorten presentation without changing event outcome
+ok 43 - move, attack and support highlights use separate vivid colors
+ok 44 - the gear table: 11 tier I, 24 tier II, 14 tier III and 26 treasures (v0.9.0 adds six from the capital and two ACT III treasures; v0.9.1 two more; v0.9.2 two more; v0.9.3 a lance for Thea, a mace for Ines and two treasures; v0.10.0 two treasures; v0.10.1 two more; v0.10.2 two more), named as in the catalog; every new piece has a town
+ok 45 - stars: ★2 of a tier I piece is exactly the old +1 upgrade; 단련 costs 40 then 70 and scales with EXP already earned
+ok 46 - Ironhold castle town: tier I everywhere; weapons after M07, armor after M08, the premium blade from the first visit, elite at Iron Crown trust 2
+ok 47 - Velmar's rare-goods shelf: one specialty of another town at +25%, bought once, turned by the next clear
+ok 48 - revisiting a town: from the M09 camp to Ironhold and back; heroes stay in camp, no council there, the save keeps the visit
+ok 49 - gear grows in battle: strikes for the weapon, blows for the armor; the stars reach the campaign only on a victory
+ok 50 - treasures in battle: Twin Daggers strike again, Shield of Silence stops counters, Mirror Cuirass halves arrows (legendary effects); the Herb Pouch is stats only (v2.0.0)
+ok 51 - treasures: Hawk Feather +1 bow range, Sage Notebook +20% EXP, Charm of Clarity blocks statuses, Lion Epaulette, Alliance Seal, Wind Horseshoe, Reliquary and Mana Ring
+ok 52 - regional gear effects: Lucky Coin crits, Iron Tower Shield, Pilgrim Mantle, Chrism Charm, Knight Lance, Sacred Flame Staff
+ok 53 - hidden objective (M01: TURN 6): a campaign victory wins the Herb Pouch once; a cleared mission can win it in practice once
+ok 54 - hidden objectives read this battle only: M02 capture without a fall gives an Elixir (a full bag gives its 60 Gold)
+ok 55 - every hidden objective reads flags its mission records, and none needs more than the victory allows (M07 ends when 2 wagons pass)
+ok 56 - supply carriers: one per mission, marked on the map; defeating it drops its tool into the bag (none when full)
+ok 57 - cut-ins: a hero critical hit and a ③ skill carry one line; enemies never do
+ok 58 - schema 11: stars, treasure slot, hidden objectives and battle flags round-trip; damaged records are rejected; treasures are never sold or tempered
+ok 59 - a music track reaches the output by two paths: the dry bus and the reverb
+ok 60 - Mute, Music Pause and BGM 0 silence both music paths, the reverb included, at an exact 0
+ok 61 - changing the settings while playing: mute, unmute, BGM 0 and back follow at once
+ok 62 - the default mix is unchanged (dry .225, reverb return .32) and the reverb now follows the BGM level
+ok 63 - Ines awakens after M23, Thea after M24 (Lv 14, tier 2); trials 115 and 116 run under the skirmish rules; Tier 3 keys
+ok 64 - ④ 성역의 문: everyone of the legion's side within 3 takes half until the next player turn and is cured; once a battle
+ok 65 - ④ 철의 돌파: a straight run through foes (no counter), standing on the far tile with three more tiles to move; walls and taken tiles refuse it; once a battle
+ok 66 - awakening conditions: Lv 14, tier 2 and the hero's own mission (Elina M16, Erik M17, Sain M18; v0.9.2 Lia M19, Kai M20); trials 106–109, 114 (v0.10.0: Ines M23 · 115, Thea M24 · 116)
+ok 67 - a won awakening trial makes tier 3 permanent with its bonus; the ④ skill opens
+ok 68 - recruits promote at join level + 5 once ACT II is over: trials 111–113, ① traits
+ok 69 - ④ Blockade: enemies starting inside the cross cannot leave it that enemy phase and are shot when they move; once a battle
+ok 70 - ④ Wall of the Oath: allies within 2 take half (Erik the rest); Erik does not fall below 1 that enemy phase
+ok 71 - ④ Dawn Prayer: the fallen hero of the battle stands up beside Sain at a third of HP
+ok 72 - Black Iron Lancer: a killing Charge leaves Thea the rest of her move; Sword Saint strikes back twice in Riposte; Sanctum Warden reaches 2
+ok 73 - first canonical victory grants base Gold and rescue supplies once; replay and restart isolate assets
+ok 74 - capture and full-rescue unique equipment depend on achieved optional objectives
+ok 75 - full inventory defers rewards without loss; delivery respects capacity and nonce
+ok 76 - legacy schema4 catchup preserves Gold/equipment/growth, marks new items once and migrates nested checkpoints
+ok 77 - pending equipment is delivered once after freeing a slot, retains old equipped gear
+ok 78 - corrupt reward ledger fails validation and failed save preserves durable pre-victory state
+ok 79 - write-then-throw storage failure restores the previous primary envelope
+ok 80 - no two source modules declare the same top-level name
+ok 81 - 01→02→03 legal-rule continuous campaign, two rescues and safe retreat
+ok 82 - capture range and HP threshold, no counterattack, special information reward
+ok 83 - escaped and eliminated targets continue campaign without prisoner flag
+ok 84 - bridge blocks canyon, hero terrain context never uses village map
+ok 85 - bridge requires rescue plus all surviving heroes safely withdrawn
+ok 86 - bridge deadline defeat supports exact checkpoint retry
+ok 87 - actual escort action at turn boundary moves protected civilian
+ok 88 - skip finishes any scene (lines kept in history); active dialogue locks combat; repeated event IDs stay unique
+ok 89 - interrupted dialogue save resumes exact speaker/line and history
+ok 90 - Restart rewinds flags, memory and event triggers, retains viewed dialogue
+ok 91 - practice clear does not inflate permanent heroes, flags or clears
+ok 92 - Erik LV5 appearance changes while legacy stable ID and stats remain valid
+ok 93 - schema1 migration retains all accumulated levels, XP, clears and old checkpoint
+ok 94 - bad scene, impossible tier, invalid mission and story memory are rejected
+ok 95 - audio original scores select expected scenes and fail-soft without AudioContext
+ok 96 - M03 actual protection + two rescue actions unlocks conditional Bond; previous mission memory alone does not
+ok 97 - Tier metadata supports level/class/story triggers and reserves unbuilt Elite art
+ok 98 - level-one practice preserves existing permanent campaign and cannot commit replacement growth
+ok 99 - defeat retry rolls back this battle story consequences while retaining defeat record and viewed history
+ok 100 - only promoted heroes have class actions; tier-1 use is rejected without spending anything
+ok 101 - Bulwark: enemies entering a tile next to Erik stop there (v0.9.3: rogues too, who ignore the zone of control); it lasts until the next Player Phase
+ok 102 - Overwatch: the first enemy step inside Elina's range draws one shot; a hit ends that enemy's move
+ok 103 - Arcane Territory: five-tile cross for three turns, ally MAG +3 / enemy RES −2, extends fire by one turn
+ok 104 - Divine Recall: pulls an ally at distance 2–4 to a free tile next to Sain and heals up to 10
+ok 105 - Shadow Exchange: ally within 3 or adjacent enemy; a swapped enemy cannot counter this Player Phase
+ok 106 - tier-2 skill upgrades: ranged Guard, Lia cost, Sain range 0–3, Elina 2–4 from forest/village, Kai moves after Quick Strike
+ok 107 - enemy planner treats overwatch ranges and runes as danger only when they exist
+ok 108 - every hub talk is an exchange: Erik answers, speakers alternate, no line is said twice in a row
+ok 109 - hub talks change with the story moment (no companion repeats the same talk in two moments)
+ok 110 - townsfolk speak under the name they have in that hub
+ok 111 - staged scenes keep their cast and story keys; hub scenes name the place they are in
+ok 112 - a save paused inside a scene that is now shorter resumes on its last line
+ok 113 - every story mission on 어려움 starts, saves and loads (stage start included)
+ok 114 - 어려움 push by mission (D-129): full in ACT II, none in the M15 chase and the M17/M18 trials, growing in elsewhere
+ok 115 - developer entry point references exist; complete 30-mission story and status taxonomy
+ok 116 - embedded font glyph manifest covers every authored Korean syllable
+ok 117 - Living Frontier required documentation, internal links and release roadmap are consistent
+ok 118 - pack I B–G: 36 duel images, each logged with its master hash, sizes as specified
+ok 119 - every duel event has both sheets, a finisher for each hero and a backdrop for its stage
+ok 120 - zone of control: an enemy that steps beside a hero stops there; without the hero it walks on
+ok 121 - zone of control works both ways: a hero beside an enemy stops; the rogue Kai and civilians pass
+ok 122 - zone of control: units that cannot strike (props, clerks, benched, range 0) hold no ground
+ok 123 - Sain heals anyone: a hero, a civilian, even an enemy — healing a foe earns no EXP or gear EXP
+ok 124 - Purify reaches anyone too; purifying a foe clears it but earns nothing
+ok 125 - Thea has a capital lance (and Ines a capital mace) on the lower-city shelf
+ok 126 - Aren collision, orthogonal path and visited-only Fast Travel survive reload
+ok 127 - Camp layout and dialogue variant retain all five heroes (v2.1: together from the start — no walk-and-talk joining)
+ok 128 - Story modal blocks walking and interactions; battle input cannot move Aren
+ok 129 - Shop buy/sell capacity, insufficient Gold and stale transaction rejection are atomic
+ok 130 - Class compatibility, equip/unequip and two 단련 steps (★2, ★3) apply once without baking growth
+ok 131 - Gear changes actual strike/terrain calculation and movement without changing raw stats
+ok 132 - Three purchased tools work, consume actions, and ward expires after enemy phase
+ok 133 - Unused tool rejects without consuming or acting
+ok 134 - Restart/retry restore departure gear/items/Gold and current attempt consequences
+ok 135 - First clear commits once; stage restart rewinds reward, practice cannot trade or commit
+ok 136 - Schema2 migration grants bounded catchup once and preserves results, bonds and growth
+ok 137 - Malformed assets/duplicate gear/foreign owner/invalid hero/blocked Aren positions rejected
+ok 138 - v2.1: talking to a companion never opens a joining prompt, and a reload keeps the five as they are
+ok 139 - every ordinary building is enterable; chests open once per mission with a seeded reward and survive save/load
+ok 140 - B4: every figure renders in four facings and the walk cycle
+ok 141 - B4: movement direction picks the facing
+ok 142 - B4: units map to distinct looks per mission
+ok 143 - B4: every mission map paints at 48 px per tile
+ok 144 - held input has one immediate step, deterministic delay, release and no frame catch-up
+ok 145 - direction changes, collision, modal and focus clear stop all held sources
+ok 146 - every hero of the legion has a title, three traits, a line, a past, chapters in order and bonds
+ok 147 - chapters open only after their mission, follow the choices, and tell an awakening only once it happened
+ok 148 - the town ☰ opens 장수 정보; the sheet walks ◀ ▶ through the heroes; 열전 tells the story; 성장 leads with the next goal
+ok 149 - the town menu folds behind ☰; the next story step and ☰ stay on the map
+ok 150 - the D-pad is hidden unless turned on, and the floating name tags never show
+ok 151 - W3 table: every ACT I story moment has its hub
+ok 152 - painted hubs: 24×16 masks, every walkable tile reachable, NPCs/places/doors usable
+ok 153 - every painted hub sells weapons and items and seats Lia at the war table
+ok 154 - chest-bearing doors: same building ids and interior kinds as the v0.4 village / Border Camp
+ok 155 - staged scenes use the hub of their moment
+ok 156 - v0.4.0 ACT I complete save (Border Camp) loads into the oath camp, valid and walkable
+ok 157 - a save inside a Border Camp tent keeps the tent when the legion has moved on
+ok 158 - pack E: 102 icons, one per work-order cell, hashes match the import log, 128×128 WebP
+ok 159 - ACT III pack F1: sheet H gives the capital's six tier III pieces and the M15–M16 treasures their painted icons
+ok 160 - ACT III pack F2: sheet I paints the three ④ ultimates, the two v0.9.1 treasures and the basic potion
+ok 161 - ACT III pack F3: sheet J paints Lia's and Kai's ④ and the two v0.9.2 treasures
+ok 162 - pack E covers every hero skill, the four statuses, buffs and the battle commands
+ok 163 - ACT III pack F4: sheet K paints Thea's capital lance, Ines' capital mace and the two v0.9.3 treasures (D-096)
+ok 164 - ACT IV pack G1: sheet L paints Ines's and Thea's ④ and the two v0.10.0 treasures (D-103)
+ok 165 - ACT IV pack G2: sheet M paints Dario's ④, Baldrick's four skills and the two v0.10.1 treasures (D-105)
+ok 166 - ACT IV pack G3: sheet N paints Aren's last order and the two v0.10.2 treasures (D-111)
+ok 167 - pack H1 P/Q (v2.2.0): 14 painted icons, one per work-order cell, hashes match the import log
+ok 168 - All doors share visual tile anchor / front-only approach / solid threshold / exact return
+ok 169 - Existing council API opens briefing and preserves return coordinates; aftermath cannot depart
+ok 170 - Schema5 blocked doors and nested battle checkpoints recover spatial state without changing assets
+ok 171 - Advisor authorization and error-only recovery share council API without remote/aftermath bypass
+ok 172 - fixtures are genuine v0.10.0 schema-16 saves after ACT IV part 1
+ok 173 - the v0.10.0 Ashen Village loads as schema 19 with every asset kept
+ok 174 - ACT IV goes on from the Ashen Village: M25 at the summit field, seven heroes, the three camps
+ok 175 - the v0.10.0 mid-M24 battle reopens in camp (v2.0.0) and is won again
+ok 176 - fixtures are genuine v0.10.1 schema-17 saves after ACT IV part 2, with Baldrick in the legion
+ok 177 - the v0.10.1 oath camp loads as schema 19 with every asset kept
+ok 178 - ACT IV goes on from the oath camp: M27 from the lower city, eight of nine heroes, the banner squads
+ok 179 - the v0.10.1 mid-M26 battle reopens in camp (v2.0.0) and is won again
+ok 180 - fixtures are genuine v0.10.2 schema-18 saves after ACT IV part 3, with the confession told and Baldrick in the legion
+ok 181 - the v0.10.2 lower city loads as schema 19 with every asset kept
+ok 182 - ACT IV goes on from the lower city: M29 at the crown's heart, eight of nine heroes, the rite points on the council path
+ok 183 - the v0.10.2 mid-M28 battle reopens in camp (v2.0.0) and is won again
+ok 184 - fixtures are genuine v0.3.3 schema-6 saves
+ok 185 - every v0.3.3 save loads in v0.4.0, gains the schema-7 fields and round-trips
+ok 186 - M01 village save: same screen, mission and starting purse
+ok 187 - M02 mid-battle save: reopens in camp (v2.0.0); the campaign survives and the battle is won again
+ok 188 - M03 aftermath save: growth, gear, items, gold and story flags kept; the campaign continues into M04
+ok 189 - storage path: a v0.3.3 save in localStorage loads, and the first v0.4.0 save keeps it as backup
+ok 190 - fixtures are genuine v0.4.0 schema-7 saves
+ok 191 - ACT I complete camp loads as schema 8 with every asset kept and promotion state readable
+ok 192 - M05 mid-battle save reopens in camp (v2.0.0) and is won again
+ok 193 - fixtures are genuine v0.5.0 schema-8 saves
+ok 194 - ACT I complete camp (oath chosen, Eric promoted) loads as schema 9 with every asset kept
+ok 195 - a v0.5.0 ACT I save continues into ACT II: Mission 7 in the castle town, trust from the ACT I choices
+ok 196 - M06 mid-battle save reopens in camp (v2.0.0) and is won again
+ok 197 - fixtures are genuine v0.6.0 schema-9 saves
+ok 198 - the v0.6.0 end-of-content camp (canyon bivouac, Thea joined) loads as the current version with every asset kept
+ok 199 - that camp continues to M09 in Velmar with Thea in the town and in the sortie of six
+ok 200 - the v0.6.0 mid-M08 battle reopens in camp (v2.0.0) and is won again
+ok 201 - fixtures are genuine v0.6.1 schema-9 saves
+ok 202 - the v0.6.1 end-of-content camp (Velmar after M10, Thea and Dario joined) loads as the current version with every asset kept
+ok 203 - that camp continues south to M11 in the pilgrim village: the third banner on the map, Thea and Dario in town, Ines waiting
+ok 204 - the v0.6.1 mid-M10 battle (mediation) reopens in camp (v2.0.0) and is won again
+ok 205 - fixtures are genuine v0.7.0 schema-9 saves
+ok 206 - the v0.7.0 end-of-content camp (refugee camp after M12, Ines joined) loads as the current version with every asset kept
+ok 207 - that camp continues to M13 at the refugee camp; Baldrick's resolve starts from the saved choices; the battle is won
+ok 208 - the v0.7.0 mid-M12 battle reopens in camp (v2.0.0) and is won again
+ok 209 - fixtures are genuine v0.7.1 schema-9 saves
+ok 210 - the v0.7.1 end-of-content camp (summit after M14, ACT II complete) loads as schema 10 with every asset kept
+ok 211 - the heroes of that save know their new skills; every tool is on sale; the bag holds eight
+ok 212 - the v0.7.1 mid-M14 battle reopens in camp (v2.0.0) and is won again
+ok 213 - fixtures are genuine v0.8.0 schema-10 saves with a +1 sword
+ok 214 - the v0.8.0 summit camp loads as schema 11: +1 → ★2 with the same stats, a treasure slot for all, every other asset kept
+ok 215 - the same Erik hits as hard as in v0.8.0: ★2 = the old +1
+ok 216 - from the summit camp the legion can revisit the four towns and buy what they now sell
+ok 217 - the v0.8.0 mid-M14 battle reopens in camp (v2.0.0) and is won again
+ok 218 - fixtures are genuine v0.8.1 schema-11 saves with star gear
+ok 219 - the v0.8.1 summit camp loads as schema 13 with every asset kept
+ok 220 - ACT III continues from the summit camp: M15 in the capital, seven heroes, Aren's 「지켜라」, the ACT III card
+ok 221 - the v0.8.1 mid-M14 battle reopens in camp (v2.0.0) and is won again
+ok 222 - fixtures are genuine v0.9.0 schema-12 saves after ACT III part 1
+ok 223 - the v0.9.0 field camp loads as schema 13 with every asset kept
+ok 224 - ACT III goes on from the field camp: M17 at the guardians' keep, seven heroes, 「지켜라」 and 「나아가라」
+ok 225 - the v0.9.0 mid-M16 battle reopens in camp (v2.0.0) and is won again
+ok 226 - fixtures are genuine v0.9.1 schema-13 saves after ACT III part 2
+ok 227 - the v0.9.1 forest village loads as schema 14 with every asset kept
+ok 228 - ACT III goes on from the forest: M19 in the lower city, seven heroes, three orders with 「한 사람도 두고 가지 않는다」 first
+ok 229 - the v0.9.1 mid-M18 battle reopens in camp (v2.0.0) and is won again
+ok 230 - fixtures are genuine v0.9.2 schema-14 saves after ACT III part 3
+ok 231 - the v0.9.2 lower city loads as schema 19 with every asset kept
+ok 232 - ACT III goes on from the lower city: M21 in the crown's heart, seven heroes, three orders; 「함께 정한다」 waits for M21
+ok 233 - the v0.9.2 mid-M20 battle reopens in camp (v2.0.0) and is won again; the win starts the hero records
+ok 234 - fixtures are genuine v0.9.3 schema-15 saves after ACT III
+ok 235 - the v0.9.3 lower city loads as schema 19 with every asset kept
+ok 236 - ACT IV goes on from the lower city: M23 at the alliance camp, seven heroes, the leaders take orders
+ok 237 - the v0.9.3 mid-M22 battle reopens in camp (v2.0.0) and is won again
+ok 238 - fixtures are genuine v1.0.0 schema-19 saves
+ok 239 - the camp before M02 loads as the current schema on the new 28×14 forest road, every asset kept, the start treasures added
+ok 240 - the M05 battle in progress reopens in the camp before M05; the campaign is intact and M05 is won again
+ok 241 - the finished campaign (dawn after M30, ending B) carries over whole: thirty missions, the ending, nine heroes (v2.1: officers are hired in taverns)
+ok 242 - M04 data: authored fortress, objects, presets inside deployment zone, campaign continues past M03
+ok 243 - M04 deployment zone: south rows by default; west drain only after the M02 capture statement
+ok 244 - Search: adjacent only, one action, evidence cannot be attacked or targeted by enemies, searched tile opens
+ok 245 - Torch-bearers burn their unsearched record at turn 8; defeating one protects its record; the ledger never burns
+ok 246 - Boss holds the archive until an ally comes within four tiles, then moves; turn-4 wave arrives once
+ok 247 - Victory needs ledger + boss; defeat after turn 14; flags, rewards and Lia–Kai bond
+ok 248 - Bond needs both Lia and Kai searching in this battle; practice never grants it
+ok 249 - M04 saves: mid-battle round trip, burned state, restart to stage start, schema6 import gains choices
+ok 250 - Supplemental reward definitions are stable and unique; M01–03 rewards unchanged
+ok 251 - M01–03 never expose Search; M03 victory now continues to M04
+ok 252 - M05 data: 28×16 ridge map (v2.0.0), presets inside the deployment zone, two wagons, M04 continues to M05
+ok 253 - M05 wagons cannot be rescued and are never attackable by heroes
+ok 254 - M05 lion formation: bearer-adjacent soldiers get DEF +2 and HIT +10; aura ends with the bearers
+ok 255 - M05 lion charge: ×1.3 against an isolated hero (v2.0.0 ratio formula), none when a comrade is adjacent or Erik guards
+ok 256 - M05 Baldrick never falls below half HP and withdraws once both bearers are down (victory A)
+ok 257 - M05 holding the road through TURN 10 wins (victory B); losing both wagons is defeat
+ok 258 - M05 AI: Baldrick stays within two tiles of a living bearer; cavalry rides for the wagons
+ok 259 - M05 threats mark isolated heroes in Baldrick reach; aura cells surround living bearers
+ok 260 - M05 Elina–Sain bond: Sain heals Elina and Elina fells a foe next to Sain
+ok 261 - M05 rewards are stable ledger entries and saves round-trip mid-battle
+ok 262 - M06 data: 24×20 besieged village (v2.0.0), presets in the deployment zone, four refugees (two injured), locked seal stones, M05 → M06, last mission
+ok 263 - M06 escort: an escorted refugee walks two tiles toward the gate; an injured one waits for Sain, who can heal refugees here; no instant rescue
+ok 264 - M06 phase 2 opens at TURN 5; Lia unseals a stone in one action, others need two; the lever opens the side gate
+ok 265 - M06 phase 3: Oath Banner gives MOV +1 near Erik, the executor moves, the garrison arrives only while the beacon burns
+ok 266 - M06 outcomes: victory needs phase 3 and one refugee through; the gate seals after TURN 11; losing every refugee is defeat
+ok 267 - M06 records choice: a reported ledger brings the inspector and the matching briefing line
+ok 268 - M06 AI: seal guards hold their posts beside the stones (v2.2.1 D-126: MOV 0), the beacon never moves, pursuers chase refugees
+ok 269 - M06 rewards and saves: stable ledger ids, optional boots/gold, mid-battle round trip
+ok 270 - M07 data (v2.3.0 big map): 30×14 snowy valley, six-hero sortie, level 8, three wagons, Thea and two Iron Crown soldiers as allies, 16 deserters + 6
+ok 271 - M06 → M07: the legion marches to the castle town below Ironhold with the ACT II card; trust starts from ACT I
+ok 272 - convoy (v2.3.0): along the road toward the north-east gate, two tiles a turn, one with an enemy beside a wagon, a blocked wagon steps across or waits, through at the gate
+ok 273 - victory, defeat, capture: two wagons through wins; two lost loses; the captain can be taken alive below half HP
+ok 274 - Thea's escort keeps beside the nearest wagon and never parks on the road ahead of it
+ok 275 - camp choice after a capture: handing over raises Iron Crown trust; taking them along does not; the victory with the escort alive raises it once
+ok 276 - M07 save round trip mid-battle and practice replays leave trust alone
+ok 277 - Thea's Charge: ×1.25, and after a 3-tile run ×1.45 with no counterattack (v2.0.0 multipliers; ACT I heroes unchanged)
+ok 278 - M08 data (v2.3.0 big map): 22×20, north canyon and the rear village to the south, six-hero sortie, level 9, Baldrick and two soldiers on the upper choke, two rockfall devices on the cliff ledges, three villagers, 12 + 14 mercenaries
+ok 279 - command order: chosen once before battle; obeying raises Iron Crown trust; the rescue squad does not
+ok 280 - hold: villagers cannot be rescued and leave on TURN 6; rescue: they can be rescued and the raiders come for them
+ok 281 - rockfall: one use per device, damage to enemies in its zone only, allies untouched
+ok 282 - Baldrick holds at half HP; a northern mercenary past row 12 is a breach; the captain falling or TURN 10 wins
+ok 283 - Thea joins after the canyon when the Iron Crown trusts the legion and the deserters were not handed over
+ok 284 - M07 → M08 → camp: nextMission chain, M08 save round trip, practice changes nothing
+ok 285 - M09 data (v2.3.0 big map): 26×20 Velmar from the south-west docks to the council hall north-east, six-hero sortie, level 9, three delegates, Dario and two harbour guards as allies, rooftops, 15 + 8
+ok 286 - M08 → M09: the legion reaches Velmar; Thea stands in the town only when she joined the legion
+ok 287 - delegates: a hero beside one brings them into the hall; assassins hunt delegates over the rooftops
+ok 288 - outcome: two delegates lost is a defeat; the leader captured below half HP wins; holding to the turn limit (v2.3.0: TURN 12) wins
+ok 289 - Free Lords trust: every delegate safe +1; a lost delegate leaves it; the captured leader opens the ledger scene; practice changes nothing
+ok 290 - M09 save round trip mid-battle keeps the allies and the mission state
+ok 291 - M10 data (v2.3.0 big map): 30×18, the legion from the west, the village between Oswin's fort (north) and Brennan's (south), level 10, two armies of twelve with factions (+4 each in waves), three villagers, Dario as ally
+ok 292 - stance: chosen once before battle; support turns that lord's army into allies (waves too) and the save stays valid
+ok 293 - mediation: the two armies are hostile to each other; a captured lord's army stands down; both captured = truce and victory
+ok 294 - mediation fails when a lord falls; the fight still ends when both are down; turn limit is a defeat
+ok 295 - support: the supported lord does not fall below half HP; the rival lord down wins
+ok 296 - Free Lords trust and Dario: a side +1, a truce +2, a failed mediation 0; Dario joins with trust ≥ 1 or a truce
+ok 297 - Dario's Riposte: counters ×1.25, ×1.5 after the skill until the next player phase; the skill itself ×1.15 (v2.0.0 multipliers)
+ok 298 - M11 data: 24×20 mountain switchback (v2.3.1), six-hero sortie, level 10, four pilgrims on the road, five braziers, Ines and two flame knights
+ok 299 - M10 → M11: the legion goes south to the pilgrim village; recruits stand there only when they joined
+ok 300 - light: sanctuary tiles are lit, the road is dark until a brazier burns; a lit brazier lights radius 2
+ok 301 - light: a legion attacker in light aims +10; any target outside the light is −15 (floor 40)
+ok 302 - march: from TURN 2 pilgrims walk the road — 1 tile in the dark, 2 in light, none with an enemy beside them, a hero blocks
+ok 303 - pilgrims in light heal 5 at the start of the player phase; braziers stay lit; the sanctuary takes them in
+ok 304 - M11 outcome: three pilgrims in the sanctuary win; two lost lose; dawn (after TURN 14) wins; rescue is not an action here
+ok 305 - Sanctuary: legion units beside Ines (the escort or the recruit) are covered (cut 2 → ×0.85, 4 after her oath → ×0.7; her too)
+ok 306 - M11 victory: the Order is met; every pilgrim through raises its trust; Lucien's offer (oath +1) is chosen once in the camp
+ok 307 - M11 saves round-trip mid battle with lit braziers and walking pilgrims
+ok 308 - M12 data: 24×20 monastery (v2.3.1), level 11, fourteen quiet guards with a turning order, the abbot, three records, a dormitory wave of five on the bell
+ok 309 - watch: two tiles ahead and the two diagonals ahead, walls block; three ahead once suspicious; awake guards watch nothing
+ok 310 - seen: a hero in a watched tile when the enemy phase starts raises suspicion; a second sighting rings the bell
+ok 311 - guards turn in their order each enemy phase while quiet and hold their place
+ok 312 - sneak: a quiet guard struck from outside its watch takes ×1.3 and is hit +30; one blow is silent, a surviving guard rings the bell
+ok 313 - the bell: three turns later the abbot burns every record not yet secured; a burned ledger is a defeat; securing it first is quiet
+ok 314 - the abbot can be taken alive below half HP; capture stops the burning
+ok 315 - records choice: return +1 / take −1 / copy only after Lia and Kai each secured a record; Ines joins when the Order trusts the legion or the copy
+ok 316 - Ines in the legion: Lv 10, Sanctuary Oath skill sets her oath until the next player phase; she stands at the camp fire
+ok 317 - M12 saves round-trip mid battle after the bell
+ok 318 - M13 data: 28×18 refugee camp (v2.3.1), level 11, Baldrick with three lion bearers, four refugees, resolve threshold 6; story keys
+ok 319 - resolve carried in: M05 "구해 주신 목숨입니다" +1, M08 hold +1, Iron Crown trust ≥ 2 +1
+ok 320 - persuade: Erik beside Baldrick once a turn, Thea once in the battle; no one else; it is an action
+ok 321 - calm turns: from TURN 4 an enemy phase with no refugee hurt adds 1, at most 2
+ok 322 - resolve 6 halts the army (victory, Iron Crown trust −1); Baldrick never falls below half
+ok 323 - formation broken + Baldrick at half wins only from TURN 5; holding to TURN 12 wins; two refugees lost lose
+ok 324 - M13 saves round-trip mid battle
+ok 325 - M14 data: 24×18 old town (v2.3.1), level 12, three leaders and six guards as allies, masked raiders, exit row 13, betrayal on TURN 4; ACT II ends here
+ok 326 - the betrayer is the banner with the lowest trust; ties go Iron Crown → Free Lords → Sacred Flame
+ok 327 - TURN 4: the betraying leader leaves, its guards turn on the legion; masked raiders and the turncoats do not fight each other
+ok 328 - each banner can be the one that turns: its leader leaves and its guards attack
+ok 329 - leaders walk south and leave by the exit row; two loyal leaders out win; a loyal leader down after the betrayal loses
+ok 330 - after the summit: the betrayer −1, the others +1; its recruit stays when they fought there, otherwise leaves (kept aside)
+ok 331 - M15 data: 28×20 upper city (v2.4.0 big map), level 13, sortie of seven, three clerks with their own gates, the watch and the archivist as civilians
+ok 332 - clerks run from TURN 1, two tiles a turn, toward their own gate; one that reaches it is gone with its box
+ok 333 - a clerk knocked down secures its box; three resolved with two boxes is a victory; two escaped is a defeat
+ok 334 - a hero strike that drops a clerk secures the box (afterDamage)
+ok 335 - the watch: fighting within two tiles warns once, the second time it turns hostile; far from it nothing happens
+ok 336 - grey cloaks hunt the archivist from TURN 3; the archivist down is a defeat
+ok 337 - Aren's command 「지켜라」: on by default in ACT III, DEF +2 on turns 1–2 only, can be dropped before battle; never in M14
+ok 338 - victory records boxes and the watch; the camp chooses what to do with the records (once); the capital hub and its scenes
+ok 339 - chests open in the capital (M15) and in later-mission hubs; each opens once
+ok 340 - M16 data: 30×18 field in fog (v2.4.0 big map), level 14, sortie of seven, two harvesters by their stones, four stones, three possible returners
+ok 341 - who returns: a recruit kept aside after M14, and Ines when she never joined; nobody already in the legion
+ok 342 - fog: bows and spells reach one tile less (not on cleared tiles, not with the Mist Lantern); far enemies are hidden
+ok 343 - harvest: a harvester beside an unsearched stone drains MP near it; searching the stone clears the fog and stops it
+ok 344 - the duel opens from TURN 3 when Erik stands beside the captain (v2.1 event), pauses the battle; v2.2: Erik always wins, gains a level and the captain leaves the field (struck down, D-124); it survives a save
+ok 345 - returners appear on TURN 2; alive at the victory they rejoin with their own record and their banner trusts the legion more
+ok 346 - a returner who falls does not come back this time
+ok 347 - M17 data: 26×22 keep (v2.4.0 big map), level 14, sortie of seven, six sleeping statues, two archive tiles, TURN 10
+ok 348 - an oath beside a statue wakes it for the legion; it fights as an ally with the guardian numbers
+ok 349 - an enemy left beside a sleeping statue at the start of a turn wakes it for the chancellery (a hero beside it prevents that)
+ok 350 - the archive: an enemy on it after two enemy phases in a row is a defeat; driven off in between, the count resets
+ok 351 - victory: hold to the end of TURN 10, or bring down the captain; flags, the camp choice (once) and Erik's word
+ok 352 - Aren's 「나아가라」 opens in M17: MOV +1 on turn 1 only, the newest command is the default; never before M17
+ok 353 - M18 data: 26×22 forest in rain (v2.4.0 big map), level 15, sortie of seven, three ward trees, eight forest-keepers, the ward at its heart
+ok 354 - the betraying banner's loggers wear that banner's look; trees are allied props that never move or strike back
+ok 355 - rain halves fire and nothing catches fire; inside the ward fire does nothing and Sain heals 50% more
+ok 356 - loggers go for the ward trees; two trees felled is a defeat
+ok 357 - forest-keepers led inside count; victory with every tree and keeper is the hidden objective; the camp choice (once)
+ok 358 - M19 data: 28×20 rite vault (v2.4.1 big map), level 16, sortie of seven, four circles each with a captive, the teacher on the dais, TURN 14
+ok 359 - from TURN 3 a lit circle with a ritualist near takes one memory a turn; Lia within 2 or her runes stall it; at 0 the captive forgets
+ok 360 - a hero beside a circle breaks its seal (봉인 해제) unless a ritualist stands beside it; four seals broken win the battle
+ok 361 - M19 rewards, feat, supply carrier; the teacher choice is fixed once made; 「한 사람도 두고 가지 않는다」 is the default order
+ok 362 - M20 data: 28×22 archive and lower city (v2.4.1 big map), level 16, sortie of seven, four cabinets, eight residents in houses, fire plan, TURN 13
+ok 363 - the fire starts in two houses, spreads through the houses it touches each turn and leaps on set turns; residents in it are hurt
+ok 364 - clerks light a cabinet from TURN 3; it burns at the end of the next enemy phase unless searched first; two burned lose
+ok 365 - two cabinets searched and four residents evacuated win; three residents lost lose; rescued residents leave the board
+ok 366 - Kai's old superior challenges him at TURN 2; M20 rewards, feat, carrier and the two camp choices (superior, then the plan)
+ok 367 - M21 data: 24×24 crown's heart (v2.4.1 big map), level 17, sortie of seven, the king on the dais, four anchor stones, TURN 12; scenes
+ok 368 - the king cannot be rescued or moved; Erik is challenged on TURN 2
+ok 369 - anchor stones: Erik breaks one at one blow and the king gets 10 HP; Elina needs two
+ok 370 - the ward pulse: the outer ring on odd turns, the inner on even turns; ending the player phase there costs 3 MP
+ok 371 - rite knights go for the king; the king falling is a defeat
+ok 372 - victory by the four stones, or by holding the king to the end of TURN 12
+ok 373 - after M21: Aren awakens (「함께 정한다」 from then on), the king's request is fixed once chosen; reward, feat, save
+ok 374 - 「함께 정한다」: only after Aren's awakening, once a battle, a hero who has acted moves and acts again
+ok 375 - M22 data: 28×22 square (v2.4.1 big map), level 17, sortie of seven, three heralds on three daises, four readings from TURN 2, TURN 12; scenes
+ok 376 - readings: once a turn from TURN 2; quiet turns finish all three on TURN 5 — victory
+ok 377 - a herald hurt since the last turn start loses that turn; a hero on a fallen herald's dais reads instead
+ok 378 - two heralds down is a defeat; TURN 12 without the readings is a defeat
+ok 379 - banners at the 「동맹」 stage (not the betrayer) send two knights on TURN 2; recruits still away come back on TURN 3 and rejoin
+ok 380 - after M22: the ACT III choice moves two banners, fixed once chosen, never in practice; reward, feat, records, save
+ok 381 - hero records: kills, rescues and heals are tallied in battle and kept on a win; the signature deed
+ok 382 - M23 data: 26×20 alliance camp (v2.5.0 big map), level 18, sortie of seven, TURN 10; three tents, three orderable leaders and guards; scenes
+ok 383 - an enemy that ends two enemy phases in a row beside a tent takes it; one that steps away clears the mark
+ok 384 - two tents taken is a defeat; the raid captain falling is a victory; TURN 10 ending is a victory
+ok 385 - a fallen leader costs their banner one trust on a win (never the battle); the reward and the feat follow the leaders
+ok 386 - allied orders: tap an orderable allied unit in the player phase — 따르라 keeps beside the nearest hero, 지켜라 holds its tile; saved and checked
+ok 387 - who leads the final campaign: once, after M23, never in practice; the camp scene follows
+ok 388 - M24 data: 20×24 border (v2.5.0 big map), a wall on row 18 with a two-tile gate, the pass above under the ash when the tide starts, eight refugees outside, the winch inside, level 18, TURN 10; scenes
+ok 389 - the ash tide: the pass is under it from TURN 2, then a row a turn; 10% of max HP at the end of the player phase on ash — never felling a hero; the beasts are at home
+ok 390 - the refugees walk two tiles a turn around whoever stands in the way; inside at row 19; the winch opens at six
+ok 391 - closing the gate at the winch wins at once; whoever is outside stays outside; flags for the epilogue
+ok 392 - three refugees down is a defeat; at the end of TURN 10 the gate shuts by itself — six inside wins, fewer loses
+ok 393 - rewards, the feat, a mid-battle save with the ash and the walkers
+ok 394 - M25 data: 30×20 summit field (v2.5.0 big map), level 19, sortie of seven, TURN 12; a north camp of hardliners, west and east camps with a leader each; scenes
+ok 395 - the camps follow the M14 betrayer; a banner at trust 3 fights beside the legion (orders), the other stands neutral
+ok 396 - the captain falling with both leaders standing wins; a leader falling or TURN 12 ending loses
+ok 397 - forgive or lower the betrayed banner: once, after the win; trust moves; rewards and the feat
+ok 398 - M26 data: 22×24 lion's pass (v2.5.0 big map), level 19, sortie of seven, TURN 12; Baldrick with two bearers; duel on TURN 2; scenes
+ok 399 - v2.2 (D-124): the won duel ends it — Baldrick lays down his sword at once and joins when he halted at M13
+ok 400 - without a duel, persuasion still adds up: Erik (once a turn) and Thea (once) add one; at four he yields
+ok 401 - without the M13 halt he rides beside the legion (Iron Crown +1); broken at half HP with both bearers down from TURN 4 he withdraws; Erik falling loses
+ok 402 - Baldrick in the legion: four skills open, Lion Strike takes no counter, Lion's Roar binds, Lion Banner −4, The Black Lion's Resolve once
+ok 403 - Dario awakens after M25 (trial 117) with A Hundred Counters: every blow answered, at any range, +30%
+ok 404 - M27 data: 32×22 royal gate (v2.5.1 big map: the ram road up the west, the ladders over the east field), level 20, sortie of eight, TURN 14; ram, two gate leaves, three ladders; scenes
+ok 405 - banners at trust 2 or more send squads (orderable); Baldrick rides along only after an M26 「협력」; the others stay off the field
+ok 406 - the ram rolls only with an escort, two tiles (one when pressed), never through a unit; three blows break the gate; the ram is not healed
+ok 407 - a hero ending the player phase on a section takes it; the gate broken with two sections wins; the ram destroyed or TURN 14 loses
+ok 408 - rewards, the hidden objective (all three sections) and its treasure
+ok 409 - M28 data: 26×22 palace (v2.5.1 big map: the great hall and three wings), level 20, sortie of eight, TURN 14; thirteen remnants (the cap), three fragments, young Aren; scenes tell the night
+ok 410 - a struck-down remnant stands again at its post three turns later; reading a fragment releases the remnants beside it for good
+ok 411 - three fragments in any order, then two enemy phases end the night (victory); Erik falling loses; the memory closes after TURN 14
+ok 412 - Aren's confession after the win (to all / to Erik alone), once; rewards and the hidden objective
+ok 413 - 「끝까지 함께」: from M28, once a battle, a fallen hero stands with 1 HP at the next player phase; never in practice or before M28
+ok 414 - M29 data: 26×24 crown heart (v2.5.1 big map), level 21, sortie of eight, TURN 14; Bellard, three rite points, scenes and talks
+ok 415 - the rite points stand where the M22 path puts them; squads at trust 2+, Baldrick after 「협력」; a rite point is not healed but mends beside a hero
+ok 416 - Bellard rises once with the crown's power; his second fall with two rite points standing wins; two broken lose; TURN 14 loses
+ok 417 - TURN 2: the duel with Bellard, or Aren's last words (skip) — the crown then answers him less and his own offer opens
+ok 418 - rewards, the hidden objective (all three rite points) and its treasure
+ok 419 - M30 data: 30×18 courtyard at dawn (v2.5.1 big map, five breaches), level 21, sortie of eight, hold to TURN 8; the heart stone, all three banners; scenes
+ok 420 - hold until the end of TURN 8 (victory, ACT IV complete); the heart broken loses
+ok 421 - which endings open: the M22 path always; the others by trust 2+ and one choice; at least one
+ok 422 - the ending is chosen once, after M30, among the open ones; it is kept in the save; the camp stays open
+ok 423 - the epilogue: every hero in the legion (3–5 lines), Aren, the king, Bellard by his fate, Baldrick when he did not join, the three leaders
+ok 424 - character names contain no Latin letters
+ok 425 - a save made with English names is renamed on load
+ok 426 - rogues: MOV 4 (was 5); still cost 1 on every terrain and free of zones of control
+ok 427 - heals restore half of the old amount, at least 1
+ok 428 - M06: the four royal seal guards hold their posts; enemy strength retuned for M03, M04, M06, M15 and M17
+ok 429 - command list sits directly beside the unit, right side first, vertically centred
+ok 430 - flips to the left near the right edge and never covers the unit
+ok 431 - clamped inside the field on phone sizes and map edges
+ok 432 - prefers a beside-the-unit slot that leaves a legal target visible
+ok 433 - painted portraits: 28 WebP files match the pack manifest and cover every id/expression
+ok 434 - art packs: 21 + 36 (v0.4.0), 25 tier-2 (v0.5.0) and 25 ACT II (v0.6.0 pack B), 18 ACT II part 2 (v0.9.1 pack D), 12 ACT III (v0.9.1 pack F1), 47 ACT III part 2 (pack F2), 22 ACT III part 3 (pack F3), 5 ACT III part 4 (pack F4: the last king), 10 ACT IV part 1 (pack G1: Ines and Thea awakened) and 5 ACT IV part 2 (pack G2: Dario awakened) and 24 class sheets (v2.1.0 pack H1 A–C) and 5 (v2.3.1 pack J A/C: 군나르, the wolf) and 3 (v2.4.1 pack K A: 마렌) and 3 (v2.5.1 pack L A: 루카) assets imported from hash-verified PNG masters
+ok 435 - shipped painted art equals the hash-verified imports (busts, sheets, hubs, world map, icons)
+ok 436 - every score is original notation with whole bars; Phase F adds five variations
+ok 437 - music follows the hub, the world map, the promotion rite and trials
+ok 438 - promotion actions emit a class flourish that leads the moves it causes
+ok 439 - ACT I tier-1 play emits no class flourish
+ok 440 - v0.6.1 ACT II music: the castle town marches, Velmar has its square, the two lords' field its own battle theme
+ok 441 - v0.7.0 music: the pilgrim village and the night procession share the flame hymn; the monastery stays silent until the bell
+ok 442 - every hero has a tier-1 class matching its current class name and one tier-2 promotion with a new action (v0.9.1: Erik, Elina and Sain also awaken to tier 3; v0.9.2: Lia and Kai)
+ok 443 - potential steps unlock in order and read existing tactical memory retroactively
+ok 444 - proficiency stars follow 1/4/9/16/25 and give no combat bonus before promotion
+ok 445 - promotion needs ACT I, the level and full potential; it applies once and is recorded
+ok 446 - tier-2 class traits: Kai MOV +1, Elina ranger crosses forest at cost 1, Erik grows by the stats (v2.0.0)
+ok 447 - skill use and Lia kills are remembered (memory only, outside practice)
+ok 448 - schema 7 saves migrate to 8: heroes read as tier 1 and an empty promotion ledger; current saves round-trip
+ok 449 - promoted heroes resolve to the tier-2 painted look; tier 1 keeps the original (incl. Erik Mantle)
+ok 450 - NPC dialogue preserves Erik, NPC map coordinates and save position
+ok 451 - Independent shop interiors require doorway and owner approach, preserve return on reload
+ok 452 - Buy and equip is one atomic nonce-confirmed action with accurate combat stats
+ok 453 - Class move and future mounted extension respect all terrain profiles
+ok 454 - Reachable path may cross allies but cannot stop on ally/enemy or impassable tiles
+ok 455 - Rectangular map dimensions and safe camera boundaries are independent
+ok 456 - schema3 migration changes only class MOV while retaining growth/assets/flags/checkpoint
+ok 457 - ACT II–IV big maps (M07–M30): every unit starts on its own passable tile
+ok 458 - restart restores custom formation, resources, RNG and pre-stage growth
+ok 459 - restart removes current victory and retains earlier campaign history and growth
+ok 460 - defeat restart revives civilian and restores mission objectives without defeat record
+ok 461 - repeat resets do not nest snapshots or change deterministic combat outcomes
+ok 462 - legacy save without snapshot uses permanent growth and recommended deployment safely
+ok 463 - corrupt or nested stage checkpoint is rejected without touching live state
+ok 464 - 47 of the 48 painted rooms are used (15 by the ACT I hubs: the v2.1.0 village tavern (pack H1 F) replaces the militia barracks, which is kept but no building opens it any more; 20 by the ACT II towns incl. art pack D, 6 by the capital from pack F1, 6 by the forest village from pack F2), each with a 12×8 mask
+ok 465 - masks: doorway and spawn walkable, every floor tile reachable, chests solid and reachable, shopkeeper within reach
+ok 466 - walking: enter the triage tent, open both chests by walking, leave through the doorway; save round trip in the room
+ok 467 - night hubs dim the same room; a v0.5 save standing on an old template tile is moved to the room entrance
+ok 468 - shipped room and chest WebPs equal the hash-verified import log
+ok 469 - v2.2.0 (art pack I part A): the village tavern keeps its keeper behind the bar and its chests where the painting leaves floor
+ok 470 - map is 12×10 with five heroes, five enemies, two civilians # SKIP superseded by v2.0.0 (D-115): pinned on the old 12×10 M01 map and the flat formula; re-pinned on the 22×16 map and the ratio formula in tests/act1-v200.test.mjs
+ok 471 - Dijkstra counts forest costs and Kai terrain exception # SKIP superseded by v2.0.0 (D-115): pinned on the old 12×10 M01 map and the flat formula; re-pinned on the 22×16 map and the ratio formula in tests/act1-v200.test.mjs
+ok 472 - ruins and occupied tiles cannot be crossed # SKIP superseded by v2.0.0 (D-115): pinned on the old 12×10 M01 map and the flat formula; re-pinned on the 22×16 map and the ratio formula in tests/act1-v200.test.mjs
+ok 473 - movement path stays orthogonal, passable and within budget
+ok 474 - free deployment swaps without changing hero data
+ok 475 - presets contain unique valid deployment tiles # SKIP superseded by v2.0.0 (D-115): pinned on the old 12×10 M01 map and the flat formula; re-pinned on the 22×16 map and the ratio formula in tests/act1-v200.test.mjs
+ok 476 - move once and undo before irreversible action # SKIP superseded by v2.0.0 (D-115): pinned on the old 12×10 M01 map and the flat formula; re-pinned on the 22×16 map and the ratio formula in tests/act1-v200.test.mjs
+ok 477 - archer has a dead zone; magic extends range
+ok 478 - physical defense, magic resistance and terrain modifiers are independent # SKIP superseded by v2.0.0 (D-115): pinned on the old 12×10 M01 map and the flat formula; re-pinned on the 22×16 map and the ratio formula in tests/act1-v200.test.mjs
+ok 479 - class terrain aptitude: rogue and cavalry cross forest/desert normally, infantry pays more
+ok 480 - Hawk Eye gives forest shooting accuracy bonus # SKIP superseded by v2.0.0 (D-115): pinned on the old 12×10 M01 map and the flat formula; re-pinned on the 22×16 map and the ratio formula in tests/act1-v200.test.mjs
+ok 481 - Unstable Mana increases damage and MP expense at low HP # SKIP superseded by v2.0.0 (D-115): pinned on the old 12×10 M01 map and the flat formula; re-pinned on the 22×16 map and the ratio formula in tests/act1-v200.test.mjs
+ok 482 - Quick Strike flank requires opposite adjacent teammate # SKIP superseded by v2.0.0 (D-115): pinned on the old 12×10 M01 map and the flat formula; re-pinned on the 22×16 map and the ratio formula in tests/act1-v200.test.mjs
+ok 483 - counterattack cannot chain; preview agrees with noncritical attack # SKIP superseded by v2.0.0 (D-115): pinned on the old 12×10 M01 map and the flat formula; re-pinned on the 22×16 map and the ratio formula in tests/act1-v200.test.mjs
+ok 484 - out-of-range attack and insufficient MP do not consume actions
+ok 485 - healing caps HP, Gentle Hands splashes, every heal gives XP scaled by amount # SKIP superseded by v2.0.0 (D-115): pinned on the old 12×10 M01 map and the flat formula; re-pinned on the 22×16 map and the ratio formula in tests/act1-v200.test.mjs
+ok 486 - level-up restores HP and MP fully
+ok 487 - Guard is a self stance: usable with no ally or enemy nearby, DEF +3, intercepts the first melee attack on an adjacent ally
+ok 488 - Guard does not intercept ranged attacks or after moving apart
+ok 489 - Indomitable Will reduces incoming damage below 30%
+ok 490 - Seeded RNG and battle reproduce exactly
+ok 491 - fixed growth records multiple levels and skill resources # SKIP superseded by v2.0.0 (D-115): pinned on the old 12×10 M01 map and the flat formula; re-pinned on the 22×16 map and the ratio formula in tests/act1-v200.test.mjs
+ok 492 - potential clue records only once
+ok 493 - rescue requires adjacency and removes civilian occupancy # SKIP superseded by v2.0.0 (D-115): pinned on the old 12×10 M01 map and the flat formula; re-pinned on the 22×16 map and the ratio formula in tests/act1-v200.test.mjs
+ok 494 - reinforcement telegraph, then two enemies with response opportunity # SKIP superseded by v2.0.0 (D-115): pinned on the old 12×10 M01 map and the flat formula; re-pinned on the 22×16 map and the ratio formula in tests/act1-v200.test.mjs
+ok 495 - civilian protection window prevents AI targeting before turn 5 # SKIP superseded by v2.0.0 (D-115): pinned on the old 12×10 M01 map and the flat formula; re-pinned on the 22×16 map and the ratio formula in tests/act1-v200.test.mjs
+ok 496 - AI destination is reachable and target is in actual attack range
+ok 497 - victory needs both rescue and boss; other enemies optional
+ok 498 - dead civilian and party wipe are explicit defeats; no negative HP
+ok 499 - Shadow Step grants next-turn movement only when not hit
+ok 500 - save restores battle phase, undo, current HP, growth and RNG
+ok 501 - enemy-phase save resumes deterministically at AI cursor
+ok 502 - save corruption safely falls back to last good snapshot
+ok 503 - save failure surfaced, invalid import rejected without mutating state
+ok 504 - duplicate tiles, invalid unit stats, missing hero, future schema rejected
+ok 505 - migration entry point accepts schema 0 and reset removes both saves
+ok 506 - victory replay keeps permanent growth, defeat replay rolls back battle gains
+ok 507 - Fire Bolt ignites burnable ground for two turns; fire hurts but never kills; swamp halves fire # SKIP superseded by v2.0.0 (D-115): pinned on the old 12×10 M01 map and the flat formula; re-pinned on the 22×16 map and the ratio formula in tests/act1-v200.test.mjs
+ok 508 - ordinary attacks rarely miss and crits stay rare (3–12%) at x1.5
+ok 509 - Lia and Kai awaken after their own mission: 결계술사 (Little Ward) after M19, 그림자 군주 (Shadow Dance) after M20; trials 109 and 114
+ok 510 - Little Ward: a 3×3 within 4 of Lia for two turns — enemies inside are pushed out, none can step in, the legion inside has RES +5; once a battle
+ok 511 - Shadow Dance: two units within 4 of Kai trade places (two taps: "a|b"); a moved enemy cannot act in the next enemy phase
+ok 512 - 「한 사람도 두고 가지 않는다」 opens at M19 (the newest order): civilians and allied units take 30% less; heroes do not
+ok 513 - grey cloaks in the shadows: the first blow shows 0% and misses, then they stand in the open
+ok 514 - the size budget: ok up to 80 MiB, warn above, fail above 90 MiB
+ok 515 - the six painting folders are AVIF (the 24 magenta-marked class sheets and the wolf sheet stay WebP); every file matches its conversion record, at least the SSIM floor
+ok 516 - the AVIF notice: browsers that cannot open AVIF are told why the paintings are missing
+ok 517 - releases/ARCHIVE.json lists every earlier build with hashes; the files still here have the recorded sizes
+ok 518 - D-134 (v2.4.0): the builds released on GitHub are out of the tree and their fetched copies are ignored
+ok 519 - skirmishes are outside the campaign: LAST_MISSION is the last story mission (30 in v1.0.0), ids 101–117 are flagged
+ok 520 - the rite opens only in the ACT I camp after the Ashen Oath; trials need the promotion conditions
+ok 521 - a trial battle: hero provisionally promoted, others in reserve, not practice, saves round-trip
+ok 522 - winning a trial promotes for good without touching completed missions or gold
+ok 523 - losing a trial changes nothing: the pre-battle campaign comes back
+ok 524 - Legion Drill: five heroes, permanent EXP and memory, counted; repeatable
+ok 525 - sortie: Erik is locked in, at least one hero goes, reserve heroes return to a free deployment tile
+ok 526 - sortie: reserve heroes take no part in battle, saves keep the choice, the victory flag ignores them
+ok 527 - the bases are fitted: today's heroes keep their Lv 1 numbers (Erik HP 42 / ATK 15 / DEF 8, Lia MAG 18)
+ok 528 - growth: one level adds the class growth (heroes ×1.15) and re-derives; promotion adds +2/+3 to the main stats, +1 to the rest
+ok 529 - enemy level: sortie average + rank (+3 boss, +2 elite) + the mission's share; never below the authored level − 2; hard adds 1 (from a Lv 19 sortie)
+ok 530 - 어려움 grows in with the legion: no stat push through ACT I (below a Lv 11 sortie), full +1 level and ×1.1 from Lv 19; 보통 never pushes
+ok 531 - troops scale by their class's reference curve: a weak unit stays as weak beside the line, and scaling twice changes nothing
+ok 532 - the troops' basic attack tier follows their level, capped by the sortie's own tier (bosses one above)
+ok 533 - the ratio formula, curses and the triangle
+ok 534 - catalog: 13 tools match the game tools, 31 skills (three per hero, plus the ④ of the five ACT I heroes, and v0.10.0 Ines and Thea), unique ids
+ok 535 - skills open by level: ① always, ② at Lv 4 (recruits on joining), ③ on promotion (recruits at join level + 3)
+ok 536 - provoke: the enemy goes for Erik next phase; Erik DEF +2 until then
+ok 537 - pinning shot binds (no movement next enemy phase); bound heroes cannot move either
+ok 538 - flame burst: cross of five around a tile 2–3 away, enemies only, 50% magic, no counter, grass burns
+ok 539 - purify and the pilgrim lantern clear statuses and give immunity until the enemy phase ends
+ok 540 - poison: venom edge poisons; 10% of max HP (3–8) at the start of each own phase for three, never below 1
+ok 541 - breakthrough pushes the target a tile (blocked: +3 damage); whirlwind hits every adjacent foe without counters
+ok 542 - rally cry: allies within 2 get MOV +1 and hit +10 through the next player phase; feint weakens; flame brand lowers DEF
+ok 543 - silence blocks every skill but not tools; confusion makes an enemy strike the nearest unit, friend or foe
+ok 544 - tools: on self or an adjacent ally only; three throws a battle; bombs hurt enemies in the cross; smoke and caltrops
+ok 545 - class matchups (v2.0.0 §3.3): the eight-class triangle at ±25%; healers stand outside it
+ok 546 - tool stock opens with progress (net after M01, drum/caltrops after M06, bomb/smoke/clarity after M08, powder after M09); never the elixir
+ok 547 - schema 10 saves keep statuses, marks and throws; damaged status records are rejected
+ok 548 - ACT II enemy weapons leave statuses: ash raiders poison, monastery guards bind, the abbot silences, masked raiders confuse
+ok 549 - a new campaign is the five alone; the ash village tavern holds Bram, Noa and Marta (200 G each), not before the first battle
+ok 550 - hiring: one fee, the legion's average level −1, kept to the ending; never twice, never without the gold; the save keeps it
+ok 551 - M04 opens 갈대 나루 and 돌우물 마을 on the world map; Rowell waits at the reed tavern as an elite hire; a wanderer moves to stonewell
+ok 552 - a battle request: the chosen sortie fights, a win pays once and is marked done; a loss changes nothing
+ok 553 - the besieged spearknight: hold six turns and Adel joins the legion (hero growth, his own 열전 and epilogue line)
+ok 554 - requests without a battle trade at the board; the bounty opens again after each story mission
+ok 555 - duels are events: Erik beside Garr starts it once (two lines); v2.2: always won, a level for Erik, Garr falls and leaves the field (D-124); no challenge command remains
+ok 556 - v2.0.0 saves (real, schema 20) load as schema 21: the officers stay as hires, the five are together, nothing else changes
+ok 557 - phase recovery floors with minimum one, clamps and is idempotent across reload
+ok 558 - enemy start heals only enemies, dead units excluded, grass has no recovery
+ok 559 - AI attacks before retreating and M02 escape always has priority
+ok 560 - enemy phase recovery is not reapplied by advancing AI
+ok 561 - the move confirmation is two buttons and no coordinates
+ok 562 - the menu title stays on one line at a smaller size
+ok 563 - the skills menu lists names and MP only, and 설명 opens the 기술 tab with every skill explained
+ok 564 - M08 opens 서리목 and M09 opens 소금항 on the world map and in the revisit list
+ok 565 - 「눈보라 속 도끼잡이」: hold seven turns and 군나르 joins — infantry, grows like a hero, snow costs him 1, his 열전 and epilogue
+ok 566 - 「얼음 다리 수리」: 300 G at the board, then 10% off tools and gear at 서리목 and 철관성 성하 마을 (not elsewhere)
+ok 567 - 소금항: four requests, a potion for the salt cart, the Velmar hire waits in its tavern; 서리목 takes in 세라 or 오린 after M08
+ok 568 - every ACT II request battle is winnable by the test policy; the bounties open again after the next story win
+ok 569 - art pack J (D-132): 군나르's three busts, the two villages and the wolf come from hash-verified masters; the wolf sheet keeps its magenta collar as WebP
+ok 570 - M16 opens 등불골 and M18 opens 이끼다리 on the world map and in the revisit list
+ok 571 - 「잿빛 안개 속 약초꾼」: hold seven turns and 마렌 joins — rogue, grows like a hero, swamp costs her 1, her lines, 열전 and epilogue
+ok 572 - 「이끼다리 보수」: 300 G at the board, then 10% off at 이끼다리, 왕도 하층가 and 등불골 (not elsewhere); 얼음 다리 still in the north
+ok 573 - 등불골: 「등유 나르기」 takes an ether; the tavern takes in 세라, 오린 or 셀린 one per story win from M16
+ok 574 - every ACT III request battle is winnable by the test policy; the bounties open again after the next story win
+ok 575 - art pack K (D-139): 마렌's three busts and the two villages come from hash-verified masters, as AVIF
+ok 576 - M24 opens 봉화둔덕 and M26 opens 사자샘 on the world map and in the revisit list
+ok 577 - 「재 속의 약사」: hold seven turns and 루카 joins — healer, grows like a hero, his lines, 열전 and epilogue
+ok 578 - 「등불 손길」: 루카's heal clears one status (poison first); 셀린's heal does not
+ok 579 - 「샘터 우물 보수」: 300 G at the board, then 10% off at 사자샘, 봉화둔덕 and 왕도 하층가 (not elsewhere)
+ok 580 - 봉화둔덕: 「피난민 겨울나기」 takes two medium potions; the 사자샘 tavern takes in 실바, 셀린 or 오린 one per story win from M26
+ok 581 - every ACT IV request battle is winnable by the test policy; 「도망친 군마」 is won by bringing the three grooms back; the bounties open again
+ok 582 - the rescued heroes fight: 아델, 군나르, 마렌 and 루카 are on the field when they sortie; a v2.5.0 save is mended
+ok 583 - art pack L (D-146): 루카's three busts and the two villages come from hash-verified masters, as AVIF
+ok 584 - the yardstick is the sortie average: within ±2 of it every hero gets the full EXP
+ok 585 - far above the sortie learns less, far below learns faster, with floor and cap
+ok 586 - without a plan (old saves mid-camp) the mission level is still the fallback

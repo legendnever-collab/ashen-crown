@@ -22,9 +22,9 @@ const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){adv
 const sturdy=s=>{for(const u of s.units.filter(u=>u.team==='ally'))u.hp=u.maxHP=999;};
 const read=(s,id,hero='lia')=>{const m=findUnit(s,id),h=findUnit(s,hero);for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const x=m.x+dx,y=m.y+dy;if(MISSIONS[28].map[y]?.[x]==='k'&&!s.units.some(o=>alive(o)&&o.x===x&&o.y===y)){h.x=x;h.y=y;h.moved=h.acted=false;break;}}return performAction(s,hero,'search',id);};
 
-test('M28 data: 18×14 palace, level 20, sortie of eight, TURN 14; ten remnants, three fragments, young Aren; scenes tell the night',()=>{
- const m=MISSIONS[28];assert.deepEqual([m.width,m.height],[18,14]);assert.equal(m.level,20);assert.equal(m.deployLimit,8);assert.equal(m.turnLimit,14);assert.equal(m.reformTurns,3);assert.equal(m.dawnHold,2);
- assert.equal(m.enemies.filter(e=>e.remnant).length,10);assert.deepEqual(m.objects.map(o=>o.memory),['oath','king','order']);
+test('M28 data: 26×22 palace (v2.5.1 big map: the great hall and three wings), level 20, sortie of eight, TURN 14; thirteen remnants (the cap), three fragments, young Aren; scenes tell the night',()=>{
+ const m=MISSIONS[28];assert.deepEqual([m.width,m.height],[26,22]);assert.ok(m.v251);assert.equal(m.level,20);assert.equal(m.deployLimit,8);assert.equal(m.turnLimit,14);assert.equal(m.reformTurns,3);assert.equal(m.dawnHold,2);
+ assert.equal(m.enemies.filter(e=>e.remnant).length,13);assert.deepEqual(m.objects.map(o=>o.memory),['oath','king','order']);
  for(const k of ['28:intro','28:echo','28:memory:oath','28:memory:king','28:memory:order','28:dawn','28:end','pre:28','after:28','after:28:all','after:28:eric','npc:28:preparation:aren','npc:28:aftermath:elder'])assert.ok(STORY[k]?.length,k);
  const night=['28:memory:oath','28:memory:king','28:memory:order'].flatMap(k=>STORY[k].map(l=>l.text)).join(' ');
  for(const fact of ['강요된 맹세','내 기억으로 붙든다','서명하마','알고 있다. 그래도 전하라'])assert.ok(night.includes(fact),fact);
@@ -32,7 +32,7 @@ test('M28 data: 18×14 palace, level 20, sortie of eight, TURN 14; ten remnants,
 });
 test('a struck-down remnant stands again at its post three turns later; reading a fragment releases the remnants beside it for good',()=>{
  const s=battle();sturdy(s);const r9=findUnit(s,'r9');r9.hp=0;M28.afterDamage(s,r9);assert.equal(r9.reformAt,s.turn+3);deserialize(serialize(s));
- enemyPhase(s);enemyPhase(s);assert.ok(!alive(r9));enemyPhase(s);assert.ok(alive(r9),'it stands again');assert.equal(r9.hp,r9.maxHP);assert.deepEqual([r9.x,r9.y],[6,6]);
+ enemyPhase(s);enemyPhase(s);assert.ok(!alive(r9));enemyPhase(s);assert.ok(alive(r9),'it stands again');assert.equal(r9.hp,r9.maxHP);assert.deepEqual([r9.x,r9.y],[8,12]);
  const near=s.units.filter(u=>u.remnant&&alive(u)&&distance(u,findUnit(s,'mem1'))<=3).map(u=>u.id);assert.ok(near.length>=1);
  assert.ok(read(s,'mem1').ok);assert.deepEqual(s.missionState.found,['oath']);for(const id of near){const u=findUnit(s,id);assert.ok(!alive(u)&&u.released,id);}
  enemyPhase(s);enemyPhase(s);enemyPhase(s);enemyPhase(s);for(const id of near)assert.ok(!alive(findUnit(s,id)),'released remnants do not return');

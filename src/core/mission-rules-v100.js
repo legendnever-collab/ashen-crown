@@ -50,7 +50,7 @@ export const M29={
  // Bellard holds the dais in his first phase; with the crown's power he goes for the rite points. Ritualists and grey cloaks
  // unbind the rites; knights hold the hall.
  planEnemy(s,u,reachable){const st=s.missionState,rites=ritesOf29(s).filter(alive),foes=[...s.units.filter(t=>alive(t)&&hostile(s,u,t)),...rites],isRite=t=>RITE_IDS.includes(t.id);
-  if(u.id==='boss'){if(st.phase===1){const keep=within1000(reachable,(x,y)=>y<=5&&x>=5&&x<=12);return strike1000(s,u,keep.size?keep:reachable,foes,null,t=>isRite(t)?6:0);}
+  if(u.id==='boss'){if(st.phase===1){const b=missionOf(s).captainBox,keep=within1000(reachable,b?(x,y)=>x>=b[0]&&x<=b[2]&&y>=b[1]&&y<=b[3]:(x,y)=>y<=5&&x>=5&&x<=12); /* v2.5.1: the big map's dais box (m.captainBox) */return strike1000(s,u,keep.size?keep:reachable,foes,null,t=>isRite(t)?6:0);}
    return strike1000(s,u,reachable,foes,goalOf1000(nearest1000(u,rites)||findUnit(s,'eric')),t=>isRite(t)?20:t.id==='eric'?8:0);}
   if(u.unbinder||u.look==='grayCloak')return strike1000(s,u,reachable,foes,goalOf1000(nearest1000(u,rites)||nearest1000(u,foes)),t=>isRite(t)?(u.unbinder?40:25):0);
   return strike1000(s,u,reachable,foes,goalOf1000(nearest1000(u,foes)),t=>isRite(t)?10:0);},

@@ -16,7 +16,7 @@ test('character names contain no Latin letters',()=>{
  for(const m of Object.values(MISSIONS))for(const u of [...m.enemies,...(m.reinforcements||[]),...m.civilians,...(m.allies||[]),...(m.waves||[]).flatMap(w=>w.units)])names.push([`M${m.id}:${u.id}`,u.name]);
  for(const [id,c] of Object.entries(CAST))names.push([`cast:${id}`,c.name]);
  for(const [id,name] of names)assert.ok(typeof name==='string'&&name&&!latin.test(name),`${id}: ${name}`);
- assert.deepEqual(HEROES.map(h=>h.name),['에릭','엘리나','리아','세인','카이']);assert.deepEqual(RECRUIT_HEROES.filter(h=>!OFFICER_IDS.includes(h.id)).map(h=>h.name),['테아','다리오','이네스','발드릭']);assert.deepEqual(RECRUIT_HEROES.filter(h=>OFFICER_IDS.includes(h.id)).map(h=>h.name),['브람','노아','마르타','로웰','세라','오린','셀린','렌','실바','군나르','마렌','아델'],'v2.1: the tavern hires and the rescued heroes (v2.3.1: 군나르)');
+ assert.deepEqual(HEROES.map(h=>h.name),['에릭','엘리나','리아','세인','카이']);assert.deepEqual(RECRUIT_HEROES.filter(h=>!OFFICER_IDS.includes(h.id)).map(h=>h.name),['테아','다리오','이네스','발드릭']);assert.deepEqual(RECRUIT_HEROES.filter(h=>OFFICER_IDS.includes(h.id)).map(h=>h.name),['브람','노아','마르타','로웰','세라','오린','셀린','렌','실바','군나르','마렌','루카','아델'],'v2.1: the tavern hires and the rescued heroes (v2.3.1: 군나르)');
  assert.equal(SPEAKERS.aren.name,'아렌 발터');assert.equal(SPEAKERS.baldrick.name,'발드릭 로엔');
 });
 test('a save made with English names is renamed on load',()=>{

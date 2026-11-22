@@ -28,6 +28,8 @@ export const sectionsTaken27=s=>(s.missionState?.sections||[]).filter(Boolean).l
 export const squads27=c=>['iron','free','flame'].filter(f=>(ensureTrust(c)[f]??0)>=MISSIONS[27].squadTrust);
 export const lion27=c=>c?.flags?.mission_26_baldrick==='cooperate';
 const SECTION_KO=['서쪽 성벽','서쪽 망루','동쪽 성벽'];
+// v2.5.1 (D-141): the big map names its sections (all three over the east field) and its rampart row (m.wallTopY)
+const sectionKo27=(s,i)=>missionOf(s).sectionNames?.[i]??SECTION_KO[i];
 // Each player phase the ram rolls up to two tiles north on the road while a hero stands beside it (one with an enemy beside
 // it); at the gate it strikes once a turn — three blows break the gate.
 function moveRam27(s){const m=missionOf(s),st=s.missionState,r=ramOf27(s);if(!r||!alive(r)||st.broken)return;
@@ -54,13 +56,13 @@ export const M27={
  // go for the ram; the grey cloaks hunt the ram from the flanks.
  planEnemy(s,u,reachable){const st=s.missionState,r=ramOf27(s),ram=r&&alive(r)?[r]:[],foes=[...s.units.filter(t=>alive(t)&&hostile(s,u,t)),...ram],bonus=t=>t.id==='ram'?25:0;
   if(u.wall){const keep=within102(reachable,(x,y)=>Math.abs(x-u.post.x)+Math.abs(y-u.post.y)<=1);return strike102(s,u,keep.size?keep:reachable,foes,goalOf102({...u.post,name:'성벽'}),bonus);}
-  if(u.look==='ritualKnight'&&!st.broken){const keep=within102(reachable,(x,y)=>y<=2);return strike102(s,u,keep.size?keep:reachable,foes,goalOf102(nearest102(u,heroesOf102(s).filter(h=>h.y<=2))||{x:u.x,y:u.y,name:'성문 안'}),bonus);}
+  if(u.look==='ritualKnight'&&!st.broken){const top=missionOf(s).wallTopY??2,keep=within102(reachable,(x,y)=>y<=top);return strike102(s,u,keep.size?keep:reachable,foes,goalOf102(nearest102(u,heroesOf102(s).filter(h=>h.y<=top))||{x:u.x,y:u.y,name:'성문 안'}),bonus);}
   if(u.look==='grayCloak'&&ram.length)return strike102(s,u,reachable,foes,goalOf102(r),t=>t.id==='ram'?40:0);
   return strike102(s,u,reachable,foes,goalOf102(ram[0]||nearest102(u,foes)),bonus);},
  afterDamage(s,v){if(v.id==='ram'&&v.hp<=0&&!s.missionState.ramLost){s.missionState.ramLost=true;enqueueStory(s,'27:ram:lost');}},
  // A hero who ends the player phase on the rampart above a ladder takes that section of the wall (it stays taken).
  beforeEnemyPhase(s){const m=missionOf(s),st=s.missionState;m.sections.forEach(([x,y],i)=>{if(st.sections[i])return;const h=heroesOf102(s).find(h=>h.x===x&&h.y===y);if(!h)return;st.sections[i]=true;remember(s,`m27_section_${h.id}`);
-  s.feedback.push({type:'rescue',id:h.id,text:`${SECTION_KO[i]} 장악`});s.log.push(`${h.name}: ${SECTION_KO[i]}을(를) 장악했습니다 (${sectionsTaken27(s)}/${m.needSections}).`);enqueueStory(s,`27:section:${sectionsTaken27(s)}`);});},
+  s.feedback.push({type:'rescue',id:h.id,text:`${sectionKo27(s,i)} 장악`});s.log.push(`${h.name}: ${sectionKo27(s,i)}을(를) 장악했습니다 (${sectionsTaken27(s)}/${m.needSections}).`);enqueueStory(s,`27:section:${sectionsTaken27(s)}`);});},
  checkOutcome(s,finish){const m=missionOf(s),st=s.missionState;
   if(st.ramLost)return finish(s,'defeat','공성추가 부서졌습니다. 성문을 열 길이 사라졌습니다.');
   if(st.broken&&sectionsTaken27(s)>=m.needSections)return finish(s,'victory',`왕도의 성문을 부수고 성벽 ${sectionsTaken27(s)}곳을 장악했습니다 (TURN ${s.turn}).`);
@@ -87,7 +89,7 @@ export const M28={
  // that came later go for the nearest hero.
  planEnemy(s,u,reachable){const st=s.missionState,foes=s.units.filter(t=>alive(t)&&hostile(s,u,t)),e=findUnit(s,'eric'),onEric=t=>t.id==='eric'?10:0;
   if(st.dawnFrom!=null)return strike102(s,u,reachable,foes,goalOf102(e&&alive(e)?e:nearest102(u,foes)),onEric);
-  if(u.remnant&&u.post&&!/^r1[1-4]$/.test(u.id)){const keep=within102(reachable,(x,y)=>Math.abs(x-u.post.x)+Math.abs(y-u.post.y)<=3);return strike102(s,u,keep.size?keep:reachable,foes,goalOf102(nearest102(u,foes.filter(t=>distance(t,u.post)<=5)))||goalOf102({...u.post,name:'제자리'}));}
+  if(u.remnant&&u.post&&!(+u.id.slice(1)>=11)){ /* the waves (r11 and up) roam; v2.5.1: extra posted remnants are r01–r04 */const keep=within102(reachable,(x,y)=>Math.abs(x-u.post.x)+Math.abs(y-u.post.y)<=3);return strike102(s,u,keep.size?keep:reachable,foes,goalOf102(nearest102(u,foes.filter(t=>distance(t,u.post)<=5)))||goalOf102({...u.post,name:'제자리'}));}
   return strike102(s,u,reachable,foes,goalOf102(nearest102(u,foes)));},
  // Reading a fragment opens its scene and releases the remnants beside it (they do not stand again).
  search(s,u,t){if(t.kind!=='memory'||t.inert)return false;const st=s.missionState,m=missionOf(s);t.inert=true;st.found.push(t.memory);remember(s,`m28_memory_${t.memory}`);

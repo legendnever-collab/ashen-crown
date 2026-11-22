@@ -1,6 +1,6 @@
 import {ACT2_HUB_SPECS} from './hubs-v06.js';
 // v2.1 (D-118): the hubs whose inn-1 is a tavern (주점 · 인재 확보).
-const TAVERN_SPECS=new Set(['village','village_raid','castletown','velmar','pilgrim','capital','forest','reed','stonewell','frost','saltport','lamp','moss']);
+const TAVERN_SPECS=new Set(['village','village_raid','castletown','velmar','pilgrim','capital','forest','reed','stonewell','frost','saltport','lamp','moss','beacon','lionspring']);
 // v0.5.0 painted interlude hubs (D-052). Each hub is one 1536×1024 painting = 24×16 tiles of 64 px.
 // mask: '.' walkable, '#' solid (authored over the painting). Doors use the same five building ids in
 // every camp-type hub so chest records and saved interiors stay valid when the legion moves on.
@@ -249,4 +249,7 @@ HV5_SPECS.saltport=smallVillage('Saltport · 소금항','소금항 촌장','염�
 // v2.4.1 (D-135): the ACT III villages, painted by art pack K on the small-village footprint (D-139)
 HV5_SPECS.lamp=smallVillage('Lampvale · 등불골','등불골 촌장','등불지기','묘지 파수','hub_lamp');
 HV5_SPECS.moss=smallVillage('Mossbridge · 이끼다리','이끼다리 촌장','약초꾼','숲길 파수','hub_moss');
+// v2.5.1 (D-141): the ACT IV villages, painted in art pack L (D-146)
+HV5_SPECS.beacon=smallVillage('Beacon Mound · 봉화둔덕','봉화둔덕 촌장','피난민','봉화 파수','hub_beacon');
+HV5_SPECS.lionspring=smallVillage('Lionspring · 사자샘','사자샘 촌장','마부','고개 파수','hub_lionspring');
 export const ART_HUBS=Object.fromEntries(Object.entries(HV5_SPECS).map(([id,spec])=>[id,hv5Build(id,spec)]));
