@@ -1,4 +1,5 @@
 # Current Status
+Updated 2026-11-23 07:39 KST: **v2.6.1 merged** (PR #44 → fc56f49, 「좋아 병합해줘」, D-156; CI 9/9 green on b3d2bf6). Next: the design of the major update of 2026-11-22 22:46 (docs/next/MAJOR_UPDATE_REQUESTS.md). The user reruns Actions → Archive old builds (v2.5.1, v2.5.2, v2.6.0, v2.6.1).
 Updated 2026-11-23 KST: **v2.6.1 「한 칸에 한 사람」 minor-update release candidate** on feature/v2.6.1 (D-155): the user's ten requests of 2026-11-22 22:33 — figure sizes, BGM, EXP text, fire in forests, minimap/drag, full screen, equal choices, town rumours, duel sizes, sortie 6–8. Merge only on the user's approval. Next: the major update of 22:46 (docs/next/MAJOR_UPDATE_REQUESTS.md), design first.
 Updated 2026-11-22 22:09 KST: **v2.5.2 (PR #42 → ce2e701) and v2.6.0 (PR #43 → f447bca) merged** on the user's 「병합해줘」 (D-154).
 Updated 2026-11-22 KST (late): **v2.6.0 「지형과 성장」 release candidate** on feature/v2.6.0 (D-152 design, D-153 build and tuning), on top of the v2.5.2 candidate.
