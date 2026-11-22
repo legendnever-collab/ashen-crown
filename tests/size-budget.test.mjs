@@ -38,7 +38,7 @@ test('D-134 (v2.4.0): the builds released on GitHub are out of the tree and thei
  const {versions}=JSON.parse(fs.readFileSync('releases/ARCHIVE.json','utf8'));const ignore=fs.readFileSync('.gitignore','utf8').split(/\r?\n/);
  for(const v of versions)for(const n of [`Ashen_Crown_v${v.version}.html`,`Ashen_Crown_v${v.version}_Source.zip`])assert.ok(ignore.includes(`releases/${n}`),`.gitignore lists ${n}`);
  // the 28 versions whose Releases were checked on 2026-11-21 (D-133) and v2.2.1–v2.3.1 (checked again for v2.5.0, D-142); their test reports and checksums stay
- const released=versions.slice(0,31).map(v=>v.version);assert.equal(released.at(-1),'2.3.1');
+ const released=versions.slice(0,33).map(v=>v.version);assert.equal(released.at(-1),'2.4.1'); /* v2.5.1: v2.4.0 and v2.4.1 archived too (D-145) */
  const {execFileSync}=await import('node:child_process');let tracked;try{tracked=execFileSync('git',['ls-files','releases'],{encoding:'utf8'}).split('\n');}catch{return;} // a Source ZIP has no git
  if(!tracked.some(Boolean))return;
  for(const ver of released){assert.ok(!tracked.includes(`releases/Ashen_Crown_v${ver}.html`)&&!tracked.includes(`releases/Ashen_Crown_v${ver}_Source.zip`),ver);assert.ok(tracked.includes(`releases/Ashen_Crown_v${ver}_Test_Report.md`),`${ver} keeps its test report`);}

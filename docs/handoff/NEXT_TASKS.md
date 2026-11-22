@@ -1,4 +1,5 @@
 # Next Tasks
+0. v2.5.1 release candidate (D-145): merge only on the user's approval. Art pack L: import with a script like import-art-pack-k.py when the ZIPs return (switch hubs-v05 beacon/lionspring to hub_beacon/hub_lionspring, MERC_BUST luka stays the fallback). After the merge the user reruns Actions → Archive old builds for v2.5.0. Open: 어려움 M22/M26; M27/M30 easy on 보통 (at the cap).
 0. v2.5.0 merged (D-143). Next on the user's word: v2.5.1 per D-141. Watch in feedback: 어려움 M22 (1/9) and M26 (2/5).
 0. v2.5.0 release candidate (D-141): the user plays it; merge only on approval (if GitHub answers 500, D-138). Watch: M24's pass under the ash, M23 (45/54 replayed), 어려움 M22 (1/9) and M26 (2/5). Then v2.5.1: M27–M30 big maps, 봉화둔덕 · 사자샘, 루카 (healer, 「등불 손길」), art pack L work order, 어려움 M27–M30.
 0. v2.4.1 merged (D-140) with art pack K (D-139). Watch in feedback: 어려움 M19–M23 (4/12, 4/9, 2/5, 2/3, 0/3 in the chain); ACT IV is still on 18×14 maps — the next design step if the user wants it. After the user reruns Actions → Archive old builds, a version removes v2.2.1–v2.3.1's builds from the tree.

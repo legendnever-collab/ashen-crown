@@ -1,0 +1,15 @@
+# v2.5.1 browser suites run here (the touched ones; two halves in parallel on one build, then reruns alone after test fixes)
+act4a exit=0
+act4b exit=0
+act4c exit=1
+act4d exit=0
+v251 exit=0
+hub-doors exit=0
+migration-v0100 exit=0
+migration-v0101 exit=0
+migration-v0102 exit=0
+v250 exit=1
+world exit=0
+v210 exit=0
+# reruns alone after the test fixes: act4c exit=0 (34 checks), v250 exit=0 (22), v251 exit=0 (28)
+# final: 12 suites exit 0

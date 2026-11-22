@@ -743,6 +743,29 @@
      "sha256": "02258c6a71593565076cc30b7b1e5c8a741bb02987c4f2a6eb60266539d9144c"
     }
    }
+  },
+  {
+   "version": "2.5.0",
+   "tag": "v2.5.0",
+   "commit": "d4797ad5becc3a4e5c21ca51f4802f0bd407fa08",
+   "files": {
+    "Ashen_Crown_v2.5.0.html": {
+     "bytes": 51659900,
+     "sha256": "4d1e6cbb5ef0351be3da924d2bb4004be006f56992dae3137dd011cdd97e4d92"
+    },
+    "Ashen_Crown_v2.5.0_Source.zip": {
+     "bytes": 63200086,
+     "sha256": "38247a074ada67f577170dadbfdb073aa45ac92640b9bfffad1f6a7978b94b7c"
+    },
+    "Ashen_Crown_v2.5.0_Test_Report.md": {
+     "bytes": 5992,
+     "sha256": "2eb74236984e89468144160fb404329c0084d19a787271bb7a3997538a50483c"
+    },
+    "Ashen_Crown_v2.5.0_SHA256SUMS": {
+     "bytes": 286,
+     "sha256": "f949a547208a34f29a56d2b8b7ff040395f777bcce36167ba173a44e39f6d605"
+    }
+   }
   }
  ]
 }
