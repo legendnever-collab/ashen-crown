@@ -82,7 +82,7 @@ test('the rescued heroes fight: 아델, 군나르, 마렌 and 루카 are on the 
  const env=JSON.parse(fixture.save),data=JSON.parse(env.data),kai=data.campaign.heroes.find(h=>h.id==='kai');
  data.campaign.roster.push('maren');data.campaign.heroes.push({...structuredClone(kai),...NEW_HEROES.find(x=>x.id==='maren'),level:kai.level,rescuedHero:undefined,rescued:true});
  const text=JSON.stringify(data),back=deserialize(JSON.stringify({...env,checksum:checksum(text),data:text}));back.economy.gold=back.campaign.economy.gold=3000;
- const rec=back.campaign.heroes.find(h=>h.id==='maren');assert.ok(!rec.rescued&&rec.rescuedHero,'mended');assert.equal(back.schema,27);
+ const rec=back.campaign.heroes.find(h=>h.id==='maren');assert.ok(!rec.rescued&&rec.rescuedHero,'mended');assert.equal(back.schema,28);
  travelDrained(back,'lionspring');const r=startRequest(back,'passbandits',['eric','maren','elina','lia']);if(r.screen==='deployment')startBattle(r);drain(r);const m=findUnit(r,'maren');
  assert.ok(m&&!m.rescued&&!m.benched&&m.hp>0,'마렌 on the field');
 });

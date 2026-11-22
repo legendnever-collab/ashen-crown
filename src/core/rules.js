@@ -181,6 +181,12 @@ export const healAmount=(s,v)=>Math.max(1,Math.round(HEAL_SCALE*((v.healPow??(12
 export const isolated=(s,t)=>t.team==='ally'&&!s.units.some(a=>a.team==='ally'&&alive(a)&&a.id!==t.id&&distance(a,t)===1);
 // Tier-1 Guard covers melee only; the Guardian Knight (tier 2) also takes the first ranged or magic hit.
 export function guardFor(s,u,t,mode){const melee=!(mode==='skill'&&skillOf(u)==='fireBolt')&&distance(u,t)===1;return s.units.find(g=>alive(g)&&g.team===t.team&&g.id!==t.id&&(g.guarding&&!g.guardUsed||g.guardTarget===t.id)&&distance(g,t)===1&&(melee||(g.classTier||1)>=2))||null;}
+// v2.7.0 (D-158, the user's request 2026-11-22 22:46 「두번 공격하는 확률은 운이 높은 캐릭터가 자주 … 아니면 특정 아이템」): 「연속 공격」
+// — one more strike at ×0.6 after the exchange — is a chance from 운: (own − foe ÷ 2) × 2%, 0–35%, plus 「쌍매듭 팔찌」 (+15%,
+// total at most 50%). It replaced the hidden rule of v2.0.0 (민첩 8 faster → always).
+export const DOUBLE_LUCK_CAP=35,DOUBLE_CAP=50,DOUBLE_SCALE=.6;
+export function doubleChance(s,u,t){if(!u||!t)return 0;const a=effectiveStats(s,u),b=effectiveStats(s,t),lu=a.stats?.luk??u.stats?.luk??0,lt=b.stats?.luk??t.stats?.luk??0;
+ return Math.max(0,Math.min(DOUBLE_CAP,Math.max(0,Math.min(DOUBLE_LUCK_CAP,Math.round((lu-lt/2)*2)))+(a.double||0)));}
 export function forecast(s,u,t,mode='attack'){
  if(mode==='skill'&&skillOf(u)==='heal'){const v=effectiveStats(s,u),amount=healAmount(s,v);return {heal:Math.min(t.maxHP-t.hp,amount),hit:100,damage:0,counter:0,after:Math.min(t.maxHP,t.hp+amount)};}
  if(mode==='skill'&&skillOf(u)==='guard')return {guard:true,damage:0,hit:100,counter:0,after:t.hp};
@@ -190,7 +196,7 @@ export function forecast(s,u,t,mode='attack'){
  if(mode==='persuade')return {persuade:true,damage:0,hit:100,counter:0,after:t.hp};
  const guard=guardFor(s,u,t,mode),victim=guard||t,stats=strikeStats(s,u,victim,mode),canCounter=validTarget(s,victim,u,'attack')&&!counterBlocked(s,victim)&&!chargeBreaks(u,mode)&&!fx(s,u,'silence')&&victim.hp>stats.damage;
  const counter=canCounter?Math.max(1,Math.round(strikeStats(s,victim,u).damage*riposteBonus(victim))):0;
- return {...stats,counter,counterHit:canCounter?strikeStats(s,victim,u).hit:0,after:Math.max(0,victim.hp-stats.damage),guard:guard?.id,victim:victim.id};
+ return {...stats,counter,counterHit:canCounter?strikeStats(s,victim,u).hit:0,after:Math.max(0,victim.hp-stats.damage),guard:guard?.id,victim:victim.id,double:mode==='attack'&&hostile(s,u,victim)&&validTarget(s,u,victim,'attack')?doubleChance(s,u,victim):0};
 }
 // Phase F (D-045): from M04 a mission carries a level. A hero more than two levels above it learns less
 // (−20% per level, floor 20%); one more than two below learns faster (+20% per level, cap 160%). M01–M03 have

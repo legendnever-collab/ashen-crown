@@ -14,10 +14,10 @@ export const SERVICE_TALK={
   '회복약은 넉넉히 챙기시오. 전장에선 사러 올 수 없으니.',
   '해독약은 늪 근처에서 다들 찾소. 하나쯤 넣어 두시오.',
   '연막은 도망칠 때보다 사람을 데리고 나올 때 쓰는 거요.'],
- requests:[
-  '마을 일이 산더미요. 게시판을 한번 봐 주시오.',
-  '작은 일이라도 군단이 맡아 주면 사람들이 밤에 잠을 자오.',
-  '현상금 붙은 놈들은 본편 싸움이 끝날 때마다 다시 모여들지.']
+ requests:[ // v2.7.0 (D-158): the county office's clerk at the square's board
+  '고을 관청에서 내건 의뢰입니다. 보수는 관청 금고에서 나가니 걱정 마시지요.',
+  '관청 도장이 찍힌 것만 붙입니다. 군단 분들 헛걸음하시게 하진 않아요.',
+  '현상금 수배서는 큰 싸움이 끝날 때마다 새로 내려옵니다. 자주 들러 주십시오.']
 };
 // the label of the service button in the person's menu
 export const SERVICE_LABEL={tavern:'인재 확보',weapon:'거래',item:'거래',stall:'거래',requests:'의뢰 게시판'};

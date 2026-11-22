@@ -15,7 +15,7 @@ const ARMS_STATS={
  steelGreatsword:[{atk:4},{atk:1}],knightLance:[{atk:3,chargeDmg:2},{atk:1}],ironwoodBow:[{atk:3},{atk:1}],
  plateCuirass:[{def:4,spd:-1},{def:1}],towerShield:[{def:2,rangedCut:2},{def:1}],lancerMail:[{def:2,res:2},{def:1}],steelGauntlets:[{atk:2},{atk:1}],runeforgedBlade:[{atk:6},{atk:1}],
  twinSabers:[{atk:3,spd:1},{atk:1}],repeatingCrossbow:[{atk:2,hit:10},{atk:1}],emberRod:[{mag:4},{mag:1}],shadowStiletto:[{atk:3,spd:1},{atk:1}],
- merchantCoat:[{def:1,res:2,spd:1},{res:1}],luckyCoin:[{crit:5},{crit:2}],windCharm:[{dodge:10},{dodge:3}],duelistRapier:[{atk:5,crit:5},{atk:1}],
+ merchantCoat:[{def:1,res:2,spd:1},{res:1}],luckyCoin:[{crit:5},{crit:2}],windCharm:[{dodge:10},{dodge:3}],twinKnot:[{double:15},{double:3}],duelistRapier:[{atk:5,crit:5},{atk:1}],
  flameStaff:[{mag:2,heal:3},{heal:1}],pilgrimMace:[{atk:3},{atk:1}],pilgrimMantle:[{res:3,resist:25},{res:1}],sanctumTome:[{mag:3,res:2},{mag:1}],
  wardenShield:[{def:3},{def:1}],chrismCharm:[{poisonImmune:1},{res:1}],votiveBand:[{mag:2,res:1},{mag:1}],cathedralStaff:[{mag:4,heal:5},{heal:1}],
  crownGuardLance:[{atk:5,def:1},{atk:1}],crownGuardShield:[{def:5,res:2},{def:1}],leagueSaber:[{atk:5,spd:2},{atk:1}],leagueLongbow:[{atk:4,hit:10},{atk:1}],
@@ -30,14 +30,14 @@ const ARMS_STATS={
 const ARMS_HOME={castletown:{arrive:6,trust:'iron'},velmar:{arrive:8,trust:'free'},pilgrim:{arrive:10,trust:'flame'},capital:{arrive:14,trust:null}};
 const ARMS_SALE={
  steelGreatsword:['castletown',7],knightLance:['castletown',7],ironwoodBow:['castletown',7],plateCuirass:['castletown',8],towerShield:['castletown',8],lancerMail:['castletown',8],steelGauntlets:['castletown',8],runeforgedBlade:['castletown','premium'],
- twinSabers:['velmar',9],repeatingCrossbow:['velmar',9],emberRod:['velmar',9],shadowStiletto:['velmar',10],merchantCoat:['velmar',10],luckyCoin:['velmar',10],windCharm:['velmar',10],duelistRapier:['velmar','premium'],
+ twinSabers:['velmar',9],repeatingCrossbow:['velmar',9],emberRod:['velmar',9],shadowStiletto:['velmar',10],merchantCoat:['velmar',10],luckyCoin:['velmar',10],windCharm:['velmar',10],twinKnot:['velmar',9],duelistRapier:['velmar','premium'],
  flameStaff:['pilgrim',11],pilgrimMace:['pilgrim',11],pilgrimMantle:['pilgrim',11],sanctumTome:['pilgrim',12],wardenShield:['pilgrim',12],chrismCharm:['pilgrim',12],votiveBand:['pilgrim',12],cathedralStaff:['pilgrim','premium'],
  royalSaber:['capital',15],archiveBow:['capital',15],wardRod:['capital',15],courtVestment:['capital',16],greyMantle:['capital',16],oathRing:['capital','premium'],royalLance:['capital',15],royalMace:['capital',16],
  crownGuardLance:['castletown','trust'],crownGuardShield:['castletown','trust'],leagueSaber:['velmar','trust'],leagueLongbow:['velmar','trust'],paladinMace:['pilgrim','trust'],flameVestment:['pilgrim','trust']
 };
 export const TOWN_HOME=ARMS_HOME;
 const ARMS_STAT_KO={atk:'ATK',def:'DEF',mag:'MAG',res:'RES',spd:'SPD',mov:'MOV',hit:'HIT',crit:'치명',dodge:'회피',heal:'치유',chargeDmg:'돌격 피해'};
-export const statText=b=>Object.entries(b).map(([k,v])=>k==='poisonImmune'?'독 면역':k==='rangedCut'?`원거리 피해 −${v}`:k==='resist'?`상태이상 확률 −${v}%`:`${ARMS_STAT_KO[k]||k.toUpperCase()} ${v<0?'−':'+'}${Math.abs(v)}`).join(' · ');
+export const statText=b=>Object.entries(b).map(([k,v])=>k==='double'?`연속 공격 +${v}%`:k==='poisonImmune'?'독 면역':k==='rangedCut'?`원거리 피해 −${v}`:k==='resist'?`상태이상 확률 −${v}%`:`${ARMS_STAT_KO[k]||k.toUpperCase()} ${v<0?'−':'+'}${Math.abs(v)}`).join(' · ');
 // v0.8.1 gear table entries (merged into frontier-data GEAR).
 export const GEAR_V081=Object.fromEntries(CATALOG_GEAR.filter(c=>c.tier>1).map(c=>{const [bonus,grow]=ARMS_STATS[c.id],[home,rule]=ARMS_SALE[c.id];
  return [c.id,{name:c.ko,en:c.en,icon:c.slot==='weapon'?'⚔':c.slot==='armor'?'▣':'✦',slot:c.slot,heroes:c.heroes,price:c.price,bonus,grow,tier:c.tier,home,after:typeof rule==='number'?rule:null,premium:rule==='premium',trust:rule==='trust'?ARMS_HOME[home].trust:null,description:statText(bonus)}];}));

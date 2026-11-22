@@ -6,6 +6,8 @@ import {drawBuilding,drawFire} from './world-art.js';
 import {drawChest} from './chest-art.js';
 import {frontierRoom,chestStyle} from '../data/rooms-v06.js';
 import {MapCamera,drawMinimap} from './camera.js';
+import {requestsAt} from '../core/villages.js';
+import {paintedProp} from './prop-art.js';
 import {hdGround,drawHDGround,drawHDObject,hdObjectKey,drawTownBuilding,drawHDFigure,hdCastFor,hdDirection} from './hd-world.js';
 const TOWN_TYPES=new Set(['forge','shop','inn','warroom','residence','depot']);
 // Figures on hubs, in rooms and on the dialogue stage are drawn 1.5× (user choice 2026-10-25, D-058); the battle map keeps 1×.
@@ -50,7 +52,7 @@ export function drawHub(canvas,s,{line=null,time=performance.now()}={}){
  if(painted)drawHubLights(c,h,time);else if(h.tone==='camp')drawFire(c,7*64,6*64,time,.65);
  if(line){const cast=(line.actors||['aren',line.speaker]).filter((id,i,a)=>a.indexOf(id)===i);const sx=h.stage?.x??220,sy=h.stage?.y??424;cast.forEach((id,i)=>{const actor=s.units.find(u=>u.id===id)||{id,team:id==='aren'?'commander':'civilian'};drawHDFigure(c,hdCastFor(actor),sx+i*STAGE_GAP,sy+i%2*30,{facing:'down',scale:FS});if(id===line.speaker)pixel(c,'#f5d594',sx-4+i*STAGE_GAP,sy-Math.round(82*FS)+i%2*30,8,8);});}
  else{const near=n=>Math.abs(n.x-f.x)+Math.abs(n.y-f.y)<=1,talking=n=>s.narrative.active?.key.startsWith('npc:')&&s.narrative.active.key.endsWith(`:${n.id}`);
-  const items=[...hd.objects.map(o=>({y:hdObjectKey(o),draw:()=>drawHDObject(c,o,time)})),...(painted?h.buildings.filter(b=>b.type==='chest'):h.buildings).map(b=>({y:(b.y+b.h)*64-2,draw:()=>drawB(b)})),...h.npcs.map((n,k)=>({y:(n.y+1)*64+(n.drop||0),draw:()=>{if(n.kind==='advisor'){if(!h.paintedTable)drawWarTable(c,n.x*64+32,n.y*64+58,time);if(near(n)||talking(n))pixel(c,'#f0d291',n.x*64+28,n.y*64-6,8,8);return;}const still=near(n)||talking(n),t=time/1700+k*1.7+n.x,dx=still?0:Math.round(Math.sin(t)*9),moving=!still&&Math.abs(Math.cos(t))>.3,actor=s.units.find(u=>u.id===n.id)||{...n,team:'civilian'},x=n.x*64+32+dx,y=n.y*64+36+(n.drop||0);
+  const items=[...(h.props||[]).filter(p=>p.type==='board').map(p=>({y:(p.y+1)*64-4,draw:()=>drawRequestBoard(c,p.x*64+32,p.y*64+60,time,!f.interior&&requestsAt(s,f.hub).some(r=>r&&!r.done))})),...hd.objects.map(o=>({y:hdObjectKey(o),draw:()=>drawHDObject(c,o,time)})),...(painted?h.buildings.filter(b=>b.type==='chest'):h.buildings).map(b=>({y:(b.y+b.h)*64-2,draw:()=>drawB(b)})),...h.npcs.map((n,k)=>({y:(n.y+1)*64+(n.drop||0),draw:()=>{if(n.kind==='advisor'){if(!h.paintedTable)drawWarTable(c,n.x*64+32,n.y*64+58,time);if(near(n)||talking(n))pixel(c,'#f0d291',n.x*64+28,n.y*64-6,8,8);return;}const still=near(n)||talking(n),t=time/1700+k*1.7+n.x,dx=still?0:Math.round(Math.sin(t)*9),moving=!still&&Math.abs(Math.cos(t))>.3,actor=s.units.find(u=>u.id===n.id)||{...n,team:'civilian'},x=n.x*64+32+dx,y=n.y*64+36+(n.drop||0);
     const facing=still?hdDirection(f.x-n.x,f.y-n.y,'down'):moving?(Math.cos(t)>0?'right':'left'):'down';
     c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(x,y+23,13*FS,4*FS,0,0,Math.PI*2);c.fill();drawHDFigure(c,hdCastFor(actor),x,y+24,{facing,frame:moving?1+Math.floor(time/260)%4:0,scale:FS});if(near(n)||talking(n))pixel(c,'#f0d291',n.x*64+28,n.y*64+60-Math.round(90*FS),8,8);}})),
    {y:(hp.y+1)*64+1,draw:()=>{const hero=explorationHero(s),px=hp.x*64+32,py=hp.y*64+36-(s.doorStep?26:0);c.fillStyle='rgba(20,24,30,.3)';c.beginPath();c.ellipse(px,py+23,13*FS,4*FS,0,0,Math.PI*2);c.fill();drawHDFigure(c,hdCastFor(hero),px,py+24,{facing:f.facing||'down',frame:s.walking||hp.moving?1+Math.floor(time/170)%4:0,scale:FS});pixel(c,'#e4c580',px-30,py+29,60,2);}}];
@@ -71,3 +73,20 @@ function drawNPCProp(c,n,x,y){const r=(col,a,b,w,h)=>pixel(c,col,x+a,y+b,w,h);
  else if(n.id==='merchant'){r('#3e6a50',-16,-38,32,5);r('#4f8460',-10,-46,20,9);r('#c9a24a',-10,-40,20,2);}
  else if(n.id==='smith'){r('#3b2f2a',-10,-6,20,22);r('#5a4a40',-8,-4,16,2);}
  else if(n.id==='refugee'){r('#8b8f87',-14,-30,28,10);r('#6f6e66',12,0,12,14);r('#c9b48a',13,2,10,3);}}
+
+// v2.7.0 (D-158): the request board in a small village's square — posts, a roofed plank with notices and a little pennant;
+// a bobbing 「!」 while a request is open. Drawn until art pack M brings its painting.
+function drawRequestBoard(c,x,y,time,open){c.save();
+ const art=paintedProp('requestBoard');if(art?.complete&&art.naturalWidth&&!art.failed){c.drawImage(art,x-48,y-92,96,96);}else{ // art pack M (D-158) when it is imported
+ c.fillStyle='rgba(20,24,30,.32)';c.beginPath();c.ellipse(x,y-2,30,7,0,0,Math.PI*2);c.fill();
+ const wood='#6b4428',dark='#3e2616',light='#9a6a3c';
+ c.fillStyle=dark;c.fillRect(x-26,y-62,7,60);c.fillRect(x+19,y-62,7,60);c.fillStyle=wood;c.fillRect(x-25,y-62,5,60);c.fillRect(x+20,y-62,5,60);
+ c.fillStyle=dark;c.fillRect(x-30,y-58,60,36);c.fillStyle='#8a5a32';c.fillRect(x-28,y-56,56,32);
+ c.fillStyle=light;for(let i=0;i<4;i++)c.fillRect(x-28,y-56+i*8,56,1);
+ const notes=[[-24,-53,14,17,'#efe2c2'],[-7,-54,13,15,'#f4ead0'],[8,-52,16,19,'#e9dbb5'],[-18,-35,12,9,'#f1e4c4']];
+ for(const [dx,dy,w,h,col] of notes){c.fillStyle=col;c.fillRect(x+dx,y+dy,w,h);c.fillStyle='rgba(60,40,20,.55)';for(let k=3;k<h-2;k+=3)c.fillRect(x+dx+2,y+dy+k,w-4,1);c.fillStyle='#b23a2a';c.fillRect(x+dx+w/2-1,y+dy+1,3,3);}
+ c.fillStyle=dark;c.beginPath();c.moveTo(x-36,y-58);c.lineTo(x,y-74);c.lineTo(x+36,y-58);c.lineTo(x+32,y-55);c.lineTo(x,y-69);c.lineTo(x-32,y-55);c.closePath();c.fill();
+ c.fillStyle='#4f6f9a';c.fillRect(x+24,y-86,2,16);c.fillStyle='#c8a24a';c.beginPath();c.moveTo(x+26,y-86);c.lineTo(x+38,y-82);c.lineTo(x+26,y-78);c.closePath();c.fill();
+ }
+ if(open){const b=Math.round(Math.sin(time/280)*3);c.fillStyle='rgba(16,24,28,.85)';c.beginPath();c.arc(x,y-92+b,10,0,Math.PI*2);c.fill();c.fillStyle='#ffd45a';c.font='bold 15px sans-serif';c.textAlign='center';c.fillText('!',x,y-87+b);}
+ c.restore();}

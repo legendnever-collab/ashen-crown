@@ -8,6 +8,7 @@ import {HEROES,TERRAIN,TERRAIN_COSTS,CLASS_MOVEMENT,HERO_CLASS,PROFILE_KO,heroDe
 import {GEAR,TOOLS} from '../data/frontier-data.js';
 import {effectiveStats} from '../core/economy.js';
 import {rangeFor,skillCost,fogHidden} from '../core/rules.js';
+import {refugeeState,REFUGEE_STATE_KO,refugeeSteps} from '../core/mission-rules.js';
 import {itemIcon,paintedIcon} from './item-art.js';
 import {SKILLS,skillsOf} from '../data/skills.js';
 import {classOf,promotedClassOf,nextClassOf,potentialOf,proficiencyOf,promotionStatus,heroRecord} from '../core/progression.js';
@@ -38,11 +39,12 @@ function rangeGrid(min,max){let cells='';for(let y=-3;y<=3;y++)for(let x=-3;x<=3
 export function skillCostNote(u,k){return {cost:k.slot===1?skillCost(u):k.slot===3&&CLASS_ACTIONS[k.mode]?CLASS_ACTIONS[k.mode].cost:k.cost,note:k.slot===1?SKILL_NOTE[u.id]||u.description:k.slot===3&&CLASS_ACTIONS[k.mode]?CLASS_ACTIONS[k.mode].note:k.effect};}
 
 // v2.0.0 (§3.3–3.5): the six stats, the matchups and the tier's attack.
-function sixStatsHTML(u,v){if(!u.stats)return '';const st=v.stats||u.stats;return `<div class="six-stats">${STAT_KEYS.map(k=>{const b=Math.floor(u.stats[k]),g=Math.floor(st[k])-b;return `<div title="${STAT_NOTE[k]}"><span>${STAT_KO[k]}</span><b>${b}${g>0?`<em>+${g}</em>`:''}</b></div>`;}).join('')}</div>`;}
+function sixStatsHTML(u,v){if(!u.stats)return '';const st=v.stats||u.stats;return `<div class="six-stats">${STAT_KEYS.map(k=>{const b=Math.floor(u.stats[k]),g=Math.floor(st[k])-b;return `<div title="${STAT_NOTE[k]}"><span>${STAT_KO[k]}</span><b>${b}${g>0?`<em>+${g}</em>`:''}</b></div>`;}).join('')}</div>${u.team==='ally'?`<div class="double-base">연속 공격 · 같은 레벨 병사에게 약 ${Math.min(50,Math.max(0,Math.min(35,Math.round((st.luk-(3+.4*(u.level||1))/2)*2)))+(v.double||0))}% (운이 높을수록 · 「쌍매듭 팔찌」 +15%)</div>`:''}`;} /* v2.7.0 (D-158) */
 function matchupHTML(u){const c=classKeyOf(u),m=MATCHUP8[c];if(!m)return '';const ko=l=>l.map(k=>CLASSES8[k].ko).join('·')||'—';return `<p class="info-note matchup-note">상성 · <b>▲ ${ko(m.up)}</b> 에게 피해 +25% · <b>▼ ${ko(m.down)}</b> 에게 −25%</p>`;}
 function tierAttackHTML(u){const c=classKeyOf(u);if(!c)return '';const rows=TIER_ATTACK[c].map((p,i)=>`<li${tierOfUnit(u)===i+1?' class="now"':''}>${CLASSES8[c].tiers[i].ko} · ${p.name||'기본 공격'}</li>`).join('');return `<h4>승급별 공격</h4><ol class="tier-attacks">${rows}</ol>`;}
 export function unitInfoHTML(s,u,tab,esc,portrait){
  // v0.9 fog (M16): an enemy more than three tiles from every hero shows no numbers.
+ {const st=refugeeState(s,u);if(st){const left=refugeeSteps(s,u),why={follow:'곁에 장수가 있어 다음 턴 시작에 관문 쪽으로 3칸 걷습니다.',hurt:'HP가 절반 이하라 움직이지 못합니다. 세인(치유사)이 치유하면 다시 걷습니다.',alone:'측면 관문이 열려 혼자서 한 칸씩 걷습니다. 장수가 곁에 있으면 3칸.',wait:'장수가 곁(상하좌우 1칸)에 있어야 따라 걷습니다.',blocked:'적이 길을 막고 있습니다. 길을 열어 주세요.'}[st];return `<div class="unit-info"><h3>${esc(u.name)} <small>주민</small></h3><p>HP ${u.hp}/${u.maxHP} · <b>${REFUGEE_STATE_KO[st]}</b></p><p>${why}</p>${left?`<p>관문 너머까지 ${left}칸</p>`:''}</div>`;}} // v2.7.0 (D-158)
  if(fogHidden(s,u))return `<div class="unit-info fogged"><h3>${esc(u.name)}</h3><p>안개 속이라 정체가 보이지 않습니다. 장수가 3칸 안으로 다가가거나 결계석을 조사해 안개를 걷으세요.</p></div>`;
  const hero=heroDef(u.id),v=u.team==='ally'?effectiveStats(s,u):u,profile=u.movementProfile||CLASS_MOVEMENT[HERO_CLASS[u.id]]?.profile||'infantry';
  /* D-108: ◀ ▶ walk through the legion's heroes without closing the sheet */

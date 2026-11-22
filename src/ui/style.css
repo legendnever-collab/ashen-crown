@@ -545,3 +545,4 @@
 .purchase-layout small.stars,.modal p small.stars{display:inline;margin:0 0 0 6px;gap:0}
 /* v2.6.1: the battle minimap takes presses (the camera goes there) */
 #battle-minimap{pointer-events:auto;cursor:pointer;touch-action:none}
+.double-base{font-size:12px;opacity:.82;margin:-4px 0 8px}.forecast .double-note{color:#f2d27a}

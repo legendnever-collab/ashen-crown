@@ -106,7 +106,7 @@ export function paintedRoom(hubId,interior,buildingId){
  const mask=['############','############',...L.mask,RV6_DOOR],chests=L.chests||[],exit=[6,6];
  const room={name:`${L.name} · 내부`,tone:'interior',painted:true,art:id,night,width:12,height:8,spawn:exit,generic:base.generic,service:base.service,mask,doors:[[5,7],[6,7]],
   buildings:chests.map(([chestId,x,y])=>({type:'chest',x,y,w:1,h:1,label:'',chestId})),
-  npcs:(base.npcs||[]).map(n=>L.npc?{...n,x:L.npc[0],y:L.npc[1],reach:L.npc[2]||2,...(L.npc[3]?{drop:L.npc[3]}:{})}:n),
+  npcs:(base.npcs||[]).map(n=>L.npc&&n.service?{...n,x:L.npc[0],y:L.npc[1],reach:L.npc[2]||2,...(L.npc[3]?{drop:L.npc[3]}:{})}:n),
   places:[{id:'exit',name:'밖으로 나가기',x:exit[0],y:exit[1],action:'exit'},...chests.map(([chestId,x,y])=>({id:`chest:${chestId}`,name:'보물상자',x,y,action:'chest',chestId}))]};
  roomCache.set(key,room);return room;
 }

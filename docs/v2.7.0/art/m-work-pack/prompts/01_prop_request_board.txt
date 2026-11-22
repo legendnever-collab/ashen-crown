@@ -1,0 +1,11 @@
+Paint ONE game prop on a fully transparent background: the village REQUEST BOARD (의뢰 게시판) of a county office, standing in a small village square in an original Western medieval frontier fantasy tactical RPG.
+
+What it is: a sturdy freestanding notice board — two squared oak posts set in a low stone footing, a plank board between them about one and a half adult heights tall in total, a small shingled roof over the board, and pinned notices (parchment sheets of different sizes, a few with a red wax seal, one torn edge). A small iron bracket on one post holds a narrow pennant in plain cloth. It must read at a glance as an official place where the local authority posts paid work and bounties — tidy, cared for, a little weathered.
+
+Scale and view: the same high three-quarter top-down angle as the attached approved_hub_reed.jpg and approved_hub_village_day.jpg. The attached square_placement.png shows the cobbled square around the well where it will stand (the tile right of the well, between the two banner posts); scale_reference.png and sprite_eric_sheet.png show the people: an adult is about 60-70 px tall on a 64 px tile, so the whole board is about 90-100 px tall at that scale and about 80 px wide. In the 512x512 output, centre it horizontally with the base of the posts touching the bottom edge area (feet of the posts at about y=470), so it can be scaled down to 128 px.
+
+Style: match the attached approved art (style_aren_neutral.png and the hub paintings) — hand-painted fantasy illustration, confident contours, painterly cel shading, warm rim light, earthy colours, readable at small size.
+
+Rules: transparent background (real alpha; if you cannot, flat pure #00FF00 and say so in QA_REPORT.md). No text, no letters or numbers on the notices (draw them as lines of unreadable scribble), no emblems or logos, no people, no shadow baked far outside the footing (a small soft contact shadow under the footing is fine). Original design: do not imitate any existing game's prop.
+
+Output: prop_request_board.png, exactly 512x512 px.

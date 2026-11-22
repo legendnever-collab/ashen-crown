@@ -18,7 +18,7 @@ export const STORY_V092={
  '19:unseal':[s92('kai','진 하나가 꺼졌어. 포로가 숨을 몰아쉬어.','concerned'),s92('eric','셋 남았다. 서두르자.','determined')],
  '19:unseal:lia':[s92('lia','봉인 해제… 스승님이 가르쳐 주신 순서 그대로예요.','sad'),s92('teacher','그 순서를 나는 사람을 묶는 데 썼고, 너는 푸는 데 쓰는구나.','sad')],
  '19:unseal3':[s92('elina','하나 남았어요!','determined'),s92('eric','끝까지 간다.','determined')],
- '19:reinforce':[s92('elina','북쪽 통로로 의식 기사들이 내려와요!','concerned'),s92('eric','진 곁을 비우지 마라.','determined')],
+ '19:reinforce':[s92('elina','남쪽 통로로 의식 기사들이 올라와요!','concerned') /* v2.7.0 (D-158): the v2.4.1 wave comes up the south passage */,s92('eric','진 곁을 비우지 마라.','determined')],
  '19:end':[s92('teacher','…다 꺼졌구나. 이 의식이 무엇을 남기는지, 너희가 다 보았겠지.','sad'),
   s92('lia','스승님. 왜 이걸 만드셨어요? 이 지식이 사람을 해칠 걸 아셨잖아요.','sad'),
   s92('teacher','알았다. 결계가 무너지면 더 많은 사람이 죽는다고 믿었다. 그래서 재상부가 부르자 갔다. 대신… 의식의 마지막 장은 쓰지 않았다.','sad'),

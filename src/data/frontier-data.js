@@ -1,5 +1,6 @@
 // Original local scenes/NPC details are PROPOSED content within approved chronology.
 import {ART_HUBS} from './hubs-v05.js';
+import {TAVERN_PATRONS} from './patrons-v270.js';
 import {GEAR_V081,TREASURES,GEAR_I_GROW,statText} from './arms-v081.js';
 import {applyClassGear} from './gear8.js';
 // v0.3 tier I gear (ids, prices, bonuses unchanged). v0.8.1: Korean names; one star (★2) equals the old +1 upgrade.
@@ -118,7 +119,7 @@ Object.assign(INTERIORS,{
  quarters:room('지휘 막사 · 내부',10,8,[prop('maptable',3,2,4,2),prop('shelf',1,1,1,3),prop('barrel',8,1)],[['a',8,4]])
 });
 // v2.1 주점 (D-118): the barracks room with a keeper who opens 「인재 확보」 (same chests, so chest records hold).
-INTERIORS.tavern={...INTERIORS.barracks,name:'주점 · 내부',service:'tavern',npcs:[{id:'tavernkeeper',name:'주점 주인 · 인재 확보',x:5,y:5,service:'tavern',reach:2}]};
+INTERIORS.tavern={...INTERIORS.barracks,name:'주점 · 내부',service:'tavern',npcs:[{id:'tavernkeeper',name:'주점 주인 · 인재 확보',x:5,y:5,service:'tavern',reach:2},...TAVERN_PATRONS.map(({id,name,x,y,look})=>({id,name,x,y,look}))]}; // v2.7.0 (D-158): the guests (data/patrons-v270.js)
 export const BUILDING_INTERIOR={residence:'house',inn:'barracks',depot:'store',warroom:'quarters'};
 for(const [hubId,hub] of Object.entries(HUBS)){let n=0;
  for(const b of hub.buildings){const interior=BUILDING_INTERIOR[b.type];if(!interior||b.entrance)continue;

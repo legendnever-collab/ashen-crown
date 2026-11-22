@@ -54,6 +54,7 @@ export const CATALOG_GEAR=[
  cGear('merchantCoat','상인의 외투','Merchant Coat',2,'armor',cLight,'DEF +1 · RES +2 · SPD +1',160,'벨마르 · M10'),
  cGear('luckyCoin','행운 동전','Lucky Coin',2,'accessory',[...cAll5,'thea','dario','ines','baldrick'],'치명 +5',150,'벨마르 · M10'),
  cGear('windCharm','바람결 부적','Windstep Charm',2,'accessory',[...cAll5,'thea','dario','ines','baldrick'],'회피 +10',180,'벨마르 · M10'),
+ cGear('twinKnot','쌍매듭 팔찌','Twin-Knot Band',2,'accessory',[...cAll5,'thea','dario','ines','baldrick'],'연속 공격 +15%',170,'벨마르 · M09'), // v2.7.0 (D-158): the 「연속 공격」 accessory
  cGear('duelistRapier','결투가의 레이피어','Duelist Rapier',2,'weapon',['dario'],'ATK +5 · 치명 +5',400,'벨마르 · 고급품'),
  // tier II — pilgrim village (Order of the Sacred Flame)
  cGear('flameStaff','성화 지팡이','Sacred Flame Staff',2,'weapon',['sain'],'MAG +2 · 치유 +3',180,'순례자 마을 · M11'),
