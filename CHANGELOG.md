@@ -1,3 +1,10 @@
+# v2.7.0 — 맞는 길, 운, 마을의 얼굴
+- Release candidate (D-157 design, D-158 approval with the recommended answers, D-159 build); merge only on the user's approval. Notes docs/v2.7.0/RELEASE_NOTES.md.
+- M06 on a 22×24 south-to-north map (src/data/missions-v270.js; legion and refugees south, the gate and the executioner north, pursuers from the south, the garrison beyond the gate, beacon east, lever west); refugees walk 3 tiles beside a hero (m.escortSteps), through heroes and refugees, around foes; a state label over each (refugeeState) and a sheet when pressed; M06 strength ×1.8.
+- 「연속 공격」: rules.js doubleChance — (own 운 − foe 운 ÷ 2) × 2%, 0–35%, plus the new accessory 「쌍매듭 팔찌」 (+15%, Velmar from M09), at most 50%; replaced the hidden 민첩 +8 follow-up; shown in the forecast, the dock and the hero sheet. Bosses' 운 +3. Tier attacks named in the forecast (patternNote).
+- Small villages: the request board in the square (14,7; drawn until art pack M), the county clerk (look clerk) at 15,7, a traveller at the tavern door (1,9); two tavern guests (patrons-v270.js) in every tavern room; painted rooms move only the service person to the counter.
+- Dialogue directions fixed to the big maps: M02, M03, M05, M16, M19. Art pack M work order (docs/v2.7.0/art/m-work-pack). Schema 28 (M06 battle saves reopen in camp).
+
 # v2.6.1 — 한 칸에 한 사람 (마이너 업데이트)
 - Release candidate (D-155), built on v2.6.0 (merged); merge only on the user's approval. Notes docs/v2.6.1/RELEASE_NOTES.md.
 - Figures: every painted figure is measured once (alpha box, head to foot; hd-world.js figureBox) and drawn FIGURE_HEIGHT 54 px tall per 64 px tile with the feet on the tile's lower edge; the duel window does the same (DS_FIGURE 320, DS_TALL for anyone the story calls huge — empty for now).
