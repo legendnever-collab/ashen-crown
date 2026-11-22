@@ -21,10 +21,10 @@ Updated 2026-11-22 KST. **Release candidate** on feature/v2.6.0 (not merged), bu
 - **Balance, 보통** (node tests/act2-balance.mjs 30): every mission at or above the 60% gate (Wilson upper bound; the gate's low list is empty). Lowest: M22 19/27, M16 21/29, M21 21/27. ACT I: M03 27/30, M04 26/30, M06 25/30; M01, M02, M05 30/30.
 - **Balance, 어려움** (report): M14 15/25, M16 12/20, M17 12/19, M21 9/16, M22 8/15, M24 5/11, M26 5/9 are the lowest; 7–11 campaigns reach ACT IV.
 - Full lines and the tuning steps: docs/v2.6.0/evidence/balance-chains.txt.
-- **Unit tests on the packaged build:** see docs/v2.6.0/evidence/unit-results.txt.
+- **Unit tests on the packaged build: 579 PASS / 0 FAIL / 16 skipped** (docs/v2.6.0/evidence/unit-results.txt; the 16 skipped are pinned on the pre-v2.0 maps, D-115).
   - New: tests/terrain-v260.test.mjs (the movement table; the forest stop on M01 for a foot soldier, a rogue and a rider; every map — no rider starts, deploys or arrives in a forest, every rider wave can reach the legion; a rider cannot deploy in M11's forest; fire by the ground on every tile of every map, the wet forest ×0.5, the dry forest ×1.5); tests/xp-scale.test.mjs rewritten for the gap table; tests/bundle-names.test.mjs (no renamed imports).
   - Re-pinned: the old forest-cost tests (act1-v200, rules), Thea's charge in M18 on open ground (awakening), the Sage Notebook level with the enemies (arms), the M28/M30 test heroes held at Lv 40 so they do not level mid-test, the strength and 어려움 tables (playtest-d126, difficulty-hard).
-- **Browser suites run here:** docs/v2.6.0/evidence/browser-run-summary.log.
+- **Browser suites run here (6): every final exit is 0** (docs/v2.6.0/evidence/browser-run-summary.log): v260, act1, class, e2e, tactics, mobile. e2e first failed on a stale winning trace recorded with the old rules (one of its moves now enters a forest); `npm run test:balance` (M01 30/30, which CI runs first) regenerated it and e2e passed.
   - **v260 suite** (1440×900, 390×844): Eric's move range reaches the first forest tile and stops there; the readout says 「보병 들어서면 멈춤 · 기병 불가」 and 「에릭: 들어서면 이동 끝」; Lia's fire on the raider in the forest forecasts 「🔥 숲 +50%」; the hit earns EXP; no runtime errors. Screenshots: docs/v2.6.0/screenshots.
 - **The other browser suites:** run by CI on the PR.
 
