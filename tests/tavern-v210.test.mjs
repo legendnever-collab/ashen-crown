@@ -39,7 +39,7 @@ test('hiring: one fee, the legion\'s average level −1, kept to the ending; nev
  const r=hire(s,'noa');assert.ok(r.ok,r.error);assert.equal(s.economy.gold,gold-200);assert.ok(s.campaign.roster.includes('noa'));assert.equal(s.campaign.heroes.find(h=>h.id==='noa').level,lv);
  assert.deepEqual(s.economy.hired,['noa']);assert.equal(hire(s,'noa').ok,false,'once');assert.ok(!mercsAt(s,'ash').some(m=>m.id==='noa'));
  s.economy.gold=50;s.campaign.economy.gold=50;assert.match(hire(s,'marta').error,/부족/);
- const back=deserialize(serialize(s));assert.ok(back.campaign.roster.includes('noa'));assert.equal(back.schema,SCHEMA);assert.equal(SCHEMA,27);assert.equal(VERSION,'2.5.1');
+ const back=deserialize(serialize(s));assert.ok(back.campaign.roster.includes('noa'));assert.equal(back.schema,SCHEMA);assert.equal(SCHEMA,27);assert.equal(VERSION,'2.5.2');
  assert.ok(STORY['officer:noa:0'],'camp talk');assert.deepEqual(loreChapters('noa',back.campaign).open.map(c=>c.after).filter(a=>a<=1),[],'chapters start after the hire');});
 
 test('M04 opens 갈대 나루 and 돌우물 마을 on the world map; Rowell waits at the reed tavern as an elite hire; a wanderer moves to stonewell',()=>{

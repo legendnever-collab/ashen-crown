@@ -36,7 +36,7 @@ try{
   await p.goto(url);await press('new');await drainStory(p);
   // 1. the real v0.10.2 lower city offers Mission 29
   await restore(camp28);await drainStory(p);await closeModals();let s=await snap();
-  check(`${label} the v0.10.2 lower city (after M28, nine heroes) offers Mission 29`,s.schema===27&&s.version==='2.5.1'&&s.frontier.hub==='capital'&&s.campaign.roster.includes('baldrick')&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 29'));
+  check(`${label} the v0.10.2 lower city (after M28, nine heroes) offers Mission 29`,s.schema===27&&s.version==='2.5.2'&&s.frontier.hub==='capital'&&s.campaign.roster.includes('baldrick')&&(await p.locator('[data-do="next-mission"]').first().textContent()).includes('Mission 29'));
   await press('next-mission');await p.waitForTimeout(400);await drainStory(p);await closeModals();s=await snap();check(`${label} the lower city before M29`,s.frontier.hub==='capital'&&s.missionId===29);
   await enterWarCouncil(p,touch);await press('deploy');await p.waitForTimeout(300);s=await snap();check(`${label} the sortie is eight of nine heroes`,s.units.filter(u=>u.team==='ally'&&!['bram','noa','marta','rowell'].includes(u.id)).length===9&&s.units.filter(u=>u.team==='ally'&&!u.benched).length===8&&s.units.filter(u=>['bram','noa','marta','rowell'].includes(u.id)).every(u=>u.benched)); /* v2.0.0: the four officers wait on the bench */
   await press('start-battle');await drainStory(p);s=await snap();

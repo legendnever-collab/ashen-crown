@@ -59,7 +59,7 @@ jobs:
           - suite_group: act3
             suites: act3 migration-v081 item-art act3b migration-v090 feedback-v091 act3c migration-v091 act3d migration-v092
           - suite_group: act4
-            suites: act4a act4b act4c act4d migration-v093 migration-v0100 migration-v0101 migration-v0102 v200 v230 v231 v240 v241 v250 v251
+            suites: act4a act4b act4c act4d migration-v093 migration-v0100 migration-v0101 migration-v0102 v200 v230 v231 v240 v241 v250 v251 v252
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

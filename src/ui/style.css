@@ -518,3 +518,26 @@
  .ds-skip{font-size:13px;min-height:40px;top:2%;bottom:auto}}
 .tavern-icon{vertical-align:middle;margin-right:8px;border-radius:6px}.merc-icon{vertical-align:-3px;margin-right:3px}
 #avif-notice{position:fixed;left:50%;top:max(12px,env(safe-area-inset-top));transform:translateX(-50%);z-index:9999;max-width:min(560px,calc(100vw - 32px));padding:12px 16px;border-radius:10px;background:#3b1f12;color:#f6e7c8;border:1px solid #c9853f;font-size:14px;line-height:1.5;box-shadow:0 6px 18px rgba(0,0,0,.45);cursor:pointer}
+/* v2.5.2: the small menu beside a person with a service (대화 · 인재 확보 / 거래 / 의뢰 게시판) */
+.frontier-map-wrap{position:relative}
+.npc-menu{position:absolute;z-index:6;display:flex;flex-direction:column;gap:6px;min-width:128px;padding:10px;background:rgba(14,30,34,.96);border:1px solid var(--gold,#c9a85a);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.45)}
+.npc-menu b{font-size:14px;color:var(--gold,#e8cf8a);padding:0 2px 2px}
+.npc-menu button{min-height:38px;font-size:15px}
+.npc-menu button.ghost{min-height:30px;font-size:13px;opacity:.8}
+.npc-talk-line{font-size:17px;line-height:1.6}
+/* v2.5.2 (the user's request 2026-11-22): the gear purchase fits the screen — the buy button no longer needs a scroll. The
+   three columns share the height left under the title; each scrolls on its own if it must, the portrait is smaller, the
+   stat comparison runs in two columns, and the buttons stay at the bottom of every modal that scrolls. */
+.modal>.row:not(:empty){position:sticky;bottom:-20px;z-index:2;background:#213b3f;padding:10px 0 4px;margin-bottom:-4px;box-shadow:0 -10px 12px -8px #213b3f}
+.modal:has(.purchase-layout){display:flex;flex-direction:column;max-height:calc(100dvh - 40px);overflow:hidden;padding:16px 20px}
+.modal:has(.purchase-layout) .modal-title{flex:none;margin-bottom:6px}
+.modal:has(.purchase-layout)>.row{position:static;flex:none;margin-top:10px;box-shadow:none}
+.purchase-layout{flex:1 1 auto;min-height:0;gap:12px;align-items:stretch}
+.purchase-layout>article,.purchase-layout>.purchase-roster{min-height:0;overflow:auto;scrollbar-width:thin}
+.purchase-layout article{padding:10px 12px}
+.purchase-layout article p{margin:6px 0;line-height:1.55}
+.purchase-layout article h3{margin:4px 0}
+.purchase-layout .portrait{width:76px;height:76px}
+.purchase-layout .stat-delta{display:inline-block;width:50%;line-height:1.6}
+@media(max-width:720px){.purchase-layout{display:block;overflow:auto}.purchase-layout>article,.purchase-layout>.purchase-roster{overflow:visible;margin-bottom:8px}}
+.purchase-layout small.stars,.modal p small.stars{display:inline;margin:0 0 0 6px;gap:0}

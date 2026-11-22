@@ -17,7 +17,7 @@ test('fixtures are genuine v0.10.0 schema-16 saves after ACT IV part 1',()=>{for
  const c=raw('m24-camp').campaign;assert.ok(c.completed.includes(24));assert.equal(c.choices.m23_lead,'banners');assert.ok(Number.isInteger(c.flags.mission_24_gate_turn));assert.equal(raw('m24-camp').frontier.hub,'village_raid');});
 
 test('the v0.10.0 Ashen Village loads as schema 19 with every asset kept',()=>{
- const before=raw('m24-camp'),s=load('m24-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,27);assert.equal(s.version,VERSION);assert.equal(VERSION,'2.5.1');assert.equal(s.frontier.hub,'village_raid');
+ const before=raw('m24-camp'),s=load('m24-camp');assert.equal(s.schema,SCHEMA);assert.equal(SCHEMA,27);assert.equal(s.version,VERSION);assert.equal(VERSION,'2.5.2');assert.equal(s.frontier.hub,'village_raid');
  for(const k of ['completed','flags','choices','promotions','factionTrust','trustLog','roster','feats','departed','economy','heroes','bonds','tacticalMemory','records','choices'])keptV200(s.campaign,before.campaign,k);
  assert.deepEqual(econV200(s.economy),econV200(before.economy));const back=deserialize(serialize(s));assert.deepEqual(econV200(back.campaign.economy),econV200(before.campaign.economy));
 });
