@@ -1,3 +1,11 @@
+# v2.6.0 — 지형과 성장
+- Release candidate (D-152, D-153), built on the v2.5.2 candidate; merge only on the user's approval. Design docs/v2.6.0/TERRAIN_XP_DESIGN.md, notes docs/v2.6.0/RELEASE_NOTES.md.
+- Forest: foot soldiers stop on entering (STOP_TERRAIN, rules.js stopsAt/pathCost), rogues 1, cavalry cannot enter; cavalry desert 2. AI pursuit, deployment, the bench, joining heroes and waves use the mover's own costs. Maps: M13 two forest-edge tiles, M05 third rider (src/data/missions-v260.js).
+- Fire: the water's edge (swamp, bridge, ice bridge, next to deep water) ×0.5, winning over forest ×1.5 (fireMul/waterEdge); the forecast shows 🔥 notes; the war council's terrain line states the forest rule.
+- EXP by the level gap to the enemy struck (gapScale, battleFoeLevel); base hit 15, kill +20; the gap shows on the EXP text.
+- Strength: M15 .88, M16 .92, M17 .85; 어려움 M14 without the push.
+- Fixed: renamed imports dropped by the build (shield push / cavalry pass-through threw in the browser since v2.0.0; M25 camps without the M14 flag). Tests: terrain-v260, xp-scale, bundle-names, v260-e2e.
+
 # v2.5.2 — 마을에서 누르면 바로 (작은 업데이트)
 - Release candidate (D-148, D-149); merge only on the user's approval. Notes docs/v2.5.2/RELEASE_NOTES.md.
 - Town clicks: a click on a person walks within reach and talks; service people open a small menu beside them (대화 · 인재 확보 / 거래 / 의뢰 게시판 · 닫기; src/data/npc-talk-v252.js); a click on a chest walks beside it and opens it; a click during a walk replaces it.

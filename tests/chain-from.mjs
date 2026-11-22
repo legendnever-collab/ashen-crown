@@ -23,7 +23,9 @@ const FIRST={},runs=[];
 // after a won mission: the same choices act2-balance makes (alternated by the campaign's index)
 const AFTER={23:(s,k)=>chooseLead23(s,k%2?'legion':'banners'),25:(s,k)=>chooseBanner25(s,k%2?'forgive':'lower'),28:(s,k)=>chooseConfession28(s,k%2?'all':'eric'),
  29:(s,k)=>chooseFate29(s,s.missionState.words?'offer':k%2?'trial':'exile')};
-function fightCamp(camp){let s;for(let t=0;t<3;t++){s=structuredClone(camp);s.rng=s.initialSeed=(s.rng+t*7919)>>>0;s.screen='deployment';startBattle(s);
+// v2.6.0: ASHEN_DUMP=<ids> saves the camps before those missions here too (to a separate folder, so the inputs are kept)
+const DUMP=new Set((process.env.ASHEN_DUMP||'').split(',').filter(Boolean).map(Number));
+function fightCamp(camp){if(DUMP.has(camp.missionId)&&camp.missionId!==FROM){fs.mkdirSync('test-output/camps-next',{recursive:true});fs.writeFileSync(`test-output/camps-next/m${camp.missionId}-${camp.initialSeed}-${k}.json`,serialize(camp));}let s;for(let t=0;t<3;t++){s=structuredClone(camp);s.rng=s.initialSeed=(s.rng+t*7919)>>>0;s.screen='deployment';startBattle(s);
   try{playCampaignBattle(s);}catch(e){s.outcome='error';s.reason=e.message;}
   if(t===0){const r=FIRST[s.missionId]??={w:0,n:0};r.n++;if(s.outcome==='victory')r.w++;}if(s.outcome==='victory')break;}return s;}
 let k=0;

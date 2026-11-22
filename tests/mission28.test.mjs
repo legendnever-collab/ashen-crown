@@ -19,7 +19,7 @@ const camp=(extra={})=>({heroes:null,results:[],clears:27,completed:[...Array(27
  choices:{act3_choice:'council'},factionTrust:{iron:2,free:3,flame:1},factionsMet:['iron','free','flame'],roster:['thea','dario','ines'],...extra});
 const battle=extra=>{const s=newGame(100,camp(extra),28);s.screen='deployment';startBattle(s);drain(s);return s;};
 const enemyPhase=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);};
-const sturdy=s=>{for(const u of s.units.filter(u=>u.team==='ally'))u.hp=u.maxHP=999;};
+const sturdy=s=>{for(const u of s.units.filter(u=>u.team==='ally')){u.hp=u.maxHP=999;u.level=Math.max(u.level,40);}}; /* v2.6.0: the test camp's Lv 1–2 heroes would earn ×2 EXP against Lv 20 foes and level mid-test (a level-up recomputes max HP); at Lv 40 they learn ×0.05 */
 const read=(s,id,hero='lia')=>{const m=findUnit(s,id),h=findUnit(s,hero);for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const x=m.x+dx,y=m.y+dy;if(MISSIONS[28].map[y]?.[x]==='k'&&!s.units.some(o=>alive(o)&&o.x===x&&o.y===y)){h.x=x;h.y=y;h.moved=h.acted=false;break;}}return performAction(s,hero,'search',id);};
 
 test('M28 data: 26×22 palace (v2.5.1 big map: the great hall and three wings), level 20, sortie of eight, TURN 14; thirteen remnants (the cap), three fragments, young Aren; scenes tell the night',()=>{

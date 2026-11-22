@@ -1,0 +1,10 @@
+v260 exit=0
+act1 exit=0
+class exit=0
+e2e exit=1
+tactics exit=0
+mobile exit=0
+DONE
+# e2e rerun after npm run test:balance regenerated the winning trace with the v2.6.0 rules (CI runs test:balance first):
+e2e exit=0
+DONE

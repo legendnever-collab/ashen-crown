@@ -1,6 +1,6 @@
 // v0.4 mission hooks. M01–03 never reach this module, so their rules stay byte-for-byte the same.
 import {missionOf} from '../data/missions.js';
-import {alive,at,distance,findUnit,terrainAt,strikeStats,isolated} from './rules.js';
+import {terrainCost,alive,at,distance,findUnit,terrainAt,strikeStats,isolated} from './rules.js';
 import {enqueueStory,setStoryFlag,remember} from './narrative.js';
 import {ACT2_RULES} from './mission-rules-v06.js';
 import {ACT2B_RULES} from './mission-rules-v061.js';
@@ -26,7 +26,10 @@ export function spawnWave(s,list){
  // v2.0.0 (§6.2): on 어려움 a wave brings a quarter more (copies of its first soldiers, never its commanders).
  const extra=Math.ceil(list.length*(DIFFICULTY[difficultyOf(s)].waves-1));if(extra>0){const pool=list.filter(e=>e.id!=='boss'&&!['captain','lion'].includes(e.kind)&&!e.leader&&!e.commander);list=[...list,...pool.slice(0,extra).map((e,i)=>({...e,id:`${e.id}h${i}`,name:e.name}))];}
  for(const e of list){let pos={x:e.x,y:e.y};if(at(s,pos.x,pos.y)){const free=[];for(let y=0;y<m.height;y++)for(let x=0;x<m.width;x++)if(!at(s,x,y)&&Number.isFinite(terrainAt(x,y,s)?.cost))free.push({x,y});free.sort((a,b)=>distance(a,e)-distance(b,e)||a.y-b.y||a.x-b.x);pos=free[0];}
-  const nu={...enemyUnit(e,s.turn),...pos};s.units.push(nu);scaleTroop(s,nu,m);s.feedback.push({type:'spawn',id:e.id,text:'REINFORCEMENT'});}
+  const nu={...enemyUnit(e,s.turn),...pos};s.units.push(nu);scaleTroop(s,nu,m);
+  // v2.6.0 (D-152): a rider never arrives in a forest — the nearest free tile it can stand on instead
+  if(!Number.isFinite(terrainCost(s,nu,nu.x,nu.y))){const free=[];for(let y=0;y<m.height;y++)for(let x=0;x<m.width;x++)if(!at(s,x,y)&&Number.isFinite(terrainCost(s,nu,x,y)))free.push({x,y});free.sort((a,b)=>distance(a,e)-distance(b,e)||a.y-b.y||a.x-b.x);if(free[0])Object.assign(nu,free[0]);}
+  s.feedback.push({type:'spawn',id:e.id,text:'REINFORCEMENT'});}
 }
 
 const M4={

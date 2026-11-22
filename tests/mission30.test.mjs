@@ -19,7 +19,7 @@ const camp=(extra={},flags={},choices={})=>({heroes:null,results:[],clears:29,co
  choices:{act3_choice:'council',m23_lead:'legion',m25_banner:'forgive',m28_confession:'eric',m29_bellard:'trial',m21_king:'promise',m20_plan:'keep',m17_oath:'leave',m16_stones:'leave',...choices},factionTrust:{iron:2,free:3,flame:1},factionsMet:['iron','free','flame'],roster:['thea','dario','ines'],...extra});
 const battle=(extra,flags,choices)=>{const s=newGame(100,camp(extra,flags,choices),30);s.screen='deployment';startBattle(s);drain(s);return s;};
 const enemyPhase=s=>{beginEnemyPhase(s);for(let i=0;s.phase==='enemy'&&!s.outcome&&i<200;i++){advanceEnemy(s);drain(s);}drain(s);};
-const sturdy=s=>{for(const u of s.units.filter(u=>u.team==='ally'||u.id==='heart')){u.hp=u.maxHP=999;u.def=999;}}; /* v2.5.1: on the big map a level-up mid-phase resets max HP, so the heroes hold by armour */
+const sturdy=s=>{for(const u of s.units.filter(u=>u.team==='ally'||u.id==='heart')){u.hp=u.maxHP=999;u.def=999;if(u.team==='ally')u.level=Math.max(u.level,40);}}; /* v2.6.0: the test camp's Lv 1–2 heroes would earn ×2 EXP against Lv 20 foes and level mid-test (a level-up recomputes max HP); at Lv 40 they learn ×0.05 */ /* v2.5.1: on the big map a level-up mid-phase resets max HP, so the heroes hold by armour */
 const won=(extra,flags,choices)=>{const s=battle(extra,flags,choices);for(let i=0;!s.outcome&&i<12;i++){sturdy(s);enemyPhase(s);}assert.equal(s.outcome,'victory');return s;};
 
 test('M30 data: 30×18 courtyard at dawn (v2.5.1 big map, five breaches), level 21, sortie of eight, hold to TURN 8; the heart stone, all three banners; scenes',()=>{

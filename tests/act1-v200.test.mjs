@@ -22,9 +22,10 @@ test('M01 is 22×16 with the five heroes (v2.1: no officers at the start — tav
  assert.equal(s.units.filter(u=>u.team==='civilian').length,2);assert.ok(s.units.filter(u=>u.team==='enemy').length>=10);
  assert.ok(s.units.some(u=>u.team==='enemy'&&u.y<=4)&&s.units.some(u=>u.team==='enemy'&&u.x>=18),'raiders come from the north road and the east road');});
 
-test('Dijkstra counts forest as 2 for infantry, 1 for the rogue and riders',()=>{const s=battle(),e=position(s,'eric',4,6),k=findUnit(s,'kai');
- assert.equal(terrainAt(5,6,s).name,'Forest');assert.equal(movement(s,e).costs.get('5,6'),2);
- assert.equal(terrainCost(s,e,5,6),2);assert.equal(terrainCost(s,k,5,6),1);assert.equal(terrainCost(s,{...e,movementProfile:'cavalry'},5,6),1);});
+// v2.6.0 (D-152): a forest takes the rest of a foot soldier's move; riders cannot enter it (tests/terrain-v260.test.mjs)
+test('Dijkstra: a forest stops infantry (the whole move), 1 for the rogue, closed to riders',()=>{const s=battle(),e=position(s,'eric',4,6),k=findUnit(s,'kai');
+ assert.equal(terrainAt(5,6,s).name,'Forest');assert.equal(movement(s,e).costs.get('5,6'),effectiveStats(s,e).mov);
+ assert.equal(terrainCost(s,e,5,6),2);assert.equal(terrainCost(s,k,5,6),1);assert.equal(terrainCost(s,{...e,movementProfile:'cavalry'},5,6),Infinity);});
 
 test('ruins, occupied tiles and the map edge cannot be entered',()=>{const s=battle(),e=position(s,'eric',9,4);
  assert.equal(terrainAt(10,4,s).name,'Ruin');assert.equal(pathTo(s,e,10,4),null);assert.equal(pathTo(s,e,-1,4),null);

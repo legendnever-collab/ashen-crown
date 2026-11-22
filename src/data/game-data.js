@@ -1,5 +1,5 @@
 import {NEW_HEROES} from './mercs-v210.js';
-export const VERSION = '2.5.2';
+export const VERSION = '2.6.0';
 export const SCHEMA = 27;
 export const WIDTH = 12, HEIGHT = 10;
 // v0.4 benchmark pass: physical cut (fraction), evade (%), fire multiplier and per-class
@@ -82,10 +82,14 @@ export const REINFORCEMENTS = [
  {id:'r2',name:'북쪽 궁수',kind:'archer',x:11,y:0,hp:21,atk:10,def:2,res:3,spd:7,mov:3,range:[2,3]}
 ];
 export const CIVILIANS = [{id:'c1',name:'미라',x:2,y:3},{id:'c2',name:'토마스',x:9,y:3}];
-export const BALANCE = {xpLevel:100,attackXP:22,killXP:28,healXP:24,rescueXP:45,guardXP:30,clearXP:35,parTurn:8,civilianThreatTurn:5,civilianHP:28};
+// v2.6.0 (D-152): with EXP by the level gap the legion levelled ~6 faster by M15 (M15 Lv 33 vs 26) — a hit 22 → 15, a kill +28 → +20
+export const BALANCE = {xpLevel:100,attackXP:15,killXP:20,healXP:24,rescueXP:45,guardXP:30,clearXP:35,parTurn:8,civilianThreatTurn:5,civilianHP:28};
 
 // Explicit profiles: future advancement data only, no promotion UI.
 export const CLASS_MOVEMENT={knight:{base:2,profile:'infantry'},archer:{base:3,profile:'infantry'},mage:{base:3,profile:'infantry'},healer:{base:3,profile:'infantry'},rogue:{base:4,profile:'rogue'},mountedKnight:{base:5,profile:'cavalry'},swordsman:{base:3,profile:'infantry'},warden:{base:3,profile:'infantry'}};
 export const HERO_CLASS={eric:'knight',elina:'archer',lia:'mage',sain:'healer',kai:'rogue',thea:'mountedKnight',dario:'swordsman',ines:'warden',baldrick:'mountedKnight'};
-export const TERRAIN_COSTS={infantry:{r:1,g:1,v:1,b:1,f:2,m:3,d:2,s:3,n:2,i:1,o:2,l:1},rogue:{r:1,g:1,v:1,b:1,f:1,m:1,d:1,s:2,n:1,i:1,o:1,l:1},ranger:{r:1,g:1,v:1,b:1,f:1,m:3,d:2,s:3,n:2,i:1,o:2,l:1},cavalry:{r:1,g:1,v:1,b:1,f:1,m:Infinity,d:1,s:Infinity,n:2,i:2,o:Infinity,l:2}};
+export const TERRAIN_COSTS={infantry:{r:1,g:1,v:1,b:1,f:2,m:3,d:2,s:3,n:2,i:1,o:2,l:1},rogue:{r:1,g:1,v:1,b:1,f:1,m:1,d:1,s:2,n:1,i:1,o:1,l:1},ranger:{r:1,g:1,v:1,b:1,f:1,m:3,d:2,s:3,n:2,i:1,o:2,l:1},cavalry:{r:1,g:1,v:1,b:1,f:Infinity,m:Infinity,d:2,s:Infinity,n:2,i:2,o:Infinity,l:2}}; // v2.6.0 (D-152): cavalry cannot enter forest, desert costs it 2
+// v2.6.0 (D-152, the user's request 2026-11-22 17:17): foot soldiers stop on entering a forest — it takes the rest of their
+// movement (one tile a turn inside it; leaving costs the open ground's price). The number in TERRAIN_COSTS stays for distance guesses.
+export const STOP_TERRAIN={infantry:new Set(['f'])};
 export const PROFILE_KO={infantry:'보병',rogue:'도적',cavalry:'기병',ranger:'레인저'};
