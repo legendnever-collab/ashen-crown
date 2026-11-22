@@ -2,7 +2,7 @@
 // town revisits, treasures, hidden objectives, supply carriers, cut-ins and schema 11 saves.
 import test from 'node:test';import {econV200,keptV200} from './v200-compat.mjs';import assert from 'node:assert/strict';
 import {newGame,startBattle,performAction,beginEnemyPhase,advanceEnemy,checkOutcome,restartStage} from '../src/core/game.js';
-import {findUnit,alive,strikeStats,rangeFor,awardXP,distance} from '../src/core/rules.js';
+import {findUnit,alive,strikeStats,rangeFor,awardXP,distance,battleFoeLevel} from '../src/core/rules.js';
 import {transact,effectiveStats,equipmentBonus,initialEconomy} from '../src/core/economy.js';
 import {gearBonus,starFor,temperCost,shelfState,shopGear,rareShelf,featOf,gainGearExp} from '../src/core/arms.js';
 import {statusChance} from '../src/core/status.js';
@@ -87,7 +87,7 @@ test('treasures in battle: Twin Daggers strike again, Shield of Silence stops co
 
 test('treasures: Hawk Feather +1 bow range, Sage Notebook +20% EXP, Charm of Clarity blocks statuses, Lion Epaulette, Alliance Seal, Wind Horseshoe, Reliquary and Mana Ring',()=>{
  const s=board(),elina=findUnit(s,'elina'),lia=findUnit(s,'lia'),eric=findUnit(s,'eric'),sain=findUnit(s,'sain');const r0=rangeFor(elina,'attack',s)[1];own(s,'hawkFeather','elina');assert.equal(rangeFor(elina,'attack',s)[1],r0+1);
- own(s,'sageNotebook','lia');const xp=lia.xp;awardXP(s,lia,10,'test');assert.equal(lia.xp-xp,12);
+ own(s,'sageNotebook','lia');lia.level=Math.round(battleFoeLevel(s));const xp=lia.xp;awardXP(s,lia,10,'test'); /* v2.6.0: level with the enemies, so only the Notebook counts */assert.equal(lia.xp-xp,12);
  {const foe=findUnit(s,'b1'),before=statusChance(s,eric,'poison',50,foe);own(s,'clearCharm','eric');assert.ok(statusChance(s,eric,'poison',50,foe)<before,'v2.0.0: the Charm is 의지 +3 — it resists curses');}
  place(sain,1,1);place(eric,1,2);const def=effectiveStats(s,sain).def;own(s,'lionEpaulette','eric');assert.equal(effectiveStats(s,sain).def,def+1);
  const mov=effectiveStats(s,lia).mov;own(s,'allianceSeal','sain');assert.equal(effectiveStats(s,lia).mov,mov+1,'turn 1');s.turn=2;assert.equal(effectiveStats(s,lia).mov,mov);

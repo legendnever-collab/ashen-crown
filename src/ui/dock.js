@@ -1,7 +1,7 @@
 import {commandsFor,COMMANDS} from '../core/command.js';
 import {effectiveStats} from '../core/economy.js';
 import {HEROES,partyHeroes} from '../data/game-data.js';
-import {findUnit,alive,forecast,skillCost,validTarget} from '../core/rules.js';
+import {findUnit,alive,forecast,skillCost,validTarget,fireNote} from '../core/rules.js';
 import {canAct,canMove,deployLimit} from '../core/game.js';
 import {isClassMode,forecastClass,tileTarget} from '../core/class-actions.js';
 import {CLASS_ACTIONS} from '../data/classes.js';
@@ -35,7 +35,7 @@ export function renderDock(s,ui,esc,portrait,bar){
  let context=`<div class="dock-hint" role="status">${esc(contextMessage(s,u,ui))}</div>`;
  if(ui.inspected){const t=findUnit(s,ui.inspected);if(t)context=`<div class="dock-hint">${esc(t.name)} · HP ${t.hp}/${t.maxHP} · ${ui.notice||'현재 공격 사거리 밖입니다. 이동 또는 다른 장수의 공격을 선택하세요.'} <button class="small" data-do="unit-info" data-id="${t.id}|ability">정보</button></div>`;}
  if(ui.preview&&isClassMode(ui.mode)){const f=forecastClass(s,u,ui.preview,ui.mode);context=`<div class="dock-hint">${esc(f.name)} · ${f.rows.map(r=>esc(r[0]+' '+r[1])).join(' · ')} · 한 번 더 누르면 실행</div>`;}
- else if(ui.preview){const t=findUnit(s,ui.preview),f=forecast(s,u,t,ui.mode);context=`<div class="dock-hint">${esc(t.name)} · ${f.heal!==undefined?`회복 +${f.heal} HP`:f.guard===true?'Guard · 첫 근접 공격 보호':f.rescue?'주민 안전 대피':`예상 피해 ${f.damage} / 명중 ${f.hit}% / 반격 ${f.counter}`} · 한 번 더 누르면 실행</div>`;}
+ else if(ui.preview){const t=findUnit(s,ui.preview),f=forecast(s,u,t,ui.mode);context=`<div class="dock-hint">${esc(t.name)} · ${f.heal!==undefined?`회복 +${f.heal} HP`:f.guard===true?'Guard · 첫 근접 공격 보호':f.rescue?'주민 안전 대피':`예상 피해 ${f.damage}${fireNote(s,f,t)?` (${fireNote(s,f,t)})`:''} / 명중 ${f.hit}% / 반격 ${f.counter}`} · 한 번 더 누르면 실행</div>`;}
  if(ui.phaseConfirm)context=`<div class="phase-confirm"><strong>아직 행동 가능한 장수가 ${s.units.filter(u=>canAct(s,u)).length}명 있습니다.</strong><span>남은 행동을 포기하고 적 Phase로 넘어갈까요?</span>${command('confirm-phase','적 Phase 진행','',false,'','primary')}${command('cancel','계속 행동')}</div>`;
  if(!deploy)commands=command('open-unit-menu','장수 명령','이동 · 공격 · 스킬',ui.busy)+command('next','다음 장수','',ui.busy||!!ui.pendingMove);
  const roster=deploy?`<div class="deploy-side" aria-label="출전 장수">${partyHeroes(s.campaign).map(h=>findUnit(s,h.id)).filter(a=>a&&!a.benched).map(a=>`<button data-do="select" data-id="${a.id}" class="deploy-face-btn ${ui.selected===a.id?'active':''}" title="${esc(a.name)}">${portrait(a,'deploy-face')}<span>${esc(a.name)}</span></button>`).join('')}</div>`:'';

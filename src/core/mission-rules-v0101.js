@@ -9,7 +9,7 @@ import {alive,distance,findUnit,hostile,strikeStats} from './rules.js';
 import {enqueueStory,setStoryFlag,remember} from './narrative.js';
 import {ensureTrust,adjustTrust,FACTIONS} from './factions.js';
 import {act2Waves} from './mission-rules-v06.js';
-import {betrayer as betrayer14} from './mission-rules-v071.js';
+import {betrayer} from './mission-rules-v071.js';
 import {joinRoster} from './roster.js';
 import {startDuel} from './duel.js';
 
@@ -32,7 +32,7 @@ const SHORT={iron:'철왕관',free:'연맹',flame:'성화'};
 const LOOK25={iron:{spear:'ironInfantry',archer:'ironArcher',cavalry:'cavalry',captain:'ironSpear',guard:'ironInfantry'},free:{spear:'mercSpear',archer:'archer',cavalry:'cavalry',captain:'mercSpear',guard:'guard'},flame:{spear:'flameKnight',archer:'flameKnight',cavalry:'cavalry',captain:'flameKnight',guard:'flameKnight'}};
 export const ALLY_TRUST25=3;
 // Which banner holds which camp: the north is the M14 betrayer; the west and east the other two in Iron → Free → Flame order.
-export function camps25(c){const b=c?.flags?.mission_14_betrayer&&BANNERS.includes(c.flags.mission_14_betrayer)?c.flags.mission_14_betrayer:betrayer14(c),rest=BANNERS.filter(f=>f!==b);return {north:b,west:rest[0],east:rest[1]};}
+export function camps25(c){const b=c?.flags?.mission_14_betrayer&&BANNERS.includes(c.flags.mission_14_betrayer)?c.flags.mission_14_betrayer:betrayer(c),rest=BANNERS.filter(f=>f!==b);return {north:b,west:rest[0],east:rest[1]};}
 export const allied25=(c,f)=>(ensureTrust(c)[f]??0)>=ALLY_TRUST25;
 const leaders25=s=>['lw','le'].map(id=>findUnit(s,id)).filter(Boolean);
 export const M25={

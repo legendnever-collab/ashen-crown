@@ -2,7 +2,7 @@
 // (base stats plus that many level-ups of growth), gets empty equipment slots and appears on the hub roster.
 import {RECRUIT_HEROES,heroDef} from '../data/game-data.js';
 import {deployZoneOf} from './game.js';
-import {at,terrainAt} from './rules.js';
+import {at,terrainAt,terrainCost} from './rules.js';
 import {ensureStats} from './stats8.js';
 export function recruitRecord(id,level=1){
  const h=heroDef(id),u={...structuredClone(h),team:'ally',maxHP:h.hp,maxMP:h.mp,xp:0,earnedXP:0,growthHistory:[],clues:[],highlights:[],healTargets:[],appearanceTier:1,classTier:1};
@@ -16,7 +16,7 @@ export function joinRoster(s,id,level=1,record=null){
  for(const e of [c.economy,s.economy])if(e?.equipped&&!e.equipped[id])e.equipped[id]={weapon:null,armor:null,accessory:null,treasure:null};
  for(const f of [s.frontier,c.frontier])if(f){if(!f.members.includes(id))f.members.push(id);f.affiliation[id]='affiliated';}
  // The current state's board gains the hero in reserve (a free deployment tile), so the save stays whole.
- if(Array.isArray(s.units)&&!s.units.some(u=>u.id===id)){const tile=[...deployZoneOf(s)].map(k=>k.split(',').map(Number)).find(([x,y])=>!at(s,x,y)&&!s.units.some(u=>u.x===x&&u.y===y)&&Number.isFinite(terrainAt(x,y,s)?.cost))||[0,0];
+ if(Array.isArray(s.units)&&!s.units.some(u=>u.id===id)){const tile=[...deployZoneOf(s)].map(k=>k.split(',').map(Number)).find(([x,y])=>!at(s,x,y)&&!s.units.some(u=>u.x===x&&u.y===y)&&Number.isFinite(terrainCost(s,rec,x,y)))||[0,0]; /* v2.6.0: a rider's tile is never a forest */
   s.units.push({...structuredClone(rec),x:tile[0],y:tile[1],moved:false,acted:false,hitThisTurn:false,shadowBonus:0,guardTarget:null,benched:true});
   s.missionStart?.push({id,level:rec.level,stats:{maxHP:rec.maxHP,atk:rec.atk,def:rec.def,mag:rec.mag}});}
  return true;

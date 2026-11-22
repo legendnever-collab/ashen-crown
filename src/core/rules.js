@@ -1,5 +1,5 @@
 import {effectiveStats} from './economy.js';
-import {MAP,TERRAIN,WIDTH,HEIGHT,BALANCE,HEROES,CLASS_MOVEMENT,HERO_CLASS,TERRAIN_COSTS,heroDef} from '../data/game-data.js';
+import {MAP,TERRAIN,WIDTH,HEIGHT,BALANCE,HEROES,CLASS_MOVEMENT,HERO_CLASS,TERRAIN_COSTS,STOP_TERRAIN,heroDef} from '../data/game-data.js';
 import {missionOf} from '../data/missions.js';
 import {remember} from './narrative.js';
 import {proficiencyBonus,classGrowth} from './progression.js';
@@ -22,6 +22,18 @@ export function hostile(s,a,b){if(!a||!b||a.team==='civilian'||b.team==='civilia
 export function nextRandom(state){const next=(Math.imul(state>>>0,1664525)+1013904223)>>>0;return {state:next,value:next/4294967296};}
 export function roll(s){const r=nextRandom(s.rng);s.rng=r.state;return r.value;}
 export function terrainCost(s,u,x,y){const type=missionOf(s).map[y]?.[x];if(!type||missionOf(s).layers.collision[y]?.[x]||!Number.isFinite(TERRAIN[type]?.cost))return Infinity;const profile=u.movementProfile||CLASS_MOVEMENT[HERO_CLASS[u.id]]?.profile||'infantry';if(type==='n'&&u.id==='gunnar')return 1; /* v2.3.1: 군나르's 「눈보라 돌격」 — snow costs him 1 */if(type==='s'&&u.id==='maren')return 1; /* v2.4.1: 마렌's 「이끼 걸음」 — a rogue already walks forests at 1; swamp costs her 1 too */return TERRAIN_COSTS[profile]?.[type]??TERRAIN[type].cost;}
+// v2.6.0 (D-152, the user's request 2026-11-22 17:17): fire by the ground — the water's edge (swamp, bridge, ice bridge, or a tile
+// touching deep water) damps fire to ×0.5 and wins over forest; elsewhere the terrain's own fire value (forest ×1.5)
+const WET260=new Set(['s','b','i']);
+export function waterEdge(s,x,y){const m=missionOf(s).map;if(WET260.has(m[y]?.[x]))return true;return [[0,-1],[-1,0],[1,0],[0,1]].some(([dx,dy])=>m[y+dy]?.[x+dx]==='w');}
+// the forecast's fire note: 「🔥 숲 +50%」, 「🔥 물가 −50%」 (empty when fire is not involved or the ground is neutral)
+export function fireNote(s,f,t){if(!f?.magic||!t||f.terrainMul===1||f.terrainMul==null)return '';const pct=Math.round(Math.abs(f.terrainMul-1)*100);return `🔥 ${f.waterEdge?'물가':terrainAt(t.x,t.y,s)?.ko||''} ${f.terrainMul>1?'+':'−'}${pct}%`;}
+export function fireMul(s,x,y){const t=terrainAt(x,y,s),f=t?.fire??1;return waterEdge(s,x,y)?Math.min(f,.5):f;}
+export const moveProfile=u=>u.movementProfile||CLASS_MOVEMENT[HERO_CLASS[u.id]]?.profile||'infantry';
+// v2.6.0 (D-152): a tile that ends the move on entering (forest for foot soldiers)
+export function stopsAt(s,u,x,y){const type=missionOf(s).map[y]?.[x];return !!type&&!!STOP_TERRAIN[moveProfile(u)]?.has(type);}
+// a tile's price for long paths (AI pursuit): a stopping tile costs a whole turn
+export function pathCost(s,u,x,y){const c=terrainCost(s,u,x,y);return Number.isFinite(c)&&stopsAt(s,u,x,y)?Math.max(c,u.mov||4):c;}
 export function movement(s,u,ignore=false){
  const start=key(u.x,u.y), costs=new Map([[start,0]]),prev=new Map(),queue=[{x:u.x,y:u.y,c:0}];
  const allowance=u.status?.bind?0:u.moveLeft!=null&&u.strikeMove===s.turn?u.moveLeft:effectiveStats(s,u).mov+(u.shadowBonus||0),zoc=u.team==='enemy'?bulwarkZone(s):null,held=blockadeHolds(s,u),hold=controlZone(s,u); // v0.8 bind: cannot move
@@ -32,7 +44,7 @@ export function movement(s,u,ignore=false){
    const occupant=at(s,x,y);if(!ignore&&occupant&&occupant.id!==u.id&&sideOf(occupant)!==sideOf(u))continue;
    if(held&&!s.blockade.cells.some(([bx,by])=>bx===x&&by===y))continue;
    if(u.team==='enemy'&&inSmallWard(s,{x,y}))continue; // v0.9.2 Little Ward: enemies cannot step in
-   const c=p.c+terrainCost(s,u,x,y),k=key(x,y);
+   const step=terrainCost(s,u,x,y),k=key(x,y),c=Number.isFinite(step)&&p.c<allowance&&stopsAt(s,u,x,y)?allowance:p.c+step; // v2.6.0: entering a forest on foot takes the rest of the move
    if(c<=allowance&&c<(costs.get(k)??Infinity)){costs.set(k,c);prev.set(k,key(p.x,p.y));queue.push({x,y,c});}
   }
  }
@@ -81,7 +93,7 @@ export function strikeStats(s,u,t,mode='attack'){
  let mul=1;if(aim)mul*=SKILL_MUL.aimed;if(magic&&u.hp<=u.maxHP/2)mul*=SKILL_MUL.lowHPFire;if(quick&&flank(s,u,t))mul*=SKILL_MUL.quickFlank;
  if(sk==='charge')mul*=(u.chargeRun||0)>=3?SKILL_MUL.chargeRun:SKILL_MUL.charge;if(sk==='riposte')mul*=SKILL_MUL.riposte;if(sk==='lion')mul*=SKILL_MUL.lion;if(sk==='brace')mul*=SKILL_MUL.brace;
  let raw=Math.max(1,ratioDamage(magic?u.mag:u.atk,defense)*mul+(sk==='charge'?(u.chargeDmg||0):0));
- let dmg=Math.max(1,Math.round(magic?raw*(ground.fire??1):raw*(1-(ground.phys||0))));
+ const fireM=magic?fireMul(s,t.x,t.y):1;let dmg=Math.max(1,Math.round(magic?raw*fireM:raw*(1-(ground.phys||0))));
  if(magic&&weatherOf(s)==='rain')dmg=Math.max(1,Math.round(dmg*.5));if(magic&&inWard(s,t))dmg=0;
  const arms=matchup(u,t);if(arms!==1&&dmg>0)dmg=Math.max(1,Math.round(dmg*arms));
  {const sh=commandShield(s,t);if(sh!==1)dmg=Math.max(1,Math.round(dmg*sh));} // v0.9.2 「한 사람도 두고 가지 않는다」
@@ -111,7 +123,7 @@ export function strikeStats(s,u,t,mode='attack'){
  if(t.shade)hit=0;
  // v2.0.0: critical from 운 (luck); the target's luck turns some away. Gear crit (Lucky Coin etc.) adds.
  const crit=magic?0:Math.min(30,Math.max(2,3+(u.critBase??Math.floor((u.stats?.luk||6)/2))-Math.floor((t.stats?.luk||0)/5)))+(u.crit||0);
- return {damage:dmg,hit,crit,magic,fire:magic,terrainMul:magic?(ground.fire??1):1-(ground.phys||0),flank:quick&&flank(s,u,t),burning,sneak,sanctuary:cut,arms};
+ return {damage:dmg,hit,crit,magic,fire:magic,terrainMul:magic?fireM:1-(ground.phys||0),waterEdge:magic&&waterEdge(s,t.x,t.y),flank:quick&&flank(s,u,t),burning,sneak,sanctuary:cut,arms};
 }
 // v2.0.0 the matchup triangle (REFORM_DESIGN §3.3, D-115): ±25% by class; specials stand outside it.
 export const armOf=u=>classKeyOf(u);
@@ -178,10 +190,15 @@ export function forecast(s,u,t,mode='attack'){
 // Phase F (D-045): from M04 a mission carries a level. A hero more than two levels above it learns less
 // (−20% per level, floor 20%); one more than two below learns faster (+20% per level, cap 160%). M01–M03 have
 // no level and keep the v0.3.x flat EXP exactly.
-export function xpScale(s,u){const lv=s?.levelPlan?.avg!=null?Math.round(s.levelPlan.avg):missionOf(s)?.level;if(!lv)return 1;const over=u.level-(lv+2),under=(lv-2)-u.level;return over>0?Math.max(0.2,1-0.2*over):under>0?Math.min(1.6,1+0.2*under):1;}
-export function awardXP(s,u,amount,reason){
- if(u.team!=='ally'||!amount)return;amount=Math.max(1,Math.round(amount*xpScale(s,u)*(1+fx(s,u,'sage')/100))); // v0.8.1 Sage Notebook
- u.xp+=amount;u.earnedXP+=amount;u.highlights.push(reason);s.feedback.push({type:'xp',id:u.id,text:`+${amount} EXP`});
+// v2.6.0 (D-152, the user's request 2026-11-22 17:21): experience by the level gap to the enemy (enemy − hero).
+// ≥ +5 ×2.0 · +1…+4 ×1.2–1.8 · 0…−2 ×1 · −3…−9 ×0.9–0.3 · ≤ −10 ×0.05. Hits, kills, counters and skill hits use the foe struck;
+// heals, guards, rescues, objectives and the clear bonus use the battle's enemy average (battleFoeLevel).
+export function gapScale(gap){gap=Math.round(gap);return gap>=5?2:gap>=1?1+.2*gap:gap>=-2?1:gap>=-9?Math.round((1+.1*(gap+2))*100)/100:.05;}
+export function battleFoeLevel(s){const foes=(s?.units||[]).filter(u=>u.team==='enemy'&&!u.prop&&Number.isFinite(u.level));if(foes.length)return foes.reduce((a,u)=>a+u.level,0)/foes.length;return s?.levelPlan?.avg??missionOf(s)?.level??null;}
+export function xpScale(s,u,foeLevel=null){const lv=foeLevel??battleFoeLevel(s);if(!Number.isFinite(lv))return 1;return gapScale(lv-u.level);}
+export function awardXP(s,u,amount,reason,foeLevel=null){
+ if(u.team!=='ally'||!amount)return;const scale=xpScale(s,u,foeLevel);amount=Math.max(1,Math.round(amount*scale*(1+fx(s,u,'sage')/100))); // v0.8.1 Sage Notebook
+ u.xp+=amount;u.earnedXP+=amount;u.highlights.push(reason);const foe=foeLevel??battleFoeLevel(s),gap=Number.isFinite(foe)?Math.round(foe-u.level):0;s.feedback.push({type:'xp',id:u.id,text:`+${amount} EXP${scale!==1?` (레벨 차 ${gap>0?'+':''}${gap})`:''}`,scale,gap}); // v2.6.0: the gap shows when it changed the EXP
  let leveled=false;while(u.xp>=BALANCE.xpLevel){leveled=true;u.xp-=BALANCE.xpLevel;u.level++;let changes;if(u.stats){changes=levelUpStats(u)||{};const mp=(heroDef(u.id)?.growth?.mp||0)+(classGrowth(u).mp||0);if(mp){u.maxMP+=mp;u.mp=Math.min(u.maxMP,u.mp+mp);changes.mp=mp;}}else{const g={...heroDef(u.id).growth};for(const [k,v]of Object.entries(classGrowth(u)))g[k]=(g[k]||0)+v;changes={...g};for(const [stat,n] of Object.entries(g)){if(stat==='hp'){u.maxHP+=n;u.hp=Math.min(u.maxHP,u.hp+n);}else if(stat==='mp'){u.maxMP+=n;u.mp=Math.min(u.maxMP,u.mp+n);}else u[stat]+=n;}}if(u.id==='eric'&&u.level>=5)u.appearanceTier=2;u.growthHistory.push({level:u.level,changes});s.feedback.push({type:'level',id:u.id,text:`LEVEL ${u.level}`,toHP:u.hp});s.log.push(`${u.name} → LV ${u.level}. 성장이 새로운 힘으로 이어집니다.`);}
  if(leveled){u.hp=u.maxHP;u.mp=u.maxMP;s.log.push(`${u.name}: 레벨업으로 HP/MP 전부 회복.`);}
 }
@@ -189,9 +206,9 @@ export function discover(s,u,clue){if(!u.clues.includes(clue)){u.clues.push(clue
 // One-line tactical summary of a tile, shown when the player taps terrain.
 export function terrainSummary(s,x,y,u=null){const type=missionOf(s).map[y]?.[x],t=TERRAIN[type];if(!t)return '전장 밖';
  if(!Number.isFinite(t.cost))return `${t.ko} · 통행 불가`;
- const costs=['infantry','rogue','cavalry'].map(p=>TERRAIN_COSTS[p]?.[type]??t.cost),cost=c=>Number.isFinite(c)?c:'불가';
+ const costs=['infantry','rogue','cavalry'].map(p=>STOP_TERRAIN[p]?.has(type)?'들어서면 멈춤':TERRAIN_COSTS[p]?.[type]??t.cost),cost=c=>typeof c==='string'||Number.isFinite(c)?c:'불가'; // v2.6.0: a forest stops foot soldiers
  const move=costs.every(c=>c===costs[0])?`이동 ${cost(costs[0])}`:`이동 보병 ${cost(costs[0])} · 도적 ${cost(costs[1])} · 기병 ${cost(costs[2])}`;
  const parts=[t.ko,move];if(t.phys)parts.push(`일반공격 ${Math.round(t.phys*100)}%↓`);if(t.evade)parts.push(`회피 ${Math.abs(t.evade)}%${t.evade>0?'↑':'↓'}`);
- if(t.fire&&t.fire!==1)parts.push(`화공 ${Math.round(Math.abs(t.fire-1)*100)}%${t.fire>1?'↑':'↓'}`);if(t.hpRecovery)parts.push(`턴 시작 HP ${t.hpRecovery*100}% 회복`);
- if(s.burning?.[key(x,y)])parts.push('🔥 불타는 중');if(u&&u.team==='ally'){const c=terrainCost(s,u,x,y);parts.push(`${u.name}: ${Number.isFinite(c)?`비용 ${c}`:'진입 불가'}`);}
+ {const f=fireMul(s,x,y);if(f!==1)parts.push(`${waterEdge(s,x,y)?'물가 · ':''}🔥 ${Math.round(Math.abs(f-1)*100)}%${f>1?'↑':'↓'}`);}if(t.hpRecovery)parts.push(`턴 시작 HP ${t.hpRecovery*100}% 회복`);
+ if(s.burning?.[key(x,y)])parts.push('🔥 불타는 중');if(u&&u.team==='ally'){const c=terrainCost(s,u,x,y);parts.push(`${u.name}: ${!Number.isFinite(c)?'진입 불가':stopsAt(s,u,x,y)?'들어서면 이동 끝':`비용 ${c}`}`);}
  return parts.join(' · ');}

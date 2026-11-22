@@ -2,7 +2,7 @@
 // They share the promotion actions' plumbing (validClassTarget / classTargetCells / forecastClass / tileTarget), so the
 // screen code treats them like the v0.5 class actions. Damage goes through game.js (strike callback) so guards, criticals,
 // mission hooks and feedback stay the same as a normal attack.
-import {distance,key,alive,at,findUnit,terrainAt,hostile,strikeStats,roll,sideOf,weatherOf,supportable} from './rules.js';
+import {fireMul,distance,key,alive,at,findUnit,terrainAt,hostile,strikeStats,roll,sideOf,weatherOf,supportable} from './rules.js';
 import {missionOf} from '../data/missions.js';
 import {TOOLS} from '../data/frontier-data.js';
 import {skillByMode,knowsMode,NEW_SKILL_MODES,ULTIMATE_MODES} from '../data/skills.js';
@@ -188,7 +188,7 @@ export function applyTactic(s,u,target,mode,strike){
  if(!STRIKE[mode]?.noCounter)out.counter=t;return out;
 }
 const rollChance=(s,c)=>roll(s)*100<c;
-function igniteCell(s,c){const t=terrainAt(c.x,c.y,s);if(!t||(t.fire??1)<1.25||weatherOf(s)==='rain')return;s.burning??={};const k=key(c.x,c.y);if(!s.burning[k]){s.burning[k]=2;s.feedback.push({type:'ignite',at:{x:c.x,y:c.y},text:'FIRE'});}}
+function igniteCell(s,c){const t=terrainAt(c.x,c.y,s);if(!t||fireMul(s,c.x,c.y)<1.25||weatherOf(s)==='rain')return;s.burning??={};const k=key(c.x,c.y);if(!s.burning[k]){s.burning[k]=2;s.feedback.push({type:'ignite',at:{x:c.x,y:c.y},text:'FIRE'});}}
 
 // Enemy weapons that leave a status on a hit (ACT II; numbers PROPOSED).
 export function enemyStatusOnHit(u){if(u?.team!=='enemy')return null;const look=u.look||u.kind;

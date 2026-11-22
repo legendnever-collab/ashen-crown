@@ -64,8 +64,8 @@ test('④ Dawn Prayer: the fallen hero of the battle stands up beside Sain at a 
 });
 
 test('Black Iron Lancer: a killing Charge leaves Thea the rest of her move; Sword Saint strikes back twice in Riposte; Sanctum Warden reaches 2',()=>{
- const s=board();const t=findUnit(s,'thea'),g=findUnit(s,'l1');t.x=8;t.y=7;g.x=8;g.y=8;g.hp=1;t.spd=99;const r=performAction(s,'thea','skill','l1');assert.ok(r.ok,r.error);
- assert.ok(canMove(s,t),'may move again');assert.ok(moveUnit(s,'thea',8,6),'moves after the kill');
+ const s=board();const t=findUnit(s,'thea'),g=findUnit(s,'l1');t.x=10;t.y=7;g.x=10;g.y=8;g.hp=1;t.spd=99;const r=performAction(s,'thea','skill','l1');assert.ok(r.ok,r.error); // v2.6.0: on open ground (a rider cannot stand in M18's forest)
+ assert.ok(canMove(s,t),'may move again');assert.ok(moveUnit(s,'thea',11,7),'moves after the kill');
  const d=board(17,16),dar=findUnit(d,'dario'),cap=findUnit(d,'g1');findUnit(d,'gcap').mov=0;dar.x=8;dar.y=3;cap.x=8;cap.y=4;cap.hp=999;cap.maxHP=999;dar.maxHP=dar.hp=999;dar.riposte=true;for(const u of d.units.filter(u=>u.team==='ally'&&u!==dar))u.x=17,u.y=0;
  d.log=[];enemyPhase(d);assert.ok(d.log.filter(l=>/반격 · 다리오/.test(l)).length>=2,d.log.join('\n'));
  const n=board(),ines=findUnit(n,'ines'),eric=findUnit(n,'eric');delete ines.benched;ines.x=8;ines.y=7;eric.x=8;eric.y=9;assert.equal(sanctuaryCut(n,eric),1);ines.classTier=1;assert.equal(sanctuaryCut(n,eric),0);
