@@ -1,4 +1,5 @@
 # Current Status
+Updated 2026-11-22 KST (late): **v2.6.0 「지형과 성장」 release candidate** on feature/v2.6.0 (D-152 design, D-153 build and tuning), on top of the v2.5.2 candidate.
 Updated 2026-11-22 KST: **v2.5.2 small-update release candidate** on feature/v2.5.2 (D-148, D-149): town clicks walk and talk (menu beside service people) or open chests, a click during a walk replaces it, the purchase window fits the screen, doors matched to the paintings (and two capital doors unblocked), shops name classes only; v2.5.0 build out of the tree, v2.5.1 in ARCHIVE.json (D-151). Next major update recorded (D-150).
 Updated 2026-11-22 KST: **v2.5.1 merged** (PR #41 → 5e07847, D-147). All 30 missions on big maps; the v2.0 reform plan is complete. The user reruns Actions → Archive old builds for v2.5.0. Next only on the user's word.
 Updated 2026-11-22 KST: **v2.5.1 「ACT IV 큰 맵 2부」 release candidate** on feature/v2.5.1 (D-144, D-145): M27–M30 on big maps (all 30 missions now), 봉화둔덕 · 사자샘, 루카, art pack L imported (D-146), the rescued heroes fight again (D-144), schema 27. The user plays and approves before the merge; art pack L to import when it returns.
