@@ -89,6 +89,8 @@ function act2Goals(s,u){const live=t=>alive(t)&&t.team==='enemy';
  if(s.missionId===10){const st=s.campaign.choices?.m10_stance||'mediate',lords=s.units.filter(t=>(st==='a'?['boss2']:st==='b'?['boss']:['boss','boss2']).includes(t.id)&&live(t)),folk=s.units.filter(v=>v.team==='civilian'&&alive(v));
   if(folk.length&&['sain','kai'].includes(u?.id))return folk;const guards=s.units.filter(e=>live(e)&&lords.some(l=>e.faction===l.faction&&distance(e,l)<=3));return lords.length?[...lords,...guards]:s.units.filter(live);}
  if(s.missionId===7){const wagons=s.units.filter(w=>w.kind==='wagon'&&alive(w)),foes=s.units.filter(e=>live(e)&&wagons.some(w=>distance(e,w)<=4));return foes.length?foes:wagons.length?wagons:s.units.filter(live);}
+ // v2.5.1 「도망친 군마」 (goal 'rescue'): everyone heads for the grooms not yet brought back
+ {const g=missionOf(s)?.goal;if(g?.type==='rescue'){const left=s.units.filter(v=>g.rescue.includes(v.id)&&alive(v)&&!v.rescued);if(left.length)return left;}}
  const villagers=s.units.filter(v=>v.team==='civilian'&&alive(v));if(s.campaign.choices?.m08_order==='rescue'&&villagers.length&&['sain','kai'].includes(u?.id))return villagers;
  const devices=s.units.filter(d=>d.kind==='rockfall'&&!d.rescued&&s.units.filter(e=>live(e)&&e.x>=d.zone[0]&&e.x<=d.zone[1]&&e.y>=d.zone[2]&&e.y<=d.zone[3]).length>=1);if(devices.length&&u?.id===(s.campaign.choices?.m08_order==='rescue'?'elina':'kai'))return devices;
  const north=s.units.filter(e=>live(e)&&!/^s\d/.test(e.id)),rear=s.units.filter(e=>live(e)&&/^s\d/.test(e.id));return north.length?north:rear.length?rear:[{x:7,y:5}];}

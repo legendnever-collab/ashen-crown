@@ -154,7 +154,10 @@ export const TOWNS=[
  {hub:'saltport',name:'소금항',site:'saltport',small:true,reached:(m,c)=>!!c?.completed?.includes(9)},
  // v2.4.1 (D-135): the ACT III small villages
  {hub:'lamp',name:'등불골',site:'lamp',small:true,reached:(m,c)=>!!c?.completed?.includes(16)},
- {hub:'moss',name:'이끼다리',site:'moss',small:true,reached:(m,c)=>!!c?.completed?.includes(18)}
+ {hub:'moss',name:'이끼다리',site:'moss',small:true,reached:(m,c)=>!!c?.completed?.includes(18)},
+ // v2.5.1 (D-141): the ACT IV small villages
+ {hub:'beacon',name:'봉화둔덕',site:'beacon',small:true,reached:(m,c)=>!!c?.completed?.includes(24)},
+ {hub:'lionspring',name:'사자샘',site:'lionspring',small:true,reached:(m,c)=>!!c?.completed?.includes(26)}
 ];
 // Townsfolk on a revisit: a short word on how the town is doing (PROPOSED wording; no new facts about the crown or factions).
 export const REVISIT_LINES={
@@ -169,6 +172,9 @@ export const REVISIT_LINES={
  frost:{elder:['서리목이오. 협곡 아래라 겨울이 일찍 오고 늦게 가지.','의뢰 게시판을 보시오. 눈 녹기 전에 해결할 일이 많소.'],refugee:['도끼잡이 아저씨가 없었으면 우린 벌써 떠났을 거예요.'],guard:['눈길 파수는 발자국부터 봅니다. 늑대인지 사람인지.']},
 // v2.4.1 (D-135, PROPOSED): 등불골 and 이끼다리
  lamp:{elder:['등불골이오. 잊힌 전장의 무덤마다 등불을 거는 게 우리 일이지.','의뢰 게시판을 보시오. 묘지를 노리는 자들이 아직 있소.'],refugee:['밤에 등불이 꺼지면 길을 잃어요. 그래서 다들 번갈아 깨어 있어요.'],guard:['묘지 파수는 발소리를 셉니다. 산 사람인지 아닌지.']},
+ // v2.5.1 (D-141, PROPOSED): 봉화둔덕 and 사자샘
+ beacon:{elder:['봉화둔덕이오. 관문 안으로 들어온 사람들이 이 둔덕에 천막을 쳤지.','의뢰 게시판을 보시오. 국경엔 아직 손 갈 데가 많소.'],refugee:['봉화가 오르면 잠이 와요. 누가 지켜보고 있다는 뜻이니까.'],guard:['봉화 파수는 연기 색을 봅니다. 재인지 장작인지.']},
+ lionspring:{elder:['사자샘이오. 기병들이 고개를 넘기 전에 말을 쉬게 하던 샘이지.','의뢰 게시판에 고갯길 일이 많소. 싸움이 끝나도 길은 아직 거칠다오.'],refugee:['샘물은 차가워요. 그래도 고개를 넘은 사람한텐 이게 제일 달아요.'],guard:['고개 파수는 말발굽 소리를 셉니다. 우리 말인지 아닌지.']},
  moss:{elder:['이끼다리요. 돌다리 하나로 숲과 왕도를 오가지.','의뢰 게시판에 숲 가장자리 일이 많소. 숲 안쪽은 숲지기들 몫이고.'],refugee:['약초는 이슬 마르기 전에 캐야 향이 남아요.'],guard:['숲길 파수는 발자국보다 꺾인 가지를 봅니다.']},
  saltport:{elder:['소금항이오. 벨마르 사람들이 먹는 소금은 다 여기서 나가지.','의뢰 게시판에 붙은 일들, 바닷바람만큼 거칠다오.'],refugee:['염전 일은 해 뜨기 전에 끝내야 해요. 해가 뜨면 소금이 마르거든요.'],guard:['포구 파수는 바다만 봅니다. 해적은 늘 바다에서 오니까요.']},
  stonewell:{elder:['돌우물 마을이오. 길가 마을이라 별의별 손님이 다 지나가지.','의뢰 게시판에 붙은 일들, 군단이라면 해낼 수 있을 거요.'],refugee:['우물이 무너져서 물 길으러 멀리 가요.'],guard:['길목 파수는 밤이 길어요. 그래도 군단 깃발을 보면 마음이 놓여요.']},

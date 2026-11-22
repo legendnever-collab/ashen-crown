@@ -859,6 +859,53 @@ req3(136,{title:'현상금: 재상부 밀정',en:'Bounty: Chancellery Spies',
  enemies:[spy('s1',3,1),spy('s2',12,1),spy('s3',7,2),spy('s4',1,3),spy('s5',14,3),unit('boss','밀정 우두머리','captain',8,1,{hp:46,atk:18,def:7,spd:9,mov:4,movementProfile:'rogue',look:'grayCloak'})],
  deployments:{recommended:[[7,10],[8,10],[6,11],[9,11],[5,10],[10,10],[7,11],[8,11]]},deployZone:reqZone(9,11),limit:6,goal:{type:'rout'},
  objective:'TURN 6까지 재상부 밀정 6명 격파',brief:'현상금이 걸린 재상부 밀정입니다. 숲길을 엿보다 들키면 흩어집니다. 본편 작전을 하나 마칠 때마다 새 무리가 들어옵니다.'});
+// v2.5.1 의뢰 (D-141 §3; maps and numbers PROPOSED): the ACT IV villages' short battles. 봉화둔덕: 「재 속의 약사」 (루카 joins
+// when he lives), 「봉화 다시 올리기」, the desert4 bounty. 사자샘: 「도망친 군마」 (bring the three grooms back: 구출 beside them),
+// 「고개 도적」, the lion-banner bounty.
+const ashling4=(id,x,y,s={})=>unit(id,'재의 짐승','bandit',x,y,{hp:40,atk:19,def:7,res:4,spd:9,mov:4,look:'ashRaider',ashBorn:true,...s});
+const desert4=(id,x,y,s={})=>unit(id,'재상부 탈영병','spear',x,y,{hp:42,atk:19,def:9,res:3,spd:6,mov:3,look:'ironSpear',...s}),dBow4=(id,x,y)=>unit(id,'탈영병 석궁수','archer',x,y,{hp:32,atk:18,def:5,res:3,spd:7,mov:3,look:'ironArcher'});
+const thief4=(id,x,y,s={})=>unit(id,'고개 도적','bandit',x,y,{hp:38,atk:19,def:7,res:3,spd:10,mov:4,movementProfile:'rogue',look:'maskedRaider',...s}),tBow4=(id,x,y)=>unit(id,'도적 궁수','archer',x,y,{hp:30,atk:17,def:4,res:3,spd:8,mov:3,look:'maskedRaider'});
+const lionRest4=(id,x,y,s={})=>unit(id,'사자 깃발 잔당','cavalry',x,y,{hp:44,atk:20,def:9,res:4,spd:8,mov:5,movementProfile:'cavalry',look:'cavalry',...s});
+const req4=(id,m)=>skirmish(id,'request',null,{level:19,threatTurn:1,deployLimit:8,...m});
+req4(137,{title:'재 속의 약사',en:'The Apothecary in the Ash',
+ rows:['mmmmmggggggmmmmm','mmgggggggggggmmm','mgggxxxggxxxgggm','gggxkkkkkkkkxggg','ggxkkkkkkkkkkxgg','ggxkkkkkkkkkkxgg','gggxkkkkkkkkxggg','ggggxxxkkxxxgggg','gggggggggggggggg','ggffggggggggffgg','gggggggggggggggg','gggggggggggggggg'],
+ civilians:[{id:'lukac',name:'루카',kind:'pilgrim',look:'pilgrim',x:7,y:4,hp:48,def:7,res:9}],
+ enemies:[ashling4('b1',1,3),ashling4('b2',14,3),ashling4('b3',1,6),ashling4('b4',14,6),ashling4('b5',2,1),ashling4('b6',13,1),ashling4('b7',6,0),unit('boss','재의 큰 짐승','captain',8,0,{hp:56,atk:20,def:9,spd:8,mov:4,look:'ashRaider',ashBorn:true})],
+ waves:[{turn:3,units:[ashling4('b8',0,5),ashling4('b9',15,5)]}],
+ deployments:{recommended:[[7,10],[8,10],[6,11],[9,11],[5,10],[10,10],[7,11],[8,11]]},deployZone:reqZone(9,11),limit:7,escortOnly:true,
+ goal:{type:'survive',turn:7,protect:['lukac']},
+ objective:'TURN 7이 끝날 때까지 약사 루카 지키기',brief:'봉화대 아래 버려진 수도원에서 약사 루카가 재의 짐승에게 둘러싸였습니다. 남쪽 문(가운데 두 칸)으로 들어가 TURN 7까지 그를 지키세요. TURN 3에 양옆에서 둘이 더 옵니다. 루카가 살아남으면 군단에 합류합니다.'});
+req4(138,{title:'봉화 다시 올리기',en:'Relighting the Beacons',
+ rows:['ffggggggggggggff','fgggggggggggggff','gggggggggggggggg','ggggrrrrrrrrgggg','gggrggggggggrggg','ggrggvggggvggrgg','ggrggggggggggrgg','gggrrrrrrrrrrggg','gggggggggggggggg','ffggggggggggggff','gggggggggggggggg','gggggggggggggggg'],
+ civilians:[{id:'bc1',name:'봉화대',kind:'beacon',x:4,y:5,hp:55,def:7,res:4},{id:'bc2',name:'봉화대',kind:'beacon',x:11,y:5,hp:55,def:7,res:4}],
+ enemies:[desert4('d1',1,1),desert4('d2',14,1),desert4('d3',0,5),desert4('d4',15,5),dBow4('a1',6,0),dBow4('a2',9,0)],
+ waves:[{turn:3,units:[desert4('d5',0,9),desert4('d6',15,9)]},{turn:5,units:[desert4('d7',0,2),desert4('d8',15,2)]}],
+ deployments:{recommended:[[7,6],[8,6],[6,5],[9,5],[3,6],[12,6],[7,8],[8,8]]},deployZone:reqZone(4,8,3,12),limit:8,escortOnly:true,
+ goal:{type:'survive',turn:6,protect:['bc1','bc2']},
+ objective:'TURN 6이 끝날 때까지 봉화대 둘 지키기',brief:'재상부 탈영병들이 국경의 봉화대 둘을 꺼뜨리려 합니다. 하나라도 꺼지면 실패입니다. 탈영병은 창을 들어 기병에 강합니다. TURN 3과 TURN 5에 양옆에서 더 옵니다.'});
+req4(139,{title:'도망친 군마',en:'The Runaway Horses',
+ rows:['mmmmggggggggmmmm','mmggggffggggggmm','mggggffffgggggmm','gggggggggggffggm','ggrrrrrrrrrrrggg','ggrggggggggggrgg','ggrgmmggggmmgrgg','ggrrrrrrrrrrrrgg','gggggggggggggggg','ggggffggggffgggg','gggggggggggggggg','gggggggggggggggg'],
+ civilians:[{id:'gr1',name:'철왕관 마부',kind:'cavalry',look:'cavalry',x:3,y:5,hp:50,def:9,res:5},{id:'gr2',name:'철왕관 마부',kind:'cavalry',look:'cavalry',x:12,y:5,hp:50,def:9,res:5},{id:'gr3',name:'철왕관 마부',kind:'cavalry',look:'cavalry',x:8,y:3,hp:50,def:9,res:5}],
+ enemies:[thief4('t1',4,0),thief4('t2',11,0),thief4('t3',6,2),thief4('t4',9,2),tBow4('a1',8,0),thief4('t5',0,2),thief4('t6',15,2)],
+ waves:[{turn:4,units:[thief4('t7',0,7),thief4('t8',15,7)]}],
+ deployments:{recommended:[[7,10],[8,10],[6,11],[9,11],[5,10],[10,10],[7,11],[8,11]]},deployZone:reqZone(9,11),limit:8,
+ goal:{type:'rescue',rescue:['gr1','gr2','gr3'],protect:['gr1','gr2','gr3']},
+ objective:'TURN 8까지 마부 셋 구출(곁에서 「구출」)',brief:'고개 싸움 뒤 흩어진 군마를 끌고 헤매는 철왕관 마부 셋을 데려옵니다. 곁에 서서 「구출」하면 됩니다. 고개 도적이 먼저 마부를 노립니다. 한 명이라도 쓰러지면 실패입니다.'});
+req4(140,{title:'고개 도적',en:'The Pass Bandits',
+ rows:['mmmmmggggggmmmmm','mmgggggggggggmmm','mgggggffffgggggm','gggggggggggggggg','gggrrrrrrrrrrggg','ggrggmmggmmggrgg','ggrggmmggmmggrgg','gggrrrrrrrrrrggg','gggggggggggggggg','ggffggggggggffgg','gggggggggggggggg','gggggggggggggggg'],
+ enemies:[thief4('t1',2,1),thief4('t2',13,1),thief4('t3',5,2),thief4('t4',10,2),thief4('t5',1,4),thief4('t6',14,4),thief4('t7',7,3),tBow4('a1',4,0),tBow4('a2',11,0),unit('boss','도적 두목','captain',8,1,{hp:56,atk:20,def:9,spd:8,mov:4,look:'maskedRaider'})],
+ deployments:{recommended:[[7,10],[8,10],[6,11],[9,11],[5,10],[10,10],[7,11],[8,11]]},deployZone:reqZone(9,11),limit:8,goal:{type:'rout'},
+ objective:'TURN 8까지 고개 도적 10명 격파',brief:'싸움이 끝난 고갯길의 도적들입니다. 산(이동 3)을 가볍게 다니고, 두목은 고갯마루에서 버팁니다.'});
+req4(141,{title:'현상금: 재상부 탈영병',en:'Bounty: Chancellery Deserters',
+ rows:['gggggggggggggggg','gvggggvggvggggvg','gggggggggggggggg','ggggrrrrrrrrgggg','gggrggggggggrggg','gggrggffffggrggg','gggrggggggggrggg','ggggrrrrrrrrgggg','gggggggggggggggg','gggggggggggggggg','gggggggggggggggg','gggggggggggggggg'],
+ enemies:[desert4('d1',3,0),desert4('d2',12,0),dBow4('a1',7,1),desert4('d3',1,2),desert4('d4',14,2),unit('boss','탈영병 우두머리','captain',8,0,{hp:54,atk:20,def:9,spd:7,mov:4,look:'ironSpear'})],
+ deployments:{recommended:[[7,10],[8,10],[6,11],[9,11],[5,10],[10,10],[7,11],[8,11]]},deployZone:reqZone(9,11),limit:6,goal:{type:'rout'},
+ objective:'TURN 6까지 재상부 탈영병 6명 격파',brief:'현상금이 걸린 재상부 탈영병입니다. 창을 들어 기병에 강합니다. 본편 작전을 하나 마칠 때마다 새 무리가 나타납니다.'});
+req4(142,{title:'현상금: 사자 깃발 잔당',en:'Bounty: Lion Banner Remnants',
+ rows:['mmmmmggggggmmmmm','mmggggggggggggmm','gggggrrrrrrggggg','ggggrggggggrgggg','gggrggffffggrggg','gggrggggggggrggg','ggggrrrrrrrrgggg','gggggggggggggggg','gggggggggggggggg','gggggggggggggggg','gggggggggggggggg','gggggggggggggggg'],
+ enemies:[lionRest4('c1',3,1),lionRest4('c2',12,1),lionRest4('c3',7,2),lionRest4('c4',1,3),lionRest4('c5',14,3),unit('boss','잔당 기병대장','captain',8,1,{hp:56,atk:21,def:10,spd:8,mov:5,movementProfile:'cavalry',look:'cavalry'})],
+ deployments:{recommended:[[7,10],[8,10],[6,11],[9,11],[5,10],[10,10],[7,11],[8,11]]},deployZone:reqZone(9,11),limit:6,goal:{type:'rout'},
+ objective:'TURN 6까지 사자 깃발 잔당 6명 격파',brief:'현상금이 걸린 사자 깃발 잔당입니다. 모두 기병이라 빠릅니다 — 창을 든 장수를 앞에 세우세요. 본편 작전을 하나 마칠 때마다 다시 모입니다.'});
 export const isSkirmish=id=>!!MISSIONS[id]?.skirmish;
 export const LAST_MISSION=Math.max(...Object.keys(MISSIONS).map(Number).filter(id=>!MISSIONS[id].skirmish));
 

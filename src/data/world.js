@@ -71,7 +71,10 @@ export const SITES=[
  {id:'saltport',name:'소금항',icon:'village',x:305,y:600,region:'west',hub:'saltport',small:true,opens:9},
  // v2.4.1 작은 마을 (D-135): the forgotten battlefield (M16) opens 등불골, the unburning forest (M18) opens 이끼다리
  {id:'lamp',name:'등불골',icon:'village',x:552,y:488,region:'center',hub:'lamp',small:true,opens:16},
- {id:'moss',name:'이끼다리',icon:'village',x:985,y:592,region:'center',hub:'moss',small:true,opens:18}
+ {id:'moss',name:'이끼다리',icon:'village',x:985,y:592,region:'center',hub:'moss',small:true,opens:18},
+ // v2.5.1 작은 마을 (D-141): the last border (M24) opens 봉화둔덕, the lion's pass (M26) opens 사자샘
+ {id:'beacon',name:'봉화둔덕',icon:'village',x:1228,y:668,region:'east',hub:'beacon',small:true,opens:24},
+ {id:'lionspring',name:'사자샘',icon:'village',x:742,y:372,region:'center',hub:'lionspring',small:true,opens:26}
 ];
 export const HUB_SITE={village:'village',village_raid:'village',camp:'garrison',bivouac:'bivouac',fortress:'fortress',oathcamp:'oathcamp',castletown:'stronghold',march:'canyon',velmar:'freecity',pilgrim:'pilgrimvillage',refuge:'refugecamp',summit:'waystation',capital:'capital',fieldcamp:'oldfield',keep:'guardkeep',forest:'unburning',reed:'reed',stonewell:'stonewell',frost:'frost',saltport:'saltport',lamp:'lamp',moss:'moss'};
 // ACT I march order (W1): village → garrison → forest → bridge → bivouac → fortress → ridge → gate → oath camp.

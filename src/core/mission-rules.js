@@ -204,7 +204,7 @@ const M6={
  rewardContext(s){return {refugees:passedOf(s),beacon:!!s.missionState.beacon};}
 };
 // v0.5.0 skirmish rules (promotion trials 101–105, Legion Drill 110); goals live in the mission data.
-const SK_GOAL={gather:g=>`TURN ${g.turn} 종료 시 동료 집결`,survive:g=>`TURN ${g.turn} 종료까지 생존`,rout:g=>g.targets?'목표 격파':'전원 격파',reach:()=>'탈출 지점 도달',standing:g=>`TURN ${g.turn} 종료 시 모두 서 있기`};
+const SK_GOAL={gather:g=>`TURN ${g.turn} 종료 시 동료 집결`,survive:g=>`TURN ${g.turn} 종료까지 생존`,rout:g=>g.targets?'목표 격파':'전원 격파',reach:()=>'탈출 지점 도달',rescue:g=>`${g.rescue.length}명 구출`,standing:g=>`TURN ${g.turn} 종료 시 모두 서 있기`};
 const SK={
  init(s){s.missionState={skirmish:true};},
  validState(m){return !!m&&typeof m==='object'&&m.skirmish===true;},
@@ -215,9 +215,11 @@ const SK={
   const m=missionOf(s),g=m.goal;
   const down=(m.must||[]).filter(id=>!(g.revive||[]).includes(id)).map(id=>findUnit(s,id)).find(u=>u&&!u.benched&&u.hp<=0);if(down)return finish(s,'defeat',`${down.name} 전투불능.`);
   for(const id of g.protect||[]){const c=findUnit(s,id);if(c&&c.hp<=0)return finish(s,'defeat',`${c.name}을(를) 지키지 못했습니다.`);}
+  // v2.5.1 「도망친 군마」: everyone listed brought back (구출 beside them) wins
+  if(g.type==='rescue'&&g.rescue.every(id=>findUnit(s,id)?.rescued))return finish(s,'victory',`${g.rescue.length}명을 모두 데려왔습니다.`);
   if(g.type==='reach'){const h=findUnit(s,g.hero);if(h&&alive(h)&&h.y<=g.row)return finish(s,'victory',`${h.name} 탈출 지점 도달.`);}
   const foes=s.units.filter(u=>u.team==='enemy'&&(!g.targets||g.targets.includes(u.id)));
-  if(g.type!=='reach'&&g.type!=='gather'&&g.type!=='standing'&&foes.every(u=>!alive(u)))return finish(s,'victory',g.targets?'목표를 모두 격파했습니다.':'상대를 모두 물리쳤습니다.');
+  if(g.type!=='reach'&&g.type!=='gather'&&g.type!=='standing'&&g.type!=='rescue'&&foes.every(u=>!alive(u)))return finish(s,'victory',g.targets?'목표를 모두 격파했습니다.':'상대를 모두 물리쳤습니다.');
   if(g.type==='survive'&&s.turn>g.turn)return finish(s,'victory',`TURN ${g.turn}까지 버텼습니다.`);
   // v0.9.1 Trial of the Dawn: the heroes must all be standing when the turn ends (a fallen one raised again counts).
   if(g.type==='standing'&&(s.turn>g.turn||foes.every(u=>!alive(u)))){const down2=(m.must||[]).map(id=>findUnit(s,id)).filter(u=>u&&u.hp<=0);if(!foes.every(u=>!alive(u))||!down2.length)return down2.length?finish(s,'defeat',`${down2.map(u=>u.name).join(', ')}이(가) 일어서지 못했습니다.`):finish(s,'victory','세 장수 모두 서 있습니다.');}
@@ -225,7 +227,7 @@ const SK={
   if(s.turn>m.turnLimit)return finish(s,'defeat',`TURN ${m.turnLimit} 안에 목표를 달성하지 못했습니다.`);
  }
 };
-export const MISSION_RULES={...ACT1_V200_RULES,4:M4,5:M5,6:M6,...ACT2_RULES,...ACT2B_RULES,...ACT2C_RULES,...ACT2D_RULES,...ACT3A_RULES,...ACT3B_RULES,...ACT3C_RULES,...ACT3D_RULES,...ACT4A_RULES,...ACT4B_RULES,...ACT4C_RULES,...ACT4D_RULES,101:SK,102:SK,103:SK,104:SK,105:SK,106:SK,107:SK,108:SK,109:SK,110:SK,111:SK,112:SK,113:SK,114:SK,115:SK,116:SK,117:SK,120:SK,121:SK,122:SK,123:SK,124:SK,125:SK,126:SK,127:SK,128:SK,129:SK,130:SK,131:SK,132:SK,133:SK,134:SK,135:SK,136:SK}; /* v2.1: 120–124 의뢰; v2.3.1: 125–130; v2.4.1: 131–136 */
+export const MISSION_RULES={...ACT1_V200_RULES,4:M4,5:M5,6:M6,...ACT2_RULES,...ACT2B_RULES,...ACT2C_RULES,...ACT2D_RULES,...ACT3A_RULES,...ACT3B_RULES,...ACT3C_RULES,...ACT3D_RULES,...ACT4A_RULES,...ACT4B_RULES,...ACT4C_RULES,...ACT4D_RULES,101:SK,102:SK,103:SK,104:SK,105:SK,106:SK,107:SK,108:SK,109:SK,110:SK,111:SK,112:SK,113:SK,114:SK,115:SK,116:SK,117:SK,120:SK,121:SK,122:SK,123:SK,124:SK,125:SK,126:SK,127:SK,128:SK,129:SK,130:SK,131:SK,132:SK,133:SK,134:SK,135:SK,136:SK,137:SK,138:SK,139:SK,140:SK,141:SK,142:SK}; /* v2.1: 120–124 의뢰; v2.3.1: 125–130; v2.4.1: 131–136 */
 export const rulesOf=s=>MISSION_RULES[s?.missionId]||null;
 
 export function searchEvidence(s,u,t){
