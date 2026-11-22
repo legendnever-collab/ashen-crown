@@ -47,6 +47,20 @@ try{
   // 1b. a person without a service: a click walks there and the talk starts (no menu)
   await restore(structuredClone(camp));{const elder=currentHub(camp).npcs.find(q=>q.id==='elder');await clickTile(elder.x,elder.y);s=await snap();
    check(`${label} a click on the village elder walks beside him and he talks`,Math.abs(s.frontier.x-elder.x)+Math.abs(s.frontier.y-elder.y)<=1&&(!!s.narrative.active||s.narrative.seen.some(k=>k.endsWith(':elder')))&&!(await p.locator('#npc-menu').count()));await drainStory(p);}
+  // 4. (17:14) a click during a walk replaces it: the walk to the far west turns at once to the new tile
+  await restore(structuredClone(camp));{const s0=await snap(),f0=s0.frontier,hub=currentHub(s0),free=(x,y)=>hub.mask[y]?.[x]==='.'&&!hub.npcs.some(n=>n.x===x&&n.y===y);
+   // along Eric's street (on screen on every viewport): six tiles west, then two tiles east of where he started
+   const cam=await p.evaluate(()=>AshenCrown.view().hubCamera),seen=([x])=>{const sx=cam.x+(x+.5)*64*cam.scale;return sx>24&&sx<cam.width-24;};
+   const far=[6,5,4,3].map(d=>[f0.x-d,f0.y]).find(t=>free(...t)&&seen(t)),next=[2,3].map(d=>[f0.x+d,f0.y]).find(t=>free(...t)&&seen(t));
+   const at=async(x,y)=>{const v=await p.evaluate(()=>AshenCrown.view().hubCamera),box=await p.locator('#frontier-map').boundingBox(),px=box.x+v.x+(x+.5)*64*v.scale,py=box.y+v.y+(y+.5)*64*v.scale;touch?await p.touchscreen.tap(px,py):await p.mouse.click(px,py);};
+   await at(...far);await p.waitForTimeout(500);const mid=(await snap()).frontier;await at(...next);
+   if(process.env.DBG)console.log('DBG cam',JSON.stringify(await p.evaluate(()=>AshenCrown.view().hubCamera)),await p.evaluate(()=>document.querySelector('.toast,#toast')?.innerText||''));
+   // until he has stood still for a second (the two walks hand over between steps)
+   {let last='',still=0;for(let i=0;i<80&&still<4;i++){await p.waitForTimeout(250);const f=(await snap()).frontier,k=`${f.x},${f.y}`;still=k===last&&!(await p.evaluate(()=>AshenCrown.view().busy||false))?still+1:0;last=k;}}s=await snap();
+   if(process.env.DBG)console.log('DBG after',await p.evaluate(()=>document.querySelector('.toast,#toast')?.innerText||''),JSON.stringify(s.narrative.active||null).slice(0,80));
+   check(`${label} a click during a walk replaces it — he turns back (started ${f0.x},${f0.y} → ${far}, turned at ${mid.x},${mid.y}, ended ${s.frontier.x},${s.frontier.y} = ${next})`,(mid.x!==f0.x||mid.y!==f0.y)&&s.frontier.x===next[0]&&s.frontier.y===next[1]);}
+  // 5. (17:14) the purchase names no heroes — only the classes in the description
+  await press('purchase-hero','lightShield|kai');{const t=await p.locator('.modal article').first().innerText();check(`${label} the purchase names the classes, not the heroes`,!t.includes('장착:')&&/보병|창병|방패병|모든 병종/.test(t));}await press('close-modal');
   // 3. the gear purchase fits the screen
   await restore(structuredClone(camp));await press('purchase-hero','lightShield|kai');const buy=p.locator('.modal [data-do="transaction"]');
   const bb=await buy.boundingBox(),vh=viewport.height;check(`${label} the purchase's buy button is on screen without scrolling (bottom ${Math.round(bb?.y+bb?.height)} ≤ ${vh})`,!!bb&&bb.y>=0&&bb.y+bb.height<=vh);

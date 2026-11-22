@@ -1,4 +1,5 @@
 # Next Tasks
+0. v2.5.2 small-update release candidate (D-148, D-149): the user plays it; merge only on approval; after the merge the user reruns Actions → Archive old builds for v2.5.1. Then the major update (D-150, docs/next/MAJOR_UPDATE_REQUESTS.md): terrain movement by class (forest closed to cavalry, infantry one tile at a time, rogues hardly slowed), fire magic by terrain, experience by level gap — a design with options first.
 0. v2.5.1 merged (D-147). Open for the user's word: 어려움 M22 (1/9) and M26 (2/5); M27/M30 easy on 보통 at the cap; the next version removes the v2.5.0 build from the tree once its Release exists.
 0. v2.5.1 release candidate (D-145): merge only on the user's approval. Art pack L is imported (D-146). After the merge the user reruns Actions → Archive old builds for v2.5.0. Open: 어려움 M22/M26; M27/M30 easy on 보통 (at the cap).
 0. v2.5.0 merged (D-143). Next on the user's word: v2.5.1 per D-141. Watch in feedback: 어려움 M22 (1/9) and M26 (2/5).

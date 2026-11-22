@@ -40,6 +40,8 @@ export function stageHubFor(key){
  if(key==='raid')return 'village';if(key.startsWith('6:'))return 'oathcamp';if(key.startsWith('promo:'))return 'oathcamp';if(key.startsWith('awaken:'))return 'keep';return null;
 }
 
+// v2.5.2 (the user's request 2026-11-22 17:14): a painting may put one door elsewhere on a shared footprint
+const moveDoor=(doors,bid,dx,dy)=>doors.map(d=>d[0]===bid?[...d.slice(0,7),dx,dy]:d);
 const hv5Interior={inn:'barracks',warroom:'quarters',depot:'store',residence:'house'};
 // Village shop doors keep the v0.3.3 anchors: place 'forge'/'shop', action and interior 'weapon'/'item'.
 const hv5Shop={forge:'weapon',shop:'item'};
@@ -74,13 +76,13 @@ const HV5_VILLAGE={tone:'village',spawn:[19,9],paintedTable:true,stage:{x:430,y:
    '##........#..###########',
    '###########..###########',
    '########################'],
-  doors:[['forge','BLACKSMITH','Blacksmith',1,0,6,4,5,3],['shop','ITEM SHOP','Item Shop',16,0,7,4,21,3],['inn-1','BARRACKS','병영',1,5,6,4,3,8],['warroom-2','COMMAND QUARTERS','지휘관 숙소',20,5,4,4,21,8],['residence-3','HOME','민가',1,10,4,3,3,12],['depot-4','SUPPLY','보급 창고',5,10,4,3,6,12]],
+  doors:[['forge','BLACKSMITH','Blacksmith',1,0,6,4,5,3],['shop','ITEM SHOP','Item Shop',16,0,7,4,21,3],['inn-1','BARRACKS','병영',1,5,6,4,3,8],['warroom-2','COMMAND QUARTERS','지휘관 숙소',20,5,4,4,20,8] /* v2.5.2: the open bay, not the right door leaf */,['residence-3','HOME','민가',1,10,4,3,3,12],['depot-4','SUPPLY','보급 창고',5,10,4,3,6,12]],
   places:[['square','Village Square',12,8],['exit','Village Exit',11,14],['advisor','작전 탁자 · 촌장 회관',19,9]],
   npcs:[...hv5Heroes({aren:[16,8],elina:[12,1],elinaName:'엘리나 · 경계',lia:[18,8],sain:[5,8],sainName:'세인 · 구호',kai:[15,5],kaiName:'카이 · 길목 관찰',advisor:[19,8]}),['elder','마을 촌장',22,9],['refugee','피난민',7,8],['guard','경비병',12,14]]};
 const HV5_SPECS={
  village:{...HV5_VILLAGE,name:'Ashen Village · 잿빛 마을',kind:'village',art:'hub_village_day',lights:[[190,180,90,'fire']]},
  village_raid:{...HV5_VILLAGE,name:'Ashen Village · 습격 후',kind:'village',art:'hub_village_raid',solid:[[10,8],[13,8],[14,7],[15,7]],
-  npcs:[...HV5_VILLAGE.npcs,['thea','테아 · 마을 어귀',2,9,{kind:'hero',requires:'thea'}],['dario','다리오 · 우물가',9,4,{kind:'hero',requires:'dario'}],['ines','이네스 · 피난민 곁',20,9,{kind:'hero',requires:'ines'}]],lights:[[200,720,120,'fire'],[420,740,110,'fire'],[300,800,90,'fire'],[930,500,70,'fire'],[1290,175,60,'fire']]},
+  npcs:[...HV5_VILLAGE.npcs,['thea','테아 · 마을 어귀',2,9,{kind:'hero',requires:'thea'}],['dario','다리오 · 우물가',9,4,{kind:'hero',requires:'dario'}],['ines','이네스 · 피난민 곁',21,9, /* v2.5.2: a step east, off the hall's moved door */{kind:'hero',requires:'ines'}]],lights:[[200,720,120,'fire'],[420,740,110,'fire'],[300,800,90,'fire'],[930,500,70,'fire'],[1290,175,60,'fire']]},
  camp:{name:'Border Camp · 국경 수비대 진영',kind:'garrison',art:'hub_garrison',spawn:[9,7],paintedTable:true,stage:{x:500,y:285},
   mask:[
    '########################',
@@ -99,7 +101,7 @@ const HV5_SPECS={
    '###########..###########',
    '###########..###########',
    '########################'],
-  doors:[['inn-1','TRIAGE','구호 천막',1,5,4,4,4,8],['inn-3','BARRACKS','병영 천막',5,5,3,4,6,8],['warroom-2','COMMAND QUARTERS','지휘 천막',16,5,4,4,17,8],['warroom-4','OPERATIONS','작전 천막',20,5,4,4,21,8],['depot-5','SUPPLY','보급 천막',15,1,4,3,17,3]],
+  doors:[['inn-1','TRIAGE','구호 천막',1,5,4,4,4,8],['inn-3','BARRACKS','병영 천막',5,5,3,4,6,8],['warroom-2','COMMAND QUARTERS','지휘 천막',16,5,4,4,19,8] /* v2.5.2: the tent floor, not the brazier */,['warroom-4','OPERATIONS','작전 천막',20,5,4,4,21,8],['depot-5','SUPPLY','보급 천막',15,1,4,3,17,3]],
   places:[['square','연병장',12,9],['forge','야전 대장간',4,4],['shop','보급관 천막',19,4],['gate','진영 입구',11,13],['advisor','작전 탁자 · 연병장',9,7]],
   npcs:[...hv5Heroes({aren:[22,9],elina:[12,2],elinaName:'엘리나 · 정찰',lia:[10,8],sain:[5,8],sainName:'세인 · 부상자',kai:[22,4],kaiName:'카이 · 우회로',advisor:[10,7]}),
    ['smith','야전 대장장이 · 무기점',4,3,{service:'weapon'}],['merchant','보급관 · 도구점',19,3,{service:'item'}],['elder','진영 관리인',14,11],['refugee','피난 주민',10,11],['guard','보초',12,13]],
@@ -122,7 +124,7 @@ const HV5_SPECS={
    '###########..###########',
    '###########..###########',
    '########################'],
-  doors:[['inn-1','TENT','병사 천막',1,1,4,3,3,3],['inn-3','TENT','보초 천막',5,1,3,3,6,3],['depot-5','SUPPLY','보급 천막',9,1,6,3,11,3],['warroom-2','COMMAND QUARTERS','지휘 천막',15,1,4,3,17,3],['warroom-4','OPERATIONS','작전 천막',20,1,4,3,22,3]],
+  doors:[['inn-1','TENT','병사 천막',1,1,4,3,4,3] /* v2.5.2: the tent floor, not the chest */,['inn-3','TENT','보초 천막',5,1,3,3,6,3],['depot-5','SUPPLY','보급 천막',9,1,6,3,11,3],['warroom-2','COMMAND QUARTERS','지휘 천막',15,1,4,3,18,3] /* v2.5.2: the rug, not the banner */,['warroom-4','OPERATIONS','작전 천막',20,1,4,3,22,3]],
   places:[['square','모닥불',12,9],['shop','방랑 상인 마차',9,7],['gate','야영지 입구',11,13],['advisor','작전 탁자 · 지휘 천막',19,4]],
   npcs:[...hv5Heroes({aren:[12,6],elina:[16,8],elinaName:'엘리나 · 경계',lia:[20,4],sain:[9,11],sainName:'세인 · 부상자',kai:[9,6],kaiName:'카이 · 모닥불',advisor:[19,3]}),
    ['merchant','방랑 상인 · 도구와 무기',8,7,{services:['item','weapon']}],['elder','진영 관리인',16,5],['refugee','피난 주민',10,10],['guard','보초',12,14]],
@@ -168,7 +170,7 @@ const HV5_SPECS={
    '###########..###########',
    '###########..###########',
    '########################'],
-  doors:[['inn-1','TENT','병사 천막',1,2,2,3,2,4],['inn-3','TENT','병사 천막 2',3,2,2,3,4,4],['depot-5','SUPPLY','보급 천막',5,2,3,3,6,4],['warroom-2','COMMAND QUARTERS','지휘 천막',16,2,3,3,17,4],['warroom-4','OPERATIONS','작전 천막',21,2,3,3,22,4]],
+  doors:[['inn-1','TENT','병사 천막',1,2,2,3,2,4],['inn-3','TENT','병사 천막 2',3,2,2,3,4,4],['depot-5','SUPPLY','보급 천막',5,2,3,3,6,4],['warroom-2','COMMAND QUARTERS','지휘 천막',16,2,3,3,18,4] /* v2.5.2: the open front, not the curtain */,['warroom-4','OPERATIONS','작전 천막',21,2,3,3,22,4]],
   places:[['square','맹세의 광장',12,10],['shop','방랑 상인',5,10],['gate','국경 관문',11,2],['training','훈련장',17,10],['advisor','작전 탁자 · 지휘 천막',20,5]],
   npcs:[...hv5Heroes({aren:[12,9],elina:[22,10],elinaName:'엘리나 · 훈련장',lia:[21,4],sain:[10,3],sainName:'세인 · 피난민',kai:[8,3],kaiName:'카이 · 길목',advisor:[20,4]}),
    ['merchant','방랑 상인 · 도구와 무기',5,9,{services:['item','weapon']}],['elder','진영 관리인',15,4],['refugee','피난 주민',13,3],['guard','보초',13,12]],
@@ -201,7 +203,7 @@ HV5_SPECS.pilgrim={name:'Pilgrim Village · 순례자 마을',kind:'pilgrim',ton
   '###########..###########',
   '###########..###########'],
  doors:[['forge','PILGRIM SMITHY','순례자 대장간',1,1,6,4,4,4],['shop','RELIEF APOTHECARY','구호 약재상',17,1,7,4,20,4],['warroom-5','CHAPEL','길가 예배당',7,1,4,3,8,3],['warroom-6','COPYISTS','필사가의 집',14,1,3,3,15,3],
-  ['inn-1','PILGRIMS HOSTEL','순례자 숙소',1,6,6,3,3,8],['warroom-2','HOSPICE','교단 구호원',17,6,7,3,20,8],['residence-3','HOME','민가',1,11,5,2,2,12],['depot-4','GRANARY','구호 곡물 창고',16,11,8,2,20,12]],
+  ['inn-1','PILGRIMS HOSTEL','순례자 숙소',1,6,6,3,3,8],['warroom-2','HOSPICE','교단 구호원',17,6,7,3,20,8],['residence-3','HOME','민가',1,11,5,2,2,12],['depot-4','GRANARY','구호 곡물 창고',16,11,8,2,21,12] /* v2.5.2: the arched door, not the lamp */],
  places:[['square','순례자 광장',12,10],['exit','남쪽 순례길',11,14],['advisor','작전 탁자 · 순례자 광장',10,8]],
  npcs:[...hv5Heroes({aren:[12,9],elina:[16,4],elinaName:'엘리나 · 언덕길',lia:[11,6],sain:[22,5],sainName:'세인 · 구호원 앞',kai:[1,5],kaiName:'카이 · 골목',advisor:[10,7]}),
   ['elder','순례자 마을 사제',21,10],['refugee','피난민',1,13],['guard','성화 기사',12,15],['ines','이네스 · 순례 수호자',10,3,{kind:'hero'}],
@@ -221,7 +223,7 @@ HV5_SPECS.oathcamp.npcs=[...HV5_SPECS.oathcamp.npcs,['thea','테아 · 경계',1
 // painted it over Velmar's footprint, so it keeps Velmar's walk mask, doors, forge and shop; its rooms are the 'capital'
 // family. After M16 the legion camps on the western plain under the night bivouac painting.
 HV5_SPECS.capital={...HV5_SPECS.velmar,name:'Royal Lower City · 왕도 하층가',kind:'capital',art:'hub_capital',
- npcs:HV5_SPECS.velmar.npcs.map(n=>n[0]==='elder'?['elder','늙은 기록관',n[2],n[3],{look:'archivist'}]:n[0]==='refugee'?['refugee','하층가 주민',n[2],n[3]]:n[0]==='guard'?['guard','왕도 경비대',n[2],n[3]]:n[0]==='dario'?['dario','다리오 · 골목',n[2],n[3],{kind:'hero',requires:'dario'}]:n[0]==='thea'?['thea','테아 · 운하 길',n[2],n[3],{kind:'hero',requires:'thea'}]:n).concat([['ines','이네스 · 광장',19,9,{kind:'hero',requires:'ines'}],['baldrick','발드릭 · 성문 쪽',6,9,{kind:'hero',requires:'baldrick',fromMission:27}]])};
+ npcs:HV5_SPECS.velmar.npcs.map(n=>n[0]==='elder'?['elder','늙은 기록관',n[2],n[3],{look:'archivist'}]:n[0]==='refugee'?['refugee','하층가 주민',n[2],n[3]]:n[0]==='guard'?['guard','왕도 경비대',n[2],n[3]]:n[0]==='dario'?['dario','다리오 · 골목',n[2],n[3],{kind:'hero',requires:'dario'}]:n[0]==='thea'?['thea','테아 · 운하 길',n[2],n[3],{kind:'hero',requires:'thea'}]:n).concat([['ines','이네스 · 광장',11,10,{kind:'hero',requires:'ines'}],['baldrick','발드릭 · 성문 쪽',13,11,{kind:'hero',requires:'baldrick',fromMission:27}]] /* v2.5.2: they stood on the tavern's and the house's door tiles (19,9 · 6,9) and shut them */)};
 HV5_SPECS.fieldcamp={...HV5_SPECS.bivouac,name:'Field Camp · 잊힌 전장 야영지',kind:'fieldcamp',
  npcs:[...HV5_SPECS.bivouac.npcs.map(n=>n[0]==='elder'?['elder','근처 마을 노인',16,5]:n[0]==='refugee'?['refugee','피난민',10,10]:n),
   ['thea','테아 · 경계',13,4,{kind:'hero',requires:'thea'}],['dario','다리오 · 모닥불',11,9,{kind:'hero',requires:'dario'}],['ines','이네스 · 모닥불',14,6,{kind:'hero',requires:'ines'}]]};
@@ -229,9 +231,13 @@ HV5_SPECS.fieldcamp={...HV5_SPECS.bivouac,name:'Field Camp · 잊힌 전장 야�
 // and the forest-keepers' village (M18) with the Ashen Village painting under a green rain tint — temporary until art pack
 // F2 (never labelled finished). The keep is where the awakening trials are held.
 HV5_SPECS.keep={...HV5_SPECS.fortress,name:"Guardians' Keep · 수호자 성채",kind:'keep',art:'hub_keep', // ACT III pack F2 (D-088): painted on the fort's footprint
+ // v2.5.2 (the user's request 2026-11-22 17:14): the keep's gate is painted a tile lower than the fortress's, so its
+ // threshold is the door's foot (row 2) and Eric stands on the steps below it
+ doors:HV5_SPECS.fortress.doors.map(d=>d[0]==='warroom-2'?['warroom-2',d[1],d[2],9,0,3,3,11,2]:d[0]==='warroom-4'?['warroom-4',d[1],d[2],12,0,3,3,12,2]:d),solid:[[11,2],[12,2]],
  npcs:[...HV5_SPECS.fortress.npcs.map(n=>n[0]==='elder'?['elder','마지막 수호자',n[2],n[3],{look:'guardianElder'}]:n[0]==='refugee'?['refugee','성채 순례자',n[2],n[3]]:n[0]==='guard'?['guard','성채 문지기',n[2],n[3]]:n),
   ['thea','테아 · 성문',10,12,{kind:'hero',requires:'thea'}],['dario','다리오 · 안뜰',16,10,{kind:'hero',requires:'dario'}],['ines','이네스 · 석상 곁',5,9,{kind:'hero',requires:'ines'}]]};
 HV5_SPECS.forest={...HV5_VILLAGE,name:'Forest Village · 숲지기 마을',kind:'forest',art:'hub_forest', // ACT III pack F2 (D-088): painted on the village's footprint
+ doors:moveDoor(HV5_VILLAGE.doors,'forge',3,3), // v2.5.2: the smithy's round door is painted two tiles west of the village's
  npcs:[...HV5_SPECS.village.npcs.map(n=>n[0]==='elder'?['elder','숲지기 장로',n[2],n[3],{look:'forestElder'}]:n[0]==='refugee'?['refugee','숲지기',n[2],n[3],{look:'forester'}]:n[0]==='guard'?['guard','숲 길잡이',n[2],n[3]]:n),
   ['thea','테아 · 숲 어귀',13,4,{kind:'hero',requires:'thea'}],['dario','다리오 · 우물',20,4,{kind:'hero',requires:'dario'}],['ines','이네스 · 고목 아래',9,4,{kind:'hero',requires:'ines'}]]};
 // v2.1 작은 마을 (D-118, TAVERN_WORLD_DESIGN §7; PROPOSED): the villages a cleared castle opens on the world map. Until
@@ -245,7 +251,7 @@ HV5_SPECS.reed=smallVillage('Reed Ferry · 갈대 나루','나루 촌장','뱃�
 HV5_SPECS.stonewell=smallVillage('Stonewell · 돌우물 마을','돌우물 촌장','우물지기','길목 파수','hub_stonewell');
 // v2.3.1 (D-131/D-132): the ACT II villages, painted on the small villages' footprint in art pack J part B.
 HV5_SPECS.frost=smallVillage('Frostneck · 서리목 마을','서리목 촌장','나무꾼','눈길 파수','hub_frost');
-HV5_SPECS.saltport=smallVillage('Saltport · 소금항','소금항 촌장','염전 일꾼','포구 파수','hub_saltport');
+HV5_SPECS.saltport={...smallVillage('Saltport · 소금항','소금항 촌장','염전 일꾼','포구 파수','hub_saltport'),doors:moveDoor(HV5_VILLAGE.doors,'forge',4,3)}; // v2.5.2: the forge's open front (the village's door tile is a wall here)
 // v2.4.1 (D-135): the ACT III villages, painted by art pack K on the small-village footprint (D-139)
 HV5_SPECS.lamp=smallVillage('Lampvale · 등불골','등불골 촌장','등불지기','묘지 파수','hub_lamp');
 HV5_SPECS.moss=smallVillage('Mossbridge · 이끼다리','이끼다리 촌장','약초꾼','숲길 파수','hub_moss');
