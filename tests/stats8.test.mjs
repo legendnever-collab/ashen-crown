@@ -8,7 +8,7 @@ import {CLASSES8,STAT_KEYS,TIER_STAT_BONUS,HERO_STATS} from '../src/data/classes
 test('the bases are fitted: today\'s heroes keep their Lv 1 numbers (Erik HP 42 / ATK 15 / DEF 8, Lia MAG 18)',()=>{
  assert.deepEqual(['maxHP','atk','def'].map(k=>derivedFrom('infantry',statsAt('eric',1),1)[k]),[42,15,8]);
  const lia=derivedFrom('mage',statsAt('lia',1),1);assert.equal(lia.mag,18);assert.equal(lia.maxHP,27);
- assert.equal(Object.keys(HERO_STATS).length,21,'nine heroes, nine tavern hires and the rescued heroes (v2.1 아델, v2.3.1 군나르, v2.4.1 마렌)');for(const st of Object.values(HERO_STATS))assert.deepEqual(Object.keys(st).sort(),[...STAT_KEYS].sort());});
+ assert.equal(Object.keys(HERO_STATS).length,22,'nine heroes, nine tavern hires and the rescued heroes (v2.1 아델, v2.3.1 군나르, v2.4.1 마렌, v2.5.1 루카)');for(const st of Object.values(HERO_STATS))assert.deepEqual(Object.keys(st).sort(),[...STAT_KEYS].sort());});
 
 test('growth: one level adds the class growth (heroes ×1.15) and re-derives; promotion adds +2/+3 to the main stats, +1 to the rest',()=>{
  const u={id:'eric',team:'ally',cls:'infantry',level:1,stats:statsAt('eric',1)};deriveUnit(u);const g=growthOf(u),before={...u.stats};u.level=2;const ch=levelUpStats(u);
