@@ -130,7 +130,12 @@ function reform250(s){const m=MISSIONS[s.missionId];
  if(!s.skirmish&&m?.v250){if(['battle','result','deployment'].includes(s.screen)){s=reopenInCamp(s);s.migrated250='battle';}else relocateCamp(s);}
  s.schema=26;s.version='2.5.0';if(s.stageStart&&MISSIONS[s.stageStart.missionId]?.v250)delete s.stageStart;else if(s.stageStart)s.stageStart=migrate(s.stageStart);
  return s;}
+// v2.5.1: the rescued heroes' records carried the battle flag "rescued" (it means "led off the field"), so 아델, 군나르 and
+// 마렌 were left out of every battle they sortied in. Their records now say rescuedHero; old saves are mended here.
+const RESCUED_HEROES=['adel','gunnar','maren','luka'];
+function mendRescued(s){for(const list of [s.campaign?.heroes,s.units])for(const h of list||[])if(RESCUED_HEROES.includes(h?.id)&&h.rescued&&(list!==s.units||h.team==='ally')){delete h.rescued;h.rescuedHero=true;}}
 function reform251(s){const m=MISSIONS[s.missionId];
+ mendRescued(s);
  if(!s.skirmish&&m?.v251){if(['battle','result','deployment'].includes(s.screen)){s=reopenInCamp(s);s.migrated251='battle';}else relocateCamp(s);}
  s.schema=27;s.version='2.5.1';if(s.stageStart&&MISSIONS[s.stageStart.missionId]?.v251)delete s.stageStart;else if(s.stageStart)s.stageStart=migrate(s.stageStart);
  return s;}

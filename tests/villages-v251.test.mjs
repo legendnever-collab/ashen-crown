@@ -3,7 +3,7 @@
 // rescued hero who grows like a hero; 「등불 손길」 clears one status when he heals); 「도망친 군마」 is won by bringing the
 // three grooms back; 「샘터 우물 보수」 takes 10% off at 사자샘, 봉화둔덕 and 왕도 하층가; each village has a bounty.
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
-import {deserialize,serialize} from '../src/persistence/save-manager.js';
+import {deserialize,serialize,checksum} from '../src/persistence/save-manager.js';
 import {travelTo,currentHub,revisitTowns,exitInterior} from '../src/core/frontier.js';
 import {requestsAt,startRequest,payRequest} from '../src/core/villages.js';
 import {returnToCamp} from '../src/core/skirmish.js';
@@ -71,4 +71,16 @@ test('every ACT IV request battle is winnable by the test policy; 「도망친 �
  assert.ok(requestsAt(s,'lionspring').find(r=>r.id==='bountyLion').done);s.campaign.completed.push(29);assert.ok(!requestsAt(s,'lionspring').find(r=>r.id==='bountyLion').done);
  assert.deepEqual(Object.keys(REQUESTS).filter(id=>REQUESTS[id].mission>=137).map(id=>REQUESTS[id].mission),[137,138,139,140,141,142]);
  assert.equal(MISSIONS[139].goal.type,'rescue');
+});
+
+test('the rescued heroes fight: 아델, 군나르, 마렌 and 루카 are on the field when they sortie; a v2.5.0 save is mended',async()=>{
+ const {NEW_HEROES}=await import('../src/data/mercs-v210.js');
+ for(const id of ['adel','gunnar','maren','luka']){const h=NEW_HEROES.find(x=>x.id===id);assert.ok(h.rescuedHero&&!h.rescued,`${id}: the record must not carry the battle flag`);}
+ // an older save (the v0.10.2 fixture) whose 마렌 record carries the old flag: loading it mends the record
+ const env=JSON.parse(fixture.save),data=JSON.parse(env.data),kai=data.campaign.heroes.find(h=>h.id==='kai');
+ data.campaign.roster.push('maren');data.campaign.heroes.push({...structuredClone(kai),...NEW_HEROES.find(x=>x.id==='maren'),level:kai.level,rescuedHero:undefined,rescued:true});
+ const text=JSON.stringify(data),back=deserialize(JSON.stringify({...env,checksum:checksum(text),data:text}));back.economy.gold=back.campaign.economy.gold=3000;
+ const rec=back.campaign.heroes.find(h=>h.id==='maren');assert.ok(!rec.rescued&&rec.rescuedHero,'mended');assert.equal(back.schema,27);
+ travelTo(back,'lionspring');const r=startRequest(back,'passbandits',['eric','maren','elina','lia']);if(r.screen==='deployment')startBattle(r);drain(r);const m=findUnit(r,'maren');
+ assert.ok(m&&!m.rescued&&!m.benched&&m.hp>0,'마렌 on the field');
 });
