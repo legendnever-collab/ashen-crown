@@ -17,7 +17,7 @@
 작업 단계별 커밋. npm test, balance, browser regression, campaign E2E, migration, offline, documentation audit. 실제 검증만 완료 표시. 모든 PR의 documentation checklist: README, CHANGELOG, CURRENT_STATUS, NEXT_TASKS, ROADMAP, Story Bible review, Decision Log review, tests/evidence, artifacts.
 
 
-## Current v2.5.1 entry (ACT IV 큰 맵 2부, villages, 루카 — release candidate, D-144/D-145)
+## Current v2.5.1 entry (ACT IV 큰 맵 2부, villages, 루카 — merged, D-144–D-147)
 feature/v2.5.1. src/data/missions-v251.js: ROWS2510 (scripts/make-act4-maps.py, M27–M30) and V251_MISSIONS (applyV251 after applyV250, m.v251; a copied unit's post moves with it). M27: gate27 (8–9,5), ramRow 6, sections (20/24/28,4), ladders row 5, m.wallTopY 4, m.sectionNames (mission-rules-v0102 sectionKo27). M28: extra posted remnants r01–r03, the waves r11+ roam (+id ≥ 11). M29: rites29 shifted, m.captainBox [9,0,16,11] (mission-rules-v100). Requests 137–142 in missions.js (req4; goal type 'rescue' in mission-rules SK), villages beacon/lionspring (villages-v210, world, arms-v081, hubs-v05 with borrowed hub_garrison/hub_frost), 루카 in mercs-v210 (rescuedHero, MERC_BUST sain until art pack L), 등불 손길 in game.js heal. D-144: NEW_HEROES carry rescuedHero (not rescued); save-manager mendRescued in reform251. HARD_SHARE 27 .5, 30 .5. tests/chain-from.mjs <from> [tries] (ASHEN_TUNE, ASHEN_DIFFICULTY). Art pack L: scripts/make-v251-l-art-pack.py → docs/v2.5.1/art/l-work-pack; returned and imported with scripts/import-art-pack-l.py (D-146): bust_luka_*, hub_beacon, hub_lionspring.
 
 ## v2.5.0 entry (ACT IV 큰 맵 1부 — merged, D-141–D-143)
