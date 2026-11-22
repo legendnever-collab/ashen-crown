@@ -1,0 +1,6 @@
+order,part,kind,id,expression,file,size,references,prompt_file
+1,A,bust,luka,neutral,bust_luka_neutral.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_sain.png, ref_bust_celine.png",prompts/01_bust_luka_neutral.txt
+2,A,bust,luka,concerned,bust_luka_concerned.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_sain.png, ref_bust_celine.png",prompts/02_bust_luka_concerned.txt
+3,A,bust,luka,determined,bust_luka_determined.png,1024x1280,"style_aren_neutral.png, ref_bust_baldrick_neutral.png, ref_bust_sain.png, ref_bust_celine.png",prompts/03_bust_luka_determined.txt
+4,B,hub,hub_beacon,,hub_beacon.jpg,1536x1024,"layout_hub_village.png, approved_hub_village_day.jpg, approved_hub_garrison.jpg, approved_hub_capital.jpg, scale_reference.png, sprite_eric_sheet.png",prompts/04_hub_beacon.txt
+5,B,hub,hub_lionspring,,hub_lionspring.jpg,1536x1024,"layout_hub_village.png, approved_hub_village_day.jpg, approved_hub_frost.jpg, approved_hub_capital.jpg, scale_reference.png, sprite_eric_sheet.png",prompts/05_hub_lionspring.txt
