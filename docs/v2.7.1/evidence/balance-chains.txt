@@ -1,0 +1,5 @@
+어려움 (ASHEN_DIFFICULTY=hard node tests/act2-balance.mjs 30, M01→M30, first try per mission; v2.7.1):
+{"rates": ["M1 29/30", "M2 30/30", "M3 17/30", "M4 29/30", "M5 30/30", "M6 21/30", "M7 21/27", "M8 26/26", "M9 26/26", "M10 26/26", "M11 23/26", "M12 26/26", "M13 26/26", "M14 22/26", "M15 24/25", "M16 20/25", "M17 24/24", "M18 24/24", "M19 24/24", "M20 24/24", "M21 19/24", "M22 19/24", "M23 15/23", "M24 16/21", "M25 20/20", "M26 11/20", "M27 16/20", "M28 13/20", "M29 14/18", "M30 16/17"]}
+
+어려움 M06 from the 30 어려움 camps saved before it (v2.7.0 rules), two tries each, by the 어려움 base strength: 1.45 60/60 · 1.6 59/60 · 1.7 46/60 · 1.75 33/60 · 1.8 33/60. Set 1.7.
+보통: unchanged by this version (no 보통 number moved); its v2.7.0 chain is docs/v2.7.0/evidence/balance-chains.txt.
