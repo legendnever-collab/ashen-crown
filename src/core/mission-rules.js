@@ -141,16 +141,25 @@ function triggerWaves(s,trigger){const m=missionOf(s),st=s.missionState;m.waves.
  if(w.when==='reported'&&s.campaign.choices?.m04_records_choice!=='reported')return;st.waves.push(i+1);
  if(w.unlessBeacon&&!alive(findUnit(s,'beacon'))){s.log.push('봉화가 꺼져 관문 수비대 증원이 오지 않습니다.');return;}
  spawnWave(s,w.units);if(w.story)enqueueStory(s,w.story);s.log.push(`적 증원 ${w.units.length}명 출현.`);});}
-// refugees walk the shortest open route north; they may pass through heroes but never stop on anyone
-function refugeeRoute(s,c){const start=`${c.x},${c.y}`,prev=new Map([[start,null]]),q=[{x:c.x,y:c.y}];let goal=null;
+// refugees walk the shortest open route to the safe ground; v2.7.0 (D-158): they pass through heroes and the other refugees
+// (never stopping on anyone); an enemy is a wall, and when enemies close every way they walk the way they would take if the
+// road were clear, as far as it is free (state 'blocked').
+function refugeeRoute(s,c,ignoreFoes=false){const start=`${c.x},${c.y}`,prev=new Map([[start,null]]),q=[{x:c.x,y:c.y}];let goal=null;
  while(q.length){const p=q.shift();if(safe6(s,p)&&`${p.x},${p.y}`!==start){goal=p;break;}
-  for(const [dx,dy]of[[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,k=`${x},${y}`;if(prev.has(k))continue;const t=terrainAt(x,y,s);if(!t||!Number.isFinite(t.cost))continue;const o=at(s,x,y);if(o&&o.team!=='ally')continue;prev.set(k,`${p.x},${p.y}`);q.push({x,y});}}
+  for(const [dx,dy]of[[0,-1],[-1,0],[1,0],[0,1]]){const x=p.x+dx,y=p.y+dy,k=`${x},${y}`;if(prev.has(k))continue;const t=terrainAt(x,y,s);if(!t||!Number.isFinite(t.cost))continue;const o=at(s,x,y);if(o&&o.team!=='ally'&&o.team!=='civilian'&&!(ignoreFoes&&o.team==='enemy'))continue;prev.set(k,`${p.x},${p.y}`);q.push({x,y});}}
  if(!goal)return [];const path=[];let k=`${goal.x},${goal.y}`;while(k&&k!==start){const [x,y]=k.split(',').map(Number);path.unshift({x,y});k=prev.get(k);}return path;}
-function escortRefugees(s){const st=s.missionState;
+// v2.7.0 (D-158): what a refugee will do at the next turn start — drawn over its head and shown when it is pressed
+export function refugeeSteps(s,c){const p=refugeeRoute(s,c);return p.length||refugeeRoute(s,c,true).length;}
+export const REFUGEE_STATE_KO={follow:'따라옴',hurt:'치유 필요',alone:'혼자 걸음',wait:'장수 곁으로',blocked:'길 막힘'};
+export function refugeeState(s,c){if(!c||c.team!=='civilian'||c.rescued||c.hp<=0||s.missionId!==6)return null;if(c.hp<=c.maxHP/2)return 'hurt';
+ const escorted=s.units.some(u=>u.team==='ally'&&alive(u)&&distance(u,c)===1);if(!escorted&&!s.missionState?.lever)return 'wait';
+ if(!refugeeRoute(s,c).length)return 'blocked';return escorted?'follow':'alone';}
+function escortRefugees(s){const st=s.missionState,steps3=missionOf(s).escortSteps||2;
  for(const c of refugeesOf(s).filter(alive)){
   if(c.hp<=c.maxHP/2){s.log.push(`${c.name}: 부상이 심해 움직이지 못합니다. 세인의 치유가 필요합니다.`);continue;}
-  const escorted=s.units.some(u=>u.team==='ally'&&alive(u)&&distance(u,c)===1),steps=escorted?2:st.lever?1:0;if(!steps)continue;
-  const path=refugeeRoute(s,c);let dest=-1;for(let i=0;i<Math.min(steps,path.length);i++)if(!at(s,path[i].x,path[i].y))dest=i;if(dest<0)continue;
+  const escorted=s.units.some(u=>u.team==='ally'&&alive(u)&&distance(u,c)===1),steps=escorted?steps3:st.lever?1:0;if(!steps)continue;
+  let path=refugeeRoute(s,c);if(!path.length)path=refugeeRoute(s,c,true);
+  let dest=-1;for(let i=0;i<Math.min(steps,path.length);i++){const o=at(s,path[i].x,path[i].y);if(o&&o.team==='enemy')break;if(!o)dest=i;}if(dest<0){s.log.push(`${c.name}: 길이 막혀 움직이지 못합니다.`);continue;}
   const from={x:c.x,y:c.y};c.x=path[dest].x;c.y=path[dest].y;s.feedback.push({type:'move',id:c.id,path:[from,...path.slice(0,dest+1)]});
   if(safe6(s,c)){c.rescued=true;s.feedback.push({type:'rescue',id:c.id,text:'SAFE'});s.log.push(`${c.name}이(가) 관문을 넘었습니다. (${passedOf(s)}/4)`);enqueueStory(s,'6:through');}
   else s.log.push(`${c.name} ${escorted?'호위 이동':'우회로 이동'}.`);}}

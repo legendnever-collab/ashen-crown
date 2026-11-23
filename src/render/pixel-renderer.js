@@ -12,6 +12,7 @@ import {heroDef} from '../data/game-data.js';
 import {RANGE_STYLE,moveDuration,motionAt,presentationPlan} from './animation.js';
 import {drawCombatEffect,effectPhase,drawClassEffect} from './combat-effects.js';
 import {rulesOf} from '../core/mission-rules.js';
+import {refugeeState,REFUGEE_STATE_KO} from '../core/mission-rules.js';
 import {pulseCells21,pulseRing21} from '../core/mission-rules-v093.js';
 import {ashRows24,gateClosed24} from '../core/mission-rules-v0100.js';
 import {drawProp,wardTreeProp} from './prop-art.js';
@@ -101,6 +102,7 @@ export class BattleRenderer{
    if(threatIds.has(u.id)&&Math.floor(now/400)%2){c.fillStyle='#e8594a';c.beginPath();c.moveTo(ux-9,uy-50);c.lineTo(ux+9,uy-50);c.lineTo(ux,uy-38);c.closePath();c.fill();c.fillStyle='#fff2d0';c.font='bold 12px sans-serif';c.textAlign='center';c.fillText('!',ux,uy-41);c.textAlign='start';}
    if(u.guarding&&!u.guardUsed){rect(c,'#2a3a44',ux+12,uy-44,13,15);rect(c,'#e7c783',ux+13,uy-43,11,13);rect(c,'#3f7fa3',ux+15,uy-41,7,9);}
    statusChips(c,u,s,ux,uy);
+   if(u.team==='civilian'&&s.missionId===6&&s.screen==='battle'){const st=refugeeState(s,u);if(st){const label=REFUGEE_STATE_KO[st],col={follow:'#7fe0a0',hurt:'#ff8a7a',alone:'#cfe7ff',wait:'#e8dcc0',blocked:'#ffb45a'}[st];c.font='bold 11px sans-serif';c.textAlign='center';const w=c.measureText(label).width+8;rect(c,'rgba(16,24,28,.82)',ux-w/2,uy-56,w,15);c.fillStyle=col;c.fillText(label,ux,uy-45);}} // v2.7.0 (D-158): the refugee's next step
    if(u.team!=='object'&&(u.team!=='civilian'||u.hp<u.maxHP)&&!fogHidden(s,u)){rect(c,'#18242a',ux-23,uy+27,46,5);rect(c,u.team==='enemy'?'#e8594a':u.team==='civilian'?'#f0cf6a':'#5fd38a',ux-22,uy+28,Math.max(1,Math.floor(44*this.displayHP(u,now)/u.maxHP)),3);}
    if(effects.some(e=>['hit','critical'].includes(e.type))&&Math.floor(now/70)%2){rect(c,'rgba(255,224,192,.5)',ux-22,uy-40,44,62);}
    }});

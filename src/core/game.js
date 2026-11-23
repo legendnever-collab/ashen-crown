@@ -4,7 +4,7 @@ import {VERSION,SCHEMA,HEROES,ENEMIES,REINFORCEMENTS,CIVILIANS,DEPLOYMENTS,BALAN
 import {tallyKill,tallyRescue,tallyHeal,commitRecords} from './records.js';
 import {skillOf,ensureStats,deriveUnit,planLevels,scaleTroop,DIFFICULTY,difficultyOf,classKeyOf,isBossRank,OFFICER_IDS} from './stats8.js';
 import {TIER_ATTACK} from '../data/classes8.js';
-import {lightSpellFire,fireMul,pathCost,flank,terrainCost,distance,healAmount,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,forecast,strikeStats,guardFor,roll,awardXP,discover,terrainAt,counterBlocked,hostile,chargeBreaks,riposteBonus,sideOf,weatherOf,inWard,blockadeHolds} from './rules.js';
+import {doubleChance,DOUBLE_SCALE,lightSpellFire,fireMul,pathCost,flank,terrainCost,distance,healAmount,key,alive,at,findUnit,movement,pathTo,skillCost,validTarget,forecast,strikeStats,guardFor,roll,awardXP,discover,terrainAt,counterBlocked,hostile,chargeBreaks,riposteBonus,sideOf,weatherOf,inWard,blockadeHolds} from './rules.js';
 import {MISSIONS,missionOf,LAST_MISSION} from '../data/missions.js';
 import {checkDuelEvents} from './duel-events.js';
 import {rulesOf,objectUnit,searchEvidence} from './mission-rules.js';
@@ -104,6 +104,8 @@ function damage(s,u,t,mode,counter=false,opts=null){
 // ember arrows to the sides, a ride-through, a shove, the ward wall, the afterimage. Multiple blows are real blows.
 export const tierOfUnit=u=>u?.team==='ally'?Math.max(1,u.classTier||1):u?.team==='enemy'||u?.team==='allied'?(u.troopTier??((u.level||1)>=16?3:(u.level||1)>=8?2:1)):1; /* troops: their level's tier, capped by the sortie's (core/stats8.js scaleTroop) */
 export function attackPattern(u){const c=classKeyOf(u);if(!c)return null;return TIER_ATTACK[c]?.[tierOfUnit(u)-1]||null;}
+// v2.7.0 (D-158): the tier attack named in the forecast (「2연 베기 ×2」) — the class's own move, not a chance
+export function patternNote(u,mode='attack'){const p=mode==='attack'?attackPattern(u):null;return p?.name?(p.hits>=2?`${p.name} ×${p.hits}`:p.name):'';}
 const STEP=[[0,-1],[1,0],[0,1],[-1,0]];
 function freeTile(s,x,y,mover){const t=terrainAt(x,y,s);return !!t&&Number.isFinite(t.cost)&&!missionOf(s).layers?.collision?.[y]?.[x]&&!at(s,x,y)&&(!mover||Number.isFinite(terrainCost(s,mover,x,y)));}
 function strikeWithPattern(s,u,t,mode){const p=mode==='attack'?attackPattern(u):null;
@@ -120,8 +122,9 @@ function strikeWithPattern(s,u,t,mode){const p=mode==='attack'?attackPattern(u):
  if(r.hit&&p.push&&alive(v)&&!isBossRank(v)&&!v.prop&&!v.anchored&&v.team!=='object'){const nx=v.x+dx,ny=v.y+dy;if(freeTile(s,nx,ny,v)){v.x=nx;v.y=ny;s.feedback.push({type:'move',id:v.id,path:[{x:nx-dx,y:ny-dy},{x:nx,y:ny}]});s.log.push(`${u.name}: 밀치기 · ${v.name}이(가) 한 칸 밀려납니다.`);}}
  if(r.hit&&p.passThrough&&alive(u)&&u.team==='ally'&&distance(u,v)===1){const nx=v.x+dx,ny=v.y+dy;if(freeTile(s,nx,ny,u)){const fx0=u.x,fy0=u.y;u.x=nx;u.y=ny;s.feedback.push({type:'move',id:u.id,path:[{x:fx0,y:fy0},{x:nx,y:ny}]});const e=s.units.find(e=>e!==v&&alive(e)&&hostile(s,u,e)&&distance(e,u)===1);if(e)damage(s,u,e,mode,false,{scale:p.passThrough});}}
  return r;}
-// v2.0.0 §3.4: an attacker 8 or more 민첩 faster strikes once more (×0.6) after the exchange.
-function followUp(s,u,v,mode){if(mode!=='attack'||!alive(u)||!alive(v)||!hostile(s,u,v)||!validTarget(s,u,v,'attack'))return null;if((effectiveStats(s,u).spd||0)<(effectiveStats(s,v).spd||0)+8)return null;s.log.push(`${u.name}: 추가 공격.`);return damage(s,u,v,mode,false,{scale:.6});}
+// v2.7.0 (D-158): 「연속 공격」 — a chance from 운 (rules.js doubleChance) to strike once more (×0.6) after the exchange; it
+// replaced v2.0.0 §3.4 (8 or more 민첩 faster → always).
+function followUp(s,u,v,mode){if(mode!=='attack'||!alive(u)||!alive(v)||!hostile(s,u,v)||!validTarget(s,u,v,'attack'))return null;const p=doubleChance(s,u,v);if(!p||roll(s)*100>=p)return null;s.log.push(`${u.name}: 연속 공격 (${p}%).`);s.feedback.push({type:'double',id:u.id,text:'연속 공격!'});return damage(s,u,v,mode,false,{scale:DOUBLE_SCALE});}
 // v2.1 (D-118): duels are story events between linked pairs (core/duel-events.js); the v2.0.0 challenge menu is gone.
 setDuelWon((s,f)=>{claimTreasure(s,f.carries,'일기토 승리');f.carries=null;});
 // v2.2.0 play-test (D-124): the beaten lead leaves the field. A mission rule may decide how (Baldrick withdraws or yields,

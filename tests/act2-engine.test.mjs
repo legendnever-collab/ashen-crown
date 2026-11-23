@@ -20,15 +20,15 @@ const battle=(seed=11,campaign=null,id=1)=>{const s=newGame(seed,campaign,id);s.
 function withTile(s,x,y,type,fn){const m=MISSIONS[s.missionId].map,old=m[y][x];m[y][x]=type;try{return fn();}finally{m[y][x]=old;}}
 
 test('schema 9 → v2.0.0: ACT I parties are the five heroes in the field and the officers earned so far on the bench, sortie 6–7 by the map (v2.6.1)',()=>{
- assert.equal(SCHEMA,27);
+ assert.equal(SCHEMA,28);
  for(const id of [1,2,3,4,5,6]){const s=newGame(7,null,id),allies=s.units.filter(u=>u.team==='ally'),officers=[]; /* v2.1 (D-118): a fresh campaign is the five alone; officers are tavern hires */assert.deepEqual(allies.map(u=>u.id),[...HEROES.map(h=>h.id),...officers]);assert.equal(deployLimit(s),[6,6,7,7,6,7][id-1]);assert.ok(s.units.every(u=>u.team!=='allied'));assert.deepEqual(s.campaign.roster,officers);assert.deepEqual(allies.filter(u=>u.benched).map(u=>u.id),officers);}
 });
 
 test('schema 8 saves migrate (v2.0.0: the ACT I officers join, no trust yet); round trip holds',()=>{
  const s=battle(5);const old=JSON.parse(JSON.stringify(s));old.schema=8;old.version='0.5.0';delete old.campaign.roster;old.stageStart.schema=8;delete old.stageStart.campaign.roster;
- const m=migrate(old);assert.equal(m.schema,27);assert.deepEqual(m.campaign.roster,[],'v2.1: no officer joins by itself');assert.equal(m.campaign.factionTrust,undefined);
+ const m=migrate(old);assert.equal(m.schema,28);assert.deepEqual(m.campaign.roster,[],'v2.1: no officer joins by itself');assert.equal(m.campaign.factionTrust,undefined);
  assert.equal(m.stageStart,undefined,'v2.0.0: an ACT I battle reopens in camp on the new map');assert.equal(m.screen,'exploration');
- assert.equal(deserialize(serialize(m)).schema,27);
+ assert.equal(deserialize(serialize(m)).schema,28);
 });
 
 test('a recruit joins at a level, gets slots and a hub place, and fields only within the sortie limit',()=>{

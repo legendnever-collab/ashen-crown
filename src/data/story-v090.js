@@ -34,7 +34,7 @@ export const STORY_V090={
  '16:echo:st3':[s90('chronicle','잔영 — 불타는 마을 하나. 아이들이 언덕 위로 달린다. 그 뒤의 길은 안개에 묻혀 있다.','sad'),s90('sain','이곳에 마을이 있었네요. 지도에서도 지워진 마을이요.','sad')],
  '16:echo:st3:elina':[s90('chronicle','잔영 — 불타는 마을 하나. 언덕 위로 달리는 아이들 사이에, 적갈색 머리를 땋은 소녀가 있다.','sad'),
   s90('elina','…저 언덕. 저 우물. 제 고향이에요. 저는 왜 이걸 잊고 있었던 거죠?','sad'),s90('eric','엘리나. 이제 기억했으면, 그걸로 됐다. 같이 끝까지 보자.','determined')],
- '16:reinforce':[s90('kai','북쪽에서 약탈대가 더 와!','concerned')],
+ '16:reinforce':[s90('kai','북쪽이랑 남쪽에서 약탈대가 더 와!','concerned') /* v2.7.0 (D-158): the v2.4 waves come from both edges */],
  '16:fallen:thea':[s90('thea','에릭 경… 미안해요, 여기까지…','sad')],
  '16:fallen:dario':[s90('dario','젠장… 이번 계약은… 손해군…','sad')],
  '16:fallen:ines':[s90('ines','등불이… 꺼지지 않게…','sad')],

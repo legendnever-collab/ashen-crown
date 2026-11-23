@@ -1,0 +1,2 @@
+order,part,kind,id,expression,file,size,references,prompt_file
+1,A,prop,requestBoard,,prop_request_board.png,512x512,"style_aren_neutral.png, approved_hub_reed.jpg, approved_hub_village_day.jpg, square_placement.png, scale_reference.png, sprite_eric_sheet.png",prompts/01_prop_request_board.txt

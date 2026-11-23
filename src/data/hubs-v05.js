@@ -1,4 +1,5 @@
 import {ACT2_HUB_SPECS} from './hubs-v06.js';
+import {TAVERN_DOOR_GUEST} from './patrons-v270.js';
 // v2.1 (D-118): the hubs whose inn-1 is a tavern (주점 · 인재 확보).
 const TAVERN_SPECS=new Set(['village','village_raid','castletown','velmar','pilgrim','capital','forest','reed','stonewell','frost','saltport','lamp','moss','beacon','lionspring']);
 // v0.5.0 painted interlude hubs (D-052). Each hub is one 1536×1024 painting = 24×16 tiles of 64 px.
@@ -53,7 +54,7 @@ function hv5Build(id,spec){
   buildings.push({x,y,w,h,label,type,buildingId:bid,entrance,returnPoint:{tileX:dx,tileY:dy+1},interiorScene:interior,painted:true});
   places.push(shop?{id:bid,name,x:dx,y:dy+1,action:shop,entrance,buildingId:bid}:{id:bid,name,x:dx,y:dy+1,action:'enter',entrance,buildingId:bid,interior,hub:id});}
  const npcs=spec.npcs.map(([nid,name,x,y,extra])=>({id:nid,name,x,y,...(extra||{})}));
- return {name:spec.name,tone:spec.tone||'camp',kind:spec.kind,art:spec.art,width:24,height:16,spawn:spec.spawn,mask,stage:spec.stage,lights:spec.lights||[],paintedTable:!!spec.paintedTable,night:!!spec.night,dusk:!!spec.dusk,grove:!!spec.grove,buildings,places,npcs};
+ return {name:spec.name,tone:spec.tone||'camp',kind:spec.kind,art:spec.art,width:24,height:16,spawn:spec.spawn,mask,stage:spec.stage,lights:spec.lights||[],props:spec.props||[],paintedTable:!!spec.paintedTable,night:!!spec.night,dusk:!!spec.dusk,grove:!!spec.grove,buildings,places,npcs};
 }
 const hv5Heroes=(pos)=>[['aren','아렌 · 군단장',...pos.aren,{kind:'commander'}],['elina',pos.elinaName,...pos.elina,{kind:'hero'}],['lia','리아 · 군사',...pos.lia,{kind:'hero'}],['sain',pos.sainName,...pos.sain,{kind:'hero'}],['kai',pos.kaiName,...pos.kai,{kind:'hero'}],['advisor','리아의 작전 탁자 · 작전 회의',...pos.advisor,{kind:'advisor'}]];
 
@@ -244,9 +245,11 @@ HV5_SPECS.forest={...HV5_VILLAGE,name:'Forest Village · 숲지기 마을',kind:
 // art pack H1 (v2) paints them they stand on the Ashen Village's daytime painting (D-094 manner); the war table becomes
 // the village's request board. Their townsfolk have their own names.
 // v2.1.0 (art pack H1 part F, imported 2026-11-18, D-121): each small village has its own painting on the ash village layout.
-const smallVillage=(name,elder,folk,guard,art)=>({...HV5_VILLAGE,name,kind:'village',art,lights:[],
+// v2.7.0 (D-158, the user's request 「의뢰 게시판은 마을 한가운데 … 의뢰를 주는 사람의 행색은 나라일을 하는 사람」): the board stands
+// in the square beside the well (14,7 — open cobbles on all eight paintings) with the county office's clerk beside it.
+const smallVillage=(name,elder,folk,guard,art)=>({...HV5_VILLAGE,name,kind:'village',art,lights:[],solid:[[14,7]],props:[{type:'board',x:14,y:7}],
  places:HV5_VILLAGE.places.filter(p=>p[0]!=='advisor'),
- npcs:[['elder',elder,22,9],['refugee',folk,7,8],['guard',guard,12,14],['requests','의뢰 게시판 · 촌장 회관',19,8,{service:'requests',reach:1}]]});
+ npcs:[['elder',elder,22,9],['refugee',folk,7,8],['guard',guard,12,14],['requests','관청 서기 · 의뢰 게시판',15,7,{service:'requests',reach:1,look:'clerk'}],[TAVERN_DOOR_GUEST.id,TAVERN_DOOR_GUEST.name,TAVERN_DOOR_GUEST.x,TAVERN_DOOR_GUEST.y,{look:TAVERN_DOOR_GUEST.look}]]});
 HV5_SPECS.reed=smallVillage('Reed Ferry · 갈대 나루','나루 촌장','뱃사공','나루 경비','hub_reed');
 HV5_SPECS.stonewell=smallVillage('Stonewell · 돌우물 마을','돌우물 촌장','우물지기','길목 파수','hub_stonewell');
 // v2.3.1 (D-131/D-132): the ACT II villages, painted on the small villages' footprint in art pack J part B.

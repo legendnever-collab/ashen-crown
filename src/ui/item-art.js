@@ -62,7 +62,7 @@ const SHAPE={
 };
 const TINT={castletown:['#aebdc6','#5f6f7a','#c9a24a'],velmar:['#9cc77a','#5a6b3a','#e2b24a'],pilgrim:['#e2584a','#efe2c4','#e7c35f'],elite:['#f3cf6c','#8a5a32','#ffffff'],treasure:['#c9a4f0','#6fa04a','#e7c35f']};
 const SHAPE_OF={steelGreatsword:'great',knightLance:'lance',ironwoodBow:'bow',plateCuirass:'plate',towerShield:'shield',lancerMail:'plate',steelGauntlets:'gauntlet',runeforgedBlade:'great',
- twinSabers:'twin',repeatingCrossbow:'crossbow',emberRod:'staff',shadowStiletto:'dagger',merchantCoat:'cloak',luckyCoin:'coin',windCharm:'charm',duelistRapier:'sword',
+ twinSabers:'twin',repeatingCrossbow:'crossbow',emberRod:'staff',shadowStiletto:'dagger',merchantCoat:'cloak',luckyCoin:'coin',windCharm:'charm',twinKnot:'charm',duelistRapier:'sword',
  flameStaff:'staff',pilgrimMace:'mace',pilgrimMantle:'cloak',sanctumTome:'tome',wardenShield:'shield',chrismCharm:'charm',votiveBand:'band',cathedralStaff:'staff',
  crownGuardLance:'lance',royalLance:'lance',royalMace:'mace',crownGuardShield:'shield',leagueSaber:'sword',leagueLongbow:'bow',paladinMace:'mace',flameVestment:'cloak',
  herbPouch:'pouch',hawkFeather:'feather',sageNotebook:'book',windHorseshoe:'horseshoe',twinDaggers:'twin',silenceShield:'shield',mirrorCuirass:'plate',clearCharm:'charm',flameReliquary:'reliquary',manaRing:'ring',lionEpaulette:'epaulette',allianceSeal:'seal',

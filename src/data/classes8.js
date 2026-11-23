@@ -6,7 +6,7 @@ import {NEW_CLASS,NEW_STATS} from './mercs-v210.js';
 // The bases are fitted so today's heroes keep their Lv 1 numbers (Erik HP 42 / ATK 15 / DEF 8 …).
 export const STAT_KEYS=['str','int','wil','con','agi','luk'];
 export const STAT_KO={str:'무력',int:'지혜',wil:'의지',con:'강인',agi:'민첩',luk:'운'};
-export const STAT_NOTE={str:'물리 공격력, 일기토',int:'마법 공격력, 전술 명중, 설득',wil:'치유량, 저주 성공·저항, 마법 방어',con:'최대 HP, 물리 방어',agi:'명중, 회피, 행동 순서',luk:'치명타, 상태이상, 보물이 떨어질 확률'};
+export const STAT_NOTE={str:'물리 공격력, 일기토',int:'마법 공격력, 전술 명중, 설득',wil:'치유량, 저주 성공·저항, 마법 방어',con:'최대 HP, 물리 방어',agi:'명중, 회피, 행동 순서',luk:'치명타, 연속 공격, 상태이상, 보물이 떨어질 확률'};
 const T=(ko,en)=>({ko,en});
 export const CLASSES8={
  infantry:{ko:'보병',en:'Infantry',tiers:[T('검사','Swordhand'),T('기사','Knight'),T('서약기사','Oathknight')],

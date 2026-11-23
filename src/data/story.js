@@ -31,6 +31,7 @@ import {STORY_V05} from './story-v05.js';
 import {STORY_WORLD} from './story-world.js';
 import {LAST_MISSION} from './missions.js';
 import {REVISIT_LINES} from './arms-v081.js';
+import {TAVERN_PATRONS,TAVERN_DOOR_GUEST} from './patrons-v270.js';
 import {TOWN_HINTS} from './hints-v261.js';
 import {NEW_HEROES,MERC_TALK} from './mercs-v210.js';
 import {DUEL_EVENTS,DUEL_SPEAKERS} from './duel-events-v210.js';
@@ -45,11 +46,11 @@ export const STORY={
  '1:rescue':[line('sain','길이 열렸어요. 제 손 잡으세요, 안전한 데로 모실게요.'),line('kai','세인 따라가면 돼. 일단 살아. 얘기는 그다음에 하고.')],
  '1:end':[line('aren','마을은 지켰다. 하지만… 이 군용 물자는 설명이 안 돼.'),line('elina','설명할 사람들은 숲으로 달아났어요. 지금 쫓으면 잡아요.'),line('eric','쫓는 건 다들 돌아온 걸 확인하고 나서다. 이번 일, 같이 짚어 보자.')],
  '2:intro':[line('elina','숲길은 제가 알아요. 퇴로 막고 끝내죠.','determined'),line('sain','끝내기 전에요, 엘리나. 저 중엔 탈영병도, 피난민도 있습니다. 살아 있는 증언이 필요해요.'),line('kai','증언이 필요하면 생포지. 대장 HP를 반 아래로 깎고 옆에 붙으면 돼. 우회는 내가 맡을게.'),line('aren','정보는 얻는다. 단, 동료를 사지로 몰면서까지는 아니다. …판단은 현장에 맡기지.')],
- '2:turn2':[line('elina','대장이 북쪽 출구로 빠져요. 이대로면 놓쳐요!','concerned'),line('kai','안 놓쳐. 숲을 가로지르면 앞을 끊을 수 있어. 엘리나, 길목에 서.')],
+ '2:turn2':[line('elina','대장이 동쪽 출구로 빠져요. 이대로면 놓쳐요!','concerned') /* v2.7.0 (D-158): the v2.0 big map's exit is east */,line('kai','안 놓쳐. 숲을 가로지르면 앞을 끊을 수 있어. 엘리나, 길목에 서.')],
  '2:encounter':[line('boss','우린 군인도 산적도 아니야! 집에 좀 보내 줘!'),line('sain','집으로 가는 길은 있습니다. 칼을 놓으면요. 다만 마을을 해친 책임은 남아요.')],
  '2:capture':[line('boss','상자는 버려진 성채에서 받았어. 누가 시켰는지는 몰라, 정말이야.'),line('elina','몰랐다는 말 한마디로 죄가 없어지진 않아.','determined'),line('sain','맞아요, 엘리나. 그래서 살려서 책임지게 하는 거예요. 그것도 우리 선택이에요.'),line('aren','버려진 성채라… 보급로는 기록해 둔다. 포로는 구호대에 넘겨라.')],
  '2:end':[line('aren','상자 흔적은 숲길 너머로 이어진다. 진술이 있든 없든… 조사는 계속한다.'),line('sain','그 전에 대장님, 마을 분들이 다리로 모이고 있어요. 추격대보다 먼저 길을 열어야 해요.'),line('elina','그럼 지금은 피난로가 먼저예요. 숲 흔적은 제가 기억해 둘게요.')],
- '3:intro':[line('eric','다리는 좁다. 내가 앞을 막을 테니 주민부터 건너보내.','determined'),line('sain','부상자가 있어요, 에릭. 곁에 누가 있어 주면 스스로 걸을 수 있어요.'),line('kai','그럼 난 돌아가서 안전한 길을 잡을게. 에릭, 앞은 맡기는데… 혼자 다 버티려고 하진 마.'),line('aren','카이 말이 맞다. 열 턴. 그 안에 구조와 철수를 끝낸다. …전원, 북쪽 안전 구역으로 돌아와라.')],
+ '3:intro':[line('eric','다리는 좁다. 내가 앞을 막을 테니 주민부터 건너보내.','determined'),line('sain','부상자가 있어요, 에릭. 곁에 누가 있어 주면 스스로 걸을 수 있어요.'),line('kai','그럼 난 돌아가서 안전한 길을 잡을게. 에릭, 앞은 맡기는데… 혼자 다 버티려고 하진 마.'),line('aren','카이 말이 맞다. 열 턴. 그 안에 구조와 철수를 끝낸다. …전원, 북서쪽 출구로 돌아와라.') /* v2.7.0 (D-158): the v2.0 exit is north-west */],
  '3:turn2':[line('kai','뒤에 추격병이 보여. 다음 턴이면 들이닥쳐!','concerned'),line('eric','알았다. 세인은 내가 지킨다. 카이, 주민들 길 좀 부탁해.')],
  '3:encounter':[line('boss','다리 건너기 전에 멈춰!'),line('aren','멈출 이유는 없다. …놈들 목적은 아직 모르지만, 지금은 탈출로만 지킨다.')],
  '3:rescue':[line('sain','부상자분들도 안전한 곳으로 가셨어요. 이제 우리가 돌아갈 차례예요.'),line('eric','그래. 다들 돌아갈 때까지 방패는 내가 들고 있지.')],
@@ -128,3 +129,6 @@ for(const [id,talks]of Object.entries(MERC_TALK))talks.forEach((lines,i)=>{STORY
 for(const evs of Object.values(DUEL_EVENTS))for(const ev of evs)if(ev.lines)STORY[ev.key]=ev.lines.map(([speaker,text,expression])=>line(speaker,text,expression));
 // v2.6.1: a party member's word about the town's rumour, the first time the legion walks in (frontier.js travelTo)
 for(const [hub,h] of Object.entries(TOWN_HINTS))STORY[`hint:${hub}`]=h.lines.map(([speaker,text,expression])=>({...line(speaker,text,expression),inPlace:true,actors:['eric',speaker],focus:1}));
+
+// v2.7.0 (D-158): the tavern guests and the traveller at a small village's tavern door — one line per talk, in turn
+for(const p of [...TAVERN_PATRONS,TAVERN_DOOR_GUEST])p.lines.forEach((text,i)=>{STORY[`patron:${p.id}:${i}`]=[{...line(p.id,text,'neutral'),name:p.name,inPlace:true,actors:['eric',p.id],focus:1}];});

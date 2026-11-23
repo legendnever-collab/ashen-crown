@@ -41,7 +41,7 @@ test('hiring: one fee, the legion\'s average level −1, kept to the ending; nev
  const r=hire(s,'noa');assert.ok(r.ok,r.error);assert.equal(s.economy.gold,gold-200);assert.ok(s.campaign.roster.includes('noa'));assert.equal(s.campaign.heroes.find(h=>h.id==='noa').level,lv);
  assert.deepEqual(s.economy.hired,['noa']);assert.equal(hire(s,'noa').ok,false,'once');assert.ok(!mercsAt(s,'ash').some(m=>m.id==='noa'));
  s.economy.gold=50;s.campaign.economy.gold=50;assert.match(hire(s,'marta').error,/부족/);
- const back=deserialize(serialize(s));assert.ok(back.campaign.roster.includes('noa'));assert.equal(back.schema,SCHEMA);assert.equal(SCHEMA,27);assert.equal(VERSION,'2.6.1');
+ const back=deserialize(serialize(s));assert.ok(back.campaign.roster.includes('noa'));assert.equal(back.schema,SCHEMA);assert.equal(SCHEMA,28);assert.equal(VERSION,'2.7.0');
  assert.ok(STORY['officer:noa:0'],'camp talk');assert.deepEqual(loreChapters('noa',back.campaign).open.map(c=>c.after).filter(a=>a<=1),[],'chapters start after the hire');});
 
 test('M04 opens 갈대 나루 and 돌우물 마을 on the world map; Rowell waits at the reed tavern as an elite hire; a wanderer moves to stonewell',()=>{
@@ -59,8 +59,8 @@ test('a battle request: the chosen sortie fights, a win pays once and is marked 
  assert.equal(startRequest(c,'ferry',['eric']),null,'done once');deserialize(serialize(c));});
 
 test('the besieged spearknight: hold six turns and Adel joins the legion (hero growth, his own 열전 and epilogue line)',()=>{
- const s=camp4();travelDrained(s,'stonewell');const b=startRequest(s,'besieged',['eric','elina','lia','sain','kai']);assert.ok(b.units.some(u=>u.id==='adelc'&&u.team==='civilian'));
- drain(b);playCampaignBattle(b);assert.equal(b.outcome,'victory',b.reason);const c=returnToCamp(b);assert.deepEqual(c.requestResult.joined,'adel');assert.ok(c.campaign.roster.includes('adel'));
+ const s=camp4();travelDrained(s,'stonewell');const b0=startRequest(s,'besieged',['eric','elina','lia','sain','kai']);assert.ok(b0.units.some(u=>u.id==='adelc'&&u.team==='civilian'));
+ /* v2.7.0: 「연속 공격」 is a chance now, so the policy gets up to three tries like the other request battles (20 tries: 15 won) */let b=null;for(let t=0;t<3&&b?.outcome!=='victory';t++){b=structuredClone(b0);b.rng=(b.rng+t*7919)>>>0;drain(b);playCampaignBattle(b);}assert.equal(b.outcome,'victory',b.reason);const c=returnToCamp(b);assert.deepEqual(c.requestResult.joined,'adel');assert.ok(c.campaign.roster.includes('adel'));
  assert.equal(heroDef('adel').name,'아델');assert.ok(HERO_LORE.adel.bio.includes('초소'));assert.ok(growthOf({id:'adel',cls:'spear'}).str>growthOf({id:'bram',cls:'spear'}).str,'grows like a hero');
  assert.ok(requestsAt(c,'stonewell').find(r=>r.id==='besieged').done);deserialize(serialize(c));});
 
@@ -79,6 +79,6 @@ test('duels are events: Erik beside Garr starts it once (two lines); v2.2: alway
 
 test('v2.0.0 saves (real, schema 20) load as schema 21: the officers stay as hires, the five are together, nothing else changes',()=>{
  for(const [name,officers] of [['m01-camp',['bram','noa','marta']],['m05-camp',['bram','noa','marta','rowell']]]){const f=JSON.parse(fs.readFileSync(new URL(`./fixtures/v200/v200-${name}.json`,import.meta.url),'utf8'));assert.equal(f.schema,20);assert.equal(f.version,'2.0.0');
-  const before=JSON.parse(JSON.parse(f.save).data),s=deserialize(f.save);assert.equal(s.schema,27);assert.equal(s.version,VERSION);assert.deepEqual(s.campaign.roster,before.campaign.roster);assert.deepEqual(s.campaign.economy.hired,officers);
+  const before=JSON.parse(JSON.parse(f.save).data),s=deserialize(f.save);assert.equal(s.schema,28);assert.equal(s.version,VERSION);assert.deepEqual(s.campaign.roster,before.campaign.roster);assert.deepEqual(s.campaign.economy.hired,officers);
   assert.equal(s.campaign.economy.gold,before.campaign.economy.gold);assert.deepEqual(s.campaign.completed,before.campaign.completed);assert.ok(['lia','sain','kai'].every(id=>s.frontier.affiliation[id]==='affiliated'));assert.equal(s.frontier.pendingRecruit,null);
   for(const id of officers)assert.ok(MERCS[id]&&(s.campaign.heroes==null||s.campaign.heroes.some(h=>h.id===id)),id);assert.deepEqual(deserialize(serialize(s)).campaign,s.campaign,'round trip');}});

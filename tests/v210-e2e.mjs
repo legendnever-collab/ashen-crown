@@ -43,7 +43,10 @@ try{for(const [width,height,touch] of [[1440,900,false],[390,844,true]]){const l
  await p.screenshot({path:`${shots}/world-map-${label}.png`});const markers=await p.locator('.world-marker').allInnerTexts();console.log('markers',markers);check(`${label} leaving the camp opens the world map: the camp, the ash village and the two small villages`,['야영지','갈대 나루','돌우물 마을','잿빛 마을'].every(k=>markers.some(m=>m.includes(k))));
  await p.screenshot({path:`${shots}/world-map-${label}.png`});
  await click('.town-list [data-do="travel"][data-id="reed"]');s=await snap();check(`${label} tapping 갈대 나루 travels there`,s.frontier.hub==='reed');await drainStory(p);await p.screenshot({path:`${shots}/reed-village-${label}.png`});
- await press('npc','requests');text=await p.locator('.modal').innerText();check(`${label} the request board: ferry bandits, barge escort, herbs and the bounty`,['나루터의 산적','짐배 호위','약초 모으기','현상금'].every(k=>text.includes(k)));
+ /* v2.7.0 (D-158): the board stands in the square with the county clerk — a press on the clerk walks Eric there and opens his menu */
+ {const cam=await p.evaluate(()=>AshenCrown.view().hubCamera),box=await p.locator('#frontier-map').boundingBox(),cx=box.x+cam.x+(15+.5)*64*cam.scale,cy=box.y+cam.y+(7+.5)*64*cam.scale;touch?await p.touchscreen.tap(cx,cy):await p.mouse.click(cx,cy);
+  for(let i=0;i<80&&!(await p.locator('#npc-menu').count());i++)await p.waitForTimeout(150);await click('#npc-menu button:has-text("의뢰 게시판")');}
+ text=await p.locator('.modal').innerText();check(`${label} the request board: ferry bandits, barge escort, herbs and the bounty`,['나루터의 산적','짐배 호위','약초 모으기','현상금'].every(k=>text.includes(k)));
  await p.screenshot({path:`${shots}/request-board-${label}.png`});
  await press('request-sortie','ferry');check(`${label} the request asks who goes (five picked)`,await p.locator('[data-do="req-sortie"][aria-pressed="true"]').count()===5);
  await press('req-sortie','sain');check(`${label} a tap leaves Sain behind`,await p.locator('[data-do="req-sortie"][aria-pressed="true"]').count()===4);await p.screenshot({path:`${shots}/request-sortie-${label}.png`});

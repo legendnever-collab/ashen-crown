@@ -14,48 +14,49 @@ import {introStory} from '../src/core/narrative.js';
 const campaign=(choices={})=>({heroes:null,results:[],clears:5,completed:[1,2,3,4,5],flags:{},choices});
 const battle=(choices={m04_records_choice:'kept'})=>{const s=newGame(6006,campaign(choices),6);s.screen='deployment';startBattle(s);introStory(s);drain(s);return s;};
 const place=(s,id,x,y)=>{const u=findUnit(s,id);u.x=x;u.y=y;return u;};
-// v2.0.0: the 24×20 map — heroes not in the scene wait on the open north-east grass, far from the refugees
-const park=(s,ids,y=0,x0=14)=>ids.forEach((id,i)=>place(s,id,x0+i*2,y));
+// v2.7.0: the 22×24 south-to-north map — heroes not in the scene wait beyond the north gate, away from the executioner
+const park=(s,ids,y=0,x0=12)=>ids.forEach((id,i)=>place(s,id,x0+i*2,y));
 const steps=(u,from)=>Math.abs(u.x-from.x)+Math.abs(u.y-from.y);
 const endTurn=s=>{beginEnemyPhase(s);while(s.phase==='enemy'&&!s.outcome){advanceEnemy(s);drain(s);}drain(s);};
 const quiet=s=>{for(const u of s.units)if(u.team==='enemy'&&u.id!=='boss')u.hp=0;};
 
-test('M06 data: 24×20 besieged village (v2.0.0), presets in the deployment zone, four refugees (two injured), locked seal stones, M05 → M06, last mission',()=>{
- const m=MISSIONS[6];assert.deepEqual([m.width,m.height],[24,20]);assert.ok(m.map.every(r=>r.length===24));assert.equal(ACT1_FINALE,6);assert.ok(LAST_MISSION>=6);
+test('M06 data: 22×24 besieged village climbing south to north (v2.7.0), presets in the deployment zone, four refugees (two injured), locked seal stones, M05 → M06, last mission',()=>{
+ const m=MISSIONS[6];assert.deepEqual([m.width,m.height],[22,24]);assert.ok(m.map.every(r=>r.length===22));assert.equal(m.escortSteps,3);
+ const rf=newGame(6006,campaign(),6).units.filter(u=>u.team==='civilian'),gate=m.map[4].join('').indexOf('k');assert.ok(rf.every(r=>r.y>=15),'the refugees start in the south');assert.ok(gate>=0&&m.safe[3]<4,'the gate and the safe ground are north');assert.equal(ACT1_FINALE,6);assert.ok(LAST_MISSION>=6);
  const s=newGame(6006,campaign(),6),zone=m.deployZone(s);for(const preset of Object.values(m.deployments))for(const [x,y]of preset)assert.ok(zone.has(`${x},${y}`),`${x},${y}`);
  const refugees=s.units.filter(u=>u.team==='civilian');assert.equal(refugees.length,4);assert.equal(refugees.filter(r=>r.hp<=r.maxHP/2).length,2);
  assert.ok(s.units.filter(u=>u.kind==='sealstone').every(o=>o.locked&&o.progress===0));
  const m5=newGame(5005,{...campaign(),completed:[1,2,3,4],clears:4},5);m5.outcome='victory';m5.campaign.completed.push(5);assert.equal(nextMission(m5).missionId,6);
  for(const k of ['pre:6','pre:6:order:kept','pre:6:order:reported','6:intro','6:phase2','6:phase3','6:banner','6:beacon','6:unseal','6:encounter','6:end','6:oath','6:oath:people','6:oath:comrades','6:oath:truth','6:oath:bond:erik_kai','act1:complete','after:6','npc:6:preparation:aren','npc:6:preparation:kai'])assert.ok(STORY[k]?.length,k);
 });
-test('M06 escort: an escorted refugee walks two tiles toward the gate; an injured one waits for Sain, who can heal refugees here; no instant rescue',()=>{
+test('M06 escort: an escorted refugee walks three tiles toward the north gate (v2.7.0); an injured one waits for Sain, who can heal refugees here; no instant rescue',()=>{
  const s=battle();quiet(s);park(s,['eric','elina','lia','sain','kai']);
  const p1=findUnit(s,'p1'),p2=findUnit(s,'p2'),o1={x:p1.x,y:p1.y},o2={x:p2.x,y:p2.y};place(s,'eric',p1.x+1,p1.y);place(s,'kai',p2.x+1,p2.y);
  assert.equal(validTarget(s,findUnit(s,'eric'),p1,'rescue'),false);
- endTurn(s);assert.equal(steps(p1,o1),2,'two tiles toward the south-west gate');assert.equal(steps(p2,o2),0,'injured refugee stays');
+ endTurn(s);assert.equal(steps(p1,o1),3,'three tiles toward the north gate');assert.ok(p1.y<o1.y,'north');assert.equal(steps(p2,o2),0,'injured refugee stays');
  const sain=place(s,'sain',p2.x-1,p2.y);assert.ok(validTarget(s,sain,p2,'skill'));assert.ok(performAction(s,'sain','skill','p2').ok);assert.ok(p2.hp>p2.maxHP/2);
  endTurn(s);assert.ok(steps(p2,o2)>0,'healed and escorted refugee moves');
 });
 test('M06 phase 2 opens at TURN 5; Lia unseals a stone in one action, others need two; the lever opens the side gate',()=>{
  const s=battle();quiet(s);park(s,['eric','elina','lia','sain','kai']);
- const stone=findUnit(s,'seal1'),lia=place(s,'lia',2,13);assert.equal(validTarget(s,lia,stone,'search'),false,'locked in phase 1');
+ const stone=findUnit(s,'seal1'),lia=place(s,'lia',9,5);assert.equal(validTarget(s,lia,stone,'search'),false,'locked in phase 1');
  s.turn=4;endTurn(s);assert.equal(s.missionState.phase,2);assert.ok(!stone.locked);assert.ok(s.narrative.events.includes('6:phase2'));
- place(s,'lia',2,13);assert.ok(performAction(s,'lia','search','seal1').ok);assert.ok(stone.rescued);
- const two=findUnit(s,'seal2');place(s,'elina',4,14);place(s,'eric',6,14);assert.ok(performAction(s,'elina','search','seal2').ok);assert.equal(two.progress,1);assert.ok(!two.rescued);
+ place(s,'lia',9,5);assert.ok(performAction(s,'lia','search','seal1').ok);assert.ok(stone.rescued);
+ const two=findUnit(s,'seal2');place(s,'elina',12,5);place(s,'eric',14,5);assert.ok(performAction(s,'elina','search','seal2').ok);assert.equal(two.progress,1);assert.ok(!two.rescued);
  assert.ok(performAction(s,'eric','search','seal2').ok);assert.ok(two.rescued);assert.equal(s.missionState.phase,3);
- const t=battle();quiet(t);park(t,['eric','elina','lia','sain','kai']);place(t,'kai',8,12);assert.ok(performAction(t,'kai','search','lever').ok);assert.ok(t.missionState.lever&&findUnit(t,'sidegate').rescued);
+ const t=battle();quiet(t);park(t,['eric','elina','lia','sain','kai']);place(t,'kai',2,11);assert.ok(performAction(t,'kai','search','lever').ok);assert.ok(t.missionState.lever&&findUnit(t,'sidegate').rescued);
  const p3=findUnit(t,'p3'),o3={x:p3.x,y:p3.y};endTurn(t);assert.equal(steps(p3,o3),1,'unescorted refugee uses the bypass');
 });
 test('M06 phase 3: Oath Banner gives MOV +1 near Erik, the executor moves, the garrison arrives only while the beacon burns',()=>{
  const run=beacon=>{const s=battle();for(const u of s.units)if(u.team==='enemy'&&!['boss','beacon'].includes(u.id))u.hp=0;if(!beacon)findUnit(s,'beacon').hp=0,rulesOf(s).afterDamage(s,findUnit(s,'beacon'));
   park(s,['eric','elina','lia','sain','kai']);s.missionState.phase=2;for(const o of s.units.filter(u=>u.kind==='sealstone'))o.locked=false;findUnit(s,'seal1').rescued=true;
-  place(s,'lia',4,14);place(s,'eric',5,13);place(s,'kai',6,13);const kai=findUnit(s,'kai'),before=effectiveStats(s,kai).mov;
+  place(s,'lia',12,5);place(s,'eric',12,6);place(s,'kai',12,7);const kai=findUnit(s,'kai'),before=effectiveStats(s,kai).mov;
   assert.ok(performAction(s,'lia','search','seal2').ok);assert.equal(s.missionState.phase,3);assert.equal(effectiveStats(s,kai).mov,before+1);assert.equal(findUnit(s,'boss').mov,3);return s;};
  const lit=run(true);assert.ok(lit.units.some(u=>u.id==='g1'&&alive(u)));const dark=run(false);assert.ok(!dark.units.some(u=>u.id==='g1'));assert.ok(dark.narrative.events.includes('6:beacon'));
 });
 test('M06 outcomes: victory needs phase 3 and one refugee through; the gate seals after TURN 11; losing every refugee is defeat',()=>{
- const s=battle();quiet(s);[[0,18],[2,18],[4,18],[6,18],[1,19]].forEach(([x,y],i)=>place(s,['eric','elina','lia','sain','kai'][i],x,y));s.missionState.phase=3;for(const o of s.units.filter(u=>u.kind==='sealstone'))o.rescued=true;
- assert.equal(checkOutcome(s),null,'nobody through yet');const p=findUnit(s,'p1');p.x=2;p.y=19;p.rescued=true;assert.equal(checkOutcome(s),'victory');
+ const s=battle();quiet(s);[[6,0],[8,0],[12,0],[14,0],[7,1]].forEach(([x,y],i)=>place(s,['eric','elina','lia','sain','kai'][i],x,y));s.missionState.phase=3;for(const o of s.units.filter(u=>u.kind==='sealstone'))o.rescued=true;
+ assert.equal(checkOutcome(s),null,'nobody through yet');const p=findUnit(s,'p1');p.x=8;p.y=2;p.rescued=true;assert.equal(checkOutcome(s),'victory');
  assert.equal(s.campaign.flags.mission_06_refugees_through,1);assert.ok(s.campaign.flags.act1_completed&&s.campaign.flags.legion_independent&&s.campaign.flags.mission_06_completed);
  const r=s.campaign.results.at(-1).rewards;assert.ok(r.extras.some(x=>x.id==='v040:m6:supply-hp'));
  const sealed=battle();quiet(sealed);sealed.turn=11;endTurn(sealed);assert.equal(sealed.outcome,'defeat');assert.match(sealed.reason,/봉인/);

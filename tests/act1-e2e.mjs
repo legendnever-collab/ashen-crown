@@ -102,8 +102,8 @@ try{for(const [width,height,touch]of viewports){
  check(`${label} M06 battle has no horizontal overflow`,await noOverflow());
  // 7. Lia opens the last seal through the visible menu → phase 3 and Erik's Oath Banner.
  const m06=JSON.parse(JSON.stringify(s));for(const u of m06.units)if(u.team==='enemy'&&!['boss','beacon'].includes(u.id))u.hp=0;m06.missionState.phase=2;for(const o of m06.units.filter(u=>u.kind==='sealstone'))o.locked=false;m06.units.find(u=>u.id==='seal1').rescued=true;
- const ref=m06.units.find(u=>u.id==='p1');ref.x=2;ref.y=19;ref.rescued=true;const ml=m06.units.find(u=>u.id==='lia');ml.x=4;ml.y=14;const mE=m06.units.find(u=>u.id==='eric');mE.x=5;mE.y=13; /* v2.0.0: the 24×20 village — seal stone 2 at 5,14, the gate to the south-west */
- await restore(m06);await settle();await menuFor('lia',4,14);await cmd('mode','search');await tile(5,14);
+ const ref=m06.units.find(u=>u.id==='p1');ref.x=8;ref.y=2;ref.rescued=true;const ml=m06.units.find(u=>u.id==='lia');ml.x=12;ml.y=5;const mE=m06.units.find(u=>u.id==='eric');mE.x=12;mE.y=6; /* v2.7.0: the 22×24 south-to-north village — seal stone 2 at 13,5 before the north gate */
+ await restore(m06);await settle();await menuFor('lia',12,5);await cmd('mode','search');await tile(13,5);
  check(`${label} unseal forecast names the seal stone`,(await p.locator('.forecast').textContent()).includes('봉인 해제'));
  await cmd('confirm');await settle();s=await snap();
  check(`${label} Lia unseals in one action → phase 3 and Erik's Oath Banner`,s.missionState.phase===3&&s.missionState.banner&&s.narrative.seen.includes('6:phase3')&&s.narrative.seen.includes('6:banner')&&s.units.find(u=>u.id==='eric').oathUntil===s.turn+1);
