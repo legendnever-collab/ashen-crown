@@ -58,7 +58,7 @@ test('v2.7.0: dialogue directions match the big maps (M02, M03, M05, M16, M19)',
  const gar=MISSIONS[6].waves.find(w=>w.story==='6:garrison');assert.ok(gar.units.every(u=>u.y<4),'the garrison beyond the north gate');
 });
 test('v2.7.0 saves: schema 28; an M06 battle of v2.6.1 reopens in its camp on the new map',()=>{
- assert.equal(SCHEMA,28);assert.equal(VERSION,'2.7.0');
+ assert.equal(SCHEMA,28);assert.equal(VERSION,'2.7.1');
  const s=m6();const old=JSON.parse(JSON.stringify(s));old.schema=27;old.version='2.6.1';delete old.stageStart;const data=JSON.stringify(old);
  const back=deserialize(JSON.stringify({format:'AshenCrown',data,checksum:checksum(data)}));assert.equal(back.schema,28);assert.equal(back.missionId,6);assert.notEqual(back.screen,'battle');
  const round=deserialize(serialize(m6()));assert.equal(round.schema,28);
