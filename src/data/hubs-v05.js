@@ -77,8 +77,8 @@ const HV5_VILLAGE={tone:'village',spawn:[19,9],paintedTable:true,stage:{x:430,y:
    '##........#..###########',
    '###########..###########',
    '########################'],
-  doors:[['forge','BLACKSMITH','Blacksmith',1,0,6,4,5,3],['shop','ITEM SHOP','Item Shop',16,0,7,4,21,3],['inn-1','BARRACKS','병영',1,5,6,4,3,8],['warroom-2','COMMAND QUARTERS','지휘관 숙소',20,5,4,4,20,8] /* v2.5.2: the open bay, not the right door leaf */,['residence-3','HOME','민가',1,10,4,3,3,12],['depot-4','SUPPLY','보급 창고',5,10,4,3,6,12]],
-  places:[['square','Village Square',12,8],['exit','Village Exit',11,14],['advisor','작전 탁자 · 촌장 회관',19,9]],
+  doors:[['forge','BLACKSMITH','대장간',1,0,6,4,5,3],['shop','ITEM SHOP','잡화점',16,0,7,4,21,3], /* v2.7.1: the town map's list says the places in Korean */['inn-1','BARRACKS','병영',1,5,6,4,3,8],['warroom-2','COMMAND QUARTERS','지휘관 숙소',20,5,4,4,20,8] /* v2.5.2: the open bay, not the right door leaf */,['residence-3','HOME','민가',1,10,4,3,3,12],['depot-4','SUPPLY','보급 창고',5,10,4,3,6,12]],
+  places:[['square','마을 광장',12,8],['exit','마을 출구',11,14],['advisor','작전 탁자 · 촌장 회관',19,9]],
   npcs:[...hv5Heroes({aren:[16,8],elina:[12,1],elinaName:'엘리나 · 경계',lia:[18,8],sain:[5,8],sainName:'세인 · 구호',kai:[15,5],kaiName:'카이 · 길목 관찰',advisor:[19,8]}),['elder','마을 촌장',22,9],['refugee','피난민',7,8],['guard','경비병',12,14]]};
 const HV5_SPECS={
  village:{...HV5_VILLAGE,name:'Ashen Village · 잿빛 마을',kind:'village',art:'hub_village_day',lights:[[190,180,90,'fire']]},
@@ -225,6 +225,14 @@ HV5_SPECS.oathcamp.npcs=[...HV5_SPECS.oathcamp.npcs,['thea','테아 · 경계',1
 // family. After M16 the legion camps on the western plain under the night bivouac painting.
 HV5_SPECS.capital={...HV5_SPECS.velmar,name:'Royal Lower City · 왕도 하층가',kind:'capital',art:'hub_capital',
  npcs:HV5_SPECS.velmar.npcs.map(n=>n[0]==='elder'?['elder','늙은 기록관',n[2],n[3],{look:'archivist'}]:n[0]==='refugee'?['refugee','하층가 주민',n[2],n[3]]:n[0]==='guard'?['guard','왕도 경비대',n[2],n[3]]:n[0]==='dario'?['dario','다리오 · 골목',n[2],n[3],{kind:'hero',requires:'dario'}]:n[0]==='thea'?['thea','테아 · 운하 길',n[2],n[3],{kind:'hero',requires:'thea'}]:n).concat([['ines','이네스 · 광장',11,10,{kind:'hero',requires:'ines'}],['baldrick','발드릭 · 성문 쪽',13,11,{kind:'hero',requires:'baldrick',fromMission:27}]] /* v2.5.2: they stood on the tavern's and the house's door tiles (19,9 · 6,9) and shut them */)};
+// v2.7.1 (D-161, the story–town review the user asked for 2026-11-22 22:46): the borrowed paintings keep their buildings, but the
+// names follow the town — the summit camp is a ruined relay station outside the capital, not the oath camp at the border gate;
+// the royal lower city has a canal and a lower-city office, not Velmar's harbour road and council hall.
+{const sign=p=>p.length>4&&typeof p[1]==='string'&&/^[A-Z0-9 ·'-]+$/.test(p[1]); /* a door: [id, SIGN, name, …] */
+ const rename=(list,names)=>list.map(p=>!names[p[0]]?p:sign(p)?[p[0],p[1],names[p[0]],...p.slice(3)]:[p[0],names[p[0]],...p.slice(2)]);
+ const SUMMIT={square:'세 깃발의 광장',gate:'무너진 역참 문'},CAPITAL={gate:'운하 계단길',['warroom-2']:'하층가 관청',forge:'하층가 무기점',['depot-4']:'운하 창고'};
+ HV5_SPECS.summit={...HV5_SPECS.summit,places:rename(HV5_SPECS.summit.places,SUMMIT),...(HV5_SPECS.summit.doors?{doors:rename(HV5_SPECS.summit.doors,SUMMIT)}:{})};
+ HV5_SPECS.capital={...HV5_SPECS.capital,places:rename(HV5_SPECS.capital.places,CAPITAL),...(HV5_SPECS.capital.doors?{doors:rename(HV5_SPECS.capital.doors,CAPITAL)}:{})};}
 HV5_SPECS.fieldcamp={...HV5_SPECS.bivouac,name:'Field Camp · 잊힌 전장 야영지',kind:'fieldcamp',
  npcs:[...HV5_SPECS.bivouac.npcs.map(n=>n[0]==='elder'?['elder','근처 마을 노인',16,5]:n[0]==='refugee'?['refugee','피난민',10,10]:n),
   ['thea','테아 · 경계',13,4,{kind:'hero',requires:'thea'}],['dario','다리오 · 모닥불',11,9,{kind:'hero',requires:'dario'}],['ines','이네스 · 모닥불',14,6,{kind:'hero',requires:'ines'}]]};

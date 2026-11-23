@@ -36,7 +36,7 @@ try{const ctx=await browser.newContext({viewport:{width:1440,height:900}});await
  check('A v0.7.0 campaign reaches the refugee camp for Mission 13',s.missionId===13&&s.frontier.hub==='refuge'&&!s.practice);
  await p.screenshot({path:'test-output/migration-v070-refuge.png'});
  await restore(fixture('m12-battle').save);s=await snapshot(p);check('v0.7.0 Mission 12 battle reopens in the camp before it (v2.0.0)',reopened(s,12));
- await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===28&&s.version==='2.7.0'&&s.missionId===12);
+ await p.reload();await p.waitForFunction(()=>!!window.AshenCrown&&!AshenCrown.view().busy);s=await snapshot(p);check('Migrated save reloads as the current version',s.schema===28&&s.version==='2.7.1'&&s.missionId===12);
  check('No runtime errors in either build',errors.length===0);await ctx.close();
 }finally{fs.mkdirSync('test-output',{recursive:true});fs.writeFileSync('test-output/migration-v070-browser.json',JSON.stringify({checks,errors},null,2));await browser.close();}
 console.log(`${checks.length} v0.7.0 browser migration checks PASS`);

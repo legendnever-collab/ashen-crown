@@ -84,7 +84,7 @@ export const FRONTIER_V092={
   ['aren','그 자리에 군단장으로 함께 서겠다.'],['eric','같이 진다. 그게 군단이다.']]},
  'after:20:send':{actors:['eric','lia','aren'],lines:[['lia','사본을 세 깃발에 보냈어요. 각자 무엇을 할지는 각자의 몫이에요.','determined'],
   ['aren','깃발들이 이걸 읽고 무엇을 고르는지, 광장에서 보게 되겠지.']]},
- 'after:20:keep':{actors:['eric','lia','aren'],lines:[['lia','계획서는 군단이 지녀요. 광장에서 모두 앞에 한 번에 읽을 거예요.','determined'],
+ 'after:20:keep':{actors:['eric','lia','aren'],lines:[['lia','계획서는 군단이 지녀요. 안뜰에서 모두 앞에 한 번에 읽을 거예요.','determined'],
   ['aren','그때까지 아무도 이 서류를 빼앗지 못하게 하자.']]},
  'after:20:kai':{actors:['eric','aren','kai'],lines:[['kai','에릭. 나 오늘 처음으로 회색 장부 앞에서 도망치지 않았어.','concerned'],
   ['eric','도망친 적 없다. 내려놓았을 뿐이지.'],['kai','…그래. 이제는 내가 고른 사람들 곁에서 움직일 거야.','determined'],

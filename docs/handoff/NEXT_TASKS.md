@@ -1,4 +1,5 @@
 # Next Tasks
+0f. v2.7.1 release candidate (D-161): merge only on the user's approval; then the user reruns Actions → Archive old builds, and the next version removes the v2.5.2–v2.7.0 builds from the tree once their Releases exist. No other open development.
 0e. v2.7.0 merged (D-160). When art pack M returns, import it as src/assets/props/requestBoard.webp. The next version removes the archived builds (v2.5.1 onward) from the tree once their Releases exist. Open: 어려움 M06 15/30; the large towns' dialogue review.
 0d. v2.7.0 release candidate (D-159): merge only on the user's approval. When art pack M returns, import the board as src/assets/props/requestBoard.webp (paintedProp('requestBoard')). Open: 어려움 M06 15/30; the large towns' dialogue review.
 0c. v2.6.1 merged (D-156). The major update is proposed as v2.7.0 (docs/v2.7.0/MAJOR_UPDATE_DESIGN.md, D-157) — build only after the user approves it. The next version removes the v2.5.1/v2.5.2/v2.6.0 builds from the tree once their Releases exist.

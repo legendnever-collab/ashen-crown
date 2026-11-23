@@ -77,7 +77,7 @@ function drawNPCProp(c,n,x,y){const r=(col,a,b,w,h)=>pixel(c,col,x+a,y+b,w,h);
 // v2.7.0 (D-158): the request board in a small village's square — posts, a roofed plank with notices and a little pennant;
 // a bobbing 「!」 while a request is open. Drawn until art pack M brings its painting.
 function drawRequestBoard(c,x,y,time,open){c.save();
- const art=paintedProp('requestBoard');if(art?.complete&&art.naturalWidth&&!art.failed){c.drawImage(art,x-48,y-92,96,96);}else{ // art pack M (D-158) when it is imported
+ const art=paintedProp('requestBoard'),painted=!!(art?.complete&&art.naturalWidth&&!art.failed);if(painted){c.drawImage(art,x-54,y-100,108,108);}else{ // v2.7.1: art pack M's painted board (posts' feet on the tile's lower edge, ~100 px tall)
  c.fillStyle='rgba(20,24,30,.32)';c.beginPath();c.ellipse(x,y-2,30,7,0,0,Math.PI*2);c.fill();
  const wood='#6b4428',dark='#3e2616',light='#9a6a3c';
  c.fillStyle=dark;c.fillRect(x-26,y-62,7,60);c.fillRect(x+19,y-62,7,60);c.fillStyle=wood;c.fillRect(x-25,y-62,5,60);c.fillRect(x+20,y-62,5,60);
@@ -88,5 +88,5 @@ function drawRequestBoard(c,x,y,time,open){c.save();
  c.fillStyle=dark;c.beginPath();c.moveTo(x-36,y-58);c.lineTo(x,y-74);c.lineTo(x+36,y-58);c.lineTo(x+32,y-55);c.lineTo(x,y-69);c.lineTo(x-32,y-55);c.closePath();c.fill();
  c.fillStyle='#4f6f9a';c.fillRect(x+24,y-86,2,16);c.fillStyle='#c8a24a';c.beginPath();c.moveTo(x+26,y-86);c.lineTo(x+38,y-82);c.lineTo(x+26,y-78);c.closePath();c.fill();
  }
- if(open){const b=Math.round(Math.sin(time/280)*3);c.fillStyle='rgba(16,24,28,.85)';c.beginPath();c.arc(x,y-92+b,10,0,Math.PI*2);c.fill();c.fillStyle='#ffd45a';c.font='bold 15px sans-serif';c.textAlign='center';c.fillText('!',x,y-87+b);}
+ if(open){const b=Math.round(Math.sin(time/280)*3),top=painted?-108:-92;c.fillStyle='rgba(16,24,28,.85)';c.beginPath();c.arc(x,y+top+b,10,0,Math.PI*2);c.fill();c.fillStyle='#ffd45a';c.font='bold 15px sans-serif';c.textAlign='center';c.fillText('!',x,y+top+5+b);}
  c.restore();}

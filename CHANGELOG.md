@@ -1,3 +1,10 @@
+# v2.7.1 — 게시판 그림과 마무리
+- Release candidate (D-161), built on v2.7.0 (merged, D-160); merge only on the user's approval. Notes docs/v2.7.1/RELEASE_NOTES.md.
+- Art pack M imported (scripts/import-art-pack-m.py → src/assets/props/requestBoard.webp); the square's board is painted (drawn 108 px).
+- 어려움 M06 from ×1.7 (stats8 HARD_BASE_AT); 보통 keeps ×1.8.
+- Town names after the story–town review: Korean place names on every town map; the lower city and the summit camp no longer use Velmar's and the border camp's names; Lia's 「안뜰」 in the keep.
+- Archive: v2.5.1's builds left the tree; v2.5.2–v2.7.0 joined releases/ARCHIVE.json (and .gitignore). Tests: v271, v271-e2e.
+
 # v2.7.0 — 맞는 길, 운, 마을의 얼굴
 - Release candidate (D-157 design, D-158 approval with the recommended answers, D-159 build); merge only on the user's approval. Notes docs/v2.7.0/RELEASE_NOTES.md.
 - M06 on a 22×24 south-to-north map (src/data/missions-v270.js; legion and refugees south, the gate and the executioner north, pursuers from the south, the garrison beyond the gate, beacon east, lever west); refugees walk 3 tiles beside a hero (m.escortSteps), through heroes and refugees, around foes; a state label over each (refugeeState) and a sheet when pressed; M06 strength ×1.8.
