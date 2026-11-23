@@ -25,7 +25,7 @@ Updated 2026-11-23 KST. **Release candidate** on feature/v2.7.0 (not merged), bu
 - **Browser suites run here (19): every final exit is 0** (docs/v2.7.0/evidence/browser-run-summary.log): balance (M01 30/30), e2e 80, v270 16, v261 15, v252 42, v210 46, v231 26, v241 26, v251 28, frontier 90, journey 176, world 32, quality 98, act1 113, tactics 26, class 30, mobile 91, hub-doors, act2-hubs 315 checks.
   - v210 and act1 first failed on the old ground: v210 opened the board from the hall (the clerk now stands in the square — the test presses him and uses his menu); act1 unsealed M06 at the old south-west stones (now the stone before the north gate). Both passed after.
   - **v270 suite** (1440×900, 390×844): M06 opens with the refugees in the south; the injured refugee's sheet says 「치유 필요」 and how far the gate is; Eric's attack forecast shows 「연속 공격 n%」; 갈대 나루's clerk opens 「대화 · 의뢰 게시판」; the tavern opens with its guests; no runtime errors. Screenshots: docs/v2.7.0/screenshots.
-- **The other browser suites:** run by CI on the PR.
+- **CI on the PR: 9/9 green on the final head.** The campaign job (M01–M03 played through the page at 1440 and 390) first timed out twice: at 390 its tap on tile 12,3 landed on the minimap, which takes presses since v2.6.1. The test now drags the map to bring a covered tile to the middle (the page gained a `lookAt` test hook too); the game itself was unchanged by that fix.
 
 ## Not done in this version
 - **Not tested here:** native phones, Safari/WebKit and Firefox.
