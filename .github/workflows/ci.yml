@@ -31,6 +31,17 @@ jobs:
       - run: npm run test:act2-balance
       # Skips until the version is packaged; then the committed HTML must equal a clean rebuild.
       - run: python scripts/verify-release.py
+      - name: Verify playable v2.8.0 candidate
+        if: github.head_ref == 'feature/v2.8.0'
+        run: |
+          node tests/m06-operations.mjs > test-output/m06-operations.json
+          python scripts/package.py
+          python scripts/verify-release.py --candidate
+      - uses: actions/upload-artifact@v4
+        if: github.head_ref == 'feature/v2.8.0'
+        with:
+          name: Ashen-Crown-v2.8.0-RC
+          path: releases/Ashen_Crown_v2.8.0*
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -47,7 +58,7 @@ jobs:
           - suite_group: exploration
             suites: journey quality migration-v031 migration-v032 frontier renaissance performance
           - suite_group: tactical
-            suites: e2e mobile tactical http post-move restart audio-mute
+            suites: e2e mobile tactical http post-move restart audio-mute v280
           - suite_group: campaign
             suites: campaign economy-balance migration-v02
           - suite_group: act1

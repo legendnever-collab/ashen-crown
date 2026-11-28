@@ -86,8 +86,8 @@ export class BattleRenderer{
   if(s.turn===2&&s.screen==='battle')for(const spawn of missionOf(s).reinforcements){const sx=spawn.x*TILE,sy=spawn.y*TILE;rect(c,'#e1af63',sx,sy,TILE,3);rect(c,'#e1af63',sx,sy,3,TILE);c.fillStyle='#ffdb87';c.font='bold 24px monospace';c.fillText('!',sx+28,sy+34);}
   const threatIds=new Set(s.screen==='battle'&&s.phase==='player'&&lion?.threats?lion.threats(s):[]);
   const drawables=[];const stateOf=b=>s.screen==='result'&&s.outcome==='victory'?'burned':b.state;
-  for(const o of this.hd.objects){if(o.kind==='house'&&this.hdCovered.has((o.x/48)+','+(o.y/48-1)))continue;drawables.push({key:hdObjectKey(o),draw:()=>drawHDObject(c,o,now)});}
-  for(const o of hdLayerBuildings(missionOf(s).layers.buildings,stateOf))drawables.push({key:hdObjectKey(o),draw:()=>drawHDObject(c,o,now)});
+  for(const o of this.hd.objects){if(o.kind==='house'&&this.hdCovered.has((o.x/48)+','+(o.y/48-1)))continue;drawables.push({key:hdObjectKey(o),draw:()=>drawHDObject(c,o,now,this.hd.raster)});}
+  for(const o of hdLayerBuildings(missionOf(s).layers.buildings,stateOf))drawables.push({key:hdObjectKey(o),draw:()=>drawHDObject(c,o,now,this.hd.raster)});
   for(const o of s.units.filter(u=>u.team==='object'&&u.rescued&&!u.evidence)){const ox=o.x*TILE+32,oy=o.y*TILE+37;drawables.push({key:oy+27.5,draw:()=>drawMissionObject(c,o,ox,oy,now)});}
   // pack F2 (D-088): a felled ward tree stays on the map as its painted stump
   for(const o of s.units.filter(u=>u.kind==='wardTree'&&!alive(u)&&this.displayHP(u,now)<=0)){const ox=o.x*TILE+32,oy=o.y*TILE+37;drawables.push({key:oy+27.5,draw:()=>drawProp(c,'wardTree_felled',ox,oy+24,1.45)});}
@@ -112,6 +112,16 @@ export class BattleRenderer{
   // them. Each range tile is drawn again on top: a light wash and a bright border; a tile with someone on it gets the
   // border only, so the figure stays clear.
   for(const [tx,ty,fill,border] of rangeTop){if(!s.units.some(u=>alive(u)&&!u.benched&&u.x===tx&&u.y===ty)){c.save();c.globalAlpha=.45;rect(c,fill,tx*TILE+1,ty*TILE+1,60,60);c.restore();}c.strokeStyle=border;c.lineWidth=2;c.strokeRect(tx*TILE+3,ty*TILE+3,58,58);}
+  if(ui.threatView&&s.missionId===6&&s.screen==='battle'){
+   c.save();c.strokeStyle='#ff6666';c.lineWidth=3;
+   for(const key of ui.threatView.tiles){
+    const [tx,ty]=key.split(',').map(Number);
+    c.strokeRect(tx*TILE+3,ty*TILE+3,TILE-6,TILE-6);
+   }
+   c.fillStyle='#ffd35d';c.font='bold 28px sans-serif';c.textAlign='center';
+   for(const unit of ui.threatView.wave)c.fillText('+',unit.x*TILE+TILE/2,unit.y*TILE+TILE*.65);
+   c.restore();
+  }
   // v0.7 M11 night (D-068): tiles outside every light are covered in dark blue; lit tiles get a faint warm glow.
   if(missionOf(s).night){const src=lightSources(s);for(let ty=0;ty<HEIGHT;ty++)for(let tx=0;tx<WIDTH;tx++){const d=Math.min(...src.map(p=>Math.abs(p.x-tx)+Math.abs(p.y-ty)-p.r));
    rect(c,d<=0?'rgba(255,186,96,.08)':d===1?'rgba(10,14,34,.44)':'rgba(6,8,26,.64)',tx*TILE,ty*TILE,TILE,TILE);}}

@@ -1,6 +1,6 @@
 // v0.4 mission hooks. M01–03 never reach this module, so their rules stay byte-for-byte the same.
 import {missionOf} from '../data/missions.js';
-import {terrainCost,alive,at,distance,findUnit,terrainAt,strikeStats,isolated} from './rules.js';
+import {movement,terrainCost,alive,at,distance,findUnit,terrainAt,strikeStats,isolated} from './rules.js';
 import {enqueueStory,setStoryFlag,remember} from './narrative.js';
 import {ACT2_RULES} from './mission-rules-v06.js';
 import {ACT2B_RULES} from './mission-rules-v061.js';
@@ -173,6 +173,45 @@ function plan6(s,u,cells,{civBias=-20,goal=null,reason='전진'}={}){
  const goals=goal?[goal]:targets;if(!goals.length)return {x:u.x,y:u.y,target:null,reason:'대상 없음'};
  let dest=null;for(const p of cells){if(at(s,p.x,p.y)&&!(p.x===u.x&&p.y===u.y))continue;const d=Math.min(...goals.map(g=>distance(p,g)))+p.c*.01;if(!dest||d<dest.d)dest={...p,d};}
  return dest?{x:dest.x,y:dest.y,target:null,reason}:{x:u.x,y:u.y,target:null,reason:'대기'};}
+// The preview and AI use the same legal end positions, including guard posts.
+function m06Positions(s,u,reachable){
+ const cells=Array.from(reachable,([key,c])=>{const [x,y]=key.split(',').map(Number);return {x,y,c};});
+ if(u.id==='boss'){
+  if(s.missionState.phase<3)return [{x:u.x,y:u.y,c:0}];
+  const inside=cells.filter(p=>safe6(s,p));
+  return inside.length?inside:cells;
+ }
+ const stone=findUnit(s,GUARD_STONE[u.id]);
+ if(stone&&!stone.rescued){
+  const near=cells.filter(p=>distance(p,stone)<=2);
+  return near.length?near:[{x:u.x,y:u.y,c:0}];
+ }
+ return cells;
+}
+export function m06ThreatTiles(s,u){
+ const tiles=new Set();
+ if(!u||!alive(u)||u.team!=='enemy'||u.dazed===s.turn||!u.range?.[1])return tiles;
+ const m=missionOf(s),[min,max]=u.range;
+ const reachable=movement(s,u).costs;
+ let positions=m06Positions(s,u,reachable);
+ if(u.status?.confuse)positions=[{x:u.x,y:u.y}];
+ else if(u.provokedBy?.turn===s.turn){
+  const source=findUnit(s,u.provokedBy.id);
+  if(source&&alive(source))positions=Array.from(reachable.keys(),key=>{const [x,y]=key.split(',').map(Number);return {x,y};});
+ }
+ for(const pos of positions){
+  for(let y=Math.max(0,pos.y-max);y<=Math.min(m.height-1,pos.y+max);y++){
+   for(let x=Math.max(0,pos.x-max);x<=Math.min(m.width-1,pos.x+max);x++){
+    const d=distance(pos,{x,y});
+    if(d>=min&&d<=max)tiles.add(x+','+y);
+   }
+  }
+ }
+ return tiles;
+}
+export function m06PursuitWave(s){
+ return s.missionState.phase===1?missionOf(s).waves.find(w=>w.trigger==='phase2')?.units||[]:[];
+}
 const M6={
  init(s){s.missionState={phase:1,waves:[],lever:false,beacon:false,banner:false};triggerWaves(s,'start');},
  clearLabel:'재의 맹세 · 관문 돌파',
@@ -196,10 +235,11 @@ const M6={
  onTurnStart(s){escortRefugees(s);M6.phaseCheck(s);},
  beforeEnemyPhase(){},
  planEnemy(s,u,reachable){
-  const cells=[...reachable].map(([p,c])=>{const [x,y]=p.split(',').map(Number);return {x,y,c};}),st=s.missionState;
+  const cells=m06Positions(s,u,reachable);
   if(u.kind==='beacon')return {x:u.x,y:u.y,target:null,reason:'봉화 신호 대기'};
-  if(u.id==='boss'){if(st.phase<3)return plan6(s,u,[{x:u.x,y:u.y,c:0}],{reason:'관문 북쪽 지휘'});const hold=cells.filter(p=>safe6(s,p));return plan6(s,u,hold.length?hold:cells,{goal:missionOf(s).gateGoal||{x:8,y:2},reason:'관문을 직접 막는다'});}
-  if(GUARD_STONE[u.id]){const stone=findUnit(s,GUARD_STONE[u.id]);if(stone&&!stone.rescued){const near=cells.filter(p=>distance(p,stone)<=2);return plan6(s,u,near.length?near:[{x:u.x,y:u.y,c:0}],{goal:stone,reason:'봉인석 사수'});}}
+  if(u.id==='boss')return plan6(s,u,cells,{goal:missionOf(s).gateGoal,reason:'관문 사수'});
+  const stone=findUnit(s,GUARD_STONE[u.id]);
+  if(stone&&!stone.rescued)return plan6(s,u,cells,{goal:stone,reason:'봉인석 사수'});
   if(/^r\d/.test(u.id))return plan6(s,u,cells,{civBias:40,goal:refugeesOf(s).filter(alive).sort((a,b)=>distance(u,a)-distance(u,b))[0]||null,reason:'피난민 추격'});
   return plan6(s,u,cells,{reason:'공격 대상으로 이동'});},
  checkOutcome(s,finish){

@@ -1,6 +1,6 @@
 {
   "name": "ashen-crown",
-  "version": "2.7.1",
+  "version": "2.8.0",
   "private": true,
   "type": "module",
   "description": "Original pixel fantasy SRPG: The Ashen Village",
@@ -84,6 +84,7 @@
     "test:v260": "node tests/v260-e2e.mjs",
     "test:v261": "node tests/v261-e2e.mjs",
     "test:v270": "node tests/v270-e2e.mjs",
+    "test:v280": "node tests/v280-e2e.mjs",
     "test:v271": "node tests/v271-e2e.mjs"
   },
   "devDependencies": {

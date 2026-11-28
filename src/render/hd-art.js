@@ -119,7 +119,7 @@ function paintFlagstones(p,ox,oy,tx,ty,rampart){
 // ---------- decor objects ----------
 const cache=new Map();
 const cached=(key,fn)=>{if(!cache.has(key))cache.set(key,fn().canvas());return cache.get(key);};
-export function treeSprite(seed,size=1){return cached('tree'+seed+size.toFixed(2),()=>{const w=40,h=52,p=new Pix(w,h),rx=12*size,cy=h-14-14*size;
+export function treeSprite(seed,size=1,raster=cached){return raster('tree'+seed+size.toFixed(2),()=>{const w=40,h=52,p=new Pix(w,h),rx=12*size,cy=h-14-14*size;
  // trunk
  p.box(18,cy+6,5,h-cy-9,WOOD);p.set(17,h-4,WOOD[1]);p.set(23,h-4,WOOD[0]);
  const blobs=[[20,cy,rx,rx*.85],[20-rx*.6,cy+4,rx*.7,rx*.6],[20+rx*.6,cy+5,rx*.7,rx*.6],[20,cy-rx*.55,rx*.7,rx*.6]];
@@ -127,12 +127,12 @@ export function treeSprite(seed,size=1){return cached('tree'+seed+size.toFixed(2
  // leaf clusters
  for(let i=0;i<14;i++){const a=hash(seed,i,3)*Math.PI*2,r=hash(seed,i,4)*rx*.9,x=20+Math.cos(a)*r,y=cy+Math.sin(a)*r*.8-2;if(p.get(x|0,y|0)){p.set(x,y,LEAF[4]);p.set(x+1,y,LEAF[3]);p.set(x,y+1,LEAF[1]);}}
  return p.outline();});}
-export function bushSprite(seed){return cached('bush'+seed,()=>{const p=new Pix(24,16);p.ball(8,9,7,6,LEAF);p.ball(15,8,7,6,LEAF);p.set(9,5,col('#e7d6f0'));p.set(16,4,col('#f1d1e0'));return p.outline();});}
-export function ruinSprite(seed){return cached('ruin'+seed,()=>{const p=new Pix(48,40);for(let row=0;row<3;row++)for(let k=0;k<4-(row===2?1:0);k++){const w=11,h=9,x=2+k*11+(row%2?5:0)+(hash(seed,k+row*4,1)*2|0),y=29-row*9;if(row===2&&hash(seed,k,6)<.4)continue;p.box(x,y,w-1,h-1,hash(seed,k+row,2)<.5?STONE:ramp('#7c7a6c'));if(hash(seed,k+row,8)<.5)for(let i=0;i<4;i++)p.set(x+1+i,y,MOSS[3]);}p.ball(9,34,6,4,MOSS);p.ball(40,36,5,3,STONE);return p.outline();});}
+export function bushSprite(seed,raster=cached){return raster('bush'+seed,()=>{const p=new Pix(24,16);p.ball(8,9,7,6,LEAF);p.ball(15,8,7,6,LEAF);p.set(9,5,col('#e7d6f0'));p.set(16,4,col('#f1d1e0'));return p.outline();});}
+export function ruinSprite(seed,raster=cached){return raster('ruin'+seed,()=>{const p=new Pix(48,40);for(let row=0;row<3;row++)for(let k=0;k<4-(row===2?1:0);k++){const w=11,h=9,x=2+k*11+(row%2?5:0)+(hash(seed,k+row*4,1)*2|0),y=29-row*9;if(row===2&&hash(seed,k,6)<.4)continue;p.box(x,y,w-1,h-1,hash(seed,k+row,2)<.5?STONE:ramp('#7c7a6c'));if(hash(seed,k+row,8)<.5)for(let i=0;i<4;i++)p.set(x+1+i,y,MOSS[3]);}p.ball(9,34,6,4,MOSS);p.ball(40,36,5,3,STONE);return p.outline();});}
 export function cragSprite(seed){return cached('crag'+seed,()=>{const p=new Pix(48,56),R=ramp(seed%2?'#8e8c78':'#857f6e'),pk=[[2,54],[12+seed%3*2,24+seed%2*4],[20,28],[28+seed%3,8+seed%2*3],[36,22],[46,54]];p.poly(pk,R[2]);for(let y=0;y<56;y++)for(let x=0;x<48;x++){if(!p.get(x,y))continue;const s=(x-30)*.6+(y-8)*.1;p.set(x,y,x<30-y*.18?R[3]:s>8?R[1]:R[2]);}p.poly([[26,14],[30,8],[34,15],[30,17]],col('#e8e4d6'));p.line(30,9,22,40,R[1]);p.line(14,24,8,46,R[3]);return p.outline();});}
 export function bridgeSprite(map,tx,ty){return cached(`bridge${tx},${ty}`,()=>{const p=new Pix(48,48),horizontal=['b','r','g'].includes(map[ty]?.[tx-1])&&map[ty]?.[tx-1]!=='w';for(let i=0;i<6;i++){if(horizontal)p.box(i*8,4,8,40,WOOD);else p.box(4,i*8,40,8,WOOD);}if(horizontal){p.box(0,2,48,4,ramp('#5e3f28'));p.box(0,42,48,4,ramp('#5e3f28'));}else{p.box(2,0,4,48,ramp('#5e3f28'));p.box(42,0,4,48,ramp('#5e3f28'));}return p;});}
 // cottage: plaster and timber walls with a shingled roof; tw/th in tiles
-export function houseSprite(seed,tw=1,th=1,state='intact'){return cached(`house${seed},${tw},${th},${state}`,()=>{const W=tw*48,H=th*48+14,p=new Pix(W,H),burned=state==='burned';
+export function houseSprite(seed,tw=1,th=1,state='intact',raster=cached){return raster(`house${seed},${tw},${th},${state}`,()=>{const W=tw*48,H=th*48+14,p=new Pix(W,H),burned=state==='burned';
  const roofR=burned?ramp('#4b3a33'):tw>1?ramp('#5d7088'):hash(seed,1,1)<.5?ROOF:THATCH,thatch=roofR===THATCH;
  const wallH=20,wallTop=H-wallH-2,wl=3,wr=W-3;
  // walls: plaster between timber posts, stone footing

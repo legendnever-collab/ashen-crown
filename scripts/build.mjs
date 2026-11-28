@@ -1,10 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import {openingArt} from './opening-art.mjs';
 const root=path.resolve(import.meta.dirname,'..'),version=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8')).version,seen=new Set();let modules=[];
 function bundle(file){file=path.resolve(file);if(seen.has(file))return;seen.add(file);let text=fs.readFileSync(file,'utf8');for(const match of text.matchAll(/^import .*? from ['"](.+?)['"];$/gm))bundle(path.resolve(path.dirname(file),match[1]));text=text.replace(/^import .*? from ['"].+?['"];\n/gm,'').replace(/^export /gm,'');modules.push(`// ${path.relative(root,file)}\n${text}`);}
 // ASHEN_ENTRY/ASHEN_OUT build a test-only page (e.g. tests/harness/act2-preview.js) into test-output; the release is untouched.
 const entry=process.env.ASHEN_ENTRY||'src/ui/app.js',testOut=process.env.ASHEN_OUT||null;
 bundle(path.join(root,entry));
+modules.unshift(`const ASHEN_OPENING_ART=${JSON.stringify(openingArt())};`);
 // Painted dialogue portraits: src/assets/portraits/bust_<id>_<expression>.webp → one data-URL registry, built once.
 // The staff aide was folded into Lia (one strategist on the map), so the 'advisor' art is kept in source but not shipped.
 const UNUSED_ART=new Set(['advisor']);

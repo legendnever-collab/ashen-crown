@@ -1,4 +1,7 @@
 # Development Roadmap
+
+v2.8.0 RC delivers M01 opening decisions and M06 operations. Follow-up order: enemy scaling and equipment choices, M13→M14 consequences, duel warnings.
+
 APPROVED_DIRECTION, 2026-10-14 user v0.3 Master Task. Story CANON과 실제 구현 상태를 구분한다.
 - v0.1.x First Battle Foundation: M01, free deployment, five heroes, growth/save/restart. Completed.
 - v0.2.0 The Burning Frontier: M01–03, narrative, identity, original BGM, schema2. PR #5 merged fdcdcc42e3adaca7c961dd76dd51268b358ce08f.
