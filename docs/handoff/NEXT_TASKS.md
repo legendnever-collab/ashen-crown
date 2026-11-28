@@ -1,4 +1,8 @@
 # Next Tasks
+
+1. Play-review M01 and both M06 operations.
+2. In order, review enemy level scaling and equipment choice, M13 consequences in M14, then duel warnings.
+
 0f. v2.7.1 release candidate (D-161): merge only on the user's approval; then the user reruns Actions → Archive old builds, and the next version removes the v2.5.2–v2.7.0 builds from the tree once their Releases exist. No other open development.
 0e. v2.7.0 merged (D-160). When art pack M returns, import it as src/assets/props/requestBoard.webp. The next version removes the archived builds (v2.5.1 onward) from the tree once their Releases exist. Open: 어려움 M06 15/30; the large towns' dialogue review.
 0d. v2.7.0 release candidate (D-159): merge only on the user's approval. When art pack M returns, import the board as src/assets/props/requestBoard.webp (paintedProp('requestBoard')). Open: 어려움 M06 15/30; the large towns' dialogue review.

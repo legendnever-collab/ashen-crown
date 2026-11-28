@@ -1,0 +1,850 @@
+{
+ "b280n": [
+  {
+   "campaignSeed": 20261014,
+   "battleSeed": 20261019,
+   "outcome": "victory",
+   "through": 1,
+   "firstPassTurn": 13
+  },
+  {
+   "campaignSeed": 20261015,
+   "battleSeed": 20261020,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261016,
+   "battleSeed": 20261021,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261017,
+   "battleSeed": 20268941,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261018,
+   "battleSeed": 20261023,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261019,
+   "battleSeed": 20261024,
+   "outcome": "victory",
+   "through": 1,
+   "firstPassTurn": 10
+  },
+  {
+   "campaignSeed": 20261020,
+   "battleSeed": 20261025,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261021,
+   "battleSeed": 20261026,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261022,
+   "battleSeed": 20261027,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261023,
+   "battleSeed": 20261028,
+   "outcome": "victory",
+   "through": 1,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261024,
+   "battleSeed": 20268948,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261025,
+   "battleSeed": 20261030,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261026,
+   "battleSeed": 20268950,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261027,
+   "battleSeed": 20261032,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261028,
+   "battleSeed": 20261033,
+   "outcome": "defeat",
+   "through": 2,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261029,
+   "battleSeed": 20261034,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261030,
+   "battleSeed": 20268954,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261031,
+   "battleSeed": 20261036,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261032,
+   "battleSeed": 20268956,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261033,
+   "battleSeed": 20261038,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261034,
+   "battleSeed": 20261039,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261035,
+   "battleSeed": 20261040,
+   "outcome": "defeat",
+   "through": 0,
+   "firstPassTurn": null
+  },
+  {
+   "campaignSeed": 20261036,
+   "battleSeed": 20276879,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261037,
+   "battleSeed": 20261042,
+   "outcome": "victory",
+   "through": 1,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261038,
+   "battleSeed": 20261043,
+   "outcome": "defeat",
+   "through": 3,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261039,
+   "battleSeed": 20261044,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261040,
+   "battleSeed": 20261045,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261041,
+   "battleSeed": 20261046,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261042,
+   "battleSeed": 20261047,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261043,
+   "battleSeed": 20261048,
+   "outcome": "defeat",
+   "through": 0,
+   "firstPassTurn": null
+  }
+ ],
+ "b280h": [
+  {
+   "campaignSeed": 20261014,
+   "battleSeed": 20261019,
+   "outcome": "defeat",
+   "through": 1,
+   "firstPassTurn": 11
+  },
+  {
+   "campaignSeed": 20261015,
+   "battleSeed": 20268939,
+   "outcome": "defeat",
+   "through": 3,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261016,
+   "battleSeed": 20268940,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261017,
+   "battleSeed": 20261022,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261018,
+   "battleSeed": 20261023,
+   "outcome": "defeat",
+   "through": 2,
+   "firstPassTurn": 11
+  },
+  {
+   "campaignSeed": 20261019,
+   "battleSeed": 20261024,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261020,
+   "battleSeed": 20261025,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261021,
+   "battleSeed": 20268945,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261022,
+   "battleSeed": 20261027,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261023,
+   "battleSeed": 20276866,
+   "outcome": "defeat",
+   "through": 1,
+   "firstPassTurn": 11
+  },
+  {
+   "campaignSeed": 20261024,
+   "battleSeed": 20268948,
+   "outcome": "defeat",
+   "through": 0,
+   "firstPassTurn": null
+  },
+  {
+   "campaignSeed": 20261025,
+   "battleSeed": 20261030,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261026,
+   "battleSeed": 20261031,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261027,
+   "battleSeed": 20268951,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261028,
+   "battleSeed": 20261033,
+   "outcome": "defeat",
+   "through": 0,
+   "firstPassTurn": null
+  },
+  {
+   "campaignSeed": 20261029,
+   "battleSeed": 20261034,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261030,
+   "battleSeed": 20261035,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261031,
+   "battleSeed": 20261036,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261032,
+   "battleSeed": 20268956,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261033,
+   "battleSeed": 20261038,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261034,
+   "battleSeed": 20268958,
+   "outcome": "defeat",
+   "through": 0,
+   "firstPassTurn": null
+  },
+  {
+   "campaignSeed": 20261035,
+   "battleSeed": 20292716,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261036,
+   "battleSeed": 20276879,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261037,
+   "battleSeed": 20268961,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261038,
+   "battleSeed": 20268962,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261039,
+   "battleSeed": 20261044,
+   "outcome": "victory",
+   "through": 1,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261040,
+   "battleSeed": 20261045,
+   "outcome": "defeat",
+   "through": 3,
+   "firstPassTurn": 10
+  },
+  {
+   "campaignSeed": 20261041,
+   "battleSeed": 20268965,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261042,
+   "battleSeed": 20261047,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261043,
+   "battleSeed": 20261048,
+   "outcome": "defeat",
+   "through": 3,
+   "firstPassTurn": 9
+  }
+ ],
+ "rc280n": [
+  {
+   "campaignSeed": 20261014,
+   "battleSeed": 20261019,
+   "outcome": "defeat",
+   "through": 2,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261015,
+   "battleSeed": 20261020,
+   "outcome": "victory",
+   "through": 1,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261016,
+   "battleSeed": 20261021,
+   "outcome": "defeat",
+   "through": 0,
+   "firstPassTurn": null
+  },
+  {
+   "campaignSeed": 20261017,
+   "battleSeed": 20261022,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 10
+  },
+  {
+   "campaignSeed": 20261018,
+   "battleSeed": 20261023,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261019,
+   "battleSeed": 20261024,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261020,
+   "battleSeed": 20261025,
+   "outcome": "victory",
+   "through": 1,
+   "firstPassTurn": 11
+  },
+  {
+   "campaignSeed": 20261021,
+   "battleSeed": 20261026,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261022,
+   "battleSeed": 20268946,
+   "outcome": "defeat",
+   "through": 3,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261023,
+   "battleSeed": 20261028,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261024,
+   "battleSeed": 20261029,
+   "outcome": "defeat",
+   "through": 0,
+   "firstPassTurn": null
+  },
+  {
+   "campaignSeed": 20261025,
+   "battleSeed": 20261030,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261026,
+   "battleSeed": 20261031,
+   "outcome": "victory",
+   "through": 1,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261027,
+   "battleSeed": 20261032,
+   "outcome": "defeat",
+   "through": 2,
+   "firstPassTurn": 11
+  },
+  {
+   "campaignSeed": 20261028,
+   "battleSeed": 20261033,
+   "outcome": "victory",
+   "through": 1,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261029,
+   "battleSeed": 20261034,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261030,
+   "battleSeed": 20261035,
+   "outcome": "defeat",
+   "through": 0,
+   "firstPassTurn": null
+  },
+  {
+   "campaignSeed": 20261031,
+   "battleSeed": 20261036,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261032,
+   "battleSeed": 20261037,
+   "outcome": "defeat",
+   "through": 2,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261033,
+   "battleSeed": 20261038,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261034,
+   "battleSeed": 20268958,
+   "outcome": "defeat",
+   "through": 1,
+   "firstPassTurn": 11
+  },
+  {
+   "campaignSeed": 20261035,
+   "battleSeed": 20268959,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261036,
+   "battleSeed": 20261041,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261037,
+   "battleSeed": 20261042,
+   "outcome": "victory",
+   "through": 1,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261038,
+   "battleSeed": 20261043,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261039,
+   "battleSeed": 20261044,
+   "outcome": "victory",
+   "through": 1,
+   "firstPassTurn": 10
+  },
+  {
+   "campaignSeed": 20261040,
+   "battleSeed": 20261045,
+   "outcome": "victory",
+   "through": 1,
+   "firstPassTurn": 10
+  },
+  {
+   "campaignSeed": 20261041,
+   "battleSeed": 20261046,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261042,
+   "battleSeed": 20268966,
+   "outcome": "defeat",
+   "through": 1,
+   "firstPassTurn": 12
+  },
+  {
+   "campaignSeed": 20261043,
+   "battleSeed": 20268967,
+   "outcome": "victory",
+   "through": 1,
+   "firstPassTurn": 9
+  }
+ ],
+ "rc280h": [
+  {
+   "campaignSeed": 20261014,
+   "battleSeed": 20261019,
+   "outcome": "defeat",
+   "through": 2,
+   "firstPassTurn": 10
+  },
+  {
+   "campaignSeed": 20261015,
+   "battleSeed": 20276858,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261016,
+   "battleSeed": 20261021,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261017,
+   "battleSeed": 20261022,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261018,
+   "battleSeed": 20261023,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261019,
+   "battleSeed": 20261024,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261020,
+   "battleSeed": 20268944,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261021,
+   "battleSeed": 20276864,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261022,
+   "battleSeed": 20261027,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261023,
+   "battleSeed": 20268947,
+   "outcome": "defeat",
+   "through": 1,
+   "firstPassTurn": 12
+  },
+  {
+   "campaignSeed": 20261024,
+   "battleSeed": 20261029,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261025,
+   "battleSeed": 20261030,
+   "outcome": "defeat",
+   "through": 0,
+   "firstPassTurn": null
+  },
+  {
+   "campaignSeed": 20261026,
+   "battleSeed": 20276869,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261027,
+   "battleSeed": 20261032,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261028,
+   "battleSeed": 20261033,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261029,
+   "battleSeed": 20268953,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261030,
+   "battleSeed": 20261035,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261031,
+   "battleSeed": 20261036,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261032,
+   "battleSeed": 20268956,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261033,
+   "battleSeed": 20261038,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261034,
+   "battleSeed": 20268958,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261035,
+   "battleSeed": 20261040,
+   "outcome": "defeat",
+   "through": 0,
+   "firstPassTurn": null
+  },
+  {
+   "campaignSeed": 20261036,
+   "battleSeed": 20261041,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261037,
+   "battleSeed": 20268961,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261038,
+   "battleSeed": 20276881,
+   "outcome": "defeat",
+   "through": 2,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261039,
+   "battleSeed": 20261044,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261040,
+   "battleSeed": 20268964,
+   "outcome": "victory",
+   "through": 1,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261041,
+   "battleSeed": 20268965,
+   "outcome": "defeat",
+   "through": 3,
+   "firstPassTurn": 9
+  },
+  {
+   "campaignSeed": 20261042,
+   "battleSeed": 20261047,
+   "outcome": "victory",
+   "through": 3,
+   "firstPassTurn": 8
+  },
+  {
+   "campaignSeed": 20261043,
+   "battleSeed": 20261048,
+   "outcome": "victory",
+   "through": 2,
+   "firstPassTurn": 8
+  }
+ ]
+}

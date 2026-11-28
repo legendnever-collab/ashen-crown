@@ -1,4 +1,7 @@
 # Current Status
+
+v2.8.0 is a play-review RC on feature/v2.7.1 (PR #47). See [the measured opening, campaign results and two operations](../../releases/Ashen_Crown_v2.8.0_Test_Report.md).
+
 Updated 2026-11-24 KST: **v2.7.1 「게시판 그림과 마무리」 release candidate** on feature/v2.7.1 (D-161): art pack M imported, 어려움 M06 ×1.7, the large towns' names, the archive list brought up to date. Merge only on the user's approval; after it the user reruns Actions → Archive old builds (v2.5.2–v2.7.0).
 Updated 2026-11-23 20:23 KST: **v2.7.0 merged** (PR #45 → 76ff46e, 「우선 병합해줘」, D-160; CI 9/9 green on e992dbd). Waiting: art pack M (the request board), the user's archive run (v2.5.1–v2.7.0), the user's next requests.
 Updated 2026-11-23 KST: **v2.7.0 「맞는 길, 운, 마을의 얼굴」 release candidate** on feature/v2.7.0 (D-157 design, D-158 approval, D-159 build): M06 south to north, 「연속 공격」 by 운, the request board in the square, tavern guests, direction fixes; art pack M (one board prop) work order out. Merge only on the user's approval.

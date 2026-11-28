@@ -155,12 +155,12 @@ function syncTurnPrompt(){const t=$('#turn-prompt');if(!t)return;const left=stat
 async function dispatch(action,id){if(state.narrative.active&&!['story-next','story-skip','story-auto','story-fast','story-log','audio','close-modal','save','menu','backup','copy-backup','restore','load','restart-stage','confirm-restart-stage'].includes(action))return;
 if(ui.pendingMove&&!['confirm-move','cancel-move','close-unit-menu','zoom-in','zoom-out','reset-camera','help','close-modal'].includes(action)){ui.menu='move-confirm';render();toast('먼저 이동을 확정하거나 취소하세요.');return;}if(ui.busy&&!['journal','zoom-in','zoom-out','reset-camera','help','close-modal'].includes(action))return;
  if(action==='threat-view'&&state.screen==='battle'&&state.phase==='player'&&state.missionId===6){
-  ui.menu=null;ui.preview=null;
+  ui.menu=null;ui.preview=null;ui.inspected=null;
   ui.threatView=ui.threatView?null:{tiles:new Set(),wave:m06PursuitWave(state)};
   ui.notice=ui.threatView?'적을 누르세요 · 붉은 테두리 = 공격 가능 · 금색 + = 2단계 추격대 진입 지점':null;
   render();return;
  }
- if(!['zoom-in','zoom-out','reset-camera','focus-unit'].includes(action))ui.threatView=null;
+ if(ui.threatView&&!['zoom-in','zoom-out','reset-camera','focus-unit'].includes(action)){ui.threatView=null;ui.notice=null;}
  if(await frontierDispatch(action,id))return;
  switch(action){
  case 'story-next':case 'story-skip':advanceStory(state,action==='story-skip');commit();if(!state.narrative.active)promptTurnEnd();if(!state.narrative.active&&state.phase==='enemy'&&state.screen==='battle')enemyLoop();break;
@@ -291,7 +291,8 @@ canvas.addEventListener('pointerup',async e=>{touches.delete(e.pointerId);if(pin
  }
  const terrain=terrainAt(tile.x,tile.y,state);if(terrain)$('#terrain-readout').textContent=terrainSummary(state,tile.x,tile.y,findUnit(state,ui.selected));
  if(state.screen!=='battle'||state.phase!=='player')return;if(ui.pendingMove){ui.menu='move-confirm';render();return;}
- if(ui.threatView){
+ if(ui.threatView||(state.missionId===6&&t?.team==='enemy'&&ui.mode==='choose'&&!(canAct(state,u)&&validTarget(state,u,t,'attack')))){
+  ui.threatView??={wave:m06PursuitWave(state)};ui.inspected=null;ui.menu=null;
   ui.threatView.tiles=m06ThreatTiles(state,t);
   ui.notice=t?.team==='enemy'?t.name+' · 공격 가능 '+ui.threatView.tiles.size+'칸 · 금색 +는 2단계 추격대 진입 지점':'확인할 적을 누르세요.';
   render();return;

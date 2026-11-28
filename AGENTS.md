@@ -17,6 +17,11 @@
 작업 단계별 커밋. npm test, balance, browser regression, campaign E2E, migration, offline, documentation audit. 실제 검증만 완료 표시. 모든 PR의 documentation checklist: README, CHANGELOG, CURRENT_STATUS, NEXT_TASKS, ROADMAP, Story Bible review, Decision Log review, tests/evidence, artifacts.
 
 
+
+## v2.8.0 RC · first turn and operations
+
+Stacked on feature/v2.7.1. See [RC QA](releases/Ashen_Crown_v2.8.0_Test_Report.md). Play review precedes any merge.
+
 ## Current v2.7.1 entry (게시판 그림과 마무리 — release candidate, D-161)
 feature/v2.7.1 (from feature/after-v2.7.0, the D-160 record). Art pack M: scripts/import-art-pack-m.py (manifest/SHA/size/alpha checks → props/requestBoard.webp 256×256, room-art-import-log.csv); frontier-renderer drawRequestBoard draws paintedProp('requestBoard') at 108 px (the drawn board only as a fallback). stats8 HARD_BASE_AT {6:1.7} (어려움 base per mission, before HARD_SHARE). hubs-v05: HV5_VILLAGE places/doors in Korean; after the capital and summit specs a `rename` gives the lower city and the summit camp their own place names (signs kept). story-v092 after:20:keep 「안뜰」. releases/ARCHIVE.json + .gitignore: v2.5.2–v2.7.0 added at their last packaging commits; v2.5.1's HTML/zip out of the tree.
 

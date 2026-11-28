@@ -31,6 +31,11 @@ with zipfile.ZipFile(source, 'w', zipfile.ZIP_DEFLATED) as archive:
         entry = zipfile.ZipInfo('ashen-crown/' + p.relative_to(root).as_posix(), (2026, 10, 14, 0, 0, 0))
         entry.compress_type = zipfile.ZIP_DEFLATED
         archive.writestr(entry, p.read_bytes())
+zip_size = source.stat().st_size
+if zip_size > 90 * 1048576:
+    raise SystemExit(f'Source ZIP exceeds 90 MiB ({zip_size} bytes)')
+if zip_size >= 80 * 1048576:
+    print(f'Check Source ZIP growth: {zip_size} bytes (80 MiB warning)')
 manifest = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in [release / f'Ashen_Crown_v{version}.html', source, release / f'Ashen_Crown_v{version}_Test_Report.md']}
 (release / f'Ashen_Crown_v{version}_SHA256SUMS').write_text(''.join(f'{digest}  {name}\n' for name,digest in manifest.items()))
 (release / 'SHA256SUMS.json').write_text(json.dumps(manifest, indent=2) + '\n')

@@ -21,7 +21,7 @@ release=root/'releases'
 # v2.2.1 (D-125): until a release candidate is packaged its HTML is not in git (builds stay in build/). Then there is
 # nothing to verify yet; once releases/Ashen_Crown_v<version>.html is tracked, every check below must pass.
 import sys
-if not subprocess.run(['git','ls-files','--error-unmatch',f'releases/Ashen_Crown_v{version}.html'],cwd=root,capture_output=True).returncode==0:
+if '--candidate' not in sys.argv and not subprocess.run(['git','ls-files','--error-unmatch',f'releases/Ashen_Crown_v{version}.html'],cwd=root,capture_output=True).returncode==0:
     print(f'v{version} is not packaged yet (releases/Ashen_Crown_v{version}.html is not in git): release verification skipped.');sys.exit(0)
 manifest={}
 for line in (release/f'Ashen_Crown_v{version}_SHA256SUMS').read_text().splitlines():

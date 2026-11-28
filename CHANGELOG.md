@@ -1,3 +1,8 @@
+
+# v2.8.0 RC — 첫 턴과 작전 선택
+
+- M01 추천 배치에서 첫 턴 구조와 교전을 선택한다. M06은 적 공격 가능 범위와 2단계 추격대 진입 지점을 표시한다. 같은 배치에서 정면·측면 작전 모두 클리어했다. [플레이 기록 및 QA](releases/Ashen_Crown_v2.8.0_Test_Report.md).
+
 # v2.7.1 — 게시판 그림과 마무리
 - Release candidate (D-161), built on v2.7.0 (merged, D-160); merge only on the user's approval. Notes docs/v2.7.1/RELEASE_NOTES.md.
 - Art pack M imported (scripts/import-art-pack-m.py → src/assets/props/requestBoard.webp); the square's board is painted (drawn 108 px).

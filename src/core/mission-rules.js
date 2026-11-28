@@ -190,9 +190,16 @@ function m06Positions(s,u,reachable){
 }
 export function m06ThreatTiles(s,u){
  const tiles=new Set();
- if(!u||!alive(u)||u.team!=='enemy'||!u.range?.[1])return tiles;
+ if(!u||!alive(u)||u.team!=='enemy'||u.dazed===s.turn||!u.range?.[1])return tiles;
  const m=missionOf(s),[min,max]=u.range;
- for(const pos of m06Positions(s,u,movement(s,u).costs)){
+ const reachable=movement(s,u).costs;
+ let positions=m06Positions(s,u,reachable);
+ if(u.status?.confuse)positions=[{x:u.x,y:u.y}];
+ else if(u.provokedBy?.turn===s.turn){
+  const source=findUnit(s,u.provokedBy.id);
+  if(source&&alive(source))positions=Array.from(reachable.keys(),key=>{const [x,y]=key.split(',').map(Number);return {x,y};});
+ }
+ for(const pos of positions){
   for(let y=Math.max(0,pos.y-max);y<=Math.min(m.height-1,pos.y+max);y++){
    for(let x=Math.max(0,pos.x-max);x<=Math.min(m.width-1,pos.x+max);x++){
     const d=distance(pos,{x,y});
