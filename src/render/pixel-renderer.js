@@ -112,6 +112,16 @@ export class BattleRenderer{
   // them. Each range tile is drawn again on top: a light wash and a bright border; a tile with someone on it gets the
   // border only, so the figure stays clear.
   for(const [tx,ty,fill,border] of rangeTop){if(!s.units.some(u=>alive(u)&&!u.benched&&u.x===tx&&u.y===ty)){c.save();c.globalAlpha=.45;rect(c,fill,tx*TILE+1,ty*TILE+1,60,60);c.restore();}c.strokeStyle=border;c.lineWidth=2;c.strokeRect(tx*TILE+3,ty*TILE+3,58,58);}
+  if(ui.threatView&&s.missionId===6&&s.screen==='battle'){
+   c.save();c.strokeStyle='#ff6666';c.lineWidth=3;
+   for(const key of ui.threatView.tiles){
+    const [tx,ty]=key.split(',').map(Number);
+    c.strokeRect(tx*TILE+3,ty*TILE+3,TILE-6,TILE-6);
+   }
+   c.fillStyle='#ffd35d';c.font='bold 28px sans-serif';c.textAlign='center';
+   for(const unit of ui.threatView.wave)c.fillText('+',unit.x*TILE+TILE/2,unit.y*TILE+TILE*.65);
+   c.restore();
+  }
   // v0.7 M11 night (D-068): tiles outside every light are covered in dark blue; lit tiles get a faint warm glow.
   if(missionOf(s).night){const src=lightSources(s);for(let ty=0;ty<HEIGHT;ty++)for(let tx=0;tx<WIDTH;tx++){const d=Math.min(...src.map(p=>Math.abs(p.x-tx)+Math.abs(p.y-ty)-p.r));
    rect(c,d<=0?'rgba(255,186,96,.08)':d===1?'rgba(10,14,34,.44)':'rgba(6,8,26,.64)',tx*TILE,ty*TILE,TILE,TILE);}}
