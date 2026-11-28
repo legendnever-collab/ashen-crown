@@ -86,8 +86,8 @@ export class BattleRenderer{
   if(s.turn===2&&s.screen==='battle')for(const spawn of missionOf(s).reinforcements){const sx=spawn.x*TILE,sy=spawn.y*TILE;rect(c,'#e1af63',sx,sy,TILE,3);rect(c,'#e1af63',sx,sy,3,TILE);c.fillStyle='#ffdb87';c.font='bold 24px monospace';c.fillText('!',sx+28,sy+34);}
   const threatIds=new Set(s.screen==='battle'&&s.phase==='player'&&lion?.threats?lion.threats(s):[]);
   const drawables=[];const stateOf=b=>s.screen==='result'&&s.outcome==='victory'?'burned':b.state;
-  for(const o of this.hd.objects){if(o.kind==='house'&&this.hdCovered.has((o.x/48)+','+(o.y/48-1)))continue;drawables.push({key:hdObjectKey(o),draw:()=>drawHDObject(c,o,now)});}
-  for(const o of hdLayerBuildings(missionOf(s).layers.buildings,stateOf))drawables.push({key:hdObjectKey(o),draw:()=>drawHDObject(c,o,now)});
+  for(const o of this.hd.objects){if(o.kind==='house'&&this.hdCovered.has((o.x/48)+','+(o.y/48-1)))continue;drawables.push({key:hdObjectKey(o),draw:()=>drawHDObject(c,o,now,this.hd.raster)});}
+  for(const o of hdLayerBuildings(missionOf(s).layers.buildings,stateOf))drawables.push({key:hdObjectKey(o),draw:()=>drawHDObject(c,o,now,this.hd.raster)});
   for(const o of s.units.filter(u=>u.team==='object'&&u.rescued&&!u.evidence)){const ox=o.x*TILE+32,oy=o.y*TILE+37;drawables.push({key:oy+27.5,draw:()=>drawMissionObject(c,o,ox,oy,now)});}
   // pack F2 (D-088): a felled ward tree stays on the map as its painted stump
   for(const o of s.units.filter(u=>u.kind==='wardTree'&&!alive(u)&&this.displayHP(u,now)<=0)){const ox=o.x*TILE+32,oy=o.y*TILE+37;drawables.push({key:oy+27.5,draw:()=>drawProp(c,'wardTree_felled',ox,oy+24,1.45)});}

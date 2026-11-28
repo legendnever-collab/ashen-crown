@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import {pathToFileURL} from 'node:url';
 import path from 'node:path';
 import {launchTestBrowser} from './browser-helper.mjs';
-import {restoreText} from './arena-helper.mjs';
+import {terrainPixels} from './m01-terrain-pixels.mjs';
+import {fitMap,restoreText} from './arena-helper.mjs';
 import {drainStory} from './story-helper.mjs';
 import {deserialize,serialize} from '../src/persistence/save-manager.js';
 import {startBattle} from '../src/core/game.js';
@@ -15,17 +16,39 @@ fs.mkdirSync('test-output',{recursive:true});
 try {
  for(const width of [1440,390]){
   const touch=width===390;
-  const ctx=await browser.newContext({viewport:{width,height:touch?844:900},hasTouch:touch,isMobile:touch});
+  const ctx=await browser.newContext({viewport:{width,height:touch?844:900},hasTouch:touch,isMobile:touch,deviceScaleFactor:touch?3:1});
   await ctx.setOffline(true);
   const page=await ctx.newPage(),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
-  await page.goto(pathToFileURL(path.resolve('build/Ashen_Crown.html')).href);
+  if(touch)await page.addInitScript(()=>{
+   const put=CanvasRenderingContext2D.prototype.putImageData;
+   CanvasRenderingContext2D.prototype.putImageData=function(...args){
+    if(window.dropTerrainUploads!==false)return;
+    return put.apply(this,args);
+   };
+  });
+  await page.goto(pathToFileURL(path.resolve(process.env.MAP_TEST_HTML||'build/Ashen_Crown.html')).href);
   const press=async action=>{
    const el=page.locator('[data-do="'+action+'"]').first();
    if(touch)await el.tap();else await el.click();
    await drainStory(page);
   };
-  for(const action of ['new','warroom','deploy','start-battle'])await press(action);
+  for(const action of ['new','warroom','deploy'])await press(action);
+  for(const screen of ['deployment','battle']){
+   if(screen==='battle')await press('start-battle');
+   await press('reset-camera');await fitMap(page,touch);
+   await page.waitForTimeout(350);
+   const colors=await terrainPixels(page);
+   console.log(width,screen,JSON.stringify(colors));
+   await page.screenshot({path:'test-output/m01-'+width+'-'+screen+'.png'});
+   assert.ok(colors.grass.green>.4&&colors.road.brown>.4&&colors.forest.green>.3&&colors.house.brown>.15,'recognizable M01 terrain and village');
+   if(screen==='deployment'){
+    const select=page.locator('[data-do="select"][data-id="eric"]').first();
+    if(touch)await select.tap();else await select.click();
+    assert.ok(await page.evaluate(()=>AshenCrown.view().mode==='deploy'&&AshenCrown.view().ranges.length>0));
+   }
+  }
+  await page.evaluate(()=>{window.dropTerrainUploads=false;});
   const opening=await page.evaluate(()=>AshenCrown.snapshot());
   assert.equal(opening.turn,1);assert.equal(opening.screen,'battle');
   assert.deepEqual(opening.units.filter(u=>u.id==='kai').map(u=>[u.x,u.y]),[[10,8]]);
